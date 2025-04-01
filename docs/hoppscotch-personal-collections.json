@@ -1,0 +1,88 @@
+[
+  {
+    "v": 6,
+    "name": "Ai Photo",
+    "folders": [
+      {
+        "v": 6,
+        "name": "webhooks",
+        "folders": [],
+        "requests": [
+          {
+            "v": "11",
+            "name": "training success",
+            "method": "POST",
+            "endpoint": "http://localhost:5150/api/webhooks/fal-ai/training",
+            "params": [],
+            "headers": [],
+            "preRequestScript": "",
+            "testScript": "",
+            "auth": {
+              "authType": "inherit",
+              "authActive": true
+            },
+            "body": {
+              "contentType": "application/json",
+              "body": "{\n  \"request_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"gateway_request_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"status\": \"OK\",\n  \"payload\": {\n    \"diffusers_lora_file\": {\n      \"url\": \"https://url.to/image.png\",\n      \"content_type\": \"image/png\",\n      \"file_name\": \"z9RV14K95DvU.png\",\n      \"file_size\": 4404019\n    },\n    \"config_file\": {\n      \"url\": \"\",\n      \"content_type\": \"image/png\",\n      \"file_name\": \"z9RV14K95DvU.png\",\n      \"file_size\": 4404019\n    }\n  }\n}\n\n"
+            },
+            "requestVariables": [],
+            "responses": {}
+          },
+          {
+            "v": "11",
+            "name": "training error",
+            "method": "POST",
+            "endpoint": "http://localhost:5150/api/webhooks/fal-ai/training",
+            "params": [],
+            "headers": [],
+            "preRequestScript": "",
+            "testScript": "",
+            "auth": {
+              "authType": "inherit",
+              "authActive": true
+            },
+            "body": {
+              "contentType": "application/json",
+              "body": "{\n  \"request_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"gateway_request_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"status\": \"ERROR\",\n  \"error\": \"Invalid status code: 422\",\n  \"payload\": {\n    \"detail\": [\n      {\n        \"loc\": [\"body\", \"prompt\"],\n        \"msg\": \"field required\",\n        \"type\": \"value_error.missing\"\n      }\n    ]\n  }\n}\n\n"
+            },
+            "requestVariables": [],
+            "responses": {}
+          },
+          {
+            "v": "11",
+            "name": "training paylod error",
+            "method": "POST",
+            "endpoint": "http://localhost:5150/api/webhooks/fal-ai/training",
+            "params": [],
+            "headers": [],
+            "preRequestScript": "",
+            "testScript": "",
+            "auth": {
+              "authType": "inherit",
+              "authActive": true
+            },
+            "body": {
+              "contentType": "application/json",
+              "body": "{\n  \"request_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"gateway_request_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"status\": \"OK\",\n  \"payload\": null,\n  \"payload_error\": \"Response payload is not JSON serializable. Either return a JSON serializable object or use the queue endpoint to retrieve the response.\"\n}\n"
+            },
+            "requestVariables": [],
+            "responses": {}
+          }
+        ],
+        "auth": {
+          "authActive": true,
+          "authType": "inherit"
+        },
+        "headers": [],
+        "_ref_id": "coll_m8kibr13_8547bf6f-fa8b-4262-acba-0e7efc584bb1"
+      }
+    ],
+    "requests": [],
+    "auth": {
+      "authActive": true,
+      "authType": "none"
+    },
+    "headers": [],
+    "_ref_id": "coll_m8kibkhl_1459ae90-3f2e-43d8-b884-09c59e3140b6"
+  }
+]

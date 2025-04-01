@@ -1,0 +1,58 @@
+{% extends "base.html" %} {% block title %} Homepage {% endblock title %} {% block content %}
+
+<!-- Navbar -->
+{% block navbar %} {% include "partials/navbar/navbar.html" %} {% endblock navbar %}
+
+<!-- Hero -->
+<div class="hero bg-base-200 min-h-screen">
+  <div class="hero-content text-center">
+    <div class="max-w-md">
+      <h1 class="text-5xl font-bold">Hello there</h1>
+      <p class="py-6">
+        Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem
+        quasi. In deleniti eaque aut repudiandae et a id nisi.
+      </p>
+      <button
+        hx-get="/info"
+        class="btn btn-primary"
+        hx-on::before-request="alert('Making a request!')"
+        hx-on::after-request="alert('Done making a request!')"
+      >
+        Get Started
+      </button>
+      <button
+        class="btn btn-secondary"
+        hx-post="/your-endpoint"
+        hx-trigger="click"
+        hx-swap="outerHTML"
+        hx-indicator="#loading-indicator"
+        x-data="{ disabled: false }"
+        x-bind:disabled="disabled"
+        @htmx:config-request="disabled = true"
+        @htmx:response-error="disabled = false"
+      >
+        Submit
+      </button>
+
+      <img id="loading-indicator" class="htmx-indicator" src="/img/bars.svg" />
+    </div>
+    <form
+      hx-post="/your-endpoint"
+      hx-trigger="submit"
+      hx-swap="outerHTML"
+      hx-indicator="#loading-indicator"
+      x-data="{ disabled: false }"
+      @htmx:config-request="disabled = true"
+      @htmx:response-error="disabled = false"
+      @htmx:after-request="if (event.detail.xhr.status !== 200) disabled = false"
+    >
+      <input type="text" name="name" required placeholder="Enter name" />
+
+      <button class="btn btn-primary" type="submit" x-bind:disabled="disabled">Submit</button>
+
+      <span id="loading-indicator" class="htmx-indicator">Loading...</span>
+    </form>
+  </div>
+</div>
+
+{% endblock content %}

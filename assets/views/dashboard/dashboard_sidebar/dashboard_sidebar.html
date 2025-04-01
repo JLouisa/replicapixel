@@ -1,0 +1,275 @@
+<aside class="flex flex-col items-center text-gray-700 shadow h-full mt-8">
+  <!-- Side Nav Bar-->
+  <ul class="flex flex-col">
+    <!-- Top Items Section -->
+
+    <!-- Album Section -->
+    <li class="hover:bg-gray-100 tooltip tooltip-right" data-tip="Album">
+      <a
+        hx-get="{{ sidebar_routes.photo_partial }}"
+        hx-target="#dashboard_content"
+        hx-push-url="{{ sidebar_routes.photo }}"
+        hx-swap="innerHTML"
+        class="h-16 px-6 flex justify-center items-center w-full focus:text-orange-500 cursor-pointer"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="lucide lucide-images-icon lucide-images"
+        >
+          <path d="M18 22H4a2 2 0 0 1-2-2V6" />
+          <path d="m22 13-1.296-1.296a2.41 2.41 0 0 0-3.408 0L11 18" />
+          <circle cx="12" cy="8" r="2" />
+          <rect width="16" height="16" x="6" y="2" rx="2" />
+        </svg>
+      </a>
+    </li>
+    <!-- Model Section -->
+    <li class="hover:bg-gray-100 tooltip tooltip-right" data-tip="Model">
+      <a
+        hx-get="{{ sidebar_routes.training_models_partial }}"
+        hx-target="#dashboard_content"
+        hx-push-url="{{ sidebar_routes.training_models }}"
+        hx-swap="innerHTML"
+        class="h-16 px-6 flex justify-center items-center w-full focus:text-orange-500 cursor-pointer"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="26"
+          height="26"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="lucide lucide-drama-icon lucide-drama"
+        >
+          <path d="M10 11h.01" />
+          <path d="M14 6h.01" />
+          <path d="M18 6h.01" />
+          <path d="M6.5 13.1h.01" />
+          <path d="M22 5c0 9-4 12-6 12s-6-3-6-12c0-2 2-3 6-3s6 1 6 3" />
+          <path d="M17.4 9.9c-.8.8-2 .8-2.8 0" />
+          <path
+            d="M10.1 7.1C9 7.2 7.7 7.7 6 8.6c-3.5 2-4.7 3.9-3.7 5.6 4.5 7.8 9.5 8.4 11.2 7.4.9-.5 1.9-2.1 1.9-4.7"
+          />
+          <path d="M9.1 16.5c.3-1.1 1.4-1.7 2.4-1.4" />
+        </svg>
+      </a>
+    </li>
+    <!-- Packs Section -->
+    <li class="hover:bg-gray-100 tooltip tooltip-right" data-tip="Packs">
+      <a
+        hx-get="{{ sidebar_routes.packs_partial }}"
+        hx-target="#dashboard_content"
+        hx-push-url="{{ sidebar_routes.packs }}"
+        hx-swap="innerHTML"
+        class="h-16 px-6 flex justify-center items-center w-full focus:text-orange-500 cursor-pointer"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="lucide lucide-package-icon lucide-package"
+        >
+          <path
+            d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"
+          />
+          <path d="M12 22V12" />
+          <polyline points="3.29 7 12 12 20.71 7" />
+          <path d="m7.5 4.27 9 5.15" />
+        </svg>
+      </a>
+    </li>
+    <!-- Favorite Section -->
+    <li class="hover:bg-gray-100 tooltip tooltip-right cursor-pointer" data-tip="Favorite">
+      <a
+        hx-get="{{ sidebar_routes.album_favorite_partial }}"
+        hx-target="#dashboard_content"
+        hx-push-url="{{ sidebar_routes.album_favorite }}"
+        hx-swap="innerHTML"
+        class="h-16 px-6 flex justify-center items-center w-full focus:text-orange-500"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+        </svg>
+      </a>
+    </li>
+    <!-- Deleted Section -->
+    <li class="hover:bg-gray-100 tooltip tooltip-right cursor-pointer" data-tip="Deleted">
+      <a
+        hx-get="{{ sidebar_routes.album_deleted_partial }}"
+        hx-target="#dashboard_content"
+        hx-push-url="{{ sidebar_routes.album_deleted }}"
+        hx-swap="innerHTML"
+        class="h-16 px-6 flex justify-center items-center w-full focus:text-orange-500"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polyline points="3 6 5 6 21 6"></polyline>
+          <path
+            d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2
+        0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+          ></path>
+        </svg>
+      </a>
+    </li>
+    <!-- Notification Section -->
+    <li
+      class="hover:bg-gray-100 relative tooltip tooltip-right cursor-pointer"
+      data-tip="Notifications"
+    >
+      <a
+        hx-get="{{ sidebar_routes.notifications_partial }}"
+        hx-target="#dashboard_content"
+        hx-push-url="{{ sidebar_routes.notifications }}"
+        hx-swap="innerHTML"
+        class="h-16 px-6 flex justify-center items-center w-full focus:text-orange-500 relative"
+      >
+        {#
+        <div class="status status-info animate-bounce abosulte"></div>
+        #}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+        </svg>
+      </a>
+    </li>
+  </ul>
+
+  <!-- Bottom Items Section -->
+  <div class="mt-auto h-56 flex flex-col items-center w-full">
+    <!-- Help Section -->
+    <div
+      hx-get="{{ sidebar_routes.help_partial }}"
+      hx-target="#dashboard_content"
+      hx-push-url="{{ sidebar_routes.help }}"
+      hx-swap="innerHTML"
+      class="h-16 w-full mx-auto flex items-center justify-center focus:text-orange-500 hover:bg-gray-100 focus:outline-none cursor-pointer tooltip tooltip-right"
+      data-tip="Help"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="lucide lucide-circle-help-icon lucide-circle-help"
+      >
+        <circle cx="12" cy="12" r="10" />
+        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+        <path d="M12 17h.01" />
+      </svg>
+    </div>
+    <!-- Settings Section -->
+    <div
+      hx-get="{{ sidebar_routes.settings_partial }}"
+      hx-target="#dashboard_content"
+      hx-push-url="{{ sidebar_routes.settings }}"
+      hx-swap="innerHTML"
+      class="h-16 w-full mx-auto flex items-center justify-center focus:text-orange-500 hover:bg-gray-100 focus:outline-none cursor-pointer tooltip tooltip-right"
+      data-tip="Settings"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="12" cy="12" r="3"></circle>
+        <path
+          d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1
+  0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0
+  0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2
+  2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0
+  0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1
+  0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0
+  0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65
+  0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0
+  1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0
+  1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2
+  0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0
+  1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0
+  2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0
+  0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65
+  1.65 0 0 0-1.51 1z"
+        ></path>
+      </svg>
+    </div>
+    <!-- Logout Section -->
+    <div
+      hx-get="{{ sidebar_routes.logout }}"
+      class="h-16 w-full mx-auto flex items-center justify-center focus:text-orange-500 hover:bg-red-200 focus:outline-none cursor-pointer tooltip tooltip-right"
+      data-tip="Logout"
+    >
+      <svg
+        class="text-red-700"
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+        <polyline points="16 17 21 12 16 7"></polyline>
+        <line x1="21" y1="12" x2="9" y2="12"></line>
+      </svg>
+    </div>
+  </div>
+</aside>

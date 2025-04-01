@@ -1,0 +1,189 @@
+<div class="min-h-screen bg-base-200 p-4">
+  <div class="max-w-2xl mx-auto bg-base-100 rounded-box shadow-xl">
+    <div class="p-6 border-b border-base-300">
+      <div class="flex items-center gap-3">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="lucide lucide-settings-icon lucide-settings"
+        >
+          <path
+            d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"
+          />
+          <circle cx="12" cy="12" r="3" />
+        </svg>
+        <h1 class="text-2xl font-semibold">Settings</h1>
+      </div>
+    </div>
+
+    <div class="p-6 space-y-6">
+      <!-- Notifications -->
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-bell-icon lucide-bell"
+          >
+            <path d="M10.268 21a2 2 0 0 0 3.464 0" />
+            <path
+              d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"
+            />
+          </svg>
+          <div>
+            <h2 class="font-medium">Notifications</h2>
+            <p class="text-sm text-base-content/70">Receive notifications about updates</p>
+          </div>
+        </div>
+        <input type="checkbox" class="toggle toggle-primary" checked="{notifications}" />
+      </div>
+
+      <!-- Dark Mode -->
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          {% if darkMode %}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-sun-icon lucide-sun"
+          >
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2" />
+            <path d="M12 20v2" />
+            <path d="m4.93 4.93 1.41 1.41" />
+            <path d="m17.66 17.66 1.41 1.41" />
+            <path d="M2 12h2" />
+            <path d="M20 12h2" />
+            <path d="m6.34 17.66-1.41 1.41" />
+            <path d="m19.07 4.93-1.41 1.41" />
+          </svg>
+          {% else %}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-moon-icon lucide-moon"
+          >
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+          </svg>
+          {% endif %}
+          <div>
+            <h2 class="font-medium">Dark Mode</h2>
+            <p class="text-sm text-base-content/70">Toggle dark mode appearance</p>
+          </div>
+        </div>
+        <input type="checkbox" class="toggle toggle-primary" checked="{darkMode}" />
+      </div>
+
+      <!-- Language -->
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-globe-icon lucide-globe"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+            <path d="M2 12h20" />
+          </svg>
+          <div>
+            <h2 class="font-medium">Language</h2>
+            <p class="text-sm text-base-content/70">Select your preferred language</p>
+          </div>
+        </div>
+        <select class="select select-bordered w-32" value="{language}">
+          <option value="english">English</option>
+          <option value="spanish">Spanish</option>
+          <option value="french">French</option>
+        </select>
+      </div>
+
+      <!-- Privacy -->
+      <div class="flex items-center gap-3 p-4 bg-base-200 rounded-lg">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="lucide lucide-shield-check-icon lucide-shield-check"
+        >
+          <path
+            d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"
+          />
+          <path d="m9 12 2 2 4-4" />
+        </svg>
+        <div>
+          <h2 class="font-medium">Privacy Policy</h2>
+          <p class="text-sm text-base-content/70">Read our privacy policy and terms</p>
+        </div>
+      </div>
+
+      <!-- Account -->
+      <div class="flex items-center gap-3 p-4 bg-base-200 rounded-lg">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="lucide lucide-user-icon lucide-user"
+        >
+          <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+          <circle cx="12" cy="7" r="4" />
+        </svg>
+        <div>
+          <h2 class="font-medium">Account Settings</h2>
+          <p class="text-sm text-base-content/70">Manage your account details</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-6 border-t border-base-300 bg-base-200 rounded-b-box">
+      <button class="btn btn-primary w-full">Save Changes</button>
+    </div>
+  </div>
+</div>

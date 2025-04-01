@@ -1,0 +1,158 @@
+<div
+  id="{{model.id}}"
+  class="w-72 shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl {% if model.training_status == 'Completed' %} bg-green-100 text-green-900 {% elif model.training_status == 'Training' %} bg-blue-100 text-blue-900 {% elif model.training_status == 'Failed' %} bg-red-100 text-red-900 {% else %} bg-white text-gray-900 {% endif %}"
+  {% if model.training_status not in ['Completed', 'Failed'] %}
+  hx-get="{{ training_route_check }}/{{ model.id }}/{{ model.training_status }}"
+  hx-trigger="every 8s"
+  hx-swap="outerHTML"
+  {% endif %}
+  >
+  {% if model.thumbnail %}
+  <img src="{{model.thumbnail}}" alt="" class="h-80 w-72 object-cover rounded-t-xl" />
+  {% elif model.training_status == 'Completed' %}
+  <div
+    role="status"
+    class="flex items-center justify-center h-56 max-w-sm bg-gray-200 rounded-t-lg dark:bg-gray-700 {% if model.training_status not in ['Completed', 'Failed'] %} animate-pulse {% endif %}"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="w-10 h-10 me-3 text-gray-500 dark:text-gray-400 ml-4"
+    >
+      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <polyline points="16 11 18 13 22 9" />
+    </svg>
+    <span class="sr-only">Loading...</span>
+  </div>
+  {% elif model.training_status == 'Training' %}
+  <div
+    role="status"
+    class="flex items-center justify-center h-56 max-w-sm bg-gray-200 rounded-t-lg dark:bg-gray-700 {% if model.training_status not in ['Completed', 'Failed'] %} animate-pulse {% endif %}"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="w-10 h-10 me-3 text-gray-500 dark:text-gray-400 ml-4"
+    >
+      <circle cx="18" cy="15" r="3" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M10 15H6a4 4 0 0 0-4 4v2" />
+      <path d="m21.7 16.4-.9-.3" />
+      <path d="m15.2 13.9-.9-.3" />
+      <path d="m16.6 18.7.3-.9" />
+      <path d="m19.1 12.2.3-.9" />
+      <path d="m19.6 18.7-.4-1" />
+      <path d="m16.8 12.3-.4-1" />
+      <path d="m14.3 16.6 1-.4" />
+      <path d="m20.7 13.8 1-.4" />
+    </svg>
+    <span class="sr-only">Loading...</span>
+  </div>
+  {% elif model.training_status == 'Failed' %}
+  <div
+    role="status"
+    class="flex items-center justify-center h-56 max-w-sm bg-gray-200 rounded-t-lg dark:bg-gray-700 {% if model.training_status not in ['Completed', 'Failed'] %} animate-pulse {% endif %}"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="w-10 h-10 me-3 text-gray-500 dark:text-gray-400 ml-4"
+    >
+      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <line x1="17" x2="22" y1="8" y2="13" />
+      <line x1="22" x2="17" y1="8" y2="13" />
+    </svg>
+    <span class="sr-only">Loading...</span>
+  </div>
+  {% else %}
+  <div
+    role="status"
+    class="flex items-center justify-center h-56 max-w-sm bg-gray-200 rounded-t-lg dark:bg-gray-700 {% if model.training_status not in ['Completed', 'Failed'] %} animate-pulse {% endif %}"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="w-10 h-10 me-3 text-gray-500 dark:text-gray-400"
+    >
+      <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+      <circle cx="12" cy="7" r="4" />
+    </svg>
+    {#
+    <svg
+      class="w-10 h-10 me-3 text-gray-500 dark:text-gray-400"
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="currentColor"
+      viewBox="0 0 20 20"
+    >
+      <path
+        d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm0 5a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm0 13a8.949 8.949 0 0 1-4.951-1.488A3.987 3.987 0 0 1 9 13h2a3.987 3.987 0 0 1 3.951 3.512A8.949 8.949 0 0 1 10 18Z"
+      />
+    </svg>
+    #}
+    <span class="sr-only">Loading...</span>
+  </div>
+
+   {% endif %}
+  <div class="px-4 py-3 w-72">
+    <div class="flex items-center justify-center">
+      <p class="text-lg font-bold text-center truncate block capitalize">{{model.name}}</p>
+    </div>
+    <div class="flex items-center justify-center gap-2 mt-2">
+      {% if model.training_status == "Completed" %}
+      <div class="inline-grid *:[grid-area:1/1]">
+        <div class="status status-success"></div>
+        <div class="status status-success"></div>
+      </div>
+      <span class="text-sm text-green-700"> {{ model.training_status }} </span>
+      {% elif model.training_status == "Training" %}
+      <div class="inline-grid *:[grid-area:1/1]">
+        <div class="status status-info animate-ping"></div>
+        <div class="status status-info"></div>
+      </div>
+      <span class="text-sm text-blue-700"> {{ model.training_status }} </span>
+      {% elif model.training_status == "Failed" %}
+      <div class="inline-grid *:[grid-area:1/1]">
+        <div aria-label="error" class="status status-error"></div>
+      </div>
+      <span class="text-sm text-red-700"> {{ model.training_status }} </span>
+      {% else %}
+      <div class="inline-grid *:[grid-area:1/1]">
+        <div class="status status-neutral animate-ping"></div>
+        <div class="status status-neutral"></div>
+      </div>
+      <span class="text-sm text-gray-500"> {{ model.training_status }} </span>
+      {% endif %}
+    </div>
+  </div>
+</div>

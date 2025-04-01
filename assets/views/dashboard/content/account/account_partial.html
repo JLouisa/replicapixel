@@ -1,0 +1,125 @@
+<div>
+  <div class="min-h-screen p-4 md:p-8">
+    <div class="max-w-3xl mx-auto">
+      <!-- Header -->
+      <div class="mb-8">
+        <h1 class="text-2xl font-semibold">Account Settings</h1>
+        <p class="text-base-content/60">Manage your account settings and preferences</p>
+      </div>
+
+      <!-- Profile Section -->
+      <div class="card bg-base-100 shadow mb-6">
+        <div class="card-body">
+          <h2 class="text-lg font-medium mb-4">Profile</h2>
+          <div class="flex items-center gap-4 mb-6">
+            {% if user.img %}
+            <div class="avatar">
+              <div class="w-24 rounded-full">
+                <img
+                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                />
+              </div>
+            </div>
+            {% else %}
+            <div
+              class="flex items-center justify-center bg-neutral text-neutral-content w-24 h-24 rounded-full"
+            >
+              <span class="text-2xl font-medium"
+                >{{ user.name | truncate(length=1, end="") | upper }}</span
+              >
+            </div>
+            {% endif %}
+            <div>
+              <button class="btn btn-sm">Change photo</button>
+              <p class="text-sm text-base-content/60 mt-1">JPG, GIF or PNG. 1MB max.</p>
+            </div>
+          </div>
+          <div class="grid gap-4">
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Name</span>
+              </label>
+              <input type="text" class="input input-bordered" placeholder="{{user.name}}" />
+            </div>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Email</span>
+              </label>
+              <input type="email" class="input input-bordered" placeholder="{{user.email}}" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Password Section -->
+      <div class="card bg-base-100 shadow mb-6">
+        <div class="card-body">
+          <h2 class="text-lg font-medium mb-4">Password</h2>
+          <div class="grid gap-4">
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Current password</span>
+              </label>
+              <input type="password" class="input input-bordered" />
+            </div>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">New password</span>
+              </label>
+              <input type="password" class="input input-bordered" />
+            </div>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Confirm new password</span>
+              </label>
+              <input type="password" class="input input-bordered" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notifications Section -->
+      <div class="card bg-base-100 shadow mb-6">
+        <div class="card-body">
+          <h2 class="text-lg font-medium mb-4">Notifications</h2>
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="font-medium">Email notifications</h3>
+                <p class="text-sm text-base-content/60">
+                  Receive emails about your account activity
+                </p>
+              </div>
+              <input type="checkbox" class="toggle toggle-primary" checked />
+            </div>
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="font-medium">Marketing emails</h3>
+                <p class="text-sm text-base-content/60">
+                  Receive emails about new products and features
+                </p>
+              </div>
+              <input type="checkbox" class="toggle toggle-primary" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Delete Account Section -->
+      <div class="card bg-base-100 shadow">
+        <div class="card-body">
+          <h2 class="text-lg font-medium text-error mb-2">Delete Account</h2>
+          <p class="text-sm text-base-content/60 mb-4">
+            Once you delete your account, there is no going back. Please be certain.
+          </p>
+          <button class="btn btn-error btn-outline">Delete your account</button>
+        </div>
+      </div>
+
+      <!-- Save Button -->
+      <div class="mt-8 flex justify-end">
+        <button class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>

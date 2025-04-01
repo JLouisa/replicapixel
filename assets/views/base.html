@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}My Loco App{% endblock title %}</title>
+    <link rel="icon" type="image/png" href="/static/favicon.png" />
+    <link href="/static/css/output.css" rel="stylesheet" type="text/css" />
+    <script src="/static/js/index.min.js" defer></script>
+    <script src="/static/js/htmx/htmx.min.js"></script>
+    <script src="/static/js/htmx/extensions/htmx-ext-form-json.js"></script>
+    {% block head %}{% endblock head %}
+  </head>
+  <body>
+    <!-- Main -->
+    <div id="app">{% block content %}{% endblock content %}</div>
+
+    <div
+      x-data
+      x-show="$store.toast.isVisible"
+      x-transition:enter="transition transform ease-out duration-300"
+      x-transition:enter-start="translate-y-full"
+      x-transition:enter-end="translate-y-0"
+      x-transition:leave="transition transform ease-in duration-300"
+      x-transition:leave-start="translate-y-0"
+      x-transition:leave-end="translate-y-full"
+      x-cloak
+      class="fixed bottom-5 right-5 px-4 py-2 rounded shadow-lg text-white"
+      :class="$store.toast.isError ? 'bg-red-500' : 'bg-green-700'"
+    >
+      <span x-text="$store.toast.message"></span>
+    </div>
+
+    <!-- Javascript -->
+    {% block js %} {% endblock js %}
+  </body>
+</html>

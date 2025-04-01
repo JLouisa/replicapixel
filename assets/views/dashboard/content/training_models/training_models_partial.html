@@ -1,0 +1,44 @@
+<div class="flex flex-col mx-auto items-center justify-center">
+  <!-- You can open the modal using ID.showModal() method -->
+  <button class="btn btn-neutral" onclick="my_modal_4.showModal()">Create Model</button>
+  <dialog id="my_modal_4" class="modal">
+    <div class="modal-box w-128 max-w-5xl">
+      <h3 class="text-lg text-center font-bold">Create New Model!</h3>
+      {% include "dashboard/content/training_models/create_new_ai_model.html" %}
+      <div class="modal-action w-full">
+        <form method="dialog" class="w-full">
+          <!-- if there is a button, it will close the modal -->
+          <button class="btn btn-neutral w-full">Cancel</button>
+        </form>
+      </div>
+    </div>
+  </dialog>
+</div>
+
+<div
+  class="w-fit mx-auto grid grid-cols-1 lg:grid-cols-6 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-5"
+>
+  {% if models|length > 0 %} {% for model in models %} {% include
+  "dashboard/content/training_models/training_models_loading_partial.html" %} {% endfor %} {% else
+  %}
+  <div class="flex flex-col mx-auto items-center justify-center">
+    <p class="text-gray-500 text-lg">No models available. Create some to get started!</p>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="128"
+      height="128"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="grey"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="lucide lucide-ghost-icon lucide-ghost"
+    >
+      <path d="M9 10h.01" />
+      <path d="M15 10h.01" />
+      <path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z" />
+    </svg>
+  </div>
+  {% endif %}
+</div>

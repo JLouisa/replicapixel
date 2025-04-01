@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+<!-- Main Content -->
+{% block content %}
+
+<!-- Login Form -->
+<div class="min-h-screen flex items-center justify-center bg-gray-600">
+  <div id="auth-form" class="w-full max-w-md bg-white shadow-lg rounded-lg">
+    {% block form %} {% endblock form %}
+  </div>
+</div>
+{% endblock content %}
+
+<!-- Javascript-->
+{% block js %} {% endblock js %}

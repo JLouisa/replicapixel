@@ -1,0 +1,77 @@
+<div
+  class="w-fit mx-auto grid grid-cols-1 lg:grid-cols-4 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-5"
+>
+  {% for pack in packs %}
+  <!-- Pack - Starts Here -->
+  <div
+    class="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl"
+    onclick="document.getElementById('{{pack.pid}}').showModal()"
+  >
+    <a href="#">
+      <img src="{{pack.img}}" alt="pack" class="h-80 w-72 object-cover rounded-t-xl" />
+      <div class="px-4 py-3 w-72">
+        <p class="text-lg text-center font-bold text-black truncate block capitalize">
+          {{pack.title}}
+        </p>
+        <p>{{pack.description}}</p>
+        <div class="flex items-center justify-between">
+          <span class="text-gray-400 mr-3 uppercase text-xs"> {{pack.amount}} Photos </span>
+          <div class="flex items-center justify-center">
+            <span> {% include "partials/svg/credit_svg.html" %} </span>
+            <span class="text-gray-700 mr-3 uppercase text-xs"> {{pack.credits}} </span>
+          </div>
+        </div>
+        <div class="ml-auto"></div>
+      </div>
+    </a>
+  </div>
+  <dialog id="{{pack.pid}}" class="modal">
+    <div class="modal-box">
+      <h3 class="text-lg font-bold">Hello!</h3>
+      <p class="py-4">Press ESC key or click the button below to close</p>
+      <div class="modal-action">
+        <form method="dialog">
+          <!-- if there is a button in form, it will close the modal -->
+          <button
+            hx-get="/dashboard/partial/photo"
+            hx-target="#dashboard_content"
+            hx-push-url="/dashboard/photo"
+            hx-swap="innerHTML"
+            class="btn"
+          >
+            Yes
+          </button>
+          <button class="btn">Close</button>
+        </form>
+      </div>
+    </div>
+  </dialog>
+  {% endfor %}
+</div>
+
+{#
+<div class="m-auto max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
+  <div class="flex justify-evenly gap-8">
+    {% for pack in packs %}
+    <div
+      class="card bg-base-100 w-[125%] shadow-sm cursor-pointer duration-500 hover:scale-105 hover:shadow-xl"
+    >
+      <figure>
+        <img src="{{pack.img}}" alt="Shoes" />
+      </figure>
+      <div class="card-body">
+        <div class="flex items-center justify-between">
+          <h2 class="card-title">{{pack.title}}</h2>
+          <div class="flex items-center">
+            <span> {% include "partials/svg/credit_svg.html" %} </span>
+            <span class="text-lg font-bold"> {{pack.credits}}</span>
+          </div>
+        </div>
+        <p>{{pack.amount}} Photos</p>
+        <p>{{pack.description}}</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+#}
