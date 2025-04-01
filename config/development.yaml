@@ -1,0 +1,138 @@
+# Loco configuration file documentation
+
+# Application logging configuration
+logger:
+  # Enable or disable logging.
+  enable: true
+  # Enable pretty backtrace (sets RUST_BACKTRACE=1)
+  pretty_backtrace: true
+  # Log level, options: trace, debug, info, warn or error.
+  level: debug
+  # Define the logging format. options: compact, pretty or json
+  format: compact
+  # By default the logger has filtering only logs that came from your code or logs that came from `loco` framework. to see all third party libraries
+  # Uncomment the line below to override to see all third party libraries you can enable this config and override the logger filters.
+  # override_filter: trace
+
+# Web server configuration
+server:
+  # Port on which the server will listen. the server binding is 0.0.0.0:{PORT}
+  port: 5150
+  # Binding for the server (which interface to bind to)
+  binding: localhost
+  # The UI hostname or IP address that mailers will point to.
+  host: http://localhost
+  # Out of the box middleware configuration. to disable middleware you can changed the `enable` field to `false` of comment the middleware block
+  middlewares:
+    static:
+      enable: true
+      must_exist: true
+      precompressed: false
+      folder:
+        uri: "/static"
+        path: "assets/static"
+      fallback: "assets/views/404.html"
+    logger:
+      # Enable/Disable the middleware.
+      enable: true
+
+# Worker Configuration
+workers:
+  # specifies the worker mode. Options:
+  #   - BackgroundQueue - Workers operate asynchronously in the background, processing queued.
+  #   - ForegroundBlocking - Workers operate in the foreground and block until tasks are completed.
+  #   - BackgroundAsync - Workers operate asynchronously in the background, processing tasks with async capabilities.
+  mode: BackgroundAsync
+
+  
+
+# Mailer Configuration.
+mailer:
+  # SMTP mailer configuration.
+  smtp:
+    # Enable/Disable smtp mailer.
+    enable: true
+    # SMTP server host. e.x localhost, smtp.gmail.com
+    host: localhost
+    # SMTP server port
+    port: 1025
+    # Use secure connection (SSL/TLS).
+    secure: false
+    # auth:
+    #   user:
+    #   password:
+    # Override the SMTP hello name (default is the machine's hostname)
+    # hello_name:
+
+# # Initializers Configuration
+# initializers:
+#  oauth2:
+#    authorization_code: # Authorization code grant type
+#      - client_identifier: google # Identifier for the OAuth2 provider. Replace 'google' with your provider's name if different, must be unique within the oauth2 config.
+#       #  ... other fields
+
+# Database Configuration
+database:
+  # Database connection URI
+  uri: {{ get_env(name="DATABASE_URL") }}
+  # When enabled, the sql query will be logged.
+  enable_logging: false
+  # Set the timeout duration when acquiring a connection.
+  connect_timeout: {{ get_env(name="DB_CONNECT_TIMEOUT") }}
+  # Set the idle duration before closing a connection.
+  idle_timeout: {{ get_env(name="DB_IDLE_TIMEOUT") }}
+  # Minimum number of connections for a pool.
+  min_connections: {{ get_env(name="DB_MIN_CONNECTIONS") }}
+  # Maximum number of connections for a pool.
+  max_connections: {{ get_env(name="DB_MAX_CONNECTIONS") }}
+  # Run migration up when application loaded
+  auto_migrate: true
+  # Truncate database when application loaded. This is a dangerous operation, make sure that you using this flag only on dev environments or test mode
+  dangerously_truncate: false
+  # Recreating schema when application loaded.  This is a dangerous operation, make sure that you using this flag only on dev environments or test mode
+  dangerously_recreate: false
+
+# Redis Configuration
+queue:
+  kind: Redis
+  # Redis connection URI
+  uri: {{ get_env(name="REDIS_URL") }}
+  # Dangerously flush all data in Redis on startup. dangerous operation, make sure that you using this flag only on dev environments or test mode
+  dangerously_flush: false
+
+# Authentication Configuration
+auth:
+  # JWT authentication
+  jwt:
+    location:
+      from: Cookie  # Add 'from' to specify the variant
+      name: {{ get_env(name="COOKIE_NAME") }}     # Specify the cookie name
+    # Secret key for token generation and verification
+    secret: {{ get_env(name="COOKIE_SECRET") }} 
+    # Token expiration time in seconds
+    expiration: {{ get_env(name="COOKIE_EXPIRATION") }} # 7 day
+
+# Custom Settings Configuration
+settings:
+  aws:
+    # AWS S3 Configuration
+    access_key_id: {{ get_env(name="AWS_KEY_ID") }} 
+    # AWS Secret Access Key for authentication
+    secret_access_key: {{ get_env(name="AWS_SECRET_ACCESS_KEY") }} 
+    s3:
+      region: {{ get_env(name="AWS_S3_REGION") }} 
+      bucket_name: {{ get_env(name="AWS_S3_BUCKET_NAME") }} 
+      access_time: {{ get_env(name="AWS_S3_ACCESS_TIME") }} 
+  # cloud:
+  #   cloud_token: {{ get_env(name="CLOUD_TOKEN") }} 
+  #   cloud_access_key_id: {{ get_env(name="CLOUD_KEY_ID") }} 
+  #   cloud_secret_access_key: {{ get_env(name="CLOUD_SECRET_ACCESS_KEY") }} 
+  #   r2:
+  #     cloud_region: {{ get_env(name="CLOUD_S3_REGION") }} 
+  #     cloud_bucket: {{ get_env(name="CLOUD_S3_BUCKET_NAME") }} 
+  #     access_time: {{ get_env(name="CLOUD_S3_ACCESS_TIME") }} 
+  fal_ai:
+    fal_key: {{ get_env(name="FAL_AI_KEY") }} 
+    generate_image_url: {{ get_env(name="FAL_GENERATE_IMAGE_URL") }} 
+    training_model_url: {{ get_env(name="FAL_TRAINING_MODEL_URL") }} 
+    webhook_url: {{ get_env(name="FAL_WEBHOOK_URL") }} 
