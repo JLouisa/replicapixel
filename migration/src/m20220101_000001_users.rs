@@ -2,7 +2,7 @@ use loco_rs::schema::table_auto_tz;
 use sea_orm_migration::{
     prelude::*,
     schema::*,
-    sea_orm::{DeriveActiveEnum, EnumIter},
+    // sea_orm::{DeriveActiveEnum, EnumIter},
 };
 
 #[derive(DeriveMigrationName)]
