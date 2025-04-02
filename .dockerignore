@@ -3,3 +3,8 @@ dockerfile
 .dockerignore
 .git
 .gitignore
+.env
+target/
+tests/
+Dockerfile
+scripts/

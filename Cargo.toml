@@ -63,6 +63,9 @@ dotenvy = "0.15.7"
 # Validation
 unicode-segmentation = "1.11.0"
 
+# For DockerImage Image
+openssl = { version = "0.10.71", features = ["vendored"] }
+
 [[bin]]
 name = "pictora-cli"
 path = "src/bin/main.rs"
