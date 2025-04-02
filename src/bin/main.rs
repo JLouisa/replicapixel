@@ -4,6 +4,6 @@ use pictora::app::App;
 
 #[tokio::main]
 async fn main() -> loco_rs::Result<()> {
-    dotenvy::dotenv().unwrap();
+    dotenvy::dotenv().ok();
     cli::main::<App, Migrator>().await
 }
