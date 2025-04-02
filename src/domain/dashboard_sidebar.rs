@@ -1,4 +1,4 @@
-use super::active_enums::{Emotion, Ethnicity, EyeColor, Sex, TypeModel};
+use crate::models::_entities::sea_orm_active_enums::{BasedOn, Emotion, Ethnicity, EyeColor, Sex};
 use axum::extract::rejection::FailedToDeserializeQueryString;
 use serde::{Deserialize, Serialize};
 use strum::{EnumIter, IntoEnumIterator};
@@ -10,7 +10,7 @@ pub struct DashboardSidebar {
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct CreateModel {
-    type_model: Vec<TypeModel>,
+    type_model: Vec<BasedOn>,
     ethnicity: Vec<Ethnicity>,
     eye_color: Vec<EyeColor>,
     emotion: Vec<Emotion>,
@@ -21,7 +21,7 @@ impl DashboardSidebar {
     pub fn init() -> Self {
         Self {
             create_model: CreateModel {
-                type_model: TypeModel::iter().collect(),
+                type_model: BasedOn::iter().collect(),
                 sex: Sex::iter().collect(),
                 ethnicity: Ethnicity::iter().collect(),
                 eye_color: EyeColor::iter().collect(),

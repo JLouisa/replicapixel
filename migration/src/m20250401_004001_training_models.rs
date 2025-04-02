@@ -1,7 +1,9 @@
-use loco_rs::schema::table_auto_tz;
-use sea_orm_migration::{prelude::*, schema::*};
-
 use crate::m20220101_000001_users::Users;
+use loco_rs::schema::table_auto_tz;
+use sea_orm_migration::{
+    prelude::{extension::postgres::Type, *},
+    schema::*,
+};
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;
@@ -13,47 +15,32 @@ pub struct Migration;
 #[async_trait::async_trait]
 impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
+        manager
+            .create_type(
+                Type::create()
+                    .as_enum(Alias::new("Status")) // Ensure alias matches SQL enum type
+                    .values([
+                        Alias::new("Pending"),
+                        Alias::new("Training"),
+                        Alias::new("Completed"),
+                        Alias::new("Failed"),
+                        Alias::new("Cancelled"),
+                    ])
+                    .to_owned(),
+            )
+            .await
+            .unwrap(); // Ensure this completes before table creation
+
         let table = table_auto_tz(TrainingModels::Table)
             .col(pk_auto(TrainingModels::Id))
             .col(uuid(TrainingModels::Pid).unique_key())
             .col(uuid(TrainingModels::UserId).unique_key())
             .col(string(TrainingModels::Name))
             .col(string(TrainingModels::Age))
-            .col(string(TrainingModels::Sex).enumeration(
-                Alias::new("Sex"),
-                [Alias::new("Male"), Alias::new("Female")],
-            ))
-            .col(string(TrainingModels::Ethnicity).enumeration(
-                Alias::new("Ethnicity"),
-                [
-                    Alias::new("White"),
-                    Alias::new("Black"),
-                    Alias::new("Pacific"),
-                    Alias::new("Hispanic"),
-                    Alias::new("Asian"),
-                    Alias::new("SouthEastAsian"),
-                    Alias::new("SouthAsian"),
-                    Alias::new("MiddleEastern"),
-                ],
-            ))
-            .col(string(TrainingModels::TypeModel).enumeration(
-                Alias::new("TypeModel"),
-                [
-                    Alias::new("BasedRealPerson"),
-                    Alias::new("CreateInfluencerAI"),
-                ],
-            ))
-            .col(string_null(TrainingModels::EyeColor).enumeration(
-                Alias::new("EyeColor"),
-                [
-                    Alias::new("Brown"),
-                    Alias::new("Blue"),
-                    Alias::new("Green"),
-                    Alias::new("Grey"),
-                    Alias::new("Hazel"),
-                    Alias::new("Red"),
-                ],
-            ))
+            .col(string(TrainingModels::Sex))
+            .col(string(TrainingModels::Ethnicity))
+            .col(string(TrainingModels::BasedOn))
+            .col(string_null(TrainingModels::EyeColor))
             .col(boolean(TrainingModels::Bald))
             .col(integer(TrainingModels::Steps))
             .col(boolean(TrainingModels::CreateMask))
@@ -61,9 +48,13 @@ impl MigrationTrait for Migration {
             .col(string(TrainingModels::TriggerWord))
             .col(string_null(TrainingModels::TensorPath))
             .col(string_null(TrainingModels::Thumbnail))
-            .col(string(TrainingModels::TrainingStatus))
-            .col(json_null(TrainingModels::FalOutput))
-            .col(json_null(TrainingModels::TrainingImages))
+            .col(
+                ColumnDef::new(TrainingModels::TrainingStatus)
+                    .custom(Alias::new("Status")) // Use the correct alias
+                    .not_null(),
+            )
+            .col(json_binary_null(TrainingModels::FalOutput))
+            .col(json_binary_null(TrainingModels::TrainingImages))
             .col(string_null(TrainingModels::FalAiRequestId))
             .col(string(TrainingModels::S3Key))
             .col(boolean(TrainingModels::IsVerified))
@@ -88,7 +79,7 @@ impl MigrationTrait for Migration {
                 ForeignKey::create()
                     .name("fk-training_models-pid_to_users-id")
                     .from_tbl(TrainingModels::Table)
-                    .from_col(TrainingModels::Pid)
+                    .from_col(TrainingModels::UserId)
                     .to_tbl(Users::Table)
                     .to_col(Users::Id)
                     .on_delete(ForeignKeyAction::Cascade)
@@ -134,7 +125,7 @@ pub enum TrainingModels {
     Age,
     Sex,
     Ethnicity,
-    TypeModel,
+    BasedOn,
     EyeColor,
     Bald,
     Steps,
@@ -150,3 +141,79 @@ pub enum TrainingModels {
     S3Key,
     IsVerified,
 }
+
+// #[derive(DeriveIden)]
+// #[sea_orm(enum_name = "Status")]
+// pub enum Status {
+//     #[sea_orm(iden = "Status")]
+//     Enum,
+//     #[sea_orm(iden = "Pending")]
+//     Pending,
+//     #[sea_orm(iden = "Training")]
+//     Training,
+//     #[sea_orm(iden = "Completed")]
+//     Completed,
+//     #[sea_orm(iden = "Failed")]
+//     Failed,
+//     #[sea_orm(iden = "Cancelled")]
+//     Cancelled,
+// }
+
+// --- Create ENUM Types using Manual String Lists ---
+// NOTE: These lists MUST be kept in sync manually with your
+//       Rust enums defined in pictora/src/models/_entities/active_enums.rs
+
+// manager
+//     .create_type(
+//         Type::create()
+//             .as_enum(Alias::new("Sex"))
+//             .values([
+//                 Alias::new("Male"),   // Match #[sea_orm(string_value = "Male")]
+//                 Alias::new("Female"), // Match #[sea_orm(string_value = "Female")]
+//             ])
+//             .to_owned(),
+//     )
+//     .await?;
+
+// manager
+//     .create_type(
+//         Type::create()
+//             .as_enum(Alias::new("Ethnicity"))
+//             .values([
+//                 Alias::new("White"),
+//                 Alias::new("Black"),
+//                 Alias::new("Pacific"),
+//                 Alias::new("Hispanic"),
+//                 Alias::new("Asian"),
+//                 Alias::new("SouthEastAsian"),
+//                 Alias::new("SouthAsian"),
+//                 Alias::new("MiddleEastern"),
+//             ])
+//             .to_owned(), // Ensure these match your Ethnicity enum string_values
+//     )
+//     .await?;
+
+// manager
+//     .create_type(
+//         Type::create()
+//             .as_enum(Alias::new("BasedOn"))
+//             .values([Alias::new("RealPerson"), Alias::new("CreateInfluencerAI")])
+//             .to_owned(), // Ensure these match your BasedOn enum string_values
+//     )
+//     .await?;
+
+// manager
+//     .create_type(
+//         Type::create()
+//             .as_enum(Alias::new("EyeColor"))
+//             .values([
+//                 Alias::new("Brown"),
+//                 Alias::new("Blue"),
+//                 Alias::new("Green"),
+//                 Alias::new("Grey"),
+//                 Alias::new("Hazel"),
+//                 Alias::new("Red"),
+//             ])
+//             .to_owned(), // Ensure these match your EyeColor enum string_values
+//     )
+//     .await?;

@@ -10,8 +10,6 @@ pub mod packs;
 
 pub mod image;
 
-pub mod active_enums;
-
 pub mod website;
 
 pub mod training_models;
