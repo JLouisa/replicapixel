@@ -20,7 +20,6 @@ COPY --from=planner /usr/src/recipe.json recipe.json
 # Build project dependencies based on the recipe
 RUN cargo chef cook --release --recipe-path recipe.json
 
-# --- Copy Application Code ---
 # Copy the application source code AFTER dependencies are built
 COPY . . 
 
@@ -31,7 +30,6 @@ RUN curl -fsSL https://deb.nodesource.com/setup_current.x | bash - && \
     rm -rf /var/lib/apt/lists/*
 
 # Install Bun and build the frontend
-# The 'frontend' directory should now exist because of the `COPY . .` above
 RUN curl -fsSL https://bun.sh/install | bash && \
     export BUN_INSTALL="/root/.bun" && \
     export PATH="$BUN_INSTALL/bin:$PATH" && \
