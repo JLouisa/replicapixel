@@ -1,43 +1,289 @@
-// #![allow(clippy::missing_errors_doc)]
-// #![allow(clippy::unnecessary_struct_initialization)]
-// #![allow(clippy::unused_async)]
-// use loco_rs::prelude::*;
+#![allow(clippy::missing_errors_doc)]
+#![allow(clippy::unnecessary_struct_initialization)]
+#![allow(clippy::unused_async)]
+use loco_rs::prelude::*;
 
-// use crate::models::_entities::training_models;
-// use crate::{
-//     controllers::PictureParams,
-//     domain::active_enums::ImageSize,
-//     domain::{
-//         active_enums::{ImageFormat, Status},
-//         image::Image,
-//         training_models::{ImageDomain, ImageGenerateDomain, TrainingDomain, UserPrompt},
-//     },
-//     models::{ImagesActiveModel, TrainingActiveModel, _entities::images::ActiveModel},
-//     models::{
-//         _entities::images::{Entity, Model},
-//         user_credits::UserCreditsDomain,
-//         users::{self, UserDomain},
-//     },
-//     service::fal_ai::fal_client::{FalAiClient, FluxLoraImageGenerate},
-//     views,
-// };
-// use axum::{debug_handler, Extension};
-// use axum::{http::HeaderMap, http::StatusCode, response::IntoResponse, Json};
-// use derive_more::{AsRef, Constructor, Display};
-// use serde::{Deserialize, Serialize};
-// use training_models::Model as TrainingModel;
+use crate::models::_entities::sea_orm_active_enums::{
+    BasedOn, Ethnicity, EyeColor, ImageFormat, ImageSize, Sex, Status,
+};
+use crate::models::_entities::training_models;
+use crate::{
+    // controllers::PictureParams,
+    domain::{
+        image::Image,
+        // training_models::{ImageDomain, ImageGenerateDomain, TrainingDomain, UserPrompt},
+    },
+    models::{
+        // ImagesActiveModel, TrainingActiveModel,
+        _entities::images::ActiveModel,
+    },
+    models::{
+        _entities::images::{Entity, Model},
+        // user_credits::UserCreditsDomain,
+        // users::{self, UserDomain},
+    },
+    service::fal_ai::fal_client::{FalAiClient, FluxLoraImageGenerate},
+    views,
+};
+use axum::{debug_handler, Extension};
+use axum::{http::HeaderMap, http::StatusCode, response::IntoResponse, Json};
+use derive_more::{AsRef, Constructor, Display};
+use sea_orm::prelude::DateTimeWithTimeZone;
+use serde::{Deserialize, Serialize};
+use training_models::Model as TrainingModel;
+use uuid::Uuid;
 
-// #[derive(Clone, Debug, Serialize, Deserialize)]
-// pub struct ImageGenRequestForm {
-//     pub training_model_id: i32,
-//     pub prompt: UserPrompt,
-//     pub image_size: ImageSize,
-//     pub num_inference_steps: u16,
-//     pub num_images: u8,
-// }
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct ImageGenRequestForm {
+    pub training_model_id: i32,
+    pub prompt: UserPrompt,
+    pub image_size: ImageSize,
+    pub num_inference_steps: u16,
+    pub num_images: u8,
+}
 
-// #[derive(Clone, Debug, Serialize, Deserialize, Constructor, AsRef)]
-// pub struct ImageDomainList(Vec<ImageDomain>);
+#[derive(Clone, Debug, Serialize, Deserialize, AsRef, PartialEq)]
+pub struct UserPrompt(String);
+impl UserPrompt {
+    pub fn new<K: Into<String>>(key: K) -> Self {
+        Self(key.into())
+    }
+    pub fn into_inner(self) -> String {
+        self.0
+    }
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize, AsRef, PartialEq)]
+pub struct SysPrompt(String);
+impl SysPrompt {
+    pub fn new<K: Into<String>>(key: K) -> Self {
+        Self(key.into())
+    }
+    pub fn into_inner(self) -> String {
+        self.0
+    }
+}
+
+impl UserPrompt {
+    pub fn formatted_prompt(&self, training_model: &TrainingDomain) -> SysPrompt {
+        let sys_prompt = format!(
+            "{} {}. The subject is a {} {} {} with {} eyes, aged {}. {}.",
+            training_model.trigger_word,
+            self.0,
+            training_model.ethnicity,
+            training_model.sex,
+            if training_model.bald {
+                "who is bald"
+            } else {
+                ""
+            },
+            training_model.eye_color,
+            training_model.age,
+            match training_model.type_model {
+                BasedOn::RealPerson => "The model is a real person.",
+                BasedOn::CreateInfluencerAI => "The model is AI-generated.",
+            }
+        );
+
+        SysPrompt(sys_prompt)
+    }
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct ImageGenerateDomain {
+    pub user_id: i32,
+    pub training_model_id: i32,
+    pub user_prompt: UserPrompt,
+    pub sys_prompt: SysPrompt,
+    pub image_size: ImageSize,
+    pub num_inference_steps: u16,
+    pub num_images: u8,
+}
+impl ImageGenerateDomain {
+    pub fn process(form: ImageGenRequestForm, model: &TrainingDomain) -> Self {
+        Self {
+            user_id: model.user_id,
+            training_model_id: form.training_model_id,
+            image_size: form.image_size,
+            num_inference_steps: form.num_inference_steps,
+            num_images: form.num_images,
+            sys_prompt: form.prompt.formatted_prompt(model),
+            user_prompt: form.prompt,
+        }
+    }
+
+    // pub fn process_par(form: ImageGenRequestForm, model: &TrainingDomain) -> Vec<PictureParams> {
+    //     let sys_prompt = form.prompt.formatted_prompt(model);
+    //     (0..form.num_images)
+    //         .map(|_| PictureParams {
+    //             pid: Uuid::new_v4(),
+    //             user_id: model.user_id,
+    //             training_model_id: form.training_model_id,
+    //             sys_prompt: sys_prompt.as_ref().to_owned(),
+    //             user_prompt: form.prompt.as_ref().to_owned(),
+    //             num_inference_steps: form.num_inference_steps as i32,
+    //             content_type: ImageFormat::Jpeg.to_string(),
+    //             status: Status::Pending.to_string(),
+    //             image_size: form.image_size.to_string(),
+    //             fal_ai_request_id: None,
+    //             width: None,
+    //             height: None,
+    //             image_url: None,
+    //             image_url_s3: None,
+    //             is_favorite: false,
+    //             deleted_at: None,
+    //         })
+    //         .collect()
+    // }
+
+    pub fn from(self) -> ImageDomainList {
+        let mut list: Vec<ImageDomain> = Vec::with_capacity(self.num_images as usize);
+        for _ in 0..self.num_images {
+            let img = self.clone().into();
+            list.push(img);
+        }
+        ImageDomainList::new(list)
+    }
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct TrainingDomain {
+    pub id: i32,
+    pub pid: Uuid,
+    pub user_id: i32,
+    pub name: String,
+    pub sex: Sex,
+    pub age: i32,
+    pub eye_color: EyeColor,
+    pub bald: bool,
+    pub creative: i32,
+    pub create_mask: bool,
+    pub is_style: bool,
+    pub type_model: BasedOn,
+    pub ethnicity: Ethnicity,
+    pub file_type: ImageFormat,
+    pub training_status: Status,
+    pub trigger_word: String, //
+}
+
+impl From<TrainingModel> for TrainingDomain {
+    fn from(model: TrainingModel) -> Self {
+        // let sex = match model.sex.as_str() {
+        //     "Male" => Sex::Male,
+        //     "Female" => Sex::Female,
+        //     _ => Sex::Male,
+        // };
+        // let eye_color = match model.eye_color.as_str() {
+        //     "Brown" => EyeColor::Brown,
+        //     "Blue" => EyeColor::Blue,
+        //     "Green" => EyeColor::Green,
+        //     "Grey" => EyeColor::Grey,
+        //     "Hazel" => EyeColor::Hazel,
+        //     "Red" => EyeColor::Red,
+        //     _ => EyeColor::Brown,
+        // };
+        // let type_model = match model.type_model.as_str() {
+        //     "RealPerson" => BasedOn::RealPerson,
+        //     "CreateInfluencerAI" => BasedOn::CreateInfluencerAI,
+        //     _ => BasedOn::RealPerson,
+        // };
+        // let ethnicity = match model.ethinicity.as_str() {
+        //     "White" => Ethnicity::White,
+        //     "Black" => Ethnicity::Black,
+        //     "Pacific" => Ethnicity::Pacific,
+        //     "Hispanic" => Ethnicity::Hispanic,
+        //     "Asian" => Ethnicity::Asian,
+        //     "SouthEastAsian" => Ethnicity::SouthEastAsian,
+        //     "SouthAsian" => Ethnicity::SouthAsian,
+        //     "MiddleEastern" => Ethnicity::MiddleEastern,
+        //     _ => Ethnicity::White,
+        // };
+        // let training_status = match model.training_status.unwrap().as_str() {
+        //     "Completed" => Status::Completed,
+        //     "Pending" => Status::Pending,
+        //     "Processing" => Status::Processing,
+        //     "Training" => Status::Training,
+        //     "Failed" => Status::Failed,
+        //     "Canceled" => Status::Cancelled,
+        //     _ => Status::Pending,
+        // };
+        Self {
+            id: model.id,
+            pid: model.pid,
+            user_id: model.user_id,
+            name: model.name,
+            sex: model.sex,
+            age: model.age,
+            eye_color: model.eye_color,
+            bald: model.bald,
+            creative: 28,
+            create_mask: model.create_mask,
+            is_style: model.is_style,
+            type_model: model.based_on,
+            ethnicity: model.ethnicity,
+            file_type: ImageFormat::Zip,
+            training_status: model.training_status,
+            trigger_word: model.trigger_word,
+        }
+    }
+}
+
+impl From<ImageGenerateDomain> for ImageDomainList {
+    fn from(form: ImageGenerateDomain) -> Self {
+        let list = (0..form.num_images)
+            .map(|_| ImageDomain::from(form.clone())) // Only shallow clone
+            .collect();
+        ImageDomainList::new(list)
+    }
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct ImageDomain {
+    pub pid: Uuid,
+    pub user_id: i32,
+    pub training_model_id: i32,
+    pub pack_id: Option<i32>,
+    pub user_prompt: UserPrompt,
+    pub sys_prompt: SysPrompt,
+    pub num_inference_steps: i32,
+    pub content_type: ImageFormat,
+    pub status: Status,
+    pub image_size: ImageSize,
+    pub fal_ai_request_id: Option<String>,
+    pub width: Option<i32>,
+    pub height: Option<i32>,
+    pub image_url: Option<String>,
+    pub image_url_s3: Option<String>,
+    pub is_favorite: bool,
+    pub deleted_at: Option<DateTimeWithTimeZone>,
+}
+
+impl From<ImageGenerateDomain> for ImageDomain {
+    fn from(form: ImageGenerateDomain) -> Self {
+        Self {
+            pid: Uuid::new_v4(),
+            user_id: form.user_id,
+            training_model_id: form.training_model_id,
+            pack_id: None,
+            user_prompt: form.user_prompt,
+            sys_prompt: form.sys_prompt,
+            num_inference_steps: form.num_inference_steps as i32,
+            content_type: ImageFormat::Jpeg,
+            image_size: form.image_size,
+            status: Status::Pending,
+            fal_ai_request_id: None,
+            width: None,
+            height: None,
+            image_url: None,
+            image_url_s3: None,
+            is_favorite: false,
+            deleted_at: None,
+        }
+    }
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize, Constructor, AsRef)]
+pub struct ImageDomainList(Vec<ImageDomain>);
 // impl ImageDomainList {
 //     pub fn into_inner(self) -> Vec<ImageDomain> {
 //         self.0
@@ -69,32 +315,32 @@
 //         Ok(())
 //     }
 // }
-// impl From<Vec<ImageDomain>> for ImageDomainList {
-//     fn from(list: Vec<ImageDomain>) -> Self {
-//         Self::new(list)
-//     }
-// }
+impl From<Vec<ImageDomain>> for ImageDomainList {
+    fn from(list: Vec<ImageDomain>) -> Self {
+        Self::new(list)
+    }
+}
 
-// #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
-// pub struct Params {
-//     pub pid: Uuid,
-//     pub user_id: i32,
-//     pub training_model_id: i32,
-//     pub pack_id: Option<i32>,
-//     pub user_prompt: String,
-//     pub sys_prompt: String,
-//     pub num_inference_steps: i32,
-//     pub content_type: String,
-//     pub status: Status,
-//     pub image_size: ImageSize,
-//     pub fal_ai_request_id: Option<String>,
-//     pub width: Option<i32>,
-//     pub height: Option<i32>,
-//     pub image_url: Option<String>,
-//     pub image_url_s3: Option<String>,
-//     pub is_favorite: bool,
-//     pub deleted_at: Option<DateTimeWithTimeZone>,
-// }
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct Params {
+    pub pid: Uuid,
+    pub user_id: i32,
+    pub training_model_id: i32,
+    pub pack_id: Option<i32>,
+    pub user_prompt: String,
+    pub sys_prompt: String,
+    pub num_inference_steps: i32,
+    pub content_type: String,
+    pub status: Status,
+    pub image_size: ImageSize,
+    pub fal_ai_request_id: Option<String>,
+    pub width: Option<i32>,
+    pub height: Option<i32>,
+    pub image_url: Option<String>,
+    pub image_url_s3: Option<String>,
+    pub is_favorite: bool,
+    pub deleted_at: Option<DateTimeWithTimeZone>,
+}
 
 // impl Params {
 //     fn update(&self, item: &mut ActiveModel) {
@@ -118,29 +364,29 @@
 //     }
 // }
 
-// impl From<ImageDomain> for Params {
-//     fn from(item: ImageDomain) -> Self {
-//         Self {
-//             pid: item.pid,
-//             user_id: item.user_id,
-//             training_model_id: item.training_model_id,
-//             pack_id: item.pack_id,
-//             user_prompt: item.user_prompt.into_inner(),
-//             sys_prompt: item.sys_prompt.into_inner(),
-//             num_inference_steps: item.num_inference_steps,
-//             content_type: item.content_type.to_string(),
-//             status: item.status,
-//             image_size: item.image_size,
-//             fal_ai_request_id: item.fal_ai_request_id,
-//             width: item.width,
-//             height: item.height,
-//             image_url: item.image_url,
-//             image_url_s3: item.image_url_s3,
-//             is_favorite: item.is_favorite,
-//             deleted_at: item.deleted_at,
-//         }
-//     }
-// }
+impl From<ImageDomain> for Params {
+    fn from(item: ImageDomain) -> Self {
+        Self {
+            pid: item.pid,
+            user_id: item.user_id,
+            training_model_id: item.training_model_id,
+            pack_id: item.pack_id,
+            user_prompt: item.user_prompt.into_inner(),
+            sys_prompt: item.sys_prompt.into_inner(),
+            num_inference_steps: item.num_inference_steps,
+            content_type: item.content_type.to_string(),
+            status: item.status,
+            image_size: item.image_size,
+            fal_ai_request_id: item.fal_ai_request_id,
+            width: item.width,
+            height: item.height,
+            image_url: item.image_url,
+            image_url_s3: item.image_url_s3,
+            is_favorite: item.is_favorite,
+            deleted_at: item.deleted_at,
+        }
+    }
+}
 
 // impl From<ImageDomainList> for Vec<Params> {
 //     fn from(item: ImageDomainList) -> Self {
@@ -153,54 +399,54 @@
 //     }
 // }
 
-// pub mod routes {
-//     use serde::Serialize;
+pub mod routes {
+    use serde::Serialize;
 
-//     #[derive(Clone, Debug, Serialize)]
-//     pub struct Images;
-//     impl Images {
-//         pub const BASE: &'static str = "/api/images";
-//         pub const IMAGE: &'static str = "/";
-//         pub const IMAGE_GENERATE: &'static str = "/generate";
-//         pub const IMAGE_GENERATE_TEST: &'static str = "/generate/test";
-//         pub const IMAGE_CHECK_TEST: &'static str = "/check/test/{id}";
-//         pub const IMAGE_CHECK_ID: &'static str = "/check/{id}";
-//         pub const IMAGE_CHECK: &'static str = "/check";
-//         pub const IMAGE_ID: &'static str = "/{id}";
-//         pub const IMAGE_BASE: &'static str = "";
-//     }
-// }
+    #[derive(Clone, Debug, Serialize)]
+    pub struct Images;
+    impl Images {
+        pub const BASE: &'static str = "/api/images";
+        pub const IMAGE: &'static str = "/";
+        pub const IMAGE_GENERATE: &'static str = "/generate";
+        pub const IMAGE_GENERATE_TEST: &'static str = "/generate/test";
+        pub const IMAGE_CHECK_TEST: &'static str = "/check/test/{id}";
+        pub const IMAGE_CHECK_ID: &'static str = "/check/{id}";
+        pub const IMAGE_CHECK: &'static str = "/check";
+        pub const IMAGE_ID: &'static str = "/{id}";
+        pub const IMAGE_BASE: &'static str = "";
+    }
+}
 
-// pub fn routes() -> Routes {
-//     Routes::new()
-//         .prefix(routes::Images::BASE)
-//         .add(routes::Images::IMAGE, get(list))
-//         .add(routes::Images::IMAGE, post(add))
-//         .add(routes::Images::IMAGE_GENERATE_TEST, post(generate_test))
-//         .add(routes::Images::IMAGE_GENERATE, post(generate_img))
-//         .add(routes::Images::IMAGE_CHECK_TEST, get(check_test))
-//         .add(routes::Images::IMAGE_ID, get(get_one))
-//         .add(routes::Images::IMAGE_ID, delete(remove))
-//         .add(routes::Images::IMAGE_ID, put(update))
-//         .add(routes::Images::IMAGE_ID, patch(update))
-// }
+pub fn routes() -> Routes {
+    Routes::new()
+        .prefix(routes::Images::BASE)
+        .add(routes::Images::IMAGE, get(list))
+        // .add(routes::Images::IMAGE, post(add))
+        // .add(routes::Images::IMAGE_GENERATE_TEST, post(generate_test))
+        // .add(routes::Images::IMAGE_GENERATE, post(generate_img))
+        .add(routes::Images::IMAGE_CHECK_TEST, get(check_test))
+        .add(routes::Images::IMAGE_ID, get(get_one))
+        .add(routes::Images::IMAGE_ID, delete(remove))
+    // .add(routes::Images::IMAGE_ID, put(update))
+    // .add(routes::Images::IMAGE_ID, patch(update))
+}
 
-// #[debug_handler]
-// pub async fn check_test(
-//     Path(pid): Path<Uuid>,
-//     State(ctx): State<AppContext>,
-//     ViewEngine(v): ViewEngine<TeraView>,
-// ) -> Result<Response> {
-//     use rand::Rng;
+#[debug_handler]
+pub async fn check_test(
+    Path(pid): Path<Uuid>,
+    State(ctx): State<AppContext>,
+    ViewEngine(v): ViewEngine<TeraView>,
+) -> Result<Response> {
+    use rand::Rng;
 
-//     let change = rand::rng().random_range(0..=2);
-//     let num = rand::rng().random_range(1..=11);
-//     if change == 0 {
-//         let image = Image::test(num);
-//         return views::images::img_completed(&v, &image);
-//     }
-//     Ok((StatusCode::NO_CONTENT).into_response())
-// }
+    let change = rand::rng().random_range(0..=2);
+    let num = rand::rng().random_range(1..=11);
+    if change == 0 {
+        let image = Image::test(num);
+        return views::images::img_completed(&v, &image);
+    }
+    Ok((StatusCode::NO_CONTENT).into_response())
+}
 
 // #[debug_handler]
 // pub async fn generate_test(
@@ -288,15 +534,15 @@
 //     Ok((StatusCode::OK, headers).into_response())
 // }
 
-// async fn load_item(ctx: &AppContext, id: i32) -> Result<Model> {
-//     let item = Entity::find_by_id(id).one(&ctx.db).await?;
-//     item.ok_or_else(|| Error::NotFound)
-// }
+async fn load_item(ctx: &AppContext, id: i32) -> Result<Model> {
+    let item = Entity::find_by_id(id).one(&ctx.db).await?;
+    item.ok_or_else(|| Error::NotFound)
+}
 
-// #[debug_handler]
-// pub async fn list(State(ctx): State<AppContext>) -> Result<Response> {
-//     format::json(Entity::find().all(&ctx.db).await?)
-// }
+#[debug_handler]
+pub async fn list(State(ctx): State<AppContext>) -> Result<Response> {
+    format::json(Entity::find().all(&ctx.db).await?)
+}
 
 // #[debug_handler]
 // pub async fn add(State(ctx): State<AppContext>, Json(params): Json<Params>) -> Result<Response> {
@@ -321,20 +567,20 @@
 //     format::json(item)
 // }
 
-// #[debug_handler]
-// pub async fn remove(Path(id): Path<i32>, State(ctx): State<AppContext>) -> Result<Response> {
-//     load_item(&ctx, id).await?.delete(&ctx.db).await?;
-//     format::empty()
-// }
+#[debug_handler]
+pub async fn remove(Path(id): Path<i32>, State(ctx): State<AppContext>) -> Result<Response> {
+    load_item(&ctx, id).await?.delete(&ctx.db).await?;
+    format::empty()
+}
 
-// #[debug_handler]
-// pub async fn get_one(
-//     Path(id): Path<i32>,
-//     State(ctx): State<AppContext>,
-//     ViewEngine(v): ViewEngine<TeraView>,
-// ) -> Result<Response> {
-//     let item = load_item(&ctx, id).await?;
+#[debug_handler]
+pub async fn get_one(
+    Path(id): Path<i32>,
+    State(ctx): State<AppContext>,
+    ViewEngine(v): ViewEngine<TeraView>,
+) -> Result<Response> {
+    let item = load_item(&ctx, id).await?;
 
-//     // views::contacts::show(&v, &item)
-//     format::empty()
-// }
+    // views::contacts::show(&v, &item)
+    format::empty()
+}

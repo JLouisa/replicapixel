@@ -57,6 +57,9 @@ COPY --from=builder /usr/src/config config
 # Copy the statically linked application binary from the builder stage
 COPY --from=builder /usr/src/target/x86_64-unknown-linux-musl/release/pictora-cli /usr/app/pictora
 
+# Expose the Loco app port
+EXPOSE 3000
+
 # Set the entrypoint for the container
 ENTRYPOINT ["/usr/app/pictora"]
 CMD ["start", "-e", "production"]

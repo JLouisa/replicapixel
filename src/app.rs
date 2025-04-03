@@ -44,14 +44,16 @@ impl Hooks for App {
     }
 
     async fn initializers(_ctx: &AppContext) -> Result<Vec<Box<dyn Initializer>>> {
-        Ok(vec![Box::new(
-            initializers::view_engine::ViewEngineInitializer,
-        )])
+        Ok(vec![
+            Box::new(initializers::view_engine::ViewEngineInitializer),
+            Box::new(initializers::s3::S3),
+            Box::new(initializers::fal_client::FalAi),
+        ])
     }
 
     fn routes(_ctx: &AppContext) -> AppRoutes {
         AppRoutes::with_default_routes() // controller routes below
-            // .add_route(controllers::images::routes())
+            .add_route(controllers::images::routes())
             .add_route(controllers::auth::routes())
     }
     async fn connect_workers(ctx: &AppContext, queue: &Queue) -> Result<()> {
