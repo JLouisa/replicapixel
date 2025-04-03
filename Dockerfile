@@ -45,7 +45,7 @@ RUN cargo build --release --target x86_64-unknown-linux-musl
 
 # Stage 4: Runtime - Create the final minimal image
 FROM debian:bookworm-slim AS runtime
-WORKDIR /usr/app
+WORKDIR /usr/src
 
 # Copy required assets and configuration from the builder stage
 # These paths depend on the `COPY . .` putting them in /usr/src/ in the builder
@@ -55,7 +55,7 @@ COPY --from=builder /usr/src/config config
 # or copy it separately if needed. For Loco, assets usually contain static files.
 
 # Copy the statically linked application binary from the builder stage
-COPY --from=builder /usr/src/target/x86_64-unknown-linux-musl/release/pictora-cli /usr/app/pictora
+COPY --from=builder /usr/src/target/x86_64-unknown-linux-musl/release/pictora-cli /usr/src/pictora
 
 # Set the entrypoint for the container
 ENTRYPOINT ["/usr/src/pictora"]
