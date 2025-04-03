@@ -58,5 +58,5 @@ COPY --from=builder /usr/src/config config
 COPY --from=builder /usr/src/target/x86_64-unknown-linux-musl/release/pictora-cli /usr/app/pictora
 
 # Set the entrypoint for the container
-ENTRYPOINT ["/usr/app/pictora"]
+ENTRYPOINT ["/usr/src/pictora"]
 CMD ["start", "-e", "production"]
