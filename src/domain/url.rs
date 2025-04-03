@@ -24,7 +24,6 @@ impl Url {
         self.0
     }
     pub fn validate(url: &str) -> Result<Self, UrlError> {
-        // Trim the URL
         let url = url.trim();
 
         // Check if the URL is empty or whitespace
