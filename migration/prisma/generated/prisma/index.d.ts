@@ -1534,6 +1534,37 @@ export namespace Prisma {
 
 
   /**
+   * Count Type PacksCountOutputType
+   */
+
+  export type PacksCountOutputType = {
+    Images: number
+  }
+
+  export type PacksCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    Images?: boolean | PacksCountOutputTypeCountImagesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * PacksCountOutputType without action
+   */
+  export type PacksCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PacksCountOutputType
+     */
+    select?: PacksCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * PacksCountOutputType without action
+   */
+  export type PacksCountOutputTypeCountImagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ImagesWhereInput
+  }
+
+
+  /**
    * Models
    */
 
@@ -5361,6 +5392,7 @@ export namespace Prisma {
     id: number | null
     user_id: number | null
     training_model_id: number | null
+    pack_id: number | null
     num_inference_steps: number | null
     width: number | null
     height: number | null
@@ -5370,6 +5402,7 @@ export namespace Prisma {
     id: number | null
     user_id: number | null
     training_model_id: number | null
+    pack_id: number | null
     num_inference_steps: number | null
     width: number | null
     height: number | null
@@ -5380,6 +5413,7 @@ export namespace Prisma {
     pid: string | null
     user_id: number | null
     training_model_id: number | null
+    pack_id: number | null
     user_prompt: string | null
     sys_prompt: string | null
     num_inference_steps: number | null
@@ -5402,6 +5436,7 @@ export namespace Prisma {
     pid: string | null
     user_id: number | null
     training_model_id: number | null
+    pack_id: number | null
     user_prompt: string | null
     sys_prompt: string | null
     num_inference_steps: number | null
@@ -5424,6 +5459,7 @@ export namespace Prisma {
     pid: number
     user_id: number
     training_model_id: number
+    pack_id: number
     user_prompt: number
     sys_prompt: number
     num_inference_steps: number
@@ -5447,6 +5483,7 @@ export namespace Prisma {
     id?: true
     user_id?: true
     training_model_id?: true
+    pack_id?: true
     num_inference_steps?: true
     width?: true
     height?: true
@@ -5456,6 +5493,7 @@ export namespace Prisma {
     id?: true
     user_id?: true
     training_model_id?: true
+    pack_id?: true
     num_inference_steps?: true
     width?: true
     height?: true
@@ -5466,6 +5504,7 @@ export namespace Prisma {
     pid?: true
     user_id?: true
     training_model_id?: true
+    pack_id?: true
     user_prompt?: true
     sys_prompt?: true
     num_inference_steps?: true
@@ -5488,6 +5527,7 @@ export namespace Prisma {
     pid?: true
     user_id?: true
     training_model_id?: true
+    pack_id?: true
     user_prompt?: true
     sys_prompt?: true
     num_inference_steps?: true
@@ -5510,6 +5550,7 @@ export namespace Prisma {
     pid?: true
     user_id?: true
     training_model_id?: true
+    pack_id?: true
     user_prompt?: true
     sys_prompt?: true
     num_inference_steps?: true
@@ -5619,17 +5660,18 @@ export namespace Prisma {
     pid: string
     user_id: number
     training_model_id: number
+    pack_id: number | null
     user_prompt: string
     sys_prompt: string
     num_inference_steps: number
     content_type: $Enums.ImageFormat
     status: $Enums.Status
     image_size: $Enums.ImageSize
-    fal_ai_request_id: string
-    width: number
-    height: number
-    image_url: string
-    image_url_s3: string
+    fal_ai_request_id: string | null
+    width: number | null
+    height: number | null
+    image_url: string | null
+    image_url_s3: string | null
     is_favorite: boolean
     deleted_at: Date | null
     created_at: Date
@@ -5660,6 +5702,7 @@ export namespace Prisma {
     pid?: boolean
     user_id?: boolean
     training_model_id?: boolean
+    pack_id?: boolean
     user_prompt?: boolean
     sys_prompt?: boolean
     num_inference_steps?: boolean
@@ -5677,6 +5720,7 @@ export namespace Prisma {
     updated_at?: boolean
     user?: boolean | UsersDefaultArgs<ExtArgs>
     training_model?: boolean | TrainingModelsDefaultArgs<ExtArgs>
+    pack?: boolean | Images$packArgs<ExtArgs>
   }, ExtArgs["result"]["images"]>
 
   export type ImagesSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -5684,6 +5728,7 @@ export namespace Prisma {
     pid?: boolean
     user_id?: boolean
     training_model_id?: boolean
+    pack_id?: boolean
     user_prompt?: boolean
     sys_prompt?: boolean
     num_inference_steps?: boolean
@@ -5701,6 +5746,7 @@ export namespace Prisma {
     updated_at?: boolean
     user?: boolean | UsersDefaultArgs<ExtArgs>
     training_model?: boolean | TrainingModelsDefaultArgs<ExtArgs>
+    pack?: boolean | Images$packArgs<ExtArgs>
   }, ExtArgs["result"]["images"]>
 
   export type ImagesSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -5708,6 +5754,7 @@ export namespace Prisma {
     pid?: boolean
     user_id?: boolean
     training_model_id?: boolean
+    pack_id?: boolean
     user_prompt?: boolean
     sys_prompt?: boolean
     num_inference_steps?: boolean
@@ -5725,6 +5772,7 @@ export namespace Prisma {
     updated_at?: boolean
     user?: boolean | UsersDefaultArgs<ExtArgs>
     training_model?: boolean | TrainingModelsDefaultArgs<ExtArgs>
+    pack?: boolean | Images$packArgs<ExtArgs>
   }, ExtArgs["result"]["images"]>
 
   export type ImagesSelectScalar = {
@@ -5732,6 +5780,7 @@ export namespace Prisma {
     pid?: boolean
     user_id?: boolean
     training_model_id?: boolean
+    pack_id?: boolean
     user_prompt?: boolean
     sys_prompt?: boolean
     num_inference_steps?: boolean
@@ -5749,18 +5798,21 @@ export namespace Prisma {
     updated_at?: boolean
   }
 
-  export type ImagesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pid" | "user_id" | "training_model_id" | "user_prompt" | "sys_prompt" | "num_inference_steps" | "content_type" | "status" | "image_size" | "fal_ai_request_id" | "width" | "height" | "image_url" | "image_url_s3" | "is_favorite" | "deleted_at" | "created_at" | "updated_at", ExtArgs["result"]["images"]>
+  export type ImagesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pid" | "user_id" | "training_model_id" | "pack_id" | "user_prompt" | "sys_prompt" | "num_inference_steps" | "content_type" | "status" | "image_size" | "fal_ai_request_id" | "width" | "height" | "image_url" | "image_url_s3" | "is_favorite" | "deleted_at" | "created_at" | "updated_at", ExtArgs["result"]["images"]>
   export type ImagesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UsersDefaultArgs<ExtArgs>
     training_model?: boolean | TrainingModelsDefaultArgs<ExtArgs>
+    pack?: boolean | Images$packArgs<ExtArgs>
   }
   export type ImagesIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UsersDefaultArgs<ExtArgs>
     training_model?: boolean | TrainingModelsDefaultArgs<ExtArgs>
+    pack?: boolean | Images$packArgs<ExtArgs>
   }
   export type ImagesIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UsersDefaultArgs<ExtArgs>
     training_model?: boolean | TrainingModelsDefaultArgs<ExtArgs>
+    pack?: boolean | Images$packArgs<ExtArgs>
   }
 
   export type $ImagesPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5768,23 +5820,25 @@ export namespace Prisma {
     objects: {
       user: Prisma.$UsersPayload<ExtArgs>
       training_model: Prisma.$TrainingModelsPayload<ExtArgs>
+      pack: Prisma.$PacksPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
       pid: string
       user_id: number
       training_model_id: number
+      pack_id: number | null
       user_prompt: string
       sys_prompt: string
       num_inference_steps: number
       content_type: $Enums.ImageFormat
       status: $Enums.Status
       image_size: $Enums.ImageSize
-      fal_ai_request_id: string
-      width: number
-      height: number
-      image_url: string
-      image_url_s3: string
+      fal_ai_request_id: string | null
+      width: number | null
+      height: number | null
+      image_url: string | null
+      image_url_s3: string | null
       is_favorite: boolean
       deleted_at: Date | null
       created_at: Date
@@ -6185,6 +6239,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     user<T extends UsersDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UsersDefaultArgs<ExtArgs>>): Prisma__UsersClient<$Result.GetResult<Prisma.$UsersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     training_model<T extends TrainingModelsDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TrainingModelsDefaultArgs<ExtArgs>>): Prisma__TrainingModelsClient<$Result.GetResult<Prisma.$TrainingModelsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    pack<T extends Images$packArgs<ExtArgs> = {}>(args?: Subset<T, Images$packArgs<ExtArgs>>): Prisma__PacksClient<$Result.GetResult<Prisma.$PacksPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6218,6 +6273,7 @@ export namespace Prisma {
     readonly pid: FieldRef<"Images", 'String'>
     readonly user_id: FieldRef<"Images", 'Int'>
     readonly training_model_id: FieldRef<"Images", 'Int'>
+    readonly pack_id: FieldRef<"Images", 'Int'>
     readonly user_prompt: FieldRef<"Images", 'String'>
     readonly sys_prompt: FieldRef<"Images", 'String'>
     readonly num_inference_steps: FieldRef<"Images", 'Int'>
@@ -6626,6 +6682,25 @@ export namespace Prisma {
      * Limit how many Images to delete.
      */
     limit?: number
+  }
+
+  /**
+   * Images.pack
+   */
+  export type Images$packArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Packs
+     */
+    select?: PacksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Packs
+     */
+    omit?: PacksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PacksInclude<ExtArgs> | null
+    where?: PacksWhereInput
   }
 
   /**
@@ -8088,6 +8163,8 @@ export namespace Prisma {
     image_url?: boolean
     created_at?: boolean
     updated_at?: boolean
+    Images?: boolean | Packs$ImagesArgs<ExtArgs>
+    _count?: boolean | PacksCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["packs"]>
 
   export type PacksSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -8130,10 +8207,18 @@ export namespace Prisma {
   }
 
   export type PacksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pid" | "name" | "description" | "pack_prompts" | "credits" | "amount" | "image_url" | "created_at" | "updated_at", ExtArgs["result"]["packs"]>
+  export type PacksInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    Images?: boolean | Packs$ImagesArgs<ExtArgs>
+    _count?: boolean | PacksCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type PacksIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type PacksIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
 
   export type $PacksPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Packs"
-    objects: {}
+    objects: {
+      Images: Prisma.$ImagesPayload<ExtArgs>[]
+    }
     scalars: $Extensions.GetPayloadResult<{
       id: number
       pid: string
@@ -8539,6 +8624,7 @@ export namespace Prisma {
    */
   export interface Prisma__PacksClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    Images<T extends Packs$ImagesArgs<ExtArgs> = {}>(args?: Subset<T, Packs$ImagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImagesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -8595,6 +8681,10 @@ export namespace Prisma {
      */
     omit?: PacksOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PacksInclude<ExtArgs> | null
+    /**
      * Filter, which Packs to fetch.
      */
     where: PacksWhereUniqueInput
@@ -8613,6 +8703,10 @@ export namespace Prisma {
      */
     omit?: PacksOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PacksInclude<ExtArgs> | null
+    /**
      * Filter, which Packs to fetch.
      */
     where: PacksWhereUniqueInput
@@ -8630,6 +8724,10 @@ export namespace Prisma {
      * Omit specific fields from the Packs
      */
     omit?: PacksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PacksInclude<ExtArgs> | null
     /**
      * Filter, which Packs to fetch.
      */
@@ -8679,6 +8777,10 @@ export namespace Prisma {
      */
     omit?: PacksOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PacksInclude<ExtArgs> | null
+    /**
      * Filter, which Packs to fetch.
      */
     where?: PacksWhereInput
@@ -8727,6 +8829,10 @@ export namespace Prisma {
      */
     omit?: PacksOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PacksInclude<ExtArgs> | null
+    /**
      * Filter, which Packs to fetch.
      */
     where?: PacksWhereInput
@@ -8769,6 +8875,10 @@ export namespace Prisma {
      * Omit specific fields from the Packs
      */
     omit?: PacksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PacksInclude<ExtArgs> | null
     /**
      * The data needed to create a Packs.
      */
@@ -8817,6 +8927,10 @@ export namespace Prisma {
      * Omit specific fields from the Packs
      */
     omit?: PacksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PacksInclude<ExtArgs> | null
     /**
      * The data needed to update a Packs.
      */
@@ -8884,6 +8998,10 @@ export namespace Prisma {
      */
     omit?: PacksOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PacksInclude<ExtArgs> | null
+    /**
      * The filter to search for the Packs to update in case it exists.
      */
     where: PacksWhereUniqueInput
@@ -8910,6 +9028,10 @@ export namespace Prisma {
      */
     omit?: PacksOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PacksInclude<ExtArgs> | null
+    /**
      * Filter which Packs to delete.
      */
     where: PacksWhereUniqueInput
@@ -8930,6 +9052,30 @@ export namespace Prisma {
   }
 
   /**
+   * Packs.Images
+   */
+  export type Packs$ImagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Images
+     */
+    select?: ImagesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Images
+     */
+    omit?: ImagesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImagesInclude<ExtArgs> | null
+    where?: ImagesWhereInput
+    orderBy?: ImagesOrderByWithRelationInput | ImagesOrderByWithRelationInput[]
+    cursor?: ImagesWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ImagesScalarFieldEnum | ImagesScalarFieldEnum[]
+  }
+
+  /**
    * Packs without action
    */
   export type PacksDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8941,6 +9087,10 @@ export namespace Prisma {
      * Omit specific fields from the Packs
      */
     omit?: PacksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PacksInclude<ExtArgs> | null
   }
 
 
@@ -9026,6 +9176,7 @@ export namespace Prisma {
     pid: 'pid',
     user_id: 'user_id',
     training_model_id: 'training_model_id',
+    pack_id: 'pack_id',
     user_prompt: 'user_prompt',
     sys_prompt: 'sys_prompt',
     num_inference_steps: 'num_inference_steps',
@@ -9645,23 +9796,25 @@ export namespace Prisma {
     pid?: UuidFilter<"Images"> | string
     user_id?: IntFilter<"Images"> | number
     training_model_id?: IntFilter<"Images"> | number
+    pack_id?: IntNullableFilter<"Images"> | number | null
     user_prompt?: StringFilter<"Images"> | string
     sys_prompt?: StringFilter<"Images"> | string
     num_inference_steps?: IntFilter<"Images"> | number
     content_type?: EnumImageFormatFilter<"Images"> | $Enums.ImageFormat
     status?: EnumStatusFilter<"Images"> | $Enums.Status
     image_size?: EnumImageSizeFilter<"Images"> | $Enums.ImageSize
-    fal_ai_request_id?: StringFilter<"Images"> | string
-    width?: IntFilter<"Images"> | number
-    height?: IntFilter<"Images"> | number
-    image_url?: StringFilter<"Images"> | string
-    image_url_s3?: StringFilter<"Images"> | string
+    fal_ai_request_id?: StringNullableFilter<"Images"> | string | null
+    width?: IntNullableFilter<"Images"> | number | null
+    height?: IntNullableFilter<"Images"> | number | null
+    image_url?: StringNullableFilter<"Images"> | string | null
+    image_url_s3?: StringNullableFilter<"Images"> | string | null
     is_favorite?: BoolFilter<"Images"> | boolean
     deleted_at?: DateTimeNullableFilter<"Images"> | Date | string | null
     created_at?: DateTimeFilter<"Images"> | Date | string
     updated_at?: DateTimeFilter<"Images"> | Date | string
     user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
     training_model?: XOR<TrainingModelsScalarRelationFilter, TrainingModelsWhereInput>
+    pack?: XOR<PacksNullableScalarRelationFilter, PacksWhereInput> | null
   }
 
   export type ImagesOrderByWithRelationInput = {
@@ -9669,23 +9822,25 @@ export namespace Prisma {
     pid?: SortOrder
     user_id?: SortOrder
     training_model_id?: SortOrder
+    pack_id?: SortOrderInput | SortOrder
     user_prompt?: SortOrder
     sys_prompt?: SortOrder
     num_inference_steps?: SortOrder
     content_type?: SortOrder
     status?: SortOrder
     image_size?: SortOrder
-    fal_ai_request_id?: SortOrder
-    width?: SortOrder
-    height?: SortOrder
-    image_url?: SortOrder
-    image_url_s3?: SortOrder
+    fal_ai_request_id?: SortOrderInput | SortOrder
+    width?: SortOrderInput | SortOrder
+    height?: SortOrderInput | SortOrder
+    image_url?: SortOrderInput | SortOrder
+    image_url_s3?: SortOrderInput | SortOrder
     is_favorite?: SortOrder
     deleted_at?: SortOrderInput | SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     user?: UsersOrderByWithRelationInput
     training_model?: TrainingModelsOrderByWithRelationInput
+    pack?: PacksOrderByWithRelationInput
   }
 
   export type ImagesWhereUniqueInput = Prisma.AtLeast<{
@@ -9696,23 +9851,25 @@ export namespace Prisma {
     NOT?: ImagesWhereInput | ImagesWhereInput[]
     user_id?: IntFilter<"Images"> | number
     training_model_id?: IntFilter<"Images"> | number
+    pack_id?: IntNullableFilter<"Images"> | number | null
     user_prompt?: StringFilter<"Images"> | string
     sys_prompt?: StringFilter<"Images"> | string
     num_inference_steps?: IntFilter<"Images"> | number
     content_type?: EnumImageFormatFilter<"Images"> | $Enums.ImageFormat
     status?: EnumStatusFilter<"Images"> | $Enums.Status
     image_size?: EnumImageSizeFilter<"Images"> | $Enums.ImageSize
-    fal_ai_request_id?: StringFilter<"Images"> | string
-    width?: IntFilter<"Images"> | number
-    height?: IntFilter<"Images"> | number
-    image_url?: StringFilter<"Images"> | string
-    image_url_s3?: StringFilter<"Images"> | string
+    fal_ai_request_id?: StringNullableFilter<"Images"> | string | null
+    width?: IntNullableFilter<"Images"> | number | null
+    height?: IntNullableFilter<"Images"> | number | null
+    image_url?: StringNullableFilter<"Images"> | string | null
+    image_url_s3?: StringNullableFilter<"Images"> | string | null
     is_favorite?: BoolFilter<"Images"> | boolean
     deleted_at?: DateTimeNullableFilter<"Images"> | Date | string | null
     created_at?: DateTimeFilter<"Images"> | Date | string
     updated_at?: DateTimeFilter<"Images"> | Date | string
     user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
     training_model?: XOR<TrainingModelsScalarRelationFilter, TrainingModelsWhereInput>
+    pack?: XOR<PacksNullableScalarRelationFilter, PacksWhereInput> | null
   }, "id" | "pid">
 
   export type ImagesOrderByWithAggregationInput = {
@@ -9720,17 +9877,18 @@ export namespace Prisma {
     pid?: SortOrder
     user_id?: SortOrder
     training_model_id?: SortOrder
+    pack_id?: SortOrderInput | SortOrder
     user_prompt?: SortOrder
     sys_prompt?: SortOrder
     num_inference_steps?: SortOrder
     content_type?: SortOrder
     status?: SortOrder
     image_size?: SortOrder
-    fal_ai_request_id?: SortOrder
-    width?: SortOrder
-    height?: SortOrder
-    image_url?: SortOrder
-    image_url_s3?: SortOrder
+    fal_ai_request_id?: SortOrderInput | SortOrder
+    width?: SortOrderInput | SortOrder
+    height?: SortOrderInput | SortOrder
+    image_url?: SortOrderInput | SortOrder
+    image_url_s3?: SortOrderInput | SortOrder
     is_favorite?: SortOrder
     deleted_at?: SortOrderInput | SortOrder
     created_at?: SortOrder
@@ -9750,17 +9908,18 @@ export namespace Prisma {
     pid?: UuidWithAggregatesFilter<"Images"> | string
     user_id?: IntWithAggregatesFilter<"Images"> | number
     training_model_id?: IntWithAggregatesFilter<"Images"> | number
+    pack_id?: IntNullableWithAggregatesFilter<"Images"> | number | null
     user_prompt?: StringWithAggregatesFilter<"Images"> | string
     sys_prompt?: StringWithAggregatesFilter<"Images"> | string
     num_inference_steps?: IntWithAggregatesFilter<"Images"> | number
     content_type?: EnumImageFormatWithAggregatesFilter<"Images"> | $Enums.ImageFormat
     status?: EnumStatusWithAggregatesFilter<"Images"> | $Enums.Status
     image_size?: EnumImageSizeWithAggregatesFilter<"Images"> | $Enums.ImageSize
-    fal_ai_request_id?: StringWithAggregatesFilter<"Images"> | string
-    width?: IntWithAggregatesFilter<"Images"> | number
-    height?: IntWithAggregatesFilter<"Images"> | number
-    image_url?: StringWithAggregatesFilter<"Images"> | string
-    image_url_s3?: StringWithAggregatesFilter<"Images"> | string
+    fal_ai_request_id?: StringNullableWithAggregatesFilter<"Images"> | string | null
+    width?: IntNullableWithAggregatesFilter<"Images"> | number | null
+    height?: IntNullableWithAggregatesFilter<"Images"> | number | null
+    image_url?: StringNullableWithAggregatesFilter<"Images"> | string | null
+    image_url_s3?: StringNullableWithAggregatesFilter<"Images"> | string | null
     is_favorite?: BoolWithAggregatesFilter<"Images"> | boolean
     deleted_at?: DateTimeNullableWithAggregatesFilter<"Images"> | Date | string | null
     created_at?: DateTimeWithAggregatesFilter<"Images"> | Date | string
@@ -9873,6 +10032,7 @@ export namespace Prisma {
     image_url?: StringFilter<"Packs"> | string
     created_at?: DateTimeFilter<"Packs"> | Date | string
     updated_at?: DateTimeFilter<"Packs"> | Date | string
+    Images?: ImagesListRelationFilter
   }
 
   export type PacksOrderByWithRelationInput = {
@@ -9886,6 +10046,7 @@ export namespace Prisma {
     image_url?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
+    Images?: ImagesOrderByRelationAggregateInput
   }
 
   export type PacksWhereUniqueInput = Prisma.AtLeast<{
@@ -9902,6 +10063,7 @@ export namespace Prisma {
     image_url?: StringFilter<"Packs"> | string
     created_at?: DateTimeFilter<"Packs"> | Date | string
     updated_at?: DateTimeFilter<"Packs"> | Date | string
+    Images?: ImagesListRelationFilter
   }, "id" | "pid">
 
   export type PacksOrderByWithAggregationInput = {
@@ -10333,17 +10495,18 @@ export namespace Prisma {
     content_type: $Enums.ImageFormat
     status: $Enums.Status
     image_size: $Enums.ImageSize
-    fal_ai_request_id: string
-    width: number
-    height: number
-    image_url: string
-    image_url_s3: string
-    is_favorite: boolean
+    fal_ai_request_id?: string | null
+    width?: number | null
+    height?: number | null
+    image_url?: string | null
+    image_url_s3?: string | null
+    is_favorite?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
     updated_at: Date | string
     user: UsersCreateNestedOneWithoutImagesInput
     training_model: TrainingModelsCreateNestedOneWithoutImagesInput
+    pack?: PacksCreateNestedOneWithoutImagesInput
   }
 
   export type ImagesUncheckedCreateInput = {
@@ -10351,18 +10514,19 @@ export namespace Prisma {
     pid: string
     user_id: number
     training_model_id: number
+    pack_id?: number | null
     user_prompt: string
     sys_prompt: string
     num_inference_steps: number
     content_type: $Enums.ImageFormat
     status: $Enums.Status
     image_size: $Enums.ImageSize
-    fal_ai_request_id: string
-    width: number
-    height: number
-    image_url: string
-    image_url_s3: string
-    is_favorite: boolean
+    fal_ai_request_id?: string | null
+    width?: number | null
+    height?: number | null
+    image_url?: string | null
+    image_url_s3?: string | null
+    is_favorite?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
     updated_at: Date | string
@@ -10376,17 +10540,18 @@ export namespace Prisma {
     content_type?: EnumImageFormatFieldUpdateOperationsInput | $Enums.ImageFormat
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
     image_size?: EnumImageSizeFieldUpdateOperationsInput | $Enums.ImageSize
-    fal_ai_request_id?: StringFieldUpdateOperationsInput | string
-    width?: IntFieldUpdateOperationsInput | number
-    height?: IntFieldUpdateOperationsInput | number
-    image_url?: StringFieldUpdateOperationsInput | string
-    image_url_s3?: StringFieldUpdateOperationsInput | string
+    fal_ai_request_id?: NullableStringFieldUpdateOperationsInput | string | null
+    width?: NullableIntFieldUpdateOperationsInput | number | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    image_url_s3?: NullableStringFieldUpdateOperationsInput | string | null
     is_favorite?: BoolFieldUpdateOperationsInput | boolean
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UsersUpdateOneRequiredWithoutImagesNestedInput
     training_model?: TrainingModelsUpdateOneRequiredWithoutImagesNestedInput
+    pack?: PacksUpdateOneWithoutImagesNestedInput
   }
 
   export type ImagesUncheckedUpdateInput = {
@@ -10394,17 +10559,18 @@ export namespace Prisma {
     pid?: StringFieldUpdateOperationsInput | string
     user_id?: IntFieldUpdateOperationsInput | number
     training_model_id?: IntFieldUpdateOperationsInput | number
+    pack_id?: NullableIntFieldUpdateOperationsInput | number | null
     user_prompt?: StringFieldUpdateOperationsInput | string
     sys_prompt?: StringFieldUpdateOperationsInput | string
     num_inference_steps?: IntFieldUpdateOperationsInput | number
     content_type?: EnumImageFormatFieldUpdateOperationsInput | $Enums.ImageFormat
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
     image_size?: EnumImageSizeFieldUpdateOperationsInput | $Enums.ImageSize
-    fal_ai_request_id?: StringFieldUpdateOperationsInput | string
-    width?: IntFieldUpdateOperationsInput | number
-    height?: IntFieldUpdateOperationsInput | number
-    image_url?: StringFieldUpdateOperationsInput | string
-    image_url_s3?: StringFieldUpdateOperationsInput | string
+    fal_ai_request_id?: NullableStringFieldUpdateOperationsInput | string | null
+    width?: NullableIntFieldUpdateOperationsInput | number | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    image_url_s3?: NullableStringFieldUpdateOperationsInput | string | null
     is_favorite?: BoolFieldUpdateOperationsInput | boolean
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -10416,18 +10582,19 @@ export namespace Prisma {
     pid: string
     user_id: number
     training_model_id: number
+    pack_id?: number | null
     user_prompt: string
     sys_prompt: string
     num_inference_steps: number
     content_type: $Enums.ImageFormat
     status: $Enums.Status
     image_size: $Enums.ImageSize
-    fal_ai_request_id: string
-    width: number
-    height: number
-    image_url: string
-    image_url_s3: string
-    is_favorite: boolean
+    fal_ai_request_id?: string | null
+    width?: number | null
+    height?: number | null
+    image_url?: string | null
+    image_url_s3?: string | null
+    is_favorite?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
     updated_at: Date | string
@@ -10441,11 +10608,11 @@ export namespace Prisma {
     content_type?: EnumImageFormatFieldUpdateOperationsInput | $Enums.ImageFormat
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
     image_size?: EnumImageSizeFieldUpdateOperationsInput | $Enums.ImageSize
-    fal_ai_request_id?: StringFieldUpdateOperationsInput | string
-    width?: IntFieldUpdateOperationsInput | number
-    height?: IntFieldUpdateOperationsInput | number
-    image_url?: StringFieldUpdateOperationsInput | string
-    image_url_s3?: StringFieldUpdateOperationsInput | string
+    fal_ai_request_id?: NullableStringFieldUpdateOperationsInput | string | null
+    width?: NullableIntFieldUpdateOperationsInput | number | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    image_url_s3?: NullableStringFieldUpdateOperationsInput | string | null
     is_favorite?: BoolFieldUpdateOperationsInput | boolean
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -10457,17 +10624,18 @@ export namespace Prisma {
     pid?: StringFieldUpdateOperationsInput | string
     user_id?: IntFieldUpdateOperationsInput | number
     training_model_id?: IntFieldUpdateOperationsInput | number
+    pack_id?: NullableIntFieldUpdateOperationsInput | number | null
     user_prompt?: StringFieldUpdateOperationsInput | string
     sys_prompt?: StringFieldUpdateOperationsInput | string
     num_inference_steps?: IntFieldUpdateOperationsInput | number
     content_type?: EnumImageFormatFieldUpdateOperationsInput | $Enums.ImageFormat
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
     image_size?: EnumImageSizeFieldUpdateOperationsInput | $Enums.ImageSize
-    fal_ai_request_id?: StringFieldUpdateOperationsInput | string
-    width?: IntFieldUpdateOperationsInput | number
-    height?: IntFieldUpdateOperationsInput | number
-    image_url?: StringFieldUpdateOperationsInput | string
-    image_url_s3?: StringFieldUpdateOperationsInput | string
+    fal_ai_request_id?: NullableStringFieldUpdateOperationsInput | string | null
+    width?: NullableIntFieldUpdateOperationsInput | number | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    image_url_s3?: NullableStringFieldUpdateOperationsInput | string | null
     is_favorite?: BoolFieldUpdateOperationsInput | boolean
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -10585,6 +10753,7 @@ export namespace Prisma {
     image_url: string
     created_at?: Date | string
     updated_at: Date | string
+    Images?: ImagesCreateNestedManyWithoutPackInput
   }
 
   export type PacksUncheckedCreateInput = {
@@ -10598,6 +10767,7 @@ export namespace Prisma {
     image_url: string
     created_at?: Date | string
     updated_at: Date | string
+    Images?: ImagesUncheckedCreateNestedManyWithoutPackInput
   }
 
   export type PacksUpdateInput = {
@@ -10610,6 +10780,7 @@ export namespace Prisma {
     image_url?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    Images?: ImagesUpdateManyWithoutPackNestedInput
   }
 
   export type PacksUncheckedUpdateInput = {
@@ -10623,6 +10794,7 @@ export namespace Prisma {
     image_url?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    Images?: ImagesUncheckedUpdateManyWithoutPackNestedInput
   }
 
   export type PacksCreateManyInput = {
@@ -11224,6 +11396,17 @@ export namespace Prisma {
     model_amount?: SortOrder
   }
 
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type EnumImageFormatFilter<$PrismaModel = never> = {
     equals?: $Enums.ImageFormat | EnumImageFormatFieldRefInput<$PrismaModel>
     in?: $Enums.ImageFormat[] | ListEnumImageFormatFieldRefInput<$PrismaModel>
@@ -11243,11 +11426,17 @@ export namespace Prisma {
     isNot?: TrainingModelsWhereInput
   }
 
+  export type PacksNullableScalarRelationFilter = {
+    is?: PacksWhereInput | null
+    isNot?: PacksWhereInput | null
+  }
+
   export type ImagesCountOrderByAggregateInput = {
     id?: SortOrder
     pid?: SortOrder
     user_id?: SortOrder
     training_model_id?: SortOrder
+    pack_id?: SortOrder
     user_prompt?: SortOrder
     sys_prompt?: SortOrder
     num_inference_steps?: SortOrder
@@ -11269,6 +11458,7 @@ export namespace Prisma {
     id?: SortOrder
     user_id?: SortOrder
     training_model_id?: SortOrder
+    pack_id?: SortOrder
     num_inference_steps?: SortOrder
     width?: SortOrder
     height?: SortOrder
@@ -11279,6 +11469,7 @@ export namespace Prisma {
     pid?: SortOrder
     user_id?: SortOrder
     training_model_id?: SortOrder
+    pack_id?: SortOrder
     user_prompt?: SortOrder
     sys_prompt?: SortOrder
     num_inference_steps?: SortOrder
@@ -11301,6 +11492,7 @@ export namespace Prisma {
     pid?: SortOrder
     user_id?: SortOrder
     training_model_id?: SortOrder
+    pack_id?: SortOrder
     user_prompt?: SortOrder
     sys_prompt?: SortOrder
     num_inference_steps?: SortOrder
@@ -11322,9 +11514,26 @@ export namespace Prisma {
     id?: SortOrder
     user_id?: SortOrder
     training_model_id?: SortOrder
+    pack_id?: SortOrder
     num_inference_steps?: SortOrder
     width?: SortOrder
     height?: SortOrder
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type EnumImageFormatWithAggregatesFilter<$PrismaModel = never> = {
@@ -11755,12 +11964,26 @@ export namespace Prisma {
     connect?: TrainingModelsWhereUniqueInput
   }
 
+  export type PacksCreateNestedOneWithoutImagesInput = {
+    create?: XOR<PacksCreateWithoutImagesInput, PacksUncheckedCreateWithoutImagesInput>
+    connectOrCreate?: PacksCreateOrConnectWithoutImagesInput
+    connect?: PacksWhereUniqueInput
+  }
+
   export type EnumImageFormatFieldUpdateOperationsInput = {
     set?: $Enums.ImageFormat
   }
 
   export type EnumImageSizeFieldUpdateOperationsInput = {
     set?: $Enums.ImageSize
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type UsersUpdateOneRequiredWithoutImagesNestedInput = {
@@ -11779,6 +12002,16 @@ export namespace Prisma {
     update?: XOR<XOR<TrainingModelsUpdateToOneWithWhereWithoutImagesInput, TrainingModelsUpdateWithoutImagesInput>, TrainingModelsUncheckedUpdateWithoutImagesInput>
   }
 
+  export type PacksUpdateOneWithoutImagesNestedInput = {
+    create?: XOR<PacksCreateWithoutImagesInput, PacksUncheckedCreateWithoutImagesInput>
+    connectOrCreate?: PacksCreateOrConnectWithoutImagesInput
+    upsert?: PacksUpsertWithoutImagesInput
+    disconnect?: PacksWhereInput | boolean
+    delete?: PacksWhereInput | boolean
+    connect?: PacksWhereUniqueInput
+    update?: XOR<XOR<PacksUpdateToOneWithWhereWithoutImagesInput, PacksUpdateWithoutImagesInput>, PacksUncheckedUpdateWithoutImagesInput>
+  }
+
   export type UsersCreateNestedOneWithoutTransactionsInput = {
     create?: XOR<UsersCreateWithoutTransactionsInput, UsersUncheckedCreateWithoutTransactionsInput>
     connectOrCreate?: UsersCreateOrConnectWithoutTransactionsInput
@@ -11791,6 +12024,48 @@ export namespace Prisma {
     upsert?: UsersUpsertWithoutTransactionsInput
     connect?: UsersWhereUniqueInput
     update?: XOR<XOR<UsersUpdateToOneWithWhereWithoutTransactionsInput, UsersUpdateWithoutTransactionsInput>, UsersUncheckedUpdateWithoutTransactionsInput>
+  }
+
+  export type ImagesCreateNestedManyWithoutPackInput = {
+    create?: XOR<ImagesCreateWithoutPackInput, ImagesUncheckedCreateWithoutPackInput> | ImagesCreateWithoutPackInput[] | ImagesUncheckedCreateWithoutPackInput[]
+    connectOrCreate?: ImagesCreateOrConnectWithoutPackInput | ImagesCreateOrConnectWithoutPackInput[]
+    createMany?: ImagesCreateManyPackInputEnvelope
+    connect?: ImagesWhereUniqueInput | ImagesWhereUniqueInput[]
+  }
+
+  export type ImagesUncheckedCreateNestedManyWithoutPackInput = {
+    create?: XOR<ImagesCreateWithoutPackInput, ImagesUncheckedCreateWithoutPackInput> | ImagesCreateWithoutPackInput[] | ImagesUncheckedCreateWithoutPackInput[]
+    connectOrCreate?: ImagesCreateOrConnectWithoutPackInput | ImagesCreateOrConnectWithoutPackInput[]
+    createMany?: ImagesCreateManyPackInputEnvelope
+    connect?: ImagesWhereUniqueInput | ImagesWhereUniqueInput[]
+  }
+
+  export type ImagesUpdateManyWithoutPackNestedInput = {
+    create?: XOR<ImagesCreateWithoutPackInput, ImagesUncheckedCreateWithoutPackInput> | ImagesCreateWithoutPackInput[] | ImagesUncheckedCreateWithoutPackInput[]
+    connectOrCreate?: ImagesCreateOrConnectWithoutPackInput | ImagesCreateOrConnectWithoutPackInput[]
+    upsert?: ImagesUpsertWithWhereUniqueWithoutPackInput | ImagesUpsertWithWhereUniqueWithoutPackInput[]
+    createMany?: ImagesCreateManyPackInputEnvelope
+    set?: ImagesWhereUniqueInput | ImagesWhereUniqueInput[]
+    disconnect?: ImagesWhereUniqueInput | ImagesWhereUniqueInput[]
+    delete?: ImagesWhereUniqueInput | ImagesWhereUniqueInput[]
+    connect?: ImagesWhereUniqueInput | ImagesWhereUniqueInput[]
+    update?: ImagesUpdateWithWhereUniqueWithoutPackInput | ImagesUpdateWithWhereUniqueWithoutPackInput[]
+    updateMany?: ImagesUpdateManyWithWhereWithoutPackInput | ImagesUpdateManyWithWhereWithoutPackInput[]
+    deleteMany?: ImagesScalarWhereInput | ImagesScalarWhereInput[]
+  }
+
+  export type ImagesUncheckedUpdateManyWithoutPackNestedInput = {
+    create?: XOR<ImagesCreateWithoutPackInput, ImagesUncheckedCreateWithoutPackInput> | ImagesCreateWithoutPackInput[] | ImagesUncheckedCreateWithoutPackInput[]
+    connectOrCreate?: ImagesCreateOrConnectWithoutPackInput | ImagesCreateOrConnectWithoutPackInput[]
+    upsert?: ImagesUpsertWithWhereUniqueWithoutPackInput | ImagesUpsertWithWhereUniqueWithoutPackInput[]
+    createMany?: ImagesCreateManyPackInputEnvelope
+    set?: ImagesWhereUniqueInput | ImagesWhereUniqueInput[]
+    disconnect?: ImagesWhereUniqueInput | ImagesWhereUniqueInput[]
+    delete?: ImagesWhereUniqueInput | ImagesWhereUniqueInput[]
+    connect?: ImagesWhereUniqueInput | ImagesWhereUniqueInput[]
+    update?: ImagesUpdateWithWhereUniqueWithoutPackInput | ImagesUpdateWithWhereUniqueWithoutPackInput[]
+    updateMany?: ImagesUpdateManyWithWhereWithoutPackInput | ImagesUpdateManyWithWhereWithoutPackInput[]
+    deleteMany?: ImagesScalarWhereInput | ImagesScalarWhereInput[]
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -12114,6 +12389,33 @@ export namespace Prisma {
     not?: NestedEnumImageSizeFilter<$PrismaModel> | $Enums.ImageSize
   }
 
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type NestedEnumImageFormatWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.ImageFormat | EnumImageFormatFieldRefInput<$PrismaModel>
     in?: $Enums.ImageFormat[] | ListEnumImageFormatFieldRefInput<$PrismaModel>
@@ -12234,34 +12536,36 @@ export namespace Prisma {
     content_type: $Enums.ImageFormat
     status: $Enums.Status
     image_size: $Enums.ImageSize
-    fal_ai_request_id: string
-    width: number
-    height: number
-    image_url: string
-    image_url_s3: string
-    is_favorite: boolean
+    fal_ai_request_id?: string | null
+    width?: number | null
+    height?: number | null
+    image_url?: string | null
+    image_url_s3?: string | null
+    is_favorite?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
     updated_at: Date | string
     training_model: TrainingModelsCreateNestedOneWithoutImagesInput
+    pack?: PacksCreateNestedOneWithoutImagesInput
   }
 
   export type ImagesUncheckedCreateWithoutUserInput = {
     id?: number
     pid: string
     training_model_id: number
+    pack_id?: number | null
     user_prompt: string
     sys_prompt: string
     num_inference_steps: number
     content_type: $Enums.ImageFormat
     status: $Enums.Status
     image_size: $Enums.ImageSize
-    fal_ai_request_id: string
-    width: number
-    height: number
-    image_url: string
-    image_url_s3: string
-    is_favorite: boolean
+    fal_ai_request_id?: string | null
+    width?: number | null
+    height?: number | null
+    image_url?: string | null
+    image_url_s3?: string | null
+    is_favorite?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
     updated_at: Date | string
@@ -12414,17 +12718,18 @@ export namespace Prisma {
     pid?: UuidFilter<"Images"> | string
     user_id?: IntFilter<"Images"> | number
     training_model_id?: IntFilter<"Images"> | number
+    pack_id?: IntNullableFilter<"Images"> | number | null
     user_prompt?: StringFilter<"Images"> | string
     sys_prompt?: StringFilter<"Images"> | string
     num_inference_steps?: IntFilter<"Images"> | number
     content_type?: EnumImageFormatFilter<"Images"> | $Enums.ImageFormat
     status?: EnumStatusFilter<"Images"> | $Enums.Status
     image_size?: EnumImageSizeFilter<"Images"> | $Enums.ImageSize
-    fal_ai_request_id?: StringFilter<"Images"> | string
-    width?: IntFilter<"Images"> | number
-    height?: IntFilter<"Images"> | number
-    image_url?: StringFilter<"Images"> | string
-    image_url_s3?: StringFilter<"Images"> | string
+    fal_ai_request_id?: StringNullableFilter<"Images"> | string | null
+    width?: IntNullableFilter<"Images"> | number | null
+    height?: IntNullableFilter<"Images"> | number | null
+    image_url?: StringNullableFilter<"Images"> | string | null
+    image_url_s3?: StringNullableFilter<"Images"> | string | null
     is_favorite?: BoolFilter<"Images"> | boolean
     deleted_at?: DateTimeNullableFilter<"Images"> | Date | string | null
     created_at?: DateTimeFilter<"Images"> | Date | string
@@ -12515,34 +12820,36 @@ export namespace Prisma {
     content_type: $Enums.ImageFormat
     status: $Enums.Status
     image_size: $Enums.ImageSize
-    fal_ai_request_id: string
-    width: number
-    height: number
-    image_url: string
-    image_url_s3: string
-    is_favorite: boolean
+    fal_ai_request_id?: string | null
+    width?: number | null
+    height?: number | null
+    image_url?: string | null
+    image_url_s3?: string | null
+    is_favorite?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
     updated_at: Date | string
     user: UsersCreateNestedOneWithoutImagesInput
+    pack?: PacksCreateNestedOneWithoutImagesInput
   }
 
   export type ImagesUncheckedCreateWithoutTraining_modelInput = {
     id?: number
     pid: string
     user_id: number
+    pack_id?: number | null
     user_prompt: string
     sys_prompt: string
     num_inference_steps: number
     content_type: $Enums.ImageFormat
     status: $Enums.Status
     image_size: $Enums.ImageSize
-    fal_ai_request_id: string
-    width: number
-    height: number
-    image_url: string
-    image_url_s3: string
-    is_favorite: boolean
+    fal_ai_request_id?: string | null
+    width?: number | null
+    height?: number | null
+    image_url?: string | null
+    image_url_s3?: string | null
+    is_favorite?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
     updated_at: Date | string
@@ -12814,6 +13121,36 @@ export namespace Prisma {
     create: XOR<TrainingModelsCreateWithoutImagesInput, TrainingModelsUncheckedCreateWithoutImagesInput>
   }
 
+  export type PacksCreateWithoutImagesInput = {
+    pid: string
+    name: string
+    description: string
+    pack_prompts: string
+    credits: number
+    amount: number
+    image_url: string
+    created_at?: Date | string
+    updated_at: Date | string
+  }
+
+  export type PacksUncheckedCreateWithoutImagesInput = {
+    id?: number
+    pid: string
+    name: string
+    description: string
+    pack_prompts: string
+    credits: number
+    amount: number
+    image_url: string
+    created_at?: Date | string
+    updated_at: Date | string
+  }
+
+  export type PacksCreateOrConnectWithoutImagesInput = {
+    where: PacksWhereUniqueInput
+    create: XOR<PacksCreateWithoutImagesInput, PacksUncheckedCreateWithoutImagesInput>
+  }
+
   export type UsersUpsertWithoutImagesInput = {
     update: XOR<UsersUpdateWithoutImagesInput, UsersUncheckedUpdateWithoutImagesInput>
     create: XOR<UsersCreateWithoutImagesInput, UsersUncheckedCreateWithoutImagesInput>
@@ -12928,6 +13265,42 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type PacksUpsertWithoutImagesInput = {
+    update: XOR<PacksUpdateWithoutImagesInput, PacksUncheckedUpdateWithoutImagesInput>
+    create: XOR<PacksCreateWithoutImagesInput, PacksUncheckedCreateWithoutImagesInput>
+    where?: PacksWhereInput
+  }
+
+  export type PacksUpdateToOneWithWhereWithoutImagesInput = {
+    where?: PacksWhereInput
+    data: XOR<PacksUpdateWithoutImagesInput, PacksUncheckedUpdateWithoutImagesInput>
+  }
+
+  export type PacksUpdateWithoutImagesInput = {
+    pid?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    pack_prompts?: StringFieldUpdateOperationsInput | string
+    credits?: IntFieldUpdateOperationsInput | number
+    amount?: IntFieldUpdateOperationsInput | number
+    image_url?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PacksUncheckedUpdateWithoutImagesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    pid?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    pack_prompts?: StringFieldUpdateOperationsInput | string
+    credits?: IntFieldUpdateOperationsInput | number
+    amount?: IntFieldUpdateOperationsInput | number
+    image_url?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UsersCreateWithoutTransactionsInput = {
     pid: string
     email: string
@@ -13018,6 +13391,75 @@ export namespace Prisma {
     Images?: ImagesUncheckedUpdateManyWithoutUserNestedInput
   }
 
+  export type ImagesCreateWithoutPackInput = {
+    pid: string
+    user_prompt: string
+    sys_prompt: string
+    num_inference_steps: number
+    content_type: $Enums.ImageFormat
+    status: $Enums.Status
+    image_size: $Enums.ImageSize
+    fal_ai_request_id?: string | null
+    width?: number | null
+    height?: number | null
+    image_url?: string | null
+    image_url_s3?: string | null
+    is_favorite?: boolean
+    deleted_at?: Date | string | null
+    created_at?: Date | string
+    updated_at: Date | string
+    user: UsersCreateNestedOneWithoutImagesInput
+    training_model: TrainingModelsCreateNestedOneWithoutImagesInput
+  }
+
+  export type ImagesUncheckedCreateWithoutPackInput = {
+    id?: number
+    pid: string
+    user_id: number
+    training_model_id: number
+    user_prompt: string
+    sys_prompt: string
+    num_inference_steps: number
+    content_type: $Enums.ImageFormat
+    status: $Enums.Status
+    image_size: $Enums.ImageSize
+    fal_ai_request_id?: string | null
+    width?: number | null
+    height?: number | null
+    image_url?: string | null
+    image_url_s3?: string | null
+    is_favorite?: boolean
+    deleted_at?: Date | string | null
+    created_at?: Date | string
+    updated_at: Date | string
+  }
+
+  export type ImagesCreateOrConnectWithoutPackInput = {
+    where: ImagesWhereUniqueInput
+    create: XOR<ImagesCreateWithoutPackInput, ImagesUncheckedCreateWithoutPackInput>
+  }
+
+  export type ImagesCreateManyPackInputEnvelope = {
+    data: ImagesCreateManyPackInput | ImagesCreateManyPackInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ImagesUpsertWithWhereUniqueWithoutPackInput = {
+    where: ImagesWhereUniqueInput
+    update: XOR<ImagesUpdateWithoutPackInput, ImagesUncheckedUpdateWithoutPackInput>
+    create: XOR<ImagesCreateWithoutPackInput, ImagesUncheckedCreateWithoutPackInput>
+  }
+
+  export type ImagesUpdateWithWhereUniqueWithoutPackInput = {
+    where: ImagesWhereUniqueInput
+    data: XOR<ImagesUpdateWithoutPackInput, ImagesUncheckedUpdateWithoutPackInput>
+  }
+
+  export type ImagesUpdateManyWithWhereWithoutPackInput = {
+    where: ImagesScalarWhereInput
+    data: XOR<ImagesUpdateManyMutationInput, ImagesUncheckedUpdateManyWithoutPackInput>
+  }
+
   export type TrainingModelsCreateManyUserInput = {
     id?: number
     pid: string
@@ -13058,18 +13500,19 @@ export namespace Prisma {
     id?: number
     pid: string
     training_model_id: number
+    pack_id?: number | null
     user_prompt: string
     sys_prompt: string
     num_inference_steps: number
     content_type: $Enums.ImageFormat
     status: $Enums.Status
     image_size: $Enums.ImageSize
-    fal_ai_request_id: string
-    width: number
-    height: number
-    image_url: string
-    image_url_s3: string
-    is_favorite: boolean
+    fal_ai_request_id?: string | null
+    width?: number | null
+    height?: number | null
+    image_url?: string | null
+    image_url_s3?: string | null
+    is_favorite?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
     updated_at: Date | string
@@ -13205,33 +13648,35 @@ export namespace Prisma {
     content_type?: EnumImageFormatFieldUpdateOperationsInput | $Enums.ImageFormat
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
     image_size?: EnumImageSizeFieldUpdateOperationsInput | $Enums.ImageSize
-    fal_ai_request_id?: StringFieldUpdateOperationsInput | string
-    width?: IntFieldUpdateOperationsInput | number
-    height?: IntFieldUpdateOperationsInput | number
-    image_url?: StringFieldUpdateOperationsInput | string
-    image_url_s3?: StringFieldUpdateOperationsInput | string
+    fal_ai_request_id?: NullableStringFieldUpdateOperationsInput | string | null
+    width?: NullableIntFieldUpdateOperationsInput | number | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    image_url_s3?: NullableStringFieldUpdateOperationsInput | string | null
     is_favorite?: BoolFieldUpdateOperationsInput | boolean
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     training_model?: TrainingModelsUpdateOneRequiredWithoutImagesNestedInput
+    pack?: PacksUpdateOneWithoutImagesNestedInput
   }
 
   export type ImagesUncheckedUpdateWithoutUserInput = {
     id?: IntFieldUpdateOperationsInput | number
     pid?: StringFieldUpdateOperationsInput | string
     training_model_id?: IntFieldUpdateOperationsInput | number
+    pack_id?: NullableIntFieldUpdateOperationsInput | number | null
     user_prompt?: StringFieldUpdateOperationsInput | string
     sys_prompt?: StringFieldUpdateOperationsInput | string
     num_inference_steps?: IntFieldUpdateOperationsInput | number
     content_type?: EnumImageFormatFieldUpdateOperationsInput | $Enums.ImageFormat
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
     image_size?: EnumImageSizeFieldUpdateOperationsInput | $Enums.ImageSize
-    fal_ai_request_id?: StringFieldUpdateOperationsInput | string
-    width?: IntFieldUpdateOperationsInput | number
-    height?: IntFieldUpdateOperationsInput | number
-    image_url?: StringFieldUpdateOperationsInput | string
-    image_url_s3?: StringFieldUpdateOperationsInput | string
+    fal_ai_request_id?: NullableStringFieldUpdateOperationsInput | string | null
+    width?: NullableIntFieldUpdateOperationsInput | number | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    image_url_s3?: NullableStringFieldUpdateOperationsInput | string | null
     is_favorite?: BoolFieldUpdateOperationsInput | boolean
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13242,17 +13687,18 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     pid?: StringFieldUpdateOperationsInput | string
     training_model_id?: IntFieldUpdateOperationsInput | number
+    pack_id?: NullableIntFieldUpdateOperationsInput | number | null
     user_prompt?: StringFieldUpdateOperationsInput | string
     sys_prompt?: StringFieldUpdateOperationsInput | string
     num_inference_steps?: IntFieldUpdateOperationsInput | number
     content_type?: EnumImageFormatFieldUpdateOperationsInput | $Enums.ImageFormat
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
     image_size?: EnumImageSizeFieldUpdateOperationsInput | $Enums.ImageSize
-    fal_ai_request_id?: StringFieldUpdateOperationsInput | string
-    width?: IntFieldUpdateOperationsInput | number
-    height?: IntFieldUpdateOperationsInput | number
-    image_url?: StringFieldUpdateOperationsInput | string
-    image_url_s3?: StringFieldUpdateOperationsInput | string
+    fal_ai_request_id?: NullableStringFieldUpdateOperationsInput | string | null
+    width?: NullableIntFieldUpdateOperationsInput | number | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    image_url_s3?: NullableStringFieldUpdateOperationsInput | string | null
     is_favorite?: BoolFieldUpdateOperationsInput | boolean
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13304,18 +13750,19 @@ export namespace Prisma {
     id?: number
     pid: string
     user_id: number
+    pack_id?: number | null
     user_prompt: string
     sys_prompt: string
     num_inference_steps: number
     content_type: $Enums.ImageFormat
     status: $Enums.Status
     image_size: $Enums.ImageSize
-    fal_ai_request_id: string
-    width: number
-    height: number
-    image_url: string
-    image_url_s3: string
-    is_favorite: boolean
+    fal_ai_request_id?: string | null
+    width?: number | null
+    height?: number | null
+    image_url?: string | null
+    image_url_s3?: string | null
+    is_favorite?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
     updated_at: Date | string
@@ -13329,33 +13776,35 @@ export namespace Prisma {
     content_type?: EnumImageFormatFieldUpdateOperationsInput | $Enums.ImageFormat
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
     image_size?: EnumImageSizeFieldUpdateOperationsInput | $Enums.ImageSize
-    fal_ai_request_id?: StringFieldUpdateOperationsInput | string
-    width?: IntFieldUpdateOperationsInput | number
-    height?: IntFieldUpdateOperationsInput | number
-    image_url?: StringFieldUpdateOperationsInput | string
-    image_url_s3?: StringFieldUpdateOperationsInput | string
+    fal_ai_request_id?: NullableStringFieldUpdateOperationsInput | string | null
+    width?: NullableIntFieldUpdateOperationsInput | number | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    image_url_s3?: NullableStringFieldUpdateOperationsInput | string | null
     is_favorite?: BoolFieldUpdateOperationsInput | boolean
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UsersUpdateOneRequiredWithoutImagesNestedInput
+    pack?: PacksUpdateOneWithoutImagesNestedInput
   }
 
   export type ImagesUncheckedUpdateWithoutTraining_modelInput = {
     id?: IntFieldUpdateOperationsInput | number
     pid?: StringFieldUpdateOperationsInput | string
     user_id?: IntFieldUpdateOperationsInput | number
+    pack_id?: NullableIntFieldUpdateOperationsInput | number | null
     user_prompt?: StringFieldUpdateOperationsInput | string
     sys_prompt?: StringFieldUpdateOperationsInput | string
     num_inference_steps?: IntFieldUpdateOperationsInput | number
     content_type?: EnumImageFormatFieldUpdateOperationsInput | $Enums.ImageFormat
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
     image_size?: EnumImageSizeFieldUpdateOperationsInput | $Enums.ImageSize
-    fal_ai_request_id?: StringFieldUpdateOperationsInput | string
-    width?: IntFieldUpdateOperationsInput | number
-    height?: IntFieldUpdateOperationsInput | number
-    image_url?: StringFieldUpdateOperationsInput | string
-    image_url_s3?: StringFieldUpdateOperationsInput | string
+    fal_ai_request_id?: NullableStringFieldUpdateOperationsInput | string | null
+    width?: NullableIntFieldUpdateOperationsInput | number | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    image_url_s3?: NullableStringFieldUpdateOperationsInput | string | null
     is_favorite?: BoolFieldUpdateOperationsInput | boolean
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13366,17 +13815,105 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     pid?: StringFieldUpdateOperationsInput | string
     user_id?: IntFieldUpdateOperationsInput | number
+    pack_id?: NullableIntFieldUpdateOperationsInput | number | null
     user_prompt?: StringFieldUpdateOperationsInput | string
     sys_prompt?: StringFieldUpdateOperationsInput | string
     num_inference_steps?: IntFieldUpdateOperationsInput | number
     content_type?: EnumImageFormatFieldUpdateOperationsInput | $Enums.ImageFormat
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
     image_size?: EnumImageSizeFieldUpdateOperationsInput | $Enums.ImageSize
-    fal_ai_request_id?: StringFieldUpdateOperationsInput | string
-    width?: IntFieldUpdateOperationsInput | number
-    height?: IntFieldUpdateOperationsInput | number
-    image_url?: StringFieldUpdateOperationsInput | string
-    image_url_s3?: StringFieldUpdateOperationsInput | string
+    fal_ai_request_id?: NullableStringFieldUpdateOperationsInput | string | null
+    width?: NullableIntFieldUpdateOperationsInput | number | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    image_url_s3?: NullableStringFieldUpdateOperationsInput | string | null
+    is_favorite?: BoolFieldUpdateOperationsInput | boolean
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ImagesCreateManyPackInput = {
+    id?: number
+    pid: string
+    user_id: number
+    training_model_id: number
+    user_prompt: string
+    sys_prompt: string
+    num_inference_steps: number
+    content_type: $Enums.ImageFormat
+    status: $Enums.Status
+    image_size: $Enums.ImageSize
+    fal_ai_request_id?: string | null
+    width?: number | null
+    height?: number | null
+    image_url?: string | null
+    image_url_s3?: string | null
+    is_favorite?: boolean
+    deleted_at?: Date | string | null
+    created_at?: Date | string
+    updated_at: Date | string
+  }
+
+  export type ImagesUpdateWithoutPackInput = {
+    pid?: StringFieldUpdateOperationsInput | string
+    user_prompt?: StringFieldUpdateOperationsInput | string
+    sys_prompt?: StringFieldUpdateOperationsInput | string
+    num_inference_steps?: IntFieldUpdateOperationsInput | number
+    content_type?: EnumImageFormatFieldUpdateOperationsInput | $Enums.ImageFormat
+    status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
+    image_size?: EnumImageSizeFieldUpdateOperationsInput | $Enums.ImageSize
+    fal_ai_request_id?: NullableStringFieldUpdateOperationsInput | string | null
+    width?: NullableIntFieldUpdateOperationsInput | number | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    image_url_s3?: NullableStringFieldUpdateOperationsInput | string | null
+    is_favorite?: BoolFieldUpdateOperationsInput | boolean
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UsersUpdateOneRequiredWithoutImagesNestedInput
+    training_model?: TrainingModelsUpdateOneRequiredWithoutImagesNestedInput
+  }
+
+  export type ImagesUncheckedUpdateWithoutPackInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    pid?: StringFieldUpdateOperationsInput | string
+    user_id?: IntFieldUpdateOperationsInput | number
+    training_model_id?: IntFieldUpdateOperationsInput | number
+    user_prompt?: StringFieldUpdateOperationsInput | string
+    sys_prompt?: StringFieldUpdateOperationsInput | string
+    num_inference_steps?: IntFieldUpdateOperationsInput | number
+    content_type?: EnumImageFormatFieldUpdateOperationsInput | $Enums.ImageFormat
+    status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
+    image_size?: EnumImageSizeFieldUpdateOperationsInput | $Enums.ImageSize
+    fal_ai_request_id?: NullableStringFieldUpdateOperationsInput | string | null
+    width?: NullableIntFieldUpdateOperationsInput | number | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    image_url_s3?: NullableStringFieldUpdateOperationsInput | string | null
+    is_favorite?: BoolFieldUpdateOperationsInput | boolean
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ImagesUncheckedUpdateManyWithoutPackInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    pid?: StringFieldUpdateOperationsInput | string
+    user_id?: IntFieldUpdateOperationsInput | number
+    training_model_id?: IntFieldUpdateOperationsInput | number
+    user_prompt?: StringFieldUpdateOperationsInput | string
+    sys_prompt?: StringFieldUpdateOperationsInput | string
+    num_inference_steps?: IntFieldUpdateOperationsInput | number
+    content_type?: EnumImageFormatFieldUpdateOperationsInput | $Enums.ImageFormat
+    status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
+    image_size?: EnumImageSizeFieldUpdateOperationsInput | $Enums.ImageSize
+    fal_ai_request_id?: NullableStringFieldUpdateOperationsInput | string | null
+    width?: NullableIntFieldUpdateOperationsInput | number | null
+    height?: NullableIntFieldUpdateOperationsInput | number | null
+    image_url?: NullableStringFieldUpdateOperationsInput | string | null
+    image_url_s3?: NullableStringFieldUpdateOperationsInput | string | null
     is_favorite?: BoolFieldUpdateOperationsInput | boolean
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string

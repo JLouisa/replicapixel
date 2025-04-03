@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use strum::{EnumIter, EnumString, IntoEnumIterator};
 
 #[derive(
-    Debug, Clone, Display, PartialEq, Eq, EnumIter, DeriveActiveEnum, Serialize, Deserialize,
+    Debug, Clone, Copy, Display, PartialEq, Eq, EnumIter, DeriveActiveEnum, Serialize, Deserialize,
 )]
 #[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "Sex")]
 pub enum Sex {
@@ -15,7 +15,7 @@ pub enum Sex {
 }
 
 #[derive(
-    Debug, Clone, Display, PartialEq, Eq, EnumIter, DeriveActiveEnum, Serialize, Deserialize,
+    Debug, Clone, Copy, Display, PartialEq, Eq, EnumIter, DeriveActiveEnum, Serialize, Deserialize,
 )]
 #[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "Status")]
 pub enum Status {
@@ -34,7 +34,7 @@ pub enum Status {
 }
 
 #[derive(
-    Serialize, Deserialize, Debug, Clone, EnumIter, Display, DeriveActiveEnum, PartialEq, Eq,
+    Serialize, Deserialize, Debug, Clone, Copy, EnumIter, Display, DeriveActiveEnum, PartialEq, Eq,
 )]
 #[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "ImageFormat")]
 #[serde(rename_all = "lowercase")]
@@ -59,6 +59,7 @@ impl Default for Status {
 #[derive(
     Debug,
     Clone,
+    Copy,
     PartialEq,
     Eq,
     EnumIter,
@@ -85,6 +86,7 @@ pub enum EyeColor {
 
 #[derive(
     Clone,
+    Copy,
     Debug,
     Serialize,
     Deserialize,
@@ -122,6 +124,7 @@ pub enum Ethnicity {
 
 #[derive(
     Clone,
+    Copy,
     Debug,
     Serialize,
     Deserialize,
@@ -151,6 +154,7 @@ pub enum Emotion {
 
 #[derive(
     Clone,
+    Copy,
     Debug,
     Serialize,
     Deserialize,
@@ -174,6 +178,7 @@ pub enum BasedOn {
 
 #[derive(
     Clone,
+    Copy,
     Debug,
     Serialize,
     Deserialize,

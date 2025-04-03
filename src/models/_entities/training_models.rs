@@ -20,6 +20,7 @@ pub struct Model {
     pub based_on: BasedOn,
     pub bald: bool,
     pub steps: i32,
+    #[sea_orm(column_type = "Text", nullable)]
     pub thumbnail: Option<String>,
     #[sea_orm(unique)]
     pub pid: Uuid,
@@ -33,6 +34,7 @@ pub struct Model {
     pub is_style: bool,
     pub is_verified: bool,
     pub s3_key: String,
+    #[sea_orm(column_type = "Text", nullable)]
     pub tensor_path: Option<String>,
     #[sea_orm(column_type = "JsonBinary", nullable)]
     pub training_images: Option<Json>,

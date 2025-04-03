@@ -93,24 +93,26 @@ model Images {
   pid                  String    @unique @db.Uuid
   user_id              Int
   training_model_id    Int
+  pack_id              Int?
   user_prompt          String     
   sys_prompt           String     
   num_inference_steps  Int
   content_type         ImageFormat
   status               Status
   image_size           ImageSize 
-  fal_ai_request_id    String     @db.VarChar(255)
-  width                Int
-  height               Int
-  image_url            String     
-  image_url_s3         String     
-  is_favorite          Boolean
+  fal_ai_request_id    String?     @db.VarChar(255)
+  width                Int?
+  height               Int?
+  image_url            String?   
+  image_url_s3         String?  
+  is_favorite          Boolean    @default(true)
   deleted_at           DateTime?  @db.Timestamptz
   created_at           DateTime   @default(now()) @db.Timestamptz
   updated_at           DateTime   @db.Timestamptz
 
   user                 Users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   training_model       TrainingModels @relation(fields: [training_model_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  pack                 Packs? @relation(fields: [pack_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@index([pid], name: "idx-images-pid")
   @@index([user_id], name: "idx-images-user_id")
@@ -149,6 +151,8 @@ model Packs {
   image_url     String      
   created_at    DateTime    @default(now()) @db.Timestamptz
   updated_at    DateTime    @db.Timestamptz
+  
+  Images             Images[]
 
   @@index([pid], name: "idx-packs-pid")
 }

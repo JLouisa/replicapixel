@@ -15,25 +15,38 @@ pub struct Model {
     pub pid: Uuid,
     pub user_id: i32,
     pub training_model_id: i32,
+    #[sea_orm(column_type = "Text")]
     pub user_prompt: String,
+    #[sea_orm(column_type = "Text")]
     pub sys_prompt: String,
     pub num_inference_steps: i32,
     pub status: Status,
-    pub fal_ai_request_id: String,
-    pub width: i32,
-    pub height: i32,
-    pub image_url: String,
-    pub image_url_s3: String,
+    pub fal_ai_request_id: Option<String>,
+    pub width: Option<i32>,
+    pub height: Option<i32>,
+    #[sea_orm(column_type = "Text", nullable)]
+    pub image_url: Option<String>,
+    #[sea_orm(column_type = "Text", nullable)]
+    pub image_url_s3: Option<String>,
     pub is_favorite: bool,
     pub deleted_at: Option<DateTimeWithTimeZone>,
     pub created_at: DateTimeWithTimeZone,
     pub updated_at: DateTimeWithTimeZone,
     pub content_type: ImageFormat,
     pub image_size: ImageSize,
+    pub pack_id: Option<i32>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
+    #[sea_orm(
+        belongs_to = "super::packs::Entity",
+        from = "Column::PackId",
+        to = "super::packs::Column::Id",
+        on_update = "Cascade",
+        on_delete = "Cascade"
+    )]
+    Packs,
     #[sea_orm(
         belongs_to = "super::training_models::Entity",
         from = "Column::TrainingModelId",
@@ -50,6 +63,12 @@ pub enum Relation {
         on_delete = "Cascade"
     )]
     Users,
+}
+
+impl Related<super::packs::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::Packs.def()
+    }
 }
 
 impl Related<super::training_models::Entity> for Entity {

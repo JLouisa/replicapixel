@@ -5,6 +5,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::Map;
 use uuid::Uuid;
 
+use super::UserModel;
 pub use super::_entities::users::{self, ActiveModel, Entity, Model};
 
 pub const MAGIC_LINK_LENGTH: i8 = 32;
@@ -21,6 +22,26 @@ pub struct RegisterParams {
     pub email: String,
     pub password: String,
     pub name: String,
+}
+
+#[derive(Debug, Serialize)]
+pub struct User {
+    pub id: i32,
+    pub pid: Uuid,
+    pub name: String,
+    pub email: String,
+}
+impl User {
+    pub async fn load_user(db: &DatabaseConnection, pid: &str) -> ModelResult<Self> {
+        let user_model = UserModel::find_by_pid(db, pid).await?;
+        let user = Self {
+            id: user_model.id,
+            pid: user_model.pid,
+            name: user_model.name,
+            email: user_model.email,
+        };
+        Ok(user)
+    }
 }
 
 #[derive(Debug, Validate, Deserialize)]

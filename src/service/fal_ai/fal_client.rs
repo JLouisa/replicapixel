@@ -1,9 +1,9 @@
 use crate::{
-    controllers::{
-        images::{ImageDomainList, Params as ImageParams},
-        webhooks::routes::Webhooks,
+    controllers::webhooks::routes::Webhooks,
+    models::{
+        _entities::sea_orm_active_enums::{ImageFormat, ImageSize},
+        images::{ImageNew, ImageNewList},
     },
-    models::_entities::sea_orm_active_enums::{ImageFormat, ImageSize},
 };
 use futures::future::join_all;
 use loco_rs::Error as FalAiClientError;
@@ -175,49 +175,49 @@ impl FalAiClient {
         Ok(response)
     }
 
-    // pub async fn send_image_queue_many(
-    //     &self,
-    //     mut list: ImageDomainList,
-    // ) -> Result<ImageDomainList, FalAiClientError> {
-    //     for item in &mut list.clone().into_inner() {
-    //         let body = item.clone().into();
-    //         let response = self.send_image_queue_webhook(&body).await?;
-    //         item.fal_ai_request_id = Some(response.request_id);
-    //     }
-    //     Ok(list)
-    // }
+    pub async fn send_image_queue_many(
+        &self,
+        mut list: ImageNewList,
+    ) -> Result<ImageNewList, FalAiClientError> {
+        for item in &mut list.clone().into_inner() {
+            let body = item.clone().into();
+            let response = self.send_image_queue_webhook(&body).await?;
+            item.fal_ai_request_id = Some(response.request_id);
+        }
+        Ok(list)
+    }
 
-    // pub async fn send_image_queue_many_async(
-    //     &self,
-    //     list: ImageDomainList,
-    // ) -> Result<ImageDomainList, FalAiClientError> {
-    //     let futures = list.into_inner().into_iter().map(|mut item| {
-    //         let body = item.clone().into();
-    //         let client = self.clone(); // Clone client for parallel execution
-    //         async move {
-    //             match client.send_image_queue_test(&body).await {
-    //                 Ok(response) => {
-    //                     item.fal_ai_request_id = Some(response.request_id);
-    //                     Ok(item)
-    //                 }
-    //                 Err(e) => Err(e),
-    //             }
-    //         }
-    //     });
+    pub async fn send_image_queue_many_async(
+        &self,
+        list: ImageNewList,
+    ) -> Result<ImageNewList, FalAiClientError> {
+        let futures = list.into_inner().into_iter().map(|mut item| {
+            let body = item.clone().into();
+            let client = self.clone(); // Clone client for parallel execution
+            async move {
+                match client.send_image_queue_test(&body).await {
+                    Ok(response) => {
+                        item.fal_ai_request_id = Some(response.request_id);
+                        Ok(item)
+                    }
+                    Err(e) => Err(e),
+                }
+            }
+        });
 
-    //     let results: Vec<Result<ImageDomain, FalAiClientError>> = join_all(futures).await;
+        let results: Vec<Result<ImageNew, FalAiClientError>> = join_all(futures).await;
 
-    //     // Collect only successful results
-    //     let mut successful: Vec<ImageDomain> = Vec::new();
-    //     for res in results {
-    //         match res {
-    //             Ok(item) => successful.push(item),
-    //             Err(e) => tracing::error!("Failed to send image queue: {:?}", e),
-    //         }
-    //     }
-    //     dbg!(&successful);
-    //     Ok(ImageDomainList::new(successful))
-    // }
+        // Collect only successful results
+        let mut successful: Vec<ImageNew> = Vec::new();
+        for res in results {
+            match res {
+                Ok(item) => successful.push(item),
+                Err(e) => tracing::error!("Failed to send image queue: {:?}", e),
+            }
+        }
+        dbg!(&successful);
+        Ok(ImageNewList::new(successful))
+    }
 
     pub async fn request_status(
         &self,
@@ -279,26 +279,31 @@ impl FalAiClient {
         Ok(())
     }
 
-    // pub async fn retry(
-    //     &self,
-    //     mut response: ImageDomainList,
-    //     list_img: ImageDomainList,
-    // ) -> Result<ImageDomainList, FalAiClientError> {
-    //     if response.as_ref().len() != list_img.as_ref().len() {
-    //         let missing_images: Vec<ImageDomain> = list_img
-    //             .into_inner()
-    //             .iter()
-    //             .filter(|item| !response.as_ref().contains(item))
-    //             .cloned()
-    //             .collect();
-    //         let missing_images = ImageDomainList::new(missing_images);
+    pub async fn retry(
+        &self,
+        mut response: ImageNewList,
+        list_img: ImageNewList,
+    ) -> Result<ImageNewList, FalAiClientError> {
+        if response.as_ref().len() != list_img.as_ref().len() {
+            let missing_images: Vec<ImageNew> = list_img
+                .into_inner()
+                .iter()
+                .filter(|item| !response.as_ref().contains(item))
+                .cloned()
+                .collect();
+            let missing_images = ImageNewList::new(missing_images);
 
-    //         // second request
-    //         let second_try = self.send_image_queue_many(missing_images).await?;
-    //         response.extend(second_try);
-    //     }
-    //     return Ok(response);
-    // }
+            // second request
+            let second_try = self.send_image_queue_many(missing_images).await?;
+
+            // Extend response manually
+            let mut response_inner = response.into_inner();
+            response_inner.extend(second_try.into_inner());
+            response = ImageNewList::new(response_inner);
+        }
+
+        Ok(response)
+    }
 }
 
 // ========================
@@ -464,6 +469,19 @@ pub struct FluxLoraImageGenerate {
     pub enable_safety_checker: bool,
     pub output_format: ImageFormat,
 }
+impl From<ImageNew> for FluxLoraImageGenerate {
+    fn from(value: ImageNew) -> Self {
+        Self {
+            prompt: value.sys_prompt.into_inner(),
+            image_size: value.image_size,
+            num_inference_steps: value.num_inference_steps as u16,
+            guidance_scale: 1.0,
+            num_images: 1,
+            enable_safety_checker: true,
+            output_format: ImageFormat::Jpeg,
+        }
+    }
+}
 
 /// Represents the schema for training a Lora model.
 #[derive(Serialize, Deserialize, Debug)]
@@ -482,18 +500,3 @@ pub struct FluxQueueResponse {
     pub status_url: String,
     pub cancel_url: String,
 }
-//? Working ================================
-
-// impl From<ImageDomain> for FluxLoraImageGenerate {
-//     fn from(value: ImageDomain) -> Self {
-//         Self {
-//             prompt: value.sys_prompt.into_inner(),
-//             image_size: value.image_size,
-//             num_inference_steps: value.num_inference_steps as u16,
-//             guidance_scale: 1.0,
-//             num_images: 1,
-//             enable_safety_checker: true,
-//             output_format: ImageFormat::Jpeg,
-//         }
-//     }
-// }

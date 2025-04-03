@@ -176,6 +176,7 @@ exports.Prisma.ImagesScalarFieldEnum = {
   pid: 'pid',
   user_id: 'user_id',
   training_model_id: 'training_model_id',
+  pack_id: 'pack_id',
   user_prompt: 'user_prompt',
   sys_prompt: 'sys_prompt',
   num_inference_steps: 'num_inference_steps',
