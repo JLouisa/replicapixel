@@ -15,11 +15,15 @@ pub struct Model {
     pub pid: Uuid,
     pub user_id: i32,
     pub training_model_id: i32,
+    pub pack_id: Option<i32>,
     #[sea_orm(column_type = "Text")]
     pub user_prompt: String,
     #[sea_orm(column_type = "Text")]
     pub sys_prompt: String,
     pub num_inference_steps: i32,
+    pub content_type: ImageFormat,
+    pub status: Status,
+    pub image_size: ImageSize,
     pub fal_ai_request_id: Option<String>,
     pub width: Option<i32>,
     pub height: Option<i32>,
@@ -31,10 +35,6 @@ pub struct Model {
     pub deleted_at: Option<DateTimeWithTimeZone>,
     pub created_at: DateTimeWithTimeZone,
     pub updated_at: DateTimeWithTimeZone,
-    pub content_type: ImageFormat,
-    pub image_size: ImageSize,
-    pub pack_id: Option<i32>,
-    pub status: Status,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

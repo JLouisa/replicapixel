@@ -155,9 +155,22 @@ model Packs {
   @@index([pid], name: "idx-packs-pid")
 }
 
+enum Status {
+  Pending
+  Processing
+  Training
+  Completed
+  Failed
+  Cancelled
+
+  @@map("status")
+}
+
 enum Sex {
   Male
   Female
+
+  @@map("sex")
 }
 
 enum Ethnicity {
@@ -169,6 +182,8 @@ enum Ethnicity {
   SouthEastAsian
   SouthAsian
   MiddleEastern
+
+  @@map("ethnicity")
 }
 
 enum BasedOn {
@@ -183,6 +198,8 @@ enum EyeColor {
   Grey
   Hazel
   Red
+
+  @@map("eyeColor")
 }
 
 enum Emotion {
@@ -193,15 +210,8 @@ enum Emotion {
   Happy
   Sad
   Surprise
-}
 
-enum Status {
-  Pending
-  Processing
-  Training
-  Completed
-  Failed
-  Cancelled
+  @@map("emotion")
 }
 
 enum ImageSize {
@@ -211,10 +221,14 @@ enum ImageSize {
   Portrait169
   Landscape43
   Landscape169
+
+  @@map("imageSize")
 }
 
 enum ImageFormat {
   Png
   Jpeg
   Zip
+
+  @@map("imageFormat")
 }

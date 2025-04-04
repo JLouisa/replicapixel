@@ -215,3 +215,8 @@ pub enum ImageSize {
     #[serde(rename = "landscape_16_9")]
     Landscape169,
 }
+impl Default for ImageSize {
+    fn default() -> Self {
+        Self::Square
+    }
+}

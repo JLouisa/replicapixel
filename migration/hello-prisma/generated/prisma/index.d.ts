@@ -48,7 +48,19 @@ export type Packs = $Result.DefaultSelection<Prisma.$PacksPayload>
  * Enums
  */
 export namespace $Enums {
-  export const Sex: {
+  export const Status: {
+  Pending: 'Pending',
+  Processing: 'Processing',
+  Training: 'Training',
+  Completed: 'Completed',
+  Failed: 'Failed',
+  Cancelled: 'Cancelled'
+};
+
+export type Status = (typeof Status)[keyof typeof Status]
+
+
+export const Sex: {
   Male: 'Male',
   Female: 'Female'
 };
@@ -103,18 +115,6 @@ export const Emotion: {
 export type Emotion = (typeof Emotion)[keyof typeof Emotion]
 
 
-export const Status: {
-  Pending: 'Pending',
-  Processing: 'Processing',
-  Training: 'Training',
-  Completed: 'Completed',
-  Failed: 'Failed',
-  Cancelled: 'Cancelled'
-};
-
-export type Status = (typeof Status)[keyof typeof Status]
-
-
 export const ImageSize: {
   Square: 'Square',
   SquareHD: 'SquareHD',
@@ -137,6 +137,10 @@ export type ImageFormat = (typeof ImageFormat)[keyof typeof ImageFormat]
 
 }
 
+export type Status = $Enums.Status
+
+export const Status: typeof $Enums.Status
+
 export type Sex = $Enums.Sex
 
 export const Sex: typeof $Enums.Sex
@@ -156,10 +160,6 @@ export const EyeColor: typeof $Enums.EyeColor
 export type Emotion = $Enums.Emotion
 
 export const Emotion: typeof $Enums.Emotion
-
-export type Status = $Enums.Status
-
-export const Status: typeof $Enums.Status
 
 export type ImageSize = $Enums.ImageSize
 

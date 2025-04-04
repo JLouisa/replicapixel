@@ -162,6 +162,9 @@ pub async fn check_model(
 ) -> Result<Response> {
     let model = load_item(&ctx, id).await?;
 
+    dbg!(&status);
+    dbg!(&model.training_status);
+
     // Check if status matches
     if status == model.training_status {
         return Ok(StatusCode::NO_CONTENT.into_response());

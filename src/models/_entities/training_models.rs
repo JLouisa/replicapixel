@@ -13,36 +13,36 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
+    #[sea_orm(unique)]
+    pub pid: Uuid,
+    pub user_id: i32,
     pub name: String,
+    pub age: i32,
     pub sex: Sex,
     pub ethnicity: Ethnicity,
     #[sea_orm(column_name = "basedOn")]
     pub based_on: BasedOn,
+    pub eye_color: EyeColor,
     pub bald: bool,
     pub steps: i32,
-    #[sea_orm(column_type = "Text", nullable)]
-    pub thumbnail: Option<String>,
-    #[sea_orm(unique)]
-    pub pid: Uuid,
     pub create_mask: bool,
-    pub created_at: DateTimeWithTimeZone,
-    pub deleted_at: Option<DateTimeWithTimeZone>,
-    pub eye_color: EyeColor,
-    pub fal_ai_request_id: Option<String>,
-    #[sea_orm(column_type = "JsonBinary", nullable)]
-    pub fal_output: Option<Json>,
     pub is_style: bool,
-    pub is_verified: bool,
-    pub s3_key: String,
+    pub trigger_word: String,
     #[sea_orm(column_type = "Text", nullable)]
     pub tensor_path: Option<String>,
+    #[sea_orm(column_type = "Text", nullable)]
+    pub thumbnail: Option<String>,
+    pub training_status: Status,
+    #[sea_orm(column_type = "JsonBinary", nullable)]
+    pub fal_output: Option<Json>,
     #[sea_orm(column_type = "JsonBinary", nullable)]
     pub training_images: Option<Json>,
-    pub trigger_word: String,
+    pub fal_ai_request_id: Option<String>,
+    pub s3_key: String,
+    pub is_verified: bool,
+    pub deleted_at: Option<DateTimeWithTimeZone>,
+    pub created_at: DateTimeWithTimeZone,
     pub updated_at: DateTimeWithTimeZone,
-    pub user_id: i32,
-    pub age: i32,
-    pub training_status: Status,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
