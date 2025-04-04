@@ -63,10 +63,6 @@ COPY --from=builder /usr/src/target/x86_64-unknown-linux-musl/release/pictora-cl
 # Expose the Loco app port
 EXPOSE 3000
 
-# Healthcheck using wget
-HEALTHCHECK --interval=5s --timeout=3s --start-period=10s --retries=5 \
-  CMD wget --spider --quiet http://localhost:3000/health || exit 1
-
 # Set the entrypoint for the container
 ENTRYPOINT ["/usr/src/pictora"]
 CMD ["start", "-e", "production"]
