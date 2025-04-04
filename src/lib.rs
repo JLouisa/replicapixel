@@ -5,6 +5,7 @@ pub mod domain;
 pub mod initializers;
 pub mod mailers;
 pub mod models;
+pub mod service;
 pub mod tasks;
 pub mod views;
 pub mod workers;

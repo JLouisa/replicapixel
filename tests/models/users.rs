@@ -50,6 +50,7 @@ async fn can_create_with_password() {
         email: "test@framework.com".to_string(),
         password: "1234".to_string(),
         name: "framework".to_string(),
+        confirm_password: "1234".to_string(),
     };
 
     let res = Model::create_with_password(&boot.app_context.db, &params).await;
@@ -77,6 +78,7 @@ async fn handle_create_with_password_with_duplicate() {
         &RegisterParams {
             email: "user1@example.com".to_string(),
             password: "1234".to_string(),
+            confirm_password: "1234".to_string(),
             name: "framework".to_string(),
         },
     )

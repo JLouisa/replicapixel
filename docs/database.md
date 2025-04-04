@@ -37,9 +37,6 @@ cargo loco g migration AddFavoriteAndDeletedToImages is_favorite:bool! is_delete
 cargo loco g migration AddModel_amountToUser_credits model_amount:int!
 cargo loco g migration AddPack_idToImages packs:references
 
-// Todo:
-images: user_prompt:string! sys_prompt:string!
-
 ## Script:
 
 You can apply it:
@@ -48,4 +45,5 @@ $ cargo loco db migrate
 
 # Generate back entities (Rust code) from it:
 
+$ bunx prisma migrate dev --name AddPackIdToImages
 $ cargo loco db entities

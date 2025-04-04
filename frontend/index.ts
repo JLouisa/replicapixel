@@ -27,7 +27,7 @@ Alpine.store("createModelForm", {
   name: "",
   sex: "",
   age: 18,
-  type_model: "",
+  based_on: "",
   ethnicity: "",
   eye_color: "",
   creative: 1000,
@@ -43,7 +43,7 @@ Alpine.store("createModelForm", {
     this.name = "";
     this.sex = "";
     this.age = 18;
-    this.type_model = "";
+    this.based_on = "";
     this.ethnicity = "";
     this.eye_color = "";
     this.creative = 1000;
@@ -70,7 +70,7 @@ Alpine.store("createModelForm", {
       name: this.name,
       sex: this.sex,
       age: this.age ?? 18,
-      type_model: this.type_model,
+      based_on: this.based_on,
       ethnicity: this.ethnicity,
       eye_color: this.eye_color,
       creative: this.creative ?? 40,

@@ -66,7 +66,7 @@ model TrainingModels {
   is_verified        Boolean     @default(false)
   deleted_at         DateTime?   @db.Timestamptz
   created_at         DateTime    @default(now()) @db.Timestamptz
-  updated_at         DateTime    @db.Timestamptz
+  updated_at         DateTime    @default(now()) @db.Timestamptz
 
   user               Users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   Images             Images[]
@@ -83,7 +83,7 @@ model UserCredits {
   credit_amount   Int              @default(0)
   model_amount    Int              @default(0)
   created_at      DateTime         @default(now()) @db.Timestamptz
-  updated_at      DateTime         @db.Timestamptz
+  updated_at      DateTime         @default(now()) @db.Timestamptz
 
   user            Users   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
@@ -93,24 +93,26 @@ model Images {
   pid                  String    @unique @db.Uuid
   user_id              Int
   training_model_id    Int
+  pack_id              Int?
   user_prompt          String     
   sys_prompt           String     
   num_inference_steps  Int
   content_type         ImageFormat
   status               Status
   image_size           ImageSize 
-  fal_ai_request_id    String     @db.VarChar(255)
-  width                Int
-  height               Int
-  image_url            String     
-  image_url_s3         String     
-  is_favorite          Boolean
+  fal_ai_request_id    String?     @db.VarChar(255)
+  width                Int?
+  height               Int?
+  image_url            String?   
+  image_url_s3         String?  
+  is_favorite          Boolean    @default(true)
   deleted_at           DateTime?  @db.Timestamptz
   created_at           DateTime   @default(now()) @db.Timestamptz
-  updated_at           DateTime   @db.Timestamptz
+  updated_at           DateTime   @default(now()) @db.Timestamptz
 
   user                 Users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   training_model       TrainingModels @relation(fields: [training_model_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  pack                 Packs? @relation(fields: [pack_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@index([pid], name: "idx-images-pid")
   @@index([user_id], name: "idx-images-user_id")
@@ -130,7 +132,7 @@ model Transactions {
   plan                         String   @db.VarChar(255)
   status                       Status
   created_at                   DateTime @default(now()) @db.Timestamptz
-  updated_at                   DateTime @db.Timestamptz
+  updated_at                   DateTime @default(now()) @db.Timestamptz
 
   user                        Users    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
@@ -148,7 +150,9 @@ model Packs {
   amount        Int   
   image_url     String      
   created_at    DateTime    @default(now()) @db.Timestamptz
-  updated_at    DateTime    @db.Timestamptz
+  updated_at    DateTime    @default(now()) @db.Timestamptz
+  
+  Images             Images[]
 
   @@index([pid], name: "idx-packs-pid")
 }

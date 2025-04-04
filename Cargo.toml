@@ -43,11 +43,11 @@ include_dir = { version = "0.7" }
 fluent-templates = { version = "0.8.0", features = ["tera"] }
 unic-langid = { version = "0.9.4" }
 # /view engine
-axum-extra = { version = "0.10", features = ["form"] }
+axum-extra = { version = "0.10", features = ["typed-header","form"] }
 
 # Integrations
-# aws-config = { version = "1.1.7", features = ["behavior-version-latest"] }
-# aws-sdk-s3 = { version = "1.48.0", features = ["behavior-version-latest"] }
+aws-config = { version = "1.1.7", features = ["behavior-version-latest"] }
+aws-sdk-s3 = { version = "1.48.0", features = ["behavior-version-latest"] }
 # async-stripe = { version = "0.39.1", features = ["runtime-tokio-hyper"] }
 futures = "0.3.31"
 

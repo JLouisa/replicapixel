@@ -13,3 +13,5 @@ pub mod image;
 pub mod website;
 
 pub mod training_models;
+
+pub mod domain_services;
