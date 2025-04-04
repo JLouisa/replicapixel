@@ -46,6 +46,7 @@ pub mod routes {
 //     Ok(item)
 // }
 
+// #[debug_handler]
 // pub async fn fal_ai_image(
 //     State(ctx): State<AppContext>,
 //     // Extension(fal_ai_client): Extension<FalAiClient>,
@@ -80,6 +81,7 @@ pub mod routes {
 //     }
 // }
 
+// #[debug_handler]
 // pub async fn fal_ai_training(
 //     State(ctx): State<AppContext>,
 //     Extension(fal_ai_client): Extension<FalAiClient>,

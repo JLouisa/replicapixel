@@ -18,6 +18,7 @@ pub fn routes() -> Routes {
     Routes::new().add(routes::Home::BASE, get(render_home))
 }
 
+#[debug_handler]
 pub async fn render_home(ViewEngine(v): ViewEngine<TeraView>) -> Result<impl IntoResponse> {
     views::home::home(v)
 }

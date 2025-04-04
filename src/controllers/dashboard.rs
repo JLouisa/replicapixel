@@ -195,6 +195,7 @@ async fn load_item_all_completed(ctx: &AppContext, id: i32) -> Result<TrainingMo
     Ok(TrainingModelList::new(list))
 }
 
+#[debug_handler]
 pub async fn billing_dashboard(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
@@ -206,6 +207,7 @@ pub async fn billing_dashboard(
     views::dashboard::billing_dashboard(v, user.into(), sidebar_routes, &user_credits.into())
 }
 
+#[debug_handler]
 pub async fn billing_partial_dashboard(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
@@ -215,6 +217,7 @@ pub async fn billing_partial_dashboard(
     views::dashboard::billing_partial_dashboard(v, user.into())
 }
 
+#[debug_handler]
 pub async fn account_dashboard(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
@@ -226,6 +229,7 @@ pub async fn account_dashboard(
     views::dashboard::account_dashboard(v, user.into(), sidebar_routes, &user_credits.into())
 }
 
+#[debug_handler]
 pub async fn account_partial_dashboard(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
@@ -235,6 +239,7 @@ pub async fn account_partial_dashboard(
     views::dashboard::account_partial_dashboard(v, user.into())
 }
 
+#[debug_handler]
 pub async fn notification_dashboard(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
@@ -246,6 +251,7 @@ pub async fn notification_dashboard(
     views::dashboard::notification_dashboard(v, user.into(), sidebar_routes, &user_credits.into())
 }
 
+#[debug_handler]
 pub async fn notification_partial_dashboard(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
@@ -255,6 +261,7 @@ pub async fn notification_partial_dashboard(
     views::dashboard::notification_partial_dashboard(v, user.into())
 }
 
+#[debug_handler]
 pub async fn help_dashboard(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
@@ -266,6 +273,7 @@ pub async fn help_dashboard(
     views::dashboard::help_dashboard(v, user.into(), sidebar_routes, &user_credits.into())
 }
 
+#[debug_handler]
 pub async fn help_partial_dashboard(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
@@ -275,6 +283,7 @@ pub async fn help_partial_dashboard(
     views::dashboard::help_partial_dashboard(v, user.into())
 }
 
+#[debug_handler]
 pub async fn settings_dashboard(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
@@ -286,6 +295,7 @@ pub async fn settings_dashboard(
     views::dashboard::settings_dashboard(v, user.into(), sidebar_routes, &user_credits.into())
 }
 
+#[debug_handler]
 pub async fn settings_partial_dashboard(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
@@ -295,6 +305,7 @@ pub async fn settings_partial_dashboard(
     views::dashboard::settings_partial_dashboard(v, user.into())
 }
 
+#[debug_handler]
 pub async fn album_deleted_dashboard(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
@@ -321,6 +332,7 @@ pub async fn album_deleted_dashboard(
     )
 }
 
+#[debug_handler]
 pub async fn album_deleted_partial_dashboard(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
@@ -345,6 +357,7 @@ pub async fn album_deleted_partial_dashboard(
     )
 }
 
+#[debug_handler]
 pub async fn album_favorite_dashboard(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
@@ -371,6 +384,7 @@ pub async fn album_favorite_dashboard(
     )
 }
 
+#[debug_handler]
 pub async fn album_favorite_partial_dashboard(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
@@ -395,6 +409,7 @@ pub async fn album_favorite_partial_dashboard(
     )
 }
 
+#[debug_handler]
 pub async fn photo_dashboard(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
@@ -421,6 +436,7 @@ pub async fn photo_dashboard(
     )
 }
 
+#[debug_handler]
 pub async fn photo_partial_dashboard(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
@@ -445,6 +461,7 @@ pub async fn photo_partial_dashboard(
     )
 }
 
+#[debug_handler]
 pub async fn training_dashboard(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
@@ -469,6 +486,7 @@ pub async fn training_dashboard(
     )
 }
 
+#[debug_handler]
 pub async fn training_partial_dashboard(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
@@ -490,6 +508,7 @@ pub async fn training_partial_dashboard(
     )
 }
 
+#[debug_handler]
 pub async fn packs_dashboard(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
@@ -508,6 +527,7 @@ pub async fn packs_dashboard(
     )
 }
 
+#[debug_handler]
 pub async fn packs_partial_dashboard(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
