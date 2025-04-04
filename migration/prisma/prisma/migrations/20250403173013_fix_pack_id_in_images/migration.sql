@@ -1,8 +1,0 @@
--- AlterTable
-ALTER TABLE "Images" ALTER COLUMN "fal_ai_request_id" DROP NOT NULL,
-ALTER COLUMN "width" DROP NOT NULL,
-ALTER COLUMN "height" DROP NOT NULL,
-ALTER COLUMN "image_url" DROP NOT NULL,
-ALTER COLUMN "image_url_s3" DROP NOT NULL,
-ALTER COLUMN "is_favorite" SET DEFAULT true,
-ALTER COLUMN "pack_id" DROP NOT NULL;

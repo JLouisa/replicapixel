@@ -1,4 +1,4 @@
-# prisma
+# hello-prisma
 
 To install dependencies:
 
