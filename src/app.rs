@@ -57,6 +57,7 @@ impl Hooks for App {
             .add_route(controllers::auth::routes())
             .add_route(controllers::home::routes())
             .add_route(controllers::dashboard::routes())
+            .add_route(controllers::training_models::routes())
         // .add_route(controllers::webhooks::routes())
     }
     async fn connect_workers(ctx: &AppContext, queue: &Queue) -> Result<()> {

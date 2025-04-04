@@ -50,12 +50,12 @@ RUN apt-get update && apt-get install -y curl
 FROM debian:bookworm-slim AS runtime
 WORKDIR /usr/src
 
+# Install wget for healthchecks (lighter than curl)
+RUN apt-get update && apt-get install -y --no-install-recommends wget && rm -rf /var/lib/apt/lists/*
+
 # Copy required assets and configuration from the builder stage
-# These paths depend on the `COPY . .` putting them in /usr/src/ in the builder
 COPY --from=builder /usr/src/assets assets
 COPY --from=builder /usr/src/config config
-# Make sure the frontend build output (e.g., static files) is part of 'assets'
-# or copy it separately if needed. For Loco, assets usually contain static files.
 
 # Copy the statically linked application binary from the builder stage
 COPY --from=builder /usr/src/target/x86_64-unknown-linux-musl/release/pictora-cli /usr/src/pictora
@@ -63,6 +63,11 @@ COPY --from=builder /usr/src/target/x86_64-unknown-linux-musl/release/pictora-cl
 # Expose the Loco app port
 EXPOSE 3000
 
+# Healthcheck using wget
+HEALTHCHECK --interval=5s --timeout=3s --start-period=10s --retries=5 \
+  CMD wget --spider --quiet http://localhost:3000/health || exit 1
+
 # Set the entrypoint for the container
 ENTRYPOINT ["/usr/src/pictora"]
 CMD ["start", "-e", "production"]
+

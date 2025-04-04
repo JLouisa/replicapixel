@@ -5,6 +5,7 @@ use crate::controllers::training_models as TrainingRoutes;
 use crate::domain::dashboard_sidebar::DashboardSidebar;
 use crate::domain::website::Website;
 use crate::domain::{image::Image, packs::Packs};
+use crate::models::_entities::sea_orm_active_enums::Status;
 use crate::models::_entities::users;
 use crate::models::training_models::TrainingModelList;
 use crate::models::{
@@ -18,6 +19,7 @@ use axum::{
     http::{HeaderMap, StatusCode},
     response::{IntoResponse, Redirect, Response},
 };
+use loco_rs::controller::ErrorDetail;
 use loco_rs::prelude::*;
 
 pub mod routes {
@@ -180,11 +182,21 @@ async fn load_user(db: &DatabaseConnection, pid: &str) -> Result<UserModel> {
 }
 async fn load_item(db: &DatabaseConnection, id: i32) -> Result<TrainingModelModel> {
     let item = TrainingModelEntity::find_by_id(id).one(db).await?;
-    item.ok_or_else(|| Error::NotFound)
+    item.ok_or_else(|| {
+        Error::CustomError(
+            StatusCode::NOT_FOUND,
+            ErrorDetail::new("Training model not found", "Training model was not found"),
+        )
+    })
 }
 async fn load_user_credits(db: &DatabaseConnection, id: i32) -> Result<UserCreditModel> {
     let item = UserCreditEntity::find_by_id(id).one(db).await?;
-    item.ok_or_else(|| Error::NotFound)
+    item.ok_or_else(|| {
+        Error::CustomError(
+            StatusCode::NOT_FOUND,
+            ErrorDetail::new("UserCredits not found", "UserCredits was not found"),
+        )
+    })
 }
 async fn load_item_all(db: &DatabaseConnection, id: i32) -> Result<TrainingModelList> {
     let list = TrainingModelModel::find_all_by_user_id(db, id).await?;
