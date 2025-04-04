@@ -2,6 +2,7 @@
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
 use crate::views;
+use axum::debug_handler;
 use loco_rs::prelude::*;
 
 pub mod routes {
