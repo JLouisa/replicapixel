@@ -58,7 +58,7 @@ model TrainingModels {
   trigger_word       String      @db.VarChar(255)
   tensor_path        String?     
   thumbnail          String?     
-  training_status    Status
+  training_status    Status     
   fal_output         Json?
   training_images    Json?
   fal_ai_request_id  String?     @db.VarChar(255)
@@ -158,9 +158,22 @@ model Packs {
 }
 
 
+enum Status {
+    Pending
+    Processing
+    Training
+    Completed
+    Failed
+    Cancelled
+
+    @@map("status")
+}
+
 enum Sex {
   Male
   Female
+
+    @@map("sex")
 }
 
 enum Ethnicity {
@@ -172,11 +185,15 @@ enum Ethnicity {
   SouthEastAsian
   SouthAsian
   MiddleEastern
+
+    @@map("ethnicity")
 }
 
 enum BasedOn {
   RealPerson
   CreateInfluencerAI
+
+    @@map("basedOn")
 }
 
 enum EyeColor {
@@ -186,6 +203,8 @@ enum EyeColor {
   Grey
   Hazel
   Red
+
+    @@map("eyeColor")
 }
 
 enum Emotion {
@@ -196,16 +215,10 @@ enum Emotion {
     Happy
     Sad
     Surprise
+
+    @@map("emotion")
 }
 
-enum Status {
-    Pending
-    Processing
-    Training
-    Completed
-    Failed
-    Cancelled
-}
 
 enum ImageSize {
     Square
@@ -214,10 +227,14 @@ enum ImageSize {
     Portrait169
     Landscape43
     Landscape169
+
+    @@map("imageSize")
 }
 
 enum ImageFormat {
     Png
     Jpeg
     Zip
+
+    @@map("imageFormat")
 }

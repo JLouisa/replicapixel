@@ -273,10 +273,10 @@ pub fn photo_dashboard(
     format::render().view(
         &v,
         "dashboard/content/photo/photo.html",
-        data!({"sidebar": &website.dashboard_sidebar, "user": user,
+        data!({"sidebar": &website.dashboard_sidebar,
             "sidebar_routes": &website.sidebar_routes,
-            "credits": credits, "images": images, "training_models": training_models,
-            "website": website
+            "user": user, "images": images, "training_models": training_models,
+            "website": website, "credits": credits,
         }),
     )
 }
@@ -287,14 +287,14 @@ pub fn photo_partial_dashboard(
     images: &Vec<Image>, // replace with &Vec<ImageViewModel>
     training_models: Vec<TrainingModelView>,
     website: &Website,
-    user_credits: &UserCreditsView,
+    credits: &UserCreditsView,
 ) -> Result<impl IntoResponse> {
     let sidebar = DashboardSidebar::init();
     format::render().view(
         &v,
         "dashboard/content/photo/photo_partial.html",
-        data!({"user": user,"credits": "1000", "images": images, "training_models": training_models,
-        "website": website, "credits": user_credits
+        data!({"user": user, "images": images, "training_models": training_models,
+        "website": website, "credits": credits
         }),
     )
 }

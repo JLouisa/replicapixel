@@ -194,10 +194,6 @@ async fn load_item_all_completed(ctx: &AppContext, id: i32) -> Result<TrainingMo
     let list = TrainingModelModel::find_all_completed_by_user_id(&ctx.db, id).await?;
     Ok(TrainingModelList::new(list))
 }
-// async fn load_all_training_models_all(ctx: &AppContext, id: i32) -> Result<TrainingModelList> {
-//     let list = TrainingModelModel::find_all_by_user_id(&ctx.db, id).await?;
-//     Ok(TrainingModelList::new(list))
-// }
 
 pub async fn billing_dashboard(
     auth: auth::JWT,
@@ -436,8 +432,8 @@ pub async fn photo_partial_dashboard(
 
     //Todo Get Images from database
     let images = Image::get_mock_images(true);
-
     let images = images.into_iter().filter(|i| !i.is_deleted).collect();
+
     let website = Website::init();
     views::dashboard::photo_partial_dashboard(
         v,

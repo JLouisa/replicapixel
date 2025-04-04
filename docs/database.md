@@ -45,5 +45,5 @@ $ cargo loco db migrate
 
 # Generate back entities (Rust code) from it:
 
-$ bunx prisma migrate dev --name AddPackIdToImages
+$ bunx prisma migrate dev --name FixEnumTypeMappingRest
 $ cargo loco db entities

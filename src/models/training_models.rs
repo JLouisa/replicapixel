@@ -217,7 +217,7 @@ impl Model {
     ) -> ModelResult<Vec<Model>> {
         let training = training_models::Entity::find()
             .filter(training_models::Column::UserId.eq(user_id))
-            .filter(training_models::Column::TrainingStatus.eq(Status::Completed))
+            .filter(training_models::Column::TrainingStatus.eq(Status::Completed)) //? Bugged. Map lowercase in Prisma to fix
             .order_by_desc(training_models::Column::CreatedAt)
             .all(db)
             .await?;

@@ -41,8 +41,8 @@ pub struct Model {
     pub trigger_word: String,
     pub updated_at: DateTimeWithTimeZone,
     pub user_id: i32,
-    pub training_status: Status,
     pub age: i32,
+    pub training_status: Status,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

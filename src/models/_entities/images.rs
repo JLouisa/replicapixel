@@ -20,7 +20,6 @@ pub struct Model {
     #[sea_orm(column_type = "Text")]
     pub sys_prompt: String,
     pub num_inference_steps: i32,
-    pub status: Status,
     pub fal_ai_request_id: Option<String>,
     pub width: Option<i32>,
     pub height: Option<i32>,
@@ -35,6 +34,7 @@ pub struct Model {
     pub content_type: ImageFormat,
     pub image_size: ImageSize,
     pub pack_id: Option<i32>,
+    pub status: Status,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
