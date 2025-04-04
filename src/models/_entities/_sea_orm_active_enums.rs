@@ -32,6 +32,11 @@ pub enum Status {
     #[sea_orm(string_value = "Cancelled")]
     Cancelled,
 }
+impl Default for Status {
+    fn default() -> Self {
+        Status::Pending
+    }
+}
 
 #[derive(
     Serialize, Deserialize, Debug, Clone, Copy, EnumIter, Display, DeriveActiveEnum, PartialEq, Eq,
@@ -48,12 +53,6 @@ pub enum ImageFormat {
     #[strum(to_string = "zip")]
     #[sea_orm(string_value = "zip")]
     Zip,
-}
-
-impl Default for Status {
-    fn default() -> Self {
-        Status::Pending
-    }
 }
 
 #[derive(

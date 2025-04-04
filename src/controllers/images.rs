@@ -10,7 +10,6 @@ use crate::models::_entities::sea_orm_active_enums::{
 use crate::models::_entities::training_models;
 use crate::models::images::{ImageNew, ImageNewList, UserPrompt};
 use crate::models::user_credits::UserCreditsClient;
-use crate::models::users::User;
 use crate::models::{ImageModel, TrainingModelModel, UserCreditModel, UserModel};
 use crate::views::images::{CreditsViewModel, ImageViewModel};
 use crate::{

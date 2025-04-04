@@ -10248,7 +10248,7 @@ export namespace Prisma {
     is_verified?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
-    updated_at: Date | string
+    updated_at?: Date | string
     user: UsersCreateNestedOneWithoutTrainingModelsInput
     Images?: ImagesCreateNestedManyWithoutTraining_modelInput
   }
@@ -10278,7 +10278,7 @@ export namespace Prisma {
     is_verified?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
-    updated_at: Date | string
+    updated_at?: Date | string
     Images?: ImagesUncheckedCreateNestedManyWithoutTraining_modelInput
   }
 
@@ -10364,7 +10364,7 @@ export namespace Prisma {
     is_verified?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
-    updated_at: Date | string
+    updated_at?: Date | string
   }
 
   export type TrainingModelsUpdateManyMutationInput = {
@@ -10426,7 +10426,7 @@ export namespace Prisma {
     credit_amount?: number
     model_amount?: number
     created_at?: Date | string
-    updated_at: Date | string
+    updated_at?: Date | string
     user: UsersCreateNestedOneWithoutUserCreditsInput
   }
 
@@ -10437,7 +10437,7 @@ export namespace Prisma {
     credit_amount?: number
     model_amount?: number
     created_at?: Date | string
-    updated_at: Date | string
+    updated_at?: Date | string
   }
 
   export type UserCreditsUpdateInput = {
@@ -10466,7 +10466,7 @@ export namespace Prisma {
     credit_amount?: number
     model_amount?: number
     created_at?: Date | string
-    updated_at: Date | string
+    updated_at?: Date | string
   }
 
   export type UserCreditsUpdateManyMutationInput = {
@@ -10503,7 +10503,7 @@ export namespace Prisma {
     is_favorite?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
-    updated_at: Date | string
+    updated_at?: Date | string
     user: UsersCreateNestedOneWithoutImagesInput
     training_model: TrainingModelsCreateNestedOneWithoutImagesInput
     pack?: PacksCreateNestedOneWithoutImagesInput
@@ -10529,7 +10529,7 @@ export namespace Prisma {
     is_favorite?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
-    updated_at: Date | string
+    updated_at?: Date | string
   }
 
   export type ImagesUpdateInput = {
@@ -10597,7 +10597,7 @@ export namespace Prisma {
     is_favorite?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
-    updated_at: Date | string
+    updated_at?: Date | string
   }
 
   export type ImagesUpdateManyMutationInput = {
@@ -10652,7 +10652,7 @@ export namespace Prisma {
     plan: string
     status: $Enums.Status
     created_at?: Date | string
-    updated_at: Date | string
+    updated_at?: Date | string
     user: UsersCreateNestedOneWithoutTransactionsInput
   }
 
@@ -10668,7 +10668,7 @@ export namespace Prisma {
     plan: string
     status: $Enums.Status
     created_at?: Date | string
-    updated_at: Date | string
+    updated_at?: Date | string
   }
 
   export type TransactionsUpdateInput = {
@@ -10712,7 +10712,7 @@ export namespace Prisma {
     plan: string
     status: $Enums.Status
     created_at?: Date | string
-    updated_at: Date | string
+    updated_at?: Date | string
   }
 
   export type TransactionsUpdateManyMutationInput = {
@@ -10752,7 +10752,7 @@ export namespace Prisma {
     amount: number
     image_url: string
     created_at?: Date | string
-    updated_at: Date | string
+    updated_at?: Date | string
     Images?: ImagesCreateNestedManyWithoutPackInput
   }
 
@@ -10766,7 +10766,7 @@ export namespace Prisma {
     amount: number
     image_url: string
     created_at?: Date | string
-    updated_at: Date | string
+    updated_at?: Date | string
     Images?: ImagesUncheckedCreateNestedManyWithoutPackInput
   }
 
@@ -10807,7 +10807,7 @@ export namespace Prisma {
     amount: number
     image_url: string
     created_at?: Date | string
-    updated_at: Date | string
+    updated_at?: Date | string
   }
 
   export type PacksUpdateManyMutationInput = {
@@ -12459,7 +12459,7 @@ export namespace Prisma {
     is_verified?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
-    updated_at: Date | string
+    updated_at?: Date | string
     Images?: ImagesCreateNestedManyWithoutTraining_modelInput
   }
 
@@ -12487,7 +12487,7 @@ export namespace Prisma {
     is_verified?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
-    updated_at: Date | string
+    updated_at?: Date | string
     Images?: ImagesUncheckedCreateNestedManyWithoutTraining_modelInput
   }
 
@@ -12506,7 +12506,7 @@ export namespace Prisma {
     credit_amount?: number
     model_amount?: number
     created_at?: Date | string
-    updated_at: Date | string
+    updated_at?: Date | string
   }
 
   export type UserCreditsUncheckedCreateWithoutUserInput = {
@@ -12515,7 +12515,7 @@ export namespace Prisma {
     credit_amount?: number
     model_amount?: number
     created_at?: Date | string
-    updated_at: Date | string
+    updated_at?: Date | string
   }
 
   export type UserCreditsCreateOrConnectWithoutUserInput = {
@@ -12544,7 +12544,7 @@ export namespace Prisma {
     is_favorite?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
-    updated_at: Date | string
+    updated_at?: Date | string
     training_model: TrainingModelsCreateNestedOneWithoutImagesInput
     pack?: PacksCreateNestedOneWithoutImagesInput
   }
@@ -12568,7 +12568,7 @@ export namespace Prisma {
     is_favorite?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
-    updated_at: Date | string
+    updated_at?: Date | string
   }
 
   export type ImagesCreateOrConnectWithoutUserInput = {
@@ -12591,7 +12591,7 @@ export namespace Prisma {
     plan: string
     status: $Enums.Status
     created_at?: Date | string
-    updated_at: Date | string
+    updated_at?: Date | string
   }
 
   export type TransactionsUncheckedCreateWithoutUserInput = {
@@ -12605,7 +12605,7 @@ export namespace Prisma {
     plan: string
     status: $Enums.Status
     created_at?: Date | string
-    updated_at: Date | string
+    updated_at?: Date | string
   }
 
   export type TransactionsCreateOrConnectWithoutUserInput = {
@@ -12828,7 +12828,7 @@ export namespace Prisma {
     is_favorite?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
-    updated_at: Date | string
+    updated_at?: Date | string
     user: UsersCreateNestedOneWithoutImagesInput
     pack?: PacksCreateNestedOneWithoutImagesInput
   }
@@ -12852,7 +12852,7 @@ export namespace Prisma {
     is_favorite?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
-    updated_at: Date | string
+    updated_at?: Date | string
   }
 
   export type ImagesCreateOrConnectWithoutTraining_modelInput = {
@@ -13084,7 +13084,7 @@ export namespace Prisma {
     is_verified?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
-    updated_at: Date | string
+    updated_at?: Date | string
     user: UsersCreateNestedOneWithoutTrainingModelsInput
   }
 
@@ -13113,7 +13113,7 @@ export namespace Prisma {
     is_verified?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
-    updated_at: Date | string
+    updated_at?: Date | string
   }
 
   export type TrainingModelsCreateOrConnectWithoutImagesInput = {
@@ -13130,7 +13130,7 @@ export namespace Prisma {
     amount: number
     image_url: string
     created_at?: Date | string
-    updated_at: Date | string
+    updated_at?: Date | string
   }
 
   export type PacksUncheckedCreateWithoutImagesInput = {
@@ -13143,7 +13143,7 @@ export namespace Prisma {
     amount: number
     image_url: string
     created_at?: Date | string
-    updated_at: Date | string
+    updated_at?: Date | string
   }
 
   export type PacksCreateOrConnectWithoutImagesInput = {
@@ -13407,7 +13407,7 @@ export namespace Prisma {
     is_favorite?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
-    updated_at: Date | string
+    updated_at?: Date | string
     user: UsersCreateNestedOneWithoutImagesInput
     training_model: TrainingModelsCreateNestedOneWithoutImagesInput
   }
@@ -13431,7 +13431,7 @@ export namespace Prisma {
     is_favorite?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
-    updated_at: Date | string
+    updated_at?: Date | string
   }
 
   export type ImagesCreateOrConnectWithoutPackInput = {
@@ -13484,7 +13484,7 @@ export namespace Prisma {
     is_verified?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
-    updated_at: Date | string
+    updated_at?: Date | string
   }
 
   export type UserCreditsCreateManyUserInput = {
@@ -13493,7 +13493,7 @@ export namespace Prisma {
     credit_amount?: number
     model_amount?: number
     created_at?: Date | string
-    updated_at: Date | string
+    updated_at?: Date | string
   }
 
   export type ImagesCreateManyUserInput = {
@@ -13515,7 +13515,7 @@ export namespace Prisma {
     is_favorite?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
-    updated_at: Date | string
+    updated_at?: Date | string
   }
 
   export type TransactionsCreateManyUserInput = {
@@ -13529,7 +13529,7 @@ export namespace Prisma {
     plan: string
     status: $Enums.Status
     created_at?: Date | string
-    updated_at: Date | string
+    updated_at?: Date | string
   }
 
   export type TrainingModelsUpdateWithoutUserInput = {
@@ -13765,7 +13765,7 @@ export namespace Prisma {
     is_favorite?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
-    updated_at: Date | string
+    updated_at?: Date | string
   }
 
   export type ImagesUpdateWithoutTraining_modelInput = {
@@ -13852,7 +13852,7 @@ export namespace Prisma {
     is_favorite?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
-    updated_at: Date | string
+    updated_at?: Date | string
   }
 
   export type ImagesUpdateWithoutPackInput = {

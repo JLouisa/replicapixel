@@ -66,7 +66,7 @@ model TrainingModels {
   is_verified        Boolean     @default(false)
   deleted_at         DateTime?   @db.Timestamptz
   created_at         DateTime    @default(now()) @db.Timestamptz
-  updated_at         DateTime    @db.Timestamptz
+  updated_at         DateTime    @default(now()) @db.Timestamptz
 
   user               Users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   Images             Images[]
@@ -83,7 +83,7 @@ model UserCredits {
   credit_amount   Int              @default(0)
   model_amount    Int              @default(0)
   created_at      DateTime         @default(now()) @db.Timestamptz
-  updated_at      DateTime         @db.Timestamptz
+  updated_at      DateTime         @default(now()) @db.Timestamptz
 
   user            Users   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
@@ -108,7 +108,7 @@ model Images {
   is_favorite          Boolean    @default(true)
   deleted_at           DateTime?  @db.Timestamptz
   created_at           DateTime   @default(now()) @db.Timestamptz
-  updated_at           DateTime   @db.Timestamptz
+  updated_at           DateTime   @default(now()) @db.Timestamptz
 
   user                 Users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   training_model       TrainingModels @relation(fields: [training_model_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -132,7 +132,7 @@ model Transactions {
   plan                         String   @db.VarChar(255)
   status                       Status
   created_at                   DateTime @default(now()) @db.Timestamptz
-  updated_at                   DateTime @db.Timestamptz
+  updated_at                   DateTime @default(now()) @db.Timestamptz
 
   user                        Users    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
@@ -150,7 +150,7 @@ model Packs {
   amount        Int   
   image_url     String      
   created_at    DateTime    @default(now()) @db.Timestamptz
-  updated_at    DateTime    @db.Timestamptz
+  updated_at    DateTime    @default(now()) @db.Timestamptz
   
   Images             Images[]
 

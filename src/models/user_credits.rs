@@ -1,7 +1,7 @@
 pub use super::_entities::user_credits::{ActiveModel, Entity, Model};
 use sea_orm::entity::prelude::*;
 pub type UserCredits = Entity;
-use super::{_entities::user_credits, users::User};
+use super::{UserModel, _entities::user_credits};
 use loco_rs::{auth::jwt, hash, prelude::*};
 use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
@@ -83,7 +83,7 @@ impl UserCreditsClient {
         let item = Entity::find_by_id(self.id).one(&ctx.db).await?;
         item.ok_or_else(|| Error::NotFound).map(|item| item.into())
     }
-    pub async fn load_item_by_user_id(ctx: &AppContext, user: &User) -> Result<Model> {
+    pub async fn load_item_by_user_id(ctx: &AppContext, user: &UserModel) -> Result<Model> {
         let item = Model::find_by_user_id(&ctx.db, user.id).await?;
         Ok(item)
     }

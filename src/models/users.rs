@@ -3,10 +3,12 @@ use chrono::{offset::Local, Duration};
 use loco_rs::{auth::jwt, hash, prelude::*};
 use serde::{Deserialize, Serialize};
 use serde_json::Map;
+use unicode_segmentation::UnicodeSegmentation;
 use uuid::Uuid;
+use validator::ValidateEmail;
 
-use super::UserModel;
 pub use super::_entities::users::{self, ActiveModel, Entity, Model};
+use super::{user_credits::UserCreditsInit, UserCreditActiveModel, UserModel};
 
 pub const MAGIC_LINK_LENGTH: i8 = 32;
 pub const MAGIC_LINK_EXPIRATION_MIN: i8 = 5;
@@ -15,13 +17,126 @@ pub const MAGIC_LINK_EXPIRATION_MIN: i8 = 5;
 pub struct LoginParams {
     pub email: String,
     pub password: String,
+    pub remember: bool,
 }
-
 #[derive(Debug, Deserialize, Serialize)]
 pub struct RegisterParams {
+    pub name: String,
     pub email: String,
     pub password: String,
-    pub name: String,
+    pub confirm_password: String,
+}
+impl RegisterParams {
+    pub fn validate_email(&self) -> Vec<String> {
+        let mut validate = Vec::new();
+
+        // Trim the email
+        let email = self.email.trim();
+
+        // Check if the email is empty or whitespace
+        if email.is_empty() {
+            validate.push(String::from("Email cannot be empty"));
+        }
+
+        // Check if the email is too long
+        if email.len() > 256 {
+            validate.push(String::from("Email is too long"));
+        }
+
+        // Check if the email is valid
+        if !ValidateEmail::validate_email(&email) {
+            validate.push(String::from("Email is invalid"));
+        }
+
+        validate
+    }
+
+    pub fn validate_name(&self) -> Vec<String> {
+        let mut validate = Vec::new();
+
+        // Trim the name and check if it is empty or consists only of whitespace
+        let trimmed_name = self.name.trim();
+        if trimmed_name.is_empty() {
+            validate.push(String::from("Name cannot be empty"));
+        }
+
+        // Check if the name is too short (less than 2 graphemes)
+        let grapheme_count = trimmed_name.graphemes(true).count();
+        if grapheme_count < 2 {
+            validate.push(String::from("Name must be at least 2 characters long"));
+        }
+
+        // Check if the name is too long (more than 256 graphemes)
+        if grapheme_count > 256 {
+            validate.push(String::from("Name cannot be longer than 256 characters"));
+        }
+
+        // Check if the name contains any forbidden characters
+        let forbidden_characters = ['/', '(', ')', '"', '<', '>', '\\', '{', '}'];
+        if trimmed_name
+            .chars()
+            .any(|c| forbidden_characters.contains(&c))
+        {
+            validate.push(String::from("Name cannot contain any special characters"));
+        }
+
+        validate
+    }
+
+    pub fn validate_password(&self) -> Vec<String> {
+        let mut validate = Vec::new();
+
+        // Trim the password and check if it is empty or consists only of whitespace
+        let trimmed_password = self.password.clone(); //-->  do no trim
+        if trimmed_password.is_empty() {
+            validate.push(String::from("Password cannot be empty"));
+        }
+
+        // Check if the password is too short or too long
+        let password_length = trimmed_password.len();
+        if password_length < 8 {
+            validate.push(String::from("Password must be at least 8 characters long"));
+        }
+        if password_length > 30 {
+            validate.push(String::from("Password cannot be longer than 30 characters"));
+        }
+
+        // let has_uppercase = trimmed_password.chars().any(|c| c.is_ascii_uppercase());
+        // let has_lowercase = trimmed_password.chars().any(|c| c.is_ascii_lowercase());
+        // let has_digit = trimmed_password.chars().any(|c| c.is_ascii_digit());
+        // let has_special = trimmed_password.chars().any(|c| !c.is_ascii_alphanumeric());
+
+        // if !has_uppercase {
+        //     validate.push(String::from(
+        //         "Password must contain at least one uppercase letter",
+        //     ));
+        // }
+        // if !has_lowercase {
+        //     validate.push(String::from(
+        //         "Password must contain at least one lowercase letter",
+        //     ));
+        // }
+        // if !has_digit {
+        //     validate.push(String::from("Password must contain at least one digit"));
+        // }
+        // if !has_special {
+        //     validate.push(String::from(
+        //         "Password must contain at least one special character",
+        //     ));
+        // }
+
+        validate
+    }
+    pub fn validate_password_confirm(&self) -> Vec<String> {
+        let mut validate = Vec::new();
+
+        let compare = self.password == self.confirm_password;
+        if !compare {
+            validate.push(String::from("Passwords do not match"));
+        }
+
+        validate
+    }
 }
 
 #[derive(Debug, Serialize)]
@@ -32,8 +147,8 @@ pub struct User {
     pub email: String,
 }
 impl User {
-    pub async fn load_user(db: &DatabaseConnection, pid: &str) -> ModelResult<Self> {
-        let user_model = UserModel::find_by_pid(db, pid).await?;
+    pub async fn load_user(db: &DatabaseConnection, pid: &Uuid) -> ModelResult<Self> {
+        let user_model = UserModel::find_by_pid(db, &pid.to_string()).await?;
         let user = Self {
             id: user_model.id,
             pid: user_model.pid,
@@ -41,6 +156,41 @@ impl User {
             email: user_model.email,
         };
         Ok(user)
+    }
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct RegisterError {
+    pub passed: bool,
+    pub name: Vec<String>,
+    pub email: Vec<String>,
+    pub password: Vec<String>,
+    pub password_confirm: Vec<String>,
+    pub global: Vec<String>,
+}
+impl RegisterError {
+    pub fn validate(register: &RegisterParams) -> Self {
+        // Validate name, email, and password
+        let name = register.validate_name();
+        let email = register.validate_email();
+        let password = register.validate_password();
+        let password_confirm = register.validate_password_confirm();
+
+        // Check if all validations passed (no errors in any field)
+        let passed = name.is_empty()
+            && email.is_empty()
+            && password.is_empty()
+            && password_confirm.is_empty();
+
+        // Create and return the RegisterError struct
+        Self {
+            passed,
+            name,
+            email,
+            password,
+            password_confirm,
+            global: Vec::new(),
+        }
     }
 }
 
@@ -265,6 +415,19 @@ impl Model {
             email: ActiveValue::set(params.email.to_string()),
             password: ActiveValue::set(password_hash),
             name: ActiveValue::set(params.name.to_string()),
+            ..Default::default()
+        }
+        .insert(&txn)
+        .await?;
+
+        dbg!(&user);
+
+        let user_credits_init = UserCreditsInit::default();
+        let user_credits = UserCreditActiveModel {
+            pid: ActiveValue::set(user_credits_init.pid),
+            user_id: ActiveValue::set(user.id),
+            model_amount: ActiveValue::set(user_credits_init.model_amount),
+            credit_amount: ActiveValue::set(user_credits_init.credit_amount),
             ..Default::default()
         }
         .insert(&txn)

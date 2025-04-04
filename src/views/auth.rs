@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::models::_entities::users;
+use crate::models::{UserCreditModel, UserModel, _entities::users};
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct LoginResponse {
@@ -12,7 +12,7 @@ pub struct LoginResponse {
 
 impl LoginResponse {
     #[must_use]
-    pub fn new(user: &users::Model, token: &String) -> Self {
+    pub fn new(user: &UserModel, token: &String) -> Self {
         Self {
             token: token.to_string(),
             pid: user.pid.to_string(),
@@ -31,11 +31,62 @@ pub struct CurrentResponse {
 
 impl CurrentResponse {
     #[must_use]
-    pub fn new(user: &users::Model) -> Self {
+    pub fn new(user: &UserModel) -> Self {
         Self {
             pid: user.pid.to_string(),
             name: user.name.clone(),
             email: user.email.clone(),
+        }
+    }
+}
+
+// ============== View Models for the View Templates ==============
+#[derive(Serialize)]
+pub struct UserView {
+    pub id: i32,
+    pub pid: String,
+    pub name: String,
+    pub email: String,
+}
+impl From<&UserModel> for UserView {
+    fn from(model: &UserModel) -> Self {
+        Self {
+            id: model.id,
+            pid: model.pid.to_string(),
+            name: model.name.clone(),
+            email: model.email.clone(),
+        }
+    }
+}
+impl From<UserModel> for UserView {
+    fn from(model: UserModel) -> Self {
+        Self {
+            id: model.id,
+            pid: model.pid.to_string(),
+            name: model.name,
+            email: model.email,
+        }
+    }
+}
+
+#[derive(Serialize)]
+pub struct UserCreditsView {
+    pub credit_amount: i32,
+    pub model_amount: i32,
+}
+impl From<&UserCreditModel> for UserCreditsView {
+    fn from(model: &UserCreditModel) -> Self {
+        Self {
+            credit_amount: model.credit_amount,
+            model_amount: model.model_amount,
+        }
+    }
+}
+impl From<UserCreditModel> for UserCreditsView {
+    fn from(model: UserCreditModel) -> Self {
+        Self {
+            credit_amount: model.credit_amount,
+            model_amount: model.model_amount,
         }
     }
 }

@@ -6,11 +6,12 @@ use super::{
         training_models,
     },
 };
+use derive_more::{AsRef, Constructor};
 use sea_orm::{entity::prelude::*, QueryOrder};
 use serde::{Deserialize, Serialize};
 pub type TrainingModels = Entity;
 
-use crate::service::aws::s3::{AwsS3, PresignedUrlRequest, PresignedUrlResponse, S3Folders, S3Key};
+use crate::service::aws::s3::{AwsS3, PresignedUrlRequest, PresignedUrlSafe, S3Folders, S3Key};
 use crate::service::fal_ai::fal_client::{FalAiClient, FluxLoraTrainingSchema};
 use crate::{domain::image::Image, views};
 use crate::{
@@ -154,6 +155,17 @@ impl TrainingModelParams {
         item.tensor_path = Set(self.tensor_path.clone());
         item.thumbnail = Set(self.thumbnail.clone());
         item.training_images = Set(self.training_images.clone());
+    }
+}
+
+#[derive(Clone, Debug, Constructor, AsRef)]
+pub struct TrainingModelList(Vec<Model>);
+impl TrainingModelList {
+    pub fn into_inner(self) -> Vec<Model> {
+        self.0
+    }
+    pub fn empty() -> Self {
+        Self(Vec::new())
     }
 }
 

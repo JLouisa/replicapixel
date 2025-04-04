@@ -18,6 +18,7 @@ use validator::ValidateUrl;
 
 use crate::domain::url::Url;
 use crate::models::_entities::sea_orm_active_enums::ImageFormat;
+use crate::models::training_models::TrainingForm;
 
 #[derive(Error, Debug)]
 pub enum AwsError {
@@ -69,6 +70,15 @@ pub struct PresignedUrlRequest {
     pub name: String,
     pub file_type: ImageFormat,
 }
+impl From<TrainingForm> for PresignedUrlRequest {
+    fn from(value: TrainingForm) -> Self {
+        Self {
+            id: value.pid,
+            name: format!("{}-{}", value.name, value.slug),
+            file_type: value.file_type,
+        }
+    }
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct S3Key(String);
@@ -108,14 +118,14 @@ impl From<PresignedUrlRequestForm> for PresignedUrlRequest {
 // }
 
 #[derive(Serialize, Deserialize)]
-pub struct PresignedUrlResponse {
+pub struct PresignedUrlSafe {
     pub id: Uuid,
     pub name: String,
     pub file_type: ImageFormat,
     pub pre_url: Url,
 }
 
-impl PresignedUrlResponse {
+impl PresignedUrlSafe {
     pub fn from_request(value: PresignedUrlRequest, pre_url: Url) -> Self {
         Self {
             id: value.id,
