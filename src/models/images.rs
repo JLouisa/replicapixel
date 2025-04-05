@@ -1,3 +1,5 @@
+use crate::service::aws::s3::S3Key;
+
 pub use super::ImageModel;
 use super::TrainingModelModel;
 
@@ -215,6 +217,14 @@ impl ActiveModel {
         let item = item.insert(db).await?;
 
         Ok(item.into())
+    }
+    pub async fn upload_s3_completed(
+        mut self,
+        key: &S3Key,
+        db: &DatabaseConnection,
+    ) -> ModelResult<Model> {
+        self.image_url_s3 = ActiveValue::Set(Some(key.as_ref().to_owned()));
+        Ok(self.update(db).await?)
     }
 }
 

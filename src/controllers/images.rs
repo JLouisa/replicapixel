@@ -10,7 +10,8 @@ use crate::models::_entities::sea_orm_active_enums::{
 use crate::models::_entities::training_models;
 use crate::models::images::{AltText, ImageNew, ImageNewList, UserPrompt};
 use crate::models::user_credits::UserCreditsClient;
-use crate::models::{ImageModel, TrainingModelModel, UserCreditModel, UserModel};
+use crate::models::{ImageActiveModel, ImageModel, TrainingModelModel, UserCreditModel, UserModel};
+use crate::service::aws::s3::{AwsS3, S3Folders, S3Key};
 use crate::views::images::{CreditsViewModel, ImageViewModel};
 use crate::{
     domain::image::Image,
@@ -79,6 +80,8 @@ pub mod routes {
     impl Images {
         pub const BASE: &'static str = "/api/images";
         pub const IMAGE: &'static str = "/";
+        pub const IMAGE_S3_UPLOAD_COMPLETE: &'static str = "/upload/complete";
+        pub const IMAGE_S3_UPLOAD_COMPLETE_ID: &'static str = "/upload/complete/{id}";
         pub const IMAGE_GENERATE: &'static str = "/generate";
         pub const IMAGE_GENERATE_TEST: &'static str = "/generate/test";
         pub const IMAGE_CHECK_TEST: &'static str = "/check/test/{id}";
@@ -111,6 +114,10 @@ pub fn routes() -> Routes {
         .add(routes::Images::IMAGE_CHECK_ID, get(check_img))
         .add(routes::Images::IMAGE_ID, get(get_one))
         .add(routes::Images::IMAGE_ID, delete(remove))
+        .add(
+            routes::Images::IMAGE_S3_UPLOAD_COMPLETE_ID,
+            patch(upload_img_s3_completed),
+        )
     // .add(routes::Images::IMAGE_ID, put(update))
     // .add(routes::Images::IMAGE_ID, patch(update))
 }
@@ -133,10 +140,44 @@ async fn load_credits(db: &DatabaseConnection, id: i32) -> Result<UserCreditMode
 }
 
 #[debug_handler]
+pub async fn upload_img_s3_completed(
+    auth: auth::JWT,
+    Path(img_pid): Path<Uuid>,
+    Extension(s3_client): Extension<AwsS3>,
+    Extension(fal_ai_client): Extension<FalAiClient>,
+    State(ctx): State<AppContext>,
+) -> Result<Response> {
+    let user = UserModel::find_by_pid(&ctx.db, &auth.claims.pid).await?;
+    let image = load_item_pid(&ctx, img_pid).await?;
+    let s3_key: S3Key = s3_client.create_s3_key(
+        &user.pid,
+        &S3Folders::Images,
+        &image.pid.to_string(),
+        &ImageFormat::Jpeg,
+    );
+
+    let exists = s3_client
+        .check_object_exists(&s3_key)
+        .await
+        .map_err(|_| loco_rs::Error::Message(String::from("Error checking storage: 101")))?;
+
+    if !exists {
+        return Ok((StatusCode::NO_CONTENT).into_response().into_response());
+    }
+    ImageActiveModel::from(image)
+        .upload_s3_completed(&s3_key, &ctx.db)
+        .await
+        .ok();
+
+    Ok((StatusCode::OK).into_response())
+}
+
+#[debug_handler]
 pub async fn check_test(
     auth: auth::JWT,
     Path(pid): Path<Uuid>,
     State(ctx): State<AppContext>,
+    Extension(s3_client): Extension<AwsS3>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<Response> {
     use rand::Rng;
@@ -150,7 +191,7 @@ pub async fn check_test(
     let user_credits = load_credits(&ctx.db, user.id).await?;
     let user_credits_view: CreditsViewModel = user_credits.into();
 
-    let change = rand::rng().random_range(0..=10);
+    let change = rand::rng().random_range(0..=3);
     let num = rand::rng().random_range(1..=11);
     if change == 0 {
         let user_credits = image.image_url = Some(format!(
@@ -159,9 +200,15 @@ pub async fn check_test(
         ));
         image.status = Status::Completed;
         let check_route = routes::Images::check_route();
+        let image: ImageViewModel = image.into();
+        let image: ImageViewModel = image
+            .clone()
+            .set_pre_url(&user.pid, &s3_client)
+            .await
+            .unwrap_or_else(|_| image);
         return views::images::img_completed(
             &v,
-            &vec![image.into()],
+            &vec![image],
             check_route.as_str(),
             &user_credits_view,
         );
@@ -174,6 +221,7 @@ pub async fn check_img(
     auth: auth::JWT,
     Path(pid): Path<Uuid>,
     State(ctx): State<AppContext>,
+    Extension(s3_client): Extension<AwsS3>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<Response> {
     use rand::Rng;
@@ -188,9 +236,15 @@ pub async fn check_img(
         let user_credits = load_credits(&ctx.db, user.id).await?;
         let user_credits_view: CreditsViewModel = user_credits.into();
         let check_route = routes::Images::check_route();
+        let image: ImageViewModel = image.into();
+        let image: ImageViewModel = image
+            .clone()
+            .set_pre_url(&user.pid, &s3_client)
+            .await
+            .unwrap_or_else(|_| image);
         return views::images::img_completed(
             &v,
-            &vec![image.into()],
+            &vec![image],
             check_route.as_str(),
             &user_credits_view,
         );

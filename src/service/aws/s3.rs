@@ -19,6 +19,7 @@ use validator::ValidateUrl;
 use crate::domain::url::Url;
 use crate::models::_entities::sea_orm_active_enums::ImageFormat;
 use crate::models::training_models::TrainingForm;
+use crate::views::images::ImageViewModel;
 
 #[derive(Error, Debug)]
 pub enum AwsError {
@@ -193,6 +194,27 @@ impl AwsS3 {
     }
 
     // Generate a presigned URL
+    pub async fn auto_upload_img_presigned_url(
+        &self,
+        user_pid: &Uuid,
+        image: &ImageViewModel,
+    ) -> Result<Url, AwsError> {
+        let folder = match image.content_type.as_str() {
+            "zip" => S3Folders::Zip,
+            _ => S3Folders::Images,
+        };
+        let time = Some(300);
+        let key = self.create_s3_key(
+            user_pid,
+            &folder,
+            &image.pid.to_string(),
+            &ImageFormat::Jpeg,
+        );
+        let pre_url = self.generate_save_presigned_url(&key, time).await?;
+        Ok((pre_url))
+    }
+
+    // Generate a presigned URL
     pub async fn presigned_save_url(
         &self,
         user_id: &Uuid,
@@ -210,7 +232,6 @@ impl AwsS3 {
         Ok((pre_url, key))
     }
 
-    // Generate a presigned URL
     pub async fn generate_save_presigned_url(
         &self,
         key: &S3Key,

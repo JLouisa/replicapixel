@@ -1,5 +1,4 @@
-{% for image in images %} {% if image.image_status == "Completed" %}
-<!-- COMPLETED IMAGE CELL -->
+{% for image in images %} {% if image.image_status == "Completed" %} {# COMPLETED IMAGE CELL #}
 <div
   class="image-container relative select-none aspect-square rounded-lg shadow-md overflow-hidden bg-base-200"
 >
@@ -69,17 +68,21 @@
     <form method="dialog" class="modal-backdrop">
       <button>close</button>
     </form>
-    {% if image.image_status == "Completed" and not image.image_url_s3 %}
+    {% if image.image_status == "Completed" and not image.image_url_s3 and image.pre_url %}
     <script>
-      console.log("Trigger S3 upload for image: ", "{{ image.pid }}");
+      // console.log("Trigger S3 upload presigned URL: ", "{{ image.pre_url }}");
+      // DAL.Console("Trigger S3 upload for image: ", "{{ image.pid }}");
+      // window.DAL.Console("Trigger S3 upload for image: ", "{{ image.pid }}");
+      uploadImageFromUrlToS3(
+        "{{ image.image_url }}",
+        "{{image.pre_url}}",
+        "/api/images/upload/complete/{{ image.pid }}"
+      );
     </script>
     {% endif %}
   </dialog>
 </div>
-<!-- End image-container for completed image -->
-
-{% else %}
-<!-- LOADING PLACEHOLDER CELL -->
+{# End image-container for completed image #} {% else %} {# LOADING PLACEHOLDER CELL #}
 <div
   id="placeholder-{{ image.pid }}"
   hx-get="{{ check_route }}/{{ image.pid }}"
@@ -100,10 +103,6 @@
   </svg>
   <span class="sr-only">Loading...</span>
 </div>
-<!-- End placeholder-{{ image.pid }} -->
-{% endif %} {% endfor %}
-
-<!-- Credits OOB Swap -->
-{% if not is_initial_load and credits %}
+{% endif %} {% endfor %} {# Credits OOB Swap #} {% if not is_initial_load and credits %}
 <span hx-swap-oob="true" id="user_credits">{{ credits.credit_amount }}</span>
 {% endif %}

@@ -30,4 +30,39 @@
 </div>
 
 {% if training_models | length > 0 and credits.credit_amount > 0 %} {% include
-"dashboard/content/photo/create_image_partial.html" %} {% endif %}
+"dashboard/content/photo/create_image_partial.html" %} {% endif %} {% block js %}
+<script>
+  async function consolIt(msg, id) {
+    console.log(msg, id);
+  }
+  async function uploadImageFromUrlToS3(imageUrl, presignedUrl, notifyBackendUrl) {
+    console.log("Start downloading image");
+    try {
+      const imageResponse = await fetch(imageUrl);
+      if (!imageResponse.ok) throw new Error("Failed to fetch image from source");
+      const blob = await imageResponse.blob();
+      console.log("Start uploading image to S3");
+      const s3Upload = await fetch(presignedUrl, {
+        method: "PUT",
+        body: blob,
+        headers: {
+          "Content-Type": blob.type,
+        },
+      });
+      if (!s3Upload.ok) throw new Error("Failed to upload to S3");
+      console.log("Start notifying backend");
+      const backendNotify = await fetch(notifyBackendUrl, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ uploaded: true, source: imageUrl }),
+      });
+      if (!backendNotify.ok) throw new Error("Failed to notify backend");
+      console.log("✅ Upload and notification successful");
+    } catch (err) {
+      console.error("❌ Upload failed", err);
+    }
+  }
+</script>
+{% endblock js %}
