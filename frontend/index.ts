@@ -32,8 +32,6 @@ Alpine.store("createModelForm", {
   eye_color: "",
   creative: 1000,
   bald: false,
-  is_style: false,
-  create_mask: true,
   consent: false,
   files: [] as File[],
   zip: null as File | null,
@@ -48,8 +46,6 @@ Alpine.store("createModelForm", {
     this.eye_color = "";
     this.creative = 1000;
     this.bald = false;
-    this.is_style = false;
-    this.create_mask = true;
     this.consent = false;
     this.files = [];
     this.zip = null;
@@ -75,8 +71,6 @@ Alpine.store("createModelForm", {
       eye_color: this.eye_color,
       creative: this.creative ?? 40,
       bald: this.bald,
-      is_style: this.is_style,
-      create_mask: this.create_mask,
       consent: this.consent,
       file_type: TrainingModelFormClass.file_type,
     });

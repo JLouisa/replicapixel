@@ -41,7 +41,7 @@ impl Default for Status {
 #[derive(
     Serialize, Deserialize, Debug, Clone, Copy, EnumIter, Display, DeriveActiveEnum, PartialEq, Eq,
 )]
-#[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "imageFormat")]
+#[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "image_format")]
 #[serde(rename_all = "lowercase")]
 pub enum ImageFormat {
     #[strum(to_string = "png")]
@@ -67,7 +67,7 @@ pub enum ImageFormat {
     strum_macros::Display,
     DeriveActiveEnum,
 )]
-#[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "eyeColor")]
+#[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "eye_color")]
 pub enum EyeColor {
     #[sea_orm(string_value = "Brown")]
     Brown,
@@ -163,7 +163,7 @@ pub enum Emotion {
     PartialEq,
     Eq,
 )]
-#[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "basedOn")]
+#[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "based_on")]
 pub enum BasedOn {
     #[sea_orm(string_value = "RealPerson")]
     #[serde(rename = "Based on a real person")]
@@ -188,7 +188,7 @@ pub enum BasedOn {
     strum_macros::Display,
     DeriveActiveEnum,
 )]
-#[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "imageSize")]
+#[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "image_size")]
 pub enum ImageSize {
     #[strum(to_string = "512x512 (Square)")]
     #[sea_orm(string_value = "Square")]

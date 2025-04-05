@@ -2,7 +2,7 @@
 FROM lukemathwalker/cargo-chef:latest-rust-1.83.0 AS chef
 WORKDIR /usr/src/
 # Install linker, C compiler, and MUSL tools for static linking
-RUN apt-get update && apt-get install -y curl wget --no-install-recommends lld clang musl-tools && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends lld clang musl-tools && rm -rf /var/lib/apt/lists/*
 
 # Stage 2: Planner - Create dependency recipe
 FROM chef AS planner
@@ -44,7 +44,6 @@ RUN rustup target add x86_64-unknown-linux-musl
 RUN cargo build --release --target x86_64-unknown-linux-musl
 
 RUN apt-get update && apt-get install -y curl
-
 
 # Stage 4: Runtime - Create the final minimal image
 FROM debian:bookworm-slim AS runtime

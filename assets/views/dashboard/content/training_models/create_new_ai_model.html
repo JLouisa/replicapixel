@@ -35,7 +35,7 @@
           i
         </div>
       </div>
-      <select class="select w-full" x-model="$store.createModelForm.type_model">
+      <select class="select w-full" x-model="$store.createModelForm.based_on">
         <option value="" disabled selected>Pick a Type</option>
         {% for type_model in sidebar.create_model.type_model %}
         <option value="{{ type_model }}">{{ type_model }}</option>

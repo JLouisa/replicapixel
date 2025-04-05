@@ -21,9 +21,6 @@ pub struct Model {
     #[sea_orm(column_type = "Text")]
     pub sys_prompt: String,
     pub num_inference_steps: i32,
-    pub content_type: ImageFormat,
-    pub status: Status,
-    pub image_size: ImageSize,
     pub fal_ai_request_id: Option<String>,
     pub width: Option<i32>,
     pub height: Option<i32>,
@@ -35,6 +32,9 @@ pub struct Model {
     pub deleted_at: Option<DateTimeWithTimeZone>,
     pub created_at: DateTimeWithTimeZone,
     pub updated_at: DateTimeWithTimeZone,
+    pub status: Status,
+    pub content_type: ImageFormat,
+    pub image_size: ImageSize,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

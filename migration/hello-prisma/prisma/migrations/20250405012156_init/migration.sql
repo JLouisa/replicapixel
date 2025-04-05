@@ -1,26 +1,26 @@
 -- CreateEnum
-CREATE TYPE "Sex" AS ENUM ('Male', 'Female');
+CREATE TYPE "status" AS ENUM ('Pending', 'Processing', 'Training', 'Completed', 'Failed', 'Cancelled');
 
 -- CreateEnum
-CREATE TYPE "Ethnicity" AS ENUM ('White', 'Black', 'Pacific', 'Hispanic', 'Asian', 'SouthEastAsian', 'SouthAsian', 'MiddleEastern');
+CREATE TYPE "sex" AS ENUM ('Male', 'Female');
 
 -- CreateEnum
-CREATE TYPE "BasedOn" AS ENUM ('RealPerson', 'CreateInfluencerAI');
+CREATE TYPE "ethnicity" AS ENUM ('White', 'Black', 'Pacific', 'Hispanic', 'Asian', 'SouthEastAsian', 'SouthAsian', 'MiddleEastern');
 
 -- CreateEnum
-CREATE TYPE "EyeColor" AS ENUM ('Brown', 'Blue', 'Green', 'Grey', 'Hazel', 'Red');
+CREATE TYPE "based_on" AS ENUM ('RealPerson', 'CreateInfluencerAI');
 
 -- CreateEnum
-CREATE TYPE "Emotion" AS ENUM ('Neutral', 'Anger', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise');
+CREATE TYPE "eye_color" AS ENUM ('Brown', 'Blue', 'Green', 'Grey', 'Hazel', 'Red');
 
 -- CreateEnum
-CREATE TYPE "Status" AS ENUM ('Pending', 'Processing', 'Training', 'Completed', 'Failed', 'Cancelled');
+CREATE TYPE "emotion" AS ENUM ('Neutral', 'Anger', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise');
 
 -- CreateEnum
-CREATE TYPE "ImageSize" AS ENUM ('Square', 'SquareHD', 'Portrait43', 'Portrait169', 'Landscape43', 'Landscape169');
+CREATE TYPE "image_size" AS ENUM ('Square', 'SquareHD', 'Portrait43', 'Portrait169', 'Landscape43', 'Landscape169');
 
 -- CreateEnum
-CREATE TYPE "ImageFormat" AS ENUM ('Png', 'Jpeg', 'Zip');
+CREATE TYPE "image_format" AS ENUM ('Png', 'Jpeg', 'Zip');
 
 -- CreateTable
 CREATE TABLE "Users" (
@@ -48,10 +48,10 @@ CREATE TABLE "TrainingModels" (
     "user_id" INTEGER NOT NULL,
     "name" VARCHAR(255) NOT NULL,
     "age" INTEGER NOT NULL,
-    "sex" "Sex" NOT NULL,
-    "ethnicity" "Ethnicity" NOT NULL,
-    "basedOn" "BasedOn" NOT NULL,
-    "eye_color" "EyeColor" NOT NULL,
+    "sex" "sex" NOT NULL,
+    "ethnicity" "ethnicity" NOT NULL,
+    "basedOn" "based_on" NOT NULL,
+    "eye_color" "eye_color" NOT NULL,
     "bald" BOOLEAN NOT NULL DEFAULT false,
     "steps" INTEGER NOT NULL,
     "create_mask" BOOLEAN NOT NULL,
@@ -59,7 +59,7 @@ CREATE TABLE "TrainingModels" (
     "trigger_word" VARCHAR(255) NOT NULL,
     "tensor_path" TEXT,
     "thumbnail" TEXT,
-    "training_status" "Status" NOT NULL,
+    "training_status" "status" NOT NULL,
     "fal_output" JSONB,
     "training_images" JSONB,
     "fal_ai_request_id" VARCHAR(255),
@@ -95,9 +95,9 @@ CREATE TABLE "Images" (
     "user_prompt" TEXT NOT NULL,
     "sys_prompt" TEXT NOT NULL,
     "num_inference_steps" INTEGER NOT NULL,
-    "content_type" "ImageFormat" NOT NULL,
-    "status" "Status" NOT NULL,
-    "image_size" "ImageSize" NOT NULL,
+    "content_type" "image_format" NOT NULL,
+    "status" "status" NOT NULL,
+    "image_size" "image_size" NOT NULL,
     "fal_ai_request_id" VARCHAR(255),
     "width" INTEGER,
     "height" INTEGER,
@@ -122,7 +122,7 @@ CREATE TABLE "Transactions" (
     "payment_id" VARCHAR(255) NOT NULL,
     "order_id" VARCHAR(255) NOT NULL,
     "plan" VARCHAR(255) NOT NULL,
-    "status" "Status" NOT NULL,
+    "status" "status" NOT NULL,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 

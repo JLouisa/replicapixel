@@ -18,8 +18,6 @@ const TrainingModelFormSchema = object({
   eye_color: pipe(string(), length(8, "Eye color is required")),
   creative: union([pipe(number(), minValue(100, "Creative must be a positive number")), string()]),
   bald: boolean(),
-  is_style: boolean(),
-  create_mask: boolean(),
   consent: boolean(),
   file_type: literal("zip"),
 });
@@ -40,8 +38,6 @@ export class TrainingModelFormClass implements TrainingModelFormData {
     public eye_color: string,
     public creative: number | string,
     public bald: boolean,
-    public is_style: boolean,
-    public create_mask: boolean,
     public consent: boolean,
     public file_type: "zip" = this.file_type
   ) {}
@@ -61,14 +57,12 @@ export class TrainingModelFormClass implements TrainingModelFormData {
       validatedData.eye_color,
       Number(validatedData.creative),
       validatedData.bald,
-      validatedData.is_style,
-      validatedData.create_mask,
       validatedData.consent,
       validatedData.file_type
     );
   }
 
   static inti(): TrainingModelFormClass {
-    return new TrainingModelFormClass("", "", "", "", "", "", 40, false, false, false, false);
+    return new TrainingModelFormClass("", "", "", "", "", "", 40, false, false);
   }
 }

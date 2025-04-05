@@ -26,7 +26,7 @@ pub mod routes {
         pub const CHECK_ID_STATUS: &'static str = "/check/{id}/{status}";
         pub const CHECK_W_ID_W_STATUS: &'static str = "/check";
         pub const TRAINING_MODELS_ID: &'static str = "/{id}";
-        pub const TRAINING_MODELS_UPLOAD: &'static str = "upload";
+        pub const TRAINING_MODELS_UPLOAD: &'static str = "/upload";
         pub const TRAINING_COMPLETED_ID: &'static str = "/upload/completed/{id}";
         pub const TRAINING_MODELS: &'static str = "/";
         pub const TRAINING_MODELS_BASE: &'static str = "";
@@ -161,9 +161,6 @@ pub async fn check_model(
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<Response> {
     let model = load_item(&ctx, id).await?;
-
-    dbg!(&status);
-    dbg!(&model.training_status);
 
     // Check if status matches
     if status == model.training_status {

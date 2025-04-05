@@ -337,29 +337,29 @@ export const DAL = {
         }
       },
     },
-    S3Upload: {
-      async saveToS3(file: File) {
-        try {
-          const preSignRequest = PreSignUrlRequestClass.newToServer(file.name, file.type);
-          // Step 1: Obtain presigned URL from the server
-          const presignedResponse = await DAL.Backend.UploadService.getPreSignUrlForUpload(
-            preSignRequest
-          );
+    // S3Upload: {
+    //   async saveToS3(file: File) {
+    //     try {
+    //       const preSignRequest = PreSignUrlRequestClass.newToServer(file.name, file.type);
+    //       // Step 1: Obtain presigned URL from the server
+    //       const presignedResponse = await DAL.Backend.UploadService.getPreSignUrlForUpload(
+    //         preSignRequest
+    //       );
 
-          // Step 2: Upload the file to S3 using the presigned URL
-          await DAL.Integrations.AwsS3.uploadToS3(presignedResponse, file);
+    //       // Step 2: Upload the file to S3 using the presigned URL
+    //       await DAL.Integrations.AwsS3.uploadToS3(presignedResponse, file);
 
-          // Step 3: Notify the server that the upload was successful
-          const item = await DAL.Backend.UploadService.markUploadSuccess(presignedResponse);
+    //       // Step 3: Notify the server that the upload was successful
+    //       const item = await DAL.Backend.UploadService.markUploadSuccess(presignedResponse);
 
-          // Step 4: Notify the user that everything is complete
-          // toast.success("Image successfully uploaded!");
-          return item;
-        } catch (error) {
-          return DAL.handleError("Failed to upload the image. Please try again.", error, false);
-        }
-      },
-    },
+    //       // Step 4: Notify the user that everything is complete
+    //       // toast.success("Image successfully uploaded!");
+    //       return item;
+    //     } catch (error) {
+    //       return DAL.handleError("Failed to upload the image. Please try again.", error, false);
+    //     }
+    //   },
+    // },
     S3UploadTrainingModel: {
       async saveToS3(modelData: TrainingModelFormClass, file: File) {
         try {
@@ -371,6 +371,7 @@ export const DAL = {
             modelData
           );
           // Step 2: Upload the file to S3 using the presigned URL
+          console.log("presignedResponse SaveToS3: ", presignedResponse);
           await DAL.Integrations.AwsS3.uploadToS3(presignedResponse, file);
 
           // Step 3: Notify the server that the upload was successful

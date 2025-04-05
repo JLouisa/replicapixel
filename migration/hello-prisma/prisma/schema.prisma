@@ -58,7 +58,7 @@ model TrainingModels {
   trigger_word       String      @db.VarChar(255)
   tensor_path        String?     
   thumbnail          String?     
-  training_status    Status
+  training_status    Status     
   fal_output         Json?
   training_images    Json?
   fal_ai_request_id  String?     @db.VarChar(255)
@@ -70,6 +70,7 @@ model TrainingModels {
 
   user               Users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   Images             Images[]
+
   
   @@index([pid], name: "idx-training_models-pid")
   @@index([user_id], name: "idx-user_id-id")
@@ -156,6 +157,7 @@ model Packs {
   @@index([pid], name: "idx-packs-pid")
 }
 
+
 enum Status {
     Pending
     Processing
@@ -164,14 +166,14 @@ enum Status {
     Failed
     Cancelled
 
-     @@map("status")
+    @@map("status")
 }
 
 enum Sex {
   Male
   Female
 
-   @@map("sex")
+    @@map("sex")
 }
 
 enum Ethnicity {
@@ -184,12 +186,14 @@ enum Ethnicity {
   SouthAsian
   MiddleEastern
 
-   @@map("ethnicity")
+    @@map("ethnicity")
 }
 
 enum BasedOn {
   RealPerson
   CreateInfluencerAI
+
+    @@map("based_on")
 }
 
 enum EyeColor {
@@ -200,7 +204,7 @@ enum EyeColor {
   Hazel
   Red
 
-   @@map("eyeColor")
+    @@map("eye_color")
 }
 
 enum Emotion {
@@ -212,7 +216,7 @@ enum Emotion {
     Sad
     Surprise
 
-   @@map("emotion")
+    @@map("emotion")
 }
 
 
@@ -224,7 +228,7 @@ enum ImageSize {
     Landscape43
     Landscape169
 
-   @@map("imageSize")
+    @@map("image_size")
 }
 
 enum ImageFormat {
@@ -232,5 +236,5 @@ enum ImageFormat {
     Jpeg
     Zip
 
-   @@map("imageFormat")
+    @@map("image_format")
 }

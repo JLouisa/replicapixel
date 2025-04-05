@@ -11,9 +11,9 @@ async function main() {
     where: { email: "golden_dragon88@hotmail.com" },
     update: {},
     create: {
-      pid: "123e4567-e89b-12d3-a456-426655440000",
+      pid: "ab5e796c-a2cd-458e-ad6b-c3a898f44bd1",
       name: "Golden",
-      email: "golden@example.com",
+      email: "golden_dragon88@hotmail.com",
       password:
         "$argon2id$v=19$m=19456,t=2,p=1$evLarirkLuzvgfh+jm9raQ$15L06vovy3DpL4j8IEAzGT5PrZbp+vKOSOFU/Jt1QTA",
       api_key: "123e4567-e89b-12d3-a456-426655440000",
