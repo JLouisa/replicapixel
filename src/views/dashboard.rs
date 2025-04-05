@@ -266,6 +266,7 @@ pub fn photo_dashboard(
             "user": user, "images": images, "training_models": training_models,
             "website": website, "credits": credits,
             "check_route":  Images::check_route(),
+            "is_initial_load": true
         }),
     )
 }
@@ -283,9 +284,9 @@ pub fn photo_partial_dashboard(
         &v,
         "dashboard/content/photo/photo_partial.html",
         data!({"user": user, "images": images,
-        "training_models": training_models,
-        "website": website, "credits": credits,
-        "check_route": Images::check_route(),
+            "training_models": training_models,
+            "website": website, "credits": credits,
+            "check_route": Images::check_route(),
         }),
     )
 }

@@ -32,7 +32,7 @@ pub fn img_completed(
     format::render().view(
         v,
         "dashboard/content/photo/image_partial.html",
-        data!({"images": images, "check_route": check_route}),
+        data!({"credits": credits,"images": images, "check_route": check_route}),
     )
 }
 

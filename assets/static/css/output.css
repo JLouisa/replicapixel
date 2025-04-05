@@ -1364,6 +1364,9 @@
       inset: 50% auto auto calc(var(--tt-tail) + 1px);
     }
   }
+  .inset-0 {
+    inset: calc(var(--spacing) * 0);
+  }
   .inset-y-0 {
     inset-block: calc(var(--spacing) * 0);
   }
@@ -2379,6 +2382,9 @@
   }
   .gap-y-20 {
     row-gap: calc(var(--spacing) * 20);
+  }
+  .self-start {
+    align-self: flex-start;
   }
   .truncate {
     overflow: hidden;

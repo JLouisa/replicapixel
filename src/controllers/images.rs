@@ -150,7 +150,7 @@ pub async fn check_test(
     let user_credits = load_credits(&ctx.db, user.id).await?;
     let user_credits_view: CreditsViewModel = user_credits.into();
 
-    let change = rand::rng().random_range(0..=80);
+    let change = rand::rng().random_range(0..=10);
     let num = rand::rng().random_range(1..=11);
     if change == 0 {
         let user_credits = image.image_url = Some(format!(
