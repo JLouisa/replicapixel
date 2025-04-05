@@ -7,10 +7,11 @@ use crate::domain::website::Website;
 use crate::domain::{image::Image, packs::Packs};
 use crate::models::_entities::sea_orm_active_enums::Status;
 use crate::models::_entities::users;
+use crate::models::images::ImagesModelList;
 use crate::models::training_models::TrainingModelList;
 use crate::models::{
-    TrainingModelActiveModel, TrainingModelEntity, TrainingModelModel, UserCreditEntity,
-    UserCreditModel, UserEntity, UserModel,
+    ImageModel, TrainingModelActiveModel, TrainingModelEntity, TrainingModelModel,
+    UserCreditEntity, UserCreditModel, UserEntity, UserModel,
 };
 use crate::views;
 use axum::{
@@ -206,6 +207,14 @@ async fn load_item_all_completed(ctx: &AppContext, id: i32) -> Result<TrainingMo
     let list = TrainingModelModel::find_all_completed_by_user_id(&ctx.db, id).await?;
     Ok(TrainingModelList::new(list))
 }
+async fn load_images(db: &DatabaseConnection, id: i32, fav: bool) -> Result<ImagesModelList> {
+    let list = ImageModel::find_all_by_user_id(db, id, fav).await?;
+    Ok(ImagesModelList::new(list))
+}
+async fn load_images_del(db: &DatabaseConnection, id: i32) -> Result<ImagesModelList> {
+    let list = ImageModel::find_all_del_by_user_id(db, id).await?;
+    Ok(ImagesModelList::new(list))
+}
 
 #[debug_handler]
 pub async fn billing_dashboard(
@@ -318,162 +327,6 @@ pub async fn settings_partial_dashboard(
 }
 
 #[debug_handler]
-pub async fn album_deleted_dashboard(
-    auth: auth::JWT,
-    State(ctx): State<AppContext>,
-    ViewEngine(v): ViewEngine<TeraView>,
-) -> Result<impl IntoResponse> {
-    let user = load_user(&ctx.db, &auth.claims.pid).await?;
-    let user_credits = load_user_credits(&ctx.db, user.id).await?;
-    let training_models = load_item_all(&ctx.db, user.id).await?;
-
-    //Todo Get Images from database
-    let images: Vec<Image> = Image::get_mock_images(true);
-
-    let images_fav: Vec<Image> = images.into_iter().filter(|i| i.is_deleted).collect();
-    let sidebar_routes = routes::Dashboard::sidebar();
-    let website = Website::init();
-    views::dashboard::photo_dashboard(
-        v,
-        &user.into(),
-        &images_fav,
-        sidebar_routes,
-        training_models.into(),
-        &website,
-        &user_credits.into(),
-    )
-}
-
-#[debug_handler]
-pub async fn album_deleted_partial_dashboard(
-    auth: auth::JWT,
-    State(ctx): State<AppContext>,
-    ViewEngine(v): ViewEngine<TeraView>,
-) -> Result<impl IntoResponse> {
-    let user = load_user(&ctx.db, &auth.claims.pid).await?;
-    let user_credits = load_user_credits(&ctx.db, user.id).await?;
-    let training_models: TrainingModelList = TrainingModelList::empty();
-
-    //Todo Get Images from database
-    let images = Image::get_mock_images(true);
-
-    let images_fav = images.into_iter().filter(|i| i.is_deleted).collect();
-    let website = Website::init();
-    views::dashboard::photo_partial_dashboard(
-        v,
-        &user.into(),
-        &images_fav,
-        training_models.into(),
-        &website,
-        &user_credits.into(),
-    )
-}
-
-#[debug_handler]
-pub async fn album_favorite_dashboard(
-    auth: auth::JWT,
-    State(ctx): State<AppContext>,
-    ViewEngine(v): ViewEngine<TeraView>,
-) -> Result<impl IntoResponse> {
-    let user = load_user(&ctx.db, &auth.claims.pid).await?;
-    let user_credits = load_user_credits(&ctx.db, user.id).await?;
-    let training_models: TrainingModelList = TrainingModelList::empty();
-
-    //Todo Get Images from database
-    let images = Image::get_mock_images(true);
-    let images = images.into_iter().filter(|i| i.is_favorite).collect();
-
-    let sidebar_routes = routes::Dashboard::sidebar();
-    let website = Website::init();
-    views::dashboard::photo_dashboard(
-        v,
-        &user.into(),
-        &images,
-        sidebar_routes,
-        training_models.into(),
-        &website,
-        &user_credits.into(),
-    )
-}
-
-#[debug_handler]
-pub async fn album_favorite_partial_dashboard(
-    auth: auth::JWT,
-    State(ctx): State<AppContext>,
-    ViewEngine(v): ViewEngine<TeraView>,
-) -> Result<impl IntoResponse> {
-    let user = load_user(&ctx.db, &auth.claims.pid).await?;
-    let user_credits = load_user_credits(&ctx.db, user.id).await?;
-    let training_models: TrainingModelList = TrainingModelList::empty();
-
-    //Todo Get Images from database
-    let images = Image::get_mock_images(true);
-    let images = images.into_iter().filter(|i| i.is_favorite).collect();
-
-    let website = Website::init();
-    views::dashboard::photo_partial_dashboard(
-        v,
-        &user.into(),
-        &images,
-        training_models.into(),
-        &website,
-        &user_credits.into(),
-    )
-}
-
-#[debug_handler]
-pub async fn photo_dashboard(
-    auth: auth::JWT,
-    State(ctx): State<AppContext>,
-    ViewEngine(v): ViewEngine<TeraView>,
-) -> Result<impl IntoResponse> {
-    let user = load_user(&ctx.db, &auth.claims.pid).await?;
-    let user_credits = load_user_credits(&ctx.db, user.id).await?;
-    let training_models = load_item_all_completed(&ctx, user.id).await?;
-
-    //Todo Get Images from database
-    let images = Image::get_mock_images(true);
-    let images: Vec<Image> = images.into_iter().filter(|i| i.is_deleted).collect();
-
-    let sidebar_routes = routes::Dashboard::sidebar();
-    let website = Website::init();
-    views::dashboard::photo_dashboard(
-        v,
-        &user.into(),
-        &images.into(),
-        sidebar_routes,
-        training_models.into(),
-        &website.into(),
-        &user_credits.into(),
-    )
-}
-
-#[debug_handler]
-pub async fn photo_partial_dashboard(
-    auth: auth::JWT,
-    State(ctx): State<AppContext>,
-    ViewEngine(v): ViewEngine<TeraView>,
-) -> Result<impl IntoResponse> {
-    let user = load_user(&ctx.db, &auth.claims.pid).await?;
-    let user_credits = load_user_credits(&ctx.db, user.id).await?;
-    let training_models = load_item_all_completed(&ctx, user.id).await?;
-
-    //Todo Get Images from database
-    let images = Image::get_mock_images(true);
-    let images = images.into_iter().filter(|i| !i.is_deleted).collect();
-
-    let website = Website::init();
-    views::dashboard::photo_partial_dashboard(
-        v,
-        &user.into(),
-        &images,
-        training_models.into(),
-        &website,
-        &user_credits.into(),
-    )
-}
-
-#[debug_handler]
 pub async fn training_dashboard(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
@@ -550,6 +403,144 @@ pub async fn packs_partial_dashboard(
     views::dashboard::packs_partial_dashboard(v, &user.into(), &packs)
 }
 
+#[debug_handler]
+pub async fn album_deleted_dashboard(
+    auth: auth::JWT,
+    State(ctx): State<AppContext>,
+    ViewEngine(v): ViewEngine<TeraView>,
+) -> Result<impl IntoResponse> {
+    let user = load_user(&ctx.db, &auth.claims.pid).await?;
+    let user_credits = load_user_credits(&ctx.db, user.id).await?;
+    let training_models = load_item_all(&ctx.db, user.id).await?;
+    let images = load_images_del(&ctx.db, user.id).await?;
+
+    let sidebar_routes = routes::Dashboard::sidebar();
+    let website = Website::init();
+    views::dashboard::photo_dashboard(
+        v,
+        &user.into(),
+        &images.into(),
+        sidebar_routes,
+        training_models.into(),
+        &website,
+        &user_credits.into(),
+    )
+}
+
+#[debug_handler]
+pub async fn album_deleted_partial_dashboard(
+    auth: auth::JWT,
+    State(ctx): State<AppContext>,
+    ViewEngine(v): ViewEngine<TeraView>,
+) -> Result<impl IntoResponse> {
+    let user = load_user(&ctx.db, &auth.claims.pid).await?;
+    let user_credits = load_user_credits(&ctx.db, user.id).await?;
+    let training_models: TrainingModelList = TrainingModelList::empty();
+    let images = load_images_del(&ctx.db, user.id).await?;
+
+    let website = Website::init();
+    views::dashboard::photo_partial_dashboard(
+        v,
+        &user.into(),
+        &images.into(),
+        training_models.into(),
+        &website,
+        &user_credits.into(),
+    )
+}
+
+#[debug_handler]
+pub async fn album_favorite_dashboard(
+    auth: auth::JWT,
+    State(ctx): State<AppContext>,
+    ViewEngine(v): ViewEngine<TeraView>,
+) -> Result<impl IntoResponse> {
+    let user = load_user(&ctx.db, &auth.claims.pid).await?;
+    let user_credits = load_user_credits(&ctx.db, user.id).await?;
+    let training_models: TrainingModelList = TrainingModelList::empty();
+    let images = load_images(&ctx.db, user.id, true).await?;
+
+    let sidebar_routes = routes::Dashboard::sidebar();
+    let website = Website::init();
+    views::dashboard::photo_dashboard(
+        v,
+        &user.into(),
+        &images.into(),
+        sidebar_routes,
+        training_models.into(),
+        &website,
+        &user_credits.into(),
+    )
+}
+
+#[debug_handler]
+pub async fn album_favorite_partial_dashboard(
+    auth: auth::JWT,
+    State(ctx): State<AppContext>,
+    ViewEngine(v): ViewEngine<TeraView>,
+) -> Result<impl IntoResponse> {
+    let user = load_user(&ctx.db, &auth.claims.pid).await?;
+    let user_credits = load_user_credits(&ctx.db, user.id).await?;
+    let training_models: TrainingModelList = TrainingModelList::empty();
+    let images = load_images(&ctx.db, user.id, true).await?;
+
+    let website = Website::init();
+    views::dashboard::photo_partial_dashboard(
+        v,
+        &user.into(),
+        &images.into(),
+        training_models.into(),
+        &website,
+        &user_credits.into(),
+    )
+}
+
+#[debug_handler]
+pub async fn photo_dashboard(
+    auth: auth::JWT,
+    State(ctx): State<AppContext>,
+    ViewEngine(v): ViewEngine<TeraView>,
+) -> Result<impl IntoResponse> {
+    let user = load_user(&ctx.db, &auth.claims.pid).await?;
+    let user_credits = load_user_credits(&ctx.db, user.id).await?;
+    let training_models = load_item_all_completed(&ctx, user.id).await?;
+    let images = load_images(&ctx.db, user.id, false).await?;
+
+    let sidebar_routes = routes::Dashboard::sidebar();
+    let website = Website::init();
+    views::dashboard::photo_dashboard(
+        v,
+        &user.into(),
+        &images.into(),
+        sidebar_routes,
+        training_models.into(),
+        &website.into(),
+        &user_credits.into(),
+    )
+}
+
+#[debug_handler]
+pub async fn photo_partial_dashboard(
+    auth: auth::JWT,
+    State(ctx): State<AppContext>,
+    ViewEngine(v): ViewEngine<TeraView>,
+) -> Result<impl IntoResponse> {
+    let user = load_user(&ctx.db, &auth.claims.pid).await?;
+    let user_credits = load_user_credits(&ctx.db, user.id).await?;
+    let training_models = load_item_all_completed(&ctx, user.id).await?;
+    let images = load_images(&ctx.db, user.id, false).await?;
+
+    let website = Website::init();
+    views::dashboard::photo_partial_dashboard(
+        v,
+        &user.into(),
+        &images.into(),
+        training_models.into(),
+        &website,
+        &user_credits.into(),
+    )
+}
+
 //Todo Remove for photo dashboard controller
 #[debug_handler]
 async fn render_dashboard(
@@ -560,17 +551,13 @@ async fn render_dashboard(
     let user = load_user(&ctx.db, &auth.claims.pid).await?;
     let user_credits = load_user_credits(&ctx.db, user.id).await?;
     let training_models = load_item_all(&ctx.db, user.id).await?;
-
-    //Todo Get Images from database
-    let images = Image::get_mock_images(true);
-    let images = images.into_iter().filter(|i| !i.is_deleted).collect();
-
+    let images = load_images(&ctx.db, user.id, false).await?;
     let sidebar_routes = routes::Dashboard::sidebar();
     let website = Website::init();
     views::dashboard::photo_dashboard(
         v,
         &user.into(),
-        &images,
+        &images.into(),
         sidebar_routes,
         training_models.into(),
         &website,

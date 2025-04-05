@@ -204,6 +204,7 @@ Alpine.store(Stores.ImageGenForm, {
     try {
       const [batches, singles] = createBatches(modelData.num_images);
       console.log(batches, singles);
+
       modelData.num_images = 4;
       for (let i = 0; i < batches; i++) {
         console.log(`Batches ${i + 1} of ${batches} send`);

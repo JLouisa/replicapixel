@@ -96,6 +96,7 @@ model Images {
   pack_id              Int?
   user_prompt          String     
   sys_prompt           String     
+  alt                  String     
   num_inference_steps  Int
   content_type         ImageFormat
   status               Status

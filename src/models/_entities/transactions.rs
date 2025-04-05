@@ -18,9 +18,9 @@ pub struct Model {
     pub payment_id: String,
     pub order_id: String,
     pub plan: String,
+    pub status: Status,
     pub created_at: DateTimeWithTimeZone,
     pub updated_at: DateTimeWithTimeZone,
-    pub status: Status,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

@@ -111,33 +111,41 @@ impl ImageGenerationService {
         // --- Prepare External API Call ---
         let image_gen_payload = params.process(&train_model);
 
-        // --- External API Interaction (Moved from Controller) ---
-        let fal_response = fal_ai_client
-            .send_image_queue_many_async(image_gen_payload.clone())
-            .await
-            .map_err(|e| GenerationError::FalAiError(format!("Initial send failed: {}", e)))?;
+        // // --- External API Interaction (Moved from Controller) ---
+        // let fal_response = fal_ai_client
+        //     .send_image_queue_many_async(image_gen_payload.clone())
+        //     .await
+        //     .map_err(|e| GenerationError::FalAiError(format!("Initial send failed: {}", e)))?;
 
-        let fal_response = fal_ai_client
-            .retry(fal_response, image_gen_payload)
-            .await
-            .map_err(|e| GenerationError::FalAiError(format!("Retry failed: {}", e)))?;
+        // let fal_response = fal_ai_client
+        //     .retry(fal_response, image_gen_payload)
+        //     .await
+        //     .map_err(|e| GenerationError::FalAiError(format!("Retry failed: {}", e)))?;
 
+        // // --- Persist Results ---
+        // fal_response
+        //     .save_all(&txn)
+        //     .await
+        //     .map_err(|e| GenerationError::SaveError(e.to_string()))?;
+
+        // // --- Business Logic: Update Credits (Moved from Controller) ---
+        // let credits_to_deduct = fal_response.as_ref().len() as i32;
+        // user_credits.credit_amount -= credits_to_deduct;
+
+        //Todo ==================================== Remove ====================================
         // --- Persist Results ---
-        fal_response
+        image_gen_payload
             .save_all(&txn)
             .await
             .map_err(|e| GenerationError::SaveError(e.to_string()))?;
 
-        // --- Business Logic: Update Credits (Moved from Controller) ---
-        let credits_to_deduct = fal_response.as_ref().len() as i32;
+        let credits_to_deduct = image_gen_payload.as_ref().len() as i32;
         user_credits.credit_amount -= credits_to_deduct;
-
+        //Todo ==================================== Remove ====================================
         // Update credits using an active model
-        let updated_credits_model = user_credits::ActiveModel {
-            id: Set(user_credits.id),
-            credit_amount: Set(user_credits.credit_amount),
-            ..Default::default()
-        };
+        let updated_credits_model = user_credits.save(&txn).await.map_err(|_| {
+            GenerationError::CreditUpdateError("Failed to update credits".to_string())
+        });
 
         let user_credits = UserCreditModel::find_by_user_id(&txn, user_credits.user_id)
             .await
@@ -146,7 +154,11 @@ impl ImageGenerationService {
         // --- Commit Transaction ---
         txn.commit().await?;
 
-        Ok((user_credits, fal_response))
+        // Ok((user_credits, fal_response))
+
+        //Todo ==================================== Remove ====================================
+        Ok((user_credits, image_gen_payload))
+        //Todo ==================================== Remove ====================================
     }
 }
 

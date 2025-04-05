@@ -19,44 +19,26 @@ WORKDIR /usr/src/
 COPY --from=planner /usr/src/recipe.json recipe.json
 # Build project dependencies based on the recipe
 RUN cargo chef cook --release --recipe-path recipe.json
-
 # Copy the application source code AFTER dependencies are built
 COPY . . 
 
-# --- Frontend Build ---
-# Install Node.js (needed for some Bun operations or as fallback)
-RUN curl -fsSL https://deb.nodesource.com/setup_current.x | bash - && \
-    apt-get update && apt-get install -y --no-install-recommends nodejs && \
-    rm -rf /var/lib/apt/lists/*
-
-# Install Bun and build the frontend
-RUN curl -fsSL https://bun.sh/install | bash && \
-    export BUN_INSTALL="/root/.bun" && \
-    export PATH="$BUN_INSTALL/bin:$PATH" && \
-    cd frontend && bun install && bun run build
-
 # --- Rust Application Build ---
-# Source code is already copied.
 # Add the MUSL target and build the application statically
 ENV CARGO_TARGET_X86_64_UNKNOWN_LINUX_MUSL_LINKER=clang
 ENV RUSTFLAGS="-C linker=clang -C link-arg=-fuse-ld=lld"
 RUN rustup target add x86_64-unknown-linux-musl
 RUN cargo build --release --target x86_64-unknown-linux-musl
 
-RUN apt-get update && apt-get install -y curl
-
 # Stage 4: Runtime - Create the final minimal image
 FROM debian:bookworm-slim AS runtime
 WORKDIR /usr/src
 
-# Install wget for healthchecks (lighter than curl)
+# Install wget for health checks
 RUN apt-get update && apt-get install -y --no-install-recommends wget && rm -rf /var/lib/apt/lists/*
 
 # Copy required assets and configuration from the builder stage
 COPY --from=builder /usr/src/assets assets
 COPY --from=builder /usr/src/config config
-
-# Copy the statically linked application binary from the builder stage
 COPY --from=builder /usr/src/target/x86_64-unknown-linux-musl/release/pictora-cli /usr/src/pictora
 
 # Expose the Loco app port

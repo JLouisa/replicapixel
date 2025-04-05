@@ -1,14 +1,14 @@
 #![allow(clippy::missing_errors_doc)]
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
-use loco_rs::prelude::*;
+use loco_rs::{db, prelude::*};
 
 use crate::domain::domain_services::image_generation::ImageGenerationService;
 use crate::models::_entities::sea_orm_active_enums::{
     BasedOn, Ethnicity, EyeColor, ImageFormat, ImageSize, Sex, Status,
 };
 use crate::models::_entities::training_models;
-use crate::models::images::{ImageNew, ImageNewList, UserPrompt};
+use crate::models::images::{AltText, ImageNew, ImageNewList, UserPrompt};
 use crate::models::user_credits::UserCreditsClient;
 use crate::models::{ImageModel, TrainingModelModel, UserCreditModel, UserModel};
 use crate::views::images::{CreditsViewModel, ImageViewModel};
@@ -44,6 +44,7 @@ pub struct ImageGenRequestParams {
 impl ImageGenRequestParams {
     pub fn process(self, model: &TrainingModelModel) -> ImageNewList {
         let sys_prompt = self.prompt.formatted_prompt(model);
+        let alt = AltText::from(&self.prompt);
         (0..self.num_images)
             .map(|_| ImageNew {
                 pid: Uuid::new_v4(),
@@ -52,6 +53,7 @@ impl ImageGenRequestParams {
                 pack_id: None,
                 sys_prompt: sys_prompt.to_owned(),
                 user_prompt: self.prompt.to_owned(),
+                alt: alt.to_owned(),
                 num_inference_steps: self.num_inference_steps as i32,
                 content_type: ImageFormat::Jpeg,
                 status: Status::Pending,
@@ -84,6 +86,17 @@ pub mod routes {
         pub const IMAGE_CHECK: &'static str = "/check";
         pub const IMAGE_ID: &'static str = "/{id}";
         pub const IMAGE_BASE: &'static str = "";
+
+        pub fn check_route() -> String {
+            use crate::controllers::images;
+
+            let check_route = format!(
+                "{}{}/test",
+                images::routes::Images::BASE,
+                images::routes::Images::IMAGE_CHECK
+            );
+            check_route
+        }
     }
 }
 
@@ -92,38 +105,95 @@ pub fn routes() -> Routes {
         .prefix(routes::Images::BASE)
         .add(routes::Images::IMAGE, get(list))
         // .add(routes::Images::IMAGE, post(add))
-        // .add(routes::Images::IMAGE_GENERATE_TEST, post(generate_test))
+        .add(routes::Images::IMAGE_GENERATE_TEST, post(generate_test))
         // .add(routes::Images::IMAGE_GENERATE, post(generate_img))
         .add(routes::Images::IMAGE_CHECK_TEST, get(check_test))
+        .add(routes::Images::IMAGE_CHECK_ID, get(check_img))
         .add(routes::Images::IMAGE_ID, get(get_one))
         .add(routes::Images::IMAGE_ID, delete(remove))
     // .add(routes::Images::IMAGE_ID, put(update))
     // .add(routes::Images::IMAGE_ID, patch(update))
 }
 
+async fn load_user(db: &DatabaseConnection, pid: &str) -> Result<UserModel> {
+    let item = UserModel::find_by_pid(db, pid).await?;
+    Ok(item)
+}
 async fn load_item(ctx: &AppContext, id: i32) -> Result<ImageModel> {
     let item = Entity::find_by_id(id).one(&ctx.db).await?;
     item.ok_or_else(|| Error::NotFound)
 }
-
 async fn load_item_pid(ctx: &AppContext, id: Uuid) -> Result<ImageModel> {
     let item = ImageModel::find_by_pid(&ctx.db, &id).await?;
     Ok(item)
 }
+async fn load_credits(db: &DatabaseConnection, id: i32) -> Result<UserCreditModel> {
+    let credits = UserCreditModel::find_by_user_id(db, id).await?;
+    Ok(credits)
+}
 
 #[debug_handler]
 pub async fn check_test(
+    auth: auth::JWT,
     Path(pid): Path<Uuid>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<Response> {
     use rand::Rng;
+    let mut image = load_item_pid(&ctx, pid).await?;
+    let user: crate::models::users::Model = load_user(&ctx.db, &auth.claims.pid).await?;
 
-    let change = rand::rng().random_range(0..=2);
+    if image.user_id != user.id {
+        return Err(Error::Unauthorized("Unauthorized".to_string()));
+    }
+
+    let user_credits = load_credits(&ctx.db, user.id).await?;
+    let user_credits_view: CreditsViewModel = user_credits.into();
+
+    let change = rand::rng().random_range(0..=80);
     let num = rand::rng().random_range(1..=11);
     if change == 0 {
-        let image = Image::test(num);
-        return views::images::img_completed(&v, &image);
+        let user_credits = image.image_url = Some(format!(
+            "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-{}.jpg",
+            num
+        ));
+        image.status = Status::Completed;
+        let check_route = routes::Images::check_route();
+        return views::images::img_completed(
+            &v,
+            &vec![image.into()],
+            check_route.as_str(),
+            &user_credits_view,
+        );
+    }
+    Ok((StatusCode::NO_CONTENT).into_response())
+}
+
+#[debug_handler]
+pub async fn check_img(
+    auth: auth::JWT,
+    Path(pid): Path<Uuid>,
+    State(ctx): State<AppContext>,
+    ViewEngine(v): ViewEngine<TeraView>,
+) -> Result<Response> {
+    use rand::Rng;
+    let image = load_item_pid(&ctx, pid).await?;
+    let user = load_user(&ctx.db, &auth.claims.pid).await?;
+
+    if image.user_id != user.id {
+        return Err(Error::Unauthorized("Unauthorized".to_string()));
+    }
+
+    if image.status == Status::Completed {
+        let user_credits = load_credits(&ctx.db, user.id).await?;
+        let user_credits_view: CreditsViewModel = user_credits.into();
+        let check_route = routes::Images::check_route();
+        return views::images::img_completed(
+            &v,
+            &vec![image.into()],
+            check_route.as_str(),
+            &user_credits_view,
+        );
     }
     Ok((StatusCode::NO_CONTENT).into_response())
 }
@@ -155,31 +225,8 @@ pub async fn generate_test(
     );
 
     // 5. Render the view using the View Models
-    views::images::one(&v, &credits_view_model, &image_view_models, &check_route)
+    views::images::img_completed(&v, &image_view_models, &check_route, &credits_view_model)
 }
-
-// #[debug_handler]
-// pub async fn add(State(ctx): State<AppContext>, Json(params): Json<Params>) -> Result<Response> {
-//     let mut item = ActiveModel {
-//         ..Default::default()
-//     };
-//     params.update(&mut item);
-//     let item = item.insert(&ctx.db).await?;
-//     format::json(item)
-// }
-
-// #[debug_handler]
-// pub async fn update(
-//     Path(id): Path<i32>,
-//     State(ctx): State<AppContext>,
-//     Json(params): Json<Params>,
-// ) -> Result<Response> {
-//     let item = load_item(&ctx, id).await?;
-//     let mut item = item.into_active_model();
-//     params.update(&mut item);
-//     let item = item.update(&ctx.db).await?;
-//     format::json(item)
-// }
 
 #[debug_handler]
 pub async fn get_one(

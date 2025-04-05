@@ -42,7 +42,7 @@ async function main() {
     },
   });
 
-  await prisma.trainingModels.create({
+  const trainingModel = await prisma.trainingModels.create({
     data: {
       pid: "5614eea0-faf6-446f-b2d4-8edfd0624bd1",
       user_id: user.id,
@@ -141,6 +141,34 @@ async function main() {
         is_verified: true,
       },
     });
+  }
+  {
+    for (let i = 0; i <= 3; i++) {
+      for (let i = 1; i <= 11; i++) {
+        const randomBoolean = Math.random() > 0.25;
+        const uuid = uuidv4();
+        const prompt = faker.lorem.sentence(8);
+        await prisma.images.upsert({
+          where: { pid: uuid },
+          update: {},
+          create: {
+            pid: uuid,
+            user_id: user.id,
+            training_model_id: trainingModel.id,
+            alt: `Image of ${prompt}`,
+            user_prompt: prompt,
+            sys_prompt: prompt,
+            num_inference_steps: 50,
+            content_type: "Jpeg",
+            status: "Completed",
+            image_size: "Square",
+            image_url: `https://flowbite.s3.amazonaws.com/docs/gallery/square/image-${i}.jpg`,
+            is_favorite: randomBoolean,
+            deleted_at: Math.random() < 0.1 ? new Date() : null,
+          },
+        });
+      }
+    }
   }
 }
 

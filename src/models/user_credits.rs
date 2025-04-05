@@ -124,6 +124,32 @@ impl ActiveModelBehavior for ActiveModel {
     }
 }
 
+impl Model {
+    pub fn update(&self, item: &mut ActiveModel) {
+        item.id = Set(self.id);
+        item.pid = Set(self.pid.clone());
+        item.user_id = Set(self.user_id.clone());
+        item.credit_amount = Set(self.credit_amount.clone());
+        item.model_amount = Set(self.model_amount.clone());
+    }
+    pub async fn load_item(&self, db: &impl ConnectionTrait) -> Result<Self> {
+        let item = Entity::find_by_id(self.id).one(db).await?;
+        item.ok_or_else(|| Error::NotFound).map(|item| item.into())
+    }
+    pub async fn load_item_by_user_id(db: &impl ConnectionTrait, user: &UserModel) -> Result<Self> {
+        let item = Model::find_by_user_id(db, user.id).await?;
+        Ok(item)
+    }
+    pub async fn save(&self, db: &impl ConnectionTrait) -> Result<Self> {
+        let mut item = ActiveModel {
+            ..Default::default()
+        };
+        self.update(&mut item);
+        let item = item.update(db).await?;
+        Ok(item.into())
+    }
+}
+
 // implement your read-oriented logic here
 impl Model {
     pub async fn find_by_user_id(db: &impl ConnectionTrait, user_id: i32) -> ModelResult<Model> {

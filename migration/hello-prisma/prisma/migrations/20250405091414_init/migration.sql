@@ -94,6 +94,7 @@ CREATE TABLE "Images" (
     "pack_id" INTEGER,
     "user_prompt" TEXT NOT NULL,
     "sys_prompt" TEXT NOT NULL,
+    "alt" TEXT NOT NULL,
     "num_inference_steps" INTEGER NOT NULL,
     "content_type" "image_format" NOT NULL,
     "status" "status" NOT NULL,

@@ -1,6 +1,8 @@
 use super::auth::{UserCreditsView, UserView};
+use super::images::{self, ImageViewModel};
 use super::training_models::TrainingModelView;
 use crate::controllers::dashboard::routes::Sidebar;
+use crate::controllers::images::routes::Images;
 use crate::domain::website::Website;
 use crate::models::_entities::training_models::Model as TrainingModel;
 use crate::{
@@ -38,11 +40,7 @@ pub fn billing_partial_dashboard(
     format::render().view(
         &v,
         "dashboard/content/billing/billing_partial.html",
-        data!(
-            {
-                "sidebar": sidebar, "user": user,
-            }
-        ),
+        data!({"sidebar": sidebar, "user": user}),
     )
 }
 
@@ -106,11 +104,7 @@ pub fn notification_partial_dashboard(
     format::render().view(
         &v,
         "dashboard/content/notification/notification_partial.html",
-        data!(
-            {
-                "sidebar": sidebar, "user": user,
-            }
-        ),
+        data!({"sidebar": sidebar, "user": user}),
     )
 }
 
@@ -175,12 +169,7 @@ pub fn settings_partial_dashboard(
     format::render().view(
         &v,
         "dashboard/content/settings/settings_partial.html",
-        data!(
-            {
-                "sidebar": sidebar, "user": user,
-                "credits": "1000",
-            }
-        ),
+        data!({"sidebar": sidebar, "user": user}),
     )
 }
 
@@ -222,7 +211,6 @@ pub fn training_partial_dashboard(
         data!(
             {
                 "sidebar": sidebar, "user": user,
-                "credits": "1000",
                 "models": models,
                 "training_route_check": training_route_check
             }
@@ -256,14 +244,14 @@ pub fn packs_partial_dashboard(
     format::render().view(
         &v,
         "dashboard/content/packs/packs_partial.html",
-        data!({"user": user,"credits": "1000", "packs": packs,  "partial": true}),
+        data!({"user": user, "packs": packs,  "partial": true}),
     )
 }
 
 pub fn photo_dashboard(
     v: impl ViewRenderer,
     user: &UserView,
-    images: &Vec<Image>, // replace with &Vec<ImageViewModel>
+    images: &Vec<ImageViewModel>,
     sidebar_routes: Sidebar,
     training_models: Vec<TrainingModelView>,
     website: &Website,
@@ -277,6 +265,7 @@ pub fn photo_dashboard(
             "sidebar_routes": &website.sidebar_routes,
             "user": user, "images": images, "training_models": training_models,
             "website": website, "credits": credits,
+            "check_route":  Images::check_route(),
         }),
     )
 }
@@ -284,7 +273,7 @@ pub fn photo_dashboard(
 pub fn photo_partial_dashboard(
     v: impl ViewRenderer,
     user: &UserView,
-    images: &Vec<Image>, // replace with &Vec<ImageViewModel>
+    images: &Vec<ImageViewModel>,
     training_models: Vec<TrainingModelView>,
     website: &Website,
     credits: &UserCreditsView,
@@ -293,26 +282,10 @@ pub fn photo_partial_dashboard(
     format::render().view(
         &v,
         "dashboard/content/photo/photo_partial.html",
-        data!({"user": user, "images": images, "training_models": training_models,
-        "website": website, "credits": credits
+        data!({"user": user, "images": images,
+        "training_models": training_models,
+        "website": website, "credits": credits,
+        "check_route": Images::check_route(),
         }),
     )
 }
-
-// pub fn dashboard(
-//     v: impl ViewRenderer,
-//     user: &UserView,
-//     images: &Vec<Image>,
-//     sidebar_routes: Sidebar,
-//     training_models: Vec<TrainingModelView>,
-//     credits: &UserCreditsView,
-// ) -> Result<impl IntoResponse> {
-//     let sidebar = DashboardSidebar::init();
-//     format::render().view(
-//         &v,
-//         "dashboard/content/photo/photo.html",
-//         data!({"sidebar": sidebar, "user": user,
-//         "sidebar_routes": sidebar_routes,
-//         "credits": credits, "images": images, "training_models": training_models}),
-//     )
-// }

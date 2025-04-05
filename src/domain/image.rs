@@ -73,52 +73,22 @@ impl Image {
         let mut list = Vec::with_capacity(33);
 
         if is_full {
-            for index in 1..=11 {
-                list.push(Image {
-                    id: index,
-                    pid: Uuid::new_v4(),
-                    name: format!("Image {}", index),
-                    url: format!(
-                        "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-{}.jpg",
-                        index
-                    ),
-                    alt: "".to_string(),
-                    content_type: "jpg".to_string(),
-                    is_favorite: rand::rng().random_bool(0.5),
-                    is_deleted: rand::rng().random_bool(0.5),
-                });
-            }
-
-            for index in 1..=11 {
-                list.push(Image {
-                    id: index + 11,
-                    pid: Uuid::new_v4(),
-                    name: format!("Image {}", index),
-                    url: format!(
-                        "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-{}.jpg",
-                        index
-                    ),
-                    alt: "".to_string(),
-                    content_type: "jpg".to_string(),
-                    is_favorite: rand::rng().random_bool(0.5),
-                    is_deleted: rand::rng().random_bool(0.5),
-                });
-            }
-
-            for index in 1..=11 {
-                list.push(Image {
-                    id: index + 22,
-                    pid: Uuid::new_v4(),
-                    name: format!("Image {}", index),
-                    url: format!(
-                        "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-{}.jpg",
-                        index
-                    ),
-                    alt: "".to_string(),
-                    content_type: "jpg".to_string(),
-                    is_favorite: rand::rng().random_bool(0.5),
-                    is_deleted: rand::rng().random_bool(0.5),
-                });
+            for i in 0..=2 {
+                for index in 1..=11 {
+                    list.push(Image {
+                        id: index,
+                        pid: Uuid::new_v4(),
+                        name: format!("Image {}", index),
+                        url: format!(
+                            "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-{}.jpg",
+                            index
+                        ),
+                        alt: "".to_string(),
+                        content_type: "jpg".to_string(),
+                        is_favorite: rand::rng().random_bool(0.5),
+                        is_deleted: rand::rng().random_bool(0.5),
+                    });
+                }
             }
         }
 

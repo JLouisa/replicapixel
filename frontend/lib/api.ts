@@ -276,6 +276,7 @@ export const DAL = {
   Backend: {
     ImageGeneration: {
       async generateImage(payload: ImageGenForm, target: string, swapStyle: string) {
+        console.log(BackendUrl.Image.GenerateImage);
         try {
           return await backendApi.postHTMX(
             BackendUrl.Image.GenerateImage,

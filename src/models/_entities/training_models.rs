@@ -18,6 +18,11 @@ pub struct Model {
     pub user_id: i32,
     pub name: String,
     pub age: i32,
+    pub sex: Sex,
+    pub ethnicity: Ethnicity,
+    #[sea_orm(column_name = "basedOn")]
+    pub based_on: BasedOn,
+    pub eye_color: EyeColor,
     pub bald: bool,
     pub steps: i32,
     pub create_mask: bool,
@@ -27,6 +32,7 @@ pub struct Model {
     pub tensor_path: Option<String>,
     #[sea_orm(column_type = "Text", nullable)]
     pub thumbnail: Option<String>,
+    pub training_status: Status,
     #[sea_orm(column_type = "JsonBinary", nullable)]
     pub fal_output: Option<Json>,
     #[sea_orm(column_type = "JsonBinary", nullable)]
@@ -37,12 +43,6 @@ pub struct Model {
     pub deleted_at: Option<DateTimeWithTimeZone>,
     pub created_at: DateTimeWithTimeZone,
     pub updated_at: DateTimeWithTimeZone,
-    pub sex: Sex,
-    pub ethnicity: Ethnicity,
-    pub training_status: Status,
-    #[sea_orm(column_name = "basedOn")]
-    pub based_on: BasedOn,
-    pub eye_color: EyeColor,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

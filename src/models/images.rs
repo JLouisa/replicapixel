@@ -13,32 +13,6 @@ use serde::{Deserialize, Serialize};
 pub type Images = Entity;
 use loco_rs::{auth::jwt, hash, prelude::*};
 
-#[derive(Clone, Debug, Serialize)]
-pub struct ImageClient {
-    pub pid: Uuid,
-    pub user_id: i32,
-    pub training_model_id: i32,
-    pub user_prompt: UserPrompt,
-    pub image_size: ImageSize,
-    pub image_url: Option<String>,
-    pub image_url_s3: Option<String>,
-    pub deleted_at: Option<DateTimeWithTimeZone>,
-}
-impl From<ImageModel> for ImageClient {
-    fn from(model: ImageModel) -> Self {
-        Self {
-            pid: model.pid,
-            user_id: model.user_id,
-            training_model_id: model.training_model_id,
-            user_prompt: UserPrompt(model.user_prompt),
-            image_size: model.image_size,
-            image_url: model.image_url,
-            image_url_s3: model.image_url_s3,
-            deleted_at: model.deleted_at,
-        }
-    }
-}
-
 #[derive(Clone, Debug, Serialize, PartialEq)]
 pub struct ImageNew {
     pub pid: Uuid,
@@ -47,6 +21,7 @@ pub struct ImageNew {
     pub pack_id: Option<i32>,
     pub user_prompt: UserPrompt,
     pub sys_prompt: SysPrompt,
+    pub alt: AltText,
     pub num_inference_steps: i32,
     pub content_type: ImageFormat,
     pub status: Status,
@@ -61,11 +36,12 @@ pub struct ImageNew {
 }
 impl ImageNew {
     pub fn update(&self, item: &mut ActiveModel) {
-        item.user_prompt = Set(self.user_prompt.as_ref().to_owned());
-        item.sys_prompt = Set(self.sys_prompt.as_ref().to_owned());
         item.pid = Set(self.pid.clone());
         item.user_id = Set(self.user_id.clone());
         item.training_model_id = Set(self.training_model_id.clone());
+        item.user_prompt = Set(self.user_prompt.as_ref().to_owned());
+        item.sys_prompt = Set(self.sys_prompt.as_ref().to_owned());
+        item.alt = Set(self.alt.as_ref().to_owned());
         item.pack_id = Set((self.pack_id.clone()));
         item.num_inference_steps = Set(self.num_inference_steps.clone());
         item.content_type = Set(self.content_type.clone());
@@ -88,12 +64,10 @@ impl ImageNewList {
         self.0
     }
     pub async fn save_all(&self, txn: &DatabaseTransaction) -> Result<(), loco_rs::Error> {
-        // Bulk insert
         let models: Vec<ActiveModel> = self
             .clone()
             .into_inner()
             .iter()
-            // .iter_mut()
             .map(|img| {
                 let mut item = ActiveModel {
                     ..Default::default()
@@ -108,19 +82,6 @@ impl ImageNewList {
 }
 impl From<Vec<ImageNew>> for ImageNewList {
     fn from(list: Vec<ImageNew>) -> Self {
-        Self::new(list)
-    }
-}
-
-#[derive(Clone, Debug, Serialize, Constructor, AsRef)]
-pub struct ImageClientList(Vec<ImageClient>);
-impl ImageClientList {
-    pub fn into_inner(self) -> Vec<ImageClient> {
-        self.0
-    }
-}
-impl From<Vec<ImageClient>> for ImageClientList {
-    fn from(list: Vec<ImageClient>) -> Self {
         Self::new(list)
     }
 }
@@ -167,6 +128,50 @@ impl SysPrompt {
     }
 }
 
+#[derive(Clone, Debug, Serialize, Deserialize, AsRef, PartialEq)]
+pub struct AltText(String);
+impl AltText {
+    pub fn new<K: Into<String>>(key: K) -> Self {
+        Self(key.into())
+    }
+    pub fn into_inner(self) -> String {
+        self.0
+    }
+    fn truncate_with_ellipsis(text: &str) -> Self {
+        let max_len: usize = 15;
+        let text = if text.chars().count() > max_len {
+            // String is longer than max_len: take first max_len chars and add "..."
+            let truncated: String = text.chars().take(max_len).collect();
+            format!("{}...", truncated)
+        } else {
+            // String is max_len or shorter: return the whole string
+            text.to_string()
+        };
+        Self::new(text)
+    }
+}
+impl From<UserPrompt> for AltText {
+    fn from(value: UserPrompt) -> Self {
+        Self::truncate_with_ellipsis(value.as_ref())
+    }
+}
+impl From<&UserPrompt> for AltText {
+    fn from(value: &UserPrompt) -> Self {
+        Self::truncate_with_ellipsis(value.as_ref())
+    }
+}
+
+#[derive(Clone, Debug, Constructor, AsRef)]
+pub struct ImagesModelList(Vec<Model>);
+impl ImagesModelList {
+    pub fn into_inner(self) -> Vec<Model> {
+        self.0
+    }
+    pub fn empty() -> Self {
+        Self(Vec::new())
+    }
+}
+
 #[async_trait::async_trait]
 impl ActiveModelBehavior for ActiveModel {
     async fn before_save<C>(self, _db: &C, insert: bool) -> std::result::Result<Self, DbErr>
@@ -193,6 +198,7 @@ impl ActiveModel {
             pack_id: ActiveValue::set((img.pack_id.clone())),
             user_prompt: ActiveValue::set(img.user_prompt.clone()),
             sys_prompt: ActiveValue::set(img.sys_prompt.clone()),
+            alt: ActiveValue::set(img.alt.clone()),
             num_inference_steps: ActiveValue::set(img.num_inference_steps.clone()),
             content_type: ActiveValue::set(img.content_type),
             status: ActiveValue::set(img.status),
@@ -218,12 +224,49 @@ impl Model {
         let user = Entity::find()
             .filter(
                 model::query::condition()
-                    .eq(images::Column::Pid, pid.to_string())
+                    .eq(images::Column::Pid, pid.clone())
                     .build(),
             )
             .one(db)
             .await?;
         user.ok_or_else(|| ModelError::EntityNotFound)
+    }
+    pub async fn find_all_by_user_id(
+        db: &DatabaseConnection,
+        id: i32,
+        fav: bool,
+    ) -> ModelResult<Vec<Self>> {
+        let mut query = Entity::find()
+            .filter(images::Column::UserId.eq(id))
+            .filter(images::Column::DeletedAt.is_null());
+        if fav {
+            query = query.filter(images::Column::IsFavorite.eq(true));
+        }
+        let results = query
+            .order_by_desc(images::Column::CreatedAt)
+            .all(db)
+            .await?;
+        Ok(results)
+    }
+    pub async fn find_all_del_by_user_id(
+        db: &DatabaseConnection,
+        id: i32,
+    ) -> ModelResult<Vec<Self>> {
+        let list = Entity::find()
+            .filter(
+                model::query::condition()
+                    .eq(images::Column::UserId, id)
+                    .build(),
+            )
+            .filter(
+                model::query::condition()
+                    .is_not_null(images::Column::DeletedAt)
+                    .build(),
+            )
+            .order_by_desc(images::Column::DeletedAt)
+            .all(db)
+            .await?;
+        Ok(list)
     }
 }
 
