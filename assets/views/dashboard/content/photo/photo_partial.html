@@ -7,7 +7,7 @@
     {% include "dashboard/content/photo/image_partial.html" %}
   </div>
   {% else %}
-  <div class="flex flex-col items-center justify-center min-h-screen">
+  <div class="flex flex-col mx-auto items-center justify-center min-h-screen">
     <p class="text-gray-500 text-lg">No images available. Create some to get started!</p>
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -32,16 +32,11 @@
 {% if training_models | length > 0 and credits.credit_amount > 0 %} {% include
 "dashboard/content/photo/create_image_partial.html" %} {% endif %} {% block js %}
 <script>
-  async function consolIt(msg, id) {
-    console.log(msg, id);
-  }
   async function uploadImageFromUrlToS3(imageUrl, presignedUrl, notifyBackendUrl) {
-    console.log("Start downloading image");
     try {
       const imageResponse = await fetch(imageUrl);
       if (!imageResponse.ok) throw new Error("Failed to fetch image from source");
       const blob = await imageResponse.blob();
-      console.log("Start uploading image to S3");
       const s3Upload = await fetch(presignedUrl, {
         method: "PUT",
         body: blob,
@@ -50,7 +45,6 @@
         },
       });
       if (!s3Upload.ok) throw new Error("Failed to upload to S3");
-      console.log("Start notifying backend");
       const backendNotify = await fetch(notifyBackendUrl, {
         method: "PATCH",
         headers: {

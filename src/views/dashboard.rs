@@ -182,6 +182,7 @@ pub fn training_dashboard(
     credits: &UserCreditsView,
 ) -> Result<impl IntoResponse> {
     let sidebar = DashboardSidebar::init();
+    // let models: Vec<TrainingModelView> = Vec::new();
     format::render().view(
         &v,
         "dashboard/content/training_models/training_models.html",

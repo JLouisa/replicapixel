@@ -194,10 +194,7 @@ pub async fn check_test(
     let change = rand::rng().random_range(0..=3);
     let num = rand::rng().random_range(1..=11);
     if change == 0 {
-        let user_credits = image.image_url = Some(format!(
-            "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-{}.jpg",
-            num
-        ));
+        image.image_url = Some("https://v3.fal.media/files/panda/ycu2NDkTawQBdmgZDAF3g_ffb513c9074146009320fa60e64beaab.jpg".to_string());
         image.status = Status::Completed;
         let check_route = routes::Images::check_route();
         let image: ImageViewModel = image.into();

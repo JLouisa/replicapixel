@@ -70,9 +70,6 @@
     </form>
     {% if image.image_status == "Completed" and not image.image_url_s3 and image.pre_url %}
     <script>
-      // console.log("Trigger S3 upload presigned URL: ", "{{ image.pre_url }}");
-      // DAL.Console("Trigger S3 upload for image: ", "{{ image.pid }}");
-      // window.DAL.Console("Trigger S3 upload for image: ", "{{ image.pid }}");
       uploadImageFromUrlToS3(
         "{{ image.image_url }}",
         "{{image.pre_url}}",
