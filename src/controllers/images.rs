@@ -4,6 +4,7 @@
 use loco_rs::{db, prelude::*};
 
 use crate::domain::domain_services::image_generation::ImageGenerationService;
+use crate::initializers::s3;
 use crate::models::_entities::sea_orm_active_enums::{
     BasedOn, Ethnicity, EyeColor, ImageFormat, ImageSize, Sex, Status,
 };
@@ -12,7 +13,7 @@ use crate::models::images::{AltText, ImageNew, ImageNewList, UserPrompt};
 use crate::models::user_credits::UserCreditsClient;
 use crate::models::{ImageActiveModel, ImageModel, TrainingModelModel, UserCreditModel, UserModel};
 use crate::service::aws::s3::{AwsS3, S3Folders, S3Key};
-use crate::views::images::{CreditsViewModel, ImageViewModel};
+use crate::views::images::{CreditsViewModel, ImageViewList, ImageViewModel};
 use crate::{
     domain::image::Image,
     models::_entities::images::ActiveModel,
@@ -62,8 +63,8 @@ impl ImageGenRequestParams {
                 fal_ai_request_id: None,
                 width: None,
                 height: None,
-                image_url: None,
-                image_url_s3: None,
+                image_url_fal: None,
+                image_s3_key: None,
                 is_favorite: false,
                 deleted_at: None,
             })
@@ -149,7 +150,7 @@ pub async fn upload_img_s3_completed(
 ) -> Result<Response> {
     let user = UserModel::find_by_pid(&ctx.db, &auth.claims.pid).await?;
     let image = load_item_pid(&ctx, img_pid).await?;
-    let s3_key: S3Key = s3_client.create_s3_key(
+    let s3_key = s3_client.create_s3_key(
         &user.pid,
         &S3Folders::Images,
         &image.pid.to_string(),
@@ -187,15 +188,15 @@ pub async fn check_test(
     if image.user_id != user.id {
         return Err(Error::Unauthorized("Unauthorized".to_string()));
     }
-
-    let user_credits = load_credits(&ctx.db, user.id).await?;
-    let user_credits_view: CreditsViewModel = user_credits.into();
-
     let change = rand::rng().random_range(0..=3);
-    let num = rand::rng().random_range(1..=11);
     if change == 0 {
-        image.image_url = Some("https://v3.fal.media/files/panda/ycu2NDkTawQBdmgZDAF3g_ffb513c9074146009320fa60e64beaab.jpg".to_string());
+        let num = rand::rng().random_range(1..=11);
+        image.image_url_fal = Some("https://v3.fal.media/files/panda/ycu2NDkTawQBdmgZDAF3g_ffb513c9074146009320fa60e64beaab.jpg".to_string());
         image.status = Status::Completed;
+    }
+    if image.status == Status::Completed {
+        let user_credits = load_credits(&ctx.db, user.id).await?;
+        let user_credits_view: CreditsViewModel = user_credits.into();
         let check_route = routes::Images::check_route();
         let image: ImageViewModel = image.into();
         let image: ImageViewModel = image
@@ -205,11 +206,12 @@ pub async fn check_test(
             .unwrap_or_else(|_| image);
         return views::images::img_completed(
             &v,
-            &vec![image],
+            &ImageViewList::new(vec![image]),
             check_route.as_str(),
             &user_credits_view,
         );
     }
+
     Ok((StatusCode::NO_CONTENT).into_response())
 }
 
@@ -241,7 +243,7 @@ pub async fn check_img(
             .unwrap_or_else(|_| image);
         return views::images::img_completed(
             &v,
-            &vec![image],
+            &ImageViewList::new(vec![image]),
             check_route.as_str(),
             &user_credits_view,
         );
@@ -276,7 +278,12 @@ pub async fn generate_test(
     );
 
     // 5. Render the view using the View Models
-    views::images::img_completed(&v, &image_view_models, &check_route, &credits_view_model)
+    views::images::img_completed(
+        &v,
+        &image_view_models.into(),
+        &check_route,
+        &credits_view_model,
+    )
 }
 
 #[debug_handler]

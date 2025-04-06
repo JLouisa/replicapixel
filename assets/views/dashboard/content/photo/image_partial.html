@@ -6,7 +6,7 @@
     id="img-{{ image.pid }}"
     class="absolute inset-0 w-full h-full object-cover cursor-pointer duration-300 ease-in-out hover:scale-105"
     onclick="document.getElementById('modal-{{ image.training_model_id }}-{{ image.pid }}').showModal()"
-    src="{% if image.image_url_s3 %}{{ image.image_url_s3 }}{% else %}{{ image.image_url }}{% endif %}"
+    src="{% if image.s3_pre_url %}{{ image.s3_pre_url }}{% else %}{{ image.image_url_fal }}{% endif %}"
     alt="{{ image.image_alt }}"
     loading="lazy"
   />
@@ -15,12 +15,12 @@
       <img
         id="modal-img-{{ image.pid }}"
         class="h-auto max-w-full rounded-lg shadow-md mx-auto"
-        src="{% if image.image_url_s3 %}{{ image.image_url_s3 }}{% else %}{{ image.image_url }}{% endif %}"
+        src="{% if image.s3_pre_url %}{{ image.s3_pre_url }}{% else %}{{ image.image_url_fal }}{% endif %}"
         alt="{{ image.image_alt }}"
       />
       <div class="flex items-center justify-center sm:justify-end gap-3 mt-4">
         <a
-          href="{% if image.image_url_s3 %}{{ image.image_url_s3 }}{% else %}{{ image.image_url }}{% endif %}"
+          href="{% if image.s3_pre_url %}{{ image.s3_pre_url }}{% else %}{{ image.image_url_fal }}{% endif %}"
           download="{{ image.pid }}.{{ image.content_type }}"
           class="btn btn-primary"
         >
@@ -71,7 +71,7 @@
     {% if image.image_status == "Completed" and not image.image_url_s3 and image.pre_url %}
     <script>
       uploadImageFromUrlToS3(
-        "{{ image.image_url }}",
+        "{{ image.image_url_fal }}",
         "{{image.pre_url}}",
         "/api/images/upload/complete/{{ image.pid }}"
       );

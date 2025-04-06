@@ -103,8 +103,8 @@ model Images {
   fal_ai_request_id   String?     @db.VarChar(255)
   width               Int?
   height              Int?
-  image_url           String?
-  image_url_s3        String?
+  image_url_fal       String?
+  image_s3_key        String?
   is_favorite         Boolean     @default(true)
   deleted_at          DateTime?   @db.Timestamptz
   created_at          DateTime    @default(now()) @db.Timestamptz

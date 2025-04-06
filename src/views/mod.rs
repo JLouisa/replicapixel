@@ -7,3 +7,5 @@ pub mod dashboard;
 pub mod images;
 
 pub mod training_models;
+
+pub mod payment;

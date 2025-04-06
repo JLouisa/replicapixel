@@ -13,7 +13,10 @@ use crate::models::{
     ImageModel, TrainingModelActiveModel, TrainingModelEntity, TrainingModelModel,
     UserCreditEntity, UserCreditModel, UserEntity, UserModel,
 };
+use crate::service::aws::s3::AwsS3;
 use crate::views;
+use crate::views::images::ImageViewModel;
+use axum::Extension;
 use axum::{
     debug_handler,
     extract::{Json, State},
@@ -24,9 +27,9 @@ use loco_rs::controller::ErrorDetail;
 use loco_rs::prelude::*;
 
 pub mod routes {
-    use serde::Serialize;
+    use serde::{Deserialize, Serialize};
 
-    #[derive(Debug, Serialize)]
+    #[derive(Debug, Serialize, Deserialize, Clone)]
     pub struct Sidebar {
         pub packs: String,
         pub packs_partial: String,
@@ -408,6 +411,7 @@ pub async fn album_deleted_dashboard(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
+    Extension(website): Extension<Website>,
 ) -> Result<impl IntoResponse> {
     let user = load_user(&ctx.db, &auth.claims.pid).await?;
     let user_credits = load_user_credits(&ctx.db, user.id).await?;
@@ -415,7 +419,6 @@ pub async fn album_deleted_dashboard(
     let images = load_images_del(&ctx.db, user.id).await?;
 
     let sidebar_routes = routes::Dashboard::sidebar();
-    let website = Website::init();
     views::dashboard::photo_dashboard(
         v,
         &user.into(),
@@ -432,13 +435,13 @@ pub async fn album_deleted_partial_dashboard(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
+    Extension(website): Extension<Website>,
 ) -> Result<impl IntoResponse> {
     let user = load_user(&ctx.db, &auth.claims.pid).await?;
     let user_credits = load_user_credits(&ctx.db, user.id).await?;
     let training_models: TrainingModelList = TrainingModelList::empty();
     let images = load_images_del(&ctx.db, user.id).await?;
 
-    let website = Website::init();
     views::dashboard::photo_partial_dashboard(
         v,
         &user.into(),
@@ -453,6 +456,7 @@ pub async fn album_deleted_partial_dashboard(
 pub async fn album_favorite_dashboard(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
+    Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
     let user = load_user(&ctx.db, &auth.claims.pid).await?;
@@ -461,7 +465,6 @@ pub async fn album_favorite_dashboard(
     let images = load_images(&ctx.db, user.id, true).await?;
 
     let sidebar_routes = routes::Dashboard::sidebar();
-    let website = Website::init();
     views::dashboard::photo_dashboard(
         v,
         &user.into(),
@@ -477,6 +480,7 @@ pub async fn album_favorite_dashboard(
 pub async fn album_favorite_partial_dashboard(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
+    Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
     let user = load_user(&ctx.db, &auth.claims.pid).await?;
@@ -484,7 +488,6 @@ pub async fn album_favorite_partial_dashboard(
     let training_models: TrainingModelList = TrainingModelList::empty();
     let images = load_images(&ctx.db, user.id, true).await?;
 
-    let website = Website::init();
     views::dashboard::photo_partial_dashboard(
         v,
         &user.into(),
@@ -499,7 +502,9 @@ pub async fn album_favorite_partial_dashboard(
 pub async fn photo_dashboard(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
+    Extension(s3_client): Extension<AwsS3>,
     ViewEngine(v): ViewEngine<TeraView>,
+    Extension(website): Extension<Website>,
 ) -> Result<impl IntoResponse> {
     let user = load_user(&ctx.db, &auth.claims.pid).await?;
     let user_credits = load_user_credits(&ctx.db, user.id).await?;
@@ -507,11 +512,30 @@ pub async fn photo_dashboard(
     let images = load_images(&ctx.db, user.id, false).await?;
 
     let sidebar_routes = routes::Dashboard::sidebar();
-    let website = Website::init();
+    let images: Vec<ImageViewModel> = images.into();
+
+    // TODO: Process to get pre-signed URL for viewing (or uploading, if needed)
+
+    // 1. Fetch list of images (from DB or service)
+    // 2. For each image:
+    // 2.1. If image.status == "completed":
+    // 2.1.1. Try fetching pre-signed URL from cache (Redis) using a deterministic cache key
+    // 2.1.2. If not found in cache:
+    // 2.1.2.1. Generate pre-signed URL from S3 (expires in 1 hour)
+    // 2.1.2.2. Store the generated URL in Redis with the same expiry (or shorter)
+    // 2.1.3. Assign pre-signed URL to image.s3_pre_url
+    // 2.2. Else (status not "completed"):
+    // 2.2.1. Set image.s3_pre_url = None or placeholder/loading indicator
+    // 2.2.2. (Optional) Push this image to a background queue for retry or further processing
+
+    // 3. Return full image list with populated s3_pre_url or fallback
+    let images = ImageViewModel::get_pre_url_many(images.clone(), &user.pid, &s3_client).await;
+    //Todo End
+
     views::dashboard::photo_dashboard(
         v,
         &user.into(),
-        &images.into(),
+        &images,
         sidebar_routes,
         training_models.into(),
         &website.into(),
@@ -524,13 +548,13 @@ pub async fn photo_partial_dashboard(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
+    Extension(website): Extension<Website>,
 ) -> Result<impl IntoResponse> {
     let user = load_user(&ctx.db, &auth.claims.pid).await?;
     let user_credits = load_user_credits(&ctx.db, user.id).await?;
     let training_models = load_item_all_completed(&ctx, user.id).await?;
     let images = load_images(&ctx.db, user.id, false).await?;
 
-    let website = Website::init();
     views::dashboard::photo_partial_dashboard(
         v,
         &user.into(),
@@ -547,13 +571,13 @@ async fn render_dashboard(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
+    Extension(website): Extension<Website>,
 ) -> Result<impl IntoResponse> {
     let user = load_user(&ctx.db, &auth.claims.pid).await?;
     let user_credits = load_user_credits(&ctx.db, user.id).await?;
     let training_models = load_item_all(&ctx.db, user.id).await?;
     let images = load_images(&ctx.db, user.id, false).await?;
     let sidebar_routes = routes::Dashboard::sidebar();
-    let website = Website::init();
     views::dashboard::photo_dashboard(
         v,
         &user.into(),

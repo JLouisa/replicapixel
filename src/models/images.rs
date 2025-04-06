@@ -31,8 +31,8 @@ pub struct ImageNew {
     pub fal_ai_request_id: Option<String>,
     pub width: Option<i32>,
     pub height: Option<i32>,
-    pub image_url: Option<String>,
-    pub image_url_s3: Option<String>,
+    pub image_url_fal: Option<String>,
+    pub image_s3_key: Option<String>,
     pub is_favorite: bool,
     pub deleted_at: Option<DateTimeWithTimeZone>,
 }
@@ -52,8 +52,8 @@ impl ImageNew {
         item.fal_ai_request_id = Set(self.fal_ai_request_id.clone());
         item.width = Set(self.width.clone());
         item.height = Set(self.height.clone());
-        item.image_url = Set(self.image_url.clone());
-        item.image_url_s3 = Set(self.image_url_s3.clone());
+        item.image_url_fal = Set(self.image_url_fal.clone());
+        item.image_s3_key = Set(self.image_s3_key.clone());
         item.is_favorite = Set(self.is_favorite);
         item.deleted_at = Set(self.deleted_at.clone());
     }
@@ -208,8 +208,8 @@ impl ActiveModel {
             fal_ai_request_id: ActiveValue::set(img.fal_ai_request_id.clone()),
             width: ActiveValue::set(img.width.clone()),
             height: ActiveValue::set(img.height.clone()),
-            image_url: ActiveValue::set(img.image_url.clone()),
-            image_url_s3: ActiveValue::set(img.image_url_s3.clone()),
+            image_url_fal: ActiveValue::set(img.image_url_fal.clone()),
+            image_s3_key: ActiveValue::set(img.image_s3_key.clone()),
             is_favorite: ActiveValue::set(img.is_favorite),
             ..Default::default()
         };
@@ -223,7 +223,7 @@ impl ActiveModel {
         key: &S3Key,
         db: &DatabaseConnection,
     ) -> ModelResult<Model> {
-        self.image_url_s3 = ActiveValue::Set(Some(key.as_ref().to_owned()));
+        self.image_s3_key = ActiveValue::Set(Some(key.as_ref().to_owned()));
         Ok(self.update(db).await?)
     }
 }

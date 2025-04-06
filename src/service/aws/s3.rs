@@ -90,6 +90,9 @@ impl S3Key {
     pub fn into_inner(self) -> String {
         self.0
     }
+    pub fn full_url(&self, bucket_name: &str) -> String {
+        format!("https://{}.s3.amazonaws.com/{}", bucket_name, self.0)
+    }
 }
 impl AsRef<str> for S3Key {
     fn as_ref(&self) -> &str {
@@ -141,6 +144,11 @@ impl PresignedUrlSafe {
 pub struct AwsS3 {
     pub client: Client,
     pub settings: AwsSettings,
+}
+impl AwsS3 {
+    pub fn bucket_name(&self) -> &String {
+        &self.settings.s3.bucket_name
+    }
 }
 
 #[derive(Serialize, Deserialize)]
@@ -279,7 +287,6 @@ impl AwsS3 {
             Some(t) => t,
             None => self.settings.s3.access_time,
         };
-
         let presigned_request = self
             .client
             .get_object()
@@ -289,9 +296,12 @@ impl AwsS3 {
                 expires_in,
             ))?)
             .await
-            .expect("Failed to generate GET Object presigned URL");
-
+            .map_err(|_| AwsError::Other("Error getting presigned URL: 101".to_string()))?;
         Ok(Url::new(presigned_request.uri().to_string()))
+    }
+
+    pub async fn get_object_pre_many() -> Result<Vec<Url>, AwsError> {
+        todo!()
     }
 
     /// Delete an object from a bucket.
@@ -347,6 +357,17 @@ impl AwsS3 {
             folder.get_folder_str(),
             item_name.to_string(),
             file_format
+        );
+        S3Key::new(key)
+    }
+
+    pub fn create_s3_key_img(&self, id: &Uuid, image_name: &Uuid) -> S3Key {
+        let key = format!(
+            "{}/{}/{}.{}",
+            id.to_string(),
+            S3Folders::Images.get_folder_str(),
+            image_name.to_string(),
+            ImageFormat::Jpeg.to_string(),
         );
         S3Key::new(key)
     }
