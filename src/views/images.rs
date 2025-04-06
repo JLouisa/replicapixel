@@ -1,10 +1,15 @@
+use derive_more::{AsMut, AsRef, Constructor, From};
+use futures::future::{join_all, try_join_all};
 use loco_rs::prelude::*;
 
 use serde::Serialize;
 use uuid::Uuid;
 
+use crate::domain::url::Url;
+use crate::initializers::s3;
 use crate::models::images::{ImageNew, ImagesModelList, UserPrompt};
 use crate::models::{ImageModel, UserCreditModel};
+use crate::service::aws::s3::{AwsError, AwsS3, S3Key};
 use crate::{
     domain::image::Image,
     models::{_entities::images, images::ImageNewList, user_credits::UserCreditsClient},
@@ -13,7 +18,7 @@ use crate::{
 pub fn one(
     v: &impl ViewRenderer,
     credits: &CreditsViewModel,
-    image_list: &Vec<ImageViewModel>,
+    image_list: &ImageViewList,
     check_route: &str,
 ) -> Result<Response> {
     format::render().view(
@@ -25,14 +30,14 @@ pub fn one(
 
 pub fn img_completed(
     v: &impl ViewRenderer,
-    images: &Vec<ImageViewModel>,
+    images: &ImageViewList,
     check_route: &str,
     credits: &CreditsViewModel,
 ) -> Result<Response> {
     format::render().view(
         v,
         "dashboard/content/photo/image_partial.html",
-        data!({"images": images, "check_route": check_route}),
+        data!({"credits": credits,"images": images, "check_route": check_route}),
     )
 }
 
@@ -76,17 +81,104 @@ impl From<&UserCreditModel> for CreditsViewModel {
     }
 }
 
-#[derive(Serialize)]
+#[derive(Debug, Serialize, Clone)]
 pub struct ImageViewModel {
     pub pid: Uuid,
     pub training_model_id: i32,
     pub user_prompt: String,
     pub image_size: String,
-    pub image_url: Option<String>,
-    pub image_url_s3: Option<String>,
+    pub image_url_fal: Option<String>,
+    pub image_s3_key: Option<String>,
     pub content_type: String,
     pub image_alt: String,
     pub image_status: String,
+    pub pre_url: Option<String>,
+    pub s3_pre_url: Option<String>,
+}
+impl ImageViewModel {
+    pub async fn set_pre_url(self, user_id: &Uuid, s3_client: &AwsS3) -> Result<Self, AwsError> {
+        let pre_url = s3_client
+            .auto_upload_img_presigned_url(user_id, &self)
+            .await?;
+        let mut new_self = self;
+        new_self.pre_url = Some(pre_url.into_inner());
+        Ok(new_self)
+    }
+    pub async fn set_pre_url_many(
+        list: Vec<Self>,
+        user_id: &Uuid,
+        s3_client: &AwsS3,
+    ) -> Result<Vec<Self>, AwsError> {
+        let futures = list.into_iter().map(|image| async move {
+            if image.image_url_fal.is_some() && image.image_s3_key.is_none() {
+                image.set_pre_url(user_id, s3_client).await
+            } else {
+                Ok(image)
+            }
+        });
+        try_join_all(futures).await
+    }
+    pub async fn get_pre_url(mut self, user_id: &Uuid, s3_client: &AwsS3) -> Self {
+        // Early exit if fields are missing
+        let Some(image_url_fal) = self.image_url_fal.clone() else {
+            return self;
+        };
+        let Some(s3_key) = self.image_s3_key.clone().map(S3Key::new) else {
+            return self;
+        };
+
+        // Try generating pre-signed URL, fall back to original URL
+        match s3_client.get_object_pre(&s3_key, None).await {
+            Ok(url) => self.s3_pre_url = Some(url.into_inner()),
+            Err(_) => return self,
+        }
+        self
+    }
+    pub async fn get_pre_url_many(list: Vec<Self>, user_id: &Uuid, s3_client: &AwsS3) -> Vec<Self> {
+        let futures = list.into_iter().map(|image| async move {
+            if image.image_url_fal.is_some() && image.image_s3_key.is_some() {
+                image.get_pre_url(&user_id, s3_client).await
+            } else {
+                image
+            }
+        });
+
+        join_all(futures).await
+    }
+}
+impl From<ImageModel> for ImageViewModel {
+    fn from(img: ImageModel) -> Self {
+        Self {
+            pid: img.pid,
+            training_model_id: img.training_model_id,
+            user_prompt: img.user_prompt,
+            image_size: img.image_size.to_string(),
+            image_url_fal: img.image_url_fal,
+            image_s3_key: img.image_s3_key,
+            content_type: img.content_type.to_string(),
+            image_alt: img.alt,
+            image_status: img.status.to_string(),
+            pre_url: None,
+            s3_pre_url: None,
+        }
+    }
+}
+impl From<&ImageModel> for ImageViewModel {
+    fn from(img: &ImageModel) -> Self {
+        Self {
+            pid: img.pid.to_owned(),
+            training_model_id: img.training_model_id,
+            user_prompt: img.user_prompt.to_owned(),
+            image_size: img.image_size.clone().to_string(),
+            image_url_fal: img.image_url_fal.to_owned(),
+            image_s3_key: img.image_s3_key.to_owned(),
+            content_type: img.content_type.to_string(),
+            image_alt: img.alt.to_owned(),
+            image_status: img.status.to_string(),
+            pre_url: None,
+            s3_pre_url: None,
+        }
+    }
 }
 
 impl From<ImageNewList> for Vec<ImageViewModel> {
@@ -101,11 +193,13 @@ impl From<ImageNew> for ImageViewModel {
             training_model_id: img.training_model_id,
             user_prompt: img.user_prompt.into_inner(),
             image_size: img.image_size.to_string(),
-            image_url: img.image_url,
-            image_url_s3: img.image_url_s3,
+            image_url_fal: img.image_url_fal,
+            image_s3_key: img.image_s3_key,
             content_type: img.content_type.to_string(),
             image_alt: img.alt.into_inner(),
             image_status: img.status.to_string(),
+            pre_url: None,
+            s3_pre_url: None,
         }
     }
 }
@@ -116,47 +210,26 @@ impl From<&ImageNew> for ImageViewModel {
             training_model_id: img.training_model_id,
             user_prompt: img.user_prompt.as_ref().to_owned(),
             image_size: img.image_size.clone().to_string(),
-            image_url: img.image_url.to_owned(),
-            image_url_s3: img.image_url_s3.to_owned(),
+            image_url_fal: img.image_url_fal.to_owned(),
+            image_s3_key: img.image_s3_key.to_owned(),
             content_type: img.content_type.to_string(),
             image_alt: img.alt.as_ref().to_owned(),
             image_status: img.status.to_string(),
+            pre_url: None,
+            s3_pre_url: None,
         }
     }
 }
-
 impl From<ImagesModelList> for Vec<ImageViewModel> {
     fn from(list: ImagesModelList) -> Vec<ImageViewModel> {
         list.into_inner().iter().map(ImageViewModel::from).collect()
     }
 }
-impl From<ImageModel> for ImageViewModel {
-    fn from(img: ImageModel) -> Self {
-        Self {
-            pid: img.pid,
-            training_model_id: img.training_model_id,
-            user_prompt: img.user_prompt,
-            image_size: img.image_size.to_string(),
-            image_url: img.image_url,
-            image_url_s3: img.image_url_s3,
-            content_type: img.content_type.to_string(),
-            image_alt: img.alt,
-            image_status: img.status.to_string(),
-        }
-    }
-}
-impl From<&ImageModel> for ImageViewModel {
-    fn from(img: &ImageModel) -> Self {
-        Self {
-            pid: img.pid.to_owned(),
-            training_model_id: img.training_model_id,
-            user_prompt: img.user_prompt.to_owned(),
-            image_size: img.image_size.clone().to_string(),
-            image_url: img.image_url.to_owned(),
-            image_url_s3: img.image_url_s3.to_owned(),
-            content_type: img.content_type.to_string(),
-            image_alt: img.alt.to_owned(),
-            image_status: img.status.to_string(),
-        }
+
+#[derive(Debug, Serialize, Clone, Constructor, From, AsRef)]
+pub struct ImageViewList(Vec<ImageViewModel>);
+impl ImageViewList {
+    fn into_inner(self) -> Vec<ImageViewModel> {
+        self.0
     }
 }

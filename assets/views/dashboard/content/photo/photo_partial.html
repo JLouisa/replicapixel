@@ -2,12 +2,12 @@
 <div class="flex flex-1 overflow-y-auto p-4">
   <!-- Gallery Content -->
   {% if images|length > 0 %}
-  <div id="drive-gallery" class="grid grid-cols-2 md:grid-cols-6 gap-4">
+  <div id="drive-gallery" class="grid grid-cols-2 md:grid-cols-6 gap-4 w-full self-start">
     <!-- Image Partial -->
     {% include "dashboard/content/photo/image_partial.html" %}
   </div>
   {% else %}
-  <div class="flex flex-col items-center justify-center min-h-screen">
+  <div class="flex flex-col mx-auto items-center justify-center min-h-screen">
     <p class="text-gray-500 text-lg">No images available. Create some to get started!</p>
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -30,4 +30,33 @@
 </div>
 
 {% if training_models | length > 0 and credits.credit_amount > 0 %} {% include
-"dashboard/content/photo/create_image_partial.html" %} {% endif %}
+"dashboard/content/photo/create_image_partial.html" %} {% endif %} {% block js %}
+<script>
+  async function uploadImageFromUrlToS3(imageUrl, presignedUrl, notifyBackendUrl) {
+    try {
+      const imageResponse = await fetch(imageUrl);
+      if (!imageResponse.ok) throw new Error("Failed to fetch image from source");
+      const blob = await imageResponse.blob();
+      const s3Upload = await fetch(presignedUrl, {
+        method: "PUT",
+        body: blob,
+        headers: {
+          "Content-Type": blob.type,
+        },
+      });
+      if (!s3Upload.ok) throw new Error("Failed to upload to S3");
+      const backendNotify = await fetch(notifyBackendUrl, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ uploaded: true, source: imageUrl }),
+      });
+      if (!backendNotify.ok) throw new Error("Failed to notify backend");
+      console.log("✅ Upload and notification successful");
+    } catch (err) {
+      console.error("❌ Upload failed", err);
+    }
+  }
+</script>
+{% endblock js %}

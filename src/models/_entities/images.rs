@@ -30,9 +30,9 @@ pub struct Model {
     pub width: Option<i32>,
     pub height: Option<i32>,
     #[sea_orm(column_type = "Text", nullable)]
-    pub image_url: Option<String>,
+    pub image_url_fal: Option<String>,
     #[sea_orm(column_type = "Text", nullable)]
-    pub image_url_s3: Option<String>,
+    pub image_s3_key: Option<String>,
     pub is_favorite: bool,
     pub deleted_at: Option<DateTimeWithTimeZone>,
     pub created_at: DateTimeWithTimeZone,

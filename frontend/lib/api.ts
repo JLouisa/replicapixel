@@ -401,11 +401,40 @@ export const DAL = {
       Alpine.store("toast").error(message);
     },
   },
+  Console(message: string) {
+    console.log(message);
+  },
   // Generic error handling function to reduce duplication
   handleError(action: string, error: any, useToast: boolean) {
     const errorMessage = `Something went wrong ${action}: ${error.message || error}`;
     console.error("Error uploading file:", error);
     Alpine.store("toast").success(errorMessage);
     throw new Error(errorMessage);
+  },
+  async uploadImageFromUrlToS3(imageUrl: string, presignedUrl: string, notifyBackendUrl: string) {
+    try {
+      const imageResponse = await fetch(imageUrl);
+      const blob = await imageResponse.blob();
+
+      const s3Upload = await fetch(presignedUrl, {
+        method: "PUT",
+        body: blob,
+        headers: {
+          "Content-Type": blob.type,
+        },
+      });
+
+      if (!s3Upload.ok) throw new Error("Upload to S3 failed");
+
+      await fetch(notifyBackendUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ uploaded: true }),
+      });
+
+      console.log("✅ Upload complete");
+    } catch (err) {
+      console.error("❌ Upload failed", err);
+    }
   },
 };

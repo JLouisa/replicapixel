@@ -25,7 +25,9 @@
       />
     </a>
     <a href="/">
-      <div class="text-lg font-bold ml-4 cursor-pointer select-none">DreamPhoto</div>
+      <div class="text-lg font-bold ml-4 cursor-pointer select-none">
+        {{ website.name | default(value="DreamPhoto") }}
+      </div>
     </a>
   </div>
 

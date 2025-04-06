@@ -19,6 +19,7 @@ use validator::ValidateUrl;
 use crate::domain::url::Url;
 use crate::models::_entities::sea_orm_active_enums::ImageFormat;
 use crate::models::training_models::TrainingForm;
+use crate::views::images::ImageViewModel;
 
 #[derive(Error, Debug)]
 pub enum AwsError {
@@ -89,6 +90,9 @@ impl S3Key {
     pub fn into_inner(self) -> String {
         self.0
     }
+    pub fn full_url(&self, bucket_name: &str) -> String {
+        format!("https://{}.s3.amazonaws.com/{}", bucket_name, self.0)
+    }
 }
 impl AsRef<str> for S3Key {
     fn as_ref(&self) -> &str {
@@ -140,6 +144,11 @@ impl PresignedUrlSafe {
 pub struct AwsS3 {
     pub client: Client,
     pub settings: AwsSettings,
+}
+impl AwsS3 {
+    pub fn bucket_name(&self) -> &String {
+        &self.settings.s3.bucket_name
+    }
 }
 
 #[derive(Serialize, Deserialize)]
@@ -193,6 +202,27 @@ impl AwsS3 {
     }
 
     // Generate a presigned URL
+    pub async fn auto_upload_img_presigned_url(
+        &self,
+        user_pid: &Uuid,
+        image: &ImageViewModel,
+    ) -> Result<Url, AwsError> {
+        let folder = match image.content_type.as_str() {
+            "zip" => S3Folders::Zip,
+            _ => S3Folders::Images,
+        };
+        let time = Some(300);
+        let key = self.create_s3_key(
+            user_pid,
+            &folder,
+            &image.pid.to_string(),
+            &ImageFormat::Jpeg,
+        );
+        let pre_url = self.generate_save_presigned_url(&key, time).await?;
+        Ok((pre_url))
+    }
+
+    // Generate a presigned URL
     pub async fn presigned_save_url(
         &self,
         user_id: &Uuid,
@@ -210,7 +240,6 @@ impl AwsS3 {
         Ok((pre_url, key))
     }
 
-    // Generate a presigned URL
     pub async fn generate_save_presigned_url(
         &self,
         key: &S3Key,
@@ -258,7 +287,6 @@ impl AwsS3 {
             Some(t) => t,
             None => self.settings.s3.access_time,
         };
-
         let presigned_request = self
             .client
             .get_object()
@@ -268,9 +296,12 @@ impl AwsS3 {
                 expires_in,
             ))?)
             .await
-            .expect("Failed to generate GET Object presigned URL");
-
+            .map_err(|_| AwsError::Other("Error getting presigned URL: 101".to_string()))?;
         Ok(Url::new(presigned_request.uri().to_string()))
+    }
+
+    pub async fn get_object_pre_many() -> Result<Vec<Url>, AwsError> {
+        todo!()
     }
 
     /// Delete an object from a bucket.
@@ -326,6 +357,17 @@ impl AwsS3 {
             folder.get_folder_str(),
             item_name.to_string(),
             file_format
+        );
+        S3Key::new(key)
+    }
+
+    pub fn create_s3_key_img(&self, id: &Uuid, image_name: &Uuid) -> S3Key {
+        let key = format!(
+            "{}/{}/{}.{}",
+            id.to_string(),
+            S3Folders::Images.get_folder_str(),
+            image_name.to_string(),
+            ImageFormat::Jpeg.to_string(),
         );
         S3Key::new(key)
     }

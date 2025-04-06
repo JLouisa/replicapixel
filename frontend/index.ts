@@ -3,7 +3,7 @@ import { TrainingModelFormClass } from "./lib/type/trainingModelForm";
 import { DAL } from "./lib/api";
 import { createBatches, createZip } from "./lib/utils";
 import { ImageGenFormClass, type ImageGenForm } from "./lib/type/ImageGenForm";
-import { set } from "valibot";
+// import { set } from "valibot";
 
 console.log("Testing should work");
 
@@ -11,6 +11,7 @@ enum Stores {
   Image = "image",
   Toast = "toast",
   ImageGenForm = "imageGenForm",
+  Uploader = "uploader",
 }
 
 interface CreateModelFormStore extends TrainingModelFormClass {
@@ -237,12 +238,22 @@ Alpine.store(Stores.ImageGenForm, {
   },
 });
 
+interface UploaderStore {
+  uploadImageFromUrlToS3(imageUrl: string, presignedUrl: string, notifyBackendUrl: string): void;
+}
+
+// Register Alpine store
+Alpine.store(Stores.Uploader, {
+  uploadImageFromUrlToS3: DAL.uploadImageFromUrlToS3,
+});
+
 // You might need to explicitly tell TypeScript about the store on the Alpine object
 // if you haven't extended the Alpine interface globally.
 declare module "alpinejs" {
   interface Stores {
     toast: ToastStore;
     imageGenForm: ImageGenFormStore;
+    uploader: UploaderStore;
   }
 }
 

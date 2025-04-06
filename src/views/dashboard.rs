@@ -182,6 +182,7 @@ pub fn training_dashboard(
     credits: &UserCreditsView,
 ) -> Result<impl IntoResponse> {
     let sidebar = DashboardSidebar::init();
+    // let models: Vec<TrainingModelView> = Vec::new();
     format::render().view(
         &v,
         "dashboard/content/training_models/training_models.html",
@@ -266,6 +267,7 @@ pub fn photo_dashboard(
             "user": user, "images": images, "training_models": training_models,
             "website": website, "credits": credits,
             "check_route":  Images::check_route(),
+            "is_initial_load": true
         }),
     )
 }
@@ -283,9 +285,9 @@ pub fn photo_partial_dashboard(
         &v,
         "dashboard/content/photo/photo_partial.html",
         data!({"user": user, "images": images,
-        "training_models": training_models,
-        "website": website, "credits": credits,
-        "check_route": Images::check_route(),
+            "training_models": training_models,
+            "website": website, "credits": credits,
+            "check_route": Images::check_route(),
         }),
     )
 }

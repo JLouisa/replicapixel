@@ -4,14 +4,16 @@
 use loco_rs::{db, prelude::*};
 
 use crate::domain::domain_services::image_generation::ImageGenerationService;
+use crate::initializers::s3;
 use crate::models::_entities::sea_orm_active_enums::{
     BasedOn, Ethnicity, EyeColor, ImageFormat, ImageSize, Sex, Status,
 };
 use crate::models::_entities::training_models;
 use crate::models::images::{AltText, ImageNew, ImageNewList, UserPrompt};
 use crate::models::user_credits::UserCreditsClient;
-use crate::models::{ImageModel, TrainingModelModel, UserCreditModel, UserModel};
-use crate::views::images::{CreditsViewModel, ImageViewModel};
+use crate::models::{ImageActiveModel, ImageModel, TrainingModelModel, UserCreditModel, UserModel};
+use crate::service::aws::s3::{AwsS3, S3Folders, S3Key};
+use crate::views::images::{CreditsViewModel, ImageViewList, ImageViewModel};
 use crate::{
     domain::image::Image,
     models::_entities::images::ActiveModel,
@@ -61,8 +63,8 @@ impl ImageGenRequestParams {
                 fal_ai_request_id: None,
                 width: None,
                 height: None,
-                image_url: None,
-                image_url_s3: None,
+                image_url_fal: None,
+                image_s3_key: None,
                 is_favorite: false,
                 deleted_at: None,
             })
@@ -79,6 +81,8 @@ pub mod routes {
     impl Images {
         pub const BASE: &'static str = "/api/images";
         pub const IMAGE: &'static str = "/";
+        pub const IMAGE_S3_UPLOAD_COMPLETE: &'static str = "/upload/complete";
+        pub const IMAGE_S3_UPLOAD_COMPLETE_ID: &'static str = "/upload/complete/{id}";
         pub const IMAGE_GENERATE: &'static str = "/generate";
         pub const IMAGE_GENERATE_TEST: &'static str = "/generate/test";
         pub const IMAGE_CHECK_TEST: &'static str = "/check/test/{id}";
@@ -111,6 +115,10 @@ pub fn routes() -> Routes {
         .add(routes::Images::IMAGE_CHECK_ID, get(check_img))
         .add(routes::Images::IMAGE_ID, get(get_one))
         .add(routes::Images::IMAGE_ID, delete(remove))
+        .add(
+            routes::Images::IMAGE_S3_UPLOAD_COMPLETE_ID,
+            patch(upload_img_s3_completed),
+        )
     // .add(routes::Images::IMAGE_ID, put(update))
     // .add(routes::Images::IMAGE_ID, patch(update))
 }
@@ -133,10 +141,44 @@ async fn load_credits(db: &DatabaseConnection, id: i32) -> Result<UserCreditMode
 }
 
 #[debug_handler]
+pub async fn upload_img_s3_completed(
+    auth: auth::JWT,
+    Path(img_pid): Path<Uuid>,
+    Extension(s3_client): Extension<AwsS3>,
+    Extension(fal_ai_client): Extension<FalAiClient>,
+    State(ctx): State<AppContext>,
+) -> Result<Response> {
+    let user = UserModel::find_by_pid(&ctx.db, &auth.claims.pid).await?;
+    let image = load_item_pid(&ctx, img_pid).await?;
+    let s3_key = s3_client.create_s3_key(
+        &user.pid,
+        &S3Folders::Images,
+        &image.pid.to_string(),
+        &ImageFormat::Jpeg,
+    );
+
+    let exists = s3_client
+        .check_object_exists(&s3_key)
+        .await
+        .map_err(|_| loco_rs::Error::Message(String::from("Error checking storage: 101")))?;
+
+    if !exists {
+        return Ok((StatusCode::NO_CONTENT).into_response().into_response());
+    }
+    ImageActiveModel::from(image)
+        .upload_s3_completed(&s3_key, &ctx.db)
+        .await
+        .ok();
+
+    Ok((StatusCode::OK).into_response())
+}
+
+#[debug_handler]
 pub async fn check_test(
     auth: auth::JWT,
     Path(pid): Path<Uuid>,
     State(ctx): State<AppContext>,
+    Extension(s3_client): Extension<AwsS3>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<Response> {
     use rand::Rng;
@@ -146,26 +188,30 @@ pub async fn check_test(
     if image.user_id != user.id {
         return Err(Error::Unauthorized("Unauthorized".to_string()));
     }
-
-    let user_credits = load_credits(&ctx.db, user.id).await?;
-    let user_credits_view: CreditsViewModel = user_credits.into();
-
-    let change = rand::rng().random_range(0..=80);
-    let num = rand::rng().random_range(1..=11);
+    let change = rand::rng().random_range(0..=3);
     if change == 0 {
-        let user_credits = image.image_url = Some(format!(
-            "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-{}.jpg",
-            num
-        ));
+        let num = rand::rng().random_range(1..=11);
+        image.image_url_fal = Some("https://v3.fal.media/files/panda/ycu2NDkTawQBdmgZDAF3g_ffb513c9074146009320fa60e64beaab.jpg".to_string());
         image.status = Status::Completed;
+    }
+    if image.status == Status::Completed {
+        let user_credits = load_credits(&ctx.db, user.id).await?;
+        let user_credits_view: CreditsViewModel = user_credits.into();
         let check_route = routes::Images::check_route();
+        let image: ImageViewModel = image.into();
+        let image: ImageViewModel = image
+            .clone()
+            .set_pre_url(&user.pid, &s3_client)
+            .await
+            .unwrap_or_else(|_| image);
         return views::images::img_completed(
             &v,
-            &vec![image.into()],
+            &ImageViewList::new(vec![image]),
             check_route.as_str(),
             &user_credits_view,
         );
     }
+
     Ok((StatusCode::NO_CONTENT).into_response())
 }
 
@@ -174,6 +220,7 @@ pub async fn check_img(
     auth: auth::JWT,
     Path(pid): Path<Uuid>,
     State(ctx): State<AppContext>,
+    Extension(s3_client): Extension<AwsS3>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<Response> {
     use rand::Rng;
@@ -188,9 +235,15 @@ pub async fn check_img(
         let user_credits = load_credits(&ctx.db, user.id).await?;
         let user_credits_view: CreditsViewModel = user_credits.into();
         let check_route = routes::Images::check_route();
+        let image: ImageViewModel = image.into();
+        let image: ImageViewModel = image
+            .clone()
+            .set_pre_url(&user.pid, &s3_client)
+            .await
+            .unwrap_or_else(|_| image);
         return views::images::img_completed(
             &v,
-            &vec![image.into()],
+            &ImageViewList::new(vec![image]),
             check_route.as_str(),
             &user_credits_view,
         );
@@ -225,7 +278,12 @@ pub async fn generate_test(
     );
 
     // 5. Render the view using the View Models
-    views::images::img_completed(&v, &image_view_models, &check_route, &credits_view_model)
+    views::images::img_completed(
+        &v,
+        &image_view_models.into(),
+        &check_route,
+        &credits_view_model,
+    )
 }
 
 #[debug_handler]

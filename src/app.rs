@@ -48,11 +48,13 @@ impl Hooks for App {
             Box::new(initializers::view_engine::ViewEngineInitializer),
             Box::new(initializers::s3::S3),
             Box::new(initializers::fal_client::FalAi),
+            Box::new(initializers::website::Website),
         ])
     }
 
     fn routes(_ctx: &AppContext) -> AppRoutes {
         AppRoutes::with_default_routes() // controller routes below
+            .add_route(controllers::payment::routes())
             .add_route(controllers::images::routes())
             .add_route(controllers::auth::routes())
             .add_route(controllers::home::routes())

@@ -1,0 +1,63 @@
+<div class="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-7xl mx-auto">
+    {# {/* Header */} #}
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-extrabold text-gray-900 sm:text-5xl sm:tracking-tight lg:text-6xl">
+        Choose Your Plan
+      </h1>
+      <p class="mt-4 text-xl text-gray-500">Select the perfect plan for your needs</p>
+    </div>
+
+    {# {/* Pricing Plans */} #}
+    <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+      {%for plan in plans%}
+      <div
+        class="bg-white rounded-2xl shadow-xl p-8 {%if plan.is_popular%} border-2 border-blue-500 transform scale-105 {%else%} border border-gray-100 hover:border-blue-500 transition-all duration-200 {%endif%}"
+      >
+        {%if plan.is_popular%}
+        <div class="absolute -top-4 right-8">
+          <span class="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+            Popular
+          </span>
+        </div>
+        {%endif%}
+        <div class="flex items-center justify-between mb-8">
+          <div>
+            <h2 class="text-2xl font-bold text-gray-900">{{plan.plan_type}}</h2>
+            <p class="text-gray-500">{{plan.subtitle}}</p>
+          </div>
+          {% if plan.plan_type == "Basic" %} {% include "partials/svg/halfstart.html" %} {% elif
+          plan.plan_type == "Premium" %} {% include "partials/svg/rocket.html" %} {% else %} {%
+          include "partials/svg/crown.html" %} {% endif %}
+        </div>
+        <div class="mb-8">
+          <p class="text-4xl font-bold text-gray-900">
+            ${{plan.price}}<span class="text-lg text-gray-500"></span>
+          </p>
+        </div>
+        <ul class="space-y-4 mb-8">
+          {% for feature in plan.features %}
+          <li class="flex items-center {%if feature.bold%} font-bold {%endif%}">
+            {% include "partials/svg/check.html" %}
+            <span>{{feature.description}}</span>
+          </li>
+          {% endfor %}
+        </ul>
+        <button
+          id="{{plan.id}}"
+          hx-get="/payment/{{ user.id | default(value="x") }}/{{plan.plan.id}}"
+          class="w-full py-3 px-6 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-medium transition-colors duration-200"
+        >
+          {{ plan.cta }}
+        </button>
+      </div>
+      {%endfor%} {# {/* Payment Security Notice */} #}
+    </div>
+    <div class="mt-12 text-center">
+      <p class="flex items-center justify-center text-gray-500 text-sm">
+        {% include "partials/svg/creditcard.html" %} Secure payment processing with SSL encryption
+      </p>
+    </div>
+  </div>
+  <script></script>
+</div>

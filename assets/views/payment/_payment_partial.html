@@ -1,0 +1,151 @@
+<div class="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-7xl mx-auto">
+    {# {/* Header */} #}
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-extrabold text-gray-900 sm:text-5xl sm:tracking-tight lg:text-6xl">
+        Choose Your Plan
+      </h1>
+      <p class="mt-4 text-xl text-gray-500">Select the perfect plan for your needs</p>
+    </div>
+
+    {# {/* Pricing Plans */} #}
+    <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+      {# {/* Basic Plan */} #}
+      <div
+        class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100 hover:border-blue-500 transition-all duration-200"
+      >
+        <div class="flex items-center justify-between mb-8">
+          <div>
+            <h2 class="text-2xl font-bold text-gray-900">Basic</h2>
+            <p class="text-gray-500">For individuals</p>
+          </div>
+          {# <Zap class="h-8 w-8 text-blue-500" /> #} {% include "partials/svg/halfstart.html" %}
+        </div>
+        <div class="mb-8">
+          <p class="text-4xl font-bold text-gray-900">
+            $9.99<span class="text-lg text-gray-500">/mo</span>
+          </p>
+        </div>
+        <ul class="space-y-4 mb-8">
+          <li class="flex items-center">
+            {# <Check class="h-5 w-5 text-green-500 mr-3" /> #} {% include
+            "partials/svg/check_svg.html" %}
+            <span>5 Projects</span>
+          </li>
+          <li class="flex items-center">
+            {# <Check class="h-5 w-5 text-green-500 mr-3" /> #} {% include
+            "partials/svg/check_svg.html" %}
+            <span>Basic Analytics</span>
+          </li>
+          <li class="flex items-center">
+            {# <Check class="h-5 w-5 text-green-500 mr-3" /> #} {% include
+            "partials/svg/check_svg.html" %}
+            <span>24/7 Support</span>
+          </li>
+        </ul>
+        <button
+          class="w-full py-3 px-6 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-900 font-medium transition-colors duration-200"
+        >
+          Choose Basic
+        </button>
+      </div>
+
+      {# {/* Pro Plan */} #}
+      <div class="bg-white rounded-2xl shadow-xl p-8 border-2 border-blue-500 transform scale-105">
+        <div class="absolute -top-4 right-8">
+          <span class="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+            Popular
+          </span>
+        </div>
+        <div class="flex items-center justify-between mb-8">
+          <div>
+            <h2 class="text-2xl font-bold text-gray-900">Pro</h2>
+            <p class="text-gray-500">For professionals</p>
+          </div>
+          {# <Rocket class="h-8 w-8 text-blue-500" /> #} {% include "partials/svg/rocket.html" %}
+        </div>
+        <div class="mb-8">
+          <p class="text-4xl font-bold text-gray-900">
+            $24.99<span class="text-lg text-gray-500">/mo</span>
+          </p>
+        </div>
+        <ul class="space-y-4 mb-8">
+          <li class="flex items-center">
+            {% include "partials/svg/check_svg.html" %} {#
+            <Check class="h-5 w-5 text-green-500 mr-3" /> #} <span>Unlimited Projects</span>
+          </li>
+          <li class="flex items-center">
+            {% include "partials/svg/check_svg.html" %} {#
+            <Check class="h-5 w-5 text-green-500 mr-3" /> #} <span>Advanced Analytics</span>
+          </li>
+          <li class="flex items-center">
+            {% include "partials/svg/check_svg.html" %} {#
+            <Check class="h-5 w-5 text-green-500 mr-3" /> #} <span>Priority Support</span>
+          </li>
+          <li class="flex items-center">
+            {% include "partials/svg/check_svg.html" %} {#
+            <Check class="h-5 w-5 text-green-500 mr-3" /> #} <span>Custom Integrations</span>
+          </li>
+        </ul>
+        <button
+          class="w-full py-3 px-6 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-medium transition-colors duration-200"
+        >
+          Choose Pro
+        </button>
+      </div>
+
+      {# {/* Enterprise Plan */} #}
+      <div
+        class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100 hover:border-blue-500 transition-all duration-200"
+      >
+        <div class="flex items-center justify-between mb-8">
+          <div>
+            <h2 class="text-2xl font-bold text-gray-900">Enterprise</h2>
+            <p class="text-gray-500">For large teams</p>
+          </div>
+          {# <Crown class="h-8 w-8 text-blue-500" /> #} {% include "partials/svg/crown.html" %}
+        </div>
+        <div class="mb-8">
+          <p class="text-4xl font-bold text-gray-900">
+            $99.99<span class="text-lg text-gray-500">/mo</span>
+          </p>
+        </div>
+        <ul class="space-y-4 mb-8">
+          <li class="flex items-center">
+            {% include "partials/svg/check_svg.html" %} {#
+            <Check class="h-5 w-5 text-green-500 mr-3" /> #} <span>Unlimited Everything</span>
+          </li>
+          <li class="flex items-center">
+            {% include "partials/svg/check_svg.html" %} {#
+            <Check class="h-5 w-5 text-green-500 mr-3" /> #} <span>Custom Reporting</span>
+          </li>
+          <li class="flex items-center">
+            {% include "partials/svg/check_svg.html" %} {#
+            <Check class="h-5 w-5 text-green-500 mr-3" /> #} <span>Dedicated Support</span>
+          </li>
+          <li class="flex items-center">
+            {% include "partials/svg/check_svg.html" %} {#
+            <Check class="h-5 w-5 text-green-500 mr-3" /> #} <span>SLA Agreement</span>
+          </li>
+          <li class="flex items-center">
+            {% include "partials/svg/check_svg.html" %} {#
+            <Check class="h-5 w-5 text-green-500 mr-3" /> #} <span>Custom Training</span>
+          </li>
+        </ul>
+        <button
+          class="w-full py-3 px-6 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-900 font-medium transition-colors duration-200"
+        >
+          Contact Sales
+        </button>
+      </div>
+    </div>
+
+    {# {/* Payment Security Notice */} #}
+    <div class="mt-12 text-center">
+      <p class="flex items-center justify-center text-gray-500 text-sm">
+        {# <CreditCard class="h-4 w-4 mr-2" /> #} {% include "partials/svg/creditcard.html" %}
+        Secure payment processing with SSL encryption
+      </p>
+    </div>
+  </div>
+</div>
