@@ -91,8 +91,6 @@ pub struct StripeClient {
 impl StripeClient {
     pub fn new(settings: &StripeSettings) -> Self {
         let client = stripe::Client::new(&settings.stripe_secret_key);
-        let meta_data =
-            std::collections::HashMap::from([(String::from("async-stripe"), String::from("true"))]);
         let stripe_publishable_key: StripePublishableKey =
             StripePublishableKey(String::from(&settings.stripe_publishable_key));
         let stripe_products = StripeProducts {
@@ -163,7 +161,10 @@ impl StripeClient {
             }
         };
 
-        let success_url = format!("{}", self.stripe_url.stripe_success_url.as_ref());
+        let success_url = format!(
+            "{}?session_id={{CHECKOUT_SESSION_ID}}",
+            self.stripe_url.stripe_success_url.as_ref()
+        );
         let checkout_params = CreateCheckoutSession {
             success_url: Some(success_url.as_str().into()),
             cancel_url: Some(self.stripe_url.stripe_cancel_url.as_ref()),
@@ -200,6 +201,47 @@ impl StripeClient {
             }
         }
         meta
+    }
+
+    pub async fn create_customer(
+        &self,
+        name: &str,
+        email: &str,
+        user_id: &Uuid,
+    ) -> Result<Customer, StripeErr> {
+        let mut meta = HashMap::new();
+        meta.insert("user_id".to_string(), user_id.to_string());
+        meta.insert("email".to_string(), email.to_owned());
+
+        let customer = Customer::create(
+            &self.client,
+            CreateCustomer {
+                name: Some(name),
+                email: Some(email),
+                description: None,
+                metadata: Some(meta),
+                ..Default::default()
+            },
+        )
+        .await?;
+
+        Ok(customer)
+    }
+
+    pub async fn get_customer(&self, user: &UserModel) -> Result<Customer, StripeErr> {
+        let customer = Customer::create(
+            &self.client,
+            CreateCustomer {
+                name: Some(&user.name),
+                email: Some(&user.email),
+                description: None,
+                metadata: Some(self.build_metadata(MetaEntity::UserModel(user))),
+                ..Default::default()
+            },
+        )
+        .await?;
+
+        Ok(customer)
     }
 
     async fn find_stripe_customer_id_in_db(

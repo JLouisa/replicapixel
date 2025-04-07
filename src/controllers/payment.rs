@@ -19,7 +19,7 @@ pub mod routes {
     #[derive(Clone, Debug, Serialize)]
     pub struct Payment;
     impl Payment {
-        pub const BASE: &'static str = "/api/payments";
+        pub const BASE: &'static str = "/payments";
         pub const API_PAYMENT_BASE: &'static str = "/";
         pub const API_STRIPE_SUCCESS: &'static str = "/success";
         pub const API_STRIPE_CANCEL: &'static str = "/cancel";
@@ -47,7 +47,6 @@ async fn success_handler(
 ) -> Result<impl IntoResponse> {
     // 1. Extract Session ID
     let session_id_str = params.session_id.as_ref().ok_or_else(|| {
-        // Return a BadRequest error if session_id is missing
         tracing::warn!("Success redirect received without session_id query parameter.");
         loco_rs::Error::BadRequest("Missing session_id query parameter".to_string())
     })?;
@@ -72,16 +71,13 @@ async fn success_handler(
     if is_successful {
         tracing::info!(session_id = %session_id_str, "Checkout session verified successfully via redirect.");
 
-        // You *can* use session details for display purposes
         let customer_email = session
             .customer_details
             .and_then(|d| d.email)
             .unwrap_or_else(|| "N/A".to_string());
 
-        // Call the view function
         views::payment::payment_success(v, &website)
     } else {
-        // Status is not 'paid' or 'complete' (e.g., 'open', 'expired', 'requires_action')
         tracing::warn!(session_id = %session_id_str, status = ?session.status, payment_status = ?session.payment_status, "Redirected session is not yet successful.");
 
         Err(loco_rs::Error::CustomError(

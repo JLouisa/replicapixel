@@ -7,6 +7,7 @@ use crate::{
         _entities::users,
         users::{LoginParams, RegisterError, RegisterParams},
     },
+    service::stripe::stripe::StripeClient,
     views::auth::{CurrentResponse, LoginResponse},
 };
 use axum::{
@@ -14,6 +15,7 @@ use axum::{
     extract::{Json, State},
     http::{HeaderMap, StatusCode},
     response::{IntoResponse, Redirect, Response},
+    Extension,
 };
 use axum_extra::headers::Cookie;
 use chrono::{Duration, Utc};
@@ -95,13 +97,16 @@ pub struct MagicLinkParams {
 /// welcome email to the user
 #[debug_handler]
 async fn register(
+    Extension((stripe_client)): Extension<(StripeClient)>,
     ViewEngine(v): ViewEngine<TeraView>,
     State(ctx): State<AppContext>,
     Json(params): Json<RegisterParams>,
 ) -> Result<Response> {
+    dbg!(&params);
     let mut validate = RegisterError::validate(&params);
+    dbg!("validate", &validate);
 
-    let user = match users::Model::create_with_password(&ctx.db, &params).await {
+    let user = match users::Model::create_with_password(&ctx.db, &params, &stripe_client).await {
         Ok(user) => user,
         Err(err) => {
             tracing::info!(

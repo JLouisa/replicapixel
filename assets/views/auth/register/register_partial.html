@@ -43,7 +43,10 @@
   <div class="divider mt-3">Or sign up with credentials</div>
   <form
     hx-post="/api/auth/register"
+    {#
     hx-ext="registerjson"
+    #}
+    hx-ext="form-json"
     hx-disabled-elt="#register-btn"
     hx-target="#auth-form"
     hx-swap="innerHTML"
@@ -180,7 +183,7 @@
   </form>
 </div>
 
-{% block js %}
+{% block js %} {#
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     const form = document.querySelector("form");
@@ -221,4 +224,4 @@
     },
   });
 </script>
-{% endblock js %}
+#} {% endblock js %}

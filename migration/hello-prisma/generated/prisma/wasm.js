@@ -124,6 +124,7 @@ exports.Prisma.UsersScalarFieldEnum = {
   password: 'password',
   api_key: 'api_key',
   name: 'name',
+  stripe_customer_id: 'stripe_customer_id',
   reset_token: 'reset_token',
   reset_sent_at: 'reset_sent_at',
   email_verification_token: 'email_verification_token',
@@ -223,6 +224,11 @@ exports.Prisma.PacksScalarFieldEnum = {
   updated_at: 'updated_at'
 };
 
+exports.Prisma.Seaql_migrationsScalarFieldEnum = {
+  version: 'version',
+  applied_at: 'applied_at'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -308,7 +314,8 @@ exports.Prisma.ModelName = {
   UserCredits: 'UserCredits',
   Images: 'Images',
   Transactions: 'Transactions',
-  Packs: 'Packs'
+  Packs: 'Packs',
+  seaql_migrations: 'seaql_migrations'
 };
 
 /**

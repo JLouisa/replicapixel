@@ -159,6 +159,10 @@ model Packs {
   @@index([pid], name: "idx-packs-pid")
 }
 
+model seaql_migrations {
+  version    String       @id @db.VarChar
+  applied_at BigInt
+}
 
 enum Status {
     Pending
