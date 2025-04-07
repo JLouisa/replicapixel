@@ -43,6 +43,11 @@ export type Transactions = $Result.DefaultSelection<Prisma.$TransactionsPayload>
  * 
  */
 export type Packs = $Result.DefaultSelection<Prisma.$PacksPayload>
+/**
+ * Model seaql_migrations
+ * 
+ */
+export type seaql_migrations = $Result.DefaultSelection<Prisma.$seaql_migrationsPayload>
 
 /**
  * Enums
@@ -353,6 +358,16 @@ export class PrismaClient<
     * ```
     */
   get packs(): Prisma.PacksDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.seaql_migrations`: Exposes CRUD operations for the **seaql_migrations** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Seaql_migrations
+    * const seaql_migrations = await prisma.seaql_migrations.findMany()
+    * ```
+    */
+  get seaql_migrations(): Prisma.seaql_migrationsDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -798,7 +813,8 @@ export namespace Prisma {
     UserCredits: 'UserCredits',
     Images: 'Images',
     Transactions: 'Transactions',
-    Packs: 'Packs'
+    Packs: 'Packs',
+    seaql_migrations: 'seaql_migrations'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -817,7 +833,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "users" | "trainingModels" | "userCredits" | "images" | "transactions" | "packs"
+      modelProps: "users" | "trainingModels" | "userCredits" | "images" | "transactions" | "packs" | "seaql_migrations"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1265,6 +1281,80 @@ export namespace Prisma {
           }
         }
       }
+      seaql_migrations: {
+        payload: Prisma.$seaql_migrationsPayload<ExtArgs>
+        fields: Prisma.seaql_migrationsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.seaql_migrationsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$seaql_migrationsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.seaql_migrationsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$seaql_migrationsPayload>
+          }
+          findFirst: {
+            args: Prisma.seaql_migrationsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$seaql_migrationsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.seaql_migrationsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$seaql_migrationsPayload>
+          }
+          findMany: {
+            args: Prisma.seaql_migrationsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$seaql_migrationsPayload>[]
+          }
+          create: {
+            args: Prisma.seaql_migrationsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$seaql_migrationsPayload>
+          }
+          createMany: {
+            args: Prisma.seaql_migrationsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.seaql_migrationsCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$seaql_migrationsPayload>[]
+          }
+          delete: {
+            args: Prisma.seaql_migrationsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$seaql_migrationsPayload>
+          }
+          update: {
+            args: Prisma.seaql_migrationsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$seaql_migrationsPayload>
+          }
+          deleteMany: {
+            args: Prisma.seaql_migrationsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.seaql_migrationsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.seaql_migrationsUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$seaql_migrationsPayload>[]
+          }
+          upsert: {
+            args: Prisma.seaql_migrationsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$seaql_migrationsPayload>
+          }
+          aggregate: {
+            args: Prisma.Seaql_migrationsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSeaql_migrations>
+          }
+          groupBy: {
+            args: Prisma.seaql_migrationsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Seaql_migrationsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.seaql_migrationsCountArgs<ExtArgs>
+            result: $Utils.Optional<Seaql_migrationsCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1355,6 +1445,7 @@ export namespace Prisma {
     images?: ImagesOmit
     transactions?: TransactionsOmit
     packs?: PacksOmit
+    seaql_migrations?: seaql_migrationsOmit
   }
 
   /* Types for Logging */
@@ -1595,6 +1686,7 @@ export namespace Prisma {
     password: string | null
     api_key: string | null
     name: string | null
+    stripe_customer_id: string | null
     reset_token: string | null
     reset_sent_at: Date | null
     email_verification_token: string | null
@@ -1611,6 +1703,7 @@ export namespace Prisma {
     password: string | null
     api_key: string | null
     name: string | null
+    stripe_customer_id: string | null
     reset_token: string | null
     reset_sent_at: Date | null
     email_verification_token: string | null
@@ -1627,6 +1720,7 @@ export namespace Prisma {
     password: number
     api_key: number
     name: number
+    stripe_customer_id: number
     reset_token: number
     reset_sent_at: number
     email_verification_token: number
@@ -1653,6 +1747,7 @@ export namespace Prisma {
     password?: true
     api_key?: true
     name?: true
+    stripe_customer_id?: true
     reset_token?: true
     reset_sent_at?: true
     email_verification_token?: true
@@ -1669,6 +1764,7 @@ export namespace Prisma {
     password?: true
     api_key?: true
     name?: true
+    stripe_customer_id?: true
     reset_token?: true
     reset_sent_at?: true
     email_verification_token?: true
@@ -1685,6 +1781,7 @@ export namespace Prisma {
     password?: true
     api_key?: true
     name?: true
+    stripe_customer_id?: true
     reset_token?: true
     reset_sent_at?: true
     email_verification_token?: true
@@ -1788,6 +1885,7 @@ export namespace Prisma {
     password: string
     api_key: string
     name: string
+    stripe_customer_id: string | null
     reset_token: string | null
     reset_sent_at: Date | null
     email_verification_token: string | null
@@ -1823,6 +1921,7 @@ export namespace Prisma {
     password?: boolean
     api_key?: boolean
     name?: boolean
+    stripe_customer_id?: boolean
     reset_token?: boolean
     reset_sent_at?: boolean
     email_verification_token?: boolean
@@ -1844,6 +1943,7 @@ export namespace Prisma {
     password?: boolean
     api_key?: boolean
     name?: boolean
+    stripe_customer_id?: boolean
     reset_token?: boolean
     reset_sent_at?: boolean
     email_verification_token?: boolean
@@ -1860,6 +1960,7 @@ export namespace Prisma {
     password?: boolean
     api_key?: boolean
     name?: boolean
+    stripe_customer_id?: boolean
     reset_token?: boolean
     reset_sent_at?: boolean
     email_verification_token?: boolean
@@ -1876,6 +1977,7 @@ export namespace Prisma {
     password?: boolean
     api_key?: boolean
     name?: boolean
+    stripe_customer_id?: boolean
     reset_token?: boolean
     reset_sent_at?: boolean
     email_verification_token?: boolean
@@ -1885,7 +1987,7 @@ export namespace Prisma {
     magicLink_expiration?: boolean
   }
 
-  export type UsersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pid" | "email" | "password" | "api_key" | "name" | "reset_token" | "reset_sent_at" | "email_verification_token" | "email_verification_sent_at" | "email_verified_at" | "magicLink_token" | "magicLink_expiration", ExtArgs["result"]["users"]>
+  export type UsersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pid" | "email" | "password" | "api_key" | "name" | "stripe_customer_id" | "reset_token" | "reset_sent_at" | "email_verification_token" | "email_verification_sent_at" | "email_verified_at" | "magicLink_token" | "magicLink_expiration", ExtArgs["result"]["users"]>
   export type UsersInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     TrainingModels?: boolean | Users$TrainingModelsArgs<ExtArgs>
     UserCredits?: boolean | Users$UserCreditsArgs<ExtArgs>
@@ -1911,6 +2013,7 @@ export namespace Prisma {
       password: string
       api_key: string
       name: string
+      stripe_customer_id: string | null
       reset_token: string | null
       reset_sent_at: Date | null
       email_verification_token: string | null
@@ -2351,6 +2454,7 @@ export namespace Prisma {
     readonly password: FieldRef<"Users", 'String'>
     readonly api_key: FieldRef<"Users", 'String'>
     readonly name: FieldRef<"Users", 'String'>
+    readonly stripe_customer_id: FieldRef<"Users", 'String'>
     readonly reset_token: FieldRef<"Users", 'String'>
     readonly reset_sent_at: FieldRef<"Users", 'DateTime'>
     readonly email_verification_token: FieldRef<"Users", 'String'>
@@ -9108,6 +9212,996 @@ export namespace Prisma {
 
 
   /**
+   * Model seaql_migrations
+   */
+
+  export type AggregateSeaql_migrations = {
+    _count: Seaql_migrationsCountAggregateOutputType | null
+    _avg: Seaql_migrationsAvgAggregateOutputType | null
+    _sum: Seaql_migrationsSumAggregateOutputType | null
+    _min: Seaql_migrationsMinAggregateOutputType | null
+    _max: Seaql_migrationsMaxAggregateOutputType | null
+  }
+
+  export type Seaql_migrationsAvgAggregateOutputType = {
+    applied_at: number | null
+  }
+
+  export type Seaql_migrationsSumAggregateOutputType = {
+    applied_at: bigint | null
+  }
+
+  export type Seaql_migrationsMinAggregateOutputType = {
+    version: string | null
+    applied_at: bigint | null
+  }
+
+  export type Seaql_migrationsMaxAggregateOutputType = {
+    version: string | null
+    applied_at: bigint | null
+  }
+
+  export type Seaql_migrationsCountAggregateOutputType = {
+    version: number
+    applied_at: number
+    _all: number
+  }
+
+
+  export type Seaql_migrationsAvgAggregateInputType = {
+    applied_at?: true
+  }
+
+  export type Seaql_migrationsSumAggregateInputType = {
+    applied_at?: true
+  }
+
+  export type Seaql_migrationsMinAggregateInputType = {
+    version?: true
+    applied_at?: true
+  }
+
+  export type Seaql_migrationsMaxAggregateInputType = {
+    version?: true
+    applied_at?: true
+  }
+
+  export type Seaql_migrationsCountAggregateInputType = {
+    version?: true
+    applied_at?: true
+    _all?: true
+  }
+
+  export type Seaql_migrationsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which seaql_migrations to aggregate.
+     */
+    where?: seaql_migrationsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of seaql_migrations to fetch.
+     */
+    orderBy?: seaql_migrationsOrderByWithRelationInput | seaql_migrationsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: seaql_migrationsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` seaql_migrations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` seaql_migrations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned seaql_migrations
+    **/
+    _count?: true | Seaql_migrationsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: Seaql_migrationsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: Seaql_migrationsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Seaql_migrationsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Seaql_migrationsMaxAggregateInputType
+  }
+
+  export type GetSeaql_migrationsAggregateType<T extends Seaql_migrationsAggregateArgs> = {
+        [P in keyof T & keyof AggregateSeaql_migrations]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSeaql_migrations[P]>
+      : GetScalarType<T[P], AggregateSeaql_migrations[P]>
+  }
+
+
+
+
+  export type seaql_migrationsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: seaql_migrationsWhereInput
+    orderBy?: seaql_migrationsOrderByWithAggregationInput | seaql_migrationsOrderByWithAggregationInput[]
+    by: Seaql_migrationsScalarFieldEnum[] | Seaql_migrationsScalarFieldEnum
+    having?: seaql_migrationsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Seaql_migrationsCountAggregateInputType | true
+    _avg?: Seaql_migrationsAvgAggregateInputType
+    _sum?: Seaql_migrationsSumAggregateInputType
+    _min?: Seaql_migrationsMinAggregateInputType
+    _max?: Seaql_migrationsMaxAggregateInputType
+  }
+
+  export type Seaql_migrationsGroupByOutputType = {
+    version: string
+    applied_at: bigint
+    _count: Seaql_migrationsCountAggregateOutputType | null
+    _avg: Seaql_migrationsAvgAggregateOutputType | null
+    _sum: Seaql_migrationsSumAggregateOutputType | null
+    _min: Seaql_migrationsMinAggregateOutputType | null
+    _max: Seaql_migrationsMaxAggregateOutputType | null
+  }
+
+  type GetSeaql_migrationsGroupByPayload<T extends seaql_migrationsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Seaql_migrationsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Seaql_migrationsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Seaql_migrationsGroupByOutputType[P]>
+            : GetScalarType<T[P], Seaql_migrationsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type seaql_migrationsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    version?: boolean
+    applied_at?: boolean
+  }, ExtArgs["result"]["seaql_migrations"]>
+
+  export type seaql_migrationsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    version?: boolean
+    applied_at?: boolean
+  }, ExtArgs["result"]["seaql_migrations"]>
+
+  export type seaql_migrationsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    version?: boolean
+    applied_at?: boolean
+  }, ExtArgs["result"]["seaql_migrations"]>
+
+  export type seaql_migrationsSelectScalar = {
+    version?: boolean
+    applied_at?: boolean
+  }
+
+  export type seaql_migrationsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"version" | "applied_at", ExtArgs["result"]["seaql_migrations"]>
+
+  export type $seaql_migrationsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "seaql_migrations"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      version: string
+      applied_at: bigint
+    }, ExtArgs["result"]["seaql_migrations"]>
+    composites: {}
+  }
+
+  type seaql_migrationsGetPayload<S extends boolean | null | undefined | seaql_migrationsDefaultArgs> = $Result.GetResult<Prisma.$seaql_migrationsPayload, S>
+
+  type seaql_migrationsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<seaql_migrationsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Seaql_migrationsCountAggregateInputType | true
+    }
+
+  export interface seaql_migrationsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['seaql_migrations'], meta: { name: 'seaql_migrations' } }
+    /**
+     * Find zero or one Seaql_migrations that matches the filter.
+     * @param {seaql_migrationsFindUniqueArgs} args - Arguments to find a Seaql_migrations
+     * @example
+     * // Get one Seaql_migrations
+     * const seaql_migrations = await prisma.seaql_migrations.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends seaql_migrationsFindUniqueArgs>(args: SelectSubset<T, seaql_migrationsFindUniqueArgs<ExtArgs>>): Prisma__seaql_migrationsClient<$Result.GetResult<Prisma.$seaql_migrationsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Seaql_migrations that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {seaql_migrationsFindUniqueOrThrowArgs} args - Arguments to find a Seaql_migrations
+     * @example
+     * // Get one Seaql_migrations
+     * const seaql_migrations = await prisma.seaql_migrations.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends seaql_migrationsFindUniqueOrThrowArgs>(args: SelectSubset<T, seaql_migrationsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__seaql_migrationsClient<$Result.GetResult<Prisma.$seaql_migrationsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Seaql_migrations that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {seaql_migrationsFindFirstArgs} args - Arguments to find a Seaql_migrations
+     * @example
+     * // Get one Seaql_migrations
+     * const seaql_migrations = await prisma.seaql_migrations.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends seaql_migrationsFindFirstArgs>(args?: SelectSubset<T, seaql_migrationsFindFirstArgs<ExtArgs>>): Prisma__seaql_migrationsClient<$Result.GetResult<Prisma.$seaql_migrationsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Seaql_migrations that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {seaql_migrationsFindFirstOrThrowArgs} args - Arguments to find a Seaql_migrations
+     * @example
+     * // Get one Seaql_migrations
+     * const seaql_migrations = await prisma.seaql_migrations.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends seaql_migrationsFindFirstOrThrowArgs>(args?: SelectSubset<T, seaql_migrationsFindFirstOrThrowArgs<ExtArgs>>): Prisma__seaql_migrationsClient<$Result.GetResult<Prisma.$seaql_migrationsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Seaql_migrations that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {seaql_migrationsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Seaql_migrations
+     * const seaql_migrations = await prisma.seaql_migrations.findMany()
+     * 
+     * // Get first 10 Seaql_migrations
+     * const seaql_migrations = await prisma.seaql_migrations.findMany({ take: 10 })
+     * 
+     * // Only select the `version`
+     * const seaql_migrationsWithVersionOnly = await prisma.seaql_migrations.findMany({ select: { version: true } })
+     * 
+     */
+    findMany<T extends seaql_migrationsFindManyArgs>(args?: SelectSubset<T, seaql_migrationsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$seaql_migrationsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Seaql_migrations.
+     * @param {seaql_migrationsCreateArgs} args - Arguments to create a Seaql_migrations.
+     * @example
+     * // Create one Seaql_migrations
+     * const Seaql_migrations = await prisma.seaql_migrations.create({
+     *   data: {
+     *     // ... data to create a Seaql_migrations
+     *   }
+     * })
+     * 
+     */
+    create<T extends seaql_migrationsCreateArgs>(args: SelectSubset<T, seaql_migrationsCreateArgs<ExtArgs>>): Prisma__seaql_migrationsClient<$Result.GetResult<Prisma.$seaql_migrationsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Seaql_migrations.
+     * @param {seaql_migrationsCreateManyArgs} args - Arguments to create many Seaql_migrations.
+     * @example
+     * // Create many Seaql_migrations
+     * const seaql_migrations = await prisma.seaql_migrations.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends seaql_migrationsCreateManyArgs>(args?: SelectSubset<T, seaql_migrationsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Seaql_migrations and returns the data saved in the database.
+     * @param {seaql_migrationsCreateManyAndReturnArgs} args - Arguments to create many Seaql_migrations.
+     * @example
+     * // Create many Seaql_migrations
+     * const seaql_migrations = await prisma.seaql_migrations.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Seaql_migrations and only return the `version`
+     * const seaql_migrationsWithVersionOnly = await prisma.seaql_migrations.createManyAndReturn({
+     *   select: { version: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends seaql_migrationsCreateManyAndReturnArgs>(args?: SelectSubset<T, seaql_migrationsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$seaql_migrationsPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Seaql_migrations.
+     * @param {seaql_migrationsDeleteArgs} args - Arguments to delete one Seaql_migrations.
+     * @example
+     * // Delete one Seaql_migrations
+     * const Seaql_migrations = await prisma.seaql_migrations.delete({
+     *   where: {
+     *     // ... filter to delete one Seaql_migrations
+     *   }
+     * })
+     * 
+     */
+    delete<T extends seaql_migrationsDeleteArgs>(args: SelectSubset<T, seaql_migrationsDeleteArgs<ExtArgs>>): Prisma__seaql_migrationsClient<$Result.GetResult<Prisma.$seaql_migrationsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Seaql_migrations.
+     * @param {seaql_migrationsUpdateArgs} args - Arguments to update one Seaql_migrations.
+     * @example
+     * // Update one Seaql_migrations
+     * const seaql_migrations = await prisma.seaql_migrations.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends seaql_migrationsUpdateArgs>(args: SelectSubset<T, seaql_migrationsUpdateArgs<ExtArgs>>): Prisma__seaql_migrationsClient<$Result.GetResult<Prisma.$seaql_migrationsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Seaql_migrations.
+     * @param {seaql_migrationsDeleteManyArgs} args - Arguments to filter Seaql_migrations to delete.
+     * @example
+     * // Delete a few Seaql_migrations
+     * const { count } = await prisma.seaql_migrations.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends seaql_migrationsDeleteManyArgs>(args?: SelectSubset<T, seaql_migrationsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Seaql_migrations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {seaql_migrationsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Seaql_migrations
+     * const seaql_migrations = await prisma.seaql_migrations.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends seaql_migrationsUpdateManyArgs>(args: SelectSubset<T, seaql_migrationsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Seaql_migrations and returns the data updated in the database.
+     * @param {seaql_migrationsUpdateManyAndReturnArgs} args - Arguments to update many Seaql_migrations.
+     * @example
+     * // Update many Seaql_migrations
+     * const seaql_migrations = await prisma.seaql_migrations.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Seaql_migrations and only return the `version`
+     * const seaql_migrationsWithVersionOnly = await prisma.seaql_migrations.updateManyAndReturn({
+     *   select: { version: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends seaql_migrationsUpdateManyAndReturnArgs>(args: SelectSubset<T, seaql_migrationsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$seaql_migrationsPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Seaql_migrations.
+     * @param {seaql_migrationsUpsertArgs} args - Arguments to update or create a Seaql_migrations.
+     * @example
+     * // Update or create a Seaql_migrations
+     * const seaql_migrations = await prisma.seaql_migrations.upsert({
+     *   create: {
+     *     // ... data to create a Seaql_migrations
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Seaql_migrations we want to update
+     *   }
+     * })
+     */
+    upsert<T extends seaql_migrationsUpsertArgs>(args: SelectSubset<T, seaql_migrationsUpsertArgs<ExtArgs>>): Prisma__seaql_migrationsClient<$Result.GetResult<Prisma.$seaql_migrationsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Seaql_migrations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {seaql_migrationsCountArgs} args - Arguments to filter Seaql_migrations to count.
+     * @example
+     * // Count the number of Seaql_migrations
+     * const count = await prisma.seaql_migrations.count({
+     *   where: {
+     *     // ... the filter for the Seaql_migrations we want to count
+     *   }
+     * })
+    **/
+    count<T extends seaql_migrationsCountArgs>(
+      args?: Subset<T, seaql_migrationsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Seaql_migrationsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Seaql_migrations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Seaql_migrationsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Seaql_migrationsAggregateArgs>(args: Subset<T, Seaql_migrationsAggregateArgs>): Prisma.PrismaPromise<GetSeaql_migrationsAggregateType<T>>
+
+    /**
+     * Group by Seaql_migrations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {seaql_migrationsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends seaql_migrationsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: seaql_migrationsGroupByArgs['orderBy'] }
+        : { orderBy?: seaql_migrationsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, seaql_migrationsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSeaql_migrationsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the seaql_migrations model
+   */
+  readonly fields: seaql_migrationsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for seaql_migrations.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__seaql_migrationsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the seaql_migrations model
+   */ 
+  interface seaql_migrationsFieldRefs {
+    readonly version: FieldRef<"seaql_migrations", 'String'>
+    readonly applied_at: FieldRef<"seaql_migrations", 'BigInt'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * seaql_migrations findUnique
+   */
+  export type seaql_migrationsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the seaql_migrations
+     */
+    select?: seaql_migrationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the seaql_migrations
+     */
+    omit?: seaql_migrationsOmit<ExtArgs> | null
+    /**
+     * Filter, which seaql_migrations to fetch.
+     */
+    where: seaql_migrationsWhereUniqueInput
+  }
+
+  /**
+   * seaql_migrations findUniqueOrThrow
+   */
+  export type seaql_migrationsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the seaql_migrations
+     */
+    select?: seaql_migrationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the seaql_migrations
+     */
+    omit?: seaql_migrationsOmit<ExtArgs> | null
+    /**
+     * Filter, which seaql_migrations to fetch.
+     */
+    where: seaql_migrationsWhereUniqueInput
+  }
+
+  /**
+   * seaql_migrations findFirst
+   */
+  export type seaql_migrationsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the seaql_migrations
+     */
+    select?: seaql_migrationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the seaql_migrations
+     */
+    omit?: seaql_migrationsOmit<ExtArgs> | null
+    /**
+     * Filter, which seaql_migrations to fetch.
+     */
+    where?: seaql_migrationsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of seaql_migrations to fetch.
+     */
+    orderBy?: seaql_migrationsOrderByWithRelationInput | seaql_migrationsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for seaql_migrations.
+     */
+    cursor?: seaql_migrationsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` seaql_migrations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` seaql_migrations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of seaql_migrations.
+     */
+    distinct?: Seaql_migrationsScalarFieldEnum | Seaql_migrationsScalarFieldEnum[]
+  }
+
+  /**
+   * seaql_migrations findFirstOrThrow
+   */
+  export type seaql_migrationsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the seaql_migrations
+     */
+    select?: seaql_migrationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the seaql_migrations
+     */
+    omit?: seaql_migrationsOmit<ExtArgs> | null
+    /**
+     * Filter, which seaql_migrations to fetch.
+     */
+    where?: seaql_migrationsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of seaql_migrations to fetch.
+     */
+    orderBy?: seaql_migrationsOrderByWithRelationInput | seaql_migrationsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for seaql_migrations.
+     */
+    cursor?: seaql_migrationsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` seaql_migrations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` seaql_migrations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of seaql_migrations.
+     */
+    distinct?: Seaql_migrationsScalarFieldEnum | Seaql_migrationsScalarFieldEnum[]
+  }
+
+  /**
+   * seaql_migrations findMany
+   */
+  export type seaql_migrationsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the seaql_migrations
+     */
+    select?: seaql_migrationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the seaql_migrations
+     */
+    omit?: seaql_migrationsOmit<ExtArgs> | null
+    /**
+     * Filter, which seaql_migrations to fetch.
+     */
+    where?: seaql_migrationsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of seaql_migrations to fetch.
+     */
+    orderBy?: seaql_migrationsOrderByWithRelationInput | seaql_migrationsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing seaql_migrations.
+     */
+    cursor?: seaql_migrationsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` seaql_migrations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` seaql_migrations.
+     */
+    skip?: number
+    distinct?: Seaql_migrationsScalarFieldEnum | Seaql_migrationsScalarFieldEnum[]
+  }
+
+  /**
+   * seaql_migrations create
+   */
+  export type seaql_migrationsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the seaql_migrations
+     */
+    select?: seaql_migrationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the seaql_migrations
+     */
+    omit?: seaql_migrationsOmit<ExtArgs> | null
+    /**
+     * The data needed to create a seaql_migrations.
+     */
+    data: XOR<seaql_migrationsCreateInput, seaql_migrationsUncheckedCreateInput>
+  }
+
+  /**
+   * seaql_migrations createMany
+   */
+  export type seaql_migrationsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many seaql_migrations.
+     */
+    data: seaql_migrationsCreateManyInput | seaql_migrationsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * seaql_migrations createManyAndReturn
+   */
+  export type seaql_migrationsCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the seaql_migrations
+     */
+    select?: seaql_migrationsSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the seaql_migrations
+     */
+    omit?: seaql_migrationsOmit<ExtArgs> | null
+    /**
+     * The data used to create many seaql_migrations.
+     */
+    data: seaql_migrationsCreateManyInput | seaql_migrationsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * seaql_migrations update
+   */
+  export type seaql_migrationsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the seaql_migrations
+     */
+    select?: seaql_migrationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the seaql_migrations
+     */
+    omit?: seaql_migrationsOmit<ExtArgs> | null
+    /**
+     * The data needed to update a seaql_migrations.
+     */
+    data: XOR<seaql_migrationsUpdateInput, seaql_migrationsUncheckedUpdateInput>
+    /**
+     * Choose, which seaql_migrations to update.
+     */
+    where: seaql_migrationsWhereUniqueInput
+  }
+
+  /**
+   * seaql_migrations updateMany
+   */
+  export type seaql_migrationsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update seaql_migrations.
+     */
+    data: XOR<seaql_migrationsUpdateManyMutationInput, seaql_migrationsUncheckedUpdateManyInput>
+    /**
+     * Filter which seaql_migrations to update
+     */
+    where?: seaql_migrationsWhereInput
+    /**
+     * Limit how many seaql_migrations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * seaql_migrations updateManyAndReturn
+   */
+  export type seaql_migrationsUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the seaql_migrations
+     */
+    select?: seaql_migrationsSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the seaql_migrations
+     */
+    omit?: seaql_migrationsOmit<ExtArgs> | null
+    /**
+     * The data used to update seaql_migrations.
+     */
+    data: XOR<seaql_migrationsUpdateManyMutationInput, seaql_migrationsUncheckedUpdateManyInput>
+    /**
+     * Filter which seaql_migrations to update
+     */
+    where?: seaql_migrationsWhereInput
+    /**
+     * Limit how many seaql_migrations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * seaql_migrations upsert
+   */
+  export type seaql_migrationsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the seaql_migrations
+     */
+    select?: seaql_migrationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the seaql_migrations
+     */
+    omit?: seaql_migrationsOmit<ExtArgs> | null
+    /**
+     * The filter to search for the seaql_migrations to update in case it exists.
+     */
+    where: seaql_migrationsWhereUniqueInput
+    /**
+     * In case the seaql_migrations found by the `where` argument doesn't exist, create a new seaql_migrations with this data.
+     */
+    create: XOR<seaql_migrationsCreateInput, seaql_migrationsUncheckedCreateInput>
+    /**
+     * In case the seaql_migrations was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<seaql_migrationsUpdateInput, seaql_migrationsUncheckedUpdateInput>
+  }
+
+  /**
+   * seaql_migrations delete
+   */
+  export type seaql_migrationsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the seaql_migrations
+     */
+    select?: seaql_migrationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the seaql_migrations
+     */
+    omit?: seaql_migrationsOmit<ExtArgs> | null
+    /**
+     * Filter which seaql_migrations to delete.
+     */
+    where: seaql_migrationsWhereUniqueInput
+  }
+
+  /**
+   * seaql_migrations deleteMany
+   */
+  export type seaql_migrationsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which seaql_migrations to delete
+     */
+    where?: seaql_migrationsWhereInput
+    /**
+     * Limit how many seaql_migrations to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * seaql_migrations without action
+   */
+  export type seaql_migrationsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the seaql_migrations
+     */
+    select?: seaql_migrationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the seaql_migrations
+     */
+    omit?: seaql_migrationsOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -9128,6 +10222,7 @@ export namespace Prisma {
     password: 'password',
     api_key: 'api_key',
     name: 'name',
+    stripe_customer_id: 'stripe_customer_id',
     reset_token: 'reset_token',
     reset_sent_at: 'reset_sent_at',
     email_verification_token: 'email_verification_token',
@@ -9243,6 +10338,14 @@ export namespace Prisma {
   };
 
   export type PacksScalarFieldEnum = (typeof PacksScalarFieldEnum)[keyof typeof PacksScalarFieldEnum]
+
+
+  export const Seaql_migrationsScalarFieldEnum: {
+    version: 'version',
+    applied_at: 'applied_at'
+  };
+
+  export type Seaql_migrationsScalarFieldEnum = (typeof Seaql_migrationsScalarFieldEnum)[keyof typeof Seaql_migrationsScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -9453,6 +10556,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'BigInt'
+   */
+  export type BigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt'>
+    
+
+
+  /**
+   * Reference to a field of type 'BigInt[]'
+   */
+  export type ListBigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -9479,6 +10596,7 @@ export namespace Prisma {
     password?: StringFilter<"Users"> | string
     api_key?: StringFilter<"Users"> | string
     name?: StringFilter<"Users"> | string
+    stripe_customer_id?: StringNullableFilter<"Users"> | string | null
     reset_token?: StringNullableFilter<"Users"> | string | null
     reset_sent_at?: DateTimeNullableFilter<"Users"> | Date | string | null
     email_verification_token?: StringNullableFilter<"Users"> | string | null
@@ -9499,6 +10617,7 @@ export namespace Prisma {
     password?: SortOrder
     api_key?: SortOrder
     name?: SortOrder
+    stripe_customer_id?: SortOrderInput | SortOrder
     reset_token?: SortOrderInput | SortOrder
     reset_sent_at?: SortOrderInput | SortOrder
     email_verification_token?: SortOrderInput | SortOrder
@@ -9522,6 +10641,7 @@ export namespace Prisma {
     NOT?: UsersWhereInput | UsersWhereInput[]
     password?: StringFilter<"Users"> | string
     name?: StringFilter<"Users"> | string
+    stripe_customer_id?: StringNullableFilter<"Users"> | string | null
     reset_token?: StringNullableFilter<"Users"> | string | null
     reset_sent_at?: DateTimeNullableFilter<"Users"> | Date | string | null
     email_verification_token?: StringNullableFilter<"Users"> | string | null
@@ -9542,6 +10662,7 @@ export namespace Prisma {
     password?: SortOrder
     api_key?: SortOrder
     name?: SortOrder
+    stripe_customer_id?: SortOrderInput | SortOrder
     reset_token?: SortOrderInput | SortOrder
     reset_sent_at?: SortOrderInput | SortOrder
     email_verification_token?: SortOrderInput | SortOrder
@@ -9566,6 +10687,7 @@ export namespace Prisma {
     password?: StringWithAggregatesFilter<"Users"> | string
     api_key?: StringWithAggregatesFilter<"Users"> | string
     name?: StringWithAggregatesFilter<"Users"> | string
+    stripe_customer_id?: StringNullableWithAggregatesFilter<"Users"> | string | null
     reset_token?: StringNullableWithAggregatesFilter<"Users"> | string | null
     reset_sent_at?: DateTimeNullableWithAggregatesFilter<"Users"> | Date | string | null
     email_verification_token?: StringNullableWithAggregatesFilter<"Users"> | string | null
@@ -10119,12 +11241,52 @@ export namespace Prisma {
     updated_at?: DateTimeWithAggregatesFilter<"Packs"> | Date | string
   }
 
+  export type seaql_migrationsWhereInput = {
+    AND?: seaql_migrationsWhereInput | seaql_migrationsWhereInput[]
+    OR?: seaql_migrationsWhereInput[]
+    NOT?: seaql_migrationsWhereInput | seaql_migrationsWhereInput[]
+    version?: StringFilter<"seaql_migrations"> | string
+    applied_at?: BigIntFilter<"seaql_migrations"> | bigint | number
+  }
+
+  export type seaql_migrationsOrderByWithRelationInput = {
+    version?: SortOrder
+    applied_at?: SortOrder
+  }
+
+  export type seaql_migrationsWhereUniqueInput = Prisma.AtLeast<{
+    version?: string
+    AND?: seaql_migrationsWhereInput | seaql_migrationsWhereInput[]
+    OR?: seaql_migrationsWhereInput[]
+    NOT?: seaql_migrationsWhereInput | seaql_migrationsWhereInput[]
+    applied_at?: BigIntFilter<"seaql_migrations"> | bigint | number
+  }, "version">
+
+  export type seaql_migrationsOrderByWithAggregationInput = {
+    version?: SortOrder
+    applied_at?: SortOrder
+    _count?: seaql_migrationsCountOrderByAggregateInput
+    _avg?: seaql_migrationsAvgOrderByAggregateInput
+    _max?: seaql_migrationsMaxOrderByAggregateInput
+    _min?: seaql_migrationsMinOrderByAggregateInput
+    _sum?: seaql_migrationsSumOrderByAggregateInput
+  }
+
+  export type seaql_migrationsScalarWhereWithAggregatesInput = {
+    AND?: seaql_migrationsScalarWhereWithAggregatesInput | seaql_migrationsScalarWhereWithAggregatesInput[]
+    OR?: seaql_migrationsScalarWhereWithAggregatesInput[]
+    NOT?: seaql_migrationsScalarWhereWithAggregatesInput | seaql_migrationsScalarWhereWithAggregatesInput[]
+    version?: StringWithAggregatesFilter<"seaql_migrations"> | string
+    applied_at?: BigIntWithAggregatesFilter<"seaql_migrations"> | bigint | number
+  }
+
   export type UsersCreateInput = {
     pid: string
     email: string
     password: string
     api_key: string
     name: string
+    stripe_customer_id?: string | null
     reset_token?: string | null
     reset_sent_at?: Date | string | null
     email_verification_token?: string | null
@@ -10145,6 +11307,7 @@ export namespace Prisma {
     password: string
     api_key: string
     name: string
+    stripe_customer_id?: string | null
     reset_token?: string | null
     reset_sent_at?: Date | string | null
     email_verification_token?: string | null
@@ -10164,6 +11327,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     api_key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
     reset_token?: NullableStringFieldUpdateOperationsInput | string | null
     reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null
@@ -10184,6 +11348,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     api_key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
     reset_token?: NullableStringFieldUpdateOperationsInput | string | null
     reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null
@@ -10204,6 +11369,7 @@ export namespace Prisma {
     password: string
     api_key: string
     name: string
+    stripe_customer_id?: string | null
     reset_token?: string | null
     reset_sent_at?: Date | string | null
     email_verification_token?: string | null
@@ -10219,6 +11385,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     api_key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
     reset_token?: NullableStringFieldUpdateOperationsInput | string | null
     reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null
@@ -10235,6 +11402,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     api_key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
     reset_token?: NullableStringFieldUpdateOperationsInput | string | null
     reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null
@@ -10861,6 +12029,41 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type seaql_migrationsCreateInput = {
+    version: string
+    applied_at: bigint | number
+  }
+
+  export type seaql_migrationsUncheckedCreateInput = {
+    version: string
+    applied_at: bigint | number
+  }
+
+  export type seaql_migrationsUpdateInput = {
+    version?: StringFieldUpdateOperationsInput | string
+    applied_at?: BigIntFieldUpdateOperationsInput | bigint | number
+  }
+
+  export type seaql_migrationsUncheckedUpdateInput = {
+    version?: StringFieldUpdateOperationsInput | string
+    applied_at?: BigIntFieldUpdateOperationsInput | bigint | number
+  }
+
+  export type seaql_migrationsCreateManyInput = {
+    version: string
+    applied_at: bigint | number
+  }
+
+  export type seaql_migrationsUpdateManyMutationInput = {
+    version?: StringFieldUpdateOperationsInput | string
+    applied_at?: BigIntFieldUpdateOperationsInput | bigint | number
+  }
+
+  export type seaql_migrationsUncheckedUpdateManyInput = {
+    version?: StringFieldUpdateOperationsInput | string
+    applied_at?: BigIntFieldUpdateOperationsInput | bigint | number
+  }
+
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -10977,6 +12180,7 @@ export namespace Prisma {
     password?: SortOrder
     api_key?: SortOrder
     name?: SortOrder
+    stripe_customer_id?: SortOrder
     reset_token?: SortOrder
     reset_sent_at?: SortOrder
     email_verification_token?: SortOrder
@@ -10997,6 +12201,7 @@ export namespace Prisma {
     password?: SortOrder
     api_key?: SortOrder
     name?: SortOrder
+    stripe_customer_id?: SortOrder
     reset_token?: SortOrder
     reset_sent_at?: SortOrder
     email_verification_token?: SortOrder
@@ -11013,6 +12218,7 @@ export namespace Prisma {
     password?: SortOrder
     api_key?: SortOrder
     name?: SortOrder
+    stripe_customer_id?: SortOrder
     reset_token?: SortOrder
     reset_sent_at?: SortOrder
     email_verification_token?: SortOrder
@@ -11695,6 +12901,56 @@ export namespace Prisma {
     amount?: SortOrder
   }
 
+  export type BigIntFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntFilter<$PrismaModel> | bigint | number
+  }
+
+  export type seaql_migrationsCountOrderByAggregateInput = {
+    version?: SortOrder
+    applied_at?: SortOrder
+  }
+
+  export type seaql_migrationsAvgOrderByAggregateInput = {
+    applied_at?: SortOrder
+  }
+
+  export type seaql_migrationsMaxOrderByAggregateInput = {
+    version?: SortOrder
+    applied_at?: SortOrder
+  }
+
+  export type seaql_migrationsMinOrderByAggregateInput = {
+    version?: SortOrder
+    applied_at?: SortOrder
+  }
+
+  export type seaql_migrationsSumOrderByAggregateInput = {
+    applied_at?: SortOrder
+  }
+
+  export type BigIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntWithAggregatesFilter<$PrismaModel> | bigint | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedBigIntFilter<$PrismaModel>
+    _min?: NestedBigIntFilter<$PrismaModel>
+    _max?: NestedBigIntFilter<$PrismaModel>
+  }
+
   export type TrainingModelsCreateNestedManyWithoutUserInput = {
     create?: XOR<TrainingModelsCreateWithoutUserInput, TrainingModelsUncheckedCreateWithoutUserInput> | TrainingModelsCreateWithoutUserInput[] | TrainingModelsUncheckedCreateWithoutUserInput[]
     connectOrCreate?: TrainingModelsCreateOrConnectWithoutUserInput | TrainingModelsCreateOrConnectWithoutUserInput[]
@@ -12097,6 +13353,14 @@ export namespace Prisma {
     deleteMany?: ImagesScalarWhereInput | ImagesScalarWhereInput[]
   }
 
+  export type BigIntFieldUpdateOperationsInput = {
+    set?: bigint | number
+    increment?: bigint | number
+    decrement?: bigint | number
+    multiply?: bigint | number
+    divide?: bigint | number
+  }
+
   export type NestedIntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -12465,6 +13729,33 @@ export namespace Prisma {
     _max?: NestedEnumImageSizeFilter<$PrismaModel>
   }
 
+  export type NestedBigIntFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntFilter<$PrismaModel> | bigint | number
+  }
+
+  export type NestedBigIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntWithAggregatesFilter<$PrismaModel> | bigint | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedBigIntFilter<$PrismaModel>
+    _min?: NestedBigIntFilter<$PrismaModel>
+    _max?: NestedBigIntFilter<$PrismaModel>
+  }
+
   export type TrainingModelsCreateWithoutUserInput = {
     pid: string
     name: string
@@ -12808,6 +14099,7 @@ export namespace Prisma {
     password: string
     api_key: string
     name: string
+    stripe_customer_id?: string | null
     reset_token?: string | null
     reset_sent_at?: Date | string | null
     email_verification_token?: string | null
@@ -12827,6 +14119,7 @@ export namespace Prisma {
     password: string
     api_key: string
     name: string
+    stripe_customer_id?: string | null
     reset_token?: string | null
     reset_sent_at?: Date | string | null
     email_verification_token?: string | null
@@ -12916,6 +14209,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     api_key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
     reset_token?: NullableStringFieldUpdateOperationsInput | string | null
     reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null
@@ -12935,6 +14229,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     api_key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
     reset_token?: NullableStringFieldUpdateOperationsInput | string | null
     reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null
@@ -12969,6 +14264,7 @@ export namespace Prisma {
     password: string
     api_key: string
     name: string
+    stripe_customer_id?: string | null
     reset_token?: string | null
     reset_sent_at?: Date | string | null
     email_verification_token?: string | null
@@ -12988,6 +14284,7 @@ export namespace Prisma {
     password: string
     api_key: string
     name: string
+    stripe_customer_id?: string | null
     reset_token?: string | null
     reset_sent_at?: Date | string | null
     email_verification_token?: string | null
@@ -13022,6 +14319,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     api_key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
     reset_token?: NullableStringFieldUpdateOperationsInput | string | null
     reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null
@@ -13041,6 +14339,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     api_key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
     reset_token?: NullableStringFieldUpdateOperationsInput | string | null
     reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null
@@ -13059,6 +14358,7 @@ export namespace Prisma {
     password: string
     api_key: string
     name: string
+    stripe_customer_id?: string | null
     reset_token?: string | null
     reset_sent_at?: Date | string | null
     email_verification_token?: string | null
@@ -13078,6 +14378,7 @@ export namespace Prisma {
     password: string
     api_key: string
     name: string
+    stripe_customer_id?: string | null
     reset_token?: string | null
     reset_sent_at?: Date | string | null
     email_verification_token?: string | null
@@ -13202,6 +14503,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     api_key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
     reset_token?: NullableStringFieldUpdateOperationsInput | string | null
     reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null
@@ -13221,6 +14523,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     api_key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
     reset_token?: NullableStringFieldUpdateOperationsInput | string | null
     reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null
@@ -13341,6 +14644,7 @@ export namespace Prisma {
     password: string
     api_key: string
     name: string
+    stripe_customer_id?: string | null
     reset_token?: string | null
     reset_sent_at?: Date | string | null
     email_verification_token?: string | null
@@ -13360,6 +14664,7 @@ export namespace Prisma {
     password: string
     api_key: string
     name: string
+    stripe_customer_id?: string | null
     reset_token?: string | null
     reset_sent_at?: Date | string | null
     email_verification_token?: string | null
@@ -13394,6 +14699,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     api_key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
     reset_token?: NullableStringFieldUpdateOperationsInput | string | null
     reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null
@@ -13413,6 +14719,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     api_key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
     reset_token?: NullableStringFieldUpdateOperationsInput | string | null
     reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null

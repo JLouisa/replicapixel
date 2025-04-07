@@ -16,6 +16,7 @@ pub struct Model {
     #[sea_orm(unique)]
     pub api_key: String,
     pub name: String,
+    pub stripe_customer_id: Option<String>,
     pub reset_token: Option<String>,
     pub reset_sent_at: Option<DateTimeWithTimeZone>,
     pub email_verification_token: Option<String>,

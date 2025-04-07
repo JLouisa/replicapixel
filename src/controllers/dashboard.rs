@@ -9,6 +9,7 @@ use crate::models::_entities::sea_orm_active_enums::Status;
 use crate::models::_entities::users;
 use crate::models::images::ImagesModelList;
 use crate::models::training_models::TrainingModelList;
+use crate::models::users::UserPid;
 use crate::models::{
     ImageModel, TrainingModelActiveModel, TrainingModelEntity, TrainingModelModel,
     UserCreditEntity, UserCreditModel, UserEntity, UserModel,
@@ -180,8 +181,8 @@ pub fn routes() -> Routes {
         .add(routes::Dashboard::BILLING, get(billing_dashboard))
 }
 
-async fn load_user(db: &DatabaseConnection, pid: &str) -> Result<UserModel> {
-    let item = UserModel::find_by_pid(db, pid).await?;
+async fn load_user(db: &DatabaseConnection, pid: &UserPid) -> Result<UserModel> {
+    let item = UserModel::find_by_pid(db, &pid.as_ref().to_string()).await?;
     Ok(item)
 }
 async fn load_item(db: &DatabaseConnection, id: i32) -> Result<TrainingModelModel> {
@@ -193,14 +194,15 @@ async fn load_item(db: &DatabaseConnection, id: i32) -> Result<TrainingModelMode
         )
     })
 }
-async fn load_user_credits(db: &DatabaseConnection, id: i32) -> Result<UserCreditModel> {
-    let item = UserCreditEntity::find_by_id(id).one(db).await?;
-    item.ok_or_else(|| {
-        Error::CustomError(
-            StatusCode::NOT_FOUND,
-            ErrorDetail::new("UserCredits not found", "UserCredits was not found"),
-        )
-    })
+async fn load_user_credits(db: &DatabaseConnection, user: &UserModel) -> Result<UserCreditModel> {
+    let item = UserCreditModel::load_item_by_user_id(db, user).await?;
+    Ok(item)
+    // item.ok_or_else(|| {
+    //     Error::CustomError(
+    //         StatusCode::NOT_FOUND,
+    //         ErrorDetail::new("UserCredits not found", "UserCredits was not found"),
+    //     )
+    // })
 }
 async fn load_item_all(db: &DatabaseConnection, id: i32) -> Result<TrainingModelList> {
     let list = TrainingModelModel::find_all_by_user_id(db, id).await?;
@@ -225,8 +227,9 @@ pub async fn billing_dashboard(
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let user = load_user(&ctx.db, &auth.claims.pid).await?;
-    let user_credits = load_user_credits(&ctx.db, user.id).await?;
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let user = load_user(&ctx.db, &user_pid).await?;
+    let user_credits = load_user_credits(&ctx.db, &user).await?;
     let sidebar_routes = routes::Dashboard::sidebar();
     views::dashboard::billing_dashboard(v, user.into(), sidebar_routes, &user_credits.into())
 }
@@ -237,7 +240,8 @@ pub async fn billing_partial_dashboard(
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let user = load_user(&ctx.db, &auth.claims.pid).await?;
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let user = load_user(&ctx.db, &user_pid).await?;
     views::dashboard::billing_partial_dashboard(v, user.into())
 }
 
@@ -247,8 +251,9 @@ pub async fn account_dashboard(
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let user = load_user(&ctx.db, &auth.claims.pid).await?;
-    let user_credits = load_user_credits(&ctx.db, user.id).await?;
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let user = load_user(&ctx.db, &user_pid).await?;
+    let user_credits = load_user_credits(&ctx.db, &user).await?;
     let sidebar_routes = routes::Dashboard::sidebar();
     views::dashboard::account_dashboard(v, user.into(), sidebar_routes, &user_credits.into())
 }
@@ -259,7 +264,8 @@ pub async fn account_partial_dashboard(
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let user = load_user(&ctx.db, &auth.claims.pid).await?;
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let user = load_user(&ctx.db, &user_pid).await?;
     views::dashboard::account_partial_dashboard(v, user.into())
 }
 
@@ -269,8 +275,9 @@ pub async fn notification_dashboard(
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let user = load_user(&ctx.db, &auth.claims.pid).await?;
-    let user_credits = load_user_credits(&ctx.db, user.id).await?;
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let user = load_user(&ctx.db, &user_pid).await?;
+    let user_credits = load_user_credits(&ctx.db, &user).await?;
     let sidebar_routes = routes::Dashboard::sidebar();
     views::dashboard::notification_dashboard(v, user.into(), sidebar_routes, &user_credits.into())
 }
@@ -281,7 +288,8 @@ pub async fn notification_partial_dashboard(
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let user = load_user(&ctx.db, &auth.claims.pid).await?;
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let user = load_user(&ctx.db, &user_pid).await?;
     views::dashboard::notification_partial_dashboard(v, user.into())
 }
 
@@ -291,8 +299,9 @@ pub async fn help_dashboard(
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let user = load_user(&ctx.db, &auth.claims.pid).await?;
-    let user_credits = load_user_credits(&ctx.db, user.id).await?;
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let user = load_user(&ctx.db, &user_pid).await?;
+    let user_credits = load_user_credits(&ctx.db, &user).await?;
     let sidebar_routes = routes::Dashboard::sidebar();
     views::dashboard::help_dashboard(v, user.into(), sidebar_routes, &user_credits.into())
 }
@@ -303,7 +312,8 @@ pub async fn help_partial_dashboard(
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let user = load_user(&ctx.db, &auth.claims.pid).await?;
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let user = load_user(&ctx.db, &user_pid).await?;
     views::dashboard::help_partial_dashboard(v, user.into())
 }
 
@@ -313,8 +323,9 @@ pub async fn settings_dashboard(
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let user = load_user(&ctx.db, &auth.claims.pid).await?;
-    let user_credits = load_user_credits(&ctx.db, user.id).await?;
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let user = load_user(&ctx.db, &user_pid).await?;
+    let user_credits = load_user_credits(&ctx.db, &user).await?;
     let sidebar_routes = routes::Dashboard::sidebar();
     views::dashboard::settings_dashboard(v, user.into(), sidebar_routes, &user_credits.into())
 }
@@ -325,7 +336,8 @@ pub async fn settings_partial_dashboard(
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let user = load_user(&ctx.db, &auth.claims.pid).await?;
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let user = load_user(&ctx.db, &user_pid).await?;
     views::dashboard::settings_partial_dashboard(v, user.into())
 }
 
@@ -335,8 +347,9 @@ pub async fn training_dashboard(
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let user = load_user(&ctx.db, &auth.claims.pid).await?;
-    let user_credits = load_user_credits(&ctx.db, user.id).await?;
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let user = load_user(&ctx.db, &user_pid).await?;
+    let user_credits = load_user_credits(&ctx.db, &user).await?;
     let training_models = load_item_all(&ctx.db, user.id).await?;
     let training_route_check = format!(
         "{}{}",
@@ -360,7 +373,8 @@ pub async fn training_partial_dashboard(
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let user = load_user(&ctx.db, &auth.claims.pid).await?;
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let user = load_user(&ctx.db, &user_pid).await?;
     let training_models = load_item_all(&ctx.db, user.id).await?;
 
     let training_route_check = format!(
@@ -382,8 +396,9 @@ pub async fn packs_dashboard(
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let user = load_user(&ctx.db, &auth.claims.pid).await?;
-    let user_credits = load_user_credits(&ctx.db, user.id).await?;
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let user = load_user(&ctx.db, &user_pid).await?;
+    let user_credits = load_user_credits(&ctx.db, &user).await?;
     let packs = Packs::get_packs();
     let sidebar_routes = routes::Dashboard::sidebar();
     views::dashboard::packs_dashboard(
@@ -401,7 +416,8 @@ pub async fn packs_partial_dashboard(
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let user = load_user(&ctx.db, &auth.claims.pid).await?;
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let user = load_user(&ctx.db, &user_pid).await?;
     let packs = Packs::get_packs();
     views::dashboard::packs_partial_dashboard(v, &user.into(), &packs)
 }
@@ -413,8 +429,9 @@ pub async fn album_deleted_dashboard(
     ViewEngine(v): ViewEngine<TeraView>,
     Extension(website): Extension<Website>,
 ) -> Result<impl IntoResponse> {
-    let user = load_user(&ctx.db, &auth.claims.pid).await?;
-    let user_credits = load_user_credits(&ctx.db, user.id).await?;
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let user = load_user(&ctx.db, &user_pid).await?;
+    let user_credits = load_user_credits(&ctx.db, &user).await?;
     let training_models = load_item_all(&ctx.db, user.id).await?;
     let images = load_images_del(&ctx.db, user.id).await?;
 
@@ -437,8 +454,9 @@ pub async fn album_deleted_partial_dashboard(
     ViewEngine(v): ViewEngine<TeraView>,
     Extension(website): Extension<Website>,
 ) -> Result<impl IntoResponse> {
-    let user = load_user(&ctx.db, &auth.claims.pid).await?;
-    let user_credits = load_user_credits(&ctx.db, user.id).await?;
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let user = load_user(&ctx.db, &user_pid).await?;
+    let user_credits = load_user_credits(&ctx.db, &user).await?;
     let training_models: TrainingModelList = TrainingModelList::empty();
     let images = load_images_del(&ctx.db, user.id).await?;
 
@@ -459,8 +477,9 @@ pub async fn album_favorite_dashboard(
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let user = load_user(&ctx.db, &auth.claims.pid).await?;
-    let user_credits = load_user_credits(&ctx.db, user.id).await?;
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let user = load_user(&ctx.db, &user_pid).await?;
+    let user_credits = load_user_credits(&ctx.db, &user).await?;
     let training_models: TrainingModelList = TrainingModelList::empty();
     let images = load_images(&ctx.db, user.id, true).await?;
 
@@ -483,8 +502,9 @@ pub async fn album_favorite_partial_dashboard(
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let user = load_user(&ctx.db, &auth.claims.pid).await?;
-    let user_credits = load_user_credits(&ctx.db, user.id).await?;
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let user = load_user(&ctx.db, &user_pid).await?;
+    let user_credits = load_user_credits(&ctx.db, &user).await?;
     let training_models: TrainingModelList = TrainingModelList::empty();
     let images = load_images(&ctx.db, user.id, true).await?;
 
@@ -506,8 +526,9 @@ pub async fn photo_dashboard(
     ViewEngine(v): ViewEngine<TeraView>,
     Extension(website): Extension<Website>,
 ) -> Result<impl IntoResponse> {
-    let user = load_user(&ctx.db, &auth.claims.pid).await?;
-    let user_credits = load_user_credits(&ctx.db, user.id).await?;
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let user = load_user(&ctx.db, &user_pid).await?;
+    let user_credits = load_user_credits(&ctx.db, &user).await?;
     let training_models = load_item_all_completed(&ctx, user.id).await?;
     let images = load_images(&ctx.db, user.id, false).await?;
 
@@ -550,8 +571,9 @@ pub async fn photo_partial_dashboard(
     ViewEngine(v): ViewEngine<TeraView>,
     Extension(website): Extension<Website>,
 ) -> Result<impl IntoResponse> {
-    let user = load_user(&ctx.db, &auth.claims.pid).await?;
-    let user_credits = load_user_credits(&ctx.db, user.id).await?;
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let user = load_user(&ctx.db, &user_pid).await?;
+    let user_credits = load_user_credits(&ctx.db, &user).await?;
     let training_models = load_item_all_completed(&ctx, user.id).await?;
     let images = load_images(&ctx.db, user.id, false).await?;
 
@@ -573,8 +595,9 @@ async fn render_dashboard(
     ViewEngine(v): ViewEngine<TeraView>,
     Extension(website): Extension<Website>,
 ) -> Result<impl IntoResponse> {
-    let user = load_user(&ctx.db, &auth.claims.pid).await?;
-    let user_credits = load_user_credits(&ctx.db, user.id).await?;
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let user = load_user(&ctx.db, &user_pid).await?;
+    let user_credits = load_user_credits(&ctx.db, &user).await?;
     let training_models = load_item_all(&ctx.db, user.id).await?;
     let images = load_images(&ctx.db, user.id, false).await?;
     let sidebar_routes = routes::Dashboard::sidebar();

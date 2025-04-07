@@ -30,6 +30,7 @@ CREATE TABLE "Users" (
     "password" VARCHAR(255) NOT NULL,
     "api_key" VARCHAR(255) NOT NULL,
     "name" VARCHAR(255) NOT NULL,
+    "stripe_customer_id" VARCHAR(255),
     "reset_token" VARCHAR(255),
     "reset_sent_at" TIMESTAMPTZ,
     "email_verification_token" VARCHAR(255),
@@ -144,6 +145,14 @@ CREATE TABLE "Packs" (
     "updated_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Packs_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "seaql_migrations" (
+    "version" VARCHAR NOT NULL,
+    "applied_at" BIGINT NOT NULL,
+
+    CONSTRAINT "seaql_migrations_pkey" PRIMARY KEY ("version")
 );
 
 -- CreateIndex

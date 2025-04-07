@@ -1,11 +1,14 @@
 use async_trait::async_trait;
 use chrono::{offset::Local, Duration};
+use derive_more::{AsRef, Constructor, From};
 use loco_rs::{auth::jwt, hash, prelude::*};
 use serde::{Deserialize, Serialize};
 use serde_json::Map;
 use unicode_segmentation::UnicodeSegmentation;
 use uuid::Uuid;
 use validator::ValidateEmail;
+
+use crate::service::stripe::stripe::StripeClient;
 
 pub use super::_entities::users::{self, ActiveModel, Entity, Model};
 use super::{user_credits::UserCreditsInit, UserCreditActiveModel, UserModel};
@@ -136,6 +139,17 @@ impl RegisterParams {
         }
 
         validate
+    }
+}
+
+#[derive(Debug, Clone, Constructor, AsRef, From)]
+pub struct UserId(i32);
+
+#[derive(Debug, Clone, AsRef, From)]
+pub struct UserPid(String);
+impl UserPid {
+    pub fn new<K: Into<String>>(key: K) -> Self {
+        Self(key.into())
     }
 }
 
@@ -393,6 +407,7 @@ impl Model {
     pub async fn create_with_password(
         db: &DatabaseConnection,
         params: &RegisterParams,
+        stripe_client: &StripeClient,
     ) -> ModelResult<Self> {
         let txn = db.begin().await?;
 
@@ -411,10 +426,22 @@ impl Model {
 
         let password_hash =
             hash::hash_password(&params.password).map_err(|e| ModelError::Any(e.into()))?;
+        let user_pid = Uuid::new_v4();
+
+        let stripe_customer = match stripe_client
+            .create_customer(&params.name, &params.email, &user_pid)
+            .await
+        {
+            Ok(stripe_customer) => Some(stripe_customer.id.to_string()),
+            Err(e) => None,
+        };
+
         let user = users::ActiveModel {
+            pid: ActiveValue::set(user_pid),
             email: ActiveValue::set(params.email.to_string()),
             password: ActiveValue::set(password_hash),
             name: ActiveValue::set(params.name.to_string()),
+            stripe_customer_id: ActiveValue::set(stripe_customer),
             ..Default::default()
         }
         .insert(&txn)

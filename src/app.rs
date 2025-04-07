@@ -46,9 +46,10 @@ impl Hooks for App {
     async fn initializers(_ctx: &AppContext) -> Result<Vec<Box<dyn Initializer>>> {
         Ok(vec![
             Box::new(initializers::view_engine::ViewEngineInitializer),
+            Box::new(initializers::website::Website),
             Box::new(initializers::s3::S3),
             Box::new(initializers::fal_client::FalAi),
-            Box::new(initializers::website::Website),
+            Box::new(initializers::stripe::Stripe),
         ])
     }
 

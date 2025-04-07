@@ -45,7 +45,7 @@
         </ul>
         <button
           id="{{plan.id}}"
-          hx-get="/payment/{{ user.id | default(value="x") }}/{{plan.plan.id}}"
+          hx-get="/payment/{{ user.pid | default(value="x") }}/{{plan.id}}"
           class="w-full py-3 px-6 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-medium transition-colors duration-200"
         >
           {{ plan.cta }}

@@ -135,4 +135,16 @@ settings:
     fal_key: {{ get_env(name="FAL_AI_KEY") }} 
     generate_image_url: {{ get_env(name="FAL_GENERATE_IMAGE_URL") }} 
     training_model_url: {{ get_env(name="FAL_TRAINING_MODEL_URL") }} 
-    webhook_url: {{ get_env(name="FAL_WEBHOOK_URL") }} 
+    webhook_url: {{ get_env(name="FAL_WEBHOOK_URL") }}
+  website:
+    site: {{ get_env(name="SITE") }} 
+    name: {{ get_env(name="NAME") }}
+  stripe:
+    site: {{ get_env(name="SITE") }}
+    stripe_secret_key: {{ get_env(name="STRIPE_SECRET_KEY") }} 
+    stripe_publishable_key: {{ get_env(name="STRIPE_PUBLISHABLE_KEY") }}
+    stripe_webhook_secret: {{ get_env(name="STRIPE_WEBHOOK_SECRET") }}
+    stripe_products:
+      basic: {{ get_env(name="STRIPE_BASIC") }} 
+      premium: {{ get_env(name="STRIPE_PREMIUM") }} 
+      max: {{ get_env(name="STRIPE_MAX") }}

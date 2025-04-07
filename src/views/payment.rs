@@ -8,3 +8,21 @@ pub fn payment_home(v: impl ViewRenderer, website: &Website) -> Result<impl Into
         data!({"plans": website.payment_plans, "website": website.website_settings}),
     )
 }
+
+pub fn payment_success(v: impl ViewRenderer, website: &Website) -> Result<impl IntoResponse> {
+    todo!("Implement payment success view");
+    format::render().view(
+        &v,
+        "payment/payment.html",
+        data!({"plans": website.payment_plans, "website": website.website_settings}),
+    )
+}
+
+pub fn payment_cancel(v: impl ViewRenderer, website: &Website) -> Result<impl IntoResponse> {
+    todo!("Implement payment cancel view");
+    format::render().view(
+        &v,
+        "payment/payment.html",
+        data!({"plans": website.payment_plans, "website": website.website_settings}),
+    )
+}
