@@ -1,0 +1,3 @@
+{% extends "payment/payment_base.html" %} {% block head %} {{ super() }} {% endblock head %} {%
+block payment %} {% include "payment/stripe/stripe_processing_partial.html" %} {% endblock payment
+%}

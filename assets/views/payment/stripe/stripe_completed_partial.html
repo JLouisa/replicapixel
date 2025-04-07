@@ -1,0 +1,38 @@
+<div class="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+  <div class="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
+    <div class="mb-6" id="iconContainer">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="lucide lucide-circle-check-big-icon lucide-circle-check-big h-16 w-16 text-green-500 mx-auto animate-bounce"
+      >
+        <path d="M21.801 10A10 10 0 1 1 17 3.335" />
+        <path d="m9 11 3 3L22 4" />
+      </svg>
+    </div>
+    <h2 class="text-2xl font-bold mb-2" id="statusText">Payment Successful!</h2>
+    <p class="text-gray-600" id="messageText">
+      "Thank you for your purchase! You will receive a confirmation email shortly."
+    </p>
+    <button
+      id="returnButton"
+      class="mt-6 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors hidden"
+      onclick="window.location.href = '/'"
+    >
+      Return to Homepage
+    </button>
+  </div>
+
+  <script>
+    setTimeout(() => {
+      window.location.href = "/dashboard";
+    }, 3000);
+  </script>
+</div>

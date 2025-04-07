@@ -1,0 +1,62 @@
+{% extends "payment/payment_base.html" %} {% block head %} {{ super() }}
+<script src="https://unpkg.com/lucide@latest"></script>
+{% endblock head %} {% block content %}
+<div class="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+  <div class="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
+    <div class="mb-6" id="iconContainer">
+      <!-- Icons will be injected here -->
+    </div>
+
+    <h2 class="text-2xl font-bold mb-2" id="statusText">Processing Payment...</h2>
+
+    <p class="text-gray-600" id="messageText">Please wait while we process your payment...</p>
+
+    <button
+      id="returnButton"
+      class="mt-6 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors hidden"
+      onclick="window.location.reload()"
+    >
+      Return to Homepage
+    </button>
+  </div>
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // Create loading and success icons
+    const loadingIcon = `
+        <i data-lucide="loader-2" 
+           class="h-16 w-16 text-blue-500 mx-auto animate-spin">
+        </i>
+    `;
+
+    const successIcon = `
+        <i data-lucide="check-circle" 
+           class="h-16 w-16 text-green-500 mx-auto animate-bounce">
+        </i>
+    `;
+
+    // Get DOM elements
+    const iconContainer = document.getElementById("iconContainer");
+    const statusText = document.getElementById("statusText");
+    const messageText = document.getElementById("messageText");
+    const returnButton = document.getElementById("returnButton");
+
+    // Show loading state
+    iconContainer.innerHTML = loadingIcon;
+    lucide.createIcons();
+
+    // Simulate payment processing
+    setTimeout(() => {
+      // Update to success state
+      iconContainer.innerHTML = successIcon;
+      lucide.createIcons();
+
+      statusText.textContent = "Payment Successful!";
+      messageText.textContent =
+        "Thank you for your purchase! You will receive a confirmation email shortly.";
+      returnButton.classList.remove("hidden");
+    }, 5000);
+  </script>
+</div>
+{% endblock content %}

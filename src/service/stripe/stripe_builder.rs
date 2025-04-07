@@ -1,145 +1,98 @@
-use stripe::CheckoutSession;
+use super::stripe::{PlansNames, StripeClient, StripeClientError};
+use crate::models::UserModel;
+use sea_orm::DatabaseConnection;
 
-use super::{
-    StripeCustomerId,
-    _stripe::{StripeClient, StripeCurrency},
+use stripe::{
+    CheckoutSession, CheckoutSessionMode, CheckoutSessionUiMode, Currency, ParseIdError,
+    StripeError,
 };
-// use crate::{
-//     data::Database,
-//     domain::{
-//         checkout::{CheckoutSessionGuest, CheckoutSessionUser},
-//         error::GlobalError,
-//         guest_order_items::GuestOrderItemList,
-//         guest_orders::GuestOrder,
-//         order_items::OrderItemList,
-//         orders::Order,
-//         payments::PaymentSessionId,
-//         users::User,
-//     },
-// };
-use std::sync::Arc;
 
-#[derive(Clone)]
+use axum::http::StatusCode;
+use loco_rs::{controller::ErrorDetail, prelude::Error as LocoError};
+use thiserror::Error;
+
+#[derive(Error, Debug)]
+pub enum StripeCheckoutBuilderErr {
+    #[error("Required field missing: {0}")]
+    MissingField(&'static str),
+
+    #[error("Conversion Error: {0}")]
+    ParseIdError(#[from] ParseIdError),
+
+    #[error("Stripe API error: {0}")]
+    StripeError(#[from] StripeError),
+
+    #[error("Stripe client operation failed: {0}")]
+    ClientOperation(#[from] StripeClientError),
+}
+
 pub struct CheckoutSessionBuilder<'a> {
     client: &'a StripeClient,
-    db: &'a Arc<Database>,
-    user: Option<&'a User>,
-    order: Option<Order>,
-    order_item: Option<&'a OrderItemList>,
-    guest_order: Option<GuestOrder>,
-    guest_order_item: Option<&'a GuestOrderItemList>,
-    stripe_currency: Option<&'a StripeCurrency>,
+    db: &'a DatabaseConnection,
+    user: Option<&'a UserModel>,
+    plan: Option<&'a PlansNames>,
+    ui_mode: CheckoutSessionUiMode,
+    mode: CheckoutSessionMode,
+    currency: Currency,
 }
 
 impl<'a> CheckoutSessionBuilder<'a> {
-    // Initialize the builder with a reference to StripeClient
-    pub fn new(client: &'a StripeClient, db: &'a Arc<Database>) -> Self {
+    pub fn new(client: &'a StripeClient, db: &'a DatabaseConnection) -> Self {
         Self {
             client,
             db,
             user: None,
-            order: None,
-            order_item: None,
-            guest_order: None,
-            guest_order_item: None,
-            stripe_currency: None,
+            plan: None,
+            ui_mode: CheckoutSessionUiMode::Hosted,
+            mode: CheckoutSessionMode::Payment,
+            currency: Currency::USD,
         }
     }
 
-    // Set the stripe_currency field
-    pub fn stripe_currency(&mut self, stripe_currency: &'a StripeCurrency) -> &mut Self {
-        self.stripe_currency = Some(stripe_currency);
+    pub fn plan(&mut self, plan: &'a PlansNames) -> &mut Self {
+        self.plan = Some(plan);
         self
     }
 
-    // Set the user field
-    pub fn user_checkout_info(&mut self, user: &'a CheckoutSessionUser) -> &mut Self {
-        self.user = Some(&user.user);
-        self.order = Some(user.order.clone());
-        self.order_item = Some(&user.order_items); // Assuming user.order_items is accessible here
+    pub fn user(&mut self, user: &'a UserModel) -> &mut Self {
+        self.user = Some(user);
         self
     }
 
-    pub fn guest_checkout_info(&mut self, guest: &'a CheckoutSessionGuest) -> &mut Self {
-        self.guest_order = Some(guest.guest_order.clone());
-        self.guest_order_item = Some(&guest.guest_order_items);
+    pub fn embedded(&mut self) -> &mut Self {
+        self.ui_mode = CheckoutSessionUiMode::Embedded;
         self
     }
 
-    // Build the CheckoutSession asynchronously
-    pub async fn build(&mut self) -> Result<(CheckoutSession, Order), GlobalError> {
-        // Unwrap the required fields or return an error if any are missing
+    pub fn subscription(&mut self) -> &mut Self {
+        self.mode = CheckoutSessionMode::Subscription;
+        self
+    }
 
-        let stripe_currency = self
-            .stripe_currency
-            .ok_or_else(|| GlobalError::MissingFieldErr("Currency"))?;
+    pub fn eur(&mut self) -> &mut Self {
+        self.currency = Currency::EUR;
+        self
+    }
+
+    pub async fn build(&self) -> Result<CheckoutSession, StripeCheckoutBuilderErr> {
+        let plan = self
+            .plan
+            .ok_or(StripeCheckoutBuilderErr::MissingField("plan"))?;
         let user = self
             .user
-            .ok_or_else(|| GlobalError::MissingFieldErr("user"))?; // Use `as_mut()` to get a mutable reference
-        let order = self
-            .order
-            .as_mut()
-            .ok_or_else(|| GlobalError::MissingFieldErr("user"))?; // Use `as_mut()` to get a mutable reference
-        let order_item = self
-            .order_item
-            .ok_or_else(|| GlobalError::MissingFieldErr("order_item"))?;
-
+            .ok_or(StripeCheckoutBuilderErr::MissingField("user"))?;
         let checkout_session = self
             .client
-            .create_checkout_session(stripe_currency, &user, &order_item, self.db)
-            .await?;
-
-        // Now you can mutate `user.order.payment_session_id` because `user` is mutable
-        order.payment_session_id =
-            PaymentSessionId::new(Some(String::from(checkout_session.id.as_str())));
-
-        // Save the user and order details to the database
-        order.save(self.db).await?;
-        order_item.save(&self.db).await?;
-
-        let new_order: Order = order.clone();
-
-        Ok((checkout_session, new_order))
-    }
-
-    // Build the CheckoutSession asynchronously
-    pub async fn build_guest(&mut self) -> Result<(CheckoutSession, GuestOrder), GlobalError> {
-        // Unwrap the required fields or return an error if any are missing
-
-        let stripe_currency = self
-            .stripe_currency
-            .ok_or_else(|| GlobalError::MissingFieldErr("Currency"))?;
-        let guest_order = self
-            .guest_order
-            .as_mut()
-            .ok_or_else(|| GlobalError::MissingFieldErr("user"))?; // Use `as_mut()` to get a mutable reference
-        let guest_order_list = self
-            .guest_order_item
-            .ok_or_else(|| GlobalError::MissingFieldErr("order_item"))?;
-
-        let customer_id = self.client.create_guest_customer(guest_order).await?.id;
-
-        let checkout_session = self
-            .client
-            .create_guest_checkout_session(
-                stripe_currency,
-                &customer_id,
-                &guest_order_list,
+            .create_checkout(
+                user,
+                plan,
+                &self.mode,
+                &self.ui_mode,
+                &self.currency,
                 self.db,
             )
             .await?;
 
-        // Now you can mutate `user.order.payment_session_id` because `user` is mutable
-        guest_order.payment_session_id =
-            PaymentSessionId::new(Some(String::from(checkout_session.id.as_str())));
-        guest_order.stripe_customer_id = StripeCustomerId::new(Some(customer_id));
-
-        // Save the user and order details to the database
-        guest_order.save(self.db).await?;
-        guest_order_list.save(&self.db).await?;
-
-        let new_order: GuestOrder = guest_order.clone();
-
-        Ok((checkout_session, new_order))
+        Ok(checkout_session)
     }
 }

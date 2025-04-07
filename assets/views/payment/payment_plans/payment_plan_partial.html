@@ -1,4 +1,7 @@
-<div class="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+{% extends "payment/payment_base.html" %} {% block head %} {% endblock head %} {% block title %} Payment Plans {% endblock
+  title %}
+
+{% block payment %} <div class="min-h-screen bg-gradient-to-b from-base-50 to-base-100 py-12 px-4 sm:px-6 lg:px-8">
   <div class="max-w-7xl mx-auto">
     {# {/* Header */} #}
     <div class="text-center mb-12">
@@ -12,7 +15,7 @@
     <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
       {%for plan in plans%}
       <div
-        class="bg-white rounded-2xl shadow-xl p-8 {%if plan.is_popular%} border-2 border-blue-500 transform scale-105 {%else%} border border-gray-100 hover:border-blue-500 transition-all duration-200 {%endif%}"
+        class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 {%if plan.is_popular%} border-2 border-blue-500 transform scale-105 {%else%} border border-gray-100 hover:border-blue-500 transition-all duration-200 {%endif%}"
       >
         {%if plan.is_popular%}
         <div class="absolute -top-4 right-8">
@@ -23,7 +26,7 @@
         {%endif%}
         <div class="flex items-center justify-between mb-8">
           <div>
-            <h2 class="text-2xl font-bold text-gray-900">{{plan.plan_type}}</h2>
+            <h2 class="text-2xl font-bold text-gray-900 dark:bg-gray-800 ">{{plan.plan_type}}</h2>
             <p class="text-gray-500">{{plan.subtitle}}</p>
           </div>
           {% if plan.plan_type == "Basic" %} {% include "partials/svg/halfstart.html" %} {% elif
@@ -43,13 +46,14 @@
           </li>
           {% endfor %}
         </ul>
-        <button
-          id="{{plan.id}}"
-          hx-get="/payment/{{ user.pid | default(value="x") }}/{{plan.id}}"
-          class="w-full py-3 px-6 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-medium transition-colors duration-200"
-        >
-          {{ plan.cta }}
-        </button>
+        <a href="{{payment_route}}/{{ user_p.pid | default(value="x") }}/{{plan.id}}">
+          <button
+            id="{{plan.id}}"
+            class="w-full py-3 px-6 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-medium transition-colors duration-200"
+          >
+            {{ plan.cta }}
+          </button>
+        </a>
       </div>
       {%endfor%} {# {/* Payment Security Notice */} #}
     </div>
@@ -61,3 +65,4 @@
   </div>
   <script></script>
 </div>
+{% endblock payment %}

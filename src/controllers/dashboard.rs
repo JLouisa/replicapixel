@@ -2,29 +2,17 @@
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
 use crate::controllers::training_models as TrainingRoutes;
-use crate::domain::dashboard_sidebar::DashboardSidebar;
+use crate::domain::packs::Packs;
 use crate::domain::website::Website;
-use crate::domain::{image::Image, packs::Packs};
-use crate::models::_entities::sea_orm_active_enums::Status;
-use crate::models::_entities::users;
 use crate::models::images::ImagesModelList;
 use crate::models::training_models::TrainingModelList;
 use crate::models::users::UserPid;
-use crate::models::{
-    ImageModel, TrainingModelActiveModel, TrainingModelEntity, TrainingModelModel,
-    UserCreditEntity, UserCreditModel, UserEntity, UserModel,
-};
+use crate::models::{ImageModel, TrainingModelModel, UserCreditModel, UserModel};
 use crate::service::aws::s3::AwsS3;
 use crate::views;
 use crate::views::images::ImageViewModel;
 use axum::Extension;
-use axum::{
-    debug_handler,
-    extract::{Json, State},
-    http::{HeaderMap, StatusCode},
-    response::{IntoResponse, Redirect, Response},
-};
-use loco_rs::controller::ErrorDetail;
+use axum::{debug_handler, extract::State, response::IntoResponse};
 use loco_rs::prelude::*;
 
 pub mod routes {
@@ -185,24 +173,9 @@ async fn load_user(db: &DatabaseConnection, pid: &UserPid) -> Result<UserModel> 
     let item = UserModel::find_by_pid(db, &pid.as_ref().to_string()).await?;
     Ok(item)
 }
-async fn load_item(db: &DatabaseConnection, id: i32) -> Result<TrainingModelModel> {
-    let item = TrainingModelEntity::find_by_id(id).one(db).await?;
-    item.ok_or_else(|| {
-        Error::CustomError(
-            StatusCode::NOT_FOUND,
-            ErrorDetail::new("Training model not found", "Training model was not found"),
-        )
-    })
-}
 async fn load_user_credits(db: &DatabaseConnection, user: &UserModel) -> Result<UserCreditModel> {
     let item = UserCreditModel::load_item_by_user_id(db, user).await?;
     Ok(item)
-    // item.ok_or_else(|| {
-    //     Error::CustomError(
-    //         StatusCode::NOT_FOUND,
-    //         ErrorDetail::new("UserCredits not found", "UserCredits was not found"),
-    //     )
-    // })
 }
 async fn load_item_all(db: &DatabaseConnection, id: i32) -> Result<TrainingModelList> {
     let list = TrainingModelModel::find_all_by_user_id(db, id).await?;

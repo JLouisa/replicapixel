@@ -4,9 +4,7 @@ title %} {% block content %}
   <div id="payment_navbar" class="bg-base">{% include "partials/navbar/navbar.html" %}</div>
 
   <!-- Main Payment Wrapper -->
-  <div id="payment_content" class="flex-1 bg-base-300">
-    {% include "payment/payment_partial.html" %}
-  </div>
-</div>
+  <div id="checkout" class="flex-1 bg-base-300">{% block payment %} {% endblock payment %}</div>
 
-{% endblock content %} {% block js %} {% endblock js %}
+  {% endblock content %} {% block js %} {% endblock js %}
+</div>
