@@ -1,5 +1,4 @@
-pub mod stripe;
-pub mod stripe_builder;
+// pub mod _stripe;
+// pub mod stripe_builder;
 
-mod domain;
-pub use domain::*;
+pub mod stripe;

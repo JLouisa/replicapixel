@@ -1,22 +1,22 @@
 use stripe::CheckoutSession;
 
 use super::{
-    stripe::{StripeClient, StripeCurrency},
     StripeCustomerId,
+    _stripe::{StripeClient, StripeCurrency},
 };
-use crate::{
-    data::Database,
-    domain::{
-        checkout::{CheckoutSessionGuest, CheckoutSessionUser},
-        error::GlobalError,
-        guest_order_items::GuestOrderItemList,
-        guest_orders::GuestOrder,
-        order_items::OrderItemList,
-        orders::Order,
-        payments::PaymentSessionId,
-        users::User,
-    },
-};
+// use crate::{
+//     data::Database,
+//     domain::{
+//         checkout::{CheckoutSessionGuest, CheckoutSessionUser},
+//         error::GlobalError,
+//         guest_order_items::GuestOrderItemList,
+//         guest_orders::GuestOrder,
+//         order_items::OrderItemList,
+//         orders::Order,
+//         payments::PaymentSessionId,
+//         users::User,
+//     },
+// };
 use std::sync::Arc;
 
 #[derive(Clone)]

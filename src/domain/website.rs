@@ -1,7 +1,11 @@
 use super::{dashboard_sidebar::DashboardSidebar, packs::Packs};
-use crate::{controllers::dashboard::routes, models::_entities::sea_orm_active_enums::ImageSize};
+use crate::{
+    controllers::dashboard::routes, models::_entities::sea_orm_active_enums::ImageSize,
+    service::stripe::stripe::PlansNames,
+};
 use derive_more::Constructor;
 use serde::{Deserialize, Serialize};
+use stripe::PriceId;
 use strum::{EnumIter, EnumString, IntoEnumIterator};
 
 #[derive(Debug, Clone, Deserialize, Serialize, Constructor, Default)]
@@ -33,13 +37,6 @@ impl Website {
             payment_plans: get_plans(),
         }
     }
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub enum PlansNames {
-    Basic,
-    Premium,
-    Max,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]

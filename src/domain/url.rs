@@ -13,7 +13,7 @@ pub enum UrlError {
     Other(String),
 }
 
-#[derive(Debug, Serialize, Deserialize, Display, From)]
+#[derive(Debug, Serialize, Deserialize, Display, From, Clone)]
 pub struct Url(String);
 
 impl Url {
