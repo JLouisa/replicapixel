@@ -2,8 +2,11 @@
 
 pub mod prelude;
 
+pub mod handled_fal_events;
+pub mod handled_stripe_events;
 pub mod images;
 pub mod packs;
+pub mod plans;
 pub mod sea_orm_active_enums;
 pub mod training_models;
 pub mod transactions;

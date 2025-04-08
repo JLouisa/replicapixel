@@ -547,6 +547,15 @@ impl ActiveModel {
         Ok(self.update(db).await?)
     }
 
+    pub async fn update_stripe_customer_id(
+        mut self,
+        stripe_customer_id: &str,
+        db: &impl ConnectionTrait,
+    ) -> ModelResult<Model> {
+        self.stripe_customer_id = ActiveValue::set(Some(stripe_customer_id.to_string()));
+        Ok(self.update(db).await?)
+    }
+
     /// Creates a magic link token for passwordless authentication.
     ///
     /// Generates a random token with a specified length and sets an expiration time

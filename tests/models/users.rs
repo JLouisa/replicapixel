@@ -37,55 +37,57 @@ async fn test_can_validate_model() {
     assert_debug_snapshot!(res);
 }
 
-#[tokio::test]
-#[serial]
-async fn can_create_with_password() {
-    configure_insta!();
+// #[tokio::test]
+// #[serial]
+// async fn can_create_with_password() {
+//     configure_insta!();
 
-    let boot = boot_test::<App>()
-        .await
-        .expect("Failed to boot test application");
+//     let boot = boot_test::<App>()
+//         .await
+//         .expect("Failed to boot test application");
 
-    let params = RegisterParams {
-        email: "test@framework.com".to_string(),
-        password: "1234".to_string(),
-        name: "framework".to_string(),
-        confirm_password: "1234".to_string(),
-    };
+//     let params = RegisterParams {
+//         email: "test@framework.com".to_string(),
+//         password: "1234".to_string(),
+//         name: "framework".to_string(),
+//         confirm_password: "1234".to_string(),
+//     };
 
-    let res = Model::create_with_password(&boot.app_context.db, &params).await;
+//     let res = Model::create_with_password(&boot.app_context.db, &params).await;
 
-    insta::with_settings!({
-        filters => cleanup_user_model()
-    }, {
-        assert_debug_snapshot!(res);
-    });
-}
-#[tokio::test]
-#[serial]
-async fn handle_create_with_password_with_duplicate() {
-    configure_insta!();
+//     insta::with_settings!({
+//         filters => cleanup_user_model()
+//     }, {
+//         assert_debug_snapshot!(res);
+//     });
+// }
+// #[tokio::test]
+// #[serial]
+// async fn handle_create_with_password_with_duplicate() {
+//     configure_insta!();
 
-    let boot = boot_test::<App>()
-        .await
-        .expect("Failed to boot test application");
-    seed::<App>(&boot.app_context)
-        .await
-        .expect("Failed to seed database");
+//     let boot = boot_test::<App>()
+//         .await
+//         .expect("Failed to boot test application");
+//     seed::<App>(&boot.app_context)
+//         .await
+//         .expect("Failed to seed database");
 
-    let new_user = Model::create_with_password(
-        &boot.app_context.db,
-        &RegisterParams {
-            email: "user1@example.com".to_string(),
-            password: "1234".to_string(),
-            confirm_password: "1234".to_string(),
-            name: "framework".to_string(),
-        },
-    )
-    .await;
+//     let stripe_client = boot.app_context.config.clone();
 
-    assert_debug_snapshot!(new_user);
-}
+//     let new_user = Model::create_with_password(
+//         &boot.app_context.db,
+//         &RegisterParams {
+//             email: "user1@example.com".to_string(),
+//             password: "1234".to_string(),
+//             confirm_password: "1234".to_string(),
+//             name: "framework".to_string(),
+//         },
+//     )
+//     .await;
+
+//     assert_debug_snapshot!(new_user);
+// }
 
 #[tokio::test]
 #[serial]

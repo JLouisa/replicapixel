@@ -1,7 +1,7 @@
 pub use super::_entities::user_credits::{ActiveModel, Entity, Model};
 use sea_orm::entity::prelude::*;
 pub type UserCredits = Entity;
-use super::{UserModel, _entities::user_credits};
+use super::{TransactionModel, UserCreditActiveModel, UserModel, _entities::user_credits};
 use loco_rs::{auth::jwt, hash, prelude::*};
 use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
@@ -140,12 +140,22 @@ impl Model {
         let item = Model::find_by_user_id(db, user.id).await?;
         Ok(item)
     }
-    pub async fn save(&self, db: &impl ConnectionTrait) -> Result<Self> {
+}
+
+// implement your write-oriented logic here
+impl ActiveModel {
+    pub async fn save(credit: &Model, db: &impl ConnectionTrait) -> ModelResult<Self> {
         let mut item = ActiveModel {
+            id: ActiveValue::set(credit.id.clone()),
+            pid: ActiveValue::set(credit.pid.clone()),
+            user_id: ActiveValue::set(credit.user_id.clone()),
+            credit_amount: ActiveValue::set((credit.credit_amount.clone())),
+            model_amount: ActiveValue::set(credit.model_amount.clone()),
             ..Default::default()
         };
-        self.update(&mut item);
-        let item = item.update(db).await?;
+
+        let item = item.insert(db).await?;
+
         Ok(item.into())
     }
 }
@@ -163,10 +173,20 @@ impl Model {
             .await?;
         user_credits.ok_or_else(|| ModelError::EntityNotFound)
     }
+    pub async fn update_credits_with_transaction(
+        mut self,
+        txn: TransactionModel,
+        db: &impl ConnectionTrait,
+    ) -> ModelResult<Model> {
+        let new_credit_amount = txn.credit_amount.clone() + self.credit_amount.clone();
+        let new_model_amount = txn.model_amount.clone() + self.model_amount.clone();
+        let mut new = ActiveModel::from(self);
+        new.credit_amount = ActiveValue::set(new_credit_amount);
+        new.model_amount = ActiveValue::set(new_model_amount);
+        let credit = new.update(db).await?;
+        Ok(credit)
+    }
 }
-
-// implement your write-oriented logic here
-impl ActiveModel {}
 
 // implement your custom finders, selectors oriented logic here
 impl Entity {}

@@ -1,27 +1,46 @@
+use crate::{
+    controllers::payment::routes,
+    domain::url::Url,
+    models::{UserActiveModel, UserModel, _entities::sea_orm_active_enums::PlanNames},
+};
+use axum::http::StatusCode;
 use axum::{extract::Json, routing::post, Router};
-use derive_more::{AsRef, Constructor, From};
+use derive_more::{AsRef, Constructor, Display, From};
+use loco_rs::prelude::Error as LocoError;
+use loco_rs::{controller::ErrorDetail, model::ModelError};
 use sea_orm::entity::prelude::*;
 use secrecy::{ExposeSecret, SecretString};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::str::FromStr;
 use stripe::{
-    CheckoutSession, CheckoutSessionMode, Client, CreateCheckoutSession,
-    CreateCheckoutSessionLineItems, CreateCustomer, Customer, CustomerId, ParseIdError, PriceId,
-    StripeError,
+    CheckoutSession, CheckoutSessionMode, CheckoutSessionUiMode, Client, CreateCheckoutSession,
+    CreateCheckoutSessionLineItems, CreateCustomer, Currency, Customer, CustomerId, Metadata,
+    ParseIdError, PriceId, StripeError,
 };
+use strum::EnumString;
 use thiserror::Error;
 
-use crate::{controllers::payment::routes, domain::url::Url, models::UserModel};
-
 #[derive(Error, Debug)]
-pub enum StripeErr {
-    #[error("Conversion Error: {0}")]
-    ParseIdError(#[from] ParseIdError),
-    #[error("Stripe error: {0}")]
-    StripeError(#[from] StripeError),
-    #[error("Other error: {0}")]
-    Other(String),
+pub enum StripeClientError {
+    // Renamed for clarity
+    #[error("Stripe API call failed: {0}")]
+    StripeApi(#[from] StripeError), // Keep this, maybe rename variant
+
+    #[error("Failed to parse ID: {0}")] // Keep if parsing happens inside client methods
+    ParseId(#[from] ParseIdError),
+
+    #[error("Database interaction failed: {0}")] // Add more specific errors if possible
+    Database(#[from] sea_orm::DbErr), // Example if using SeaORM
+
+    #[error("Database interaction failed: {0}")]
+    DbModel(#[from] ModelError),
+
+    #[error("Internal client error: {0}")] // Generic fallback
+    Internal(String),
+
+    #[error("Required configuration missing for client: {0}")] // e.g., API key
+    Configuration(String),
 }
 
 enum MetaEntity<'a> {
@@ -30,12 +49,13 @@ enum MetaEntity<'a> {
     // Register(&'a Register),
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub enum PlansNames {
-    Basic,
-    Premium,
-    Max,
-}
+// #[derive(Debug, Serialize, Deserialize, EnumString, Clone, Display)]
+// #[serde(rename_all = "lowercase")]
+// pub enum PlanNames {
+//     Basic,
+//     Premium,
+//     Max,
+// }
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct StripeSettings {
@@ -67,11 +87,11 @@ pub struct StripeProducts {
     max: PriceId,
 }
 impl StripeProducts {
-    pub fn get_price_id(&self, plan: &PlansNames) -> PriceId {
+    pub fn get_price_id(&self, plan: &PlanNames) -> PriceId {
         match plan {
-            PlansNames::Basic => self.basic.clone(),
-            PlansNames::Premium => self.premium.clone(),
-            PlansNames::Max => self.max.clone(),
+            PlanNames::Basic => self.basic.clone(),
+            PlanNames::Premium => self.premium.clone(),
+            PlanNames::Max => self.max.clone(),
         }
     }
 }
@@ -102,7 +122,7 @@ impl StripeClient {
         };
         let stripe_url = StripeUrls {
             stripe_success_url: Url::new(format!(
-                "{}{}{}",
+                "{}{}{}?session_id={{CHECKOUT_SESSION_ID}}",
                 settings.site,
                 routes::Payment::BASE,
                 routes::Payment::API_STRIPE_SUCCESS
@@ -130,47 +150,44 @@ impl StripeClient {
     }
 
     pub async fn create_checkout(
-        self,
+        &self,
         user: &UserModel,
-        plan: PlansNames,
+        plan: &PlanNames,
+        transaction_id: String,
+        mode: &CheckoutSessionMode,
+        ui_mode: &CheckoutSessionUiMode,
+        currency: &Currency,
+        metadata: Metadata,
         txn: &impl ConnectionTrait,
-    ) -> Result<Url, String> {
-        let customer_id: CustomerId = match Self::find_stripe_customer_id_in_db(&user.pid, txn)
-            .await?
-        {
-            Some(existing_stripe_id_str) => {
-                // Found in DB, parse it back into CustomerId
-                CustomerId::from_str(&existing_stripe_id_str).map_err(|_| {
-                    format!(
-                        "Invalid stored Stripe Customer ID format: {}",
-                        existing_stripe_id_str
-                    )
-                })?
-            }
+    ) -> Result<CheckoutSession, StripeClientError> {
+        let customer_id: CustomerId = match user.stripe_customer_id.to_owned() {
+            Some(existing_stripe_id_str) => CustomerId::from_str(&existing_stripe_id_str)?,
             None => {
-                let mut customer_params = CreateCustomer::new();
-                customer_params.email = Some(&user.email);
-                let mut metadata = HashMap::new();
-                metadata.insert("app_user_id".to_string(), user.pid.to_string());
-                customer_params.metadata = Some(metadata);
-                let customer = Customer::create(&self.client, customer_params)
-                    .await
-                    .map_err(|e: StripeError| format!("Failed to create Stripe customer: {}", e))?;
-                Self::save_stripe_customer_id_to_db(&user.pid, customer.id.as_str(), txn).await?;
-                customer.id
+                let stripe_customer = self
+                    .create_customer(&user.name, &user.email, &user.pid)
+                    .await?;
+                Self::save_stripe_customer_id_to_db(&user, stripe_customer.id.as_str(), txn)
+                    .await?;
+                stripe_customer.id
             }
         };
 
-        let success_url = format!(
-            "{}?session_id={{CHECKOUT_SESSION_ID}}",
-            self.stripe_url.stripe_success_url.as_ref()
-        );
         let checkout_params = CreateCheckoutSession {
-            success_url: Some(success_url.as_str().into()),
-            cancel_url: Some(self.stripe_url.stripe_cancel_url.as_ref()),
-            return_url: Some(self.stripe_url.stripe_return_url.as_ref()),
-            mode: Some(CheckoutSessionMode::Payment),
+            success_url: Some(self.stripe_url.stripe_success_url.as_ref()),
+            cancel_url: match ui_mode == &CheckoutSessionUiMode::Hosted {
+                true => Some(self.stripe_url.stripe_cancel_url.as_ref()),
+                false => None,
+            },
+            return_url: match ui_mode == &CheckoutSessionUiMode::Embedded {
+                true => Some(self.stripe_url.stripe_return_url.as_ref()),
+                false => None,
+            },
+            client_reference_id: Some(&transaction_id),
+            mode: Some(*mode),
+            ui_mode: Some(*ui_mode),
+            currency: Some(*currency),
             customer: Some(customer_id),
+            metadata: Some(metadata),
             line_items: Some(vec![CreateCheckoutSessionLineItems {
                 price: Some(self.stripe_products.get_price_id(&plan).to_string()),
                 quantity: Some(1),
@@ -179,17 +196,9 @@ impl StripeClient {
             ..Default::default()
         };
 
-        dbg!("Creating checkout session: {:?}", &checkout_params);
+        let session = CheckoutSession::create(&self.client, checkout_params).await?;
 
-        let session = CheckoutSession::create(&self.client, checkout_params)
-            .await
-            .map_err(|e: StripeError| format!("Stripe Checkout Session creation error: {}", e))?;
-
-        // The URL should always be present for hosted checkout sessions
-        match session.url {
-            Some(url) => Ok(Url::new(url)),
-            None => Err("Stripe Checkout Session created without a URL".to_string()),
-        }
+        Ok(session)
     }
 
     fn build_metadata(&self, entity: MetaEntity) -> std::collections::HashMap<String, String> {
@@ -207,17 +216,17 @@ impl StripeClient {
         &self,
         name: &str,
         email: &str,
-        user_id: &Uuid,
-    ) -> Result<Customer, StripeErr> {
+        pid: &Uuid,
+    ) -> Result<Customer, StripeClientError> {
         let mut meta = HashMap::new();
-        meta.insert("user_id".to_string(), user_id.to_string());
+        meta.insert("user_id".to_string(), pid.to_string());
         meta.insert("email".to_string(), email.to_owned());
 
         let customer = Customer::create(
             &self.client,
             CreateCustomer {
-                name: Some(name),
-                email: Some(email),
+                name: Some(&name),
+                email: Some(&email),
                 description: None,
                 metadata: Some(meta),
                 ..Default::default()
@@ -228,7 +237,7 @@ impl StripeClient {
         Ok(customer)
     }
 
-    pub async fn get_customer(&self, user: &UserModel) -> Result<Customer, StripeErr> {
+    pub async fn get_customer(&self, user: &UserModel) -> Result<Customer, StripeClientError> {
         let customer = Customer::create(
             &self.client,
             CreateCustomer {
@@ -244,20 +253,14 @@ impl StripeClient {
         Ok(customer)
     }
 
-    async fn find_stripe_customer_id_in_db(
-        user_id: &Uuid,
-        db: &impl ConnectionTrait,
-    ) -> Result<Option<String>, String> {
-        // TODO: Implement database lookup
-        todo!();
-    }
-
     async fn save_stripe_customer_id_to_db(
-        user_id: &Uuid,
+        user: &UserModel,
         stripe_customer_id: &str,
         db: &impl ConnectionTrait,
-    ) -> Result<(), String> {
-        // TODO: Implement database update
-        todo!();
+    ) -> Result<UserModel, ModelError> {
+        let user = UserActiveModel::from(user.clone())
+            .update_stripe_customer_id(stripe_customer_id, db)
+            .await?;
+        Ok(user)
     }
 }

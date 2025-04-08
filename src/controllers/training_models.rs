@@ -7,14 +7,12 @@ use crate::models::_entities::training_models::{ActiveModel, Entity, Model};
 use crate::models::training_models::{TrainingForm, TrainingModelParams};
 use crate::models::{TrainingModelActiveModel, TrainingModelModel, UserModel};
 use crate::service::aws::s3::{AwsS3, PresignedUrlRequest, PresignedUrlSafe, S3Folders, S3Key};
-use crate::service::fal_ai::fal_client::{FalAiClient, FluxLoraTrainingSchema};
+use crate::service::fal_ai::fal_client::FalAiClient;
+use crate::views;
 use crate::views::training_models::TrainingModelView;
-use crate::{domain::image::Image, views};
 use axum::{debug_handler, Extension};
-use axum::{http::HeaderMap, http::StatusCode, response::IntoResponse, Json};
+use axum::{http::StatusCode, response::IntoResponse, Json};
 use loco_rs::prelude::*;
-use serde::{Deserialize, Serialize};
-use strum::{EnumIter, EnumString, IntoEnumIterator};
 
 pub mod routes {
     use serde::Serialize;
@@ -58,11 +56,11 @@ async fn load_item(ctx: &AppContext, id: i32) -> Result<Model> {
     item.ok_or_else(|| Error::NotFound)
 }
 
-async fn load_item_all(ctx: &AppContext, id: i32) -> Result<Model> {
-    let list = TrainingModelModel::find_all_by_user_id(&ctx.db, id).await?;
-    let item = Entity::find_by_id(id).one(&ctx.db).await?;
-    item.ok_or_else(|| Error::NotFound)
-}
+// async fn load_item_all(ctx: &AppContext, id: i32) -> Result<Model> {
+//     let list = TrainingModelModel::find_all_by_user_id(&ctx.db, id).await?;
+//     let item = Entity::find_by_id(id).one(&ctx.db).await?;
+//     item.ok_or_else(|| Error::NotFound)
+// }
 
 #[debug_handler]
 pub async fn upload_training(
@@ -77,7 +75,7 @@ pub async fn upload_training(
     let (pre_url, s3_key) = s3_client
         .presigned_save_url(&user.pid, &pre_url_request, None)
         .await
-        .map_err(|e| loco_rs::Error::Message(String::from("Generating Pre-sign URL error: 101")))?;
+        .map_err(|_| loco_rs::Error::Message(String::from("Generating Pre-sign URL error: 101")))?;
 
     // Create and save Training Model in Database
     let training_params: TrainingModelParams = form.from_from(&user, &s3_key);

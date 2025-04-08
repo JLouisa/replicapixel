@@ -43,34 +43,34 @@ model Users {
 }
 
 model TrainingModels {
-  id                 Int         @id @default(autoincrement())
-  pid                String      @unique @db.Uuid
-  user_id            Int       
-  name               String      @db.VarChar(255)
-  age                Int
-  sex                Sex
-  ethnicity          Ethnicity
-  basedOn            BasedOn
-  eye_color          EyeColor
-  bald               Boolean     @default(false)
-  steps              Int    
-  create_mask        Boolean    
-  is_style           Boolean    
-  trigger_word       String      @db.VarChar(255)
-  tensor_path        String?     
-  thumbnail          String?     
-  training_status    Status     
-  fal_output         Json?
-  training_images    Json?
-  fal_ai_request_id  String?     @db.VarChar(255)
-  s3_key             String      @db.VarChar(255)
-  is_verified        Boolean     @default(false)
-  deleted_at         DateTime?   @db.Timestamptz
-  created_at         DateTime    @default(now()) @db.Timestamptz
-  updated_at         DateTime    @default(now()) @db.Timestamptz
+  id                        Int         @id @default(autoincrement())
+  pid                       String      @unique @db.Uuid
+  user_id                   Int       
+  name                      String      @db.VarChar(255)
+  age                       Int
+  sex                       Sex
+  ethnicity                 Ethnicity
+  basedOn                   BasedOn
+  eye_color                 EyeColor
+  bald                      Boolean     @default(false)
+  steps                     Int    
+  create_mask               Boolean    
+  is_style                  Boolean    
+  trigger_word              String      @db.VarChar(255)
+  tensor_path               String?     
+  thumbnail                 String?     
+  training_status           Status     
+  fal_output                Json?
+  training_images           Json?
+  fal_ai_request_id         String?     @db.VarChar(255)
+  s3_key                    String      @db.VarChar(255)
+  is_verified               Boolean     @default(false)
+  deleted_at                DateTime?   @db.Timestamptz
+  created_at                DateTime    @default(now()) @db.Timestamptz
+  updated_at                DateTime    @default(now()) @db.Timestamptz
 
-  user               Users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  Images             Images[]
+  user                      Users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Images                    Images[]
 
   
   @@index([pid], name: "idx-training_models-pid")
@@ -78,91 +78,129 @@ model TrainingModels {
 }
 
 model UserCredits {
-  id              Int              @id @default(autoincrement())
-  pid             String           @unique @db.Uuid
-  user_id         Int              @unique
-  credit_amount   Int              @default(0)
-  model_amount    Int              @default(0)
-  created_at      DateTime         @default(now()) @db.Timestamptz
-  updated_at      DateTime         @default(now()) @db.Timestamptz
+  id                        Int              @id @default(autoincrement())
+  pid                       String           @unique @db.Uuid
+  user_id                   Int              @unique
+  credit_amount             Int              @default(0)
+  model_amount              Int              @default(0)
+  created_at                DateTime         @default(now()) @db.Timestamptz
+  updated_at                DateTime         @default(now()) @db.Timestamptz
 
-  user            Users   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user                      Users   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model Images {
-  id                   Int       @id @default(autoincrement())
-  pid                  String    @unique @db.Uuid
-  user_id              Int
-  training_model_id    Int
-  pack_id              Int?
-  user_prompt          String     
-  sys_prompt           String     
-  alt                  String     
-  num_inference_steps  Int
-  content_type         ImageFormat
-  status               Status
-  image_size           ImageSize 
-  fal_ai_request_id    String?     @db.VarChar(255)
-  width                Int?
-  height               Int?
-  image_url_fal        String?   
-  image_s3_key         String?  
-  is_favorite          Boolean    @default(true)
-  deleted_at           DateTime?  @db.Timestamptz
-  created_at           DateTime   @default(now()) @db.Timestamptz
-  updated_at           DateTime   @default(now()) @db.Timestamptz
+  id                        Int       @id @default(autoincrement())
+  pid                       String    @unique @db.Uuid
+  user_id                   Int
+  training_model_id         Int
+  pack_id                   Int?
+  user_prompt               String     
+  sys_prompt                String     
+  alt                       String     
+  num_inference_steps       Int
+  content_type              ImageFormat
+  status                    Status
+  image_size                ImageSize 
+  fal_ai_request_id         String?     @db.VarChar(255)
+  width                     Int?
+  height                    Int?
+  image_url_fal             String?   
+  image_s3_key              String?  
+  is_favorite               Boolean    @default(true)
+  deleted_at                DateTime?  @db.Timestamptz
+  created_at                DateTime   @default(now()) @db.Timestamptz
+  updated_at                DateTime   @default(now()) @db.Timestamptz
 
-  user                 Users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  training_model       TrainingModels @relation(fields: [training_model_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  pack                 Packs? @relation(fields: [pack_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user                      Users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  training_model            TrainingModels @relation(fields: [training_model_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  pack                      Packs? @relation(fields: [pack_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@index([pid], name: "idx-images-pid")
   @@index([user_id], name: "idx-images-user_id")
   @@index([training_model_id], name: "idx-images-training_model_id")
 }
 
+model Plans {
+  id                        Int             @id @default(autoincrement())
+  pid                       String          @unique @db.Uuid
+  name                      String          @unique
+  plan_name                 PlanNames       @unique
+  credit_amount             Int
+  model_amount              Int
+  price_cents               Int
+  stripe_price_id           String          @unique
+  subtitle                  String          @db.VarChar(255)
+  features                  String[]        @db.Text @default([])
+  cta                       String          @db.VarChar(255)
+  created_at                DateTime        @default(now()) @db.Timestamptz
+  updated_at                DateTime        @default(now()) @db.Timestamptz
+  is_popular                Boolean         @default(false)
+  transactions              Transactions[]  @relation("PlanToTransactions")
+
+  @@index([pid], name: "idx-plan-pid")
+}
 
 model Transactions {
-  id                           Int      @id @default(autoincrement())
-  pid                          String   @unique @db.Uuid
-  user_id                      Int
-  credit_amount                Int
-  model_amount                 Int
-  currency                     String   @db.VarChar(255)
-  payment_id                   String   @db.VarChar(255)
-  order_id                     String   @db.VarChar(255)
-  plan                         String   @db.VarChar(255)
-  status                       Status
-  created_at                   DateTime @default(now()) @db.Timestamptz
-  updated_at                   DateTime @default(now()) @db.Timestamptz
+  id                      Int       @id @default(autoincrement())
+  pid                     String    @unique @db.Uuid
+  user_id                 Int
+  plan_id                 Int
+  credit_amount           Int
+  model_amount            Int
+  currency                String    @db.VarChar(16)
+  payment_id              String    @db.VarChar(255)
+  status                  Status
+  created_at              DateTime  @default(now()) @db.Timestamptz
+  updated_at              DateTime  @default(now()) @db.Timestamptz
 
-  user                        Users    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  plan                    Plans     @relation("PlanToTransactions", fields: [plan_id], references: [id])
+  user                    Users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@index([pid], name: "idx-transactions-pid")
   @@index([user_id], name: "idx-transactions-user_id")
 }
 
+
+
 model Packs {
-  id            Int         @id @default(autoincrement())
-  pid           String      @unique @db.Uuid
-  name          String      @db.VarChar(255)
-  description   String      
-  pack_prompts  String      
-  credits       Int   
-  amount        Int   
-  image_url     String      
-  created_at    DateTime    @default(now()) @db.Timestamptz
-  updated_at    DateTime    @default(now()) @db.Timestamptz
+  id                      Int         @id @default(autoincrement())
+  pid                     String      @unique @db.Uuid
+  name                    String      @db.VarChar(255)
+  description             String      
+  pack_prompts            String      
+  credits                 Int   
+  amount                  Int   
+  image_url               String      
+  created_at              DateTime    @default(now()) @db.Timestamptz
+  updated_at              DateTime    @default(now()) @db.Timestamptz
   
-  Images             Images[]
+  Images                  Images[]
 
   @@index([pid], name: "idx-packs-pid")
 }
 
-model seaql_migrations {
-  version    String       @id @db.VarChar
-  applied_at BigInt
+model HandledStripeEvent {
+  session_id String             @id 
+  processed_at DateTime         @default(now())
+
+  @@map("handled_stripe_events")
 }
+
+model HandledFalEvent {
+  request_id String             @id 
+  processed_at DateTime         @default(now())
+
+  @@map("handled_fal_events")
+}
+
+
+model seaql_migrations {
+  version                 String       @id @db.VarChar
+  applied_at              BigInt
+}
+
+
 
 enum Status {
     Pending
@@ -173,6 +211,14 @@ enum Status {
     Cancelled
 
     @@map("status")
+}
+
+enum PlanNames {
+    Basic
+    Premium
+    Max
+
+    @@map("plan_names")
 }
 
 enum Sex {

@@ -1,32 +1,18 @@
 #![allow(clippy::missing_errors_doc)]
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
-use loco_rs::{db, prelude::*};
+use loco_rs::prelude::*;
 
 use crate::domain::domain_services::image_generation::ImageGenerationService;
-use crate::initializers::s3;
-use crate::models::_entities::sea_orm_active_enums::{
-    BasedOn, Ethnicity, EyeColor, ImageFormat, ImageSize, Sex, Status,
-};
-use crate::models::_entities::training_models;
+use crate::models::_entities::sea_orm_active_enums::{ImageFormat, ImageSize, Status};
 use crate::models::images::{AltText, ImageNew, ImageNewList, UserPrompt};
-use crate::models::user_credits::UserCreditsClient;
 use crate::models::{ImageActiveModel, ImageModel, TrainingModelModel, UserCreditModel, UserModel};
-use crate::service::aws::s3::{AwsS3, S3Folders, S3Key};
+use crate::service::aws::s3::{AwsS3, S3Folders};
 use crate::views::images::{CreditsViewModel, ImageViewList, ImageViewModel};
-use crate::{
-    domain::image::Image,
-    models::_entities::images::ActiveModel,
-    models::_entities::images::{Entity, Model},
-    service::fal_ai::fal_client::{FalAiClient, FluxLoraImageGenerate},
-    views,
-};
+use crate::{models::_entities::images::Entity, service::fal_ai::fal_client::FalAiClient, views};
 use axum::{debug_handler, Extension};
-use axum::{http::HeaderMap, http::StatusCode, response::IntoResponse, Json};
-use derive_more::{AsRef, Constructor, Display};
-use sea_orm::prelude::DateTimeWithTimeZone;
-use serde::{Deserialize, Serialize};
-use training_models::Model as TrainingModel;
+use axum::{http::StatusCode, response::IntoResponse, Json};
+use serde::Deserialize;
 use uuid::Uuid;
 
 #[derive(Clone, Validate, Debug, Deserialize)]
@@ -145,7 +131,6 @@ pub async fn upload_img_s3_completed(
     auth: auth::JWT,
     Path(img_pid): Path<Uuid>,
     Extension(s3_client): Extension<AwsS3>,
-    Extension(fal_ai_client): Extension<FalAiClient>,
     State(ctx): State<AppContext>,
 ) -> Result<Response> {
     let user = UserModel::find_by_pid(&ctx.db, &auth.claims.pid).await?;
@@ -190,7 +175,7 @@ pub async fn check_test(
     }
     let change = rand::rng().random_range(0..=3);
     if change == 0 {
-        let num = rand::rng().random_range(1..=11);
+        // let num = rand::rng().random_range(1..=11);
         image.image_url_fal = Some("https://v3.fal.media/files/panda/ycu2NDkTawQBdmgZDAF3g_ffb513c9074146009320fa60e64beaab.jpg".to_string());
         image.status = Status::Completed;
     }
@@ -223,7 +208,6 @@ pub async fn check_img(
     Extension(s3_client): Extension<AwsS3>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<Response> {
-    use rand::Rng;
     let image = load_item_pid(&ctx, pid).await?;
     let user = load_user(&ctx.db, &auth.claims.pid).await?;
 
@@ -307,7 +291,7 @@ pub async fn list(State(ctx): State<AppContext>) -> Result<Response> {
 #[debug_handler]
 pub async fn remove(
     auth: auth::JWT,
-    Path(id): Path<Uuid>,
+    // Path(id): Path<Uuid>,
     State(ctx): State<AppContext>,
 ) -> Result<Response> {
     // --- Load Entities ---

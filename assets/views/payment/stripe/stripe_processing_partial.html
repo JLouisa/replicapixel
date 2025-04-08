@@ -1,0 +1,28 @@
+<div
+  id="stripestatus"
+  hx-get="/payment/processing/status/{{session_id}}"
+  hx-trigger="every 4s"
+  hx-swap="outerHTML"
+  class="min-h-screen bg-gray-50 flex items-center justify-center p-4"
+>
+  <div class="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
+    <div class="mb-6" id="iconContainer">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="lucide lucide-loader-circle-icon lucide-loader-circle h-16 w-16 text-blue-500 mx-auto animate-spin"
+      >
+        <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+      </svg>
+    </div>
+    <h2 class="text-2xl font-bold mb-2" id="statusText">Processing Payment...</h2>
+    <p class="text-gray-600" id="messageText">Please wait while we process your payment...</p>
+  </div>
+</div>

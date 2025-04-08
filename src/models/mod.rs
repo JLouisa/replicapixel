@@ -26,3 +26,17 @@ pub mod user_credits;
 pub type UserCreditActiveModel = user_credits::ActiveModel;
 pub type UserCreditModel = user_credits::Model;
 pub type UserCreditEntity = user_credits::Entity;
+
+pub mod plans;
+pub type PlanActiveModel = plans::ActiveModel;
+pub type PlanModel = plans::Model;
+
+pub mod handled_stripe_events;
+pub type StripeEventModel = handled_stripe_events::Model;
+pub type StripeEventActiveModel = handled_stripe_events::ActiveModel;
+pub type StripeEventsEntity = user_credits::Entity;
+
+pub mod handled_fal_events;
+pub type FalEventModel = handled_fal_events::Model;
+pub type FalEventActiveModel = handled_fal_events::ActiveModel;
+pub type FalEventsEntity = user_credits::Entity;

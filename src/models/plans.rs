@@ -1,8 +1,9 @@
-pub use super::_entities::packs::{ActiveModel, Entity, Model};
 use super::_entities::plans;
-use sea_orm::entity::prelude::*;
-pub type Packs = Entity;
+pub use super::_entities::plans::{ActiveModel, Entity, Model};
 use loco_rs::prelude::*;
+use sea_orm::entity::prelude::*;
+pub type Plans = Entity;
+use crate::models::_entities::sea_orm_active_enums::PlanNames;
 
 #[async_trait::async_trait]
 impl ActiveModelBehavior for ActiveModel {
@@ -33,11 +34,18 @@ impl Model {
             .await?;
         user.ok_or_else(|| ModelError::EntityNotFound)
     }
-    pub async fn find_by_id(db: &DatabaseConnection, id: &i32) -> ModelResult<Self> {
+    pub async fn find_by_id(db: &DatabaseConnection, id: i32) -> ModelResult<Self> {
+        let user = Entity::find()
+            .filter(model::query::condition().eq(plans::Column::Id, id).build())
+            .one(db)
+            .await?;
+        user.ok_or_else(|| ModelError::EntityNotFound)
+    }
+    pub async fn find_by_name(db: &DatabaseConnection, name: &PlanNames) -> ModelResult<Self> {
         let user = Entity::find()
             .filter(
                 model::query::condition()
-                    .eq(plans::Column::Id, id.clone())
+                    .eq(plans::Column::Name, name.to_string())
                     .build(),
             )
             .one(db)

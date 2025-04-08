@@ -14,10 +14,9 @@ use axum::{
     debug_handler,
     extract::{Json, State},
     http::{HeaderMap, StatusCode},
-    response::{IntoResponse, Redirect, Response},
+    response::{IntoResponse, Response},
     Extension,
 };
-use axum_extra::headers::Cookie;
 use chrono::{Duration, Utc};
 use loco_rs::prelude::*;
 use regex::Regex;
@@ -97,7 +96,7 @@ pub struct MagicLinkParams {
 /// welcome email to the user
 #[debug_handler]
 async fn register(
-    Extension((stripe_client)): Extension<(StripeClient)>,
+    Extension(stripe_client): Extension<StripeClient>,
     ViewEngine(v): ViewEngine<TeraView>,
     State(ctx): State<AppContext>,
     Json(params): Json<RegisterParams>,

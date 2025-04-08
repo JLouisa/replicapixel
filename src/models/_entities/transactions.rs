@@ -16,15 +16,22 @@ pub struct Model {
     pub model_amount: i32,
     pub currency: String,
     pub payment_id: String,
-    pub order_id: String,
-    pub plan: String,
     pub status: Status,
     pub created_at: DateTimeWithTimeZone,
     pub updated_at: DateTimeWithTimeZone,
+    pub plan_id: i32,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
+    #[sea_orm(
+        belongs_to = "super::plans::Entity",
+        from = "Column::PlanId",
+        to = "super::plans::Column::Id",
+        on_update = "Cascade",
+        on_delete = "Restrict"
+    )]
+    Plans,
     #[sea_orm(
         belongs_to = "super::users::Entity",
         from = "Column::UserId",
@@ -33,6 +40,12 @@ pub enum Relation {
         on_delete = "Cascade"
     )]
     Users,
+}
+
+impl Related<super::plans::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::Plans.def()
+    }
 }
 
 impl Related<super::users::Entity> for Entity {

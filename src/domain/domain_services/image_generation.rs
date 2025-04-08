@@ -5,7 +5,7 @@ use crate::{
         _entities::{training_models, user_credits, users},
         images::{Entity, ImageNew, ImageNewList},
         user_credits::UserCredits,
-        ImageActiveModel,
+        ImageActiveModel, UserCreditActiveModel,
     },
     service::fal_ai::fal_client::FalAiClient,
 };
@@ -143,9 +143,11 @@ impl ImageGenerationService {
         user_credits.credit_amount -= credits_to_deduct;
         //Todo ==================================== Remove ====================================
         // Update credits using an active model
-        let updated_credits_model = user_credits.save(&txn).await.map_err(|_| {
-            GenerationError::CreditUpdateError("Failed to update credits".to_string())
-        });
+        let updated_credits_model = UserCreditActiveModel::save(&user_credits, &txn)
+            .await
+            .map_err(|_| {
+                GenerationError::CreditUpdateError("Failed to update credits".to_string())
+            });
 
         let user_credits = UserCreditModel::find_by_user_id(&txn, user_credits.user_id)
             .await
