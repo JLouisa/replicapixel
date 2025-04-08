@@ -170,6 +170,84 @@ async function main() {
       }
     }
   }
+  {
+    const uuid = uuidv4();
+    await prisma.plans.upsert({
+      where: { pid: uuid }, // Ensure uniqueness
+      update: {}, // No changes if record exists
+      create: {
+        pid: uuid,
+        name: "Basic",
+        plan_name: "Basic",
+        credit_amount: 50,
+        model_amount: 1,
+        price_cents: 999,
+        stripe_price_id: "price_1RAyvzHsQkT5gWXDZVsbR8VM",
+        subtitle: "For individuals",
+        features: [
+          "60 AI Photos (credits)",
+          "1 AI Model",
+          "No monthly subscription!",
+          "Use any photo pack",
+          "No Watermarked photos",
+          "24/7 Support",
+        ],
+        cta: "Choose Basic",
+      },
+    });
+  }
+  {
+    const uuid = uuidv4();
+    await prisma.plans.upsert({
+      where: { pid: uuid },
+      update: {},
+      create: {
+        pid: uuid,
+        name: "Premium",
+        plan_name: "Premium",
+        credit_amount: 250,
+        model_amount: 7,
+        price_cents: 3999,
+        stripe_price_id: "price_1RAywNHsQkT5gWXDGEb6Pmoi",
+        subtitle: "For professionals",
+        features: [
+          "300 AI Photos (credits)",
+          "7 AI Model",
+          "No monthly subscription!",
+          "Use any photo pack",
+          "No Watermarked photos",
+          "24/7 Support",
+        ],
+        cta: "Choose Premium",
+      },
+    });
+  }
+  {
+    const uuid = uuidv4();
+    await prisma.plans.upsert({
+      where: { pid: uuid },
+      update: {},
+      create: {
+        pid: uuid,
+        name: "Max",
+        plan_name: "Max",
+        credit_amount: 1100,
+        model_amount: 16,
+        price_cents: 9999,
+        stripe_price_id: "price_1RAyxOHsQkT5gWXDxQklgtPM",
+        subtitle: "For Business",
+        features: [
+          "1100 AI Photos (credits)",
+          "16 AI Model",
+          "No monthly subscription!",
+          "Use any photo pack",
+          "No Watermarked photos",
+          "24/7 Support",
+        ],
+        cta: "Choose Max",
+      },
+    });
+  }
 }
 
 main()

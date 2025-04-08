@@ -2,7 +2,10 @@ use crate::{
     controllers::payment::routes,
     domain::url::Url,
     models::{UserActiveModel, UserModel},
-    service::stripe::{stripe::StripeClientError, stripe_builder::StripeCheckoutBuilderErr},
+    service::stripe::{
+        stripe::StripeClientError, stripe_builder::StripeCheckoutBuilderErr,
+        stripe_service::StripeServiceError,
+    },
 };
 use axum::http::StatusCode;
 use axum::{extract::Json, routing::post, Router};
@@ -67,6 +70,42 @@ impl From<StripeCheckoutBuilderErr> for LocoError {
             ),
             StripeCheckoutBuilderErr::ClientOperation(client_err) => LocoError::from(client_err),
             StripeCheckoutBuilderErr::StripeError(stripe_err) => LocoError::InternalServerError,
+        }
+    }
+}
+
+impl From<StripeServiceError> for LocoError {
+    fn from(err: StripeServiceError) -> Self {
+        tracing::error!(error.cause = ?err, "Checkout builder error occurred");
+        match err {
+            StripeServiceError::SignatureError => LocoError::CustomError(
+                StatusCode::BAD_REQUEST,
+                ErrorDetail::new("SignatureError", "Signature Missing"),
+            ),
+            StripeServiceError::SignatureVerifyError(field) => LocoError::CustomError(
+                StatusCode::BAD_REQUEST,
+                ErrorDetail::new("SignatureError", "Signature Verification Failed"),
+            ),
+            StripeServiceError::Unauthorized => {
+                LocoError::Unauthorized("Unauthorized Request".to_string())
+            }
+            StripeServiceError::MetadataMissing => LocoError::NotFound,
+            StripeServiceError::MissingMetadataField(field) => LocoError::NotFound,
+            StripeServiceError::UnexpectedObject(field) => LocoError::CustomError(
+                StatusCode::BAD_REQUEST,
+                ErrorDetail::new("Unexpected Object", "Unexpected Event Type"),
+            ),
+            StripeServiceError::TransactionIdMissing => LocoError::CustomError(
+                StatusCode::BAD_REQUEST,
+                ErrorDetail::new("TransactionIdMissing", "TransactionId Missing"),
+            ),
+            StripeServiceError::ParseId(field) => LocoError::CustomError(
+                StatusCode::BAD_REQUEST,
+                ErrorDetail::new("ParseIdError", &field.to_string()),
+            ),
+            StripeServiceError::DbErr(db_err) => LocoError::InternalServerError,
+            StripeServiceError::DbModel(model_err) => LocoError::InternalServerError,
+            StripeServiceError::LocoErr(loco_err) => LocoError::from(loco_err),
         }
     }
 }

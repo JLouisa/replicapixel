@@ -1,7 +1,7 @@
 use super::{dashboard_sidebar::DashboardSidebar, packs::Packs};
 use crate::{
-    controllers::dashboard::routes, models::_entities::sea_orm_active_enums::ImageSize,
-    service::stripe::stripe::PlansNames,
+    controllers::dashboard::routes,
+    models::_entities::sea_orm_active_enums::{ImageSize, PlanNames},
 };
 use derive_more::Constructor;
 use serde::{Deserialize, Serialize};
@@ -48,7 +48,7 @@ pub struct Feature {
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Plan {
     pub id: String,
-    pub plan_type: PlansNames,
+    pub plan_type: PlanNames,
     pub title: String,
     pub subtitle: String,
     pub price: f64,
@@ -63,7 +63,7 @@ impl Plan {
     pub fn basic() -> Self {
         Self {
             id: "basic".to_owned(),
-            plan_type: PlansNames::Basic,
+            plan_type: PlanNames::Basic,
             title: "Basic".to_owned(),
             subtitle: "For individuals".to_owned(),
             price: 9.99,
@@ -100,7 +100,7 @@ impl Plan {
     pub fn premium() -> Self {
         Self {
             id: "premium".to_owned(),
-            plan_type: PlansNames::Premium,
+            plan_type: PlanNames::Premium,
             title: "For professionals".to_owned(),
             subtitle: "For large teams".to_owned(),
             price: 39.99,
@@ -137,7 +137,7 @@ impl Plan {
     pub fn max() -> Self {
         Self {
             id: "max".to_owned(),
-            plan_type: PlansNames::Max,
+            plan_type: PlanNames::Max,
             title: "Business".to_owned(),
             subtitle: "For large teams".to_owned(),
             price: 99.99,

@@ -15,6 +15,29 @@ pub enum Sex {
 }
 
 #[derive(
+    Debug,
+    Clone,
+    PartialEq,
+    Eq,
+    EnumIter,
+    DeriveActiveEnum,
+    EnumString,
+    Display,
+    Serialize,
+    Deserialize,
+)]
+#[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "plan_names")]
+#[serde(rename_all = "lowercase")]
+pub enum PlanNames {
+    #[sea_orm(string_value = "Basic")]
+    Basic,
+    #[sea_orm(string_value = "Premium")]
+    Premium,
+    #[sea_orm(string_value = "Max")]
+    Max,
+}
+
+#[derive(
     Debug, Clone, Copy, Display, PartialEq, Eq, EnumIter, DeriveActiveEnum, Serialize, Deserialize,
 )]
 #[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "status")]

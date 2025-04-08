@@ -1,11 +1,11 @@
 use crate::{
     controllers::payment::routes,
     domain::url::Url,
-    models::{UserActiveModel, UserModel},
+    models::{UserActiveModel, UserModel, _entities::sea_orm_active_enums::PlanNames},
 };
 use axum::http::StatusCode;
 use axum::{extract::Json, routing::post, Router};
-use derive_more::{AsRef, Constructor, From};
+use derive_more::{AsRef, Constructor, Display, From};
 use loco_rs::prelude::Error as LocoError;
 use loco_rs::{controller::ErrorDetail, model::ModelError};
 use sea_orm::entity::prelude::*;
@@ -15,9 +15,10 @@ use std::collections::HashMap;
 use std::str::FromStr;
 use stripe::{
     CheckoutSession, CheckoutSessionMode, CheckoutSessionUiMode, Client, CreateCheckoutSession,
-    CreateCheckoutSessionLineItems, CreateCustomer, Currency, Customer, CustomerId, ParseIdError,
-    PriceId, StripeError,
+    CreateCheckoutSessionLineItems, CreateCustomer, Currency, Customer, CustomerId, Metadata,
+    ParseIdError, PriceId, StripeError,
 };
+use strum::EnumString;
 use thiserror::Error;
 
 #[derive(Error, Debug)]
@@ -48,13 +49,13 @@ enum MetaEntity<'a> {
     // Register(&'a Register),
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
-#[serde(rename_all = "lowercase")]
-pub enum PlansNames {
-    Basic,
-    Premium,
-    Max,
-}
+// #[derive(Debug, Serialize, Deserialize, EnumString, Clone, Display)]
+// #[serde(rename_all = "lowercase")]
+// pub enum PlanNames {
+//     Basic,
+//     Premium,
+//     Max,
+// }
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct StripeSettings {
@@ -86,11 +87,11 @@ pub struct StripeProducts {
     max: PriceId,
 }
 impl StripeProducts {
-    pub fn get_price_id(&self, plan: &PlansNames) -> PriceId {
+    pub fn get_price_id(&self, plan: &PlanNames) -> PriceId {
         match plan {
-            PlansNames::Basic => self.basic.clone(),
-            PlansNames::Premium => self.premium.clone(),
-            PlansNames::Max => self.max.clone(),
+            PlanNames::Basic => self.basic.clone(),
+            PlanNames::Premium => self.premium.clone(),
+            PlanNames::Max => self.max.clone(),
         }
     }
 }
@@ -151,10 +152,12 @@ impl StripeClient {
     pub async fn create_checkout(
         &self,
         user: &UserModel,
-        plan: &PlansNames,
+        plan: &PlanNames,
+        transaction_id: String,
         mode: &CheckoutSessionMode,
         ui_mode: &CheckoutSessionUiMode,
         currency: &Currency,
+        metadata: Metadata,
         txn: &impl ConnectionTrait,
     ) -> Result<CheckoutSession, StripeClientError> {
         let customer_id: CustomerId = match user.stripe_customer_id.to_owned() {
@@ -179,10 +182,12 @@ impl StripeClient {
                 true => Some(self.stripe_url.stripe_return_url.as_ref()),
                 false => None,
             },
+            client_reference_id: Some(&transaction_id),
             mode: Some(*mode),
             ui_mode: Some(*ui_mode),
             currency: Some(*currency),
             customer: Some(customer_id),
+            metadata: Some(metadata),
             line_items: Some(vec![CreateCheckoutSessionLineItems {
                 price: Some(self.stripe_products.get_price_id(&plan).to_string()),
                 quantity: Some(1),
@@ -190,8 +195,6 @@ impl StripeClient {
             }]),
             ..Default::default()
         };
-
-        dbg!("Creating checkout session: {:?}", &checkout_params);
 
         let session = CheckoutSession::create(&self.client, checkout_params).await?;
 

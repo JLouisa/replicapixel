@@ -11,11 +11,11 @@ use stripe::{
 pub struct PaymentController;
 use crate::{
     domain::website::Website,
-    models::{users::UserPid, UserModel},
-    service::stripe::{
-        stripe::{PlansNames, StripeClient},
-        stripe_builder::CheckoutSessionBuilder,
+    models::{
+        transactions::TransactionDomain, users::UserPid, PlanModel, TransactionActiveModel,
+        UserModel, _entities::sea_orm_active_enums::PlanNames,
     },
+    service::stripe::{stripe::StripeClient, stripe_builder::CheckoutSessionBuilder},
     views,
 };
 use axum::{http::StatusCode, response::IntoResponse};
@@ -54,6 +54,17 @@ async fn load_user(db: &DatabaseConnection, pid: &UserPid) -> Result<UserModel> 
     let item = UserModel::find_by_pid(db, &pid.as_ref().to_string()).await?;
     Ok(item)
 }
+async fn load_plan(db: &DatabaseConnection, name: &PlanNames) -> Result<PlanModel> {
+    let item = PlanModel::find_by_name(db, &name).await?;
+    Ok(item)
+}
+async fn save_txn(
+    db: &DatabaseConnection,
+    transaction: &TransactionDomain,
+) -> Result<TransactionActiveModel> {
+    let item = TransactionActiveModel::save(db, &transaction).await?;
+    Ok(item)
+}
 
 #[derive(Deserialize, Debug)]
 struct PaymentRedirectParams {
@@ -73,7 +84,7 @@ async fn success_handler(
 #[debug_handler]
 pub async fn payment_request(
     auth: auth::JWT,
-    Path((pid, plan)): Path<(Uuid, PlansNames)>,
+    Path((pid, plan)): Path<(Uuid, PlanNames)>,
     Extension(stripe_client): Extension<StripeClient>,
     State(ctx): State<AppContext>,
 ) -> Result<impl IntoResponse> {
@@ -84,11 +95,22 @@ pub async fn payment_request(
             "You are not authorized to access this page".to_string(),
         ));
     }
+    let plan = load_plan(&ctx.db, &plan).await?;
+    let transaction_id = uuid::Uuid::new_v4();
     let stripe_checkout = CheckoutSessionBuilder::new(&stripe_client, &ctx.db)
         .user(&user)
-        .plan(&plan)
+        .plan(&plan.plan_name)
+        .transaction_id(&transaction_id)
         .build()
         .await?;
+    let transaction = TransactionDomain::new(
+        transaction_id,
+        &user,
+        plan,
+        stripe_checkout.currency.clone(),
+        stripe_checkout.id.to_string(),
+    );
+    let _transaction = save_txn(&ctx.db, &transaction).await?;
 
     let session = match stripe_checkout.url {
         Some(session) => session,

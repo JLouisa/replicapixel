@@ -196,16 +196,32 @@ exports.Prisma.ImagesScalarFieldEnum = {
   updated_at: 'updated_at'
 };
 
+exports.Prisma.PlansScalarFieldEnum = {
+  id: 'id',
+  pid: 'pid',
+  name: 'name',
+  plan_name: 'plan_name',
+  credit_amount: 'credit_amount',
+  model_amount: 'model_amount',
+  price_cents: 'price_cents',
+  stripe_price_id: 'stripe_price_id',
+  subtitle: 'subtitle',
+  features: 'features',
+  cta: 'cta',
+  created_at: 'created_at',
+  updated_at: 'updated_at',
+  is_popular: 'is_popular'
+};
+
 exports.Prisma.TransactionsScalarFieldEnum = {
   id: 'id',
   pid: 'pid',
   user_id: 'user_id',
+  plan_id: 'plan_id',
   credit_amount: 'credit_amount',
   model_amount: 'model_amount',
   currency: 'currency',
   payment_id: 'payment_id',
-  order_id: 'order_id',
-  plan: 'plan',
   status: 'status',
   created_at: 'created_at',
   updated_at: 'updated_at'
@@ -222,6 +238,16 @@ exports.Prisma.PacksScalarFieldEnum = {
   image_url: 'image_url',
   created_at: 'created_at',
   updated_at: 'updated_at'
+};
+
+exports.Prisma.HandledStripeEventScalarFieldEnum = {
+  session_id: 'session_id',
+  processed_at: 'processed_at'
+};
+
+exports.Prisma.HandledFalEventScalarFieldEnum = {
+  request_id: 'request_id',
+  processed_at: 'processed_at'
 };
 
 exports.Prisma.Seaql_migrationsScalarFieldEnum = {
@@ -308,13 +334,22 @@ exports.ImageSize = exports.$Enums.ImageSize = {
   Landscape169: 'Landscape169'
 };
 
+exports.PlanNames = exports.$Enums.PlanNames = {
+  Basic: 'Basic',
+  Premium: 'Premium',
+  Max: 'Max'
+};
+
 exports.Prisma.ModelName = {
   Users: 'Users',
   TrainingModels: 'TrainingModels',
   UserCredits: 'UserCredits',
   Images: 'Images',
+  Plans: 'Plans',
   Transactions: 'Transactions',
   Packs: 'Packs',
+  HandledStripeEvent: 'HandledStripeEvent',
+  HandledFalEvent: 'HandledFalEvent',
   seaql_migrations: 'seaql_migrations'
 };
 

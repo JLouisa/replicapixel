@@ -120,20 +120,40 @@ model Images {
   @@index([training_model_id], name: "idx-images-training_model_id")
 }
 
+model Plans {
+  id              Int            @id @default(autoincrement())
+  pid             String         @unique @db.Uuid
+  name            String         @unique
+  plan_name       PlanNames      @unique
+  credit_amount   Int
+  model_amount    Int
+  price_cents     Int
+  stripe_price_id String         @unique
+  subtitle        String         @db.VarChar(255)
+  features        String[]       @default([]) @db.Text
+  cta             String         @db.VarChar(255)
+  created_at      DateTime       @default(now()) @db.Timestamptz
+  updated_at      DateTime       @default(now()) @db.Timestamptz
+  is_popular      Boolean        @default(false)
+  transactions    Transactions[] @relation("PlanToTransactions")
+
+  @@index([pid], name: "idx-plan-pid")
+}
+
 model Transactions {
   id            Int      @id @default(autoincrement())
   pid           String   @unique @db.Uuid
   user_id       Int
+  plan_id       Int
   credit_amount Int
   model_amount  Int
-  currency      String   @db.VarChar(255)
+  currency      String   @db.VarChar(16)
   payment_id    String   @db.VarChar(255)
-  order_id      String   @db.VarChar(255)
-  plan          String   @db.VarChar(255)
   status        Status
   created_at    DateTime @default(now()) @db.Timestamptz
   updated_at    DateTime @default(now()) @db.Timestamptz
 
+  plan Plans @relation("PlanToTransactions", fields: [plan_id], references: [id])
   user Users @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@index([pid], name: "idx-transactions-pid")
@@ -157,6 +177,20 @@ model Packs {
   @@index([pid], name: "idx-packs-pid")
 }
 
+model HandledStripeEvent {
+  session_id   String   @id
+  processed_at DateTime @default(now())
+
+  @@map("handled_stripe_events")
+}
+
+model HandledFalEvent {
+  request_id   String   @id
+  processed_at DateTime @default(now())
+
+  @@map("handled_fal_events")
+}
+
 model seaql_migrations {
   version    String @id @db.VarChar
   applied_at BigInt
@@ -171,6 +205,14 @@ enum Status {
   Cancelled
 
   @@map("status")
+}
+
+enum PlanNames {
+  Basic
+  Premium
+  Max
+
+  @@map("plan_names")
 }
 
 enum Sex {

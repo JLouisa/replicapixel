@@ -47,3 +47,9 @@ $ cargo loco db migrate
 
 $ bunx prisma migrate dev --name FixEnumTypeMappingRest
 $ cargo loco db entities
+
+### Prisma:
+
+bunx prisma migrate dev --name <Name the migration>
+bunx prisma migrate reset --force
+bunx prisma db seed
