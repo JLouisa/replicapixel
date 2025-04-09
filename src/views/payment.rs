@@ -1,4 +1,7 @@
-use crate::domain::website::Website;
+use crate::{
+    controllers::payment::ClientSecret, domain::website::Website,
+    service::stripe::stripe::StripePublishableKey,
+};
 use loco_rs::prelude::*;
 
 use super::auth::UserView;
@@ -49,5 +52,30 @@ pub fn payment_status(
         &v,
         "payment/stripe/stripe_payment.html",
         data!({"plans": website.payment_plans, "website": website.website_settings, "session_id": params}),
+    )
+}
+
+pub fn checkout_session(
+    v: impl ViewRenderer,
+    website: &Website,
+    stripe_publishable_key: &StripePublishableKey,
+    secret: ClientSecret,
+) -> Result<impl IntoResponse> {
+    format::render().view(
+        &v,
+        "payment/stripe/embedded/checkout.html",
+        data!({ "website": website.website_settings, "stripe_public_key": stripe_publishable_key.as_ref(), "secret": secret.client_secret }),
+    )
+}
+
+pub fn return_session(
+    v: impl ViewRenderer,
+    website: &Website,
+    params: &Option<String>,
+) -> Result<impl IntoResponse> {
+    format::render().view(
+        &v,
+        "payment/stripe/embedded/return.html",
+        data!({ "website": website.website_settings}),
     )
 }

@@ -49,14 +49,6 @@ enum MetaEntity<'a> {
     // Register(&'a Register),
 }
 
-// #[derive(Debug, Serialize, Deserialize, EnumString, Clone, Display)]
-// #[serde(rename_all = "lowercase")]
-// pub enum PlanNames {
-//     Basic,
-//     Premium,
-//     Max,
-// }
-
 #[derive(Debug, Clone, Deserialize)]
 pub struct StripeSettings {
     pub site: String,
@@ -173,13 +165,17 @@ impl StripeClient {
         };
 
         let checkout_params = CreateCheckoutSession {
-            success_url: Some(self.stripe_url.stripe_success_url.as_ref()),
+            success_url: match ui_mode == &CheckoutSessionUiMode::Embedded {
+                true => None,
+                false => Some(self.stripe_url.stripe_success_url.as_ref()),
+            },
             cancel_url: match ui_mode == &CheckoutSessionUiMode::Hosted {
                 true => Some(self.stripe_url.stripe_cancel_url.as_ref()),
                 false => None,
             },
             return_url: match ui_mode == &CheckoutSessionUiMode::Embedded {
-                true => Some(self.stripe_url.stripe_return_url.as_ref()),
+                // true => Some(self.stripe_url.stripe_return_url.as_ref()),
+                true => Some(self.stripe_url.stripe_success_url.as_ref()),
                 false => None,
             },
             client_reference_id: Some(&transaction_id),
