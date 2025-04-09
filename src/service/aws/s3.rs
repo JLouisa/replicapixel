@@ -367,7 +367,7 @@ impl AwsS3 {
             id.to_string(),
             S3Folders::Images.get_folder_str(),
             image_name.to_string(),
-            ImageFormat::Jpeg.to_string(),
+            ImageFormat::Jpeg,
         );
         S3Key::new(key)
     }

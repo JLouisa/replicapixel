@@ -1,7 +1,10 @@
 pub use super::_entities::user_credits::{ActiveModel, Entity, Model};
 use sea_orm::entity::prelude::*;
 pub type UserCredits = Entity;
-use super::{TransactionModel, UserCreditActiveModel, UserModel, _entities::user_credits};
+use super::{
+    TransactionModel, UserCreditActiveModel, UserModel, _entities::user_credits,
+    images::ImageNewList,
+};
 use loco_rs::{auth::jwt, hash, prelude::*};
 use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
@@ -183,6 +186,18 @@ impl Model {
         let mut new = ActiveModel::from(self);
         new.credit_amount = ActiveValue::set(new_credit_amount);
         new.model_amount = ActiveValue::set(new_model_amount);
+        let credit = new.update(db).await?;
+        Ok(credit)
+    }
+
+    pub async fn update_credits_with_image_list(
+        mut self,
+        list: &ImageNewList,
+        db: &impl ConnectionTrait,
+    ) -> ModelResult<Model> {
+        let new_credit_amount = self.credit_amount.clone() - list.as_ref().len() as i32;
+        let mut new = ActiveModel::from(self);
+        new.credit_amount = ActiveValue::set(new_credit_amount);
         let credit = new.update(db).await?;
         Ok(credit)
     }

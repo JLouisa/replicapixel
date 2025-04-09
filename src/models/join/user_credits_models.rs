@@ -1,9 +1,14 @@
+use std::collections::HashSet;
+
+use loco_rs::prelude::*;
+use migration::IntoCondition;
+use sea_orm::prelude::*;
 use sea_orm::{entity::*, query::*, DatabaseConnection, DbErr, JoinType};
 use thiserror::Error;
 use uuid::Uuid;
 
 use crate::models::images::{self as images_model, ImagesModelList, Model as ImageModel};
-use crate::models::images::{self as pack_model, Model as PackModel};
+use crate::models::packs::{self as pack_model, Model as PackModel};
 use crate::models::training_models::{
     self as training_models_model, Model as TrainingModelModel, TrainingModelList,
 };
@@ -12,8 +17,14 @@ use crate::models::users::{
     self as users_model, users, Entity as UserEntity, Model as UserModel, UserPid,
 };
 
+use crate::models::_entities::{
+    packs,
+    sea_orm_active_enums::{BasedOn, Ethnicity, EyeColor, ImageFormat, Sex, Status},
+    training_models,
+};
+
 #[derive(Error, Debug)]
-pub enum LoadError {
+pub enum JoinError {
     #[error("Database error: {0}")]
     Database(#[from] DbErr),
     #[error("User not found for PID: {0}")]
@@ -22,6 +33,10 @@ pub enum LoadError {
     CreditsMissingInvariant(i32),
     #[error("Invalid PID format: {0}")]
     InvalidPidFormat(String),
+    #[error("Conversion Error: {0}")]
+    ParseIdError(#[from] uuid::Error),
+    #[error("User not found for PID: {0}")]
+    ImageNotFound(String),
 }
 
 type CombinedUserUserCredits = (UserModel, Option<UserCreditModel>);
@@ -39,54 +54,109 @@ type CombinedWithPacksResult = (
     Option<Vec<PackModel>>,
 );
 
-pub async fn load_user_credit_packs(
+// Bugged
+pub async fn load_user_and_completed_models(
     db: &DatabaseConnection,
     pid: &UserPid,
-) -> Result<(UserModel, UserCreditModel, Vec<PackModel>), LoadError> {
+) -> Result<(UserModel, TrainingModelList), JoinError> {
     let pid_string = pid.as_ref().to_string();
-    let pid_uuid = Uuid::parse_str(&pid_string).unwrap();
+    let pid_uuid = Uuid::parse_str(&pid_string)?;
+
+    let user_to_training_relation = users::Relation::TrainingModels.def();
+
     let query_results = UserEntity::find()
         .filter(users::Column::Pid.eq(pid_uuid))
-        .join(JoinType::InnerJoin, users::Relation::UserCredits.def())
-        .left_join(pack_model::Entity)
-        .select_also(user_credits_model::Entity)
-        .select_also(pack_model::Entity)
+        .join(
+            JoinType::LeftJoin,
+            user_to_training_relation.on_condition(|_left_alias, right_alias| {
+                Expr::col((right_alias, training_models::Column::TrainingStatus))
+                    .eq(Status::Completed) //<-------- Bugged
+                    .into_condition()
+            }),
+        )
+        .select_also(training_models_model::Entity)
         .all(db)
         .await?;
 
     if query_results.is_empty() {
         let user_exists = UserEntity::find()
-            .filter(users::Column::Pid.eq(&pid_string))
+            .filter(users::Column::Pid.eq(pid_uuid))
             .count(db)
             .await?
             > 0;
+
         if !user_exists {
-            return Err(LoadError::UserNotFound(pid_string));
+            return Err(JoinError::UserNotFound(pid_string));
         } else {
-            return Err(LoadError::UserNotFound(format!(
-                "User {} found, but query with credits failed.",
-                pid_string
-            )));
+            let user_model = UserEntity::find()
+                .filter(users::Column::Pid.eq(pid_uuid))
+                .one(db)
+                .await?
+                .ok_or_else(|| JoinError::UserNotFound(pid_string))?;
+
+            return Ok((user_model, TrainingModelList::new(Vec::new())));
         }
     }
 
     let user_model = query_results[0].0.clone();
 
-    let user_credit_model = query_results[0]
-        .1
-        .clone()
-        .ok_or_else(|| LoadError::CreditsMissingInvariant(user_model.id))?;
-    let pack_model_vec: Vec<PackModel> = query_results
+    let training_models: Vec<TrainingModelModel> = query_results
         .into_iter()
-        .filter_map(|(_, _, tm_opt)| tm_opt)
+        .filter_map(|(_user, training_opt)| training_opt)
         .collect();
-    Ok((user_model, user_credit_model, pack_model_vec))
+
+    let training_model_list = TrainingModelList::new(training_models);
+
+    Ok((user_model, training_model_list))
 }
+
+// pub async fn load_user_credit_packs(
+//     db: &DatabaseConnection,
+//     pid: &UserPid,
+// ) -> Result<(UserModel, UserCreditModel, Vec<PackModel>), JoinError> {
+//     let pid_string = pid.as_ref().to_string();
+//     let pid_uuid = Uuid::parse_str(&pid_string).unwrap();
+//     let query_results = UserEntity::find()
+//         .filter(users::Column::Pid.eq(pid_uuid))
+//         .join(JoinType::InnerJoin, users::Relation::UserCredits.def())
+//         .select_also(user_credits_model::Entity)
+//         .select_also(pack_model::Entity)
+//         .all(db)
+//         .await?;
+
+//     if query_results.is_empty() {
+//         let user_exists = UserEntity::find()
+//             .filter(users::Column::Pid.eq(&pid_string))
+//             .count(db)
+//             .await?
+//             > 0;
+//         if !user_exists {
+//             return Err(JoinError::UserNotFound(pid_string));
+//         } else {
+//             return Err(JoinError::UserNotFound(format!(
+//                 "User {} found, but query with credits failed.",
+//                 pid_string
+//             )));
+//         }
+//     }
+
+//     let user_model = query_results[0].0.clone();
+
+//     let user_credit_model = query_results[0]
+//         .1
+//         .clone()
+//         .ok_or_else(|| JoinError::CreditsMissingInvariant(user_model.id))?;
+//     let pack_model_vec: Vec<PackModel> = query_results
+//         .into_iter()
+//         .filter_map(|(_, _, tm_opt)| tm_opt)
+//         .collect();
+//     Ok((user_model, user_credit_model, pack_model_vec))
+// }
 
 pub async fn load_user_credit_training(
     db: &DatabaseConnection,
     pid: &UserPid,
-) -> Result<(UserModel, UserCreditModel, TrainingModelList), LoadError> {
+) -> Result<(UserModel, UserCreditModel, TrainingModelList), JoinError> {
     let pid_string = pid.as_ref().to_string();
     let pid_uuid = Uuid::parse_str(&pid_string).unwrap();
     let query_results = UserEntity::find()
@@ -105,9 +175,9 @@ pub async fn load_user_credit_training(
             .await?
             > 0;
         if !user_exists {
-            return Err(LoadError::UserNotFound(pid_string));
+            return Err(JoinError::UserNotFound(pid_string));
         } else {
-            return Err(LoadError::UserNotFound(format!(
+            return Err(JoinError::UserNotFound(format!(
                 "User {} found, but query with credits failed.",
                 pid_string
             )));
@@ -119,7 +189,7 @@ pub async fn load_user_credit_training(
     let user_credit_model = query_results[0]
         .1 // Option<UserCreditModel>
         .clone()
-        .ok_or_else(|| LoadError::CreditsMissingInvariant(user_model.id))?;
+        .ok_or_else(|| JoinError::CreditsMissingInvariant(user_model.id))?;
 
     // Aggregate the training models from the third element of the tuple in *all* rows.
     let training_models: Vec<TrainingModelModel> = query_results
@@ -138,7 +208,7 @@ pub async fn load_user_credit_training(
 pub async fn load_user_and_training(
     db: &DatabaseConnection,
     pid: &UserPid,
-) -> Result<(UserModel, TrainingModelList), LoadError> {
+) -> Result<(UserModel, TrainingModelList), JoinError> {
     let pid_string = pid.as_ref().to_string();
     let pid_uuid = Uuid::parse_str(&pid_string).unwrap();
     let query_results = UserEntity::find()
@@ -155,9 +225,9 @@ pub async fn load_user_and_training(
             .await?
             > 0;
         if !user_exists {
-            return Err(LoadError::UserNotFound(pid_string));
+            return Err(JoinError::UserNotFound(pid_string));
         } else {
-            return Err(LoadError::UserNotFound(format!(
+            return Err(JoinError::UserNotFound(format!(
                 "User {} found, but query with credits failed.",
                 pid_string
             )));
@@ -177,7 +247,7 @@ pub async fn load_user_and_training(
 pub async fn load_user_and_credits(
     db: &DatabaseConnection,
     pid: &UserPid,
-) -> Result<(UserModel, UserCreditModel), LoadError> {
+) -> Result<(UserModel, UserCreditModel), JoinError> {
     let pid_string = pid.as_ref().to_string();
     let pid_uuid = Uuid::parse_str(&pid_string).unwrap();
     // --- Build the Query ---
@@ -195,9 +265,9 @@ pub async fn load_user_and_credits(
             .await?
             > 0;
         if !user_exists {
-            return Err(LoadError::UserNotFound(pid_string));
+            return Err(JoinError::UserNotFound(pid_string));
         } else {
-            return Err(LoadError::UserNotFound(format!(
+            return Err(JoinError::UserNotFound(format!(
                 "User {} found, but query with credits failed.",
                 pid_string
             )));
@@ -209,7 +279,7 @@ pub async fn load_user_and_credits(
     let user_credit_model = query_results[0]
         .1 // Option<UserCreditModel>
         .clone()
-        .ok_or_else(|| LoadError::CreditsMissingInvariant(user_model.id))?;
+        .ok_or_else(|| JoinError::CreditsMissingInvariant(user_model.id))?;
 
     // Return the combined data
     Ok((user_model, user_credit_model))

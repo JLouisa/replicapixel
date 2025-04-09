@@ -13,10 +13,17 @@
     <script src="https://js.stripe.com/v3/" defer></script>
     {% block head %}{% endblock head %}
   </head>
-  <body>
-    <!-- Main -->
-    <div id="app">{% block content %}{% endblock content %}</div>
+  <body class="bg-base-100">
+    <!-- Main Layout Container -->
+    <div id="app" class="flex flex-col h-screen overflow-hidden">
+      <!-- Navbar Block -->
+      {% block navbar %} {% include "partials/navbar/navbar.html" %} {% endblock navbar %}
 
+      <!-- Page Content Block -->
+      <div class="flex-1 overflow-hidden">{% block content %}{% endblock content %}</div>
+    </div>
+
+    <!-- Toast Notifications -->
     <div
       x-data
       x-show="$store.toast.isVisible"

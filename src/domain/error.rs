@@ -1,7 +1,7 @@
 use crate::{
     controllers::payment::routes,
     domain::url::Url,
-    models::{join::user_credits_models::LoadError, UserActiveModel, UserModel},
+    models::{join::user_credits_models::JoinError, UserActiveModel, UserModel},
     service::stripe::{
         stripe::StripeClientError, stripe_builder::StripeCheckoutBuilderErr,
         stripe_service::StripeServiceError,
@@ -24,6 +24,8 @@ use stripe::{
 };
 
 use thiserror::Error;
+
+use super::domain_services::image_generation::GenerationError;
 
 impl From<StripeClientError> for LocoError {
     fn from(err: StripeClientError) -> Self {
@@ -110,23 +112,54 @@ impl From<StripeServiceError> for LocoError {
     }
 }
 
-impl From<LoadError> for LocoError {
-    fn from(err: LoadError) -> Self {
+impl From<JoinError> for LocoError {
+    fn from(err: JoinError) -> Self {
         tracing::error!(error.cause = ?err, "Checkout builder error occurred");
         match err {
-            LoadError::Database(db_err) => LocoError::CustomError(
+            JoinError::Database(db_err) => LocoError::CustomError(
                 StatusCode::INTERNAL_SERVER_ERROR,
                 ErrorDetail::new("Internal Server Error", "Internal Server Error DB"),
             ),
-            LoadError::UserNotFound(field) => LocoError::CustomError(
+            JoinError::UserNotFound(field) => LocoError::CustomError(
                 StatusCode::NOT_FOUND,
                 ErrorDetail::new("UserNotFound", "User Not Found"),
             ),
-            LoadError::InvalidPidFormat(field) => LocoError::CustomError(
+            JoinError::InvalidPidFormat(field) => LocoError::CustomError(
                 StatusCode::INTERNAL_SERVER_ERROR,
                 ErrorDetail::new("Invalid Id Format", "User Signature Invalid"),
             ),
-            LoadError::CreditsMissingInvariant(field) => LocoError::NotFound,
+            JoinError::CreditsMissingInvariant(field) => LocoError::NotFound,
+            JoinError::ParseIdError(parse_err) => LocoError::CustomError(
+                StatusCode::BAD_REQUEST,
+                ErrorDetail::new("Error", &parse_err.to_string()),
+            ),
+            JoinError::ImageNotFound(field) => LocoError::CustomError(
+                StatusCode::NOT_FOUND,
+                ErrorDetail::new("ImageNotFound", "Image Not Found"),
+            ),
+        }
+    }
+}
+
+// Implement conversion from our Domain Error to Loco's Error
+impl From<GenerationError> for loco_rs::Error {
+    fn from(err: GenerationError) -> Self {
+        match err {
+            GenerationError::Unauthorized => loco_rs::Error::Unauthorized(err.to_string()),
+            GenerationError::InsufficientCredits => loco_rs::Error::BadRequest(err.to_string()),
+            GenerationError::ModelNotFound | GenerationError::UserNotFound => {
+                loco_rs::Error::NotFound
+            }
+            GenerationError::UserCreditsNotFound => loco_rs::Error::NotFound,
+            GenerationError::FalAiError(msg) => loco_rs::Error::InternalServerError,
+            GenerationError::DatabaseError(db_err) => loco_rs::Error::DB(db_err),
+            GenerationError::ConfigError(msg) => loco_rs::Error::CustomError(
+                StatusCode::PAYMENT_REQUIRED,
+                ErrorDetail::new("".to_string(), msg.into()),
+            ),
+            GenerationError::SaveError(msg) => loco_rs::Error::InternalServerError,
+            GenerationError::CreditUpdateError(msg) => loco_rs::Error::InternalServerError,
+            GenerationError::ModelError(model_err) => model_err.into(),
         }
     }
 }

@@ -159,7 +159,7 @@ async function main() {
             user_prompt: prompt,
             sys_prompt: prompt,
             num_inference_steps: 50,
-            content_type: "Jpeg",
+            content_type: "jpg",
             status: "Completed",
             image_size: "Square",
             image_url_fal: `https://flowbite.s3.amazonaws.com/docs/gallery/square/image-${i}.jpg`,

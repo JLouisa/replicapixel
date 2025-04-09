@@ -6,6 +6,8 @@ use crate::views;
 use axum::{debug_handler, Extension};
 use loco_rs::prelude::*;
 
+use super::auth;
+
 pub mod routes {
     use serde::Serialize;
 
@@ -25,5 +27,7 @@ pub async fn render_home(
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    views::home::home(v, &website)
+    let is_home = true;
+    let validate_route = crate::controllers::auth::routes::Auth::VALIDATE_USER;
+    views::home::home(v, &website, &validate_route, is_home)
 }

@@ -1,3 +1,4 @@
+use crate::domain::url::Url;
 use crate::service::aws::s3::S3Key;
 
 pub use super::ImageModel;
@@ -277,6 +278,17 @@ impl Model {
             .all(db)
             .await?;
         Ok(list)
+    }
+    pub async fn update_fal_image_url(
+        mut self,
+        url: &Url,
+        db: &impl ConnectionTrait,
+    ) -> ModelResult<Model> {
+        let mut new = ActiveModel::from(self);
+        new.image_url_fal = ActiveValue::set(Some(url.as_ref().to_owned()));
+        new.status = ActiveValue::set(Status::Completed);
+        let image = new.update(db).await?;
+        Ok(image)
     }
 }
 

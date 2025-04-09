@@ -5,7 +5,8 @@ use crate::{
     mailers::auth::AuthMailer,
     models::{
         _entities::users,
-        users::{LoginParams, RegisterError, RegisterParams},
+        join::user_credits_models::load_user_and_credits,
+        users::{LoginParams, RegisterError, RegisterParams, UserPid},
     },
     service::stripe::stripe::StripeClient,
     views::auth::{CurrentResponse, LoginResponse},
@@ -18,7 +19,10 @@ use axum::{
     Extension,
 };
 use chrono::{Duration, Utc};
-use loco_rs::prelude::*;
+use loco_rs::{
+    controller::{extractor::validate, ErrorDetail},
+    prelude::*,
+};
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::sync::OnceLock;
@@ -48,6 +52,7 @@ pub mod routes {
         pub const API_MAGIC_LINK: &'static str = "/api/auth/magic-link";
         pub const API_MAGIC_LINK_W_TOKEN: &'static str = "/api/auth/magic";
         pub const API_MAGIC_LINK_TOKEN: &'static str = "/api/auth/magic/{token}";
+        pub const VALIDATE_USER: &'static str = "/validate-user";
     }
 }
 
@@ -68,6 +73,7 @@ pub fn routes() -> Routes {
         .add(routes::Auth::API_CURRENT, get(current))
         .add(routes::Auth::API_MAGIC_LINK, post(magic_link))
         .add(routes::Auth::API_MAGIC_LINK_W_TOKEN, get(magic_link_verify))
+        .add(routes::Auth::VALIDATE_USER, get(validate_user))
 }
 
 fn get_allow_email_domain_re() -> &'static Regex {
@@ -90,6 +96,31 @@ pub struct ResetParams {
 #[derive(Debug, Deserialize, Serialize)]
 pub struct MagicLinkParams {
     pub email: String,
+}
+
+#[debug_handler]
+pub async fn validate_user(
+    auth: auth::JWT,
+    State(ctx): State<AppContext>,
+    ViewEngine(v): ViewEngine<TeraView>,
+) -> Result<impl IntoResponse> {
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let (user, user_credits) = match load_user_and_credits(&ctx.db, &user_pid).await {
+        Ok((user, user_credits)) => (user, user_credits),
+        Err(err) => {
+            return Ok((
+                StatusCode::NO_CONTENT,
+                "Redirected session is not yet successful.",
+            )
+                .into_response());
+        }
+    };
+    let validate_route = routes::Auth::VALIDATE_USER;
+    format::render().view(
+        &v,
+        "partials/navbar/navbar_user_partial.html",
+        data!({"user": user, "credits": user_credits, "validate_route": validate_route}),
+    )
 }
 
 /// Register function creates a new user with the given parameters and sends a

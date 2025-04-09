@@ -44,6 +44,10 @@ impl Model {
             .await?;
         user.ok_or_else(|| ModelError::EntityNotFound)
     }
+    pub async fn find_all_packs(db: &DatabaseConnection) -> ModelResult<Vec<Self>> {
+        let packs = Entity::find().all(db).await?;
+        Ok(packs)
+    }
 }
 
 // implement your write-oriented logic here

@@ -32,13 +32,16 @@
   </div>
 
   <!-- Middle section (Navigation links) -->
-  {% if user.name %}
-  <div class="absolute left-1/2 transform -translate-x-1/2 z-10 bg-base">
+  {% if not is_home %}
+  <div id="navbar-middle" class="absolute left-1/2 transform -translate-x-1/2 z-10 bg-base">
+    <!-- Search bar container (already centered) -->
     <div class="max-w-md mx-auto">
       <div
         class="relative flex items-center w-full h-12 rounded-lg focus-within:shadow-lg bg-base overflow-hidden"
       >
-        <div class="grid place-items-center h-full w-12 text-gray-300 dark:text-white-300">
+        <div
+          class="grid place-items-center h-full w-12 text-gray-300 dark:text-white-300 text-base-content"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="h-6 w-6"
@@ -56,13 +59,18 @@
         </div>
 
         <input
-          class="peer h-full w-full outline-none text-sm text-gray-700 pr-2"
+          class="peer h-full w-full outline-none text-sm text-base-content placeholder:text-base-content/70 pr-2 bg-transparent"
           type="text"
           id="search"
           placeholder="Search something.."
         />
       </div>
     </div>
+  </div>
+  {% else %}
+  <!-- Dashboard button container (NOW centered) -->
+  <div id="navbar-middle" class="absolute left-1/2 transform -translate-x-1/2 z-10">
+    <a href="/dashboard" class="btn btn-neutral">Dashboard</a>
   </div>
   {% endif %}
 
@@ -94,75 +102,19 @@
         />
       </svg>
     </label>
-    {% if user.name %}
-    <div class="flex items-center space-x-4">
-      <div class="hidden md:inline-flex items-center hover:text-base-600 select-none">
-        <span>Hi {{user.name}}</span>
+    {% if user.name %} {% include "partials/navbar/navbar_user_partial.html" %} {% else %}
+    <div
+      hx-get="{{ validate_route }}"
+      hx-trigger="load once"
+      hx-swap="outerHTML"
+      class="flex items-center space-x-2"
+    >
+      <div class="flex items-center space-x-4">
+        <a href="/login" class="btn btn-neutral">Login</a>
       </div>
-      <div class="hidden md:inline-flex items-center hover:text-base-600 select-none">
-        {% include "partials/svg/model_svg.html" %}
-        <span hx-swap-oob="true" id="user_model_credits">{{ credits.model_amount }}</span>
+      <div class="flex items-center space-x-4">
+        <a href="/register" class="btn btn-neutral">Sign Up</a>
       </div>
-      <div class="hidden md:inline-flex items-center hover:text-base-600 select-none">
-        {% include "partials/svg/credit_svg.html" %}
-        <span hx-swap-oob="true" id="user_credits">{{ credits.credit_amount }}</span>
-      </div>
-      <div class="relative parent">
-        <div class="flex items-center hover:bg-gray-100 rounded-full p-1 cursor-pointer">
-          <div
-            class="flex items-center justify-center bg-neutral text-neutral-content w-8 h-8 rounded-full select-none"
-          >
-            <span class="text-sm font-medium"
-              >{{ user.name | truncate(length=1, end="") | upper }}
-            </span>
-          </div>
-        </div>
-        <ul
-          class="child transition duration-300 md:absolute top-full right-0 md:w-48 bg-white md:shadow-lg md:rounded-b z-10"
-        >
-          <li>
-            <a
-              hx-get="/dashboard/partial/account"
-              hx-target="#dashboard_content"
-              hx-push-url="/dashboard/account"
-              hx-swap="innerHTML"
-              class="flex px-4 py-3 hover:bg-gray-50 cursor-pointer"
-            >
-              Account
-            </a>
-          </li>
-          <li>
-            <a
-              hx-get="/dashboard/partial/billing"
-              hx-target="#dashboard_content"
-              hx-push-url="/dashboard/billing"
-              hx-swap="innerHTML"
-              class="flex px-4 py-3 hover:bg-gray-50 cursor-pointer"
-            >
-              Billing & Plans
-            </a>
-          </li>
-          <li>
-            <a hx-get="/api/auth/logout" class="flex px-4 py-3 hover:bg-gray-50 cursor-pointer">
-              Logout
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- Mobile menu button -->
-    <button class="md:hidden text-gray-500 focus:outline-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-current" viewBox="0 0 24 24">
-        <path
-          d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z"
-        />
-      </svg>
-    </button>
-
-    {% else %}
-    <div class="flex items-center space-x-4">
-      <a href="/login" class="btn btn-neutral">Login</a>
     </div>
     {% endif %}
   </div>

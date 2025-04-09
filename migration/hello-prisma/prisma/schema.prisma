@@ -284,9 +284,9 @@ enum ImageSize {
 }
 
 enum ImageFormat {
-    Png
-    Jpeg
-    Zip
+    png
+    jpg
+    zip
 
     @@map("image_format")
 }

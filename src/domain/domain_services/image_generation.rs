@@ -33,34 +33,14 @@ pub enum GenerationError {
     FalAiError(String),
     #[error("Database error: {0}")]
     DatabaseError(#[from] DbErr),
+    #[error("Database error: {0}")]
+    ModelError(#[from] ModelError),
     #[error("Configuration error: {0}")]
     ConfigError(String),
     #[error("Failed to save generated images: {0}")]
     SaveError(String),
     #[error("Failed to update credits: {0}")]
     CreditUpdateError(String),
-}
-
-// Implement conversion from our Domain Error to Loco's Error
-impl From<GenerationError> for loco_rs::Error {
-    fn from(err: GenerationError) -> Self {
-        match err {
-            GenerationError::Unauthorized => loco_rs::Error::Unauthorized(err.to_string()),
-            GenerationError::InsufficientCredits => loco_rs::Error::BadRequest(err.to_string()),
-            GenerationError::ModelNotFound | GenerationError::UserNotFound => {
-                loco_rs::Error::NotFound
-            }
-            GenerationError::UserCreditsNotFound => loco_rs::Error::NotFound,
-            GenerationError::FalAiError(msg) => loco_rs::Error::InternalServerError,
-            GenerationError::DatabaseError(db_err) => loco_rs::Error::DB(db_err),
-            GenerationError::ConfigError(msg) => loco_rs::Error::CustomError(
-                StatusCode::PAYMENT_REQUIRED,
-                ErrorDetail::new("".to_string(), msg.into()),
-            ),
-            GenerationError::SaveError(msg) => loco_rs::Error::InternalServerError,
-            GenerationError::CreditUpdateError(msg) => loco_rs::Error::InternalServerError,
-        }
-    }
 }
 
 pub struct ImageGenerationService;
@@ -139,19 +119,13 @@ impl ImageGenerationService {
             .await
             .map_err(|e| GenerationError::SaveError(e.to_string()))?;
 
-        let credits_to_deduct = image_gen_payload.as_ref().len() as i32;
-        user_credits.credit_amount -= credits_to_deduct;
         //Todo ==================================== Remove ====================================
         // Update credits using an active model
-        let updated_credits_model = UserCreditActiveModel::save(&user_credits, &txn)
-            .await
-            .map_err(|_| {
-                GenerationError::CreditUpdateError("Failed to update credits".to_string())
-            });
+        let updated_credits_model = user_credits
+            .update_credits_with_image_list(&image_gen_payload, &txn)
+            .await?;
 
-        let user_credits = UserCreditModel::find_by_user_id(&txn, user_credits.user_id)
-            .await
-            .map_err(|e| GenerationError::CreditUpdateError(e.to_string()))?;
+        dbg!(&updated_credits_model);
 
         // --- Commit Transaction ---
         txn.commit().await?;
@@ -159,7 +133,7 @@ impl ImageGenerationService {
         // Ok((user_credits, fal_response))
 
         //Todo ==================================== Remove ====================================
-        Ok((user_credits, image_gen_payload))
+        Ok((updated_credits_model, image_gen_payload))
         //Todo ==================================== Remove ====================================
     }
 }

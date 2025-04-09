@@ -4,8 +4,12 @@
 use loco_rs::prelude::*;
 
 use crate::domain::domain_services::image_generation::ImageGenerationService;
+use crate::domain::url::Url;
 use crate::models::_entities::sea_orm_active_enums::{ImageFormat, ImageSize, Status};
 use crate::models::images::{AltText, ImageNew, ImageNewList, UserPrompt};
+use crate::models::join::user_credits_models::load_user_and_credits;
+use crate::models::join::user_image::load_user_and_image;
+use crate::models::users::UserPid;
 use crate::models::{ImageActiveModel, ImageModel, TrainingModelModel, UserCreditModel, UserModel};
 use crate::service::aws::s3::{AwsS3, S3Folders};
 use crate::views::images::{CreditsViewModel, ImageViewList, ImageViewModel};
@@ -133,8 +137,7 @@ pub async fn upload_img_s3_completed(
     Extension(s3_client): Extension<AwsS3>,
     State(ctx): State<AppContext>,
 ) -> Result<Response> {
-    let user = UserModel::find_by_pid(&ctx.db, &auth.claims.pid).await?;
-    let image = load_item_pid(&ctx, img_pid).await?;
+    let (user, image) = load_user_and_image(&ctx.db, &auth.claims.pid, &img_pid).await?;
     let s3_key = s3_client.create_s3_key(
         &user.pid,
         &S3Folders::Images,
@@ -167,8 +170,7 @@ pub async fn check_test(
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<Response> {
     use rand::Rng;
-    let mut image = load_item_pid(&ctx, pid).await?;
-    let user: crate::models::users::Model = load_user(&ctx.db, &auth.claims.pid).await?;
+    let (user, mut image) = load_user_and_image(&ctx.db, &auth.claims.pid, &pid).await?;
 
     if image.user_id != user.id {
         return Err(Error::Unauthorized("Unauthorized".to_string()));
@@ -176,8 +178,13 @@ pub async fn check_test(
     let change = rand::rng().random_range(0..=3);
     if change == 0 {
         // let num = rand::rng().random_range(1..=11);
-        image.image_url_fal = Some("https://v3.fal.media/files/panda/ycu2NDkTawQBdmgZDAF3g_ffb513c9074146009320fa60e64beaab.jpg".to_string());
+        let image_url_fal = Url::new("https://v3.fal.media/files/panda/ycu2NDkTawQBdmgZDAF3g_ffb513c9074146009320fa60e64beaab.jpg".to_string());
+        image.image_url_fal = Some(image_url_fal.as_ref().to_owned());
         image.status = Status::Completed;
+        image
+            .clone()
+            .update_fal_image_url(&image_url_fal, &ctx.db)
+            .await?;
     }
     if image.status == Status::Completed {
         let user_credits = load_credits(&ctx.db, user.id).await?;
@@ -208,15 +215,15 @@ pub async fn check_img(
     Extension(s3_client): Extension<AwsS3>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<Response> {
+    let user_pid = UserPid::new(&auth.claims.pid);
     let image = load_item_pid(&ctx, pid).await?;
-    let user = load_user(&ctx.db, &auth.claims.pid).await?;
+    let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
 
     if image.user_id != user.id {
         return Err(Error::Unauthorized("Unauthorized".to_string()));
     }
 
     if image.status == Status::Completed {
-        let user_credits = load_credits(&ctx.db, user.id).await?;
         let user_credits_view: CreditsViewModel = user_credits.into();
         let check_route = routes::Images::check_route();
         let image: ImageViewModel = image.into();
@@ -245,6 +252,8 @@ pub async fn generate_test(
 ) -> Result<Response> {
     // 1. Validate request payload format
     request.validate()?;
+
+    dbg!(&request);
 
     // 2. Call the Domain Service to perform the core logic
     let (updated_credits, saved_images) =
