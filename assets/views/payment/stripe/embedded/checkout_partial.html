@@ -1,0 +1,22 @@
+<!-- Display a payment form -->
+<div id="checkout">
+  <!-- Checkout will insert the payment form here -->
+</div>
+
+{% block js %}
+<script>
+  const stripe = Stripe("{{ stripe_public_key }}");
+
+  initialize();
+
+  // Create a Checkout Session
+  async function initialize() {
+    const checkout = await stripe.initEmbeddedCheckout({
+      clientSecret: "{{ secret }}",
+    });
+
+    // Mount Checkout
+    checkout.mount("#checkout");
+  }
+</script>
+{% endblock js %}

@@ -1,8 +1,5 @@
-{% extends "payment/payment_base.html" %} {% block head %} {% endblock head %} {% block title %} Payment Plans {% endblock
-  title %}
-
-{% block payment %} <div class="min-h-screen bg-gradient-to-b from-base-50 to-base-100 py-12 px-4 sm:px-6 lg:px-8">
-  <div class="max-w-7xl mx-auto">
+ <div class="min-h-screen bg-gradient-to-b from-base-50 to-base-100 py-12 px-4 sm:px-6 lg:px-8">
+  <div id="embedded-checkout" class="max-w-7xl mx-auto">
     {# {/* Header */} #}
     <div class="text-center mb-12">
       <h1 class="text-4xl font-extrabold text-gray-900 sm:text-5xl sm:tracking-tight lg:text-6xl">
@@ -46,14 +43,15 @@
           </li>
           {% endfor %}
         </ul>
-        <a href="{{payment_route}}/{{ user_p.pid | default(value="x") }}/{{plan.id}}">
           <button
-            id="{{plan.id}}"
+            hx-get="{{payment_route}}/partial/{{ user_p.pid | default(value="x") }}/{{plan.plan_type}}"
+            hx-target="#checkout"
+            hx-swap="outerHTML"
+            hx-push-url="{{payment_route}}/{{ user_p.pid | default(value="x") }}/{{plan.plan_type}}"
             class="w-full py-3 px-6 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-medium transition-colors duration-200"
           >
             {{ plan.cta }}
           </button>
-        </a>
       </div>
       {%endfor%} {# {/* Payment Security Notice */} #}
     </div>
@@ -65,4 +63,3 @@
   </div>
   <script></script>
 </div>
-{% endblock payment %}
