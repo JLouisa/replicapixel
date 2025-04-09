@@ -40,3 +40,5 @@ pub mod handled_fal_events;
 pub type FalEventModel = handled_fal_events::Model;
 pub type FalEventActiveModel = handled_fal_events::ActiveModel;
 pub type FalEventsEntity = user_credits::Entity;
+
+pub mod join;

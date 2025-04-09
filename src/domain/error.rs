@@ -1,7 +1,7 @@
 use crate::{
     controllers::payment::routes,
     domain::url::Url,
-    models::{UserActiveModel, UserModel},
+    models::{join::user_credits_models::LoadError, UserActiveModel, UserModel},
     service::stripe::{
         stripe::StripeClientError, stripe_builder::StripeCheckoutBuilderErr,
         stripe_service::StripeServiceError,
@@ -106,6 +106,27 @@ impl From<StripeServiceError> for LocoError {
             StripeServiceError::DbErr(db_err) => LocoError::InternalServerError,
             StripeServiceError::DbModel(model_err) => LocoError::InternalServerError,
             StripeServiceError::LocoErr(loco_err) => LocoError::from(loco_err),
+        }
+    }
+}
+
+impl From<LoadError> for LocoError {
+    fn from(err: LoadError) -> Self {
+        tracing::error!(error.cause = ?err, "Checkout builder error occurred");
+        match err {
+            LoadError::Database(db_err) => LocoError::CustomError(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                ErrorDetail::new("Internal Server Error", "Internal Server Error DB"),
+            ),
+            LoadError::UserNotFound(field) => LocoError::CustomError(
+                StatusCode::NOT_FOUND,
+                ErrorDetail::new("UserNotFound", "User Not Found"),
+            ),
+            LoadError::InvalidPidFormat(field) => LocoError::CustomError(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                ErrorDetail::new("Invalid Id Format", "User Signature Invalid"),
+            ),
+            LoadError::CreditsMissingInvariant(field) => LocoError::NotFound,
         }
     }
 }

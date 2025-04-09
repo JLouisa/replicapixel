@@ -3,6 +3,7 @@ use loco_rs::{
     app::{AppContext, Hooks, Initializer},
     bgworker::{BackgroundWorker, Queue},
     boot::{create_app, BootResult, StartMode},
+    cache,
     config::Config,
     controller::AppRoutes,
     db::{self, truncate_table},
@@ -80,5 +81,11 @@ impl Hooks for App {
         db::seed::<users::ActiveModel>(&ctx.db, &base.join("users.yaml").display().to_string())
             .await?;
         Ok(())
+    }
+    async fn after_context(ctx: AppContext) -> Result<AppContext> {
+        Ok(AppContext {
+            cache: cache::Cache::new(cache::drivers::inmem::new()).into(),
+            ..ctx
+        })
     }
 }

@@ -156,7 +156,7 @@ impl TrainingModelParams {
     }
 }
 
-#[derive(Clone, Debug, Constructor, AsRef)]
+#[derive(Clone, Serialize, Debug, Constructor, AsRef)]
 pub struct TrainingModelList(Vec<Model>);
 impl TrainingModelList {
     pub fn into_inner(self) -> Vec<Model> {
