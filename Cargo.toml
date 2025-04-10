@@ -60,6 +60,10 @@ strum_macros = "0.26.4"
 rand = "0.9.0"
 dotenvy = "0.15.7"
 secrecy = "0.10.3"
+serde-aux = "4.6.0"
+
+# Redis
+redis = { version = "0.29.5", features = ["tokio-native-tls-comp" ,"aio"] }
 
 # Validation
 unicode-segmentation = "1.11.0"
