@@ -51,6 +51,7 @@ impl Hooks for App {
             Box::new(initializers::s3::S3),
             Box::new(initializers::fal_client::FalAi),
             Box::new(initializers::stripe::Stripe),
+            Box::new(initializers::redis::RedisClient),
         ])
     }
 

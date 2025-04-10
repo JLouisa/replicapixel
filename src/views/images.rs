@@ -1,6 +1,6 @@
 use derive_more::{AsMut, AsRef, Constructor, From};
 use futures::future::{join_all, try_join_all};
-use loco_rs::prelude::*;
+use loco_rs::{cache, prelude::*};
 
 use serde::Serialize;
 use uuid::Uuid;
@@ -10,6 +10,7 @@ use crate::initializers::s3;
 use crate::models::images::{ImageNew, ImagesModelList, UserPrompt};
 use crate::models::{ImageModel, UserCreditModel};
 use crate::service::aws::s3::{AwsError, AwsS3, S3Key};
+use crate::service::redis::redis::Cache;
 use crate::{
     domain::image::Image,
     models::{_entities::images, images::ImageNewList, user_credits::UserCreditsClient},
@@ -118,26 +119,44 @@ impl ImageViewModel {
         });
         try_join_all(futures).await
     }
-    pub async fn get_pre_url(mut self, user_id: &Uuid, s3_client: &AwsS3) -> Self {
+    pub async fn get_pre_url(mut self, user_id: &Uuid, s3_client: &AwsS3, cache: &Cache) -> Self {
         // Early exit if fields are missing
-        let Some(image_url_fal) = self.image_url_fal.clone() else {
+        let Some(_image_url_fal) = self.image_url_fal.clone() else {
             return self;
         };
         let Some(s3_key) = self.image_s3_key.clone().map(S3Key::new) else {
             return self;
         };
 
-        // Try generating pre-signed URL, fall back to original URL
-        match s3_client.get_object_pre(&s3_key, None).await {
-            Ok(url) => self.s3_pre_url = Some(url.into_inner()),
-            Err(_) => return self,
+        // Check if the pre_url is already cached
+        match cache.get_s3_pre_url(&self).await {
+            Ok(pre_url) => {
+                tracing::info!("Using cached pre_url: {}", &self.pid);
+                let url = Url::new(pre_url);
+                self.s3_pre_url = Some(url.into_inner());
+            }
+            Err(_) => match s3_client.get_object_pre(&s3_key, None).await {
+                Ok(url) => {
+                    tracing::info!("Generating new pre_url: {}", &self.pid);
+                    self.s3_pre_url = Some(url.into_inner());
+                    let _ = cache.set_s3_pre_url(&self).await;
+                }
+                Err(_) => return self,
+            },
         }
+
         self
     }
-    pub async fn get_pre_url_many(list: Vec<Self>, user_id: &Uuid, s3_client: &AwsS3) -> Vec<Self> {
+
+    pub async fn get_pre_url_many(
+        list: Vec<Self>,
+        user_id: &Uuid,
+        s3_client: &AwsS3,
+        cache: &Cache,
+    ) -> Vec<Self> {
         let futures = list.into_iter().map(|image| async move {
             if image.image_url_fal.is_some() && image.image_s3_key.is_some() {
-                image.get_pre_url(&user_id, s3_client).await
+                image.get_pre_url(&user_id, s3_client, cache).await
             } else {
                 image
             }

@@ -290,6 +290,18 @@ impl Model {
         let image = new.update(db).await?;
         Ok(image)
     }
+    pub async fn delete_image(mut self, db: &impl ConnectionTrait) -> ModelResult<Model> {
+        let mut new = ActiveModel::from(self);
+        new.deleted_at = ActiveValue::set(Some(chrono::Utc::now().into()));
+        let image = new.update(db).await?;
+        Ok(image)
+    }
+    pub async fn restore_image(mut self, db: &impl ConnectionTrait) -> ModelResult<Model> {
+        let mut new = ActiveModel::from(self);
+        new.deleted_at = ActiveValue::set(None);
+        let image = new.update(db).await?;
+        Ok(image)
+    }
 }
 
 // implement your custom finders, selectors oriented logic here

@@ -1,4 +1,4 @@
-{% extends "base.html" %} {% block title %}Dashboard{% endblock title %} {% block navbar %}
+{# {% extends "base.html" %} {% block title %}Dashboard{% endblock title %} {% block navbar %}
 <div class="bg-base h-14">{% include "partials/navbar/navbar.html" %}</div>
 {% endblock navbar %} {% block content %}
 <div class="w-full h-full flex overflow-hidden">
@@ -10,4 +10,32 @@
     {% block dashboard_content %} {% endblock dashboard_content %}
   </div>
 </div>
+{% endblock content %} #} {% extends "base.html" %}
+
+<!-- Html Head -->
+{% block head %} {% endblock head %}
+
+<!-- Page Title -->
+{% block title %}Dashboard{% endblock title %} {% block navbar %} {% endblock navbar %}
+
+<!-- Content -->
+{% block content %}
+<!-- Dashboard Container -->
+<div class="w-screen h-screen flex flex-col overflow-hidden">
+  <!-- Navbar (Extracted) -->
+  <div id="dashboard_navbar" class="bg-base">{% include "partials/navbar/navbar.html" %}</div>
+
+  <!-- Main Dashboard Wrapper -->
+  <div class="flex flex-1 overflow-hidden">
+    <!-- Sidebar -->
+    {% include "dashboard/dashboard_sidebar/dashboard_sidebar.html" %}
+
+    <!-- Main Dashboard Content (Now Replaceable) -->
+    <div id="dashboard_content" class="flex-1 bg-base-300 overflow-y-auto p-4">
+      {% block dashboard_content %} {% endblock dashboard_content %}
+    </div>
+  </div>
+</div>
 {% endblock content %}
+<!-- Javascript -->
+{% block js %} {% endblock js %}

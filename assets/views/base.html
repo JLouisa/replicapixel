@@ -11,7 +11,19 @@
     <script src="/static/js/htmx/extensions/htmx-ext-form-json.js"></script>
     <link rel="stylesheet" href="style.css" />
     <script src="https://js.stripe.com/v3/" defer></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     {% block head %}{% endblock head %}
+    <style>
+      /* Apply the font globally */
+      body {
+        font-family: "Inter", sans-serif;
+      }
+    </style>
   </head>
   <body class="bg-base-100">
     <!-- Main Layout Container -->

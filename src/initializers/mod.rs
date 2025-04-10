@@ -7,3 +7,5 @@ pub mod fal_client;
 pub mod website;
 
 pub mod stripe;
+
+pub mod redis;

@@ -285,7 +285,7 @@ impl AwsS3 {
     pub async fn get_object_pre(&self, key: &S3Key, time: Option<u64>) -> Result<Url, AwsError> {
         let expires_in = match time {
             Some(t) => t,
-            None => self.settings.s3.access_time,
+            None => self.settings.s3.access_time * 24, // 1 hour * 24 | 1 day
         };
         let presigned_request = self
             .client

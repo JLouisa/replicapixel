@@ -1,5 +1,8 @@
 use crate::service::{
-    aws::s3::AwsSettings, fal_ai::fal_client::FalAiSettings, stripe::stripe::StripeSettings,
+    aws::s3::AwsSettings,
+    fal_ai::fal_client::FalAiSettings,
+    redis::redis::{Redis, RedisSettings},
+    stripe::stripe::StripeSettings,
 };
 use serde::{Deserialize, Serialize};
 
@@ -11,4 +14,5 @@ pub struct Settings {
     pub fal_ai: FalAiSettings,
     pub website: WebsiteSettings,
     pub stripe: StripeSettings,
+    pub redis: RedisSettings,
 }

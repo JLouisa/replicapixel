@@ -1,4 +1,5 @@
 use super::{dashboard_sidebar::DashboardSidebar, packs::Packs};
+use crate::controllers::images::routes as ImagesRoute;
 use crate::{
     controllers::dashboard::routes,
     models::_entities::sea_orm_active_enums::{ImageSize, PlanNames},
@@ -15,6 +16,36 @@ pub struct WebsiteSettings {
 }
 
 #[derive(Debug, Serialize, Deserialize, Constructor, Clone)]
+pub struct MainRoutes {
+    pub image: String,
+    pub check: String,
+    pub image_s3_complete_upload: String,
+    pub image_restore: String,
+}
+impl MainRoutes {
+    pub fn init() -> MainRoutes {
+        MainRoutes {
+            image: String::from(ImagesRoute::Images::BASE),
+            check: format!(
+                "{}{}/test",
+                ImagesRoute::Images::BASE,
+                ImagesRoute::Images::IMAGE_CHECK
+            ),
+            image_s3_complete_upload: format!(
+                "{}{}",
+                ImagesRoute::Images::BASE,
+                ImagesRoute::Images::IMAGE_S3_UPLOAD_COMPLETE
+            ),
+            image_restore: format!(
+                "{}{}",
+                ImagesRoute::Images::BASE,
+                ImagesRoute::Images::IMAGE_RESTORE
+            ),
+        }
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize, Constructor, Clone)]
 pub struct Website {
     pub website_settings: WebsiteSettings,
     pub dashboard_sidebar: DashboardSidebar,
@@ -22,6 +53,7 @@ pub struct Website {
     pub sidebar_routes: routes::Sidebar,
     pub packs: Vec<Packs>,
     pub payment_plans: Vec<Plan>,
+    pub main_routes: MainRoutes,
 }
 impl Website {
     pub fn init(settings: WebsiteSettings) -> Website {
@@ -35,6 +67,7 @@ impl Website {
             sidebar_routes: routes::Dashboard::sidebar(),
             packs: Packs::get_packs(),
             payment_plans: get_plans(),
+            main_routes: MainRoutes::init(),
         }
     }
 }

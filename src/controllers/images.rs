@@ -5,6 +5,7 @@ use loco_rs::prelude::*;
 
 use crate::domain::domain_services::image_generation::ImageGenerationService;
 use crate::domain::url::Url;
+use crate::domain::website::Website;
 use crate::models::_entities::sea_orm_active_enums::{ImageFormat, ImageSize, Status};
 use crate::models::images::{AltText, ImageNew, ImageNewList, UserPrompt};
 use crate::models::join::user_credits_models::load_user_and_credits;
@@ -12,6 +13,7 @@ use crate::models::join::user_image::load_user_and_image;
 use crate::models::users::UserPid;
 use crate::models::{ImageActiveModel, ImageModel, TrainingModelModel, UserCreditModel, UserModel};
 use crate::service::aws::s3::{AwsS3, S3Folders};
+use crate::service::redis::redis::Cache;
 use crate::views::images::{CreditsViewModel, ImageViewList, ImageViewModel};
 use crate::{models::_entities::images::Entity, service::fal_ai::fal_client::FalAiClient, views};
 use axum::{debug_handler, Extension};
@@ -79,6 +81,8 @@ pub mod routes {
         pub const IMAGE_CHECK_ID: &'static str = "/check/{id}";
         pub const IMAGE_CHECK: &'static str = "/check";
         pub const IMAGE_ID: &'static str = "/{id}";
+        pub const IMAGE_RESTORE_ID: &'static str = "restore/{id}";
+        pub const IMAGE_RESTORE: &'static str = "restore/{id}";
         pub const IMAGE_BASE: &'static str = "";
 
         pub fn check_route() -> String {
@@ -105,6 +109,7 @@ pub fn routes() -> Routes {
         .add(routes::Images::IMAGE_CHECK_ID, get(check_img))
         .add(routes::Images::IMAGE_ID, get(get_one))
         .add(routes::Images::IMAGE_ID, delete(remove))
+        .add(routes::Images::IMAGE_RESTORE_ID, delete(restore))
         .add(
             routes::Images::IMAGE_S3_UPLOAD_COMPLETE_ID,
             patch(upload_img_s3_completed),
@@ -153,6 +158,7 @@ pub async fn upload_img_s3_completed(
     if !exists {
         return Ok((StatusCode::NO_CONTENT).into_response().into_response());
     }
+
     ImageActiveModel::from(image)
         .upload_s3_completed(&s3_key, &ctx.db)
         .await
@@ -165,6 +171,7 @@ pub async fn upload_img_s3_completed(
 pub async fn check_test(
     auth: auth::JWT,
     Path(pid): Path<Uuid>,
+    Extension(cache): Extension<Cache>,
     State(ctx): State<AppContext>,
     Extension(s3_client): Extension<AwsS3>,
     ViewEngine(v): ViewEngine<TeraView>,
@@ -177,7 +184,6 @@ pub async fn check_test(
     }
     let change = rand::rng().random_range(0..=3);
     if change == 0 {
-        // let num = rand::rng().random_range(1..=11);
         let image_url_fal = Url::new("https://v3.fal.media/files/panda/ycu2NDkTawQBdmgZDAF3g_ffb513c9074146009320fa60e64beaab.jpg".to_string());
         image.image_url_fal = Some(image_url_fal.as_ref().to_owned());
         image.status = Status::Completed;
@@ -211,6 +217,7 @@ pub async fn check_test(
 pub async fn check_img(
     auth: auth::JWT,
     Path(pid): Path<Uuid>,
+    Extension(cache): Extension<Cache>,
     State(ctx): State<AppContext>,
     Extension(s3_client): Extension<AwsS3>,
     ViewEngine(v): ViewEngine<TeraView>,
@@ -297,18 +304,31 @@ pub async fn get_one(
 pub async fn list(State(ctx): State<AppContext>) -> Result<Response> {
     format::json(Entity::find().all(&ctx.db).await?)
 }
+
 #[debug_handler]
 pub async fn remove(
     auth: auth::JWT,
-    // Path(id): Path<Uuid>,
+    Path(img_pid): Path<Uuid>,
     State(ctx): State<AppContext>,
 ) -> Result<Response> {
-    // --- Load Entities ---
-    let user = UserModel::find_by_pid(&ctx.db, &auth.claims.pid).await?;
-    let img = load_item(&ctx, user.id).await?;
-    if user.id == img.user_id {
+    let (user, img) = load_user_and_image(&ctx.db, &auth.claims.pid, &img_pid).await?;
+    if img.user_id != user.id {
         return Ok((StatusCode::UNAUTHORIZED).into_response());
     }
-    img.delete(&ctx.db).await?;
-    format::empty()
+    img.delete_image(&ctx.db).await?;
+    Ok((StatusCode::OK).into_response())
+}
+
+#[debug_handler]
+pub async fn restore(
+    auth: auth::JWT,
+    Path(img_pid): Path<Uuid>,
+    State(ctx): State<AppContext>,
+) -> Result<Response> {
+    let (user, img) = load_user_and_image(&ctx.db, &auth.claims.pid, &img_pid).await?;
+    if img.user_id != user.id {
+        return Ok((StatusCode::UNAUTHORIZED).into_response());
+    }
+    img.restore_image(&ctx.db).await?;
+    Ok((StatusCode::OK).into_response())
 }

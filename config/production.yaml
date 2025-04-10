@@ -148,3 +148,5 @@ settings:
       basic: {{ get_env(name="STRIPE_BASIC") }} 
       premium: {{ get_env(name="STRIPE_PREMIUM") }} 
       max: {{ get_env(name="STRIPE_MAX") }}
+  redis:
+    redis_url: {{ get_env(name="REDIS_URL") }}
