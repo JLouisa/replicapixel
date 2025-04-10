@@ -460,7 +460,7 @@ pub async fn album_deleted_dashboard(
     let images: Vec<ImageViewModel> = images.into();
     let images = ImageViewModel::get_pre_url_many(images, &user.pid, &s3_client, &cache).await;
     let sidebar_routes = routes::Dashboard::sidebar();
-    let is_deleted = Some(true);
+    let is_deleted = true;
     views::dashboard::photo_dashboard(
         v,
         &user.into(),
@@ -488,7 +488,7 @@ pub async fn album_deleted_partial_dashboard(
     let images = load_images_del(&ctx.db, user.id).await?;
     let images: Vec<ImageViewModel> = images.into();
     let images = ImageViewModel::get_pre_url_many(images, &user.pid, &s3_client, &cache).await;
-    let is_deleted = Some(true);
+    let is_deleted = true;
     views::dashboard::photo_partial_dashboard(
         v,
         &user.into(),
@@ -516,7 +516,7 @@ pub async fn album_favorite_dashboard(
     let images = load_images(&ctx.db, user.id, true).await?;
     let images: Vec<ImageViewModel> = images.into();
     let images = ImageViewModel::get_pre_url_many(images, &user.pid, &s3_client, &cache).await;
-    let is_deleted = None;
+    let is_deleted = false;
 
     views::dashboard::photo_dashboard(
         v,
@@ -545,7 +545,7 @@ pub async fn album_favorite_partial_dashboard(
     let images = load_images(&ctx.db, user.id, true).await?;
     let images: Vec<ImageViewModel> = images.into();
     let images = ImageViewModel::get_pre_url_many(images, &user.pid, &s3_client, &cache).await;
-    let is_deleted = None;
+    let is_deleted = false;
     views::dashboard::photo_partial_dashboard(
         v,
         &user.into(),
@@ -573,7 +573,7 @@ pub async fn photo_dashboard(
     let images = load_images(&ctx.db, user.id, false).await?;
     let images: Vec<ImageViewModel> = images.into();
     let images = ImageViewModel::get_pre_url_many(images, &user.pid, &s3_client, &cache).await;
-    let is_deleted = None;
+    let is_deleted = false;
 
     views::dashboard::photo_dashboard(
         v,
@@ -602,7 +602,7 @@ pub async fn photo_partial_dashboard(
     let images = load_images(&ctx.db, user.id, false).await?;
     let images: Vec<ImageViewModel> = images.into();
     let images = ImageViewModel::get_pre_url_many(images, &user.pid, &s3_client, &cache).await;
-    let is_deleted = None;
+    let is_deleted = false;
 
     views::dashboard::photo_partial_dashboard(
         v,
@@ -632,7 +632,7 @@ async fn render_dashboard(
     let images = load_images(&ctx.db, user.id, false).await?;
     let images: Vec<ImageViewModel> = images.into();
     let images = ImageViewModel::get_pre_url_many(images, &user.pid, &s3_client, &cache).await;
-    let is_deleted = None;
+    let is_deleted = false;
     views::dashboard::photo_dashboard(
         v,
         &user.into(),

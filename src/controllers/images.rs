@@ -81,8 +81,8 @@ pub mod routes {
         pub const IMAGE_CHECK_ID: &'static str = "/check/{id}";
         pub const IMAGE_CHECK: &'static str = "/check";
         pub const IMAGE_ID: &'static str = "/{id}";
-        pub const IMAGE_RESTORE_ID: &'static str = "restore/{id}";
-        pub const IMAGE_RESTORE: &'static str = "restore/{id}";
+        pub const IMAGE_RESTORE_ID: &'static str = "/restore/{id}";
+        pub const IMAGE_RESTORE: &'static str = "/restore";
         pub const IMAGE_BASE: &'static str = "";
 
         pub fn check_route() -> String {

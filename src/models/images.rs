@@ -254,7 +254,7 @@ impl Model {
             query = query.filter(images::Column::IsFavorite.eq(true));
         }
         let results = query
-            .order_by_desc(images::Column::CreatedAt)
+            .order_by_desc(images::Column::UpdatedAt)
             .all(db)
             .await?;
         Ok(results)
@@ -291,13 +291,16 @@ impl Model {
         Ok(image)
     }
     pub async fn delete_image(mut self, db: &impl ConnectionTrait) -> ModelResult<Model> {
+        let time = chrono::Utc::now().into();
         let mut new = ActiveModel::from(self);
-        new.deleted_at = ActiveValue::set(Some(chrono::Utc::now().into()));
+        new.deleted_at = ActiveValue::set(Some(time));
+        new.updated_at = ActiveValue::set(time);
         let image = new.update(db).await?;
         Ok(image)
     }
     pub async fn restore_image(mut self, db: &impl ConnectionTrait) -> ModelResult<Model> {
         let mut new = ActiveModel::from(self);
+        new.updated_at = ActiveValue::set(chrono::Utc::now().into());
         new.deleted_at = ActiveValue::set(None);
         let image = new.update(db).await?;
         Ok(image)

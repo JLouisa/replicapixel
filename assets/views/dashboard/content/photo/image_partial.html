@@ -42,7 +42,7 @@
             <line x1="12" x2="12" y1="15" y2="3" />
           </svg>
         </button>
-        {% if not is_deleted %}
+        {% if is_deleted == false %}
         <button
           hx-delete="{{ delete_route }}/{{ image.pid }}"
           hx-target="#container3-{{ image.pid }}"
@@ -76,7 +76,7 @@
           hx-target="#container3-{{ image.pid }}"
           hx-confirm="Are you sure you want to delete this item?"
           hx-swap="outerHTML"
-          class="btn btn-warning"
+          class="btn btn-info"
         >
           Restore
           <svg

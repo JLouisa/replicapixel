@@ -257,7 +257,7 @@ pub fn photo_dashboard(
     training_models: Vec<TrainingModelView>,
     website: &Website,
     credits: &UserCreditsView,
-    is_deleted: Option<bool>,
+    is_deleted: bool,
 ) -> Result<impl IntoResponse> {
     let sidebar = DashboardSidebar::init();
     format::render().view(
@@ -270,8 +270,8 @@ pub fn photo_dashboard(
             "check_route":  website.main_routes.check,
             "delete_route":  website.main_routes.image,
             "restore_route": website.main_routes.image_restore,
+            "is_deleted": is_deleted,
              "is_initial_load": true,
-             "is_deleted": true
         }),
     )
 }
@@ -283,7 +283,7 @@ pub fn photo_partial_dashboard(
     training_models: Vec<TrainingModelView>,
     website: &Website,
     credits: &UserCreditsView,
-    is_deleted: Option<bool>,
+    is_deleted: bool,
 ) -> Result<impl IntoResponse> {
     let sidebar = DashboardSidebar::init();
     format::render().view(
@@ -295,7 +295,7 @@ pub fn photo_partial_dashboard(
             "check_route": website.main_routes.check,
             "delete_route":  website.main_routes.image,
             "restore_route": website.main_routes.image_restore,
-            "is_deleted": true
+            "is_deleted": is_deleted
         }),
     )
 }
