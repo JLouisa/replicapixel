@@ -1,20 +1,16 @@
-use derive_more::{AsMut, AsRef, Constructor, From};
+use derive_more::{AsRef, Constructor, From};
 use futures::future::{join_all, try_join_all};
-use loco_rs::{cache, prelude::*};
+use loco_rs::prelude::*;
 
 use serde::Serialize;
 use uuid::Uuid;
 
 use crate::domain::url::Url;
-use crate::initializers::s3;
-use crate::models::images::{ImageNew, ImagesModelList, UserPrompt};
+use crate::models::images::{ImageNew, ImagesModelList};
 use crate::models::{ImageModel, UserCreditModel};
+use crate::models::{_entities::images, images::ImageNewList};
 use crate::service::aws::s3::{AwsError, AwsS3, S3Key};
 use crate::service::redis::redis::Cache;
-use crate::{
-    domain::image::Image,
-    models::{_entities::images, images::ImageNewList, user_credits::UserCreditsClient},
-};
 
 pub fn one(
     v: &impl ViewRenderer,
@@ -119,7 +115,7 @@ impl ImageViewModel {
         });
         try_join_all(futures).await
     }
-    pub async fn get_pre_url(mut self, user_id: &Uuid, s3_client: &AwsS3, cache: &Cache) -> Self {
+    pub async fn get_pre_url(mut self, s3_client: &AwsS3, cache: &Cache) -> Self {
         // Early exit if fields are missing
         let Some(_image_url_fal) = self.image_url_fal.clone() else {
             return self;
@@ -148,15 +144,10 @@ impl ImageViewModel {
         self
     }
 
-    pub async fn get_pre_url_many(
-        list: Vec<Self>,
-        user_id: &Uuid,
-        s3_client: &AwsS3,
-        cache: &Cache,
-    ) -> Vec<Self> {
+    pub async fn get_pre_url_many(list: Vec<Self>, s3_client: &AwsS3, cache: &Cache) -> Vec<Self> {
         let futures = list.into_iter().map(|image| async move {
             if image.image_url_fal.is_some() && image.image_s3_key.is_some() {
-                image.get_pre_url(&user_id, s3_client, cache).await
+                image.get_pre_url(s3_client, cache).await
             } else {
                 image
             }

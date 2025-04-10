@@ -1,11 +1,10 @@
-use chrono::Utc;
 use derive_more::Constructor;
 use redis::{aio::MultiplexedConnection, AsyncCommands, Client, RedisResult};
 use serde::Deserialize;
 use strum::{AsRefStr, EnumString};
 use thiserror::Error;
 
-use crate::{models::ImageModel, views::images::ImageViewModel};
+use crate::views::images::ImageViewModel;
 
 pub type Cache = Redis;
 

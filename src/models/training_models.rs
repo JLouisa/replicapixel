@@ -11,17 +11,9 @@ use sea_orm::{entity::prelude::*, QueryOrder};
 use serde::{Deserialize, Serialize};
 pub type TrainingModels = Entity;
 
-use crate::service::aws::s3::{AwsS3, PresignedUrlRequest, PresignedUrlSafe, S3Folders, S3Key};
-use crate::service::fal_ai::fal_client::{FalAiClient, FluxLoraTrainingSchema};
-use crate::{domain::image::Image, views};
-use crate::{
-    domain::response::{handle_general_response, handle_general_response_text},
-    service::fal_ai::fal_client::FluxQueueResponse,
-};
-use axum::{debug_handler, Extension};
-use axum::{http::HeaderMap, http::StatusCode, response::IntoResponse, Json};
+use crate::service::aws::s3::S3Key;
+use crate::service::fal_ai::fal_client::FluxQueueResponse;
 use loco_rs::prelude::*;
-use strum::{EnumIter, EnumString, IntoEnumIterator};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct TrainingModelClient {
@@ -256,7 +248,7 @@ impl Model {
 // implement your write-oriented logic here
 impl ActiveModel {
     pub async fn save(db: &DatabaseConnection, params: &TrainingModelParams) -> ModelResult<Self> {
-        let mut item = training_models::ActiveModel {
+        let item = training_models::ActiveModel {
             pid: ActiveValue::set(params.pid.clone()),
             name: ActiveValue::set(params.name.clone()),
             age: ActiveValue::set(params.age.clone() as i32),

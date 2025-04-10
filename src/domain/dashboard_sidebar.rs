@@ -1,7 +1,6 @@
 use crate::models::_entities::sea_orm_active_enums::{BasedOn, Emotion, Ethnicity, EyeColor, Sex};
-use axum::extract::rejection::FailedToDeserializeQueryString;
 use serde::{Deserialize, Serialize};
-use strum::{EnumIter, IntoEnumIterator};
+use strum::IntoEnumIterator;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct DashboardSidebar {

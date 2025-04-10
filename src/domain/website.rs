@@ -6,8 +6,7 @@ use crate::{
 };
 use derive_more::Constructor;
 use serde::{Deserialize, Serialize};
-use stripe::PriceId;
-use strum::{EnumIter, EnumString, IntoEnumIterator};
+use strum::IntoEnumIterator;
 
 #[derive(Debug, Clone, Deserialize, Serialize, Constructor, Default)]
 pub struct WebsiteSettings {
@@ -49,7 +48,7 @@ impl MainRoutes {
 pub struct Website {
     pub website_settings: WebsiteSettings,
     pub dashboard_sidebar: DashboardSidebar,
-    pub image_sizes: (Vec<(ImageSize, String)>),
+    pub image_sizes: Vec<(ImageSize, String)>,
     pub sidebar_routes: routes::Sidebar,
     pub packs: Vec<Packs>,
     pub payment_plans: Vec<Plan>,

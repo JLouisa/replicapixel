@@ -3,7 +3,11 @@ use insta::assert_debug_snapshot;
 use loco_rs::testing::prelude::*;
 use pictora::{
     app::App,
-    models::users::{self, Model, RegisterParams},
+    models::users::{
+        self,
+        Model,
+        //  RegisterParams
+    },
 };
 use sea_orm::{ActiveModelTrait, ActiveValue, IntoActiveModel};
 use serial_test::serial;

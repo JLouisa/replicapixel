@@ -16,10 +16,7 @@ use crate::{
         transactions::TransactionDomain, users::UserPid, PlanModel, TransactionActiveModel,
         UserModel, _entities::sea_orm_active_enums::PlanNames,
     },
-    service::stripe::{
-        stripe::StripeClient, stripe_builder::CheckoutSessionBuilder,
-        stripe_status_service::StripeStatusService,
-    },
+    service::stripe::{stripe::StripeClient, stripe_builder::CheckoutSessionBuilder},
     views,
 };
 use axum::{http::StatusCode, response::IntoResponse};
@@ -107,12 +104,11 @@ pub struct ClientSecret {
 }
 
 async fn checkout_return_handler(
-    params: Query<PaymentRedirectParams>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
     tracing::error!("User successfully completed payment process.");
-    views::payment::return_session(v, &website, &params.session_id)
+    views::payment::return_session(v, &website)
 }
 
 async fn checkout_partial_handler(
@@ -291,22 +287,20 @@ pub async fn payment_request(
     Ok(Redirect::to(&session).into_response())
 }
 
-async fn status_embedded_handler(
-    Path(session_id_str): Path<String>,
-    Extension(stripe_client): Extension<StripeClient>,
-    Extension(website): Extension<Website>,
-    ViewEngine(v): ViewEngine<TeraView>,
-) -> Result<impl IntoResponse> {
-    // 2. Parse Session ID
-    let session_id = CheckoutSessionId::from_str(session_id_str.as_str()).map_err(|_| {
-        tracing::warn!(session_id = %session_id_str, "Received invalid session_id format.");
-        loco_rs::Error::BadRequest(format!("Invalid session_id format: {}", session_id_str))
-    })?;
+// async fn status_embedded_handler(
+//     Path(session_id_str): Path<String>,
+//     Extension(stripe_client): Extension<StripeClient>,
+// ) -> Result<impl IntoResponse> {
+//     // 2. Parse Session ID
+//     let session_id = CheckoutSessionId::from_str(session_id_str.as_str()).map_err(|_| {
+//         tracing::warn!(session_id = %session_id_str, "Received invalid session_id format.");
+//         loco_rs::Error::BadRequest(format!("Invalid session_id format: {}", session_id_str))
+//     })?;
 
-    let session = StripeStatusService::handle_status(&session_id, &stripe_client).await?;
+//     let session = StripeStatusService::handle_status(&session_id, &stripe_client).await?;
 
-    format::json(session)
-}
+//     format::json(session)
+// }
 
 async fn status_handler(
     Path(session_id_str): Path<String>,

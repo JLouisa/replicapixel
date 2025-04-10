@@ -4,17 +4,15 @@
 use crate::controllers::training_models as TrainingRoutes;
 use crate::domain::packs::Packs;
 use crate::domain::website::Website;
-use crate::initializers::redis::RedisClient;
-use crate::models::_entities::sea_orm_active_enums::Status;
 use crate::models::images::ImagesModelList;
 use crate::models::join::user_credits_models::{
     load_user_and_credits, load_user_and_training, load_user_credit_training,
 };
 use crate::models::training_models::TrainingModelList;
 use crate::models::users::UserPid;
-use crate::models::{ImageModel, PackModel, TrainingModelModel, UserCreditModel, UserModel};
+use crate::models::{ImageModel, PackModel, TrainingModelModel, UserModel};
 use crate::service::aws::s3::AwsS3;
-use crate::service::redis::redis::{Cache, Redis};
+use crate::service::redis::redis::Cache;
 use crate::views;
 use crate::views::images::ImageViewModel;
 use axum::Extension;
@@ -191,14 +189,14 @@ async fn load_user(db: &DatabaseConnection, pid: &UserPid) -> Result<UserModel> 
     let item = UserModel::find_by_pid(db, &pid.as_ref().to_string()).await?;
     Ok(item)
 }
-async fn load_user_credits(db: &DatabaseConnection, user: &UserModel) -> Result<UserCreditModel> {
-    let item = UserCreditModel::load_item_by_user_id(db, user).await?;
-    Ok(item)
-}
-async fn load_item_all(db: &DatabaseConnection, id: i32) -> Result<TrainingModelList> {
-    let list = TrainingModelModel::find_all_by_user_id(db, id).await?;
-    Ok(TrainingModelList::new(list))
-}
+// async fn load_user_credits(db: &DatabaseConnection, user: &UserModel) -> Result<UserCreditModel> {
+//     let item = UserCreditModel::load_item_by_user_id(db, user).await?;
+//     Ok(item)
+// }
+// async fn load_item_all(db: &DatabaseConnection, id: i32) -> Result<TrainingModelList> {
+//     let list = TrainingModelModel::find_all_by_user_id(db, id).await?;
+//     Ok(TrainingModelList::new(list))
+// }
 async fn load_item_all_completed(ctx: &AppContext, id: i32) -> Result<TrainingModelList> {
     let list = TrainingModelModel::find_all_completed_by_user_id(&ctx.db, id).await?;
     Ok(TrainingModelList::new(list))
@@ -217,12 +215,7 @@ async fn load_packs(db: &DatabaseConnection) -> Result<Vec<PackModel>> {
 }
 
 #[debug_handler]
-pub async fn dashboard_test_set(
-    // auth: auth::JWT,
-    Extension(cache): Extension<Cache>,
-    State(ctx): State<AppContext>,
-    ViewEngine(v): ViewEngine<TeraView>,
-) -> Result<impl IntoResponse> {
+pub async fn dashboard_test_set(Extension(cache): Extension<Cache>) -> Result<impl IntoResponse> {
     match cache.set("testing:1", "Testing Number 2", Some(120)).await {
         Ok(_) => {
             return Ok((StatusCode::OK).into_response());
@@ -235,13 +228,8 @@ pub async fn dashboard_test_set(
 }
 
 #[debug_handler]
-pub async fn dashboard_test_get(
-    // auth: auth::JWT,
-    Extension(cache): Extension<Cache>,
-    State(ctx): State<AppContext>,
-    ViewEngine(v): ViewEngine<TeraView>,
-) -> Result<impl IntoResponse> {
-    let key = match cache.get("testing:1").await {
+pub async fn dashboard_test_get(Extension(cache): Extension<Cache>) -> Result<impl IntoResponse> {
+    let _ = match cache.get("testing:1").await {
         Ok(e) => return format::json(e),
         Err(e) => {
             println!("Error: {}", e);
@@ -419,7 +407,7 @@ pub async fn packs_dashboard(
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
-    let packs = load_packs(&ctx.db).await?;
+    let _packs = load_packs(&ctx.db).await?;
     let packs = Packs::get_packs();
     let sidebar_routes = routes::Dashboard::sidebar();
     views::dashboard::packs_dashboard(
@@ -438,7 +426,7 @@ pub async fn packs_partial_dashboard(
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
-    let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
+    let user = load_user(&ctx.db, &user_pid).await?;
 
     let packs = Packs::get_packs();
     views::dashboard::packs_partial_dashboard(v, &user.into(), &packs)
@@ -458,14 +446,12 @@ pub async fn album_deleted_dashboard(
     let training_models: TrainingModelList = TrainingModelList::empty();
     let images = load_images_del(&ctx.db, user.id).await?;
     let images: Vec<ImageViewModel> = images.into();
-    let images = ImageViewModel::get_pre_url_many(images, &user.pid, &s3_client, &cache).await;
-    let sidebar_routes = routes::Dashboard::sidebar();
+    let images = ImageViewModel::get_pre_url_many(images, &s3_client, &cache).await;
     let is_deleted = true;
     views::dashboard::photo_dashboard(
         v,
         &user.into(),
         &images.into(),
-        sidebar_routes,
         training_models.into(),
         &website,
         &user_credits.into(),
@@ -487,7 +473,7 @@ pub async fn album_deleted_partial_dashboard(
     let training_models: TrainingModelList = TrainingModelList::empty();
     let images = load_images_del(&ctx.db, user.id).await?;
     let images: Vec<ImageViewModel> = images.into();
-    let images = ImageViewModel::get_pre_url_many(images, &user.pid, &s3_client, &cache).await;
+    let images = ImageViewModel::get_pre_url_many(images, &s3_client, &cache).await;
     let is_deleted = true;
     views::dashboard::photo_partial_dashboard(
         v,
@@ -512,17 +498,15 @@ pub async fn album_favorite_dashboard(
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     let training_models: TrainingModelList = TrainingModelList::empty();
-    let sidebar_routes = routes::Dashboard::sidebar();
     let images = load_images(&ctx.db, user.id, true).await?;
     let images: Vec<ImageViewModel> = images.into();
-    let images = ImageViewModel::get_pre_url_many(images, &user.pid, &s3_client, &cache).await;
+    let images = ImageViewModel::get_pre_url_many(images, &s3_client, &cache).await;
     let is_deleted = false;
 
     views::dashboard::photo_dashboard(
         v,
         &user.into(),
         &images.into(),
-        sidebar_routes,
         training_models.into(),
         &website,
         &user_credits.into(),
@@ -544,7 +528,7 @@ pub async fn album_favorite_partial_dashboard(
     let training_models: TrainingModelList = TrainingModelList::empty();
     let images = load_images(&ctx.db, user.id, true).await?;
     let images: Vec<ImageViewModel> = images.into();
-    let images = ImageViewModel::get_pre_url_many(images, &user.pid, &s3_client, &cache).await;
+    let images = ImageViewModel::get_pre_url_many(images, &s3_client, &cache).await;
     let is_deleted = false;
     views::dashboard::photo_partial_dashboard(
         v,
@@ -569,17 +553,15 @@ pub async fn photo_dashboard(
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     let training_models = load_item_all_completed(&ctx, user.id).await?;
-    let sidebar_routes = routes::Dashboard::sidebar();
     let images = load_images(&ctx.db, user.id, false).await?;
     let images: Vec<ImageViewModel> = images.into();
-    let images = ImageViewModel::get_pre_url_many(images, &user.pid, &s3_client, &cache).await;
+    let images = ImageViewModel::get_pre_url_many(images, &s3_client, &cache).await;
     let is_deleted = false;
 
     views::dashboard::photo_dashboard(
         v,
         &user.into(),
         &images,
-        sidebar_routes,
         training_models.into(),
         &website.into(),
         &user_credits.into(),
@@ -601,7 +583,7 @@ pub async fn photo_partial_dashboard(
     let training_models = load_item_all_completed(&ctx, user.id).await?;
     let images = load_images(&ctx.db, user.id, false).await?;
     let images: Vec<ImageViewModel> = images.into();
-    let images = ImageViewModel::get_pre_url_many(images, &user.pid, &s3_client, &cache).await;
+    let images = ImageViewModel::get_pre_url_many(images, &s3_client, &cache).await;
     let is_deleted = false;
 
     views::dashboard::photo_partial_dashboard(
@@ -628,16 +610,14 @@ async fn render_dashboard(
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     let training_models = load_item_all_completed(&ctx, user.id).await?;
-    let sidebar_routes = routes::Dashboard::sidebar();
     let images = load_images(&ctx.db, user.id, false).await?;
     let images: Vec<ImageViewModel> = images.into();
-    let images = ImageViewModel::get_pre_url_many(images, &user.pid, &s3_client, &cache).await;
+    let images = ImageViewModel::get_pre_url_many(images, &s3_client, &cache).await;
     let is_deleted = false;
     views::dashboard::photo_dashboard(
         v,
         &user.into(),
         &images.into(),
-        sidebar_routes,
         training_models.into(),
         &website,
         &user_credits.into(),

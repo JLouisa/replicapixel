@@ -11,7 +11,7 @@ impl ActiveModelBehavior for ActiveModel {}
 // implement your write-oriented logic here
 impl ActiveModel {
     pub async fn save(db: &impl ConnectionTrait, request_id: &str) -> ModelResult<Self> {
-        let mut hse = ActiveModel {
+        let hse = ActiveModel {
             request_id: ActiveValue::set(request_id.to_owned()),
             ..Default::default()
         };

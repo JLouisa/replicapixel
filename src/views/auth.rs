@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::models::{UserCreditModel, UserModel, _entities::users};
+use crate::models::{UserCreditModel, UserModel};
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct LoginResponse {

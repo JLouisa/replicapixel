@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use super::stripe::{StripeClient, StripeClientError};
 use crate::models::{UserModel, _entities::sea_orm_active_enums::PlanNames};
 use sea_orm::DatabaseConnection;
@@ -8,9 +6,6 @@ use stripe::{
     CheckoutSession, CheckoutSessionMode, CheckoutSessionUiMode, Currency, Metadata, ParseIdError,
     StripeError,
 };
-
-use axum::http::StatusCode;
-use loco_rs::{controller::ErrorDetail, prelude::Error as LocoError};
 use thiserror::Error;
 
 #[derive(Error, Debug)]

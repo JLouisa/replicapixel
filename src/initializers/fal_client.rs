@@ -1,12 +1,9 @@
 use async_trait::async_trait;
 use axum::{Extension, Router as AxumRouter};
-use fluent_templates::{ArcLoader, FluentLoader};
 use loco_rs::{
     app::{AppContext, Initializer},
-    controller::views::{engines, ViewEngine},
-    Error, Result,
+    Result,
 };
-use tracing::info;
 
 use crate::{domain::settings::Settings, service::fal_ai::fal_client::FalAiClient};
 

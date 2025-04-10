@@ -1,20 +1,10 @@
 use crate::{
     controllers::images::ImageGenRequestParams,
-    models::{
-        TrainingModelModel, UserCreditModel, UserModel,
-        _entities::{training_models, user_credits, users},
-        images::{Entity, ImageNew, ImageNewList},
-        user_credits::UserCredits,
-        ImageActiveModel, UserCreditActiveModel,
-    },
+    models::{images::ImageNewList, TrainingModelModel, UserCreditModel, UserModel},
     service::fal_ai::fal_client::FalAiClient,
 };
-use axum::http::StatusCode;
 use loco_rs::prelude::*;
-use loco_rs::{controller::ErrorDetail, prelude::*};
-use sea_orm::{entity::prelude::*, QueryOrder};
-use sea_orm::{DatabaseConnection, DatabaseTransaction, DbErr, TransactionTrait};
-use serde::Deserialize;
+use sea_orm::{DbErr, TransactionTrait};
 use thiserror::Error;
 
 #[derive(Debug, Error)]

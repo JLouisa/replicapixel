@@ -6,7 +6,7 @@ use super::TrainingModelModel;
 
 use super::_entities::images;
 pub use super::_entities::images::{ActiveModel, Entity, Model};
-use super::_entities::sea_orm_active_enums::{BasedOn, ImageFormat, ImageSize, Status};
+use super::_entities::sea_orm_active_enums::{ImageFormat, ImageSize, Status};
 use derive_more::{AsRef, Constructor};
 use sea_orm::entity::prelude::*;
 use sea_orm::{
@@ -14,7 +14,7 @@ use sea_orm::{
 };
 use serde::{Deserialize, Serialize};
 pub type Images = Entity;
-use loco_rs::{auth::jwt, hash, prelude::*};
+use loco_rs::prelude::*;
 
 #[derive(Clone, Debug, Serialize, PartialEq)]
 pub struct ImageNew {
@@ -45,7 +45,7 @@ impl ImageNew {
         item.user_prompt = Set(self.user_prompt.as_ref().to_owned());
         item.sys_prompt = Set(self.sys_prompt.as_ref().to_owned());
         item.alt = Set(self.alt.as_ref().to_owned());
-        item.pack_id = Set((self.pack_id.clone()));
+        item.pack_id = Set(self.pack_id.clone());
         item.num_inference_steps = Set(self.num_inference_steps.clone());
         item.content_type = Set(self.content_type.clone());
         item.status = Set(self.status);
@@ -79,7 +79,7 @@ impl ImageNewList {
                 item
             })
             .collect();
-        let results = Entity::insert_many(models).exec(txn).await?;
+        Entity::insert_many(models).exec(txn).await?;
         Ok(())
     }
 }
@@ -194,11 +194,11 @@ impl ActiveModelBehavior for ActiveModel {
 // implement your write-oriented logic here
 impl ActiveModel {
     pub async fn save(db: &DatabaseConnection, img: &ImageModel) -> ModelResult<Self> {
-        let mut item = ActiveModel {
+        let item = ActiveModel {
             pid: ActiveValue::set(img.pid.clone()),
             user_id: ActiveValue::set(img.user_id.clone()),
             training_model_id: ActiveValue::set(img.training_model_id.clone()),
-            pack_id: ActiveValue::set((img.pack_id.clone())),
+            pack_id: ActiveValue::set(img.pack_id.clone()),
             user_prompt: ActiveValue::set(img.user_prompt.clone()),
             sys_prompt: ActiveValue::set(img.sys_prompt.clone()),
             alt: ActiveValue::set(img.alt.clone()),
@@ -280,7 +280,7 @@ impl Model {
         Ok(list)
     }
     pub async fn update_fal_image_url(
-        mut self,
+        self,
         url: &Url,
         db: &impl ConnectionTrait,
     ) -> ModelResult<Model> {
@@ -290,7 +290,7 @@ impl Model {
         let image = new.update(db).await?;
         Ok(image)
     }
-    pub async fn delete_image(mut self, db: &impl ConnectionTrait) -> ModelResult<Model> {
+    pub async fn delete_image(self, db: &impl ConnectionTrait) -> ModelResult<Model> {
         let time = chrono::Utc::now().into();
         let mut new = ActiveModel::from(self);
         new.deleted_at = ActiveValue::set(Some(time));
@@ -298,7 +298,7 @@ impl Model {
         let image = new.update(db).await?;
         Ok(image)
     }
-    pub async fn restore_image(mut self, db: &impl ConnectionTrait) -> ModelResult<Model> {
+    pub async fn restore_image(self, db: &impl ConnectionTrait) -> ModelResult<Model> {
         let mut new = ActiveModel::from(self);
         new.updated_at = ActiveValue::set(chrono::Utc::now().into());
         new.deleted_at = ActiveValue::set(None);

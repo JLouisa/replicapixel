@@ -1,6 +1,6 @@
 pub use super::_entities::transactions::{ActiveModel, Entity, Model};
 use super::{
-    PlanModel, TransactionActiveModel, TransactionModel, UserModel,
+    PlanModel, TransactionActiveModel, UserModel,
     _entities::{sea_orm_active_enums::Status, transactions},
 };
 use loco_rs::prelude::*;
@@ -70,12 +70,12 @@ impl ActiveModelBehavior for ActiveModel {
 // implement your write-oriented logic here
 impl ActiveModel {
     pub async fn save(db: &impl ConnectionTrait, item: &TransactionDomain) -> ModelResult<Self> {
-        let mut transaction = ActiveModel {
+        let transaction = ActiveModel {
             pid: ActiveValue::set(item.pid.clone()),
             user_id: ActiveValue::set(item.user_id.clone()),
             plan_id: ActiveValue::set(item.plan_id.clone()),
             credit_amount: ActiveValue::set(item.credit_amount.clone()),
-            model_amount: ActiveValue::set((item.model_amount.clone())),
+            model_amount: ActiveValue::set(item.model_amount.clone()),
             currency: ActiveValue::set(item.currency.clone()),
             payment_id: ActiveValue::set(item.payment_id.clone()),
             status: ActiveValue::set(item.status),
@@ -96,7 +96,7 @@ impl ActiveModel {
 }
 // implement your read-oriented logic here
 impl Model {
-    pub async fn status_completed(mut self, db: &impl ConnectionTrait) -> ModelResult<Model> {
+    pub async fn status_completed(self, db: &impl ConnectionTrait) -> ModelResult<Model> {
         let mut new = ActiveModel::from(self);
         new.status = ActiveValue::Set(Status::Completed);
         let updated = new.update(db).await?;
@@ -112,7 +112,7 @@ impl Model {
         let updated = new.update(db).await?;
         Ok(updated)
     }
-    pub async fn status_failed(mut self, db: &impl ConnectionTrait) -> ModelResult<Model> {
+    pub async fn status_failed(self, db: &impl ConnectionTrait) -> ModelResult<Model> {
         let mut new = ActiveModel::from(self);
         new.status = ActiveValue::Set(Status::Failed);
         let updated = new.update(db).await?;

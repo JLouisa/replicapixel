@@ -19,10 +19,7 @@ use axum::{
     Extension,
 };
 use chrono::{Duration, Utc};
-use loco_rs::{
-    controller::{extractor::validate, ErrorDetail},
-    prelude::*,
-};
+use loco_rs::prelude::*;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::sync::OnceLock;
@@ -107,7 +104,7 @@ pub async fn validate_user(
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, user_credits) = match load_user_and_credits(&ctx.db, &user_pid).await {
         Ok((user, user_credits)) => (user, user_credits),
-        Err(err) => {
+        Err(_) => {
             return Ok((
                 StatusCode::NO_CONTENT,
                 "Redirected session is not yet successful.",

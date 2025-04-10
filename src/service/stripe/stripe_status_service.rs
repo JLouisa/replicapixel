@@ -1,8 +1,5 @@
-use derive_more::Constructor;
 use serde::Serialize;
-use stripe::{
-    CheckoutSession, CheckoutSessionId, CheckoutSessionPaymentStatus, CheckoutSessionStatus,
-};
+use stripe::{CheckoutSession, CheckoutSessionId, CheckoutSessionStatus};
 
 use super::stripe::StripeClient;
 

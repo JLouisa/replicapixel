@@ -8,9 +8,7 @@ use crate::{
 use futures::future::join_all;
 use loco_rs::Error as FalAiClientError;
 use reqwest::Client as ReqwestClient;
-use sea_orm::DeriveActiveEnum;
 use serde::{Deserialize, Serialize};
-use strum::{EnumIter, EnumString, IntoEnumIterator};
 use strum_macros::Display;
 use uuid::Uuid;
 
@@ -96,10 +94,6 @@ impl FalAiClient {
         prompt: &FluxLoraImageGenerate,
     ) -> Result<FluxQueueResponse, FalAiClientError> {
         // dbg!("FluxLoraImageGenerate", &prompt);
-        dbg!(
-            "FluxLoraImageGenerate Json:",
-            serde_json::to_string(&prompt)
-        );
         let response = self
             .client
             .post(&self.image_url)
@@ -177,7 +171,7 @@ impl FalAiClient {
 
     pub async fn send_image_queue_many(
         &self,
-        mut list: ImageNewList,
+        list: ImageNewList,
     ) -> Result<ImageNewList, FalAiClientError> {
         for item in &mut list.clone().into_inner() {
             let body = item.clone().into();
@@ -232,7 +226,7 @@ impl FalAiClient {
             .header("Authorization", format!("Key {}", &self.fal_key))
             .send()
             .await
-            .map_err(|e| {
+            .map_err(|_| {
                 loco_rs::Error::Message("Error processing Status Request: 102".to_string())
             })?
             .json::<FluxStatusResponse>()
@@ -251,7 +245,7 @@ impl FalAiClient {
             .header("Authorization", format!("Key {}", &self.fal_key))
             .send()
             .await
-            .map_err(|e| {
+            .map_err(|_| {
                 loco_rs::Error::Message("Error processing Result Request: 103".to_string())
             })?
             .json::<SuccessfulPayloadTraining>()
@@ -270,7 +264,7 @@ impl FalAiClient {
             .header("Authorization", format!("Key {}", &self.fal_key))
             .send()
             .await
-            .map_err(|e| {
+            .map_err(|_| {
                 loco_rs::Error::Message("Error processing Cancel Request: 104".to_string())
             })?;
 

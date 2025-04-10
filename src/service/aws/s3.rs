@@ -3,18 +3,15 @@ use aws_sdk_s3::config::BehaviorVersion;
 use aws_sdk_s3::operation::delete_object::DeleteObjectError;
 use aws_sdk_s3::operation::head_object::HeadObjectError;
 use cuid2;
-use derive_more::From;
 use s3::config::{Credentials, Region};
 use s3::error::SdkError;
 use s3::operation::put_object::PutObjectError;
 use s3::presigning::{PresigningConfig, PresigningConfigError};
 use s3::Client;
 use serde::{Deserialize, Serialize};
-use std::sync::Arc;
 use std::time::Duration;
 use thiserror::Error;
 use uuid::Uuid;
-use validator::ValidateUrl;
 
 use crate::domain::url::Url;
 use crate::models::_entities::sea_orm_active_enums::ImageFormat;
@@ -219,7 +216,7 @@ impl AwsS3 {
             &ImageFormat::Jpeg,
         );
         let pre_url = self.generate_save_presigned_url(&key, time).await?;
-        Ok((pre_url))
+        Ok(pre_url)
     }
 
     // Generate a presigned URL
@@ -235,7 +232,6 @@ impl AwsS3 {
             ImageFormat::Png => S3Folders::Images,
         };
         let key = self.create_s3_key(user_id, &folder, &url_request.name, &url_request.file_type);
-        let full_url = self.create_full_path(&key);
         let pre_url = self.generate_save_presigned_url(&key, time).await?;
         Ok((pre_url, key))
     }

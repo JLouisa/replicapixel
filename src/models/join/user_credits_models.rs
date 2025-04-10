@@ -1,27 +1,17 @@
-use std::collections::HashSet;
-
 use loco_rs::prelude::*;
 use migration::IntoCondition;
 use sea_orm::prelude::*;
-use sea_orm::{entity::*, query::*, DatabaseConnection, DbErr, JoinType};
+use sea_orm::{query::*, DatabaseConnection, DbErr, JoinType};
 use thiserror::Error;
 use uuid::Uuid;
 
-use crate::models::images::{self as images_model, ImagesModelList, Model as ImageModel};
-use crate::models::packs::{self as pack_model, Model as PackModel};
 use crate::models::training_models::{
     self as training_models_model, Model as TrainingModelModel, TrainingModelList,
 };
 use crate::models::user_credits::{self as user_credits_model, Model as UserCreditModel};
-use crate::models::users::{
-    self as users_model, users, Entity as UserEntity, Model as UserModel, UserPid,
-};
+use crate::models::users::{users, Entity as UserEntity, Model as UserModel, UserPid};
 
-use crate::models::_entities::{
-    packs,
-    sea_orm_active_enums::{BasedOn, Ethnicity, EyeColor, ImageFormat, Sex, Status},
-    training_models,
-};
+use crate::models::_entities::{sea_orm_active_enums::Status, training_models};
 
 #[derive(Error, Debug)]
 pub enum JoinError {
@@ -38,21 +28,6 @@ pub enum JoinError {
     #[error("User not found for PID: {0}")]
     ImageNotFound(String),
 }
-
-type CombinedUserUserCredits = (UserModel, Option<UserCreditModel>);
-
-type CombinedResult = (
-    UserModel,
-    Option<UserCreditModel>,
-    Option<TrainingModelModel>,
-);
-
-type CombinedWithPacksResult = (
-    UserModel,
-    Option<UserCreditModel>,
-    Option<TrainingModelModel>,
-    Option<Vec<PackModel>>,
-);
 
 // Bugged
 pub async fn load_user_and_completed_models(

@@ -433,7 +433,7 @@ impl Model {
             .await
         {
             Ok(stripe_customer) => Some(stripe_customer.id.to_string()),
-            Err(e) => None,
+            Err(_) => None,
         };
 
         let user = users::ActiveModel {
@@ -450,7 +450,7 @@ impl Model {
         dbg!(&user);
 
         let user_credits_init = UserCreditsInit::default();
-        let user_credits = UserCreditActiveModel {
+        UserCreditActiveModel {
             pid: ActiveValue::set(user_credits_init.pid),
             user_id: ActiveValue::set(user.id),
             model_amount: ActiveValue::set(user_credits_init.model_amount),

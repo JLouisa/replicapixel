@@ -94,11 +94,7 @@ pub fn checkout_session_partial(
     )
 }
 
-pub fn return_session(
-    v: impl ViewRenderer,
-    website: &Website,
-    params: &Option<String>,
-) -> Result<impl IntoResponse> {
+pub fn return_session(v: impl ViewRenderer, website: &Website) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
         "payment/stripe/embedded/return.html",

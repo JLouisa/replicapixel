@@ -4,9 +4,11 @@
 use crate::domain::response::{handle_general_response, handle_general_response_text};
 use crate::models::_entities::sea_orm_active_enums::Status;
 use crate::models::_entities::training_models::{ActiveModel, Entity, Model};
+use crate::models::join::user_credits_models::load_user_and_training;
 use crate::models::training_models::{TrainingForm, TrainingModelParams};
-use crate::models::{TrainingModelActiveModel, TrainingModelModel, UserModel};
-use crate::service::aws::s3::{AwsS3, PresignedUrlRequest, PresignedUrlSafe, S3Folders, S3Key};
+use crate::models::users::UserPid;
+use crate::models::{TrainingModelModel, UserModel};
+use crate::service::aws::s3::{AwsS3, PresignedUrlRequest, PresignedUrlSafe, S3Key};
 use crate::service::fal_ai::fal_client::FalAiClient;
 use crate::views;
 use crate::views::training_models::TrainingModelView;
@@ -72,15 +74,12 @@ pub async fn upload_training(
     let user = UserModel::find_by_pid(&ctx.db, &auth.claims.pid).await?;
 
     let pre_url_request: PresignedUrlRequest = form.clone().into();
-    let (pre_url, s3_key) = s3_client
+    let (pre_url, _) = s3_client
         .presigned_save_url(&user.pid, &pre_url_request, None)
         .await
         .map_err(|_| loco_rs::Error::Message(String::from("Generating Pre-sign URL error: 101")))?;
 
     // Create and save Training Model in Database
-    let training_params: TrainingModelParams = form.from_from(&user, &s3_key);
-    let train = TrainingModelActiveModel::save(&ctx.db, &training_params).await?;
-
     let pre_sign_response = PresignedUrlSafe::from_request(pre_url_request, pre_url);
 
     Ok(handle_general_response(
@@ -99,10 +98,9 @@ pub async fn upload_training_completed(
     Extension(fal_ai_client): Extension<FalAiClient>,
     State(ctx): State<AppContext>,
 ) -> Result<Response> {
-    let user = UserModel::find_by_pid(&ctx.db, &auth.claims.pid).await?;
+    let (user, train) = load_user_and_training(&ctx.db, &&UserPid::new(&auth.claims.pid)).await?;
     let train = TrainingModelModel::find_by_pid(&ctx.db, &training_model_id).await?;
     let s3_key: S3Key = S3Key::new(&train.s3_key);
-    let folder = S3Folders::Zip;
 
     let exists = s3_client
         .check_object_exists(&s3_key)

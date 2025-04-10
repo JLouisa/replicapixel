@@ -2,29 +2,10 @@
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
 use crate::models::_entities::sea_orm_active_enums::Status;
-use crate::models::_entities::training_models;
-use crate::models::{
-    users, StripeEventActiveModel, StripeEventModel, StripeEventsEntity, TransactionActiveModel,
-    TransactionModel, UserCreditModel, UserModel,
-};
-use crate::service::stripe::stripe::StripeClient;
-use axum::{
-    body::Bytes, debug_handler, extract::State, http::HeaderMap, http::StatusCode,
-    response::IntoResponse, Extension, Json,
-};
-use loco_rs::{db, prelude::*};
-use training_models::Model as TrainingModel;
+use crate::models::{StripeEventActiveModel, StripeEventModel, TransactionModel, UserCreditModel};
+use loco_rs::prelude::*;
 
-use crate::service::fal_ai::fal_client::{
-    FalAiClient, FluxApiWebhookResponse, StatusResponse, SuccessfulPayload,
-};
-
-use crate::{
-    models::_entities::training_models::{ActiveModel, Entity, Model},
-    service::aws::s3::PresignedUrlRequest,
-};
-
-use stripe::{CheckoutSessionPaymentStatus, Event, EventObject, EventType, Webhook};
+use stripe::{CheckoutSessionPaymentStatus, Event, EventObject, EventType};
 use thiserror::Error;
 
 #[derive(Debug, Error)]
@@ -97,14 +78,13 @@ impl StripeWebhookService {
                         .ok_or(StripeServiceError::TransactionIdMissing)?;
                     let transaction_id = Uuid::parse_str(transaction_id)?;
 
-                    let session_map = session
-                        .metadata
-                        .as_ref()
-                        .ok_or(StripeServiceError::MetadataMissing)?;
-
-                    let plan = session_map.get("plan");
-                    let user_id = session_map.get("user_id");
-                    let email = session_map.get("email");
+                    // let session_map = session
+                    //     .metadata
+                    //     .as_ref()
+                    //     .ok_or(StripeServiceError::MetadataMissing)?;
+                    // let plan = session_map.get("plan");
+                    // let user_id = session_map.get("user_id");
+                    // let email = session_map.get("email");
                     match session.payment_status {
                         CheckoutSessionPaymentStatus::Paid => {
                             // 0. Check if the transaction has already been handled
@@ -125,10 +105,10 @@ impl StripeWebhookService {
                             let complete_transaction =
                                 update_txn_completed(load_transaction, &db_txn).await?;
                             // 3. Update credits
-                            let mut credits =
+                            let credits =
                                 load_credits(complete_transaction.user_id, &db_txn).await?;
                             // Update credits
-                            let new_credits = credits
+                            credits
                                 .update_credits_with_transaction(complete_transaction, &db_txn)
                                 .await?;
                             // 4. Create a handled stripe event

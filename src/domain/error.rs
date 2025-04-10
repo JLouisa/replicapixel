@@ -1,29 +1,13 @@
 use crate::{
-    controllers::payment::routes,
-    domain::url::Url,
-    models::{join::user_credits_models::JoinError, UserActiveModel, UserModel},
+    models::join::user_credits_models::JoinError,
     service::stripe::{
         stripe::StripeClientError, stripe_builder::StripeCheckoutBuilderErr,
         stripe_service::StripeServiceError,
     },
 };
 use axum::http::StatusCode;
-use axum::{extract::Json, routing::post, Router};
-use derive_more::{AsRef, Constructor, From};
+use loco_rs::controller::ErrorDetail;
 use loco_rs::prelude::Error as LocoError;
-use loco_rs::{controller::ErrorDetail, model::ModelError};
-use sea_orm::entity::prelude::*;
-use secrecy::{ExposeSecret, SecretString};
-use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
-use std::str::FromStr;
-use stripe::{
-    CheckoutSession, CheckoutSessionMode, Client, CreateCheckoutSession,
-    CreateCheckoutSessionLineItems, CreateCustomer, Customer, CustomerId, ParseIdError, PriceId,
-    StripeError,
-};
-
-use thiserror::Error;
 
 use super::domain_services::image_generation::GenerationError;
 
@@ -34,15 +18,15 @@ impl From<StripeClientError> for LocoError {
 
         // Choose the best LocoError variant based on the specific client error
         match err {
-            StripeClientError::StripeApi(stripe_err) => {
+            StripeClientError::StripeApi(_) => {
                 // You could potentially inspect stripe_err further (e.g., status code)
                 // For simplicity, map to InternalServerError or Message
                 LocoError::InternalServerError // Or LocoError::Message(stripe_err.to_string())
             }
-            StripeClientError::Database(db_err) => {
+            StripeClientError::Database(_) => {
                 LocoError::InternalServerError // Database errors are typically internal
             }
-            StripeClientError::DbModel(model_err) => {
+            StripeClientError::DbModel(_) => {
                 LocoError::InternalServerError // Model errors are typically internal
             }
             StripeClientError::ParseId(parse_err) => {
@@ -53,7 +37,7 @@ impl From<StripeClientError> for LocoError {
                 )
                 // Or LocoError::Message(parse_err.to_string())
             }
-            StripeClientError::Internal(msg) | StripeClientError::Configuration(msg) => {
+            StripeClientError::Internal(_) | StripeClientError::Configuration(_) => {
                 LocoError::InternalServerError // These seem like internal issues
                                                // Or LocoError::Message(msg)
             }
@@ -65,13 +49,13 @@ impl From<StripeCheckoutBuilderErr> for LocoError {
     fn from(err: StripeCheckoutBuilderErr) -> Self {
         tracing::error!(error.cause = ?err, "Checkout builder error occurred");
         match err {
-            StripeCheckoutBuilderErr::MissingField(field) => LocoError::InternalServerError,
+            StripeCheckoutBuilderErr::MissingField(_) => LocoError::InternalServerError,
             StripeCheckoutBuilderErr::ParseIdError(parse_err) => LocoError::CustomError(
                 StatusCode::BAD_REQUEST,
                 ErrorDetail::new("Error", &parse_err.to_string()),
             ),
             StripeCheckoutBuilderErr::ClientOperation(client_err) => LocoError::from(client_err),
-            StripeCheckoutBuilderErr::StripeError(stripe_err) => LocoError::InternalServerError,
+            StripeCheckoutBuilderErr::StripeError(_) => LocoError::InternalServerError,
         }
     }
 }
@@ -84,7 +68,7 @@ impl From<StripeServiceError> for LocoError {
                 StatusCode::BAD_REQUEST,
                 ErrorDetail::new("SignatureError", "Signature Missing"),
             ),
-            StripeServiceError::SignatureVerifyError(field) => LocoError::CustomError(
+            StripeServiceError::SignatureVerifyError(_) => LocoError::CustomError(
                 StatusCode::BAD_REQUEST,
                 ErrorDetail::new("SignatureError", "Signature Verification Failed"),
             ),
@@ -92,8 +76,8 @@ impl From<StripeServiceError> for LocoError {
                 LocoError::Unauthorized("Unauthorized Request".to_string())
             }
             StripeServiceError::MetadataMissing => LocoError::NotFound,
-            StripeServiceError::MissingMetadataField(field) => LocoError::NotFound,
-            StripeServiceError::UnexpectedObject(field) => LocoError::CustomError(
+            StripeServiceError::MissingMetadataField(_) => LocoError::NotFound,
+            StripeServiceError::UnexpectedObject(_) => LocoError::CustomError(
                 StatusCode::BAD_REQUEST,
                 ErrorDetail::new("Unexpected Object", "Unexpected Event Type"),
             ),
@@ -105,8 +89,8 @@ impl From<StripeServiceError> for LocoError {
                 StatusCode::BAD_REQUEST,
                 ErrorDetail::new("ParseIdError", &field.to_string()),
             ),
-            StripeServiceError::DbErr(db_err) => LocoError::InternalServerError,
-            StripeServiceError::DbModel(model_err) => LocoError::InternalServerError,
+            StripeServiceError::DbErr(_) => LocoError::InternalServerError,
+            StripeServiceError::DbModel(_) => LocoError::InternalServerError,
             StripeServiceError::LocoErr(loco_err) => LocoError::from(loco_err),
         }
     }
@@ -116,24 +100,24 @@ impl From<JoinError> for LocoError {
     fn from(err: JoinError) -> Self {
         tracing::error!(error.cause = ?err, "Checkout builder error occurred");
         match err {
-            JoinError::Database(db_err) => LocoError::CustomError(
+            JoinError::Database(_) => LocoError::CustomError(
                 StatusCode::INTERNAL_SERVER_ERROR,
                 ErrorDetail::new("Internal Server Error", "Internal Server Error DB"),
             ),
-            JoinError::UserNotFound(field) => LocoError::CustomError(
+            JoinError::UserNotFound(_) => LocoError::CustomError(
                 StatusCode::NOT_FOUND,
                 ErrorDetail::new("UserNotFound", "User Not Found"),
             ),
-            JoinError::InvalidPidFormat(field) => LocoError::CustomError(
+            JoinError::InvalidPidFormat(_) => LocoError::CustomError(
                 StatusCode::INTERNAL_SERVER_ERROR,
                 ErrorDetail::new("Invalid Id Format", "User Signature Invalid"),
             ),
-            JoinError::CreditsMissingInvariant(field) => LocoError::NotFound,
+            JoinError::CreditsMissingInvariant(_) => LocoError::NotFound,
             JoinError::ParseIdError(parse_err) => LocoError::CustomError(
                 StatusCode::BAD_REQUEST,
                 ErrorDetail::new("Error", &parse_err.to_string()),
             ),
-            JoinError::ImageNotFound(field) => LocoError::CustomError(
+            JoinError::ImageNotFound(_) => LocoError::CustomError(
                 StatusCode::NOT_FOUND,
                 ErrorDetail::new("ImageNotFound", "Image Not Found"),
             ),
@@ -151,14 +135,14 @@ impl From<GenerationError> for loco_rs::Error {
                 loco_rs::Error::NotFound
             }
             GenerationError::UserCreditsNotFound => loco_rs::Error::NotFound,
-            GenerationError::FalAiError(msg) => loco_rs::Error::InternalServerError,
+            GenerationError::FalAiError(_) => loco_rs::Error::InternalServerError,
             GenerationError::DatabaseError(db_err) => loco_rs::Error::DB(db_err),
             GenerationError::ConfigError(msg) => loco_rs::Error::CustomError(
                 StatusCode::PAYMENT_REQUIRED,
                 ErrorDetail::new("".to_string(), msg.into()),
             ),
-            GenerationError::SaveError(msg) => loco_rs::Error::InternalServerError,
-            GenerationError::CreditUpdateError(msg) => loco_rs::Error::InternalServerError,
+            GenerationError::SaveError(_) => loco_rs::Error::InternalServerError,
+            GenerationError::CreditUpdateError(_) => loco_rs::Error::InternalServerError,
             GenerationError::ModelError(model_err) => model_err.into(),
         }
     }

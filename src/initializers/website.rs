@@ -1,17 +1,12 @@
 use async_trait::async_trait;
 use axum::{Extension, Router as AxumRouter};
-use fluent_templates::{ArcLoader, FluentLoader};
 use loco_rs::{
     app::{AppContext, Initializer},
-    controller::views::{engines, ViewEngine},
-    Error, Result,
+    Result,
 };
 use tracing::info;
 
-use crate::domain::{
-    settings::Settings,
-    website::{Website as WebsiteInit, WebsiteSettings},
-};
+use crate::domain::{settings::Settings, website::Website as WebsiteInit};
 
 #[allow(clippy::module_name_repetitions)]
 pub struct Website;
@@ -29,7 +24,7 @@ impl Initializer for Website {
 
         let website_settings = settings.website;
         let website = WebsiteInit::init(website_settings);
-
+        info!("Website loaded");
         let router = router.layer(Extension(website));
         Ok(router)
     }

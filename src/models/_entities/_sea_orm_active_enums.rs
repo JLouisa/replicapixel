@@ -1,7 +1,7 @@
 use derive_more::Display;
 use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
-use strum::{EnumIter, EnumString, IntoEnumIterator};
+use strum::{EnumIter, EnumString};
 
 #[derive(
     Debug, Clone, Copy, Display, PartialEq, Eq, EnumIter, DeriveActiveEnum, Serialize, Deserialize,

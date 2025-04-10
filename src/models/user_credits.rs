@@ -1,13 +1,9 @@
 pub use super::_entities::user_credits::{ActiveModel, Entity, Model};
 use sea_orm::entity::prelude::*;
 pub type UserCredits = Entity;
-use super::{
-    TransactionModel, UserCreditActiveModel, UserModel, _entities::user_credits,
-    images::ImageNewList,
-};
-use loco_rs::{auth::jwt, hash, prelude::*};
-use sea_orm::entity::prelude::*;
-use serde::{Deserialize, Serialize};
+use super::{TransactionModel, UserModel, _entities::user_credits, images::ImageNewList};
+use loco_rs::prelude::*;
+use serde::Serialize;
 
 pub struct UserCreditsInit {
     pub pid: Uuid,
@@ -148,11 +144,11 @@ impl Model {
 // implement your write-oriented logic here
 impl ActiveModel {
     pub async fn save(credit: &Model, db: &impl ConnectionTrait) -> ModelResult<Self> {
-        let mut item = ActiveModel {
+        let item = ActiveModel {
             id: ActiveValue::set(credit.id.clone()),
             pid: ActiveValue::set(credit.pid.clone()),
             user_id: ActiveValue::set(credit.user_id.clone()),
-            credit_amount: ActiveValue::set((credit.credit_amount.clone())),
+            credit_amount: ActiveValue::set(credit.credit_amount.clone()),
             model_amount: ActiveValue::set(credit.model_amount.clone()),
             ..Default::default()
         };
@@ -177,7 +173,7 @@ impl Model {
         user_credits.ok_or_else(|| ModelError::EntityNotFound)
     }
     pub async fn update_credits_with_transaction(
-        mut self,
+        self,
         txn: TransactionModel,
         db: &impl ConnectionTrait,
     ) -> ModelResult<Model> {
@@ -191,7 +187,7 @@ impl Model {
     }
 
     pub async fn update_credits_with_image_list(
-        mut self,
+        self,
         list: &ImageNewList,
         db: &impl ConnectionTrait,
     ) -> ModelResult<Model> {

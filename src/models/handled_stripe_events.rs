@@ -10,7 +10,7 @@ impl ActiveModelBehavior for ActiveModel {}
 // implement your write-oriented logic here
 impl ActiveModel {
     pub async fn save(session_id: &str, db: &impl ConnectionTrait) -> ModelResult<Self> {
-        let mut hse = ActiveModel {
+        let hse = ActiveModel {
             session_id: ActiveValue::set(session_id.to_owned()),
             ..Default::default()
         };

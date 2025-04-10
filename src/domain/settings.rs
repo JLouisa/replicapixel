@@ -1,10 +1,8 @@
 use crate::service::{
-    aws::s3::AwsSettings,
-    fal_ai::fal_client::FalAiSettings,
-    redis::redis::{Redis, RedisSettings},
+    aws::s3::AwsSettings, fal_ai::fal_client::FalAiSettings, redis::redis::RedisSettings,
     stripe::stripe::StripeSettings,
 };
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 
 use super::website::WebsiteSettings;
 

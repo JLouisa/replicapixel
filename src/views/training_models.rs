@@ -1,11 +1,8 @@
 use crate::controllers::training_models::routes;
+use crate::domain::dashboard_sidebar::DashboardSidebar;
 use crate::models::_entities::sea_orm_active_enums::Status;
-use crate::models::_entities::training_models::{ActiveModel, Entity, Model as TrainingModel};
+use crate::models::_entities::training_models::Model as TrainingModel;
 use crate::models::training_models::TrainingModelList;
-use crate::{
-    domain::{dashboard_sidebar::DashboardSidebar, image::Image, packs::Packs},
-    models::_entities::users,
-};
 use loco_rs::prelude::*;
 use serde::Serialize;
 
@@ -54,7 +51,6 @@ pub fn training_partial_dashboard(
     user: UserView,
     images: &Vec<ImageViewModel>,
 ) -> Result<impl IntoResponse> {
-    let sidebar = DashboardSidebar::init();
     let first_letter = user.name.chars().next().unwrap();
     format::render().view(
         &v,

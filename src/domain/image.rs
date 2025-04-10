@@ -73,7 +73,7 @@ impl Image {
         let mut list = Vec::with_capacity(33);
 
         if is_full {
-            for i in 0..=2 {
+            for _ in 0..=2 {
                 for index in 1..=11 {
                     list.push(Image {
                         id: index,

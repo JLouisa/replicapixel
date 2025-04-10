@@ -1,16 +1,10 @@
 use super::auth::{UserCreditsView, UserView};
-use super::images::{self, ImageViewModel};
+use super::images::ImageViewModel;
 use super::training_models::TrainingModelView;
 use crate::controllers::dashboard::routes::Sidebar;
-use crate::controllers::images::routes::Images;
 use crate::domain::website::Website;
-use crate::models::_entities::training_models::Model as TrainingModel;
-use crate::{
-    domain::{dashboard_sidebar::DashboardSidebar, image::Image, packs::Packs},
-    models::_entities::users,
-};
+use crate::domain::{dashboard_sidebar::DashboardSidebar, packs::Packs};
 use loco_rs::prelude::*;
-use strum::{EnumIter, IntoEnumIterator};
 
 pub fn billing_dashboard(
     v: impl ViewRenderer,
@@ -241,7 +235,6 @@ pub fn packs_partial_dashboard(
     user: &UserView,
     packs: &Vec<Packs>,
 ) -> Result<impl IntoResponse> {
-    let sidebar = DashboardSidebar::init();
     format::render().view(
         &v,
         "dashboard/content/packs/packs_partial.html",
@@ -253,13 +246,11 @@ pub fn photo_dashboard(
     v: impl ViewRenderer,
     user: &UserView,
     images: &Vec<ImageViewModel>,
-    sidebar_routes: Sidebar,
     training_models: Vec<TrainingModelView>,
     website: &Website,
     credits: &UserCreditsView,
     is_deleted: bool,
 ) -> Result<impl IntoResponse> {
-    let sidebar = DashboardSidebar::init();
     format::render().view(
         &v,
         "dashboard/content/photo/photo.html",
@@ -285,7 +276,6 @@ pub fn photo_partial_dashboard(
     credits: &UserCreditsView,
     is_deleted: bool,
 ) -> Result<impl IntoResponse> {
-    let sidebar = DashboardSidebar::init();
     format::render().view(
         &v,
         "dashboard/content/photo/photo_partial.html",

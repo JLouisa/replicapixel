@@ -5,7 +5,6 @@ use loco_rs::prelude::*;
 
 use crate::domain::domain_services::image_generation::ImageGenerationService;
 use crate::domain::url::Url;
-use crate::domain::website::Website;
 use crate::models::_entities::sea_orm_active_enums::{ImageFormat, ImageSize, Status};
 use crate::models::images::{AltText, ImageNew, ImageNewList, UserPrompt};
 use crate::models::join::user_credits_models::load_user_and_credits;
@@ -13,7 +12,6 @@ use crate::models::join::user_image::load_user_and_image;
 use crate::models::users::UserPid;
 use crate::models::{ImageActiveModel, ImageModel, TrainingModelModel, UserCreditModel, UserModel};
 use crate::service::aws::s3::{AwsS3, S3Folders};
-use crate::service::redis::redis::Cache;
 use crate::views::images::{CreditsViewModel, ImageViewList, ImageViewModel};
 use crate::{models::_entities::images::Entity, service::fal_ai::fal_client::FalAiClient, views};
 use axum::{debug_handler, Extension};
@@ -118,14 +116,14 @@ pub fn routes() -> Routes {
     // .add(routes::Images::IMAGE_ID, patch(update))
 }
 
-async fn load_user(db: &DatabaseConnection, pid: &str) -> Result<UserModel> {
-    let item = UserModel::find_by_pid(db, pid).await?;
-    Ok(item)
-}
-async fn load_item(ctx: &AppContext, id: i32) -> Result<ImageModel> {
-    let item = Entity::find_by_id(id).one(&ctx.db).await?;
-    item.ok_or_else(|| Error::NotFound)
-}
+// async fn load_user(db: &DatabaseConnection, pid: &str) -> Result<UserModel> {
+//     let item = UserModel::find_by_pid(db, pid).await?;
+//     Ok(item)
+// }
+// async fn load_item(ctx: &AppContext, id: i32) -> Result<ImageModel> {
+//     let item = Entity::find_by_id(id).one(&ctx.db).await?;
+//     item.ok_or_else(|| Error::NotFound)
+// }
 async fn load_item_pid(ctx: &AppContext, id: Uuid) -> Result<ImageModel> {
     let item = ImageModel::find_by_pid(&ctx.db, &id).await?;
     Ok(item)
@@ -171,7 +169,6 @@ pub async fn upload_img_s3_completed(
 pub async fn check_test(
     auth: auth::JWT,
     Path(pid): Path<Uuid>,
-    Extension(cache): Extension<Cache>,
     State(ctx): State<AppContext>,
     Extension(s3_client): Extension<AwsS3>,
     ViewEngine(v): ViewEngine<TeraView>,
@@ -217,7 +214,6 @@ pub async fn check_test(
 pub async fn check_img(
     auth: auth::JWT,
     Path(pid): Path<Uuid>,
-    Extension(cache): Extension<Cache>,
     State(ctx): State<AppContext>,
     Extension(s3_client): Extension<AwsS3>,
     ViewEngine(v): ViewEngine<TeraView>,

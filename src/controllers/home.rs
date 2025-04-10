@@ -6,8 +6,6 @@ use crate::views;
 use axum::{debug_handler, Extension};
 use loco_rs::prelude::*;
 
-use super::auth;
-
 pub mod routes {
     use serde::Serialize;
 

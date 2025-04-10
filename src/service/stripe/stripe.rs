@@ -3,13 +3,9 @@ use crate::{
     domain::url::Url,
     models::{UserActiveModel, UserModel, _entities::sea_orm_active_enums::PlanNames},
 };
-use axum::http::StatusCode;
-use axum::{extract::Json, routing::post, Router};
-use derive_more::{AsRef, Constructor, Display, From};
-use loco_rs::prelude::Error as LocoError;
-use loco_rs::{controller::ErrorDetail, model::ModelError};
+use derive_more::{AsRef, Constructor, From};
+use loco_rs::model::ModelError;
 use sea_orm::entity::prelude::*;
-use secrecy::{ExposeSecret, SecretString};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::str::FromStr;
@@ -18,7 +14,6 @@ use stripe::{
     CreateCheckoutSessionLineItems, CreateCustomer, Currency, Customer, CustomerId, Metadata,
     ParseIdError, PriceId, StripeError,
 };
-use strum::EnumString;
 use thiserror::Error;
 
 #[derive(Error, Debug)]
