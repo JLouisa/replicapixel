@@ -13,6 +13,24 @@ use crate::models::{_entities::images, images::ImageNewList};
 use crate::service::aws::s3::{AwsError, AwsS3, S3Key};
 use crate::service::redis::redis::Cache;
 
+pub fn img_infinite_loading(
+    v: &impl ViewRenderer,
+    website: &Website,
+    images: &ImageViewList,
+) -> Result<Response> {
+    format::render().view(
+        v,
+        "dashboard/content/photo/image_partial.html",
+        data!(
+            {
+                "images": images,
+                "check_route": website.main_routes.check,
+                "delete_route":  website.main_routes.image,
+            }
+        ),
+    )
+}
+
 pub fn one(
     v: &impl ViewRenderer,
     credits: &CreditsViewModel,

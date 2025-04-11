@@ -11,6 +11,7 @@ use derive_more::{AsRef, Constructor};
 use sea_orm::entity::prelude::*;
 use sea_orm::{
     ColumnTrait, DatabaseConnection, DatabaseTransaction, EntityTrait, QueryFilter, QueryOrder,
+    QuerySelect,
 };
 use serde::{Deserialize, Serialize};
 pub type Images = Entity;
@@ -231,6 +232,28 @@ impl ActiveModel {
 
 // implement your read-oriented logic here
 impl Model {
+    pub async fn get_next_20_images_after(
+        anchor_image_pid: &Uuid,
+        db: &DatabaseConnection,
+    ) -> ModelResult<Vec<Self>> {
+        // Fetch the anchor image first (optional, if needed)
+        let anchor_image = Entity::find()
+            .filter(images::Column::Pid.eq(anchor_image_pid.clone()))
+            .one(db)
+            .await?;
+
+        if let Some(anchor) = anchor_image {
+            let next_images = Entity::find()
+                .filter(images::Column::Id.gt(anchor.id))
+                .limit(20)
+                .order_by_asc(images::Column::Id)
+                .all(db)
+                .await?;
+            Ok(next_images)
+        } else {
+            Err(ModelError::EntityNotFound)
+        }
+    }
     pub async fn find_by_pid(db: &DatabaseConnection, pid: &Uuid) -> ModelResult<Self> {
         let user = Entity::find()
             .filter(

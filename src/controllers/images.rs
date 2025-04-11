@@ -1,13 +1,15 @@
 #![allow(clippy::missing_errors_doc)]
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
+use axum::{debug_handler, extract::Query, response::Redirect, Extension};
 use loco_rs::prelude::*;
 
+use crate::controllers::images;
 use crate::domain::domain_services::image_generation::ImageGenerationService;
 use crate::domain::url::Url;
 use crate::domain::website::Website;
 use crate::models::_entities::sea_orm_active_enums::{ImageFormat, ImageSize, Status};
-use crate::models::images::{AltText, ImageNew, ImageNewList, UserPrompt};
+use crate::models::images::{AltText, ImageNew, ImageNewList, ImagesModelList, UserPrompt};
 use crate::models::join::user_credits_models::{
     load_user_and_credits, load_user_and_one_training_model,
 };
@@ -15,9 +17,9 @@ use crate::models::join::user_image::load_user_and_image;
 use crate::models::users::UserPid;
 use crate::models::{ImageActiveModel, ImageModel, TrainingModelModel, UserCreditModel, UserModel};
 use crate::service::aws::s3::{AwsS3, S3Folders};
+use crate::service::redis::redis::Cache;
 use crate::views::images::{CreditsViewModel, ImageViewList, ImageViewModel};
 use crate::{models::_entities::images::Entity, service::fal_ai::fal_client::FalAiClient, views};
-use axum::{debug_handler, Extension};
 use axum::{http::StatusCode, response::IntoResponse, Json};
 use serde::Deserialize;
 use uuid::Uuid;
@@ -70,6 +72,11 @@ impl ImageGenRequestParams {
     }
 }
 
+#[derive(Deserialize, Debug)]
+struct ImageLoadingParams {
+    page: Option<Uuid>,
+}
+
 pub mod routes {
     use serde::Serialize;
 
@@ -81,6 +88,7 @@ pub mod routes {
         pub const IMAGE_S3_UPLOAD_COMPLETE: &'static str = "/upload/complete";
         pub const IMAGE_S3_UPLOAD_COMPLETE_ID: &'static str = "/upload/complete/{id}";
         pub const IMAGE_GENERATE: &'static str = "/generate";
+        pub const IMAGE_INFINITE_PAGE: &'static str = "/page/";
         pub const IMAGE_GENERATE_TEST: &'static str = "/generate/test";
         pub const IMAGE_CHECK_TEST: &'static str = "/check/test/{id}";
         pub const IMAGE_CHECK_ID: &'static str = "/check/{id}";
@@ -116,6 +124,10 @@ pub fn routes() -> Routes {
         .add(routes::Images::IMAGE_ID, delete(remove))
         .add(routes::Images::IMAGE_RESTORE_ID, delete(restore))
         .add(
+            routes::Images::IMAGE_INFINITE_PAGE,
+            get(image_loading_handler),
+        )
+        .add(
             routes::Images::IMAGE_S3_UPLOAD_COMPLETE_ID,
             patch(img_s3_upload_completed),
         )
@@ -142,6 +154,35 @@ async fn load_credits(db: &DatabaseConnection, id: i32) -> Result<UserCreditMode
 async fn load_user(db: &DatabaseConnection, pid: &UserPid) -> Result<UserModel> {
     let item = UserModel::find_by_pid(db, &pid.as_ref().to_string()).await?;
     Ok(item)
+}
+async fn load_images(db: &DatabaseConnection, id: &Uuid) -> Result<ImagesModelList> {
+    let list = ImageModel::get_next_20_images_after(id, db).await?;
+    Ok(ImagesModelList::new(list))
+}
+
+async fn image_loading_handler(
+    auth: auth::JWT,
+    params: Query<ImageLoadingParams>,
+    Extension(cache): Extension<Cache>,
+    Extension(website): Extension<Website>,
+    Extension(s3_client): Extension<AwsS3>,
+    State(ctx): State<AppContext>,
+    ViewEngine(v): ViewEngine<TeraView>,
+) -> Result<impl IntoResponse> {
+    tracing::error!("User successfully completed payment process.");
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let user = load_user(&ctx.db, &user_pid).await?;
+
+    let anchor_image = match params.page {
+        Some(p) => p,
+        None => return Ok((StatusCode::NO_CONTENT).into_response()),
+    };
+
+    let images = load_images(&ctx.db, &anchor_image).await?;
+    let images: Vec<ImageViewModel> = images.into();
+    let images = ImageViewModel::get_pre_url_many(images, &s3_client, &cache).await;
+
+    views::images::img_infinite_loading(&v, &website, &images.into())
 }
 
 #[debug_handler]
