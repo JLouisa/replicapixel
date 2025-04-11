@@ -18,6 +18,14 @@
       rel="stylesheet"
     />
     {% block head %}{% endblock head %}
+    <script>
+      // Apply theme on page load
+      const userTheme = localStorage.getItem("theme");
+      if (userTheme) {
+        document.documentElement.setAttribute("data-theme", userTheme);
+      }
+    </script>
+
     <style>
       /* Apply the font globally */
       body {
@@ -54,5 +62,21 @@
 
     <!-- Javascript -->
     {% block js %} {% endblock js %}
+    <script>
+      const themeToggle = document.querySelector(".theme-controller");
+
+      if (themeToggle) {
+        // Set initial checked state based on current theme
+        const currentTheme = document.documentElement.getAttribute("data-theme");
+        themeToggle.checked = currentTheme === "dark";
+
+        // On toggle, change theme and save to localStorage
+        themeToggle.addEventListener("change", function () {
+          const newTheme = this.checked ? "dark" : "light";
+          document.documentElement.setAttribute("data-theme", newTheme);
+          localStorage.setItem("theme", newTheme);
+        });
+      }
+    </script>
   </body>
 </html>

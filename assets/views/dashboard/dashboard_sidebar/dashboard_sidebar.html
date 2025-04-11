@@ -4,13 +4,13 @@
     <!-- Top Items Section -->
 
     <!-- Album Section -->
-    <li class="hover:bg-gray-100 tooltip tooltip-right" data-tip="Album">
+    <li class="hover:bg-base-300 tooltip tooltip-right" data-tip="Album">
       <a
         hx-get="{{ sidebar_routes.photo_partial }}"
         hx-target="#dashboard_content"
         hx-push-url="{{ sidebar_routes.photo }}"
         hx-swap="innerHTML"
-        class="h-16 px-6 flex justify-center items-center w-full focus:text-orange-500 cursor-pointer"
+        class="h-16 px-6 flex justify-center items-center w-full cursor-pointer"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -32,13 +32,13 @@
       </a>
     </li>
     <!-- Model Section -->
-    <li class="hover:bg-gray-100 tooltip tooltip-right" data-tip="Model">
+    <li class="hover:bg-base-300 tooltip tooltip-right" data-tip="Model">
       <a
         hx-get="{{ sidebar_routes.training_models_partial }}"
         hx-target="#dashboard_content"
         hx-push-url="{{ sidebar_routes.training_models }}"
         hx-swap="innerHTML"
-        class="h-16 px-6 flex justify-center items-center w-full focus:text-orange-500 cursor-pointer"
+        class="h-16 px-6 flex justify-center items-center w-full cursor-pointer"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -66,13 +66,13 @@
       </a>
     </li>
     <!-- Packs Section -->
-    <li class="hover:bg-gray-100 tooltip tooltip-right" data-tip="Packs">
+    <li class="hover:bg-base-300 tooltip tooltip-right" data-tip="Packs">
       <a
         hx-get="{{ sidebar_routes.packs_partial }}"
         hx-target="#dashboard_content"
         hx-push-url="{{ sidebar_routes.packs }}"
         hx-swap="innerHTML"
-        class="h-16 px-6 flex justify-center items-center w-full focus:text-orange-500 cursor-pointer"
+        class="h-16 px-6 flex justify-center items-center w-full cursor-pointer"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -96,13 +96,13 @@
       </a>
     </li>
     <!-- Favorite Section -->
-    <li class="hover:bg-gray-100 tooltip tooltip-right cursor-pointer" data-tip="Favorite">
+    <li class="hover:bg-base-300 tooltip tooltip-right cursor-pointer" data-tip="Favorite">
       <a
         hx-get="{{ sidebar_routes.album_favorite_partial }}"
         hx-target="#dashboard_content"
         hx-push-url="{{ sidebar_routes.album_favorite }}"
         hx-swap="innerHTML"
-        class="h-16 px-6 flex justify-center items-center w-full focus:text-orange-500 text-base-content"
+        class="h-16 px-6 flex justify-center items-center w-full text-base-content"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -120,13 +120,13 @@
       </a>
     </li>
     <!-- Deleted Section -->
-    <li class="hover:bg-gray-100 tooltip tooltip-right cursor-pointer" data-tip="Deleted">
+    <li class="hover:bg-base-300 tooltip tooltip-right cursor-pointer" data-tip="Deleted">
       <a
         hx-get="{{ sidebar_routes.album_deleted_partial }}"
         hx-target="#dashboard_content"
         hx-push-url="{{ sidebar_routes.album_deleted }}"
         hx-swap="innerHTML"
-        class="h-16 px-6 flex justify-center items-center w-full focus:text-orange-500 text-base-content"
+        class="h-16 px-6 flex justify-center items-center w-full text-base-content"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -149,7 +149,7 @@
     </li>
     <!-- Notification Section -->
     <li
-      class="hover:bg-gray-100 relative tooltip tooltip-right cursor-pointer"
+      class="hover:bg-base-300 relative tooltip tooltip-right cursor-pointer"
       data-tip="Notifications"
     >
       <a
@@ -157,7 +157,7 @@
         hx-target="#dashboard_content"
         hx-push-url="{{ sidebar_routes.notifications }}"
         hx-swap="innerHTML"
-        class="h-16 px-6 flex justify-center items-center w-full focus:text-orange-500 relative text-base-content"
+        class="h-16 px-6 flex justify-center items-center w-full relative text-base-content"
       >
         {#
         <div class="status status-info animate-bounce abosulte"></div>
@@ -188,7 +188,7 @@
       hx-target="#dashboard_content"
       hx-push-url="{{ sidebar_routes.help }}"
       hx-swap="innerHTML"
-      class="h-16 w-full mx-auto flex items-center justify-center focus:text-orange-500 hover:bg-gray-100 focus:outline-none cursor-pointer tooltip tooltip-right text-base-content"
+      class="h-16 w-full mx-auto flex items-center justify-center hover:bg-base-300 focus:outline-none cursor-pointer tooltip tooltip-right text-base-content"
       data-tip="Help"
     >
       <svg
@@ -214,7 +214,7 @@
       hx-target="#dashboard_content"
       hx-push-url="{{ sidebar_routes.settings }}"
       hx-swap="innerHTML"
-      class="h-16 w-full mx-auto flex items-center justify-center focus:text-orange-500 hover:bg-gray-100 focus:outline-none cursor-pointer tooltip tooltip-right text-base-content"
+      class="h-16 w-full mx-auto flex items-center justify-center hover:bg-base-300 focus:outline-none cursor-pointer tooltip tooltip-right text-base-content"
       data-tip="Settings"
     >
       <svg
@@ -251,7 +251,7 @@
     <!-- Logout Section -->
     <div
       hx-get="{{ sidebar_routes.logout }}"
-      class="h-16 w-full mx-auto flex items-center justify-center focus:text-orange-500 hover:bg-red-200 focus:outline-none cursor-pointer tooltip tooltip-right text-base-content"
+      class="h-16 w-full mx-auto flex items-center justify-center hover:bg-red-200 focus:outline-none cursor-pointer tooltip tooltip-right text-base-content"
       data-tip="Logout"
     >
       <svg

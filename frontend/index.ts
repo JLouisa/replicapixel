@@ -141,7 +141,7 @@ interface ImageGenFormStore {
 // Register the store with Alpine
 Alpine.store(Stores.ImageGenForm, {
   advancedOptionsOpen: false,
-  inferenceSteps: 50,
+  inferenceSteps: 28,
   numImages: 8,
   isLoading: false,
   selectedModelId: "",

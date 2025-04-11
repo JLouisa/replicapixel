@@ -71,7 +71,7 @@ pub enum ImageFormat {
     #[strum(to_string = "png")]
     Png,
     #[sea_orm(string_value = "Jpeg")]
-    #[strum(to_string = "jpeg")]
+    #[strum(to_string = "jpg")]
     Jpeg,
     #[sea_orm(string_value = "Zip")]
     #[strum(to_string = "zip")]

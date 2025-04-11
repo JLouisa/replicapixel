@@ -32,8 +32,8 @@ pub struct ImageNew {
     pub fal_ai_request_id: Option<String>,
     pub width: Option<i32>,
     pub height: Option<i32>,
+    pub image_s3_key: S3Key,
     pub image_url_fal: Option<String>,
-    pub image_s3_key: Option<String>,
     pub is_favorite: bool,
     pub deleted_at: Option<DateTimeWithTimeZone>,
 }
@@ -54,7 +54,7 @@ impl ImageNew {
         item.width = Set(self.width.clone());
         item.height = Set(self.height.clone());
         item.image_url_fal = Set(self.image_url_fal.clone());
-        item.image_s3_key = Set(self.image_s3_key.clone());
+        item.image_s3_key = Set(Some(self.image_s3_key.as_ref().to_string()));
         item.is_favorite = Set(self.is_favorite);
         item.deleted_at = Set(self.deleted_at.clone());
     }
@@ -66,7 +66,7 @@ impl ImageNewList {
     pub fn into_inner(self) -> Vec<ImageNew> {
         self.0
     }
-    pub async fn save_all(&self, txn: &DatabaseTransaction) -> Result<(), loco_rs::Error> {
+    pub async fn save_all(&self, txn: &DatabaseTransaction) -> Result<(), DbErr> {
         let models: Vec<ActiveModel> = self
             .clone()
             .into_inner()
@@ -224,7 +224,7 @@ impl ActiveModel {
         key: &S3Key,
         db: &DatabaseConnection,
     ) -> ModelResult<Model> {
-        self.image_s3_key = ActiveValue::Set(Some(key.as_ref().to_owned()));
+        self.status = ActiveValue::Set(Status::Completed);
         Ok(self.update(db).await?)
     }
 }
@@ -286,7 +286,7 @@ impl Model {
     ) -> ModelResult<Model> {
         let mut new = ActiveModel::from(self);
         new.image_url_fal = ActiveValue::set(Some(url.as_ref().to_owned()));
-        new.status = ActiveValue::set(Status::Completed);
+        new.status = ActiveValue::set(Status::Processing);
         let image = new.update(db).await?;
         Ok(image)
     }

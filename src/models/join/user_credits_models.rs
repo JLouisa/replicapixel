@@ -5,6 +5,7 @@ use sea_orm::{query::*, DatabaseConnection, DbErr, JoinType};
 use thiserror::Error;
 use uuid::Uuid;
 
+use crate::models::_entities::training_models as training_models_entity;
 use crate::models::training_models::{
     self as training_models_model, Model as TrainingModelModel, TrainingModelList,
 };
@@ -27,6 +28,8 @@ pub enum JoinError {
     ParseIdError(#[from] uuid::Error),
     #[error("User not found for PID: {0}")]
     ImageNotFound(String),
+    #[error("User not found for PID: {0}")]
+    TrainingModelNotFound(i32),
 }
 
 // Bugged
@@ -258,4 +261,42 @@ pub async fn load_user_and_credits(
 
     // Return the combined data
     Ok((user_model, user_credit_model))
+}
+
+pub async fn load_user_and_one_training_model(
+    db: &DatabaseConnection,
+    pid_uuid: &UserPid,
+    id: i32,
+) -> Result<(UserModel, TrainingModelModel), JoinError> {
+    let pid_uuid = Uuid::parse_str(&pid_uuid.as_ref())?;
+    if let Some((user, training_model)) = UserEntity::find()
+        .filter(users::Column::Pid.eq(pid_uuid.to_owned()))
+        .join(JoinType::InnerJoin, users::Relation::TrainingModels.def())
+        .filter(training_models_entity::Column::Id.eq(id))
+        .select_also(training_models_model::Entity)
+        .one(db)
+        .await?
+    {
+        match training_model {
+            Some(training_model) => {
+                return Ok((user, training_model));
+            }
+            None => {
+                return Err(JoinError::TrainingModelNotFound(id));
+            }
+        }
+    };
+
+    // Check if user exists
+    let user_exists = UserEntity::find()
+        .filter(users::Column::Pid.eq(pid_uuid.to_owned()))
+        .count(db)
+        .await?
+        > 0;
+
+    if !user_exists {
+        return Err(JoinError::UserNotFound(pid_uuid.to_string()));
+    }
+
+    Err(JoinError::TrainingModelNotFound(id))
 }

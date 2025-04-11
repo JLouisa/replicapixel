@@ -6,6 +6,7 @@ use serde::Serialize;
 use uuid::Uuid;
 
 use crate::domain::url::Url;
+use crate::domain::website::Website;
 use crate::models::images::{ImageNew, ImagesModelList};
 use crate::models::{ImageModel, UserCreditModel};
 use crate::models::{_entities::images, images::ImageNewList};
@@ -28,13 +29,19 @@ pub fn one(
 pub fn img_completed(
     v: &impl ViewRenderer,
     images: &ImageViewList,
-    check_route: &str,
+    website: &Website,
     credits: &CreditsViewModel,
 ) -> Result<Response> {
     format::render().view(
         v,
         "dashboard/content/photo/image_partial.html",
-        data!({"credits": credits,"images": images, "check_route": check_route}),
+        data!(
+            {
+                "credits": credits,"images": images,
+                "check_route": website.main_routes.check,
+                "delete_route":  website.main_routes.image,
+            }
+        ),
     )
 }
 
@@ -84,8 +91,8 @@ pub struct ImageViewModel {
     pub training_model_id: i32,
     pub user_prompt: String,
     pub image_size: String,
-    pub image_url_fal: Option<String>,
     pub image_s3_key: Option<String>,
+    pub image_url_fal: Option<String>,
     pub content_type: String,
     pub image_alt: String,
     pub image_status: String,
@@ -204,7 +211,7 @@ impl From<ImageNew> for ImageViewModel {
             user_prompt: img.user_prompt.into_inner(),
             image_size: img.image_size.to_string(),
             image_url_fal: img.image_url_fal,
-            image_s3_key: img.image_s3_key,
+            image_s3_key: Some(img.image_s3_key.into_inner()),
             content_type: img.content_type.to_string(),
             image_alt: img.alt.into_inner(),
             image_status: img.status.to_string(),
@@ -221,7 +228,7 @@ impl From<&ImageNew> for ImageViewModel {
             user_prompt: img.user_prompt.as_ref().to_owned(),
             image_size: img.image_size.clone().to_string(),
             image_url_fal: img.image_url_fal.to_owned(),
-            image_s3_key: img.image_s3_key.to_owned(),
+            image_s3_key: Some(img.image_s3_key.as_ref().to_string()),
             content_type: img.content_type.to_string(),
             image_alt: img.alt.as_ref().to_owned(),
             image_status: img.status.to_string(),
