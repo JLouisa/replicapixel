@@ -1,6 +1,8 @@
+use crate::controllers::images::ImageLoadingParams;
 use crate::domain::url::Url;
 use crate::service::aws::s3::S3Key;
 
+use super::users::{User, UserPid};
 pub use super::ImageModel;
 use super::TrainingModelModel;
 
@@ -55,7 +57,7 @@ impl ImageNew {
         item.width = Set(self.width.clone());
         item.height = Set(self.height.clone());
         item.image_url_fal = Set(self.image_url_fal.clone());
-        item.image_s3_key = Set(Some(self.image_s3_key.as_ref().to_string()));
+        item.image_s3_key = Set(self.image_s3_key.as_ref().to_string());
         item.is_favorite = Set(self.is_favorite);
         item.deleted_at = Set(self.deleted_at.clone());
     }
@@ -233,24 +235,55 @@ impl ActiveModel {
 // implement your read-oriented logic here
 impl Model {
     pub async fn get_next_20_images_after(
-        anchor_image_pid: &Uuid,
         db: &DatabaseConnection,
+        user_id: i32,
+        anchor_image_pid: &Uuid,
+        num: u64,
+        params: ImageLoadingParams,
     ) -> ModelResult<Vec<Self>> {
         // Fetch the anchor image first (optional, if needed)
         let anchor_image = Entity::find()
+            .filter(images::Column::UserId.eq(user_id))
             .filter(images::Column::Pid.eq(anchor_image_pid.clone()))
             .one(db)
             .await?;
 
         if let Some(anchor) = anchor_image {
-            let next_images = Entity::find()
-                .filter(images::Column::Id.gt(anchor.id))
-                .limit(20)
-                .order_by_asc(images::Column::Id)
-                .all(db)
-                .await?;
+            let mut query = Entity::find()
+                .filter(images::Column::UserId.eq(user_id))
+                .filter(images::Column::Id.lt(anchor.id))
+                .order_by_desc(images::Column::Id);
+
+            if params.favorite.is_some() && params.deleted.is_none() {
+                query = query
+                    .filter(images::Column::IsFavorite.eq(true))
+                    .filter(images::Column::DeletedAt.is_null())
+                    .order_by_desc(images::Column::Id)
+            } else if params.deleted.is_some() && params.favorite.is_none() {
+                query = query
+                    .filter(images::Column::DeletedAt.is_not_null())
+                    .order_by_desc(images::Column::DeletedAt)
+            } else {
+                query = query
+                    .filter(images::Column::DeletedAt.is_null())
+                    .order_by_desc(images::Column::Id)
+            }
+            let next_images = query.limit(num).all(db).await?;
             Ok(next_images)
-        } else {
+        }
+        //===================================Old Stable Query===========================================
+        // if let Some(anchor) = anchor_image {
+        //     let mut next_images = Entity::find()
+        //         .filter(images::Column::UserId.eq(user_id))
+        //         .filter(images::Column::Id.lt(anchor.id))
+        //         .filter(images::Column::DeletedAt.is_null())
+        //         .limit(num)
+        //         .order_by_desc(images::Column::Id)
+        //         .all(db)
+        //         .await?;
+        //     Ok(next_images)
+        // }
+        else {
             Err(ModelError::EntityNotFound)
         }
     }
@@ -264,6 +297,25 @@ impl Model {
             .one(db)
             .await?;
         user.ok_or_else(|| ModelError::EntityNotFound)
+    }
+    pub async fn find_x_images_by_user_id(
+        db: &DatabaseConnection,
+        id: i32,
+        fav: bool,
+        num: u64,
+    ) -> ModelResult<Vec<Self>> {
+        let mut query = Entity::find()
+            .filter(images::Column::UserId.eq(id))
+            .filter(images::Column::DeletedAt.is_null());
+        if fav {
+            query = query.filter(images::Column::IsFavorite.eq(true));
+        }
+        let results = query
+            .limit(num)
+            .order_by_desc(images::Column::UpdatedAt)
+            .all(db)
+            .await?;
+        Ok(results)
     }
     pub async fn find_all_by_user_id(
         db: &DatabaseConnection,

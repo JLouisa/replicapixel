@@ -67,13 +67,13 @@ impl Default for Status {
 #[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "image_format")]
 #[serde(rename_all = "lowercase")]
 pub enum ImageFormat {
-    #[sea_orm(string_value = "Png")]
+    #[sea_orm(string_value = "png")]
     #[strum(to_string = "png")]
     Png,
-    #[sea_orm(string_value = "Jpeg")]
-    #[strum(to_string = "jpeg")]
+    #[sea_orm(string_value = "jpg")]
+    #[strum(to_string = "jpg")]
     Jpeg,
-    #[sea_orm(string_value = "Zip")]
+    #[sea_orm(string_value = "zip")]
     #[strum(to_string = "zip")]
     Zip,
 }

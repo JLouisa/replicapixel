@@ -21,7 +21,7 @@ use crate::service::redis::redis::Cache;
 use crate::views::images::{CreditsViewModel, ImageViewList, ImageViewModel};
 use crate::{models::_entities::images::Entity, service::fal_ai::fal_client::FalAiClient, views};
 use axum::{http::StatusCode, response::IntoResponse, Json};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 #[derive(Clone, Validate, Debug, Deserialize)]
@@ -73,8 +73,9 @@ impl ImageGenRequestParams {
 }
 
 #[derive(Deserialize, Debug)]
-struct ImageLoadingParams {
-    page: Option<Uuid>,
+pub struct ImageLoadingParams {
+    pub deleted: Option<bool>,
+    pub favorite: Option<bool>,
 }
 
 pub mod routes {
@@ -88,7 +89,7 @@ pub mod routes {
         pub const IMAGE_S3_UPLOAD_COMPLETE: &'static str = "/upload/complete";
         pub const IMAGE_S3_UPLOAD_COMPLETE_ID: &'static str = "/upload/complete/{id}";
         pub const IMAGE_GENERATE: &'static str = "/generate";
-        pub const IMAGE_INFINITE_PAGE: &'static str = "/page/";
+        pub const IMAGE_INFINITE: &'static str = "/infinite/{id}";
         pub const IMAGE_GENERATE_TEST: &'static str = "/generate/test";
         pub const IMAGE_CHECK_TEST: &'static str = "/check/test/{id}";
         pub const IMAGE_CHECK_ID: &'static str = "/check/{id}";
@@ -123,10 +124,7 @@ pub fn routes() -> Routes {
         .add(routes::Images::IMAGE_ID, get(get_one))
         .add(routes::Images::IMAGE_ID, delete(remove))
         .add(routes::Images::IMAGE_RESTORE_ID, delete(restore))
-        .add(
-            routes::Images::IMAGE_INFINITE_PAGE,
-            get(image_loading_handler),
-        )
+        .add(routes::Images::IMAGE_INFINITE, get(image_infinite_handler))
         .add(
             routes::Images::IMAGE_S3_UPLOAD_COMPLETE_ID,
             patch(img_s3_upload_completed),
@@ -155,30 +153,31 @@ async fn load_user(db: &DatabaseConnection, pid: &UserPid) -> Result<UserModel> 
     let item = UserModel::find_by_pid(db, &pid.as_ref().to_string()).await?;
     Ok(item)
 }
-async fn load_images(db: &DatabaseConnection, id: &Uuid) -> Result<ImagesModelList> {
-    let list = ImageModel::get_next_20_images_after(id, db).await?;
+async fn load_images_inf(
+    db: &DatabaseConnection,
+    user: &UserModel,
+    anchor_image_id: &Uuid,
+    params: ImageLoadingParams,
+) -> Result<ImagesModelList> {
+    let list =
+        ImageModel::get_next_20_images_after(db, user.id, anchor_image_id, 20, params).await?;
     Ok(ImagesModelList::new(list))
 }
 
-async fn image_loading_handler(
+async fn image_infinite_handler(
     auth: auth::JWT,
-    params: Query<ImageLoadingParams>,
+    Path(anchor_image_pid): Path<Uuid>,
+    Query(params): Query<ImageLoadingParams>,
     Extension(cache): Extension<Cache>,
     Extension(website): Extension<Website>,
     Extension(s3_client): Extension<AwsS3>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    tracing::error!("User successfully completed payment process.");
+    tracing::debug!("User successfully scrolled into view.");
     let user_pid = UserPid::new(&auth.claims.pid);
     let user = load_user(&ctx.db, &user_pid).await?;
-
-    let anchor_image = match params.page {
-        Some(p) => p,
-        None => return Ok((StatusCode::NO_CONTENT).into_response()),
-    };
-
-    let images = load_images(&ctx.db, &anchor_image).await?;
+    let images = load_images_inf(&ctx.db, &user, &anchor_image_pid, params).await?;
     let images: Vec<ImageViewModel> = images.into();
     let images = ImageViewModel::get_pre_url_many(images, &s3_client, &cache).await;
 

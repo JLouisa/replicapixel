@@ -58,5 +58,18 @@
       console.error("❌ Upload failed", err);
     }
   }
+
+  async function downloadImage(url, filename) {
+    const response = await fetch(url, { mode: "cors" });
+    const blob = await response.blob();
+    const blobUrl = window.URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = blobUrl;
+    link.download = filename;
+    link.click();
+
+    window.URL.revokeObjectURL(blobUrl);
+  }
 </script>
 {% endblock js %}

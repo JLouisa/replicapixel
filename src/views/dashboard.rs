@@ -250,6 +250,7 @@ pub fn photo_dashboard(
     website: &Website,
     credits: &UserCreditsView,
     is_deleted: bool,
+    is_favorite: bool,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
@@ -262,6 +263,7 @@ pub fn photo_dashboard(
             "delete_route":  website.main_routes.image,
             "restore_route": website.main_routes.image_restore,
             "is_deleted": is_deleted,
+            "is_favorite": is_favorite,
              "is_initial_load": true,
         }),
     )
@@ -275,6 +277,7 @@ pub fn photo_partial_dashboard(
     website: &Website,
     credits: &UserCreditsView,
     is_deleted: bool,
+    is_favorite: bool,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
@@ -285,7 +288,8 @@ pub fn photo_partial_dashboard(
             "check_route": website.main_routes.check,
             "delete_route":  website.main_routes.image,
             "restore_route": website.main_routes.image_restore,
-            "is_deleted": is_deleted
+            "is_deleted": is_deleted,
+            "is_favorite": is_favorite
         }),
     )
 }

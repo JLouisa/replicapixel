@@ -204,18 +204,7 @@ impl AwsS3 {
         user_pid: &Uuid,
         image: &ImageViewModel,
     ) -> Result<Url, AwsError> {
-        // let folder = match image.content_type.as_str() {
-        //     "zip" => S3Folders::Zip,
-        //     _ => S3Folders::Images,
-        // };
-        // let key = self.create_s3_key(
-        //     user_pid,
-        //     &folder,
-        //     &image.pid.to_string(),
-        //     &ImageFormat::Jpeg,
-        // );
-        let key = image.image_s3_key.clone().unwrap();
-        let key = S3Key::new(key);
+        let key = S3Key::new(image.image_s3_key.to_owned());
         let time = Some(300);
         let pre_url = self.generate_save_presigned_url(&key, time).await?;
         Ok(pre_url)
