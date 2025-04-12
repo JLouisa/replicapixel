@@ -157,9 +157,9 @@ export type ImageSize = (typeof ImageSize)[keyof typeof ImageSize]
 
 
 export const ImageFormat: {
-  Png: 'Png',
-  Jpeg: 'Jpeg',
-  Zip: 'Zip'
+  png: 'png',
+  jpg: 'jpg',
+  zip: 'zip'
 };
 
 export type ImageFormat = (typeof ImageFormat)[keyof typeof ImageFormat]
@@ -5845,8 +5845,8 @@ export namespace Prisma {
     fal_ai_request_id: string | null
     width: number | null
     height: number | null
-    image_url_fal: string | null
     image_s3_key: string | null
+    image_url_fal: string | null
     is_favorite: boolean | null
     deleted_at: Date | null
     created_at: Date | null
@@ -5869,8 +5869,8 @@ export namespace Prisma {
     fal_ai_request_id: string | null
     width: number | null
     height: number | null
-    image_url_fal: string | null
     image_s3_key: string | null
+    image_url_fal: string | null
     is_favorite: boolean | null
     deleted_at: Date | null
     created_at: Date | null
@@ -5893,8 +5893,8 @@ export namespace Prisma {
     fal_ai_request_id: number
     width: number
     height: number
-    image_url_fal: number
     image_s3_key: number
+    image_url_fal: number
     is_favorite: number
     deleted_at: number
     created_at: number
@@ -5939,8 +5939,8 @@ export namespace Prisma {
     fal_ai_request_id?: true
     width?: true
     height?: true
-    image_url_fal?: true
     image_s3_key?: true
+    image_url_fal?: true
     is_favorite?: true
     deleted_at?: true
     created_at?: true
@@ -5963,8 +5963,8 @@ export namespace Prisma {
     fal_ai_request_id?: true
     width?: true
     height?: true
-    image_url_fal?: true
     image_s3_key?: true
+    image_url_fal?: true
     is_favorite?: true
     deleted_at?: true
     created_at?: true
@@ -5987,8 +5987,8 @@ export namespace Prisma {
     fal_ai_request_id?: true
     width?: true
     height?: true
-    image_url_fal?: true
     image_s3_key?: true
+    image_url_fal?: true
     is_favorite?: true
     deleted_at?: true
     created_at?: true
@@ -6098,8 +6098,8 @@ export namespace Prisma {
     fal_ai_request_id: string | null
     width: number | null
     height: number | null
+    image_s3_key: string
     image_url_fal: string | null
-    image_s3_key: string | null
     is_favorite: boolean
     deleted_at: Date | null
     created_at: Date
@@ -6141,8 +6141,8 @@ export namespace Prisma {
     fal_ai_request_id?: boolean
     width?: boolean
     height?: boolean
-    image_url_fal?: boolean
     image_s3_key?: boolean
+    image_url_fal?: boolean
     is_favorite?: boolean
     deleted_at?: boolean
     created_at?: boolean
@@ -6168,8 +6168,8 @@ export namespace Prisma {
     fal_ai_request_id?: boolean
     width?: boolean
     height?: boolean
-    image_url_fal?: boolean
     image_s3_key?: boolean
+    image_url_fal?: boolean
     is_favorite?: boolean
     deleted_at?: boolean
     created_at?: boolean
@@ -6195,8 +6195,8 @@ export namespace Prisma {
     fal_ai_request_id?: boolean
     width?: boolean
     height?: boolean
-    image_url_fal?: boolean
     image_s3_key?: boolean
+    image_url_fal?: boolean
     is_favorite?: boolean
     deleted_at?: boolean
     created_at?: boolean
@@ -6222,15 +6222,15 @@ export namespace Prisma {
     fal_ai_request_id?: boolean
     width?: boolean
     height?: boolean
-    image_url_fal?: boolean
     image_s3_key?: boolean
+    image_url_fal?: boolean
     is_favorite?: boolean
     deleted_at?: boolean
     created_at?: boolean
     updated_at?: boolean
   }
 
-  export type ImagesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pid" | "user_id" | "training_model_id" | "pack_id" | "user_prompt" | "sys_prompt" | "alt" | "num_inference_steps" | "content_type" | "status" | "image_size" | "fal_ai_request_id" | "width" | "height" | "image_url_fal" | "image_s3_key" | "is_favorite" | "deleted_at" | "created_at" | "updated_at", ExtArgs["result"]["images"]>
+  export type ImagesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pid" | "user_id" | "training_model_id" | "pack_id" | "user_prompt" | "sys_prompt" | "alt" | "num_inference_steps" | "content_type" | "status" | "image_size" | "fal_ai_request_id" | "width" | "height" | "image_s3_key" | "image_url_fal" | "is_favorite" | "deleted_at" | "created_at" | "updated_at", ExtArgs["result"]["images"]>
   export type ImagesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UsersDefaultArgs<ExtArgs>
     training_model?: boolean | TrainingModelsDefaultArgs<ExtArgs>
@@ -6270,8 +6270,8 @@ export namespace Prisma {
       fal_ai_request_id: string | null
       width: number | null
       height: number | null
+      image_s3_key: string
       image_url_fal: string | null
-      image_s3_key: string | null
       is_favorite: boolean
       deleted_at: Date | null
       created_at: Date
@@ -6717,8 +6717,8 @@ export namespace Prisma {
     readonly fal_ai_request_id: FieldRef<"Images", 'String'>
     readonly width: FieldRef<"Images", 'Int'>
     readonly height: FieldRef<"Images", 'Int'>
-    readonly image_url_fal: FieldRef<"Images", 'String'>
     readonly image_s3_key: FieldRef<"Images", 'String'>
+    readonly image_url_fal: FieldRef<"Images", 'String'>
     readonly is_favorite: FieldRef<"Images", 'Boolean'>
     readonly deleted_at: FieldRef<"Images", 'DateTime'>
     readonly created_at: FieldRef<"Images", 'DateTime'>
@@ -13752,8 +13752,8 @@ export namespace Prisma {
     fal_ai_request_id: 'fal_ai_request_id',
     width: 'width',
     height: 'height',
-    image_url_fal: 'image_url_fal',
     image_s3_key: 'image_s3_key',
+    image_url_fal: 'image_url_fal',
     is_favorite: 'is_favorite',
     deleted_at: 'deleted_at',
     created_at: 'created_at',
@@ -14449,8 +14449,8 @@ export namespace Prisma {
     fal_ai_request_id?: StringNullableFilter<"Images"> | string | null
     width?: IntNullableFilter<"Images"> | number | null
     height?: IntNullableFilter<"Images"> | number | null
+    image_s3_key?: StringFilter<"Images"> | string
     image_url_fal?: StringNullableFilter<"Images"> | string | null
-    image_s3_key?: StringNullableFilter<"Images"> | string | null
     is_favorite?: BoolFilter<"Images"> | boolean
     deleted_at?: DateTimeNullableFilter<"Images"> | Date | string | null
     created_at?: DateTimeFilter<"Images"> | Date | string
@@ -14476,8 +14476,8 @@ export namespace Prisma {
     fal_ai_request_id?: SortOrderInput | SortOrder
     width?: SortOrderInput | SortOrder
     height?: SortOrderInput | SortOrder
+    image_s3_key?: SortOrder
     image_url_fal?: SortOrderInput | SortOrder
-    image_s3_key?: SortOrderInput | SortOrder
     is_favorite?: SortOrder
     deleted_at?: SortOrderInput | SortOrder
     created_at?: SortOrder
@@ -14506,8 +14506,8 @@ export namespace Prisma {
     fal_ai_request_id?: StringNullableFilter<"Images"> | string | null
     width?: IntNullableFilter<"Images"> | number | null
     height?: IntNullableFilter<"Images"> | number | null
+    image_s3_key?: StringFilter<"Images"> | string
     image_url_fal?: StringNullableFilter<"Images"> | string | null
-    image_s3_key?: StringNullableFilter<"Images"> | string | null
     is_favorite?: BoolFilter<"Images"> | boolean
     deleted_at?: DateTimeNullableFilter<"Images"> | Date | string | null
     created_at?: DateTimeFilter<"Images"> | Date | string
@@ -14533,8 +14533,8 @@ export namespace Prisma {
     fal_ai_request_id?: SortOrderInput | SortOrder
     width?: SortOrderInput | SortOrder
     height?: SortOrderInput | SortOrder
+    image_s3_key?: SortOrder
     image_url_fal?: SortOrderInput | SortOrder
-    image_s3_key?: SortOrderInput | SortOrder
     is_favorite?: SortOrder
     deleted_at?: SortOrderInput | SortOrder
     created_at?: SortOrder
@@ -14565,8 +14565,8 @@ export namespace Prisma {
     fal_ai_request_id?: StringNullableWithAggregatesFilter<"Images"> | string | null
     width?: IntNullableWithAggregatesFilter<"Images"> | number | null
     height?: IntNullableWithAggregatesFilter<"Images"> | number | null
+    image_s3_key?: StringWithAggregatesFilter<"Images"> | string
     image_url_fal?: StringNullableWithAggregatesFilter<"Images"> | string | null
-    image_s3_key?: StringNullableWithAggregatesFilter<"Images"> | string | null
     is_favorite?: BoolWithAggregatesFilter<"Images"> | boolean
     deleted_at?: DateTimeNullableWithAggregatesFilter<"Images"> | Date | string | null
     created_at?: DateTimeWithAggregatesFilter<"Images"> | Date | string
@@ -15366,8 +15366,8 @@ export namespace Prisma {
     fal_ai_request_id?: string | null
     width?: number | null
     height?: number | null
+    image_s3_key: string
     image_url_fal?: string | null
-    image_s3_key?: string | null
     is_favorite?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
@@ -15393,8 +15393,8 @@ export namespace Prisma {
     fal_ai_request_id?: string | null
     width?: number | null
     height?: number | null
+    image_s3_key: string
     image_url_fal?: string | null
-    image_s3_key?: string | null
     is_favorite?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
@@ -15413,8 +15413,8 @@ export namespace Prisma {
     fal_ai_request_id?: NullableStringFieldUpdateOperationsInput | string | null
     width?: NullableIntFieldUpdateOperationsInput | number | null
     height?: NullableIntFieldUpdateOperationsInput | number | null
+    image_s3_key?: StringFieldUpdateOperationsInput | string
     image_url_fal?: NullableStringFieldUpdateOperationsInput | string | null
-    image_s3_key?: NullableStringFieldUpdateOperationsInput | string | null
     is_favorite?: BoolFieldUpdateOperationsInput | boolean
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -15440,8 +15440,8 @@ export namespace Prisma {
     fal_ai_request_id?: NullableStringFieldUpdateOperationsInput | string | null
     width?: NullableIntFieldUpdateOperationsInput | number | null
     height?: NullableIntFieldUpdateOperationsInput | number | null
+    image_s3_key?: StringFieldUpdateOperationsInput | string
     image_url_fal?: NullableStringFieldUpdateOperationsInput | string | null
-    image_s3_key?: NullableStringFieldUpdateOperationsInput | string | null
     is_favorite?: BoolFieldUpdateOperationsInput | boolean
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -15464,8 +15464,8 @@ export namespace Prisma {
     fal_ai_request_id?: string | null
     width?: number | null
     height?: number | null
+    image_s3_key: string
     image_url_fal?: string | null
-    image_s3_key?: string | null
     is_favorite?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
@@ -15484,8 +15484,8 @@ export namespace Prisma {
     fal_ai_request_id?: NullableStringFieldUpdateOperationsInput | string | null
     width?: NullableIntFieldUpdateOperationsInput | number | null
     height?: NullableIntFieldUpdateOperationsInput | number | null
+    image_s3_key?: StringFieldUpdateOperationsInput | string
     image_url_fal?: NullableStringFieldUpdateOperationsInput | string | null
-    image_s3_key?: NullableStringFieldUpdateOperationsInput | string | null
     is_favorite?: BoolFieldUpdateOperationsInput | boolean
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -15508,8 +15508,8 @@ export namespace Prisma {
     fal_ai_request_id?: NullableStringFieldUpdateOperationsInput | string | null
     width?: NullableIntFieldUpdateOperationsInput | number | null
     height?: NullableIntFieldUpdateOperationsInput | number | null
+    image_s3_key?: StringFieldUpdateOperationsInput | string
     image_url_fal?: NullableStringFieldUpdateOperationsInput | string | null
-    image_s3_key?: NullableStringFieldUpdateOperationsInput | string | null
     is_favorite?: BoolFieldUpdateOperationsInput | boolean
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16541,8 +16541,8 @@ export namespace Prisma {
     fal_ai_request_id?: SortOrder
     width?: SortOrder
     height?: SortOrder
-    image_url_fal?: SortOrder
     image_s3_key?: SortOrder
+    image_url_fal?: SortOrder
     is_favorite?: SortOrder
     deleted_at?: SortOrder
     created_at?: SortOrder
@@ -16575,8 +16575,8 @@ export namespace Prisma {
     fal_ai_request_id?: SortOrder
     width?: SortOrder
     height?: SortOrder
-    image_url_fal?: SortOrder
     image_s3_key?: SortOrder
+    image_url_fal?: SortOrder
     is_favorite?: SortOrder
     deleted_at?: SortOrder
     created_at?: SortOrder
@@ -16599,8 +16599,8 @@ export namespace Prisma {
     fal_ai_request_id?: SortOrder
     width?: SortOrder
     height?: SortOrder
-    image_url_fal?: SortOrder
     image_s3_key?: SortOrder
+    image_url_fal?: SortOrder
     is_favorite?: SortOrder
     deleted_at?: SortOrder
     created_at?: SortOrder
@@ -17930,8 +17930,8 @@ export namespace Prisma {
     fal_ai_request_id?: string | null
     width?: number | null
     height?: number | null
+    image_s3_key: string
     image_url_fal?: string | null
-    image_s3_key?: string | null
     is_favorite?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
@@ -17955,8 +17955,8 @@ export namespace Prisma {
     fal_ai_request_id?: string | null
     width?: number | null
     height?: number | null
+    image_s3_key: string
     image_url_fal?: string | null
-    image_s3_key?: string | null
     is_favorite?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
@@ -18119,8 +18119,8 @@ export namespace Prisma {
     fal_ai_request_id?: StringNullableFilter<"Images"> | string | null
     width?: IntNullableFilter<"Images"> | number | null
     height?: IntNullableFilter<"Images"> | number | null
+    image_s3_key?: StringFilter<"Images"> | string
     image_url_fal?: StringNullableFilter<"Images"> | string | null
-    image_s3_key?: StringNullableFilter<"Images"> | string | null
     is_favorite?: BoolFilter<"Images"> | boolean
     deleted_at?: DateTimeNullableFilter<"Images"> | Date | string | null
     created_at?: DateTimeFilter<"Images"> | Date | string
@@ -18216,8 +18216,8 @@ export namespace Prisma {
     fal_ai_request_id?: string | null
     width?: number | null
     height?: number | null
+    image_s3_key: string
     image_url_fal?: string | null
-    image_s3_key?: string | null
     is_favorite?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
@@ -18241,8 +18241,8 @@ export namespace Prisma {
     fal_ai_request_id?: string | null
     width?: number | null
     height?: number | null
+    image_s3_key: string
     image_url_fal?: string | null
-    image_s3_key?: string | null
     is_favorite?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
@@ -18944,8 +18944,8 @@ export namespace Prisma {
     fal_ai_request_id?: string | null
     width?: number | null
     height?: number | null
+    image_s3_key: string
     image_url_fal?: string | null
-    image_s3_key?: string | null
     is_favorite?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
@@ -18969,8 +18969,8 @@ export namespace Prisma {
     fal_ai_request_id?: string | null
     width?: number | null
     height?: number | null
+    image_s3_key: string
     image_url_fal?: string | null
-    image_s3_key?: string | null
     is_favorite?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
@@ -19054,8 +19054,8 @@ export namespace Prisma {
     fal_ai_request_id?: string | null
     width?: number | null
     height?: number | null
+    image_s3_key: string
     image_url_fal?: string | null
-    image_s3_key?: string | null
     is_favorite?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
@@ -19195,8 +19195,8 @@ export namespace Prisma {
     fal_ai_request_id?: NullableStringFieldUpdateOperationsInput | string | null
     width?: NullableIntFieldUpdateOperationsInput | number | null
     height?: NullableIntFieldUpdateOperationsInput | number | null
+    image_s3_key?: StringFieldUpdateOperationsInput | string
     image_url_fal?: NullableStringFieldUpdateOperationsInput | string | null
-    image_s3_key?: NullableStringFieldUpdateOperationsInput | string | null
     is_favorite?: BoolFieldUpdateOperationsInput | boolean
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19220,8 +19220,8 @@ export namespace Prisma {
     fal_ai_request_id?: NullableStringFieldUpdateOperationsInput | string | null
     width?: NullableIntFieldUpdateOperationsInput | number | null
     height?: NullableIntFieldUpdateOperationsInput | number | null
+    image_s3_key?: StringFieldUpdateOperationsInput | string
     image_url_fal?: NullableStringFieldUpdateOperationsInput | string | null
-    image_s3_key?: NullableStringFieldUpdateOperationsInput | string | null
     is_favorite?: BoolFieldUpdateOperationsInput | boolean
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19243,8 +19243,8 @@ export namespace Prisma {
     fal_ai_request_id?: NullableStringFieldUpdateOperationsInput | string | null
     width?: NullableIntFieldUpdateOperationsInput | number | null
     height?: NullableIntFieldUpdateOperationsInput | number | null
+    image_s3_key?: StringFieldUpdateOperationsInput | string
     image_url_fal?: NullableStringFieldUpdateOperationsInput | string | null
-    image_s3_key?: NullableStringFieldUpdateOperationsInput | string | null
     is_favorite?: BoolFieldUpdateOperationsInput | boolean
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19304,8 +19304,8 @@ export namespace Prisma {
     fal_ai_request_id?: string | null
     width?: number | null
     height?: number | null
+    image_s3_key: string
     image_url_fal?: string | null
-    image_s3_key?: string | null
     is_favorite?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
@@ -19324,8 +19324,8 @@ export namespace Prisma {
     fal_ai_request_id?: NullableStringFieldUpdateOperationsInput | string | null
     width?: NullableIntFieldUpdateOperationsInput | number | null
     height?: NullableIntFieldUpdateOperationsInput | number | null
+    image_s3_key?: StringFieldUpdateOperationsInput | string
     image_url_fal?: NullableStringFieldUpdateOperationsInput | string | null
-    image_s3_key?: NullableStringFieldUpdateOperationsInput | string | null
     is_favorite?: BoolFieldUpdateOperationsInput | boolean
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19349,8 +19349,8 @@ export namespace Prisma {
     fal_ai_request_id?: NullableStringFieldUpdateOperationsInput | string | null
     width?: NullableIntFieldUpdateOperationsInput | number | null
     height?: NullableIntFieldUpdateOperationsInput | number | null
+    image_s3_key?: StringFieldUpdateOperationsInput | string
     image_url_fal?: NullableStringFieldUpdateOperationsInput | string | null
-    image_s3_key?: NullableStringFieldUpdateOperationsInput | string | null
     is_favorite?: BoolFieldUpdateOperationsInput | boolean
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19372,8 +19372,8 @@ export namespace Prisma {
     fal_ai_request_id?: NullableStringFieldUpdateOperationsInput | string | null
     width?: NullableIntFieldUpdateOperationsInput | number | null
     height?: NullableIntFieldUpdateOperationsInput | number | null
+    image_s3_key?: StringFieldUpdateOperationsInput | string
     image_url_fal?: NullableStringFieldUpdateOperationsInput | string | null
-    image_s3_key?: NullableStringFieldUpdateOperationsInput | string | null
     is_favorite?: BoolFieldUpdateOperationsInput | boolean
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19446,8 +19446,8 @@ export namespace Prisma {
     fal_ai_request_id?: string | null
     width?: number | null
     height?: number | null
+    image_s3_key: string
     image_url_fal?: string | null
-    image_s3_key?: string | null
     is_favorite?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
@@ -19466,8 +19466,8 @@ export namespace Prisma {
     fal_ai_request_id?: NullableStringFieldUpdateOperationsInput | string | null
     width?: NullableIntFieldUpdateOperationsInput | number | null
     height?: NullableIntFieldUpdateOperationsInput | number | null
+    image_s3_key?: StringFieldUpdateOperationsInput | string
     image_url_fal?: NullableStringFieldUpdateOperationsInput | string | null
-    image_s3_key?: NullableStringFieldUpdateOperationsInput | string | null
     is_favorite?: BoolFieldUpdateOperationsInput | boolean
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19491,8 +19491,8 @@ export namespace Prisma {
     fal_ai_request_id?: NullableStringFieldUpdateOperationsInput | string | null
     width?: NullableIntFieldUpdateOperationsInput | number | null
     height?: NullableIntFieldUpdateOperationsInput | number | null
+    image_s3_key?: StringFieldUpdateOperationsInput | string
     image_url_fal?: NullableStringFieldUpdateOperationsInput | string | null
-    image_s3_key?: NullableStringFieldUpdateOperationsInput | string | null
     is_favorite?: BoolFieldUpdateOperationsInput | boolean
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19514,8 +19514,8 @@ export namespace Prisma {
     fal_ai_request_id?: NullableStringFieldUpdateOperationsInput | string | null
     width?: NullableIntFieldUpdateOperationsInput | number | null
     height?: NullableIntFieldUpdateOperationsInput | number | null
+    image_s3_key?: StringFieldUpdateOperationsInput | string
     image_url_fal?: NullableStringFieldUpdateOperationsInput | string | null
-    image_s3_key?: NullableStringFieldUpdateOperationsInput | string | null
     is_favorite?: BoolFieldUpdateOperationsInput | boolean
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string

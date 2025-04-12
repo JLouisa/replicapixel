@@ -78,7 +78,7 @@ impl From<TrainingForm> for PresignedUrlRequest {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct S3Key(String);
 impl S3Key {
     pub fn new<K: Into<String>>(key: K) -> Self {
@@ -204,17 +204,8 @@ impl AwsS3 {
         user_pid: &Uuid,
         image: &ImageViewModel,
     ) -> Result<Url, AwsError> {
-        let folder = match image.content_type.as_str() {
-            "zip" => S3Folders::Zip,
-            _ => S3Folders::Images,
-        };
+        let key = S3Key::new(image.image_s3_key.to_owned());
         let time = Some(300);
-        let key = self.create_s3_key(
-            user_pid,
-            &folder,
-            &image.pid.to_string(),
-            &ImageFormat::Jpeg,
-        );
         let pre_url = self.generate_save_presigned_url(&key, time).await?;
         Ok(pre_url)
     }
@@ -353,6 +344,17 @@ impl AwsS3 {
             folder.get_folder_str(),
             item_name.to_string(),
             file_format
+        );
+        S3Key::new(key)
+    }
+
+    pub fn init_img_s3_key(user_id: &Uuid, img_id: &Uuid) -> S3Key {
+        let key = format!(
+            "{}/{}/{}.{}",
+            user_id,
+            S3Folders::Images.get_folder_str(),
+            img_id,
+            ImageFormat::Jpeg.to_string()
         );
         S3Key::new(key)
     }

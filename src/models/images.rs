@@ -1,6 +1,8 @@
+use crate::controllers::images::ImageLoadingParams;
 use crate::domain::url::Url;
 use crate::service::aws::s3::S3Key;
 
+use super::users::{User, UserPid};
 pub use super::ImageModel;
 use super::TrainingModelModel;
 
@@ -11,6 +13,7 @@ use derive_more::{AsRef, Constructor};
 use sea_orm::entity::prelude::*;
 use sea_orm::{
     ColumnTrait, DatabaseConnection, DatabaseTransaction, EntityTrait, QueryFilter, QueryOrder,
+    QuerySelect,
 };
 use serde::{Deserialize, Serialize};
 pub type Images = Entity;
@@ -32,8 +35,8 @@ pub struct ImageNew {
     pub fal_ai_request_id: Option<String>,
     pub width: Option<i32>,
     pub height: Option<i32>,
+    pub image_s3_key: S3Key,
     pub image_url_fal: Option<String>,
-    pub image_s3_key: Option<String>,
     pub is_favorite: bool,
     pub deleted_at: Option<DateTimeWithTimeZone>,
 }
@@ -54,7 +57,7 @@ impl ImageNew {
         item.width = Set(self.width.clone());
         item.height = Set(self.height.clone());
         item.image_url_fal = Set(self.image_url_fal.clone());
-        item.image_s3_key = Set(self.image_s3_key.clone());
+        item.image_s3_key = Set(self.image_s3_key.as_ref().to_string());
         item.is_favorite = Set(self.is_favorite);
         item.deleted_at = Set(self.deleted_at.clone());
     }
@@ -66,7 +69,7 @@ impl ImageNewList {
     pub fn into_inner(self) -> Vec<ImageNew> {
         self.0
     }
-    pub async fn save_all(&self, txn: &DatabaseTransaction) -> Result<(), loco_rs::Error> {
+    pub async fn save_all(&self, txn: &DatabaseTransaction) -> Result<(), DbErr> {
         let models: Vec<ActiveModel> = self
             .clone()
             .into_inner()
@@ -224,13 +227,66 @@ impl ActiveModel {
         key: &S3Key,
         db: &DatabaseConnection,
     ) -> ModelResult<Model> {
-        self.image_s3_key = ActiveValue::Set(Some(key.as_ref().to_owned()));
+        self.status = ActiveValue::Set(Status::Completed);
         Ok(self.update(db).await?)
     }
 }
 
 // implement your read-oriented logic here
 impl Model {
+    pub async fn get_next_20_images_after(
+        db: &DatabaseConnection,
+        user_id: i32,
+        anchor_image_pid: &Uuid,
+        num: u64,
+        params: ImageLoadingParams,
+    ) -> ModelResult<Vec<Self>> {
+        // Fetch the anchor image first (optional, if needed)
+        let anchor_image = Entity::find()
+            .filter(images::Column::UserId.eq(user_id))
+            .filter(images::Column::Pid.eq(anchor_image_pid.clone()))
+            .one(db)
+            .await?;
+
+        if let Some(anchor) = anchor_image {
+            let mut query = Entity::find()
+                .filter(images::Column::UserId.eq(user_id))
+                .filter(images::Column::Id.lt(anchor.id))
+                .order_by_desc(images::Column::Id);
+
+            if params.favorite.is_some() && params.deleted.is_none() {
+                query = query
+                    .filter(images::Column::IsFavorite.eq(true))
+                    .filter(images::Column::DeletedAt.is_null())
+                    .order_by_desc(images::Column::Id)
+            } else if params.deleted.is_some() && params.favorite.is_none() {
+                query = query
+                    .filter(images::Column::DeletedAt.is_not_null())
+                    .order_by_desc(images::Column::DeletedAt)
+            } else {
+                query = query
+                    .filter(images::Column::DeletedAt.is_null())
+                    .order_by_desc(images::Column::Id)
+            }
+            let next_images = query.limit(num).all(db).await?;
+            Ok(next_images)
+        }
+        //===================================Old Stable Query===========================================
+        // if let Some(anchor) = anchor_image {
+        //     let mut next_images = Entity::find()
+        //         .filter(images::Column::UserId.eq(user_id))
+        //         .filter(images::Column::Id.lt(anchor.id))
+        //         .filter(images::Column::DeletedAt.is_null())
+        //         .limit(num)
+        //         .order_by_desc(images::Column::Id)
+        //         .all(db)
+        //         .await?;
+        //     Ok(next_images)
+        // }
+        else {
+            Err(ModelError::EntityNotFound)
+        }
+    }
     pub async fn find_by_pid(db: &DatabaseConnection, pid: &Uuid) -> ModelResult<Self> {
         let user = Entity::find()
             .filter(
@@ -241,6 +297,25 @@ impl Model {
             .one(db)
             .await?;
         user.ok_or_else(|| ModelError::EntityNotFound)
+    }
+    pub async fn find_x_images_by_user_id(
+        db: &DatabaseConnection,
+        id: i32,
+        fav: bool,
+        num: u64,
+    ) -> ModelResult<Vec<Self>> {
+        let mut query = Entity::find()
+            .filter(images::Column::UserId.eq(id))
+            .filter(images::Column::DeletedAt.is_null());
+        if fav {
+            query = query.filter(images::Column::IsFavorite.eq(true));
+        }
+        let results = query
+            .limit(num)
+            .order_by_desc(images::Column::UpdatedAt)
+            .all(db)
+            .await?;
+        Ok(results)
     }
     pub async fn find_all_by_user_id(
         db: &DatabaseConnection,
@@ -286,7 +361,7 @@ impl Model {
     ) -> ModelResult<Model> {
         let mut new = ActiveModel::from(self);
         new.image_url_fal = ActiveValue::set(Some(url.as_ref().to_owned()));
-        new.status = ActiveValue::set(Status::Completed);
+        new.status = ActiveValue::set(Status::Processing);
         let image = new.update(db).await?;
         Ok(image)
     }

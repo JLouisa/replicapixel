@@ -12,7 +12,7 @@
       <span id="user_credits" class="ml-1">{{ credits.credit_amount }}</span>
     </div>
     <div class="relative parent">
-      <div class="flex items-center hover:bg-gray-100 rounded-full p-1 cursor-pointer">
+      <div class="flex items-center hover:bg-base-100 rounded-full p-1 cursor-pointer">
         <div
           class="flex items-center justify-center bg-neutral text-neutral-content w-8 h-8 rounded-full select-none"
         >
@@ -22,7 +22,7 @@
         </div>
       </div>
       <ul
-        class="child transition duration-300 md:absolute top-full right-0 md:w-48 bg-white md:shadow-lg md:rounded-b z-10"
+        class="child transition duration-300 md:absolute top-full right-0 md:w-48 md:shadow-lg md:rounded-b bg-base-100 z-20"
       >
         <li>
           <a
@@ -30,7 +30,7 @@
             hx-target="#dashboard_content"
             hx-push-url="/dashboard/account"
             hx-swap="innerHTML"
-            class="flex px-4 py-3 hover:bg-gray-50 cursor-pointer"
+            class="flex px-4 py-3 hover:bg-base-300 cursor-pointer"
           >
             Account
           </a>
@@ -41,13 +41,13 @@
             hx-target="#dashboard_content"
             hx-push-url="/dashboard/billing"
             hx-swap="innerHTML"
-            class="flex px-4 py-3 hover:bg-gray-50 cursor-pointer"
+            class="flex px-4 py-3 hover:bg-base-300 cursor-pointer"
           >
             Billing & Plans
           </a>
         </li>
         <li>
-          <a hx-get="/api/auth/logout" class="flex px-4 py-3 hover:bg-gray-50 cursor-pointer">
+          <a hx-get="/api/auth/logout" class="flex px-4 py-3 hover:bg-base-300 cursor-pointer">
             Logout
           </a>
         </li>

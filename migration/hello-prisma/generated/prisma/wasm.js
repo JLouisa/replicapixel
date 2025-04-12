@@ -188,8 +188,8 @@ exports.Prisma.ImagesScalarFieldEnum = {
   fal_ai_request_id: 'fal_ai_request_id',
   width: 'width',
   height: 'height',
-  image_url_fal: 'image_url_fal',
   image_s3_key: 'image_s3_key',
+  image_url_fal: 'image_url_fal',
   is_favorite: 'is_favorite',
   deleted_at: 'deleted_at',
   created_at: 'created_at',
@@ -320,9 +320,9 @@ exports.Status = exports.$Enums.Status = {
 };
 
 exports.ImageFormat = exports.$Enums.ImageFormat = {
-  Png: 'Png',
-  Jpeg: 'Jpeg',
-  Zip: 'Zip'
+  png: 'png',
+  jpg: 'jpg',
+  zip: 'zip'
 };
 
 exports.ImageSize = exports.$Enums.ImageSize = {

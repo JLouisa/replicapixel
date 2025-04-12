@@ -205,6 +205,10 @@ async fn load_images(db: &DatabaseConnection, id: i32, fav: bool) -> Result<Imag
     let list = ImageModel::find_all_by_user_id(db, id, fav).await?;
     Ok(ImagesModelList::new(list))
 }
+async fn load_first_images(db: &DatabaseConnection, id: i32, fav: bool) -> Result<ImagesModelList> {
+    let list = ImageModel::find_x_images_by_user_id(db, id, fav, 30).await?;
+    Ok(ImagesModelList::new(list))
+}
 async fn load_images_del(db: &DatabaseConnection, id: i32) -> Result<ImagesModelList> {
     let list = ImageModel::find_all_del_by_user_id(db, id).await?;
     Ok(ImagesModelList::new(list))
@@ -448,6 +452,7 @@ pub async fn album_deleted_dashboard(
     let images: Vec<ImageViewModel> = images.into();
     let images = ImageViewModel::get_pre_url_many(images, &s3_client, &cache).await;
     let is_deleted = true;
+    let is_favorite = false;
     views::dashboard::photo_dashboard(
         v,
         &user.into(),
@@ -456,6 +461,7 @@ pub async fn album_deleted_dashboard(
         &website,
         &user_credits.into(),
         is_deleted,
+        is_favorite,
     )
 }
 
@@ -475,6 +481,7 @@ pub async fn album_deleted_partial_dashboard(
     let images: Vec<ImageViewModel> = images.into();
     let images = ImageViewModel::get_pre_url_many(images, &s3_client, &cache).await;
     let is_deleted = true;
+    let is_favorite = false;
     views::dashboard::photo_partial_dashboard(
         v,
         &user.into(),
@@ -483,6 +490,7 @@ pub async fn album_deleted_partial_dashboard(
         &website,
         &user_credits.into(),
         is_deleted,
+        is_favorite,
     )
 }
 
@@ -498,10 +506,11 @@ pub async fn album_favorite_dashboard(
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     let training_models: TrainingModelList = TrainingModelList::empty();
-    let images = load_images(&ctx.db, user.id, true).await?;
+    let images = load_first_images(&ctx.db, user.id, true).await?;
     let images: Vec<ImageViewModel> = images.into();
     let images = ImageViewModel::get_pre_url_many(images, &s3_client, &cache).await;
     let is_deleted = false;
+    let is_favorite = true;
 
     views::dashboard::photo_dashboard(
         v,
@@ -511,6 +520,7 @@ pub async fn album_favorite_dashboard(
         &website,
         &user_credits.into(),
         is_deleted,
+        is_favorite,
     )
 }
 
@@ -526,10 +536,12 @@ pub async fn album_favorite_partial_dashboard(
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     let training_models: TrainingModelList = TrainingModelList::empty();
-    let images = load_images(&ctx.db, user.id, true).await?;
+    let images = load_first_images(&ctx.db, user.id, true).await?;
     let images: Vec<ImageViewModel> = images.into();
     let images = ImageViewModel::get_pre_url_many(images, &s3_client, &cache).await;
     let is_deleted = false;
+    let is_favorite = true;
+
     views::dashboard::photo_partial_dashboard(
         v,
         &user.into(),
@@ -538,6 +550,7 @@ pub async fn album_favorite_partial_dashboard(
         &website,
         &user_credits.into(),
         is_deleted,
+        is_favorite,
     )
 }
 
@@ -553,10 +566,11 @@ pub async fn photo_dashboard(
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     let training_models = load_item_all_completed(&ctx, user.id).await?;
-    let images = load_images(&ctx.db, user.id, false).await?;
+    let images = load_first_images(&ctx.db, user.id, false).await?;
     let images: Vec<ImageViewModel> = images.into();
     let images = ImageViewModel::get_pre_url_many(images, &s3_client, &cache).await;
     let is_deleted = false;
+    let is_favorite = false;
 
     views::dashboard::photo_dashboard(
         v,
@@ -566,6 +580,7 @@ pub async fn photo_dashboard(
         &website.into(),
         &user_credits.into(),
         is_deleted,
+        is_favorite,
     )
 }
 
@@ -581,10 +596,11 @@ pub async fn photo_partial_dashboard(
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     let training_models = load_item_all_completed(&ctx, user.id).await?;
-    let images = load_images(&ctx.db, user.id, false).await?;
+    let images = load_first_images(&ctx.db, user.id, false).await?;
     let images: Vec<ImageViewModel> = images.into();
     let images = ImageViewModel::get_pre_url_many(images, &s3_client, &cache).await;
     let is_deleted = false;
+    let is_favorite = false;
 
     views::dashboard::photo_partial_dashboard(
         v,
@@ -594,6 +610,7 @@ pub async fn photo_partial_dashboard(
         &website,
         &user_credits.into(),
         is_deleted,
+        is_favorite,
     )
 }
 
@@ -610,10 +627,12 @@ async fn render_dashboard(
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     let training_models = load_item_all_completed(&ctx, user.id).await?;
-    let images = load_images(&ctx.db, user.id, false).await?;
+    let images = load_first_images(&ctx.db, user.id, false).await?;
     let images: Vec<ImageViewModel> = images.into();
     let images = ImageViewModel::get_pre_url_many(images, &s3_client, &cache).await;
     let is_deleted = false;
+    let is_favorite = false;
+
     views::dashboard::photo_dashboard(
         v,
         &user.into(),
@@ -622,5 +641,6 @@ async fn render_dashboard(
         &website,
         &user_credits.into(),
         is_deleted,
+        is_favorite,
     )
 }

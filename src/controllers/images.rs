@@ -1,22 +1,27 @@
 #![allow(clippy::missing_errors_doc)]
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
+use axum::{debug_handler, extract::Query, response::Redirect, Extension};
 use loco_rs::prelude::*;
 
+use crate::controllers::images;
 use crate::domain::domain_services::image_generation::ImageGenerationService;
 use crate::domain::url::Url;
+use crate::domain::website::Website;
 use crate::models::_entities::sea_orm_active_enums::{ImageFormat, ImageSize, Status};
-use crate::models::images::{AltText, ImageNew, ImageNewList, UserPrompt};
-use crate::models::join::user_credits_models::load_user_and_credits;
+use crate::models::images::{AltText, ImageNew, ImageNewList, ImagesModelList, UserPrompt};
+use crate::models::join::user_credits_models::{
+    load_user_and_credits, load_user_and_one_training_model,
+};
 use crate::models::join::user_image::load_user_and_image;
 use crate::models::users::UserPid;
 use crate::models::{ImageActiveModel, ImageModel, TrainingModelModel, UserCreditModel, UserModel};
 use crate::service::aws::s3::{AwsS3, S3Folders};
+use crate::service::redis::redis::Cache;
 use crate::views::images::{CreditsViewModel, ImageViewList, ImageViewModel};
 use crate::{models::_entities::images::Entity, service::fal_ai::fal_client::FalAiClient, views};
-use axum::{debug_handler, Extension};
 use axum::{http::StatusCode, response::IntoResponse, Json};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 #[derive(Clone, Validate, Debug, Deserialize)]
@@ -34,33 +39,43 @@ pub struct ImageGenRequestParams {
     pub num_images: u8,
 }
 impl ImageGenRequestParams {
-    pub fn process(self, model: &TrainingModelModel) -> ImageNewList {
+    pub fn process(self, model: &TrainingModelModel, user_pid: &Uuid) -> ImageNewList {
         let sys_prompt = self.prompt.formatted_prompt(model);
         let alt = AltText::from(&self.prompt);
         (0..self.num_images)
-            .map(|_| ImageNew {
-                pid: Uuid::new_v4(),
-                user_id: model.user_id,
-                training_model_id: self.training_model_id,
-                pack_id: None,
-                sys_prompt: sys_prompt.to_owned(),
-                user_prompt: self.prompt.to_owned(),
-                alt: alt.to_owned(),
-                num_inference_steps: self.num_inference_steps as i32,
-                content_type: ImageFormat::Jpeg,
-                status: Status::Pending,
-                image_size: self.image_size,
-                fal_ai_request_id: None,
-                width: None,
-                height: None,
-                image_url_fal: None,
-                image_s3_key: None,
-                is_favorite: false,
-                deleted_at: None,
+            .map(|_| {
+                let uuid = Uuid::new_v4();
+                let s3_key = AwsS3::init_img_s3_key(&user_pid, &uuid);
+                ImageNew {
+                    pid: uuid,
+                    user_id: model.user_id,
+                    training_model_id: self.training_model_id,
+                    pack_id: None,
+                    sys_prompt: sys_prompt.to_owned(),
+                    user_prompt: self.prompt.to_owned(),
+                    alt: alt.to_owned(),
+                    num_inference_steps: self.num_inference_steps as i32,
+                    content_type: ImageFormat::Jpeg,
+                    status: Status::Pending,
+                    image_size: self.image_size,
+                    fal_ai_request_id: None,
+                    width: None,
+                    height: None,
+                    image_url_fal: None,
+                    image_s3_key: s3_key,
+                    is_favorite: false,
+                    deleted_at: None,
+                }
             })
             .collect::<Vec<ImageNew>>()
             .into()
     }
+}
+
+#[derive(Deserialize, Debug)]
+pub struct ImageLoadingParams {
+    pub deleted: Option<bool>,
+    pub favorite: Option<bool>,
 }
 
 pub mod routes {
@@ -74,6 +89,7 @@ pub mod routes {
         pub const IMAGE_S3_UPLOAD_COMPLETE: &'static str = "/upload/complete";
         pub const IMAGE_S3_UPLOAD_COMPLETE_ID: &'static str = "/upload/complete/{id}";
         pub const IMAGE_GENERATE: &'static str = "/generate";
+        pub const IMAGE_INFINITE: &'static str = "/infinite/{id}";
         pub const IMAGE_GENERATE_TEST: &'static str = "/generate/test";
         pub const IMAGE_CHECK_TEST: &'static str = "/check/test/{id}";
         pub const IMAGE_CHECK_ID: &'static str = "/check/{id}";
@@ -101,16 +117,17 @@ pub fn routes() -> Routes {
         .prefix(routes::Images::BASE)
         .add(routes::Images::IMAGE, get(list))
         // .add(routes::Images::IMAGE, post(add))
-        .add(routes::Images::IMAGE_GENERATE_TEST, post(generate_test))
+        .add(routes::Images::IMAGE_GENERATE_TEST, post(generate))
         // .add(routes::Images::IMAGE_GENERATE, post(generate_img))
         .add(routes::Images::IMAGE_CHECK_TEST, get(check_test))
         .add(routes::Images::IMAGE_CHECK_ID, get(check_img))
         .add(routes::Images::IMAGE_ID, get(get_one))
         .add(routes::Images::IMAGE_ID, delete(remove))
         .add(routes::Images::IMAGE_RESTORE_ID, delete(restore))
+        .add(routes::Images::IMAGE_INFINITE, get(image_infinite_handler))
         .add(
             routes::Images::IMAGE_S3_UPLOAD_COMPLETE_ID,
-            patch(upload_img_s3_completed),
+            patch(img_s3_upload_completed),
         )
     // .add(routes::Images::IMAGE_ID, put(update))
     // .add(routes::Images::IMAGE_ID, patch(update))
@@ -132,9 +149,43 @@ async fn load_credits(db: &DatabaseConnection, id: i32) -> Result<UserCreditMode
     let credits = UserCreditModel::find_by_user_id(db, id).await?;
     Ok(credits)
 }
+async fn load_user(db: &DatabaseConnection, pid: &UserPid) -> Result<UserModel> {
+    let item = UserModel::find_by_pid(db, &pid.as_ref().to_string()).await?;
+    Ok(item)
+}
+async fn load_images_inf(
+    db: &DatabaseConnection,
+    user: &UserModel,
+    anchor_image_id: &Uuid,
+    params: ImageLoadingParams,
+) -> Result<ImagesModelList> {
+    let list =
+        ImageModel::get_next_20_images_after(db, user.id, anchor_image_id, 20, params).await?;
+    Ok(ImagesModelList::new(list))
+}
+
+async fn image_infinite_handler(
+    auth: auth::JWT,
+    Path(anchor_image_pid): Path<Uuid>,
+    Query(params): Query<ImageLoadingParams>,
+    Extension(cache): Extension<Cache>,
+    Extension(website): Extension<Website>,
+    Extension(s3_client): Extension<AwsS3>,
+    State(ctx): State<AppContext>,
+    ViewEngine(v): ViewEngine<TeraView>,
+) -> Result<impl IntoResponse> {
+    tracing::debug!("User successfully scrolled into view.");
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let user = load_user(&ctx.db, &user_pid).await?;
+    let images = load_images_inf(&ctx.db, &user, &anchor_image_pid, params).await?;
+    let images: Vec<ImageViewModel> = images.into();
+    let images = ImageViewModel::get_pre_url_many(images, &s3_client, &cache).await;
+
+    views::images::img_infinite_loading(&v, &website, &images.into())
+}
 
 #[debug_handler]
-pub async fn upload_img_s3_completed(
+pub async fn img_s3_upload_completed(
     auth: auth::JWT,
     Path(img_pid): Path<Uuid>,
     Extension(s3_client): Extension<AwsS3>,
@@ -170,6 +221,7 @@ pub async fn check_test(
     auth: auth::JWT,
     Path(pid): Path<Uuid>,
     State(ctx): State<AppContext>,
+    Extension(website): Extension<Website>,
     Extension(s3_client): Extension<AwsS3>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<Response> {
@@ -183,26 +235,26 @@ pub async fn check_test(
     if change == 0 {
         let image_url_fal = Url::new("https://v3.fal.media/files/panda/ycu2NDkTawQBdmgZDAF3g_ffb513c9074146009320fa60e64beaab.jpg".to_string());
         image.image_url_fal = Some(image_url_fal.as_ref().to_owned());
-        image.status = Status::Completed;
+        image.status = Status::Processing;
         image
             .clone()
             .update_fal_image_url(&image_url_fal, &ctx.db)
             .await?;
     }
-    if image.status == Status::Completed {
+    if image.status == Status::Processing {
         let user_credits = load_credits(&ctx.db, user.id).await?;
         let user_credits_view: CreditsViewModel = user_credits.into();
-        let check_route = routes::Images::check_route();
         let image: ImageViewModel = image.into();
         let image: ImageViewModel = image
             .clone()
             .set_pre_url(&user.pid, &s3_client)
             .await
             .unwrap_or_else(|_| image);
+
         return views::images::img_completed(
             &v,
             &ImageViewList::new(vec![image]),
-            check_route.as_str(),
+            &website,
             &user_credits_view,
         );
     }
@@ -215,6 +267,7 @@ pub async fn check_img(
     auth: auth::JWT,
     Path(pid): Path<Uuid>,
     State(ctx): State<AppContext>,
+    Extension(website): Extension<Website>,
     Extension(s3_client): Extension<AwsS3>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<Response> {
@@ -228,17 +281,17 @@ pub async fn check_img(
 
     if image.status == Status::Completed {
         let user_credits_view: CreditsViewModel = user_credits.into();
-        let check_route = routes::Images::check_route();
         let image: ImageViewModel = image.into();
         let image: ImageViewModel = image
             .clone()
             .set_pre_url(&user.pid, &s3_client)
             .await
             .unwrap_or_else(|_| image);
+
         return views::images::img_completed(
             &v,
             &ImageViewList::new(vec![image]),
-            check_route.as_str(),
+            &website,
             &user_credits_view,
         );
     }
@@ -246,59 +299,33 @@ pub async fn check_img(
 }
 
 #[debug_handler]
-pub async fn generate_test(
+pub async fn generate(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
+    Extension(website): Extension<Website>,
     Extension(fal_ai_client): Extension<FalAiClient>,
     ViewEngine(v): ViewEngine<TeraView>,
     Json(request): Json<ImageGenRequestParams>,
 ) -> Result<Response> {
-    // 1. Validate request payload format
+    // 0. Validate request payload format
     request.validate()?;
 
-    dbg!(&request);
+    // 1. Load User
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let (user, training_model) =
+        load_user_and_one_training_model(&ctx.db, &user_pid, request.training_model_id).await?;
 
     // 2. Call the Domain Service to perform the core logic
     let (updated_credits, saved_images) =
-        ImageGenerationService::generate(&ctx, &fal_ai_client, &auth.claims.pid, request).await?;
+        ImageGenerationService::generate(&ctx, &fal_ai_client, request, &user, &training_model)
+            .await?;
 
     // 3. Prepare Data for the View using safe View Models
     let credits_view_model = CreditsViewModel::from(&updated_credits);
     let image_view_models: Vec<ImageViewModel> = saved_images.into();
 
-    // 4. Prepare other view-specific data
-    let check_route = format!(
-        "{}{}/test",
-        routes::Images::BASE,
-        routes::Images::IMAGE_CHECK
-    );
-
-    // 5. Render the view using the View Models
-    views::images::img_completed(
-        &v,
-        &image_view_models.into(),
-        &check_route,
-        &credits_view_model,
-    )
-}
-
-#[debug_handler]
-pub async fn get_one(
-    auth: auth::JWT,
-    Path(id): Path<Uuid>,
-    State(ctx): State<AppContext>,
-    ViewEngine(v): ViewEngine<TeraView>,
-) -> Result<Response> {
-    let user = UserModel::find_by_pid(&ctx.db, &auth.claims.pid).await?;
-    let image = load_item_pid(&ctx, id).await?;
-    if image.user_id != user.id {
-        return Ok((StatusCode::UNAUTHORIZED).into_response());
-    }
-    views::images::show(&v, &image)
-}
-#[debug_handler]
-pub async fn list(State(ctx): State<AppContext>) -> Result<Response> {
-    format::json(Entity::find().all(&ctx.db).await?)
+    // 4. Render the view using the View Models
+    views::images::img_completed(&v, &image_view_models.into(), &website, &credits_view_model)
 }
 
 #[debug_handler]
@@ -327,4 +354,24 @@ pub async fn restore(
     }
     img.restore_image(&ctx.db).await?;
     Ok((StatusCode::OK).into_response())
+}
+
+//=======================
+#[debug_handler]
+pub async fn get_one(
+    auth: auth::JWT,
+    Path(id): Path<Uuid>,
+    State(ctx): State<AppContext>,
+    ViewEngine(v): ViewEngine<TeraView>,
+) -> Result<Response> {
+    let user = UserModel::find_by_pid(&ctx.db, &auth.claims.pid).await?;
+    let image = load_item_pid(&ctx, id).await?;
+    if image.user_id != user.id {
+        return Ok((StatusCode::UNAUTHORIZED).into_response());
+    }
+    views::images::show(&v, &image)
+}
+#[debug_handler]
+pub async fn list(State(ctx): State<AppContext>) -> Result<Response> {
+    format::json(Entity::find().all(&ctx.db).await?)
 }

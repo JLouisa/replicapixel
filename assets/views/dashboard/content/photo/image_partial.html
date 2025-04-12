@@ -1,156 +1,153 @@
-{% for image in images %} {% if image.image_status == "Completed" %} {# COMPLETED IMAGE CELL #}
+{% for image in images %} {% if image.image_status == "Completed" or image.image_status ==
+"Processing" %} {# COMPLETED IMAGE CELL #} {% if loop.last %}
 <div
+  hx-get="/api/images/infinite/{{ image.pid }}{% if is_deleted %}?deleted=true{% endif %}{% if is_favorite %}?favorite=true{% endif %}"
+  hx-trigger="intersect once"
+  hx-swap="afterend"
   id="container3-{{ image.pid }}"
   class="image-container relative select-none aspect-square rounded-lg shadow-md overflow-hidden bg-base-200"
 >
-  <img
-    id="img-{{ image.pid }}"
-    class="absolute inset-0 w-full h-full object-cover cursor-pointer duration-300 ease-in-out hover:scale-105"
-    onclick="document.getElementById('modal-{{ image.training_model_id }}-{{ image.pid }}').showModal()"
-    src="{{  image.s3_pre_url | default(value= image.image_url_fal) }}"
-    alt="{{ image.image_alt }}"
-    loading="lazy"
-  />
-  <dialog id="modal-{{ image.training_model_id }}-{{ image.pid }}" class="modal">
-    <div class="modal-box w-11/12 max-w-5xl">
-      <img
-        id="modal-img-{{ image.pid }}"
-        class="h-auto max-w-full rounded-lg shadow-md mx-auto"
-        src="{{  image.s3_pre_url | default(value= image.image_url_fal) }}"
-        alt="{{ image.image_alt }}"
-      />
-      <div class="flex items-center justify-center sm:justify-end gap-3 mt-4">
-        <button
-          onclick="downloadImage('{{  image.s3_pre_url | default(value= image.image_url_fal) }}', '{{ image.pid }}.{{ image.content_type }}')"
-          class="btn btn-primary"
-        >
-          Download
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="lucide lucide-download"
-          >
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-            <polyline points="7 10 12 15 17 10" />
-            <line x1="12" x2="12" y1="15" y2="3" />
-          </svg>
-        </button>
-        {% if is_deleted == false %}
-        <button
-          hx-delete="{{ delete_route }}/{{ image.pid }}"
-          hx-target="#container3-{{ image.pid }}"
-          hx-confirm="Are you sure you want to delete this item?"
-          hx-swap="outerHTML"
-          class="btn btn-error"
-        >
-          Delete
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="lucide lucide-trash-2"
-          >
-            <path d="M3 6h18" />
-            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
-            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-            <line x1="10" x2="10" y1="11" y2="17" />
-            <line x1="14" x2="14" y1="11" y2="17" />
-          </svg>
-        </button>
-        {% else %}
-        <button
-          hx-delete="{{ restore_route }}/{{ image.pid }}"
-          hx-target="#container3-{{ image.pid }}"
-          hx-confirm="Are you sure you want to delete this item?"
-          hx-swap="outerHTML"
-          class="btn btn-info"
-        >
-          Restore
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="lucide lucide-archive-restore-icon lucide-archive-restore"
-          >
-            <rect width="20" height="5" x="2" y="3" rx="1" />
-            <path d="M4 8v11a2 2 0 0 0 2 2h2" />
-            <path d="M20 8v11a2 2 0 0 1-2 2h-2" />
-            <path d="m9 15 3-3 3 3" />
-            <path d="M12 12v9" />
-          </svg>
-        </button>
-        {% endif %}
-      </div>
-    </div>
-    <form method="dialog" class="modal-backdrop">
-      <button>close</button>
-    </form>
-    {% if image.image_status == "Completed" and not image.image_url_s3 and image.pre_url %}
-    <script>
-      uploadImageFromUrlToS3(
-        "{{ image.image_url_fal }}",
-        "{{image.pre_url}}",
-        "/api/images/upload/complete/{{ image.pid }}"
-      );
-    </script>
-    {% endif %}
-  </dialog>
-</div>
-{# End image-container for completed image #} {% else %} {# LOADING PLACEHOLDER CELL #}
-<div
-  id="placeholder-{{ image.pid }}"
-  hx-get="{{ check_route }}/{{ image.pid }}"
-  hx-trigger="load, every 2s"
-  hx-swap="outerHTML"
-  class="relative select-none flex items-center justify-center aspect-square rounded-lg shadow-md overflow-hidden bg-neutral animate-pulse"
->
-  <svg
-    class="w-10 h-10 text-neutral-content text-opacity-50"
-    aria-hidden="true"
-    xmlns="http://www.w3.org/2000/svg"
-    fill="currentColor"
-    viewBox="0 0 20 18"
+  {% else %}
+  <div
+    id="container3-{{ image.pid }}"
+    class="image-container relative select-none aspect-square rounded-lg shadow-md overflow-hidden bg-base-200"
   >
-    <path
-      d="M18 0H2a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm4.376 10.481A1 1 0 0 1 16 15H4a1 1 0 0 1-.895-1.447l3.5-7A1 1 0 0 1 7.468 6a.965.965 0 0 1 .9.5l2.775 4.757 1.546-1.887a1 1 0 0 1 1.618.1l2.541 4a1 1 0 0 1 .028 1.011Z"
+    {% endif %}
+    <img
+      id="img-{{ image.pid }}"
+      class="absolute inset-0 w-full h-full object-cover cursor-pointer duration-300 ease-in-out hover:scale-105"
+      onclick="document.getElementById('modal-{{ image.training_model_id }}-{{ image.pid }}').showModal()"
+      src="{{  image.s3_pre_url | default(value= image.image_url_fal) }}"
+      alt="{{ image.image_alt }}"
+      onerror="this.onerror=null; this.src='{{ image.image_url_fal }}';"
+      loading="lazy"
     />
-  </svg>
-  <span class="sr-only">Loading...</span>
+    <dialog id="modal-{{ image.training_model_id }}-{{ image.pid }}" class="modal">
+      <div class="modal-box w-11/12 max-w-5xl">
+        <img
+          id="modal-img-{{ image.pid }}"
+          class="h-auto max-w-full rounded-lg shadow-md mx-auto"
+          src="{{  image.s3_pre_url | default(value= image.image_url_fal) }}"
+          alt="{{ image.image_alt }}"
+        />
+        <div class="flex items-center justify-center sm:justify-end gap-3 mt-4">
+          <button
+            onclick="downloadImage('{{  image.s3_pre_url | default(value= image.image_url_fal) }}', '{{ image.pid }}.{{ image.content_type }}')"
+            class="btn btn-primary"
+          >
+            Download
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-download"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" x2="12" y1="15" y2="3" />
+            </svg>
+          </button>
+          {% if is_deleted %}
+          <button
+            hx-delete="{{ restore_route }}/{{ image.pid }}"
+            hx-target="#container3-{{ image.pid }}"
+            hx-confirm="Are you sure you want to delete this item?"
+            hx-swap="outerHTML"
+            class="btn btn-info"
+          >
+            Restore
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-archive-restore-icon lucide-archive-restore"
+            >
+              <rect width="20" height="5" x="2" y="3" rx="1" />
+              <path d="M4 8v11a2 2 0 0 0 2 2h2" />
+              <path d="M20 8v11a2 2 0 0 1-2 2h-2" />
+              <path d="m9 15 3-3 3 3" />
+              <path d="M12 12v9" />
+            </svg>
+          </button>
+          {% else %}
+          <button
+            hx-delete="{{ delete_route }}/{{ image.pid }}"
+            hx-target="#container3-{{ image.pid }}"
+            hx-confirm="Are you sure you want to delete this item?"
+            hx-swap="outerHTML"
+            class="btn btn-error"
+          >
+            Delete
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-trash-2"
+            >
+              <path d="M3 6h18" />
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+              <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+              <line x1="10" x2="10" y1="11" y2="17" />
+              <line x1="14" x2="14" y1="11" y2="17" />
+            </svg>
+          </button>
+          {% endif %}
+        </div>
+      </div>
+      <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+      </form>
+      {% if image.image_status == "Processing" and not image.image_url_s3 and image.pre_url %}
+      <script>
+        uploadImageFromUrlToS3(
+          "{{ image.image_url_fal }}",
+          "{{image.pre_url}}",
+          "/api/images/upload/complete/{{ image.pid }}"
+        );
+      </script>
+      {% endif %}
+    </dialog>
+  </div>
+  {# End image-container for completed image #} {% else %} {# LOADING PLACEHOLDER CELL #}
+  <div
+    id="placeholder-{{ image.pid }}"
+    hx-get="{{ check_route }}/{{ image.pid }}"
+    hx-trigger="load, every 2s"
+    hx-swap="outerHTML"
+    class="relative select-none flex items-center justify-center aspect-square rounded-lg shadow-md overflow-hidden bg-neutral animate-pulse"
+  >
+    <svg
+      class="w-10 h-10 text-neutral-content text-opacity-50"
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="currentColor"
+      viewBox="0 0 20 18"
+    >
+      <path
+        d="M18 0H2a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm4.376 10.481A1 1 0 0 1 16 15H4a1 1 0 0 1-.895-1.447l3.5-7A1 1 0 0 1 7.468 6a.965.965 0 0 1 .9.5l2.775 4.757 1.546-1.887a1 1 0 0 1 1.618.1l2.541 4a1 1 0 0 1 .028 1.011Z"
+      />
+    </svg>
+    <span class="sr-only">Loading...</span>
+  </div>
+  {% endif %} {% endfor %} {# Credits OOB Swap #} {% if not is_initial_load and credits %}
+  <span hx-swap-oob="true" id="user_credits">{{ credits.credit_amount }}</span>
+  {% endif %}
 </div>
-{% endif %} {% endfor %} {# Credits OOB Swap #} {% if not is_initial_load and credits %}
-<span hx-swap-oob="true" id="user_credits">{{ credits.credit_amount }}</span>
-{% endif %} {%block js%}
-<script>
-  async function downloadImage(url, filename) {
-    const response = await fetch(url, { mode: "cors" });
-    const blob = await response.blob();
-    const blobUrl = window.URL.createObjectURL(blob);
-
-    const link = document.createElement("a");
-    link.href = blobUrl;
-    link.download = filename;
-    link.click();
-
-    window.URL.revokeObjectURL(blobUrl);
-  }
-</script>
-{%endblock js%}

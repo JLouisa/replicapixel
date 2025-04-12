@@ -6,40 +6,27 @@ use crate::{
     },
 };
 use axum::http::StatusCode;
-use loco_rs::controller::ErrorDetail;
 use loco_rs::prelude::Error as LocoError;
+use loco_rs::{controller::ErrorDetail, model::ModelError};
+use sea_orm::DbErr;
+use thiserror::Error;
 
-use super::domain_services::image_generation::GenerationError;
+use super::domain_services::image_generation::ImageGenerationError;
 
 impl From<StripeClientError> for LocoError {
     fn from(err: StripeClientError) -> Self {
-        // Log the original error for detailed debugging
         tracing::error!(error.cause = ?err, "Stripe client error occurred");
 
-        // Choose the best LocoError variant based on the specific client error
         match err {
-            StripeClientError::StripeApi(_) => {
-                // You could potentially inspect stripe_err further (e.g., status code)
-                // For simplicity, map to InternalServerError or Message
-                LocoError::InternalServerError // Or LocoError::Message(stripe_err.to_string())
-            }
-            StripeClientError::Database(_) => {
-                LocoError::InternalServerError // Database errors are typically internal
-            }
-            StripeClientError::DbModel(_) => {
-                LocoError::InternalServerError // Model errors are typically internal
-            }
-            StripeClientError::ParseId(parse_err) => {
-                // This might indicate bad input, depends on context
-                LocoError::CustomError(
-                    StatusCode::BAD_REQUEST,
-                    ErrorDetail::new("Error", &parse_err.to_string()),
-                )
-                // Or LocoError::Message(parse_err.to_string())
-            }
+            StripeClientError::StripeApi(_) => LocoError::InternalServerError,
+            StripeClientError::Database(_) => LocoError::InternalServerError,
+            StripeClientError::DbModel(_) => LocoError::InternalServerError,
+            StripeClientError::ParseId(parse_err) => LocoError::CustomError(
+                StatusCode::BAD_REQUEST,
+                ErrorDetail::new("Error", &parse_err.to_string()),
+            ),
             StripeClientError::Internal(_) | StripeClientError::Configuration(_) => {
-                LocoError::InternalServerError // These seem like internal issues
-                                               // Or LocoError::Message(msg)
+                LocoError::InternalServerError
             }
         }
     }
@@ -121,42 +108,34 @@ impl From<JoinError> for LocoError {
                 StatusCode::NOT_FOUND,
                 ErrorDetail::new("ImageNotFound", "Image Not Found"),
             ),
+            JoinError::TrainingModelNotFound(_) => LocoError::CustomError(
+                StatusCode::NOT_FOUND,
+                ErrorDetail::new("TrainingNotFound", "Model Not Found"),
+            ),
         }
     }
 }
 
 // Implement conversion from our Domain Error to Loco's Error
-impl From<GenerationError> for loco_rs::Error {
-    fn from(err: GenerationError) -> Self {
+impl From<ImageGenerationError> for loco_rs::Error {
+    fn from(err: ImageGenerationError) -> Self {
         match err {
-            GenerationError::Unauthorized => loco_rs::Error::Unauthorized(err.to_string()),
-            GenerationError::InsufficientCredits => loco_rs::Error::BadRequest(err.to_string()),
-            GenerationError::ModelNotFound | GenerationError::UserNotFound => {
+            ImageGenerationError::Unauthorized => loco_rs::Error::Unauthorized(err.to_string()),
+            ImageGenerationError::InsufficientCredits => {
+                loco_rs::Error::BadRequest(err.to_string())
+            }
+            ImageGenerationError::ModelNotFound | ImageGenerationError::UserNotFound => {
                 loco_rs::Error::NotFound
             }
-            GenerationError::UserCreditsNotFound => loco_rs::Error::NotFound,
-            GenerationError::FalAiError(_) => loco_rs::Error::InternalServerError,
-            GenerationError::DatabaseError(db_err) => loco_rs::Error::DB(db_err),
-            GenerationError::ConfigError(msg) => loco_rs::Error::CustomError(
+            ImageGenerationError::UserCreditsNotFound => loco_rs::Error::NotFound,
+            ImageGenerationError::FalAiError(_) => loco_rs::Error::InternalServerError,
+            ImageGenerationError::DatabaseError(db_err) => loco_rs::Error::DB(db_err),
+            ImageGenerationError::ConfigError(msg) => loco_rs::Error::CustomError(
                 StatusCode::PAYMENT_REQUIRED,
                 ErrorDetail::new("".to_string(), msg.into()),
             ),
-            GenerationError::SaveError(_) => loco_rs::Error::InternalServerError,
-            GenerationError::CreditUpdateError(_) => loco_rs::Error::InternalServerError,
-            GenerationError::ModelError(model_err) => model_err.into(),
+            ImageGenerationError::CreditUpdateError(_) => loco_rs::Error::InternalServerError,
+            ImageGenerationError::ModelError(model_err) => model_err.into(),
         }
     }
 }
-
-// // --- You might also have conversions for other common errors ---
-// impl From<sea_orm::DbErr> for LocoError {
-//     fn from(err: sea_orm::DbErr) -> Self {
-//         tracing::error!(error.cause = ?err, "Database error occurred");
-//         // Example: Map specific DB errors if needed
-//         // match err {
-//         //     sea_orm::DbErr::RecordNotFound(_) => LocoError::NotFound,
-//         //     _ => LocoError::InternalServerError,
-//         // }
-//         LocoError::InternalServerError
-//     }
-// }

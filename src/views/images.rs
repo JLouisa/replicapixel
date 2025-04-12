@@ -6,11 +6,31 @@ use serde::Serialize;
 use uuid::Uuid;
 
 use crate::domain::url::Url;
+use crate::domain::website::Website;
+use crate::models::_entities::sea_orm_active_enums::Status;
 use crate::models::images::{ImageNew, ImagesModelList};
 use crate::models::{ImageModel, UserCreditModel};
 use crate::models::{_entities::images, images::ImageNewList};
 use crate::service::aws::s3::{AwsError, AwsS3, S3Key};
 use crate::service::redis::redis::Cache;
+
+pub fn img_infinite_loading(
+    v: &impl ViewRenderer,
+    website: &Website,
+    images: &ImageViewList,
+) -> Result<Response> {
+    format::render().view(
+        v,
+        "dashboard/content/photo/image_partial.html",
+        data!(
+            {
+                "images": images,
+                "check_route": website.main_routes.check,
+                "delete_route":  website.main_routes.image,
+            }
+        ),
+    )
+}
 
 pub fn one(
     v: &impl ViewRenderer,
@@ -28,13 +48,19 @@ pub fn one(
 pub fn img_completed(
     v: &impl ViewRenderer,
     images: &ImageViewList,
-    check_route: &str,
+    website: &Website,
     credits: &CreditsViewModel,
 ) -> Result<Response> {
     format::render().view(
         v,
         "dashboard/content/photo/image_partial.html",
-        data!({"credits": credits,"images": images, "check_route": check_route}),
+        data!(
+            {
+                "credits": credits,"images": images,
+                "check_route": website.main_routes.check,
+                "delete_route":  website.main_routes.image,
+            }
+        ),
     )
 }
 
@@ -84,8 +110,8 @@ pub struct ImageViewModel {
     pub training_model_id: i32,
     pub user_prompt: String,
     pub image_size: String,
+    pub image_s3_key: String,
     pub image_url_fal: Option<String>,
-    pub image_s3_key: Option<String>,
     pub content_type: String,
     pub image_alt: String,
     pub image_status: String,
@@ -107,7 +133,8 @@ impl ImageViewModel {
         s3_client: &AwsS3,
     ) -> Result<Vec<Self>, AwsError> {
         let futures = list.into_iter().map(|image| async move {
-            if image.image_url_fal.is_some() && image.image_s3_key.is_none() {
+            if image.image_url_fal.is_some() && image.image_status == Status::Processing.to_string()
+            {
                 image.set_pre_url(user_id, s3_client).await
             } else {
                 Ok(image)
@@ -120,9 +147,7 @@ impl ImageViewModel {
         let Some(_image_url_fal) = self.image_url_fal.clone() else {
             return self;
         };
-        let Some(s3_key) = self.image_s3_key.clone().map(S3Key::new) else {
-            return self;
-        };
+        let s3_key = S3Key::new(self.image_s3_key.clone());
 
         // Check if the pre_url is already cached
         match cache.get_s3_pre_url(&self).await {
@@ -146,7 +171,8 @@ impl ImageViewModel {
 
     pub async fn get_pre_url_many(list: Vec<Self>, s3_client: &AwsS3, cache: &Cache) -> Vec<Self> {
         let futures = list.into_iter().map(|image| async move {
-            if image.image_url_fal.is_some() && image.image_s3_key.is_some() {
+            if image.image_url_fal.is_some() && image.image_status == Status::Completed.to_string()
+            {
                 image.get_pre_url(s3_client, cache).await
             } else {
                 image
@@ -204,7 +230,7 @@ impl From<ImageNew> for ImageViewModel {
             user_prompt: img.user_prompt.into_inner(),
             image_size: img.image_size.to_string(),
             image_url_fal: img.image_url_fal,
-            image_s3_key: img.image_s3_key,
+            image_s3_key: img.image_s3_key.into_inner(),
             content_type: img.content_type.to_string(),
             image_alt: img.alt.into_inner(),
             image_status: img.status.to_string(),
@@ -221,7 +247,7 @@ impl From<&ImageNew> for ImageViewModel {
             user_prompt: img.user_prompt.as_ref().to_owned(),
             image_size: img.image_size.clone().to_string(),
             image_url_fal: img.image_url_fal.to_owned(),
-            image_s3_key: img.image_s3_key.to_owned(),
+            image_s3_key: img.image_s3_key.as_ref().to_string(),
             content_type: img.content_type.to_string(),
             image_alt: img.alt.as_ref().to_owned(),
             image_status: img.status.to_string(),

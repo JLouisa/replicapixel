@@ -13,19 +13,19 @@ pub struct Model {
     pub pid: Uuid,
     #[sea_orm(column_type = "Text", unique)]
     pub name: String,
+    #[sea_orm(unique)]
+    pub plan_name: PlanNames,
     pub credit_amount: i32,
     pub model_amount: i32,
     pub price_cents: i32,
     #[sea_orm(column_type = "Text", unique)]
     pub stripe_price_id: String,
+    pub subtitle: String,
+    pub features: Option<Vec<String>>,
+    pub cta: String,
     pub created_at: DateTimeWithTimeZone,
     pub updated_at: DateTimeWithTimeZone,
-    pub cta: String,
-    pub features: Option<Vec<String>>,
     pub is_popular: bool,
-    pub subtitle: String,
-    #[sea_orm(unique)]
-    pub plan_name: PlanNames,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

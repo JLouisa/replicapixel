@@ -2,6 +2,9 @@
 CREATE TYPE "status" AS ENUM ('Pending', 'Processing', 'Training', 'Completed', 'Failed', 'Cancelled');
 
 -- CreateEnum
+CREATE TYPE "plan_names" AS ENUM ('Basic', 'Premium', 'Max');
+
+-- CreateEnum
 CREATE TYPE "sex" AS ENUM ('Male', 'Female');
 
 -- CreateEnum
@@ -20,7 +23,7 @@ CREATE TYPE "emotion" AS ENUM ('Neutral', 'Anger', 'Disgust', 'Fear', 'Happy', '
 CREATE TYPE "image_size" AS ENUM ('Square', 'SquareHD', 'Portrait43', 'Portrait169', 'Landscape43', 'Landscape169');
 
 -- CreateEnum
-CREATE TYPE "image_format" AS ENUM ('Png', 'Jpeg', 'Zip');
+CREATE TYPE "image_format" AS ENUM ('png', 'jpg', 'zip');
 
 -- CreateTable
 CREATE TABLE "Users" (
@@ -103,8 +106,8 @@ CREATE TABLE "Images" (
     "fal_ai_request_id" VARCHAR(255),
     "width" INTEGER,
     "height" INTEGER,
+    "image_s3_key" VARCHAR(255) NOT NULL,
     "image_url_fal" TEXT,
-    "image_s3_key" TEXT,
     "is_favorite" BOOLEAN NOT NULL DEFAULT true,
     "deleted_at" TIMESTAMPTZ,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -114,16 +117,35 @@ CREATE TABLE "Images" (
 );
 
 -- CreateTable
+CREATE TABLE "Plans" (
+    "id" SERIAL NOT NULL,
+    "pid" UUID NOT NULL,
+    "name" TEXT NOT NULL,
+    "plan_name" "plan_names" NOT NULL,
+    "credit_amount" INTEGER NOT NULL,
+    "model_amount" INTEGER NOT NULL,
+    "price_cents" INTEGER NOT NULL,
+    "stripe_price_id" TEXT NOT NULL,
+    "subtitle" VARCHAR(255) NOT NULL,
+    "features" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "cta" VARCHAR(255) NOT NULL,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "is_popular" BOOLEAN NOT NULL DEFAULT false,
+
+    CONSTRAINT "Plans_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "Transactions" (
     "id" SERIAL NOT NULL,
     "pid" UUID NOT NULL,
     "user_id" INTEGER NOT NULL,
+    "plan_id" INTEGER NOT NULL,
     "credit_amount" INTEGER NOT NULL,
     "model_amount" INTEGER NOT NULL,
-    "currency" VARCHAR(255) NOT NULL,
+    "currency" VARCHAR(16) NOT NULL,
     "payment_id" VARCHAR(255) NOT NULL,
-    "order_id" VARCHAR(255) NOT NULL,
-    "plan" VARCHAR(255) NOT NULL,
     "status" "status" NOT NULL,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -145,6 +167,22 @@ CREATE TABLE "Packs" (
     "updated_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Packs_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "handled_stripe_events" (
+    "session_id" TEXT NOT NULL,
+    "processed_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "handled_stripe_events_pkey" PRIMARY KEY ("session_id")
+);
+
+-- CreateTable
+CREATE TABLE "handled_fal_events" (
+    "request_id" TEXT NOT NULL,
+    "processed_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "handled_fal_events_pkey" PRIMARY KEY ("request_id")
 );
 
 -- CreateTable
@@ -198,6 +236,21 @@ CREATE INDEX "idx-images-user_id" ON "Images"("user_id");
 CREATE INDEX "idx-images-training_model_id" ON "Images"("training_model_id");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Plans_pid_key" ON "Plans"("pid");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Plans_name_key" ON "Plans"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Plans_plan_name_key" ON "Plans"("plan_name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Plans_stripe_price_id_key" ON "Plans"("stripe_price_id");
+
+-- CreateIndex
+CREATE INDEX "idx-plan-pid" ON "Plans"("pid");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Transactions_pid_key" ON "Transactions"("pid");
 
 -- CreateIndex
@@ -226,6 +279,9 @@ ALTER TABLE "Images" ADD CONSTRAINT "Images_training_model_id_fkey" FOREIGN KEY 
 
 -- AddForeignKey
 ALTER TABLE "Images" ADD CONSTRAINT "Images_pack_id_fkey" FOREIGN KEY ("pack_id") REFERENCES "Packs"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Transactions" ADD CONSTRAINT "Transactions_plan_id_fkey" FOREIGN KEY ("plan_id") REFERENCES "Plans"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Transactions" ADD CONSTRAINT "Transactions_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "Users"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -162,6 +162,7 @@ async function main() {
             content_type: "jpg",
             status: "Completed",
             image_size: "Square",
+            image_s3_key: `${user.pid}/images/${uuid}.jpg`,
             image_url_fal: `https://flowbite.s3.amazonaws.com/docs/gallery/square/image-${i}.jpg`,
             is_favorite: randomBoolean,
             deleted_at: Math.random() < 0.1 ? new Date() : null,

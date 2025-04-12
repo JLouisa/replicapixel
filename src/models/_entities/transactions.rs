@@ -12,6 +12,7 @@ pub struct Model {
     #[sea_orm(unique)]
     pub pid: Uuid,
     pub user_id: i32,
+    pub plan_id: i32,
     pub credit_amount: i32,
     pub model_amount: i32,
     pub currency: String,
@@ -19,7 +20,6 @@ pub struct Model {
     pub status: Status,
     pub created_at: DateTimeWithTimeZone,
     pub updated_at: DateTimeWithTimeZone,
-    pub plan_id: i32,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
