@@ -62,7 +62,7 @@ mailer:
       user: jonathan.louisa@gmail.com
       password: "yymi xrxf zejp cflz"
     # Override the SMTP hello name (default is the machine's hostname)
-    # hello_name:
+      hello_name: Pictora
 
 # Initializers Configuration
 initializers:
