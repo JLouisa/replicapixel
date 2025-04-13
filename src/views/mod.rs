@@ -1,11 +1,7 @@
 pub mod auth;
-
-pub mod home;
-
 pub mod dashboard;
-
+pub mod home;
 pub mod images;
-
-pub mod training_models;
-
 pub mod payment;
+pub mod policy;
+pub mod training_models;

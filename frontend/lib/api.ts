@@ -8,7 +8,9 @@ import type { ImageGenForm, ImageGenFormClass } from "./type/ImageGenForm";
 import Alpine from "alpinejs";
 
 const DEFAULT_BASE_URL =
-  window.location.hostname === "localhost" ? "http://localhost:5150" : "https://api.example.com";
+  window.location.hostname === "localhost"
+    ? "http://localhost:5150"
+    : "https://pictora.jonathanlouisa.nl";
 
 enum Api {
   Upload = "/api/models",

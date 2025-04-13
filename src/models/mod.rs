@@ -42,3 +42,4 @@ pub type FalEventActiveModel = handled_fal_events::ActiveModel;
 pub type FalEventsEntity = user_credits::Entity;
 
 pub mod join;
+pub mod o_auth2_sessions;

@@ -134,6 +134,15 @@ exports.Prisma.UsersScalarFieldEnum = {
   magicLink_expiration: 'magicLink_expiration'
 };
 
+exports.Prisma.OAuth2SessionScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
+  session_id: 'session_id',
+  expires_at: 'expires_at',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
 exports.Prisma.TrainingModelsScalarFieldEnum = {
   id: 'id',
   pid: 'pid',
@@ -342,6 +351,7 @@ exports.PlanNames = exports.$Enums.PlanNames = {
 
 exports.Prisma.ModelName = {
   Users: 'Users',
+  OAuth2Session: 'OAuth2Session',
   TrainingModels: 'TrainingModels',
   UserCredits: 'UserCredits',
   Images: 'Images',

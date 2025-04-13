@@ -14,7 +14,7 @@ use crate::{
 use axum::{
     debug_handler,
     extract::{Json, State},
-    http::{HeaderMap, StatusCode},
+    http::{HeaderMap, HeaderValue, StatusCode},
     response::{IntoResponse, Response},
     Extension,
 };
@@ -23,6 +23,8 @@ use loco_rs::prelude::*;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::sync::OnceLock;
+
+use axum_extra::extract::cookie::{Cookie as AxumCookie, SameSite};
 
 pub static EMAIL_DOMAIN_RE: OnceLock<Regex> = OnceLock::new();
 
@@ -278,22 +280,28 @@ async fn login(
     }
 
     let jwt_secret = ctx.config.get_jwt_config()?;
-
     let expire = match params.remember {
         true => 7 * 24 * 60 * 60,
         false => jwt_secret.expiration,
     };
-
     let token = user
         .generate_jwt(&jwt_secret.secret, expire)
         .or_else(|_| unauthorized("unauthorized!"))?;
-    let cookie_value = format!(
-        "auth={}; Path=/; HttpOnly; Secure; SameSite=Strict; Expires={}",
-        token, expire
-    );
+
+    let cookie = AxumCookie::build(("auth", token.clone()))
+        .path("/")
+        .http_only(true)
+        .secure(!cfg!(debug_assertions)) // set to false in localhost for dev
+        .same_site(SameSite::Strict)
+        .max_age(time::Duration::seconds(expire as i64))
+        .build();
+
+    let cookie_value = HeaderValue::from_str(&cookie.to_string())
+        .map_err(|_| loco_rs::Error::Unauthorized("failed to build cookie header".to_string()))?;
+
     let mut headers = HeaderMap::new();
-    headers.insert("Set-Cookie", cookie_value.parse().unwrap());
-    headers.insert("HX-Redirect", "/dashboard".parse().unwrap()); // HTMX Redirect
+    headers.insert("Set-Cookie", cookie_value);
+    headers.insert("HX-Redirect", "/dashboard".parse().unwrap());
 
     Ok((StatusCode::OK, headers).into_response())
 }

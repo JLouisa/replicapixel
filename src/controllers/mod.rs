@@ -1,13 +1,9 @@
 pub mod auth;
-
-pub mod images;
-
-pub mod webhooks;
-
-pub mod home;
-
-pub mod training_models;
-
 pub mod dashboard;
-
+pub mod home;
+pub mod images;
+pub mod oauth2;
 pub mod payment;
+pub mod policy;
+pub mod training_models;
+pub mod webhooks;

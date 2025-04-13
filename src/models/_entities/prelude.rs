@@ -3,6 +3,7 @@
 pub use super::handled_fal_events::Entity as HandledFalEvents;
 pub use super::handled_stripe_events::Entity as HandledStripeEvents;
 pub use super::images::Entity as Images;
+pub use super::o_auth2_sessions::Entity as OAuth2Sessions;
 pub use super::packs::Entity as Packs;
 pub use super::plans::Entity as Plans;
 pub use super::training_models::Entity as TrainingModels;
