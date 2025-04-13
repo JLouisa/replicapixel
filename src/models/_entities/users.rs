@@ -38,6 +38,8 @@ pub enum Relation {
     Transactions,
     #[sea_orm(has_one = "super::user_credits::Entity")]
     UserCredits,
+    #[sea_orm(has_many = "super::o_auth2_sessions::Entity")]
+    OAuth2Sessions,
 }
 
 impl Related<super::images::Entity> for Entity {
@@ -61,5 +63,11 @@ impl Related<super::transactions::Entity> for Entity {
 impl Related<super::user_credits::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::UserCredits.def()
+    }
+}
+
+impl Related<super::o_auth2_sessions::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::OAuth2Sessions.def()
     }
 }

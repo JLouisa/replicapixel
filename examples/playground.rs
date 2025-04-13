@@ -4,6 +4,7 @@ use pictora::app::App;
 
 #[tokio::main]
 async fn main() -> loco_rs::Result<()> {
+    dotenvy::dotenv().ok();
     let _ctx = playground::<App>().await?;
 
     // let active_model: articles::ActiveModel = articles::ActiveModel {
@@ -17,5 +18,21 @@ async fn main() -> loco_rs::Result<()> {
     // println!("{:?}", res);
     println!("welcome to playground. edit me at `examples/playground.rs`");
 
+    // src/main.rs
+    use axum_extra::extract::cookie::Key;
+    use rand::{rng, Rng};
+
+    // Generate a cryptographically random key of 64 bytes
+    let mut rng = rng();
+    let mut random_key = [0u8; 64];
+    rng.fill(&mut random_key);
+    match Key::try_from(&random_key[..]) {
+        Ok(key) => {
+            println!("Random key: {:?}", key.master());
+        }
+        Err(e) => {
+            println!("Error: {:?}", e);
+        }
+    }
     Ok(())
 }

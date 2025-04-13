@@ -52,18 +52,22 @@ impl Hooks for App {
             Box::new(initializers::fal_client::FalAi),
             Box::new(initializers::stripe::Stripe),
             Box::new(initializers::redis::RedisClient),
+            Box::new(initializers::axum_session::AxumSessionInitializer),
+            Box::new(initializers::oauth2::OAuth2StoreInitializer),
         ])
     }
 
     fn routes(_ctx: &AppContext) -> AppRoutes {
         AppRoutes::with_default_routes()
+            .add_route(controllers::oauth2::routes())
+            .add_route(controllers::auth::routes())
             .add_route(controllers::payment::routes())
             .add_route(controllers::images::routes())
-            .add_route(controllers::auth::routes())
             .add_route(controllers::home::routes())
             .add_route(controllers::dashboard::routes())
             .add_route(controllers::training_models::routes())
             .add_route(controllers::webhooks::routes())
+            .add_route(controllers::policy::routes())
     }
     async fn connect_workers(ctx: &AppContext, queue: &Queue) -> Result<()> {
         queue.register(DownloadWorker::build(ctx)).await?;

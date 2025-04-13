@@ -19,6 +19,11 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  */
 export type Users = $Result.DefaultSelection<Prisma.$UsersPayload>
 /**
+ * Model OAuth2Session
+ * 
+ */
+export type OAuth2Session = $Result.DefaultSelection<Prisma.$OAuth2SessionPayload>
+/**
  * Model TrainingModels
  * 
  */
@@ -336,6 +341,16 @@ export class PrismaClient<
     * ```
     */
   get users(): Prisma.UsersDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.oAuth2Session`: Exposes CRUD operations for the **OAuth2Session** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more OAuth2Sessions
+    * const oAuth2Sessions = await prisma.oAuth2Session.findMany()
+    * ```
+    */
+  get oAuth2Session(): Prisma.OAuth2SessionDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.trainingModels`: Exposes CRUD operations for the **TrainingModels** model.
@@ -867,6 +882,7 @@ export namespace Prisma {
 
   export const ModelName: {
     Users: 'Users',
+    OAuth2Session: 'OAuth2Session',
     TrainingModels: 'TrainingModels',
     UserCredits: 'UserCredits',
     Images: 'Images',
@@ -894,7 +910,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "users" | "trainingModels" | "userCredits" | "images" | "plans" | "transactions" | "packs" | "handledStripeEvent" | "handledFalEvent" | "seaql_migrations"
+      modelProps: "users" | "oAuth2Session" | "trainingModels" | "userCredits" | "images" | "plans" | "transactions" | "packs" | "handledStripeEvent" | "handledFalEvent" | "seaql_migrations"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -969,6 +985,80 @@ export namespace Prisma {
           count: {
             args: Prisma.UsersCountArgs<ExtArgs>
             result: $Utils.Optional<UsersCountAggregateOutputType> | number
+          }
+        }
+      }
+      OAuth2Session: {
+        payload: Prisma.$OAuth2SessionPayload<ExtArgs>
+        fields: Prisma.OAuth2SessionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.OAuth2SessionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OAuth2SessionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.OAuth2SessionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OAuth2SessionPayload>
+          }
+          findFirst: {
+            args: Prisma.OAuth2SessionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OAuth2SessionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.OAuth2SessionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OAuth2SessionPayload>
+          }
+          findMany: {
+            args: Prisma.OAuth2SessionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OAuth2SessionPayload>[]
+          }
+          create: {
+            args: Prisma.OAuth2SessionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OAuth2SessionPayload>
+          }
+          createMany: {
+            args: Prisma.OAuth2SessionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.OAuth2SessionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OAuth2SessionPayload>[]
+          }
+          delete: {
+            args: Prisma.OAuth2SessionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OAuth2SessionPayload>
+          }
+          update: {
+            args: Prisma.OAuth2SessionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OAuth2SessionPayload>
+          }
+          deleteMany: {
+            args: Prisma.OAuth2SessionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.OAuth2SessionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.OAuth2SessionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OAuth2SessionPayload>[]
+          }
+          upsert: {
+            args: Prisma.OAuth2SessionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OAuth2SessionPayload>
+          }
+          aggregate: {
+            args: Prisma.OAuth2SessionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateOAuth2Session>
+          }
+          groupBy: {
+            args: Prisma.OAuth2SessionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<OAuth2SessionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.OAuth2SessionCountArgs<ExtArgs>
+            result: $Utils.Optional<OAuth2SessionCountAggregateOutputType> | number
           }
         }
       }
@@ -1723,6 +1813,7 @@ export namespace Prisma {
   }
   export type GlobalOmitConfig = {
     users?: UsersOmit
+    oAuth2Session?: OAuth2SessionOmit
     trainingModels?: TrainingModelsOmit
     userCredits?: UserCreditsOmit
     images?: ImagesOmit
@@ -1830,6 +1921,7 @@ export namespace Prisma {
     UserCredits: number
     Images: number
     Transactions: number
+    oAuth2Sessions: number
   }
 
   export type UsersCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1837,6 +1929,7 @@ export namespace Prisma {
     UserCredits?: boolean | UsersCountOutputTypeCountUserCreditsArgs
     Images?: boolean | UsersCountOutputTypeCountImagesArgs
     Transactions?: boolean | UsersCountOutputTypeCountTransactionsArgs
+    oAuth2Sessions?: boolean | UsersCountOutputTypeCountOAuth2SessionsArgs
   }
 
   // Custom InputTypes
@@ -1876,6 +1969,13 @@ export namespace Prisma {
    */
   export type UsersCountOutputTypeCountTransactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TransactionsWhereInput
+  }
+
+  /**
+   * UsersCountOutputType without action
+   */
+  export type UsersCountOutputTypeCountOAuth2SessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OAuth2SessionWhereInput
   }
 
 
@@ -2250,6 +2350,7 @@ export namespace Prisma {
     UserCredits?: boolean | Users$UserCreditsArgs<ExtArgs>
     Images?: boolean | Users$ImagesArgs<ExtArgs>
     Transactions?: boolean | Users$TransactionsArgs<ExtArgs>
+    oAuth2Sessions?: boolean | Users$oAuth2SessionsArgs<ExtArgs>
     _count?: boolean | UsersCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["users"]>
 
@@ -2310,6 +2411,7 @@ export namespace Prisma {
     UserCredits?: boolean | Users$UserCreditsArgs<ExtArgs>
     Images?: boolean | Users$ImagesArgs<ExtArgs>
     Transactions?: boolean | Users$TransactionsArgs<ExtArgs>
+    oAuth2Sessions?: boolean | Users$oAuth2SessionsArgs<ExtArgs>
     _count?: boolean | UsersCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UsersIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2322,6 +2424,7 @@ export namespace Prisma {
       UserCredits: Prisma.$UserCreditsPayload<ExtArgs>[]
       Images: Prisma.$ImagesPayload<ExtArgs>[]
       Transactions: Prisma.$TransactionsPayload<ExtArgs>[]
+      oAuth2Sessions: Prisma.$OAuth2SessionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -2736,6 +2839,7 @@ export namespace Prisma {
     UserCredits<T extends Users$UserCreditsArgs<ExtArgs> = {}>(args?: Subset<T, Users$UserCreditsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserCreditsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     Images<T extends Users$ImagesArgs<ExtArgs> = {}>(args?: Subset<T, Users$ImagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImagesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     Transactions<T extends Users$TransactionsArgs<ExtArgs> = {}>(args?: Subset<T, Users$TransactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    oAuth2Sessions<T extends Users$oAuth2SessionsArgs<ExtArgs> = {}>(args?: Subset<T, Users$oAuth2SessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OAuth2SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3263,6 +3367,30 @@ export namespace Prisma {
   }
 
   /**
+   * Users.oAuth2Sessions
+   */
+  export type Users$oAuth2SessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OAuth2Session
+     */
+    select?: OAuth2SessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OAuth2Session
+     */
+    omit?: OAuth2SessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OAuth2SessionInclude<ExtArgs> | null
+    where?: OAuth2SessionWhereInput
+    orderBy?: OAuth2SessionOrderByWithRelationInput | OAuth2SessionOrderByWithRelationInput[]
+    cursor?: OAuth2SessionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: OAuth2SessionScalarFieldEnum | OAuth2SessionScalarFieldEnum[]
+  }
+
+  /**
    * Users without action
    */
   export type UsersDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3278,6 +3406,1115 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: UsersInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model OAuth2Session
+   */
+
+  export type AggregateOAuth2Session = {
+    _count: OAuth2SessionCountAggregateOutputType | null
+    _avg: OAuth2SessionAvgAggregateOutputType | null
+    _sum: OAuth2SessionSumAggregateOutputType | null
+    _min: OAuth2SessionMinAggregateOutputType | null
+    _max: OAuth2SessionMaxAggregateOutputType | null
+  }
+
+  export type OAuth2SessionAvgAggregateOutputType = {
+    id: number | null
+    user_id: number | null
+  }
+
+  export type OAuth2SessionSumAggregateOutputType = {
+    id: number | null
+    user_id: number | null
+  }
+
+  export type OAuth2SessionMinAggregateOutputType = {
+    id: number | null
+    user_id: number | null
+    session_id: string | null
+    expires_at: Date | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type OAuth2SessionMaxAggregateOutputType = {
+    id: number | null
+    user_id: number | null
+    session_id: string | null
+    expires_at: Date | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type OAuth2SessionCountAggregateOutputType = {
+    id: number
+    user_id: number
+    session_id: number
+    expires_at: number
+    created_at: number
+    updated_at: number
+    _all: number
+  }
+
+
+  export type OAuth2SessionAvgAggregateInputType = {
+    id?: true
+    user_id?: true
+  }
+
+  export type OAuth2SessionSumAggregateInputType = {
+    id?: true
+    user_id?: true
+  }
+
+  export type OAuth2SessionMinAggregateInputType = {
+    id?: true
+    user_id?: true
+    session_id?: true
+    expires_at?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type OAuth2SessionMaxAggregateInputType = {
+    id?: true
+    user_id?: true
+    session_id?: true
+    expires_at?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type OAuth2SessionCountAggregateInputType = {
+    id?: true
+    user_id?: true
+    session_id?: true
+    expires_at?: true
+    created_at?: true
+    updated_at?: true
+    _all?: true
+  }
+
+  export type OAuth2SessionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which OAuth2Session to aggregate.
+     */
+    where?: OAuth2SessionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OAuth2Sessions to fetch.
+     */
+    orderBy?: OAuth2SessionOrderByWithRelationInput | OAuth2SessionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: OAuth2SessionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OAuth2Sessions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OAuth2Sessions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned OAuth2Sessions
+    **/
+    _count?: true | OAuth2SessionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: OAuth2SessionAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: OAuth2SessionSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: OAuth2SessionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: OAuth2SessionMaxAggregateInputType
+  }
+
+  export type GetOAuth2SessionAggregateType<T extends OAuth2SessionAggregateArgs> = {
+        [P in keyof T & keyof AggregateOAuth2Session]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateOAuth2Session[P]>
+      : GetScalarType<T[P], AggregateOAuth2Session[P]>
+  }
+
+
+
+
+  export type OAuth2SessionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OAuth2SessionWhereInput
+    orderBy?: OAuth2SessionOrderByWithAggregationInput | OAuth2SessionOrderByWithAggregationInput[]
+    by: OAuth2SessionScalarFieldEnum[] | OAuth2SessionScalarFieldEnum
+    having?: OAuth2SessionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: OAuth2SessionCountAggregateInputType | true
+    _avg?: OAuth2SessionAvgAggregateInputType
+    _sum?: OAuth2SessionSumAggregateInputType
+    _min?: OAuth2SessionMinAggregateInputType
+    _max?: OAuth2SessionMaxAggregateInputType
+  }
+
+  export type OAuth2SessionGroupByOutputType = {
+    id: number
+    user_id: number
+    session_id: string
+    expires_at: Date
+    created_at: Date
+    updated_at: Date
+    _count: OAuth2SessionCountAggregateOutputType | null
+    _avg: OAuth2SessionAvgAggregateOutputType | null
+    _sum: OAuth2SessionSumAggregateOutputType | null
+    _min: OAuth2SessionMinAggregateOutputType | null
+    _max: OAuth2SessionMaxAggregateOutputType | null
+  }
+
+  type GetOAuth2SessionGroupByPayload<T extends OAuth2SessionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<OAuth2SessionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof OAuth2SessionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], OAuth2SessionGroupByOutputType[P]>
+            : GetScalarType<T[P], OAuth2SessionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type OAuth2SessionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    user_id?: boolean
+    session_id?: boolean
+    expires_at?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["oAuth2Session"]>
+
+  export type OAuth2SessionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    user_id?: boolean
+    session_id?: boolean
+    expires_at?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["oAuth2Session"]>
+
+  export type OAuth2SessionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    user_id?: boolean
+    session_id?: boolean
+    expires_at?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["oAuth2Session"]>
+
+  export type OAuth2SessionSelectScalar = {
+    id?: boolean
+    user_id?: boolean
+    session_id?: boolean
+    expires_at?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }
+
+  export type OAuth2SessionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "user_id" | "session_id" | "expires_at" | "created_at" | "updated_at", ExtArgs["result"]["oAuth2Session"]>
+  export type OAuth2SessionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }
+  export type OAuth2SessionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }
+  export type OAuth2SessionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }
+
+  export type $OAuth2SessionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "OAuth2Session"
+    objects: {
+      user: Prisma.$UsersPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      user_id: number
+      session_id: string
+      expires_at: Date
+      created_at: Date
+      updated_at: Date
+    }, ExtArgs["result"]["oAuth2Session"]>
+    composites: {}
+  }
+
+  type OAuth2SessionGetPayload<S extends boolean | null | undefined | OAuth2SessionDefaultArgs> = $Result.GetResult<Prisma.$OAuth2SessionPayload, S>
+
+  type OAuth2SessionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<OAuth2SessionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: OAuth2SessionCountAggregateInputType | true
+    }
+
+  export interface OAuth2SessionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['OAuth2Session'], meta: { name: 'OAuth2Session' } }
+    /**
+     * Find zero or one OAuth2Session that matches the filter.
+     * @param {OAuth2SessionFindUniqueArgs} args - Arguments to find a OAuth2Session
+     * @example
+     * // Get one OAuth2Session
+     * const oAuth2Session = await prisma.oAuth2Session.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends OAuth2SessionFindUniqueArgs>(args: SelectSubset<T, OAuth2SessionFindUniqueArgs<ExtArgs>>): Prisma__OAuth2SessionClient<$Result.GetResult<Prisma.$OAuth2SessionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one OAuth2Session that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {OAuth2SessionFindUniqueOrThrowArgs} args - Arguments to find a OAuth2Session
+     * @example
+     * // Get one OAuth2Session
+     * const oAuth2Session = await prisma.oAuth2Session.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends OAuth2SessionFindUniqueOrThrowArgs>(args: SelectSubset<T, OAuth2SessionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__OAuth2SessionClient<$Result.GetResult<Prisma.$OAuth2SessionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first OAuth2Session that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OAuth2SessionFindFirstArgs} args - Arguments to find a OAuth2Session
+     * @example
+     * // Get one OAuth2Session
+     * const oAuth2Session = await prisma.oAuth2Session.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends OAuth2SessionFindFirstArgs>(args?: SelectSubset<T, OAuth2SessionFindFirstArgs<ExtArgs>>): Prisma__OAuth2SessionClient<$Result.GetResult<Prisma.$OAuth2SessionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first OAuth2Session that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OAuth2SessionFindFirstOrThrowArgs} args - Arguments to find a OAuth2Session
+     * @example
+     * // Get one OAuth2Session
+     * const oAuth2Session = await prisma.oAuth2Session.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends OAuth2SessionFindFirstOrThrowArgs>(args?: SelectSubset<T, OAuth2SessionFindFirstOrThrowArgs<ExtArgs>>): Prisma__OAuth2SessionClient<$Result.GetResult<Prisma.$OAuth2SessionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more OAuth2Sessions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OAuth2SessionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all OAuth2Sessions
+     * const oAuth2Sessions = await prisma.oAuth2Session.findMany()
+     * 
+     * // Get first 10 OAuth2Sessions
+     * const oAuth2Sessions = await prisma.oAuth2Session.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const oAuth2SessionWithIdOnly = await prisma.oAuth2Session.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends OAuth2SessionFindManyArgs>(args?: SelectSubset<T, OAuth2SessionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OAuth2SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a OAuth2Session.
+     * @param {OAuth2SessionCreateArgs} args - Arguments to create a OAuth2Session.
+     * @example
+     * // Create one OAuth2Session
+     * const OAuth2Session = await prisma.oAuth2Session.create({
+     *   data: {
+     *     // ... data to create a OAuth2Session
+     *   }
+     * })
+     * 
+     */
+    create<T extends OAuth2SessionCreateArgs>(args: SelectSubset<T, OAuth2SessionCreateArgs<ExtArgs>>): Prisma__OAuth2SessionClient<$Result.GetResult<Prisma.$OAuth2SessionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many OAuth2Sessions.
+     * @param {OAuth2SessionCreateManyArgs} args - Arguments to create many OAuth2Sessions.
+     * @example
+     * // Create many OAuth2Sessions
+     * const oAuth2Session = await prisma.oAuth2Session.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends OAuth2SessionCreateManyArgs>(args?: SelectSubset<T, OAuth2SessionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many OAuth2Sessions and returns the data saved in the database.
+     * @param {OAuth2SessionCreateManyAndReturnArgs} args - Arguments to create many OAuth2Sessions.
+     * @example
+     * // Create many OAuth2Sessions
+     * const oAuth2Session = await prisma.oAuth2Session.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many OAuth2Sessions and only return the `id`
+     * const oAuth2SessionWithIdOnly = await prisma.oAuth2Session.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends OAuth2SessionCreateManyAndReturnArgs>(args?: SelectSubset<T, OAuth2SessionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OAuth2SessionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a OAuth2Session.
+     * @param {OAuth2SessionDeleteArgs} args - Arguments to delete one OAuth2Session.
+     * @example
+     * // Delete one OAuth2Session
+     * const OAuth2Session = await prisma.oAuth2Session.delete({
+     *   where: {
+     *     // ... filter to delete one OAuth2Session
+     *   }
+     * })
+     * 
+     */
+    delete<T extends OAuth2SessionDeleteArgs>(args: SelectSubset<T, OAuth2SessionDeleteArgs<ExtArgs>>): Prisma__OAuth2SessionClient<$Result.GetResult<Prisma.$OAuth2SessionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one OAuth2Session.
+     * @param {OAuth2SessionUpdateArgs} args - Arguments to update one OAuth2Session.
+     * @example
+     * // Update one OAuth2Session
+     * const oAuth2Session = await prisma.oAuth2Session.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends OAuth2SessionUpdateArgs>(args: SelectSubset<T, OAuth2SessionUpdateArgs<ExtArgs>>): Prisma__OAuth2SessionClient<$Result.GetResult<Prisma.$OAuth2SessionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more OAuth2Sessions.
+     * @param {OAuth2SessionDeleteManyArgs} args - Arguments to filter OAuth2Sessions to delete.
+     * @example
+     * // Delete a few OAuth2Sessions
+     * const { count } = await prisma.oAuth2Session.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends OAuth2SessionDeleteManyArgs>(args?: SelectSubset<T, OAuth2SessionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more OAuth2Sessions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OAuth2SessionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many OAuth2Sessions
+     * const oAuth2Session = await prisma.oAuth2Session.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends OAuth2SessionUpdateManyArgs>(args: SelectSubset<T, OAuth2SessionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more OAuth2Sessions and returns the data updated in the database.
+     * @param {OAuth2SessionUpdateManyAndReturnArgs} args - Arguments to update many OAuth2Sessions.
+     * @example
+     * // Update many OAuth2Sessions
+     * const oAuth2Session = await prisma.oAuth2Session.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more OAuth2Sessions and only return the `id`
+     * const oAuth2SessionWithIdOnly = await prisma.oAuth2Session.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends OAuth2SessionUpdateManyAndReturnArgs>(args: SelectSubset<T, OAuth2SessionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OAuth2SessionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one OAuth2Session.
+     * @param {OAuth2SessionUpsertArgs} args - Arguments to update or create a OAuth2Session.
+     * @example
+     * // Update or create a OAuth2Session
+     * const oAuth2Session = await prisma.oAuth2Session.upsert({
+     *   create: {
+     *     // ... data to create a OAuth2Session
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the OAuth2Session we want to update
+     *   }
+     * })
+     */
+    upsert<T extends OAuth2SessionUpsertArgs>(args: SelectSubset<T, OAuth2SessionUpsertArgs<ExtArgs>>): Prisma__OAuth2SessionClient<$Result.GetResult<Prisma.$OAuth2SessionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of OAuth2Sessions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OAuth2SessionCountArgs} args - Arguments to filter OAuth2Sessions to count.
+     * @example
+     * // Count the number of OAuth2Sessions
+     * const count = await prisma.oAuth2Session.count({
+     *   where: {
+     *     // ... the filter for the OAuth2Sessions we want to count
+     *   }
+     * })
+    **/
+    count<T extends OAuth2SessionCountArgs>(
+      args?: Subset<T, OAuth2SessionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], OAuth2SessionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a OAuth2Session.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OAuth2SessionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends OAuth2SessionAggregateArgs>(args: Subset<T, OAuth2SessionAggregateArgs>): Prisma.PrismaPromise<GetOAuth2SessionAggregateType<T>>
+
+    /**
+     * Group by OAuth2Session.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OAuth2SessionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends OAuth2SessionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: OAuth2SessionGroupByArgs['orderBy'] }
+        : { orderBy?: OAuth2SessionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, OAuth2SessionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetOAuth2SessionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the OAuth2Session model
+   */
+  readonly fields: OAuth2SessionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for OAuth2Session.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__OAuth2SessionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UsersDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UsersDefaultArgs<ExtArgs>>): Prisma__UsersClient<$Result.GetResult<Prisma.$UsersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the OAuth2Session model
+   */ 
+  interface OAuth2SessionFieldRefs {
+    readonly id: FieldRef<"OAuth2Session", 'Int'>
+    readonly user_id: FieldRef<"OAuth2Session", 'Int'>
+    readonly session_id: FieldRef<"OAuth2Session", 'String'>
+    readonly expires_at: FieldRef<"OAuth2Session", 'DateTime'>
+    readonly created_at: FieldRef<"OAuth2Session", 'DateTime'>
+    readonly updated_at: FieldRef<"OAuth2Session", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * OAuth2Session findUnique
+   */
+  export type OAuth2SessionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OAuth2Session
+     */
+    select?: OAuth2SessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OAuth2Session
+     */
+    omit?: OAuth2SessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OAuth2SessionInclude<ExtArgs> | null
+    /**
+     * Filter, which OAuth2Session to fetch.
+     */
+    where: OAuth2SessionWhereUniqueInput
+  }
+
+  /**
+   * OAuth2Session findUniqueOrThrow
+   */
+  export type OAuth2SessionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OAuth2Session
+     */
+    select?: OAuth2SessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OAuth2Session
+     */
+    omit?: OAuth2SessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OAuth2SessionInclude<ExtArgs> | null
+    /**
+     * Filter, which OAuth2Session to fetch.
+     */
+    where: OAuth2SessionWhereUniqueInput
+  }
+
+  /**
+   * OAuth2Session findFirst
+   */
+  export type OAuth2SessionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OAuth2Session
+     */
+    select?: OAuth2SessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OAuth2Session
+     */
+    omit?: OAuth2SessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OAuth2SessionInclude<ExtArgs> | null
+    /**
+     * Filter, which OAuth2Session to fetch.
+     */
+    where?: OAuth2SessionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OAuth2Sessions to fetch.
+     */
+    orderBy?: OAuth2SessionOrderByWithRelationInput | OAuth2SessionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for OAuth2Sessions.
+     */
+    cursor?: OAuth2SessionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OAuth2Sessions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OAuth2Sessions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of OAuth2Sessions.
+     */
+    distinct?: OAuth2SessionScalarFieldEnum | OAuth2SessionScalarFieldEnum[]
+  }
+
+  /**
+   * OAuth2Session findFirstOrThrow
+   */
+  export type OAuth2SessionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OAuth2Session
+     */
+    select?: OAuth2SessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OAuth2Session
+     */
+    omit?: OAuth2SessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OAuth2SessionInclude<ExtArgs> | null
+    /**
+     * Filter, which OAuth2Session to fetch.
+     */
+    where?: OAuth2SessionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OAuth2Sessions to fetch.
+     */
+    orderBy?: OAuth2SessionOrderByWithRelationInput | OAuth2SessionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for OAuth2Sessions.
+     */
+    cursor?: OAuth2SessionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OAuth2Sessions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OAuth2Sessions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of OAuth2Sessions.
+     */
+    distinct?: OAuth2SessionScalarFieldEnum | OAuth2SessionScalarFieldEnum[]
+  }
+
+  /**
+   * OAuth2Session findMany
+   */
+  export type OAuth2SessionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OAuth2Session
+     */
+    select?: OAuth2SessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OAuth2Session
+     */
+    omit?: OAuth2SessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OAuth2SessionInclude<ExtArgs> | null
+    /**
+     * Filter, which OAuth2Sessions to fetch.
+     */
+    where?: OAuth2SessionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OAuth2Sessions to fetch.
+     */
+    orderBy?: OAuth2SessionOrderByWithRelationInput | OAuth2SessionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing OAuth2Sessions.
+     */
+    cursor?: OAuth2SessionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OAuth2Sessions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OAuth2Sessions.
+     */
+    skip?: number
+    distinct?: OAuth2SessionScalarFieldEnum | OAuth2SessionScalarFieldEnum[]
+  }
+
+  /**
+   * OAuth2Session create
+   */
+  export type OAuth2SessionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OAuth2Session
+     */
+    select?: OAuth2SessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OAuth2Session
+     */
+    omit?: OAuth2SessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OAuth2SessionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a OAuth2Session.
+     */
+    data: XOR<OAuth2SessionCreateInput, OAuth2SessionUncheckedCreateInput>
+  }
+
+  /**
+   * OAuth2Session createMany
+   */
+  export type OAuth2SessionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many OAuth2Sessions.
+     */
+    data: OAuth2SessionCreateManyInput | OAuth2SessionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * OAuth2Session createManyAndReturn
+   */
+  export type OAuth2SessionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OAuth2Session
+     */
+    select?: OAuth2SessionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the OAuth2Session
+     */
+    omit?: OAuth2SessionOmit<ExtArgs> | null
+    /**
+     * The data used to create many OAuth2Sessions.
+     */
+    data: OAuth2SessionCreateManyInput | OAuth2SessionCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OAuth2SessionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * OAuth2Session update
+   */
+  export type OAuth2SessionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OAuth2Session
+     */
+    select?: OAuth2SessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OAuth2Session
+     */
+    omit?: OAuth2SessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OAuth2SessionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a OAuth2Session.
+     */
+    data: XOR<OAuth2SessionUpdateInput, OAuth2SessionUncheckedUpdateInput>
+    /**
+     * Choose, which OAuth2Session to update.
+     */
+    where: OAuth2SessionWhereUniqueInput
+  }
+
+  /**
+   * OAuth2Session updateMany
+   */
+  export type OAuth2SessionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update OAuth2Sessions.
+     */
+    data: XOR<OAuth2SessionUpdateManyMutationInput, OAuth2SessionUncheckedUpdateManyInput>
+    /**
+     * Filter which OAuth2Sessions to update
+     */
+    where?: OAuth2SessionWhereInput
+    /**
+     * Limit how many OAuth2Sessions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * OAuth2Session updateManyAndReturn
+   */
+  export type OAuth2SessionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OAuth2Session
+     */
+    select?: OAuth2SessionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the OAuth2Session
+     */
+    omit?: OAuth2SessionOmit<ExtArgs> | null
+    /**
+     * The data used to update OAuth2Sessions.
+     */
+    data: XOR<OAuth2SessionUpdateManyMutationInput, OAuth2SessionUncheckedUpdateManyInput>
+    /**
+     * Filter which OAuth2Sessions to update
+     */
+    where?: OAuth2SessionWhereInput
+    /**
+     * Limit how many OAuth2Sessions to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OAuth2SessionIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * OAuth2Session upsert
+   */
+  export type OAuth2SessionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OAuth2Session
+     */
+    select?: OAuth2SessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OAuth2Session
+     */
+    omit?: OAuth2SessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OAuth2SessionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the OAuth2Session to update in case it exists.
+     */
+    where: OAuth2SessionWhereUniqueInput
+    /**
+     * In case the OAuth2Session found by the `where` argument doesn't exist, create a new OAuth2Session with this data.
+     */
+    create: XOR<OAuth2SessionCreateInput, OAuth2SessionUncheckedCreateInput>
+    /**
+     * In case the OAuth2Session was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<OAuth2SessionUpdateInput, OAuth2SessionUncheckedUpdateInput>
+  }
+
+  /**
+   * OAuth2Session delete
+   */
+  export type OAuth2SessionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OAuth2Session
+     */
+    select?: OAuth2SessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OAuth2Session
+     */
+    omit?: OAuth2SessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OAuth2SessionInclude<ExtArgs> | null
+    /**
+     * Filter which OAuth2Session to delete.
+     */
+    where: OAuth2SessionWhereUniqueInput
+  }
+
+  /**
+   * OAuth2Session deleteMany
+   */
+  export type OAuth2SessionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which OAuth2Sessions to delete
+     */
+    where?: OAuth2SessionWhereInput
+    /**
+     * Limit how many OAuth2Sessions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * OAuth2Session without action
+   */
+  export type OAuth2SessionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OAuth2Session
+     */
+    select?: OAuth2SessionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OAuth2Session
+     */
+    omit?: OAuth2SessionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OAuth2SessionInclude<ExtArgs> | null
   }
 
 
@@ -13692,6 +14929,18 @@ export namespace Prisma {
   export type UsersScalarFieldEnum = (typeof UsersScalarFieldEnum)[keyof typeof UsersScalarFieldEnum]
 
 
+  export const OAuth2SessionScalarFieldEnum: {
+    id: 'id',
+    user_id: 'user_id',
+    session_id: 'session_id',
+    expires_at: 'expires_at',
+    created_at: 'created_at',
+    updated_at: 'updated_at'
+  };
+
+  export type OAuth2SessionScalarFieldEnum = (typeof OAuth2SessionScalarFieldEnum)[keyof typeof OAuth2SessionScalarFieldEnum]
+
+
   export const TrainingModelsScalarFieldEnum: {
     id: 'id',
     pid: 'pid',
@@ -14114,6 +15363,7 @@ export namespace Prisma {
     UserCredits?: UserCreditsListRelationFilter
     Images?: ImagesListRelationFilter
     Transactions?: TransactionsListRelationFilter
+    oAuth2Sessions?: OAuth2SessionListRelationFilter
   }
 
   export type UsersOrderByWithRelationInput = {
@@ -14135,6 +15385,7 @@ export namespace Prisma {
     UserCredits?: UserCreditsOrderByRelationAggregateInput
     Images?: ImagesOrderByRelationAggregateInput
     Transactions?: TransactionsOrderByRelationAggregateInput
+    oAuth2Sessions?: OAuth2SessionOrderByRelationAggregateInput
   }
 
   export type UsersWhereUniqueInput = Prisma.AtLeast<{
@@ -14159,6 +15410,7 @@ export namespace Prisma {
     UserCredits?: UserCreditsListRelationFilter
     Images?: ImagesListRelationFilter
     Transactions?: TransactionsListRelationFilter
+    oAuth2Sessions?: OAuth2SessionListRelationFilter
   }, "id" | "pid" | "email" | "api_key">
 
   export type UsersOrderByWithAggregationInput = {
@@ -14201,6 +15453,68 @@ export namespace Prisma {
     email_verified_at?: DateTimeNullableWithAggregatesFilter<"Users"> | Date | string | null
     magicLink_token?: StringNullableWithAggregatesFilter<"Users"> | string | null
     magicLink_expiration?: DateTimeNullableWithAggregatesFilter<"Users"> | Date | string | null
+  }
+
+  export type OAuth2SessionWhereInput = {
+    AND?: OAuth2SessionWhereInput | OAuth2SessionWhereInput[]
+    OR?: OAuth2SessionWhereInput[]
+    NOT?: OAuth2SessionWhereInput | OAuth2SessionWhereInput[]
+    id?: IntFilter<"OAuth2Session"> | number
+    user_id?: IntFilter<"OAuth2Session"> | number
+    session_id?: StringFilter<"OAuth2Session"> | string
+    expires_at?: DateTimeFilter<"OAuth2Session"> | Date | string
+    created_at?: DateTimeFilter<"OAuth2Session"> | Date | string
+    updated_at?: DateTimeFilter<"OAuth2Session"> | Date | string
+    user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
+  }
+
+  export type OAuth2SessionOrderByWithRelationInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    session_id?: SortOrder
+    expires_at?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    user?: UsersOrderByWithRelationInput
+  }
+
+  export type OAuth2SessionWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: OAuth2SessionWhereInput | OAuth2SessionWhereInput[]
+    OR?: OAuth2SessionWhereInput[]
+    NOT?: OAuth2SessionWhereInput | OAuth2SessionWhereInput[]
+    user_id?: IntFilter<"OAuth2Session"> | number
+    session_id?: StringFilter<"OAuth2Session"> | string
+    expires_at?: DateTimeFilter<"OAuth2Session"> | Date | string
+    created_at?: DateTimeFilter<"OAuth2Session"> | Date | string
+    updated_at?: DateTimeFilter<"OAuth2Session"> | Date | string
+    user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
+  }, "id">
+
+  export type OAuth2SessionOrderByWithAggregationInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    session_id?: SortOrder
+    expires_at?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    _count?: OAuth2SessionCountOrderByAggregateInput
+    _avg?: OAuth2SessionAvgOrderByAggregateInput
+    _max?: OAuth2SessionMaxOrderByAggregateInput
+    _min?: OAuth2SessionMinOrderByAggregateInput
+    _sum?: OAuth2SessionSumOrderByAggregateInput
+  }
+
+  export type OAuth2SessionScalarWhereWithAggregatesInput = {
+    AND?: OAuth2SessionScalarWhereWithAggregatesInput | OAuth2SessionScalarWhereWithAggregatesInput[]
+    OR?: OAuth2SessionScalarWhereWithAggregatesInput[]
+    NOT?: OAuth2SessionScalarWhereWithAggregatesInput | OAuth2SessionScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"OAuth2Session"> | number
+    user_id?: IntWithAggregatesFilter<"OAuth2Session"> | number
+    session_id?: StringWithAggregatesFilter<"OAuth2Session"> | string
+    expires_at?: DateTimeWithAggregatesFilter<"OAuth2Session"> | Date | string
+    created_at?: DateTimeWithAggregatesFilter<"OAuth2Session"> | Date | string
+    updated_at?: DateTimeWithAggregatesFilter<"OAuth2Session"> | Date | string
   }
 
   export type TrainingModelsWhereInput = {
@@ -14978,6 +16292,7 @@ export namespace Prisma {
     UserCredits?: UserCreditsCreateNestedManyWithoutUserInput
     Images?: ImagesCreateNestedManyWithoutUserInput
     Transactions?: TransactionsCreateNestedManyWithoutUserInput
+    oAuth2Sessions?: OAuth2SessionCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateInput = {
@@ -14999,6 +16314,7 @@ export namespace Prisma {
     UserCredits?: UserCreditsUncheckedCreateNestedManyWithoutUserInput
     Images?: ImagesUncheckedCreateNestedManyWithoutUserInput
     Transactions?: TransactionsUncheckedCreateNestedManyWithoutUserInput
+    oAuth2Sessions?: OAuth2SessionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersUpdateInput = {
@@ -15019,6 +16335,7 @@ export namespace Prisma {
     UserCredits?: UserCreditsUpdateManyWithoutUserNestedInput
     Images?: ImagesUpdateManyWithoutUserNestedInput
     Transactions?: TransactionsUpdateManyWithoutUserNestedInput
+    oAuth2Sessions?: OAuth2SessionUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateInput = {
@@ -15040,6 +16357,7 @@ export namespace Prisma {
     UserCredits?: UserCreditsUncheckedUpdateManyWithoutUserNestedInput
     Images?: ImagesUncheckedUpdateManyWithoutUserNestedInput
     Transactions?: TransactionsUncheckedUpdateManyWithoutUserNestedInput
+    oAuth2Sessions?: OAuth2SessionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UsersCreateManyInput = {
@@ -15090,6 +16408,65 @@ export namespace Prisma {
     email_verified_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     magicLink_token?: NullableStringFieldUpdateOperationsInput | string | null
     magicLink_expiration?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type OAuth2SessionCreateInput = {
+    session_id: string
+    expires_at: Date | string
+    created_at?: Date | string
+    updated_at?: Date | string
+    user: UsersCreateNestedOneWithoutOAuth2SessionsInput
+  }
+
+  export type OAuth2SessionUncheckedCreateInput = {
+    id?: number
+    user_id: number
+    session_id: string
+    expires_at: Date | string
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type OAuth2SessionUpdateInput = {
+    session_id?: StringFieldUpdateOperationsInput | string
+    expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UsersUpdateOneRequiredWithoutOAuth2SessionsNestedInput
+  }
+
+  export type OAuth2SessionUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    user_id?: IntFieldUpdateOperationsInput | number
+    session_id?: StringFieldUpdateOperationsInput | string
+    expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OAuth2SessionCreateManyInput = {
+    id?: number
+    user_id: number
+    session_id: string
+    expires_at: Date | string
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type OAuth2SessionUpdateManyMutationInput = {
+    session_id?: StringFieldUpdateOperationsInput | string
+    expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OAuth2SessionUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    user_id?: IntFieldUpdateOperationsInput | number
+    session_id?: StringFieldUpdateOperationsInput | string
+    expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TrainingModelsCreateInput = {
@@ -16014,6 +17391,12 @@ export namespace Prisma {
     none?: TransactionsWhereInput
   }
 
+  export type OAuth2SessionListRelationFilter = {
+    every?: OAuth2SessionWhereInput
+    some?: OAuth2SessionWhereInput
+    none?: OAuth2SessionWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -16032,6 +17415,10 @@ export namespace Prisma {
   }
 
   export type TransactionsOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type OAuth2SessionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -16175,6 +17562,73 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
+  export type DateTimeFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  }
+
+  export type UsersScalarRelationFilter = {
+    is?: UsersWhereInput
+    isNot?: UsersWhereInput
+  }
+
+  export type OAuth2SessionCountOrderByAggregateInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    session_id?: SortOrder
+    expires_at?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type OAuth2SessionAvgOrderByAggregateInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+  }
+
+  export type OAuth2SessionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    session_id?: SortOrder
+    expires_at?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type OAuth2SessionMinOrderByAggregateInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    session_id?: SortOrder
+    expires_at?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type OAuth2SessionSumOrderByAggregateInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+  }
+
+  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedDateTimeFilter<$PrismaModel>
+    _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
   export type EnumSexFilter<$PrismaModel = never> = {
     equals?: $Enums.Sex | EnumSexFieldRefInput<$PrismaModel>
     in?: $Enums.Sex[] | ListEnumSexFieldRefInput<$PrismaModel>
@@ -16236,22 +17690,6 @@ export namespace Prisma {
     gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
     gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-  }
-
-  export type DateTimeFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
-  }
-
-  export type UsersScalarRelationFilter = {
-    is?: UsersWhereInput
-    isNot?: UsersWhereInput
   }
 
   export type TrainingModelsCountOrderByAggregateInput = {
@@ -16430,20 +17868,6 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedJsonNullableFilter<$PrismaModel>
     _max?: NestedJsonNullableFilter<$PrismaModel>
-  }
-
-  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
   export type UserCreditsCountOrderByAggregateInput = {
@@ -16963,6 +18387,13 @@ export namespace Prisma {
     connect?: TransactionsWhereUniqueInput | TransactionsWhereUniqueInput[]
   }
 
+  export type OAuth2SessionCreateNestedManyWithoutUserInput = {
+    create?: XOR<OAuth2SessionCreateWithoutUserInput, OAuth2SessionUncheckedCreateWithoutUserInput> | OAuth2SessionCreateWithoutUserInput[] | OAuth2SessionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: OAuth2SessionCreateOrConnectWithoutUserInput | OAuth2SessionCreateOrConnectWithoutUserInput[]
+    createMany?: OAuth2SessionCreateManyUserInputEnvelope
+    connect?: OAuth2SessionWhereUniqueInput | OAuth2SessionWhereUniqueInput[]
+  }
+
   export type TrainingModelsUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<TrainingModelsCreateWithoutUserInput, TrainingModelsUncheckedCreateWithoutUserInput> | TrainingModelsCreateWithoutUserInput[] | TrainingModelsUncheckedCreateWithoutUserInput[]
     connectOrCreate?: TrainingModelsCreateOrConnectWithoutUserInput | TrainingModelsCreateOrConnectWithoutUserInput[]
@@ -16989,6 +18420,13 @@ export namespace Prisma {
     connectOrCreate?: TransactionsCreateOrConnectWithoutUserInput | TransactionsCreateOrConnectWithoutUserInput[]
     createMany?: TransactionsCreateManyUserInputEnvelope
     connect?: TransactionsWhereUniqueInput | TransactionsWhereUniqueInput[]
+  }
+
+  export type OAuth2SessionUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<OAuth2SessionCreateWithoutUserInput, OAuth2SessionUncheckedCreateWithoutUserInput> | OAuth2SessionCreateWithoutUserInput[] | OAuth2SessionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: OAuth2SessionCreateOrConnectWithoutUserInput | OAuth2SessionCreateOrConnectWithoutUserInput[]
+    createMany?: OAuth2SessionCreateManyUserInputEnvelope
+    connect?: OAuth2SessionWhereUniqueInput | OAuth2SessionWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -17059,6 +18497,20 @@ export namespace Prisma {
     deleteMany?: TransactionsScalarWhereInput | TransactionsScalarWhereInput[]
   }
 
+  export type OAuth2SessionUpdateManyWithoutUserNestedInput = {
+    create?: XOR<OAuth2SessionCreateWithoutUserInput, OAuth2SessionUncheckedCreateWithoutUserInput> | OAuth2SessionCreateWithoutUserInput[] | OAuth2SessionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: OAuth2SessionCreateOrConnectWithoutUserInput | OAuth2SessionCreateOrConnectWithoutUserInput[]
+    upsert?: OAuth2SessionUpsertWithWhereUniqueWithoutUserInput | OAuth2SessionUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: OAuth2SessionCreateManyUserInputEnvelope
+    set?: OAuth2SessionWhereUniqueInput | OAuth2SessionWhereUniqueInput[]
+    disconnect?: OAuth2SessionWhereUniqueInput | OAuth2SessionWhereUniqueInput[]
+    delete?: OAuth2SessionWhereUniqueInput | OAuth2SessionWhereUniqueInput[]
+    connect?: OAuth2SessionWhereUniqueInput | OAuth2SessionWhereUniqueInput[]
+    update?: OAuth2SessionUpdateWithWhereUniqueWithoutUserInput | OAuth2SessionUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: OAuth2SessionUpdateManyWithWhereWithoutUserInput | OAuth2SessionUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: OAuth2SessionScalarWhereInput | OAuth2SessionScalarWhereInput[]
+  }
+
   export type IntFieldUpdateOperationsInput = {
     set?: number
     increment?: number
@@ -17123,6 +18575,38 @@ export namespace Prisma {
     deleteMany?: TransactionsScalarWhereInput | TransactionsScalarWhereInput[]
   }
 
+  export type OAuth2SessionUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<OAuth2SessionCreateWithoutUserInput, OAuth2SessionUncheckedCreateWithoutUserInput> | OAuth2SessionCreateWithoutUserInput[] | OAuth2SessionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: OAuth2SessionCreateOrConnectWithoutUserInput | OAuth2SessionCreateOrConnectWithoutUserInput[]
+    upsert?: OAuth2SessionUpsertWithWhereUniqueWithoutUserInput | OAuth2SessionUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: OAuth2SessionCreateManyUserInputEnvelope
+    set?: OAuth2SessionWhereUniqueInput | OAuth2SessionWhereUniqueInput[]
+    disconnect?: OAuth2SessionWhereUniqueInput | OAuth2SessionWhereUniqueInput[]
+    delete?: OAuth2SessionWhereUniqueInput | OAuth2SessionWhereUniqueInput[]
+    connect?: OAuth2SessionWhereUniqueInput | OAuth2SessionWhereUniqueInput[]
+    update?: OAuth2SessionUpdateWithWhereUniqueWithoutUserInput | OAuth2SessionUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: OAuth2SessionUpdateManyWithWhereWithoutUserInput | OAuth2SessionUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: OAuth2SessionScalarWhereInput | OAuth2SessionScalarWhereInput[]
+  }
+
+  export type UsersCreateNestedOneWithoutOAuth2SessionsInput = {
+    create?: XOR<UsersCreateWithoutOAuth2SessionsInput, UsersUncheckedCreateWithoutOAuth2SessionsInput>
+    connectOrCreate?: UsersCreateOrConnectWithoutOAuth2SessionsInput
+    connect?: UsersWhereUniqueInput
+  }
+
+  export type DateTimeFieldUpdateOperationsInput = {
+    set?: Date | string
+  }
+
+  export type UsersUpdateOneRequiredWithoutOAuth2SessionsNestedInput = {
+    create?: XOR<UsersCreateWithoutOAuth2SessionsInput, UsersUncheckedCreateWithoutOAuth2SessionsInput>
+    connectOrCreate?: UsersCreateOrConnectWithoutOAuth2SessionsInput
+    upsert?: UsersUpsertWithoutOAuth2SessionsInput
+    connect?: UsersWhereUniqueInput
+    update?: XOR<XOR<UsersUpdateToOneWithWhereWithoutOAuth2SessionsInput, UsersUpdateWithoutOAuth2SessionsInput>, UsersUncheckedUpdateWithoutOAuth2SessionsInput>
+  }
+
   export type UsersCreateNestedOneWithoutTrainingModelsInput = {
     create?: XOR<UsersCreateWithoutTrainingModelsInput, UsersUncheckedCreateWithoutTrainingModelsInput>
     connectOrCreate?: UsersCreateOrConnectWithoutTrainingModelsInput
@@ -17165,10 +18649,6 @@ export namespace Prisma {
 
   export type EnumStatusFieldUpdateOperationsInput = {
     set?: $Enums.Status
-  }
-
-  export type DateTimeFieldUpdateOperationsInput = {
-    set?: Date | string
   }
 
   export type UsersUpdateOneRequiredWithoutTrainingModelsNestedInput = {
@@ -17575,6 +19055,31 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
+  export type NestedDateTimeFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  }
+
+  export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedDateTimeFilter<$PrismaModel>
+    _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
   export type NestedEnumSexFilter<$PrismaModel = never> = {
     equals?: $Enums.Sex | EnumSexFieldRefInput<$PrismaModel>
     in?: $Enums.Sex[] | ListEnumSexFieldRefInput<$PrismaModel>
@@ -17613,17 +19118,6 @@ export namespace Prisma {
     in?: $Enums.Status[] | ListEnumStatusFieldRefInput<$PrismaModel>
     notIn?: $Enums.Status[] | ListEnumStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumStatusFilter<$PrismaModel> | $Enums.Status
-  }
-
-  export type NestedDateTimeFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
   export type NestedEnumSexWithAggregatesFilter<$PrismaModel = never> = {
@@ -17705,20 +19199,6 @@ export namespace Prisma {
     gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
     gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-  }
-
-  export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
   export type NestedEnumImageFormatFilter<$PrismaModel = never> = {
@@ -18008,6 +19488,31 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type OAuth2SessionCreateWithoutUserInput = {
+    session_id: string
+    expires_at: Date | string
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type OAuth2SessionUncheckedCreateWithoutUserInput = {
+    id?: number
+    session_id: string
+    expires_at: Date | string
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type OAuth2SessionCreateOrConnectWithoutUserInput = {
+    where: OAuth2SessionWhereUniqueInput
+    create: XOR<OAuth2SessionCreateWithoutUserInput, OAuth2SessionUncheckedCreateWithoutUserInput>
+  }
+
+  export type OAuth2SessionCreateManyUserInputEnvelope = {
+    data: OAuth2SessionCreateManyUserInput | OAuth2SessionCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type TrainingModelsUpsertWithWhereUniqueWithoutUserInput = {
     where: TrainingModelsWhereUniqueInput
     update: XOR<TrainingModelsUpdateWithoutUserInput, TrainingModelsUncheckedUpdateWithoutUserInput>
@@ -18160,6 +19665,132 @@ export namespace Prisma {
     updated_at?: DateTimeFilter<"Transactions"> | Date | string
   }
 
+  export type OAuth2SessionUpsertWithWhereUniqueWithoutUserInput = {
+    where: OAuth2SessionWhereUniqueInput
+    update: XOR<OAuth2SessionUpdateWithoutUserInput, OAuth2SessionUncheckedUpdateWithoutUserInput>
+    create: XOR<OAuth2SessionCreateWithoutUserInput, OAuth2SessionUncheckedCreateWithoutUserInput>
+  }
+
+  export type OAuth2SessionUpdateWithWhereUniqueWithoutUserInput = {
+    where: OAuth2SessionWhereUniqueInput
+    data: XOR<OAuth2SessionUpdateWithoutUserInput, OAuth2SessionUncheckedUpdateWithoutUserInput>
+  }
+
+  export type OAuth2SessionUpdateManyWithWhereWithoutUserInput = {
+    where: OAuth2SessionScalarWhereInput
+    data: XOR<OAuth2SessionUpdateManyMutationInput, OAuth2SessionUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type OAuth2SessionScalarWhereInput = {
+    AND?: OAuth2SessionScalarWhereInput | OAuth2SessionScalarWhereInput[]
+    OR?: OAuth2SessionScalarWhereInput[]
+    NOT?: OAuth2SessionScalarWhereInput | OAuth2SessionScalarWhereInput[]
+    id?: IntFilter<"OAuth2Session"> | number
+    user_id?: IntFilter<"OAuth2Session"> | number
+    session_id?: StringFilter<"OAuth2Session"> | string
+    expires_at?: DateTimeFilter<"OAuth2Session"> | Date | string
+    created_at?: DateTimeFilter<"OAuth2Session"> | Date | string
+    updated_at?: DateTimeFilter<"OAuth2Session"> | Date | string
+  }
+
+  export type UsersCreateWithoutOAuth2SessionsInput = {
+    pid: string
+    email: string
+    password: string
+    api_key: string
+    name: string
+    stripe_customer_id?: string | null
+    reset_token?: string | null
+    reset_sent_at?: Date | string | null
+    email_verification_token?: string | null
+    email_verification_sent_at?: Date | string | null
+    email_verified_at?: Date | string | null
+    magicLink_token?: string | null
+    magicLink_expiration?: Date | string | null
+    TrainingModels?: TrainingModelsCreateNestedManyWithoutUserInput
+    UserCredits?: UserCreditsCreateNestedManyWithoutUserInput
+    Images?: ImagesCreateNestedManyWithoutUserInput
+    Transactions?: TransactionsCreateNestedManyWithoutUserInput
+  }
+
+  export type UsersUncheckedCreateWithoutOAuth2SessionsInput = {
+    id?: number
+    pid: string
+    email: string
+    password: string
+    api_key: string
+    name: string
+    stripe_customer_id?: string | null
+    reset_token?: string | null
+    reset_sent_at?: Date | string | null
+    email_verification_token?: string | null
+    email_verification_sent_at?: Date | string | null
+    email_verified_at?: Date | string | null
+    magicLink_token?: string | null
+    magicLink_expiration?: Date | string | null
+    TrainingModels?: TrainingModelsUncheckedCreateNestedManyWithoutUserInput
+    UserCredits?: UserCreditsUncheckedCreateNestedManyWithoutUserInput
+    Images?: ImagesUncheckedCreateNestedManyWithoutUserInput
+    Transactions?: TransactionsUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UsersCreateOrConnectWithoutOAuth2SessionsInput = {
+    where: UsersWhereUniqueInput
+    create: XOR<UsersCreateWithoutOAuth2SessionsInput, UsersUncheckedCreateWithoutOAuth2SessionsInput>
+  }
+
+  export type UsersUpsertWithoutOAuth2SessionsInput = {
+    update: XOR<UsersUpdateWithoutOAuth2SessionsInput, UsersUncheckedUpdateWithoutOAuth2SessionsInput>
+    create: XOR<UsersCreateWithoutOAuth2SessionsInput, UsersUncheckedCreateWithoutOAuth2SessionsInput>
+    where?: UsersWhereInput
+  }
+
+  export type UsersUpdateToOneWithWhereWithoutOAuth2SessionsInput = {
+    where?: UsersWhereInput
+    data: XOR<UsersUpdateWithoutOAuth2SessionsInput, UsersUncheckedUpdateWithoutOAuth2SessionsInput>
+  }
+
+  export type UsersUpdateWithoutOAuth2SessionsInput = {
+    pid?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    api_key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_token?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null
+    email_verification_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    email_verified_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    magicLink_token?: NullableStringFieldUpdateOperationsInput | string | null
+    magicLink_expiration?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    TrainingModels?: TrainingModelsUpdateManyWithoutUserNestedInput
+    UserCredits?: UserCreditsUpdateManyWithoutUserNestedInput
+    Images?: ImagesUpdateManyWithoutUserNestedInput
+    Transactions?: TransactionsUpdateManyWithoutUserNestedInput
+  }
+
+  export type UsersUncheckedUpdateWithoutOAuth2SessionsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    pid?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    api_key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_token?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null
+    email_verification_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    email_verified_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    magicLink_token?: NullableStringFieldUpdateOperationsInput | string | null
+    magicLink_expiration?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    TrainingModels?: TrainingModelsUncheckedUpdateManyWithoutUserNestedInput
+    UserCredits?: UserCreditsUncheckedUpdateManyWithoutUserNestedInput
+    Images?: ImagesUncheckedUpdateManyWithoutUserNestedInput
+    Transactions?: TransactionsUncheckedUpdateManyWithoutUserNestedInput
+  }
+
   export type UsersCreateWithoutTrainingModelsInput = {
     pid: string
     email: string
@@ -18177,6 +19808,7 @@ export namespace Prisma {
     UserCredits?: UserCreditsCreateNestedManyWithoutUserInput
     Images?: ImagesCreateNestedManyWithoutUserInput
     Transactions?: TransactionsCreateNestedManyWithoutUserInput
+    oAuth2Sessions?: OAuth2SessionCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutTrainingModelsInput = {
@@ -18197,6 +19829,7 @@ export namespace Prisma {
     UserCredits?: UserCreditsUncheckedCreateNestedManyWithoutUserInput
     Images?: ImagesUncheckedCreateNestedManyWithoutUserInput
     Transactions?: TransactionsUncheckedCreateNestedManyWithoutUserInput
+    oAuth2Sessions?: OAuth2SessionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersCreateOrConnectWithoutTrainingModelsInput = {
@@ -18287,6 +19920,7 @@ export namespace Prisma {
     UserCredits?: UserCreditsUpdateManyWithoutUserNestedInput
     Images?: ImagesUpdateManyWithoutUserNestedInput
     Transactions?: TransactionsUpdateManyWithoutUserNestedInput
+    oAuth2Sessions?: OAuth2SessionUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutTrainingModelsInput = {
@@ -18307,6 +19941,7 @@ export namespace Prisma {
     UserCredits?: UserCreditsUncheckedUpdateManyWithoutUserNestedInput
     Images?: ImagesUncheckedUpdateManyWithoutUserNestedInput
     Transactions?: TransactionsUncheckedUpdateManyWithoutUserNestedInput
+    oAuth2Sessions?: OAuth2SessionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ImagesUpsertWithWhereUniqueWithoutTraining_modelInput = {
@@ -18342,6 +19977,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsCreateNestedManyWithoutUserInput
     Images?: ImagesCreateNestedManyWithoutUserInput
     Transactions?: TransactionsCreateNestedManyWithoutUserInput
+    oAuth2Sessions?: OAuth2SessionCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutUserCreditsInput = {
@@ -18362,6 +19998,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsUncheckedCreateNestedManyWithoutUserInput
     Images?: ImagesUncheckedCreateNestedManyWithoutUserInput
     Transactions?: TransactionsUncheckedCreateNestedManyWithoutUserInput
+    oAuth2Sessions?: OAuth2SessionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersCreateOrConnectWithoutUserCreditsInput = {
@@ -18397,6 +20034,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsUpdateManyWithoutUserNestedInput
     Images?: ImagesUpdateManyWithoutUserNestedInput
     Transactions?: TransactionsUpdateManyWithoutUserNestedInput
+    oAuth2Sessions?: OAuth2SessionUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutUserCreditsInput = {
@@ -18417,6 +20055,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsUncheckedUpdateManyWithoutUserNestedInput
     Images?: ImagesUncheckedUpdateManyWithoutUserNestedInput
     Transactions?: TransactionsUncheckedUpdateManyWithoutUserNestedInput
+    oAuth2Sessions?: OAuth2SessionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UsersCreateWithoutImagesInput = {
@@ -18436,6 +20075,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsCreateNestedManyWithoutUserInput
     UserCredits?: UserCreditsCreateNestedManyWithoutUserInput
     Transactions?: TransactionsCreateNestedManyWithoutUserInput
+    oAuth2Sessions?: OAuth2SessionCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutImagesInput = {
@@ -18456,6 +20096,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsUncheckedCreateNestedManyWithoutUserInput
     UserCredits?: UserCreditsUncheckedCreateNestedManyWithoutUserInput
     Transactions?: TransactionsUncheckedCreateNestedManyWithoutUserInput
+    oAuth2Sessions?: OAuth2SessionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersCreateOrConnectWithoutImagesInput = {
@@ -18581,6 +20222,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsUpdateManyWithoutUserNestedInput
     UserCredits?: UserCreditsUpdateManyWithoutUserNestedInput
     Transactions?: TransactionsUpdateManyWithoutUserNestedInput
+    oAuth2Sessions?: OAuth2SessionUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutImagesInput = {
@@ -18601,6 +20243,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsUncheckedUpdateManyWithoutUserNestedInput
     UserCredits?: UserCreditsUncheckedUpdateManyWithoutUserNestedInput
     Transactions?: TransactionsUncheckedUpdateManyWithoutUserNestedInput
+    oAuth2Sessions?: OAuth2SessionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type TrainingModelsUpsertWithoutImagesInput = {
@@ -18811,6 +20454,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsCreateNestedManyWithoutUserInput
     UserCredits?: UserCreditsCreateNestedManyWithoutUserInput
     Images?: ImagesCreateNestedManyWithoutUserInput
+    oAuth2Sessions?: OAuth2SessionCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutTransactionsInput = {
@@ -18831,6 +20475,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsUncheckedCreateNestedManyWithoutUserInput
     UserCredits?: UserCreditsUncheckedCreateNestedManyWithoutUserInput
     Images?: ImagesUncheckedCreateNestedManyWithoutUserInput
+    oAuth2Sessions?: OAuth2SessionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersCreateOrConnectWithoutTransactionsInput = {
@@ -18910,6 +20555,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsUpdateManyWithoutUserNestedInput
     UserCredits?: UserCreditsUpdateManyWithoutUserNestedInput
     Images?: ImagesUpdateManyWithoutUserNestedInput
+    oAuth2Sessions?: OAuth2SessionUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutTransactionsInput = {
@@ -18930,6 +20576,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsUncheckedUpdateManyWithoutUserNestedInput
     UserCredits?: UserCreditsUncheckedUpdateManyWithoutUserNestedInput
     Images?: ImagesUncheckedUpdateManyWithoutUserNestedInput
+    oAuth2Sessions?: OAuth2SessionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ImagesCreateWithoutPackInput = {
@@ -19071,6 +20718,14 @@ export namespace Prisma {
     currency: string
     payment_id: string
     status: $Enums.Status
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type OAuth2SessionCreateManyUserInput = {
+    id?: number
+    session_id: string
+    expires_at: Date | string
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -19285,6 +20940,29 @@ export namespace Prisma {
     currency?: StringFieldUpdateOperationsInput | string
     payment_id?: StringFieldUpdateOperationsInput | string
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OAuth2SessionUpdateWithoutUserInput = {
+    session_id?: StringFieldUpdateOperationsInput | string
+    expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OAuth2SessionUncheckedUpdateWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    session_id?: StringFieldUpdateOperationsInput | string
+    expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type OAuth2SessionUncheckedUpdateManyWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    session_id?: StringFieldUpdateOperationsInput | string
+    expires_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }

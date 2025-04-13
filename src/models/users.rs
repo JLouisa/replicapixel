@@ -8,7 +8,9 @@ use unicode_segmentation::UnicodeSegmentation;
 use uuid::Uuid;
 use validator::ValidateEmail;
 
+use super::o_auth2_sessions;
 use crate::service::stripe::stripe::StripeClient;
+use loco_oauth2::models::users::OAuth2UserTrait;
 
 pub use super::_entities::users::{self, ActiveModel, Entity, Model};
 use super::{user_credits::UserCreditsInit, UserCreditActiveModel, UserModel};
@@ -16,16 +18,20 @@ use super::{user_credits::UserCreditsInit, UserCreditActiveModel, UserModel};
 pub const MAGIC_LINK_LENGTH: i8 = 32;
 pub const MAGIC_LINK_EXPIRATION_MIN: i8 = 5;
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Serialize, Deserialize, Validate)]
 pub struct LoginParams {
+    #[validate(email)]
     pub email: String,
     pub password: String,
     pub remember: bool,
 }
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Serialize, Deserialize, Validate)]
 pub struct RegisterParams {
+    #[validate(length(min = 2, message = "Name must be at least 2 characters long."))]
     pub name: String,
+    #[validate(email)]
     pub email: String,
+    #[validate(must_match(other = "confirm_password", message = "Passwords do not match"))]
     pub password: String,
     pub confirm_password: String,
 }
@@ -145,7 +151,7 @@ impl RegisterParams {
 #[derive(Debug, Clone, Constructor, AsRef, From)]
 pub struct UserId(i32);
 
-#[derive(Debug, Clone, AsRef, From)]
+#[derive(Debug, Serialize, Clone, AsRef, From)]
 pub struct UserPid(String);
 impl UserPid {
     pub fn new<K: Into<String>>(key: K) -> Self {
@@ -222,6 +228,126 @@ impl Validatable for ActiveModel {
             name: self.name.as_ref().to_owned(),
             email: self.email.as_ref().to_owned(),
         })
+    }
+}
+
+/// `OAuth2UserProfile` user profile information via scopes
+/// https://developers.google.com/identity/openid-connect/openid-connect#obtainuserinfo
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct OAuth2UserProfile {
+    // https://www.googleapis.com/auth/userinfo.email	See your primary Google Account email address
+    pub email: String,
+    // https://www.googleapis.com/auth/userinfo.profile   See your personal info, including any personal info you've made publicly available
+    pub name: String,
+    // sub field is unique
+    pub sub: String,
+    pub email_verified: bool,
+    pub given_name: Option<String>, // Some accounts don't have this field
+    pub family_name: Option<String>, // Some accounts don't have this field
+    pub picture: Option<String>,    // Some accounts don't have this field
+    pub locale: Option<String>,     // Some accounts don't have this field
+}
+
+#[async_trait]
+impl OAuth2UserTrait<OAuth2UserProfile> for Model {
+    /// Asynchronously finds user by OAuth2 session id.
+    /// # Arguments
+    /// * `db` - Database connection
+    /// * `cookie` - OAuth2 session id
+    ///
+    /// # Returns
+    /// * `Self` - The `OAuth2UserTrait` struct
+    ///
+    /// # Errors
+    /// * `ModelError` - When could not find the user in the DB
+    async fn find_by_oauth2_session_id(
+        db: &DatabaseConnection,
+        session_id: &str,
+    ) -> ModelResult<Self> {
+        // find the session by the session id
+        let session = o_auth2_sessions::Entity::find()
+            .filter(super::_entities::o_auth2_sessions::Column::SessionId.eq(session_id))
+            .one(db)
+            .await?
+            .ok_or_else(|| ModelError::EntityNotFound)?;
+        // if the session is found, find the user by the user id
+        let user = users::Entity::find()
+            .filter(users::Column::Id.eq(session.user_id))
+            .one(db)
+            .await?;
+        user.ok_or_else(|| ModelError::EntityNotFound)
+    }
+    /// Asynchronously upsert user with OAuth data and saves it to the
+    /// database.
+    /// # Arguments
+    /// * `db` - Database connection
+    /// * `profile` - OAuth profile
+    ///
+    /// # Returns
+    /// * `Self` - The `OAuth2UserTrait` struct
+    ///
+    /// # Errors
+    ///
+    /// When could not save the user into the DB
+    async fn upsert_with_oauth(
+        db: &DatabaseConnection,
+        profile: &OAuth2UserProfile,
+    ) -> ModelResult<Self> {
+        let txn = db.begin().await?;
+        let user = match users::Entity::find()
+            .filter(users::Column::Email.eq(&profile.email))
+            .one(&txn)
+            .await?
+        {
+            None => {
+                // We use the sub field as the user fake password since sub is unique
+                let password_hash =
+                    hash::hash_password(&profile.sub).map_err(|e| ModelError::Any(e.into()))?;
+                // Create the user into the database
+                let user = users::ActiveModel {
+                    email: ActiveValue::set(profile.email.to_string()),
+                    name: ActiveValue::set(profile.name.to_string()),
+                    email_verified_at: ActiveValue::set(Some(Local::now().into())),
+                    password: ActiveValue::set(password_hash),
+                    ..Default::default()
+                }
+                .insert(&txn)
+                .await
+                .map_err(|e| {
+                    tracing::error!("Error while trying to create user: {e}");
+                    ModelError::Any(e.into())
+                })?;
+                let user_credits_init = UserCreditsInit::default();
+                UserCreditActiveModel {
+                    pid: ActiveValue::set(user_credits_init.pid),
+                    user_id: ActiveValue::set(user.id),
+                    model_amount: ActiveValue::set(user_credits_init.model_amount),
+                    credit_amount: ActiveValue::set(user_credits_init.credit_amount),
+                    ..Default::default()
+                }
+                .insert(&txn)
+                .await?;
+                user
+            }
+            // Do nothing if user exists
+            Some(user) => user,
+        };
+        txn.commit().await?;
+        Ok(user)
+    }
+
+    /// Generates a JWT
+    /// # Arguments
+    /// * `secret` - JWT secret
+    /// * `expiration` - JWT expiration time
+    ///
+    /// # Returns
+    /// * `String` - JWT token
+    ///
+    /// # Errors
+    /// * `ModelError` - When could not generate the JWT
+    fn generate_jwt(&self, secret: &str, expiration: &u64) -> ModelResult<String> {
+        self.generate_jwt(secret, expiration.to_owned())
     }
 }
 

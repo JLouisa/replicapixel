@@ -37,9 +37,24 @@ model Users {
   UserCredits    UserCredits[]
   Images         Images[]
   Transactions   Transactions[]
+  oAuth2Sessions OAuth2Session[]
 
   @@index([pid], name: "idx-users-pid")
   @@index([email], name: "idx-users-email")
+}
+
+model OAuth2Session {
+  id         Int      @id @default(autoincrement())
+  user_id    Int
+  session_id String   @db.VarChar(255)
+  expires_at DateTime @db.Timestamptz
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+
+  user Users @relation(fields: [user_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  @@index([session_id], name: "idx-oauth2-session_id")
+  @@map("o_auth2_sessions")
 }
 
 model TrainingModels {
@@ -118,6 +133,8 @@ model Images {
   @@index([pid], name: "idx-images-pid")
   @@index([user_id], name: "idx-images-user_id")
   @@index([training_model_id], name: "idx-images-training_model_id")
+  @@index([created_at], name: "idx-images-created_at")
+  @@index([updated_at], name: "idx-images-updated_at")
 }
 
 model Plans {

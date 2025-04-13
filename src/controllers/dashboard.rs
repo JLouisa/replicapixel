@@ -10,7 +10,7 @@ use crate::models::join::user_credits_models::{
 };
 use crate::models::training_models::TrainingModelList;
 use crate::models::users::UserPid;
-use crate::models::{ImageModel, PackModel, TrainingModelModel, UserModel};
+use crate::models::{ImageModel, PackModel, TrainingModelModel, UserCreditModel, UserModel};
 use crate::service::aws::s3::AwsS3;
 use crate::service::redis::redis::Cache;
 use crate::views;
@@ -19,6 +19,12 @@ use axum::Extension;
 use axum::{debug_handler, extract::State, response::IntoResponse};
 use loco_rs::prelude::*;
 use reqwest::StatusCode;
+
+use crate::{
+    models::{o_auth2_sessions, users, users::OAuth2UserProfile},
+    views::auth::LoginResponse,
+};
+use loco_oauth2::controllers::middleware::OAuth2CookieUser;
 
 pub mod routes {
     use serde::{Deserialize, Serialize};
@@ -189,10 +195,10 @@ async fn load_user(db: &DatabaseConnection, pid: &UserPid) -> Result<UserModel> 
     let item = UserModel::find_by_pid(db, &pid.as_ref().to_string()).await?;
     Ok(item)
 }
-// async fn load_user_credits(db: &DatabaseConnection, user: &UserModel) -> Result<UserCreditModel> {
-//     let item = UserCreditModel::load_item_by_user_id(db, user).await?;
-//     Ok(item)
-// }
+async fn load_user_credits(db: &DatabaseConnection, user: &UserModel) -> Result<UserCreditModel> {
+    let item = UserCreditModel::load_item_by_user_id(db, user).await?;
+    Ok(item)
+}
 // async fn load_item_all(db: &DatabaseConnection, id: i32) -> Result<TrainingModelList> {
 //     let list = TrainingModelModel::find_all_by_user_id(db, id).await?;
 //     Ok(TrainingModelList::new(list))
@@ -644,3 +650,4 @@ async fn render_dashboard(
         is_favorite,
     )
 }
+//Todo Remove for photo dashboard controller

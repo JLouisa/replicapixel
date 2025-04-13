@@ -1,7 +1,7 @@
-use derive_more::{AsRef, Constructor, From};
-use futures::future::{join_all, try_join_all};
 use loco_rs::prelude::*;
 
+use derive_more::{AsRef, Constructor, From};
+use futures::future::{join_all, try_join_all};
 use serde::Serialize;
 use uuid::Uuid;
 

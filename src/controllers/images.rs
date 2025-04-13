@@ -2,7 +2,10 @@
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
 use axum::{debug_handler, extract::Query, response::Redirect, Extension};
+use axum::{http::StatusCode, response::IntoResponse, Json};
 use loco_rs::prelude::*;
+use serde::{Deserialize, Serialize};
+use uuid::Uuid;
 
 use crate::controllers::images;
 use crate::domain::domain_services::image_generation::ImageGenerationService;
@@ -20,9 +23,6 @@ use crate::service::aws::s3::{AwsS3, S3Folders};
 use crate::service::redis::redis::Cache;
 use crate::views::images::{CreditsViewModel, ImageViewList, ImageViewModel};
 use crate::{models::_entities::images::Entity, service::fal_ai::fal_client::FalAiClient, views};
-use axum::{http::StatusCode, response::IntoResponse, Json};
-use serde::{Deserialize, Serialize};
-use uuid::Uuid;
 
 #[derive(Clone, Validate, Debug, Deserialize)]
 pub struct ImageGenRequestParams {
