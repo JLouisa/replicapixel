@@ -131,9 +131,7 @@ async fn register(
     State(ctx): State<AppContext>,
     Json(params): Json<RegisterParams>,
 ) -> Result<Response> {
-    dbg!(&params);
     let mut validate = RegisterError::validate(&params);
-    dbg!("validate", &validate);
 
     let user = match users::Model::create_with_password(&ctx.db, &params, &stripe_client).await {
         Ok(user) => user,
