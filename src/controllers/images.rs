@@ -177,9 +177,10 @@ async fn image_infinite_handler(
     tracing::debug!("User successfully scrolled into view.");
     let user_pid = UserPid::new(&auth.claims.pid);
     let user = load_user(&ctx.db, &user_pid).await?;
-    let images = load_images_inf(&ctx.db, &user, &anchor_image_pid, params).await?;
-    let images: Vec<ImageViewModel> = images.into();
-    let images = ImageViewModel::get_pre_url_many(images, &s3_client, &cache).await;
+    let images: ImageViewList = load_images_inf(&ctx.db, &user, &anchor_image_pid, params)
+        .await?
+        .into();
+    let images = images.populate_s3_pre_urls(&s3_client, &cache).await;
 
     views::images::img_infinite_loading(&v, &website, &images.into())
 }

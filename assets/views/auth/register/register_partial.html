@@ -3,7 +3,8 @@
   <div>
     <div class="flex items-center justify-center space-x-4 mt-3">
       <button
-        class="flex items-center py-2 px-4 text-sm uppercase rounded bg-white hover:bg-gray-100 text-indigo-500 border border-transparent hover:border-transparent hover:text-gray-700 shadow-md hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
+        onclick="oAuth2('google')"
+        class="flex btn items-center py-2 px-4 text-sm uppercase rounded bg-white hover:bg-gray-100 text-indigo-500 border border-transparent hover:border-transparent hover:text-gray-700 shadow-md hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-3" viewBox="0 0 48 48">
           <path
@@ -26,7 +27,8 @@
         Google
       </button>
       <button
-        class="flex items-center py-2 px-4 text-sm uppercase rounded bg-white hover:bg-gray-100 text-indigo-500 border border-transparent hover:border-transparent hover:text-gray-700 shadow-md hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
+        disabled
+        class="flex btn items-center py-2 px-4 text-sm uppercase rounded bg-white hover:bg-gray-100 text-indigo-500 border border-transparent hover:border-transparent hover:text-gray-700 shadow-md hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
       >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="w-6 h-6 mr-3">
           <path
@@ -40,12 +42,9 @@
   </div>
 </div>
 <div class="rounded-b-lg pt-4 pb-12 px-4 lg:px-12">
-  <div class="divider mt-3">Or sign up with credentials</div>
+  <div class="divider mt-3 text-gray-500">Or sign up with credentials</div>
   <form
     hx-post="/api/auth/register"
-    {#
-    hx-ext="registerjson"
-    #}
     hx-ext="form-json"
     hx-disabled-elt="#register-btn"
     hx-target="#auth-form"
@@ -183,46 +182,3 @@
     </div>
   </form>
 </div>
-
-{% block js %} {#
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const form = document.querySelector("form");
-    const password = document.querySelector('input[name="password"]');
-    const confirmPassword = document.querySelector('input[name="confirmPassword"]');
-
-    form.addEventListener("submit", function (event) {
-      if (password.value !== confirmPassword.value) {
-        event.preventDefault();
-        alert("Passwords do not match!");
-      }
-    });
-  });
-
-  htmx.defineExtension("registerjson", {
-    onEvent: function (name, evt) {
-      if (name === "htmx:configRequest") {
-        evt.detail.headers["Content-Type"] = "application/json";
-      }
-    },
-    encodeParameters: function (xhr, parameters) {
-      let json = {};
-      for (const key in parameters) {
-        const input = document.querySelector(`[name="${key}"]`);
-        if (input) {
-          if (input.type === "number") {
-            json[key] = parseFloat(parameters[key]);
-          } else if (input.type === "checkbox") {
-            json[key] = input.checked;
-          } else {
-            json[key] = parameters[key];
-          }
-        }
-      }
-
-      console.log(json);
-      return JSON.stringify(json);
-    },
-  });
-</script>
-#} {% endblock js %}

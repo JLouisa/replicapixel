@@ -1,10 +1,13 @@
 // auth mailer
 #![allow(non_upper_case_globals)]
 
+use axum::Extension;
+use chrono::Datelike;
+use chrono::Local;
 use loco_rs::prelude::*;
 use serde_json::json;
 
-use crate::models::users;
+use crate::{domain::website::Website, models::users};
 
 static welcome: Dir<'_> = include_dir!("src/mailers/auth/welcome");
 static forgot: Dir<'_> = include_dir!("src/mailers/auth/forgot");
@@ -21,16 +24,28 @@ impl AuthMailer {
     /// # Errors
     ///
     /// When email sending is failed
-    pub async fn send_welcome(ctx: &AppContext, user: &users::Model) -> Result<()> {
+    pub async fn send_welcome(
+        ctx: &AppContext,
+        user: &users::Model,
+        website: &Website,
+    ) -> Result<()> {
         Self::mail_template(
             ctx,
             &welcome,
             mailer::Args {
+                from: Some("Pictora <jonathan.louisa@gmail.com>".to_string()),
                 to: user.email.to_string(),
                 locals: json!({
+                  "company": website.website_settings.name.to_string(),
                   "name": user.name,
                   "verifyToken": user.email_verification_token,
-                  "domain": ctx.config.server.full_url()
+                  "domain": ctx.config.server.full_url(),
+                  "company_address": "Netherland".to_string(),
+                  "current_year": Local::now().year(),
+                  "twitter_url": "https://twitter.com/".to_string(),
+                  "facebook_url": "https://www.facebook.com/".to_string(),
+                  "linkedin_url": "https://www.linkedin.com/".to_string(),
+                  "unsubscribe_url": "https://unsubscribe.com/".to_string(),
                 }),
                 ..Default::default()
             },
@@ -45,16 +60,28 @@ impl AuthMailer {
     /// # Errors
     ///
     /// When email sending is failed
-    pub async fn forgot_password(ctx: &AppContext, user: &users::Model) -> Result<()> {
+    pub async fn forgot_password(
+        ctx: &AppContext,
+        user: &users::Model,
+        website: &Website,
+    ) -> Result<()> {
         Self::mail_template(
             ctx,
             &forgot,
             mailer::Args {
+                from: Some("Pictora <jonathan.louisa@gmail.com>".to_string()),
                 to: user.email.to_string(),
                 locals: json!({
                   "name": user.name,
                   "resetToken": user.reset_token,
-                  "domain": ctx.config.server.full_url()
+                  "domain": ctx.config.server.full_url(),
+                  "company": website.website_settings.name.to_string(),
+                  "current_year": Local::now().year(),
+                  "company_address": "Netherland".to_string(),
+                  "twitter_url": "https://twitter.com/".to_string(),
+                  "facebook_url": "https://www.facebook.com/".to_string(),
+                  "linkedin_url": "https://www.linkedin.com/".to_string(),
+                  "support_email": "support@".to_string(),
                 }),
                 ..Default::default()
             },
@@ -69,11 +96,16 @@ impl AuthMailer {
     /// # Errors
     ///
     /// When email sending is failed
-    pub async fn send_magic_link(ctx: &AppContext, user: &users::Model) -> Result<()> {
+    pub async fn send_magic_link(
+        ctx: &AppContext,
+        user: &users::Model,
+        website: &Website,
+    ) -> Result<()> {
         Self::mail_template(
             ctx,
             &magic_link,
             mailer::Args {
+                from: Some("Pictora <jonathan.louisa@gmail.com>".to_string()),
                 to: user.email.to_string(),
                 locals: json!({
                   "name": user.name,

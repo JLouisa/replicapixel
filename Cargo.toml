@@ -76,6 +76,11 @@ loco-oauth2 = "0.4.0"
 axum_session = "0.16.0"
 time = "0.3.41"
 
+oauth2 =  {version = "4.0.0", features = [] }
+# hyper = {version = "0.14", features = ["full"] }
+# url = "2.5.4"
+# once_cell = "1"
+
 [[bin]]
 name = "pictora-cli"
 path = "src/bin/main.rs"

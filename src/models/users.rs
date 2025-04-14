@@ -573,8 +573,6 @@ impl Model {
         .insert(&txn)
         .await?;
 
-        dbg!(&user);
-
         let user_credits_init = UserCreditsInit::default();
         UserCreditActiveModel {
             pid: ActiveValue::set(user_credits_init.pid),

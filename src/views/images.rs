@@ -12,7 +12,7 @@ use crate::models::images::{ImageNew, ImagesModelList};
 use crate::models::{ImageModel, UserCreditModel};
 use crate::models::{_entities::images, images::ImageNewList};
 use crate::service::aws::s3::{AwsError, AwsS3, S3Key};
-use crate::service::redis::redis::Cache;
+use crate::service::redis::redis::{Cache, RedisDbError};
 
 pub fn img_infinite_loading(
     v: &impl ViewRenderer,
@@ -143,32 +143,67 @@ impl ImageViewModel {
         try_join_all(futures).await
     }
     pub async fn get_pre_url(mut self, s3_client: &AwsS3, cache: &Cache) -> Self {
-        // Early exit if fields are missing
-        let Some(_image_url_fal) = self.image_url_fal.clone() else {
+        // Early exit if there isn't an image URL or S3 key
+        if self.image_url_fal.is_none() || self.image_s3_key.is_empty() {
             return self;
-        };
+        }
+
         let s3_key = S3Key::new(self.image_s3_key.clone());
 
-        // Check if the pre_url is already cached
+        // Try getting from cache
         match cache.get_s3_pre_url(&self).await {
             Ok(pre_url) => {
-                tracing::info!("Using cached pre_url: {}", &self.pid);
-                let url = Url::new(pre_url);
-                self.s3_pre_url = Some(url.into_inner());
+                tracing::info!("Using cached pre_url: {}", self.pid);
+                self.s3_pre_url = Some(pre_url);
             }
-            Err(_) => match s3_client.get_object_pre(&s3_key, None).await {
-                Ok(url) => {
-                    tracing::info!("Generating new pre_url: {}", &self.pid);
-                    self.s3_pre_url = Some(url.into_inner());
-                    let _ = cache.set_s3_pre_url(&self).await;
+            Err(_) => {
+                // Fallback: generate new URL and set it in cache
+                match s3_client.get_object_pre(&s3_key, None).await {
+                    Ok(url) => {
+                        tracing::info!("Generating new pre_url: {}", self.pid);
+                        self.s3_pre_url = Some(url.into_inner());
+                        let _ = cache.set_s3_pre_url(&self).await;
+                    }
+                    Err(err) => {
+                        tracing::warn!("Failed to generate pre_url for {}: {:?}", self.pid, err);
+                    }
                 }
-                Err(_) => return self,
-            },
+            }
         }
 
         self
     }
+    pub async fn get_pre_url_mut(&mut self, s3_client: &AwsS3, cache: &Cache) -> &mut Self {
+        // Early exit if there isn't an image URL or S3 key
+        if self.image_url_fal.is_none() || self.image_s3_key.is_empty() {
+            return self;
+        }
 
+        let s3_key = S3Key::new(self.image_s3_key.clone());
+
+        // Try getting from cache
+        match cache.get_s3_pre_url(&self).await {
+            Ok(pre_url) => {
+                tracing::info!("Using cached pre_url: {}", self.pid);
+                self.s3_pre_url = Some(pre_url);
+            }
+            Err(_) => {
+                // Fallback: generate new URL and set it in cache
+                match s3_client.get_object_pre(&s3_key, None).await {
+                    Ok(url) => {
+                        tracing::info!("Generating new pre_url: {}", self.pid);
+                        self.s3_pre_url = Some(url.into_inner());
+                        let _ = cache.set_s3_pre_url(&self).await;
+                    }
+                    Err(err) => {
+                        tracing::warn!("Failed to generate pre_url for {}: {:?}", self.pid, err);
+                    }
+                }
+            }
+        }
+
+        self
+    }
     pub async fn get_pre_url_many(list: Vec<Self>, s3_client: &AwsS3, cache: &Cache) -> Vec<Self> {
         let futures = list.into_iter().map(|image| async move {
             if image.image_url_fal.is_some() && image.image_status == Status::Completed.to_string()
@@ -182,6 +217,7 @@ impl ImageViewModel {
         join_all(futures).await
     }
 }
+
 impl From<ImageModel> for ImageViewModel {
     fn from(img: ImageModel) -> Self {
         Self {
@@ -256,16 +292,39 @@ impl From<&ImageNew> for ImageViewModel {
         }
     }
 }
-impl From<ImagesModelList> for Vec<ImageViewModel> {
-    fn from(list: ImagesModelList) -> Vec<ImageViewModel> {
-        list.into_inner().iter().map(ImageViewModel::from).collect()
-    }
-}
 
 #[derive(Debug, Serialize, Clone, Constructor, From, AsRef)]
 pub struct ImageViewList(Vec<ImageViewModel>);
 impl ImageViewList {
-    fn into_inner(self) -> Vec<ImageViewModel> {
+    pub fn into_inner(self) -> Vec<ImageViewModel> {
         self.0
+    }
+    pub fn as_mut_vec(&mut self) -> &mut Vec<ImageViewModel> {
+        &mut self.0
+    }
+    pub async fn populate_s3_pre_urls(mut self, s3_client: &AwsS3, cache: &Cache) -> Self {
+        self.get_pre_url_many(s3_client, cache).await;
+        self
+    }
+    pub async fn get_pre_url_many(
+        &mut self,
+        s3_client: &AwsS3,
+        cache: &Cache,
+    ) -> Result<(), RedisDbError> {
+        let futures = self.as_mut_vec().iter_mut().map(|image| async move {
+            if image.image_url_fal.is_some() && image.image_status == Status::Completed.to_string()
+            {
+                let updated_image = image.get_pre_url_mut(s3_client, cache).await;
+                return updated_image;
+            }
+            image
+        });
+        let updated_images = join_all(futures).await;
+        Ok(())
+    }
+}
+impl From<ImagesModelList> for ImageViewList {
+    fn from(list: ImagesModelList) -> ImageViewList {
+        Self(list.into_inner().iter().map(ImageViewModel::from).collect())
     }
 }

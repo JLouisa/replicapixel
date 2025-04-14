@@ -2,6 +2,7 @@
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
 use crate::{
+    domain::website::Website,
     mailers::auth::AuthMailer,
     models::{
         _entities::users,
@@ -64,7 +65,7 @@ pub fn routes() -> Routes {
         .add(routes::Auth::REGISTER_PARTIAL, get(partial_register))
         .add(routes::Auth::FORGOT_PARTIAL, get(partial_forgot))
         .add(routes::Auth::API_REGISTER, post(register))
-        .add(routes::Auth::API_VERIFY_W_TOKEN, get(verify))
+        .add(routes::Auth::API_VERIFY_TOKEN, get(verify))
         .add(routes::Auth::API_LOGIN, post(login))
         .add(routes::Auth::API_LOGOUT, get(logout))
         .add(routes::Auth::API_FORGOT, post(forgot))
@@ -128,12 +129,11 @@ pub async fn validate_user(
 async fn register(
     Extension(stripe_client): Extension<StripeClient>,
     ViewEngine(v): ViewEngine<TeraView>,
+    Extension(website): Extension<Website>,
     State(ctx): State<AppContext>,
     Json(params): Json<RegisterParams>,
 ) -> Result<Response> {
-    dbg!(&params);
     let mut validate = RegisterError::validate(&params);
-    dbg!("validate", &validate);
 
     let user = match users::Model::create_with_password(&ctx.db, &params, &stripe_client).await {
         Ok(user) => user,
@@ -177,7 +177,7 @@ async fn register(
         .set_email_verification_sent(&ctx.db)
         .await?;
 
-    AuthMailer::send_welcome(&ctx, &user).await?;
+    AuthMailer::send_welcome(&ctx, &user, &website).await?;
 
     let mut headers = HeaderMap::new();
     headers.insert("HX-Redirect", "/login".parse().unwrap()); // HTMX Redirect
@@ -210,6 +210,7 @@ async fn verify(State(ctx): State<AppContext>, Path(token): Path<String>) -> Res
 async fn forgot(
     ViewEngine(v): ViewEngine<TeraView>,
     State(ctx): State<AppContext>,
+    Extension(website): Extension<Website>,
     Json(params): Json<ForgotParams>,
 ) -> Result<Response> {
     let Ok(user) = users::Model::find_by_email(&ctx.db, &params.email).await else {
@@ -227,7 +228,7 @@ async fn forgot(
         .set_forgot_password_sent(&ctx.db)
         .await?;
 
-    AuthMailer::forgot_password(&ctx, &user).await?;
+    AuthMailer::forgot_password(&ctx, &user, &website).await?;
 
     format::render().view(
         &v,
@@ -345,6 +346,7 @@ async fn current(auth: auth::JWT, State(ctx): State<AppContext>) -> Result<Respo
 /// This flow enhances security by avoiding traditional passwords and providing a seamless login experience.
 async fn magic_link(
     State(ctx): State<AppContext>,
+    Extension(website): Extension<Website>,
     Json(params): Json<MagicLinkParams>,
 ) -> Result<Response> {
     let email_regex = get_allow_email_domain_re();
@@ -364,7 +366,7 @@ async fn magic_link(
     };
 
     let user = user.into_active_model().create_magic_link(&ctx.db).await?;
-    AuthMailer::send_magic_link(&ctx, &user).await?;
+    AuthMailer::send_magic_link(&ctx, &user, &website).await?;
 
     format::empty_json()
 }

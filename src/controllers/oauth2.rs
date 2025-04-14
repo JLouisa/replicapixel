@@ -1,7 +1,9 @@
+use loco_oauth2::base_oauth2::AuthorizationCode;
+use loco_oauth2::error::OAuth2ClientError;
 use std::fmt::Debug;
 use tokio::sync::MutexGuard;
 
-use loco_oauth2::grants::authorization_code::GrantTrait;
+use loco_oauth2::grants::authorization_code::{Client, GrantTrait};
 use loco_oauth2::models::oauth2_sessions::OAuth2SessionsTrait;
 use loco_oauth2::models::users::OAuth2UserTrait;
 use loco_rs::prelude::*;
@@ -198,3 +200,62 @@ pub async fn callback_jwt_github<
 
     Ok(user)
 }
+
+// use std::{collections::HashMap, time::Instant};
+
+// use async_trait::async_trait;
+// use oauth2::basic::{
+//     BasicErrorResponse, BasicRevocationErrorResponse, BasicTokenIntrospectionResponse,
+// };
+// use oauth2::{
+//     basic::{BasicClient, BasicTokenResponse},
+//     url,
+//     url::Url,
+//     AuthUrl, AuthorizationCode, ClientId, ClientSecret, CsrfToken, PkceCodeChallenge,
+//     PkceCodeVerifier, RedirectUrl, Scope, StandardRevocableToken, TokenResponse, TokenUrl,
+// };
+// use reqwest::{header, Response};
+// use serde::Serialize;
+
+// fn constant_time_compare(a: &str, b: &str) -> bool {
+//     // Convert the strings to bytes for comparison.
+//     a.as_bytes().ct_eq(b.as_bytes()).into()
+// }
+
+// async fn verify_code_from_callback(
+//     foo: &mut MutexGuard<'_, dyn GrantTrait>,
+//     code: String,
+//     state: String,
+//     csrf_token: String,
+// ) -> OAuth2ClientResult<(BasicTokenResponse, Response)> {
+//     let client = foo.get_authorization_code_client();
+//     // Clear outdated flow states
+//     client.remove_expire_flow();
+//     // Compare csrf token, use subtle to prevent time attack
+//     if constant_time_compare(&csrf_token, &state) {
+//         return Err(OAuth2ClientError::CsrfTokenError);
+//     }
+//     // Get the pkce_verifier for exchanging code
+//     let (pkce_verifier, _) = match client.flow_states.remove(&csrf_token) {
+//         None => {
+//             return Err(OAuth2ClientError::CsrfTokenError);
+//         }
+//         Some(item) => item,
+//     };
+//     // Exchange the code with a token
+//     let token = client
+//         .oauth2
+//         .exchange_code(AuthorizationCode::new(code))?
+//         .set_pkce_verifier(pkce_verifier)
+//         .request_async(&oauth2::reqwest::Client::new())
+//         .await?;
+//     let profile = client
+//         .http_client
+//         .get(client.profile_url.clone())
+//         .bearer_auth(token.access_token().secret().to_owned())
+//         .header(header::CONTENT_TYPE, "application/json")
+//         .send()
+//         .await
+//         .map_err(OAuth2ClientError::ProfileError)?;
+//     Ok((token, profile))
+// }
