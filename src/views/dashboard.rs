@@ -1,5 +1,5 @@
 use super::auth::{UserCreditsView, UserView};
-use super::images::ImageViewModel;
+use super::images::{ImageViewList, ImageViewModel};
 use super::training_models::TrainingModelView;
 use crate::controllers::dashboard::routes::Sidebar;
 use crate::domain::website::Website;
@@ -245,7 +245,7 @@ pub fn packs_partial_dashboard(
 pub fn photo_dashboard(
     v: impl ViewRenderer,
     user: &UserView,
-    images: &Vec<ImageViewModel>,
+    images: &ImageViewList,
     training_models: Vec<TrainingModelView>,
     website: &Website,
     credits: &UserCreditsView,
@@ -272,7 +272,7 @@ pub fn photo_dashboard(
 pub fn photo_partial_dashboard(
     v: impl ViewRenderer,
     user: &UserView,
-    images: &Vec<ImageViewModel>,
+    images: &ImageViewList,
     training_models: Vec<TrainingModelView>,
     website: &Website,
     credits: &UserCreditsView,

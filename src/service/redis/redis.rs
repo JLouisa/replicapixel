@@ -4,7 +4,7 @@ use serde::Deserialize;
 use strum::{AsRefStr, EnumString};
 use thiserror::Error;
 
-use crate::views::images::ImageViewModel;
+use crate::views::images::{ImageViewList, ImageViewModel};
 
 pub type Cache = Redis;
 
@@ -84,5 +84,18 @@ impl Cache {
         let mut conn = self.client.clone();
         let value: String = conn.get(key.pid.to_string()).await?;
         Ok(value)
+    }
+    pub async fn populate_s3_pre_urls(
+        &self,
+        items: &mut ImageViewList,
+    ) -> Result<(), RedisDbError> {
+        let mut conn = self.client.clone();
+
+        for item in items.as_mut_vec().iter_mut() {
+            let url: String = conn.get(item.pid.to_string()).await?;
+            item.s3_pre_url = Some(url);
+        }
+
+        Ok(())
     }
 }

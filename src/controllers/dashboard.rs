@@ -14,7 +14,7 @@ use crate::models::{ImageModel, PackModel, TrainingModelModel, UserCreditModel, 
 use crate::service::aws::s3::AwsS3;
 use crate::service::redis::redis::Cache;
 use crate::views;
-use crate::views::images::ImageViewModel;
+use crate::views::images::{ImageViewList, ImageViewModel};
 use axum::Extension;
 use axum::{debug_handler, extract::State, response::IntoResponse};
 use loco_rs::prelude::*;
@@ -455,14 +455,14 @@ pub async fn album_deleted_dashboard(
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     let training_models: TrainingModelList = TrainingModelList::empty();
     let images = load_images_del(&ctx.db, user.id).await?;
-    let images: Vec<ImageViewModel> = images.into();
-    let images = ImageViewModel::get_pre_url_many(images, &s3_client, &cache).await;
+    let mut images: ImageViewList = load_first_images(&ctx.db, user.id, false).await?.into();
+    let images = images.populate_s3_pre_urls(&s3_client, &cache).await;
     let is_deleted = true;
     let is_favorite = false;
     views::dashboard::photo_dashboard(
         v,
         &user.into(),
-        &images.into(),
+        &images,
         training_models.into(),
         &website,
         &user_credits.into(),
@@ -484,14 +484,14 @@ pub async fn album_deleted_partial_dashboard(
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     let training_models: TrainingModelList = TrainingModelList::empty();
     let images = load_images_del(&ctx.db, user.id).await?;
-    let images: Vec<ImageViewModel> = images.into();
-    let images = ImageViewModel::get_pre_url_many(images, &s3_client, &cache).await;
+    let mut images: ImageViewList = load_first_images(&ctx.db, user.id, false).await?.into();
+    let images = images.populate_s3_pre_urls(&s3_client, &cache).await;
     let is_deleted = true;
     let is_favorite = false;
     views::dashboard::photo_partial_dashboard(
         v,
         &user.into(),
-        &images.into(),
+        &images,
         training_models.into(),
         &website,
         &user_credits.into(),
@@ -513,15 +513,15 @@ pub async fn album_favorite_dashboard(
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     let training_models: TrainingModelList = TrainingModelList::empty();
     let images = load_first_images(&ctx.db, user.id, true).await?;
-    let images: Vec<ImageViewModel> = images.into();
-    let images = ImageViewModel::get_pre_url_many(images, &s3_client, &cache).await;
+    let mut images: ImageViewList = load_first_images(&ctx.db, user.id, false).await?.into();
+    let images = images.populate_s3_pre_urls(&s3_client, &cache).await;
     let is_deleted = false;
     let is_favorite = true;
 
     views::dashboard::photo_dashboard(
         v,
         &user.into(),
-        &images.into(),
+        &images,
         training_models.into(),
         &website,
         &user_credits.into(),
@@ -543,15 +543,15 @@ pub async fn album_favorite_partial_dashboard(
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     let training_models: TrainingModelList = TrainingModelList::empty();
     let images = load_first_images(&ctx.db, user.id, true).await?;
-    let images: Vec<ImageViewModel> = images.into();
-    let images = ImageViewModel::get_pre_url_many(images, &s3_client, &cache).await;
+    let mut images: ImageViewList = load_first_images(&ctx.db, user.id, false).await?.into();
+    let images = images.populate_s3_pre_urls(&s3_client, &cache).await;
     let is_deleted = false;
     let is_favorite = true;
 
     views::dashboard::photo_partial_dashboard(
         v,
         &user.into(),
-        &images.into(),
+        &images,
         training_models.into(),
         &website,
         &user_credits.into(),
@@ -572,9 +572,8 @@ pub async fn photo_dashboard(
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     let training_models = load_item_all_completed(&ctx, user.id).await?;
-    let images = load_first_images(&ctx.db, user.id, false).await?;
-    let images: Vec<ImageViewModel> = images.into();
-    let images = ImageViewModel::get_pre_url_many(images, &s3_client, &cache).await;
+    let mut images: ImageViewList = load_first_images(&ctx.db, user.id, false).await?.into();
+    let images = images.populate_s3_pre_urls(&s3_client, &cache).await;
     let is_deleted = false;
     let is_favorite = false;
 
@@ -602,16 +601,15 @@ pub async fn photo_partial_dashboard(
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     let training_models = load_item_all_completed(&ctx, user.id).await?;
-    let images = load_first_images(&ctx.db, user.id, false).await?;
-    let images: Vec<ImageViewModel> = images.into();
-    let images = ImageViewModel::get_pre_url_many(images, &s3_client, &cache).await;
+    let mut images: ImageViewList = load_first_images(&ctx.db, user.id, false).await?.into();
+    let images = images.populate_s3_pre_urls(&s3_client, &cache).await;
     let is_deleted = false;
     let is_favorite = false;
 
     views::dashboard::photo_partial_dashboard(
         v,
         &user.into(),
-        &images.into(),
+        &images,
         training_models.into(),
         &website,
         &user_credits.into(),
@@ -634,15 +632,15 @@ async fn render_dashboard(
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     let training_models = load_item_all_completed(&ctx, user.id).await?;
     let images = load_first_images(&ctx.db, user.id, false).await?;
-    let images: Vec<ImageViewModel> = images.into();
-    let images = ImageViewModel::get_pre_url_many(images, &s3_client, &cache).await;
+    let mut images: ImageViewList = load_first_images(&ctx.db, user.id, false).await?.into();
+    let images = images.populate_s3_pre_urls(&s3_client, &cache).await;
     let is_deleted = false;
     let is_favorite = false;
 
     views::dashboard::photo_dashboard(
         v,
         &user.into(),
-        &images.into(),
+        &images,
         training_models.into(),
         &website,
         &user_credits.into(),
