@@ -263,4 +263,26 @@ declare global {
   }
 }
 
+async function oAuth2(provider: string) {
+  const DEFAULT_BASE_URL =
+    window.location.hostname === "localhost"
+      ? "http://localhost:5150"
+      : "https://pictora.jonathanlouisa.nl";
+
+  try {
+    const response = await fetch(`/api/oauth2/${provider}`);
+    if (!response.ok) {
+      throw new Error("Failed to get OAuth URL");
+    }
+
+    const oauthLink = await response.text();
+    window.location.href = oauthLink;
+  } catch (err) {
+    console.error("OAuth2 error:", err);
+    alert("Could not start OAuth2 login. Please try again.");
+  }
+}
+
+(window as any).oAuth2 = oAuth2;
+
 Alpine.start();

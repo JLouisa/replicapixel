@@ -4,7 +4,7 @@
     <div class="flex items-center justify-center space-x-4 mt-3">
       <button
         onclick="oAuth2('google')"
-        class="flex items-center py-2 px-4 text-sm uppercase rounded bg-white hover:bg-gray-100 text-indigo-500 border border-transparent hover:border-transparent hover:text-gray-700 shadow-md hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
+        class="flex btn items-center py-2 px-4 text-sm uppercase rounded bg-white hover:bg-gray-100 text-indigo-500 border border-transparent hover:border-transparent hover:text-gray-700 shadow-md hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-3" viewBox="0 0 48 48">
           <path
@@ -29,7 +29,7 @@
       <button
         disabled
         onclick="oAuth2('github')"
-        class="flex items-center py-2 px-4 text-sm uppercase rounded bg-white hover:bg-gray-100 text-indigo-500 border border-transparent hover:border-transparent hover:text-gray-700 shadow-md hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
+        class="flex btn items-center py-2 px-4 text-sm uppercase rounded bg-white hover:bg-gray-100 text-indigo-500 border border-transparent hover:border-transparent hover:text-gray-700 shadow-md hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
       >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="w-6 h-6 mr-3">
           <path
@@ -45,13 +45,12 @@
 <div class="rounded-b-lg pt-4 pb-12 px-4 lg:px-12">
   <div class="divider mt-3 text-gray-500">Or sign in with credentials</div>
   <form
-    id="login-form"
     hx-post="/api/auth/login"
     hx-ext="form-json"
     hx-disabled-elt="#login-btn"
+    hx-target="#auth-form"
+    hx-swap="innerHTML"
     class="mt-6"
-    hx-target="#login-error"
-    hx-oob="true"
   >
     <div class="relative">
       <input
@@ -99,7 +98,6 @@
 
     <!-- Login Error -->
     {% include "auth/login/login_error.html" %}
-
     <!-- Remember Me & Password Forgot -->
     <div class="mt-4 flex items-center justify-between text-gray-500">
       <label class="cursor-pointer flex items-center gap-2" for="remember">
@@ -126,7 +124,9 @@
       <button
         id="login-btn"
         class="w-full text-white py-2 px-4 uppercase rounded bg-indigo-500 hover:bg-indigo-600 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:hover:bg-gray-400 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5 disabled:hover:translate-y-0"
+        {#
         x-bind:disabled="disabled"
+        #}
       >
         Sign in
       </button>
@@ -141,67 +141,3 @@
     </div>
   </form>
 </div>
-
-{% block js %}
-<script>
-  async function oAuth2(provider) {
-    const DEFAULT_BASE_URL =
-      window.location.hostname === "localhost"
-        ? "http://localhost:5150"
-        : "https://pictora.jonathanlouisa.nl";
-
-    try {
-      const response = await fetch(`/api/oauth2/${provider}`);
-      if (!response.ok) {
-        throw new Error("Failed to get OAuth URL");
-      }
-
-      const oauthLink = await response.text(); // 👈 this is the fix
-      window.location.href = oauthLink;
-    } catch (err) {
-      console.error("OAuth2 error:", err);
-      alert("Could not start OAuth2 login. Please try again.");
-    }
-  }
-  /*
-  htmx.defineExtension("submitjson", {
-    onEvent: function (name, evt) {
-      if (name === "htmx:configRequest") {
-        evt.detail.headers["Content-Type"] = "application/json";
-      }
-    },
-    encodeParameters: function (xhr, parameters, elt) {
-      let json = {};
-      for (const key in parameters) {
-        const input = document.querySelector(`[name="${key}"]`);
-        if (input) {
-          if (input.type === "number") {
-            json[key] = parseFloat(parameters[key]);
-          } else if (input.type === "checkbox") {
-            json[key] = input.checked;
-          } else {
-            json[key] = parameters[key];
-          }
-        }
-      }
-      
-      try {
-        console.log("Raw form data:", json);
-        
-        // Validate and transform
-        const loginForm = window.createLoginForm(json);
-        
-        console.log("Transformed form data:", loginForm);
-        return JSON.stringify(loginForm);
-      } catch (error) {
-        console.error("Validation error:", error);
-        
-        // Prevent HTMX request explicitly
-        preventDefault();
-        return null;
-      }
-    },
-  });
-  */
-</script>
-{% endblock js %}
