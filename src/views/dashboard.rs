@@ -1,5 +1,5 @@
 use super::auth::{UserCreditsView, UserView};
-use super::images::{ImageViewList, ImageViewModel};
+use super::images::{ImageViewList, ImageView};
 use super::training_models::TrainingModelView;
 use crate::controllers::dashboard::routes::Sidebar;
 use crate::domain::website::Website;

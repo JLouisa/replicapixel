@@ -7,7 +7,7 @@ use loco_rs::prelude::*;
 use serde::Serialize;
 
 use super::auth::UserView;
-use super::images::ImageViewModel;
+use super::images::ImageView;
 
 pub fn training_models_update(
     v: impl ViewRenderer,
@@ -34,7 +34,7 @@ pub fn training_models(v: impl ViewRenderer) -> Result<impl IntoResponse> {
 pub fn training_dashboard(
     v: impl ViewRenderer,
     user: UserView,
-    images: &Vec<ImageViewModel>,
+    images: &Vec<ImageView>,
     models: &Vec<&str>,
 ) -> Result<impl IntoResponse> {
     let sidebar = DashboardSidebar::init();
@@ -49,7 +49,7 @@ pub fn training_dashboard(
 pub fn training_partial_dashboard(
     v: impl ViewRenderer,
     user: UserView,
-    images: &Vec<ImageViewModel>,
+    images: &Vec<ImageView>,
 ) -> Result<impl IntoResponse> {
     let first_letter = user.name.chars().next().unwrap();
     format::render().view(

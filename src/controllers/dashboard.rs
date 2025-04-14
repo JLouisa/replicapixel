@@ -14,7 +14,7 @@ use crate::models::{ImageModel, PackModel, TrainingModelModel, UserCreditModel, 
 use crate::service::aws::s3::AwsS3;
 use crate::service::redis::redis::Cache;
 use crate::views;
-use crate::views::images::{ImageViewList, ImageViewModel};
+use crate::views::images::{ImageView, ImageViewList};
 use axum::Extension;
 use axum::{debug_handler, extract::State, response::IntoResponse};
 use loco_rs::prelude::*;

@@ -21,7 +21,7 @@ use crate::models::users::UserPid;
 use crate::models::{ImageActiveModel, ImageModel, TrainingModelModel, UserCreditModel, UserModel};
 use crate::service::aws::s3::{AwsS3, S3Folders};
 use crate::service::redis::redis::Cache;
-use crate::views::images::{CreditsViewModel, ImageViewList, ImageViewModel};
+use crate::views::images::{CreditsViewModel, ImageViewList, ImageView};
 use crate::{models::_entities::images::Entity, service::fal_ai::fal_client::FalAiClient, views};
 
 #[derive(Clone, Validate, Debug, Deserialize)]
@@ -245,8 +245,8 @@ pub async fn check_test(
     if image.status == Status::Processing {
         let user_credits = load_credits(&ctx.db, user.id).await?;
         let user_credits_view: CreditsViewModel = user_credits.into();
-        let image: ImageViewModel = image.into();
-        let image: ImageViewModel = image
+        let image: ImageView = image.into();
+        let image: ImageView = image
             .clone()
             .set_pre_url(&user.pid, &s3_client)
             .await
@@ -282,8 +282,8 @@ pub async fn check_img(
 
     if image.status == Status::Completed {
         let user_credits_view: CreditsViewModel = user_credits.into();
-        let image: ImageViewModel = image.into();
-        let image: ImageViewModel = image
+        let image: ImageView = image.into();
+        let image: ImageView = image
             .clone()
             .set_pre_url(&user.pid, &s3_client)
             .await
@@ -323,7 +323,7 @@ pub async fn generate(
 
     // 3. Prepare Data for the View using safe View Models
     let credits_view_model = CreditsViewModel::from(&updated_credits);
-    let image_view_models: Vec<ImageViewModel> = saved_images.into();
+    let image_view_models: Vec<ImageView> = saved_images.into();
 
     // 4. Render the view using the View Models
     views::images::img_completed(&v, &image_view_models.into(), &website, &credits_view_model)
