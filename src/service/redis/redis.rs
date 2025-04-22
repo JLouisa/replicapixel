@@ -4,7 +4,7 @@ use serde::Deserialize;
 use strum::{AsRefStr, EnumString};
 use thiserror::Error;
 
-use crate::views::images::{ImageViewList, ImageViewModel};
+use crate::views::images::{ImageView, ImageViewList};
 
 pub type Cache = Redis;
 
@@ -73,14 +73,14 @@ impl Redis {
 }
 
 impl Cache {
-    pub async fn set_s3_pre_url(&self, key: &ImageViewModel) -> Result<(), RedisDbError> {
+    pub async fn set_s3_pre_url(&self, key: &ImageView) -> Result<(), RedisDbError> {
         let mut conn = self.client.clone();
         let _: () = conn
             .set_ex(key.pid.to_string(), key.s3_pre_url.to_owned(), 60 * 60 * 23)
             .await?;
         Ok(())
     }
-    pub async fn get_s3_pre_url(&self, key: &ImageViewModel) -> Result<String, RedisDbError> {
+    pub async fn get_s3_pre_url(&self, key: &ImageView) -> Result<String, RedisDbError> {
         let mut conn = self.client.clone();
         let value: String = conn.get(key.pid.to_string()).await?;
         Ok(value)

@@ -119,7 +119,7 @@ pub async fn validate_user(
     format::render().view(
         &v,
         "partials/navbar/navbar_user_partial.html",
-        data!({"user": user, "credits": user_credits, "validate_route": validate_route}),
+        data!({"user": user, "credits": user_credits, "validate_route": validate_route, "is_home": true}),
     )
 }
 

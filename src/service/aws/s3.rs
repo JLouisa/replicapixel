@@ -16,7 +16,7 @@ use uuid::Uuid;
 use crate::domain::url::Url;
 use crate::models::_entities::sea_orm_active_enums::ImageFormat;
 use crate::models::training_models::TrainingForm;
-use crate::views::images::ImageViewModel;
+use crate::views::images::ImageView;
 
 #[derive(Error, Debug)]
 pub enum AwsError {
@@ -202,7 +202,7 @@ impl AwsS3 {
     pub async fn auto_upload_img_presigned_url(
         &self,
         user_pid: &Uuid,
-        image: &ImageViewModel,
+        image: &ImageView,
     ) -> Result<Url, AwsError> {
         let key = S3Key::new(image.image_s3_key.to_owned());
         let time = Some(300);

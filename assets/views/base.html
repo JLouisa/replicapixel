@@ -6,7 +6,7 @@
     <title>{% block title %}My Loco App{% endblock title %}</title>
     <link rel="icon" type="image/png" href="/static/favicon.png" />
     <link href="/static/css/output.css" rel="stylesheet" type="text/css" />
-    <script src="/static/js/index.min.js" defer></script>
+    <script src="/static/js/index.js" defer></script>
     <script src="/static/js/htmx/htmx.min.js"></script>
     <script src="/static/js/htmx/extensions/htmx-ext-form-json.js"></script>
     <link rel="stylesheet" href="style.css" />
@@ -18,44 +18,18 @@
       rel="stylesheet"
     />
 
-    <!-- Privacy Policy -->
-    {#
-    <script
-      id="usercentrics-ppg"
-      privacy-policy-id="86f6dbcb-bf8e-4b36-8565-19d6db737844"
-      src="https://policygenerator.usercentrics.eu/api/privacy-policy"
-    ></script>
-    #}
+    <!-- Cookie Consent -->
+    {% if cc_cookie.cookie_exists %}
+    <!-- Google Analytics -->
+    {% if cc_cookie.analytics %} {% include "partials/cookie/analytics.html" %} {% endif %}
+    <!-- Meta Pixel -->
+    {% if cc_cookie.marketing %} {% include "partials/cookie/marketing.html" %} {% endif %} {% else
+    %} {# --- COOKIE EXISTS: Load Main App Bundle + Conditional Tracking --- #}
+    <link href="/static/js/cookie-consent.css" rel="stylesheet" type="text/css" />
+    <script src="/static/js/cookie-consent.js" defer></script>
+    <!-- End Cookie Consent -->
+    {% endif %}
 
-    <!-- Cookie Consent by TermsFeed https://www.TermsFeed.com -->
-    <script
-      type="text/javascript"
-      src="https://www.termsfeed.com/public/cookie-consent/4.2.0/cookie-consent.js"
-      charset="UTF-8"
-    ></script>
-    <script type="text/javascript" charset="UTF-8">
-      document.addEventListener("DOMContentLoaded", function () {
-        cookieconsent.run({
-          notice_banner_type: "interstitial",
-          consent_type: "express",
-          palette: "dark",
-          language: "en",
-          page_load_consent_levels: ["strictly-necessary"],
-          notice_banner_reject_button_hide: false,
-          preferences_center_close_button_hide: false,
-          page_refresh_confirmation_buttons: false,
-          website_name: "Pictora",
-        });
-      });
-    </script>
-
-    <noscript
-      >Free cookie consent management tool by
-      <a href="https://www.termsfeed.com/">TermsFeed Generator</a></noscript
-    >
-    <!-- End Cookie Consent by TermsFeed https://www.TermsFeed.com -->
-
-    {% block head %}{% endblock head %}
     <script>
       // Apply theme on page load
       const userTheme = localStorage.getItem("theme");
@@ -63,13 +37,13 @@
         document.documentElement.setAttribute("data-theme", userTheme);
       }
     </script>
-
     <style>
       /* Apply the font globally */
       body {
         font-family: "Inter", sans-serif;
       }
     </style>
+    {% block head %}{% endblock head %}
   </head>
   <body class="bg-base-100">
     <!-- Main Layout Container -->
@@ -97,11 +71,6 @@
     >
       <span x-text="$store.toast.message"></span>
     </div>
-
-    {#
-    <!-- Below is the link that users can use to open Preferences Center to change their preferences. Do not modify the ID parameter. Place it where appropriate, style it as needed. -->
-    <a href="#" id="open_preferences_center">Update cookies preferences</a>
-    #}
 
     <!-- Javascript -->
     {% block js %} {% endblock js %}

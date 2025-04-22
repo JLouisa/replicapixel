@@ -14,6 +14,7 @@ pub mod routes {
     impl Policy {
         pub const BASE: &'static str = "/policy";
         pub const PRIVACY: &'static str = "/privacy";
+        pub const COOKIE: &'static str = "/cookie";
         pub const TERMS: &'static str = "/terms-and-conditions";
     }
 }
@@ -23,6 +24,17 @@ pub fn routes() -> Routes {
         .prefix(routes::Policy::BASE)
         .add(routes::Policy::PRIVACY, get(privacy))
         .add(routes::Policy::TERMS, get(terms))
+        .add(routes::Policy::COOKIE, get(cookie))
+}
+
+#[debug_handler]
+pub async fn cookie(
+    Extension(website): Extension<Website>,
+    ViewEngine(v): ViewEngine<TeraView>,
+) -> Result<impl IntoResponse> {
+    let is_home = true;
+    let validate_route = crate::controllers::auth::routes::Auth::VALIDATE_USER;
+    views::policy::cookie(v, &website)
 }
 
 #[debug_handler]

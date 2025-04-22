@@ -4,7 +4,7 @@ use crate::service::{
 };
 use serde::Deserialize;
 
-use super::website::WebsiteSettings;
+use super::website::{GoogleAnalytics, MetaPixel, WebsiteSettings};
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct Settings {
@@ -13,4 +13,6 @@ pub struct Settings {
     pub website: WebsiteSettings,
     pub stripe: StripeSettings,
     pub redis: RedisSettings,
+    // pub google_analytics: GoogleAnalytics,
+    // pub meta_pixel: MetaPixel,
 }

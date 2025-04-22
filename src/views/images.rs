@@ -105,7 +105,7 @@ impl From<&UserCreditModel> for CreditsViewModel {
 }
 
 #[derive(Debug, Serialize, Clone)]
-pub struct ImageViewModel {
+pub struct ImageView {
     pub pid: Uuid,
     pub training_model_id: i32,
     pub user_prompt: String,
@@ -118,7 +118,7 @@ pub struct ImageViewModel {
     pub pre_url: Option<String>,
     pub s3_pre_url: Option<String>,
 }
-impl ImageViewModel {
+impl ImageView {
     pub async fn set_pre_url(self, user_id: &Uuid, s3_client: &AwsS3) -> Result<Self, AwsError> {
         let pre_url = s3_client
             .auto_upload_img_presigned_url(user_id, &self)
@@ -218,7 +218,7 @@ impl ImageViewModel {
     }
 }
 
-impl From<ImageModel> for ImageViewModel {
+impl From<ImageModel> for ImageView {
     fn from(img: ImageModel) -> Self {
         Self {
             pid: img.pid,
@@ -235,7 +235,7 @@ impl From<ImageModel> for ImageViewModel {
         }
     }
 }
-impl From<&ImageModel> for ImageViewModel {
+impl From<&ImageModel> for ImageView {
     fn from(img: &ImageModel) -> Self {
         Self {
             pid: img.pid.to_owned(),
@@ -253,12 +253,12 @@ impl From<&ImageModel> for ImageViewModel {
     }
 }
 
-impl From<ImageNewList> for Vec<ImageViewModel> {
-    fn from(list: ImageNewList) -> Vec<ImageViewModel> {
-        list.into_inner().iter().map(ImageViewModel::from).collect()
+impl From<ImageNewList> for Vec<ImageView> {
+    fn from(list: ImageNewList) -> Vec<ImageView> {
+        list.into_inner().iter().map(ImageView::from).collect()
     }
 }
-impl From<ImageNew> for ImageViewModel {
+impl From<ImageNew> for ImageView {
     fn from(img: ImageNew) -> Self {
         Self {
             pid: img.pid,
@@ -275,7 +275,7 @@ impl From<ImageNew> for ImageViewModel {
         }
     }
 }
-impl From<&ImageNew> for ImageViewModel {
+impl From<&ImageNew> for ImageView {
     fn from(img: &ImageNew) -> Self {
         Self {
             pid: img.pid.to_owned(),
@@ -294,12 +294,12 @@ impl From<&ImageNew> for ImageViewModel {
 }
 
 #[derive(Debug, Serialize, Clone, Constructor, From, AsRef)]
-pub struct ImageViewList(Vec<ImageViewModel>);
+pub struct ImageViewList(Vec<ImageView>);
 impl ImageViewList {
-    pub fn into_inner(self) -> Vec<ImageViewModel> {
+    pub fn into_inner(self) -> Vec<ImageView> {
         self.0
     }
-    pub fn as_mut_vec(&mut self) -> &mut Vec<ImageViewModel> {
+    pub fn as_mut_vec(&mut self) -> &mut Vec<ImageView> {
         &mut self.0
     }
     pub async fn populate_s3_pre_urls(mut self, s3_client: &AwsS3, cache: &Cache) -> Self {
@@ -325,6 +325,6 @@ impl ImageViewList {
 }
 impl From<ImagesModelList> for ImageViewList {
     fn from(list: ImagesModelList) -> ImageViewList {
-        Self(list.into_inner().iter().map(ImageViewModel::from).collect())
+        Self(list.into_inner().iter().map(ImageView::from).collect())
     }
 }

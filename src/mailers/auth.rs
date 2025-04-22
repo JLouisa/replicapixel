@@ -33,7 +33,7 @@ impl AuthMailer {
             ctx,
             &welcome,
             mailer::Args {
-                from: Some("Pictora <jonathan.louisa@gmail.com>".to_string()),
+                from: Some("Pictora <jissicko@gmail.com>".to_string()),
                 to: user.email.to_string(),
                 locals: json!({
                   "company": website.website_settings.name.to_string(),
@@ -69,7 +69,7 @@ impl AuthMailer {
             ctx,
             &forgot,
             mailer::Args {
-                from: Some("Pictora <jonathan.louisa@gmail.com>".to_string()),
+                from: Some("Pictora <jissicko@gmail.com>".to_string()),
                 to: user.email.to_string(),
                 locals: json!({
                   "name": user.name,
@@ -105,7 +105,7 @@ impl AuthMailer {
             ctx,
             &magic_link,
             mailer::Args {
-                from: Some("Pictora <jonathan.louisa@gmail.com>".to_string()),
+                from: Some("Pictora <jissicko@gmail.com>".to_string()),
                 to: user.email.to_string(),
                 locals: json!({
                   "name": user.name,
