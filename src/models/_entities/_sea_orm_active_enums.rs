@@ -78,6 +78,42 @@ pub enum ImageFormat {
     Zip,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, EnumIter, DeriveActiveEnum, Serialize, Deserialize)]
+#[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "language")]
+pub enum Language {
+    #[sea_orm(string_value = "English")]
+    #[strum(to_string = "en-US")]
+    #[serde(rename = "en-US")]
+    English,
+    #[sea_orm(string_value = "Spanish")]
+    #[strum(to_string = "es-ES")]
+    #[serde(rename = "es-ES")]
+    Spanish,
+    #[sea_orm(string_value = "German")]
+    #[strum(to_string = "de-DE")]
+    #[serde(rename = "de-DE")]
+    German,
+    #[sea_orm(string_value = "Italian")]
+    #[strum(to_string = "it-IT")]
+    #[serde(rename = "it-IT")]
+    Italian,
+    #[sea_orm(string_value = "Dutch")]
+    #[strum(to_string = "nl-NL")]
+    #[serde(rename = "nl-NL")]
+    Dutch,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, EnumIter, DeriveActiveEnum, Serialize, Deserialize)]
+#[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "notification")]
+pub enum Notification {
+    #[sea_orm(string_value = "Message")]
+    Message,
+    #[sea_orm(string_value = "System_update")]
+    SystemUpdate,
+    #[sea_orm(string_value = "Promotion")]
+    Promotion,
+}
+
 #[derive(
     Debug,
     Clone,
@@ -242,4 +278,15 @@ impl Default for ImageSize {
     fn default() -> Self {
         Self::Square
     }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, EnumIter, DeriveActiveEnum, Serialize, Deserialize)]
+#[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "theme_preference")]
+pub enum ThemePreference {
+    #[sea_orm(string_value = "Light")]
+    Light,
+    #[sea_orm(string_value = "Dark")]
+    Dark,
+    #[sea_orm(string_value = "System")]
+    System,
 }

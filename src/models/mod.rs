@@ -17,6 +17,7 @@ pub type TrainingModelEntity = training_models::Entity;
 pub mod packs;
 pub type PackActiveModel = packs::ActiveModel;
 pub type PackModel = packs::Model;
+pub type PackEntity = packs::Entity;
 
 pub mod transactions;
 pub type TransactionActiveModel = transactions::ActiveModel;
@@ -27,9 +28,15 @@ pub type UserCreditActiveModel = user_credits::ActiveModel;
 pub type UserCreditModel = user_credits::Model;
 pub type UserCreditEntity = user_credits::Entity;
 
+pub mod user_settings;
+pub type UserSettingsActiveModel = user_settings::ActiveModel;
+pub type UserSettingsModel = user_settings::Model;
+pub type UserSettingsEntity = user_settings::Entity;
+
 pub mod plans;
 pub type PlanActiveModel = plans::ActiveModel;
 pub type PlanModel = plans::Model;
+pub type PlanEntity = plans::Entity;
 
 pub mod handled_stripe_events;
 pub type StripeEventModel = handled_stripe_events::Model;
@@ -40,6 +47,11 @@ pub mod handled_fal_events;
 pub type FalEventModel = handled_fal_events::Model;
 pub type FalEventActiveModel = handled_fal_events::ActiveModel;
 pub type FalEventsEntity = user_credits::Entity;
+
+pub mod notification;
+pub type NotificationActiveModel = notification::ActiveModel;
+pub type NotificationModel = notification::Model;
+pub type NotificationEntity = notification::Entity;
 
 pub mod join;
 pub mod o_auth2_sessions;

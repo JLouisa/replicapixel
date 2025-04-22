@@ -26,17 +26,6 @@
       >
         <li>
           <a
-            hx-get="/dashboard/partial/account"
-            hx-target="#dashboard_content"
-            hx-push-url="/dashboard/account"
-            hx-swap="innerHTML"
-            class="flex px-4 py-3 hover:bg-base-300 cursor-pointer"
-          >
-            Account
-          </a>
-        </li>
-        <li>
-          <a
             hx-get="/dashboard/partial/billing"
             hx-target="#dashboard_content"
             hx-push-url="/dashboard/billing"
@@ -65,16 +54,7 @@
   </button>
 </div>
 
-{# {% if is_home %}
-<!-- Dashboard button container (NOW centered) -->
-<div
-  id="navbar-middle"
-  hx-swap-oob="true"
-  class="absolute left-1/2 transform -translate-x-1/2 z-10"
->
-  <a href="/dashboard" class="btn btn-neutral">Dashboard</a>
-</div>
-{% endif %} #} {% if user.name and is_home %}
+{% if user.name and is_home %}
 <div id="navbar-middle" class="absolute left-1/2 transform -translate-x-1/2 z-10">
   <a href="/dashboard" class="btn btn-neutral">Dashboard</a>
 </div>

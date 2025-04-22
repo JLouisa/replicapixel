@@ -239,7 +239,7 @@ exports.Prisma.TransactionsScalarFieldEnum = {
 exports.Prisma.PacksScalarFieldEnum = {
   id: 'id',
   pid: 'pid',
-  name: 'name',
+  title: 'title',
   description: 'description',
   pack_prompts: 'pack_prompts',
   credits: 'credits',
@@ -262,6 +262,29 @@ exports.Prisma.HandledFalEventScalarFieldEnum = {
 exports.Prisma.Seaql_migrationsScalarFieldEnum = {
   version: 'version',
   applied_at: 'applied_at'
+};
+
+exports.Prisma.NotificationScalarFieldEnum = {
+  id: 'id',
+  pid: 'pid',
+  user_id: 'user_id',
+  message: 'message',
+  read: 'read',
+  link: 'link',
+  created_at: 'created_at',
+  updated_at: 'updated_at',
+  type: 'type'
+};
+
+exports.Prisma.UserSettingsScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
+  enable_notification_email: 'enable_notification_email',
+  enable_marketing_email: 'enable_marketing_email',
+  created_at: 'created_at',
+  updated_at: 'updated_at',
+  language: 'language',
+  theme: 'theme'
 };
 
 exports.Prisma.SortOrder = {
@@ -349,6 +372,26 @@ exports.PlanNames = exports.$Enums.PlanNames = {
   Max: 'Max'
 };
 
+exports.NotificationType = exports.$Enums.NotificationType = {
+  Message: 'Message',
+  System_update: 'System_update',
+  Promotion: 'Promotion'
+};
+
+exports.Language = exports.$Enums.Language = {
+  English: 'English',
+  Spanish: 'Spanish',
+  German: 'German',
+  Italian: 'Italian',
+  Dutch: 'Dutch'
+};
+
+exports.ThemePreference = exports.$Enums.ThemePreference = {
+  Light: 'Light',
+  Dark: 'Dark',
+  System: 'System'
+};
+
 exports.Prisma.ModelName = {
   Users: 'Users',
   OAuth2Session: 'OAuth2Session',
@@ -360,7 +403,9 @@ exports.Prisma.ModelName = {
   Packs: 'Packs',
   HandledStripeEvent: 'HandledStripeEvent',
   HandledFalEvent: 'HandledFalEvent',
-  seaql_migrations: 'seaql_migrations'
+  seaql_migrations: 'seaql_migrations',
+  Notification: 'Notification',
+  UserSettings: 'UserSettings'
 };
 
 /**

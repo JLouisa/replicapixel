@@ -1,8 +1,12 @@
 pub use super::_entities::packs::{ActiveModel, Entity, Model};
-use super::_entities::plans;
+use super::{PackModel, _entities::plans};
+use derive_more::{AsRef, Constructor};
 use sea_orm::entity::prelude::*;
 pub type Packs = Entity;
 use loco_rs::prelude::*;
+
+#[derive(Debug, Clone, AsRef, Constructor)]
+pub struct PackModelList(pub Vec<PackModel>);
 
 #[async_trait::async_trait]
 impl ActiveModelBehavior for ActiveModel {

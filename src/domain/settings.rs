@@ -13,6 +13,4 @@ pub struct Settings {
     pub website: WebsiteSettings,
     pub stripe: StripeSettings,
     pub redis: RedisSettings,
-    // pub google_analytics: GoogleAnalytics,
-    // pub meta_pixel: MetaPixel,
 }

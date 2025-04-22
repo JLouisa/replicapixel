@@ -19,7 +19,7 @@ async function main() {
       api_key: "123e4567-e89b-12d3-a456-426655440000",
     },
   });
-  await prisma.users.upsert({
+  let user2 = await prisma.users.upsert({
     where: { email: "golden@example.com" },
     update: {},
     create: {
@@ -31,7 +31,6 @@ async function main() {
       api_key: "123e4567-e89b-12d3-a456-426655440012",
     },
   });
-
   await prisma.userCredits.upsert({
     where: { user_id: user.id },
     update: {},
@@ -39,6 +38,38 @@ async function main() {
       pid: uuidv4(),
       user_id: user.id,
       credit_amount: 1000,
+    },
+  });
+  await prisma.userCredits.upsert({
+    where: { user_id: user2.id },
+    update: {},
+    create: {
+      pid: uuidv4(),
+      user_id: user2.id,
+      credit_amount: 80,
+    },
+  });
+
+  await prisma.userSettings.upsert({
+    where: { user_id: user.id },
+    update: {},
+    create: {
+      user_id: user.id,
+      enable_notification_email: true,
+      enable_marketing_email: false,
+      language: "English",
+      theme: "Dark",
+    },
+  });
+
+  await prisma.userSettings.upsert({
+    where: { user_id: user2.id },
+    update: {},
+    create: {
+      user_id: user2.id,
+      enable_notification_email: false,
+      enable_marketing_email: true,
+      language: "English",
     },
   });
 
@@ -246,6 +277,91 @@ async function main() {
           "24/7 Support",
         ],
         cta: "Choose Max",
+      },
+    });
+  }
+  {
+    const uuid = uuidv4();
+    await prisma.packs.upsert({
+      where: { pid: uuid },
+      update: {},
+      create: {
+        id: 0,
+        pid: uuid,
+        title: "Sexy Valentine's Day",
+        description: "Get your partner a special Valentine's Day with this pack of sexy images.",
+        pack_prompts: "Get your partner a special Valentine's Day with this pack of sexy images.",
+        credits: 100,
+        amount: 20,
+        image_url: "https://picsum.photos/id/31/400/500",
+      },
+    });
+  }
+  {
+    const uuid = uuidv4();
+    await prisma.packs.upsert({
+      where: { pid: uuid },
+      update: {},
+      create: {
+        pid: uuid,
+        title: "Valentine's Day",
+        description:
+          "Get your partner a special Valentine's Day with this pack of romantic images.",
+        pack_prompts:
+          "Get your partner a special Valentine's Day with this pack of romantic images.",
+        credits: 75,
+        amount: 20,
+        image_url: "https://picsum.photos/id/65/400/500",
+      },
+    });
+  }
+  {
+    const uuid = uuidv4();
+    await prisma.packs.upsert({
+      where: { pid: uuid },
+      update: {},
+      create: {
+        pid: uuid,
+        title: "Tinder",
+        description: "Get your partner a special Valentine's Day with this pack of Tinder images.",
+        pack_prompts: "Get your partner a special Valentine's Day with this pack of Tinder images.",
+        credits: 65,
+        amount: 20,
+        image_url: "https://picsum.photos/id/103/400/500",
+      },
+    });
+  }
+  {
+    const uuid = uuidv4();
+    await prisma.packs.upsert({
+      where: { pid: uuid },
+      update: {},
+      create: {
+        pid: uuid,
+        title: "Tinder",
+        description: "Get your partner a special Valentine's Day with this pack of Tinder images.",
+        pack_prompts: "Get your partner a special Valentine's Day with this pack of Tinder images.",
+        credits: 65,
+        amount: 20,
+        image_url: "https://picsum.photos/id/103/400/500",
+      },
+    });
+  }
+  {
+    const uuid = uuidv4();
+    await prisma.packs.upsert({
+      where: { pid: uuid },
+      update: {},
+      create: {
+        pid: uuid,
+        title: "Professional Head shots",
+        description:
+          "Get your partner a special Valentine's Day with this pack of professional head shots.",
+        pack_prompts:
+          "Get your partner a special Valentine's Day with this pack of professional head shots.",
+        credits: 100,
+        amount: 20,
+        image_url: "https://picsum.photos/id/160/400/500",
       },
     });
   }

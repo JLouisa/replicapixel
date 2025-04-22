@@ -2,10 +2,14 @@ use super::auth::{UserCreditsView, UserView};
 use super::images::{ImageView, ImageViewList};
 use super::training_models::TrainingModelView;
 use crate::controllers::dashboard::routes::Sidebar;
+use crate::domain::dashboard_sidebar::DashboardSidebar;
 use crate::domain::website::Website;
-use crate::domain::{dashboard_sidebar::DashboardSidebar, packs::Packs};
 use crate::middleware::cookie::CookieConsent;
+use crate::models::packs::PackModelList;
+use crate::models::PackModel;
+use derive_more::{AsRef, Constructor};
 use loco_rs::prelude::*;
+use serde::Serialize;
 
 pub fn billing_dashboard(
     v: impl ViewRenderer,
@@ -224,7 +228,7 @@ pub fn packs_dashboard(
     v: impl ViewRenderer,
     user: &UserView,
     credits: &UserCreditsView,
-    packs: &Vec<Packs>,
+    packs: PackViewList,
     website: &Website,
     cc_cookie: &CookieConsent,
 ) -> Result<impl IntoResponse> {
@@ -245,7 +249,7 @@ pub fn packs_dashboard(
 pub fn packs_partial_dashboard(
     v: impl ViewRenderer,
     user: &UserView,
-    packs: &Vec<Packs>,
+    packs: PackViewList,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
@@ -306,4 +310,37 @@ pub fn photo_partial_dashboard(
             "is_favorite": is_favorite
         }),
     )
+}
+
+#[derive(Debug, Serialize, Clone, Constructor)]
+pub struct PackView {
+    pub id: i32,
+    pub pid: Uuid,
+    pub title: String,
+    pub description: String,
+    pub credits: i32,
+    pub amount: i32,
+    pub image_url: String,
+}
+impl From<PackModel> for PackView {
+    fn from(p: PackModel) -> Self {
+        Self {
+            id: p.id,
+            pid: p.pid,
+            title: p.title,
+            description: p.description,
+            credits: p.credits,
+            amount: p.amount,
+            image_url: p.image_url,
+        }
+    }
+}
+
+#[derive(Debug, Serialize, Clone, AsRef, Constructor)]
+pub struct PackViewList(pub Vec<PackView>);
+
+impl From<PackModelList> for PackViewList {
+    fn from(p: PackModelList) -> Self {
+        Self(p.0.into_iter().map(|x| x.into()).collect())
+    }
 }

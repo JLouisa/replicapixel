@@ -5,9 +5,10 @@ use uuid::Uuid;
 pub struct Packs {
     id: i32,
     pid: Uuid,
-    img: String,
+    image_url: String,
     title: String,
     description: String,
+    pack_prompts: String,
     credits: i32,
     amount: i32,
 }
@@ -16,9 +17,12 @@ impl Packs {
         let sexy_valentine = Packs {
             id: 0,
             pid: Uuid::new_v4(),
-            img: "https://picsum.photos/id/31/400/500".to_string(),
+            image_url: "https://picsum.photos/id/31/400/500".to_string(),
             title: "Sexy Valentine's Day".to_string(),
             description:
+                "Get your partner a special Valentine's Day with this pack of sexy images."
+                    .to_string(),
+            pack_prompts:
                 "Get your partner a special Valentine's Day with this pack of sexy images."
                     .to_string(),
             credits: 100,
@@ -27,9 +31,12 @@ impl Packs {
         let valentine_day = Packs {
             id: 1,
             pid: Uuid::new_v4(),
-            img: "https://picsum.photos/id/65/400/500".to_string(),
+            image_url: "https://picsum.photos/id/65/400/500".to_string(),
             title: "Valentine's Day".to_string(),
             description:
+                "Get your partner a special Valentine's Day with this pack of romantic images."
+                    .to_string(),
+            pack_prompts:
                 "Get your partner a special Valentine's Day with this pack of romantic images."
                     .to_string(),
             credits: 75,
@@ -38,9 +45,12 @@ impl Packs {
         let tinder = Packs {
             id: 2,
             pid: Uuid::new_v4(),
-            img: "https://picsum.photos/id/103/400/500".to_string(),
+            image_url: "https://picsum.photos/id/103/400/500".to_string(),
             title: "Tinder".to_string(),
             description:
+                "Get your partner a special Valentine's Day with this pack of Tinder images."
+                    .to_string(),
+            pack_prompts:
                 "Get your partner a special Valentine's Day with this pack of Tinder images."
                     .to_string(),
             credits: 65,
@@ -48,9 +58,11 @@ impl Packs {
         };
         let professional_head_shots = Packs {
             id: 3,
-            pid: Uuid::new_v4(), img: "https://picsum.photos/id/160/400/500".to_string(),
+            pid: Uuid::new_v4(), 
+            image_url: "https://picsum.photos/id/160/400/500".to_string(),
             title: "Professional Head shots".to_string(),
             description: "Get your partner a special Valentine's Day with this pack of professional head shots.".to_string(),
+            pack_prompts: "Get your partner a special Valentine's Day with this pack of professional head shots.".to_string(),
             credits: 100,
             amount: 20,
         };

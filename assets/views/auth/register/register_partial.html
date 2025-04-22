@@ -154,12 +154,30 @@
       {% if errors %} {% for password in errors.password_confirm %} - {{password}} {% endfor %} {%
       endif %}
     </p>
+    <label class="cursor-pointer flex items-center gap-2 mt-3" for="email_notifications">
+      <input
+        type="checkbox"
+        class="checkbox checkbox-primary"
+        id="email_notifications"
+        name="email_notifications"
+      />
+      <span class="text-sm text-gray-800"> Get account updates by email </span>
+    </label>
+
+    <label class="cursor-pointer flex items-center gap-2 mt-3" for="marketing">
+      <input type="checkbox" class="checkbox checkbox-primary" id="marketing" name="marketing" />
+      <span class="text-sm text-gray-800"> Send me news and offers </span>
+    </label>
+    <input type="hidden" name="theme_preference" id="theme_preference" />
+    <input type="hidden" value="en-US" name="language" id="language" />
+    <!-- Todo: Make dynamic -->
+
     <!-- Terms -->
     <div class="mt-4 flex items-center justify-between text-gray-500">
       <p class="mt-4 text-sm text-gray-500">
         By signing up, you agree to our
-        <a href="#" class="text-primary">Terms of Service</a> and
-        <a href="#" class="text-primary">Privacy Policy</a>.
+        <a href="/policy/terms-and-conditions" class="text-primary">Terms of Service</a> and
+        <a href="/policy/privacy" class="text-primary">Privacy Policy</a>.
       </p>
     </div>
     <div class="flex flex-col items-center justify-center mt-8">
@@ -180,5 +198,16 @@
       >
       <a href="/" class="text-sm text-primary cursor-pointer mt-4 text-center">Home</a>
     </div>
+    <script>
+      // Set theme on load
+      const userThemeRegister = localStorage.getItem("theme");
+      if (userThemeRegister) {
+        document.documentElement.setAttribute("data-theme", userThemeRegister);
+        const themeInput = document.getElementById("theme_preference");
+        if (themeInput) {
+          themeInput.value = userThemeRegister;
+        }
+      }
+    </script>
   </form>
 </div>

@@ -32,12 +32,16 @@ pub struct Model {
 pub enum Relation {
     #[sea_orm(has_many = "super::images::Entity")]
     Images,
+    #[sea_orm(has_many = "super::notification::Entity")]
+    Notification,
     #[sea_orm(has_many = "super::training_models::Entity")]
     TrainingModels,
     #[sea_orm(has_many = "super::transactions::Entity")]
     Transactions,
     #[sea_orm(has_one = "super::user_credits::Entity")]
     UserCredits,
+    #[sea_orm(has_one = "super::user_settings::Entity")]
+    UserSettings,
     #[sea_orm(has_many = "super::o_auth2_sessions::Entity")]
     OAuth2Sessions,
 }
@@ -45,6 +49,12 @@ pub enum Relation {
 impl Related<super::images::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::Images.def()
+    }
+}
+
+impl Related<super::notification::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::Notification.def()
     }
 }
 
@@ -63,6 +73,12 @@ impl Related<super::transactions::Entity> for Entity {
 impl Related<super::user_credits::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::UserCredits.def()
+    }
+}
+
+impl Related<super::user_settings::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::UserSettings.def()
     }
 }
 

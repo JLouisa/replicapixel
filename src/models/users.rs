@@ -8,7 +8,10 @@ use unicode_segmentation::UnicodeSegmentation;
 use uuid::Uuid;
 use validator::ValidateEmail;
 
-use super::o_auth2_sessions;
+use super::{
+    o_auth2_sessions, UserSettingsActiveModel,
+    _entities::sea_orm_active_enums::{Language, ThemePreference},
+};
 use crate::service::stripe::stripe::StripeClient;
 use loco_oauth2::models::users::OAuth2UserTrait;
 
@@ -34,6 +37,12 @@ pub struct RegisterParams {
     #[validate(must_match(other = "confirm_password", message = "Passwords do not match"))]
     pub password: String,
     pub confirm_password: String,
+    pub email_notifications: bool,
+    pub marketing: bool,
+    #[serde(default)]
+    pub theme_preference: ThemePreference,
+    #[serde(default)]
+    pub language: Language,
 }
 impl RegisterParams {
     pub fn validate_email(&self) -> Vec<String> {
@@ -579,6 +588,17 @@ impl Model {
             user_id: ActiveValue::set(user.id),
             model_amount: ActiveValue::set(user_credits_init.model_amount),
             credit_amount: ActiveValue::set(user_credits_init.credit_amount),
+            ..Default::default()
+        }
+        .insert(&txn)
+        .await?;
+
+        UserSettingsActiveModel {
+            user_id: ActiveValue::set(user.id),
+            enable_notification_email: ActiveValue::set(params.email_notifications),
+            enable_marketing_email: ActiveValue::set(params.marketing),
+            theme: ActiveValue::set(params.theme_preference.clone()),
+            language: ActiveValue::set(params.language.clone()),
             ..Default::default()
         }
         .insert(&txn)

@@ -9,8 +9,9 @@ use crate::models::images::ImagesModelList;
 use crate::models::join::user_credits_models::{
     load_user_and_credits, load_user_and_training, load_user_credit_training,
 };
+use crate::models::packs::PackModelList;
 use crate::models::training_models::TrainingModelList;
-use crate::models::users::UserPid;
+use crate::models::users::{RegisterParams, UserPid};
 use crate::models::{ImageModel, PackModel, TrainingModelModel, UserCreditModel, UserModel};
 use crate::service::aws::s3::AwsS3;
 use crate::service::redis::redis::Cache;
@@ -119,6 +120,7 @@ pub mod routes {
 
         pub const DASHBOARD_TEST_SET: &'static str = "/test/set";
         pub const DASHBOARD_TEST_GET: &'static str = "/test/get";
+        pub const DASHBOARD_TEST: &'static str = "/test";
     }
 }
 
@@ -172,11 +174,11 @@ pub fn routes() -> Routes {
         .add(routes::Dashboard::SETTINGS, get(settings_dashboard))
         .add(routes::Dashboard::HELP_PARTIAL, get(help_partial_dashboard))
         .add(routes::Dashboard::HELP, get(help_dashboard))
-        .add(
-            routes::Dashboard::ACCOUNT_PARTIAL,
-            get(account_partial_dashboard),
-        )
-        .add(routes::Dashboard::ACCOUNT, get(account_dashboard))
+        // .add(
+        //     routes::Dashboard::ACCOUNT_PARTIAL,
+        //     get(account_partial_dashboard),
+        // )
+        // .add(routes::Dashboard::ACCOUNT, get(account_dashboard))
         .add(
             routes::Dashboard::BILLING_PARTIAL,
             get(billing_partial_dashboard),
@@ -190,6 +192,7 @@ pub fn routes() -> Routes {
             routes::Dashboard::DASHBOARD_TEST_GET,
             get(dashboard_test_get),
         )
+        .add(routes::Dashboard::DASHBOARD_TEST, post(dashboard_test))
         .layer(CookieConsentLayer::new())
 }
 
@@ -221,9 +224,15 @@ async fn load_images_del(db: &DatabaseConnection, id: i32) -> Result<ImagesModel
     let list = ImageModel::find_all_del_by_user_id(db, id).await?;
     Ok(ImagesModelList::new(list))
 }
-async fn load_packs(db: &DatabaseConnection) -> Result<Vec<PackModel>> {
+async fn load_packs(db: &DatabaseConnection) -> Result<PackModelList> {
     let list = PackModel::find_all_packs(db).await?;
-    Ok(list)
+    Ok(PackModelList::new(list))
+}
+
+#[debug_handler]
+pub async fn dashboard_test(Json(params): Json<RegisterParams>) -> Result<impl IntoResponse> {
+    dbg!(params);
+    Ok((StatusCode::OK).into_response())
 }
 
 #[debug_handler]
@@ -272,30 +281,6 @@ pub async fn billing_partial_dashboard(
     let user_pid = UserPid::new(&auth.claims.pid);
     let user = load_user(&ctx.db, &user_pid).await?;
     views::dashboard::billing_partial_dashboard(v, user.into())
-}
-
-#[debug_handler]
-pub async fn account_dashboard(
-    auth: auth::JWT,
-    ExtractConsentState(cc_cookie): ExtractConsentState,
-    Extension(website): Extension<Website>,
-    State(ctx): State<AppContext>,
-    ViewEngine(v): ViewEngine<TeraView>,
-) -> Result<impl IntoResponse> {
-    let user_pid = UserPid::new(&auth.claims.pid);
-    let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
-    views::dashboard::account_dashboard(v, user.into(), &user_credits.into(), &website, &cc_cookie)
-}
-
-#[debug_handler]
-pub async fn account_partial_dashboard(
-    auth: auth::JWT,
-    State(ctx): State<AppContext>,
-    ViewEngine(v): ViewEngine<TeraView>,
-) -> Result<impl IntoResponse> {
-    let user_pid = UserPid::new(&auth.claims.pid);
-    let user = load_user(&ctx.db, &user_pid).await?;
-    views::dashboard::account_partial_dashboard(v, user.into())
 }
 
 #[debug_handler]
@@ -434,13 +419,12 @@ pub async fn packs_dashboard(
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
-    let _packs = load_packs(&ctx.db).await?;
-    let packs = Packs::get_packs();
+    let packs = load_packs(&ctx.db).await?;
     views::dashboard::packs_dashboard(
         v,
         &user.into(),
         &user_credits.into(),
-        &packs,
+        packs.into(),
         &website,
         &cc_cookie,
     )
@@ -454,9 +438,8 @@ pub async fn packs_partial_dashboard(
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
     let user = load_user(&ctx.db, &user_pid).await?;
-
-    let packs = Packs::get_packs();
-    views::dashboard::packs_partial_dashboard(v, &user.into(), &packs)
+    let packs = load_packs(&ctx.db).await?;
+    views::dashboard::packs_partial_dashboard(v, &user.into(), packs.into())
 }
 
 #[debug_handler]
