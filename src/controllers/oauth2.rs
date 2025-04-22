@@ -1,4 +1,5 @@
 use loco_oauth2::base_oauth2::AuthorizationCode;
+use loco_oauth2::controllers::middleware::OAuth2CookieUser;
 use loco_oauth2::error::OAuth2ClientError;
 use std::fmt::Debug;
 use tokio::sync::MutexGuard;
@@ -28,6 +29,7 @@ use crate::models::{o_auth2_sessions, users, users::OAuth2UserProfile};
 pub fn routes() -> Routes {
     Routes::new()
         .prefix("api/oauth2")
+        .add("/protected", get(protected))
         .add("/google", get(google_authorization_url::<SessionNullPool>))
         .add(
             "/google/callback/jwt",
@@ -48,6 +50,33 @@ pub fn routes() -> Routes {
                 SessionNullPool,
             >),
         )
+}
+
+async fn protected(
+    State(ctx): State<AppContext>,
+    user: OAuth2CookieUser<OAuth2UserProfile, users::Model, o_auth2_sessions::Model>,
+) -> Result<Response> {
+    let user: &users::Model = user.as_ref();
+    let jwt_secret = ctx.config.get_jwt_config()?;
+    // Generate a JWT token
+    let token = user
+        .generate_jwt(&jwt_secret.secret, jwt_secret.expiration)
+        .or_else(|_| unauthorized("unauthorized!"))?;
+
+    let cookie = AxumCookie::build(("auth", token))
+        .path("/")
+        .http_only(true)
+        .secure(!cfg!(debug_assertions)) // set to false in localhost
+        .same_site(SameSite::Strict)
+        .max_age(time::Duration::seconds(jwt_secret.expiration as i64))
+        .build();
+
+    let mut response = Redirect::to("/dashboard").into_response();
+    response
+        .headers_mut()
+        .append("Set-Cookie", cookie.to_string().parse().unwrap());
+
+    Ok(response)
 }
 
 pub async fn google_callback_jwt<
@@ -80,7 +109,7 @@ pub async fn google_callback_jwt<
         .path("/")
         .http_only(true)
         .secure(!cfg!(debug_assertions)) // set to false in localhost
-        .same_site(SameSite::Strict)
+        .same_site(SameSite::Lax)
         .max_age(time::Duration::seconds(jwt_secret.expiration as i64))
         .build();
 

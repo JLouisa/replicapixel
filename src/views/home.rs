@@ -15,7 +15,7 @@ pub fn home(
         "home/home.html",
         data!(
                 {
-                "website": website.website_settings, "cc_cookie": cc_cookie,
+                "website": website, "cc_cookie": cc_cookie,
                 "validate_route": validate_route, "is_home": is_home
                 }
         ),
