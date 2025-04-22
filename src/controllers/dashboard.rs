@@ -4,6 +4,7 @@
 use crate::controllers::training_models as TrainingRoutes;
 use crate::domain::packs::Packs;
 use crate::domain::website::Website;
+use crate::middleware::cookie::{CookieConsentLayer, ExtractConsentState};
 use crate::models::images::ImagesModelList;
 use crate::models::join::user_credits_models::{
     load_user_and_credits, load_user_and_training, load_user_credit_training,
@@ -124,7 +125,7 @@ pub mod routes {
 pub fn routes() -> Routes {
     Routes::new()
         .prefix(routes::Dashboard::BASE)
-        .add(routes::Dashboard::DASHBOARD, get(render_dashboard))
+        .add(routes::Dashboard::DASHBOARD, get(photo_dashboard))
         .add(routes::Dashboard::PACKS, get(packs_dashboard))
         .add(
             routes::Dashboard::PACKS_PARTIAL,
@@ -189,6 +190,7 @@ pub fn routes() -> Routes {
             routes::Dashboard::DASHBOARD_TEST_GET,
             get(dashboard_test_get),
         )
+        .layer(CookieConsentLayer::new())
 }
 
 async fn load_user(db: &DatabaseConnection, pid: &UserPid) -> Result<UserModel> {
@@ -251,13 +253,14 @@ pub async fn dashboard_test_get(Extension(cache): Extension<Cache>) -> Result<im
 #[debug_handler]
 pub async fn billing_dashboard(
     auth: auth::JWT,
+    ExtractConsentState(cc_cookie): ExtractConsentState,
+    Extension(website): Extension<Website>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
-    let sidebar_routes = routes::Dashboard::sidebar();
-    views::dashboard::billing_dashboard(v, user.into(), sidebar_routes, &user_credits.into())
+    views::dashboard::billing_dashboard(v, user.into(), &user_credits.into(), &website, &cc_cookie)
 }
 
 #[debug_handler]
@@ -274,13 +277,14 @@ pub async fn billing_partial_dashboard(
 #[debug_handler]
 pub async fn account_dashboard(
     auth: auth::JWT,
+    ExtractConsentState(cc_cookie): ExtractConsentState,
+    Extension(website): Extension<Website>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
-    let sidebar_routes = routes::Dashboard::sidebar();
-    views::dashboard::account_dashboard(v, user.into(), sidebar_routes, &user_credits.into())
+    views::dashboard::account_dashboard(v, user.into(), &user_credits.into(), &website, &cc_cookie)
 }
 
 #[debug_handler]
@@ -297,13 +301,20 @@ pub async fn account_partial_dashboard(
 #[debug_handler]
 pub async fn notification_dashboard(
     auth: auth::JWT,
+    ExtractConsentState(cc_cookie): ExtractConsentState,
+    Extension(website): Extension<Website>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
-    let sidebar_routes = routes::Dashboard::sidebar();
-    views::dashboard::notification_dashboard(v, user.into(), sidebar_routes, &user_credits.into())
+    views::dashboard::notification_dashboard(
+        v,
+        user.into(),
+        &user_credits.into(),
+        &website,
+        &cc_cookie,
+    )
 }
 
 #[debug_handler]
@@ -320,13 +331,14 @@ pub async fn notification_partial_dashboard(
 #[debug_handler]
 pub async fn help_dashboard(
     auth: auth::JWT,
+    ExtractConsentState(cc_cookie): ExtractConsentState,
+    Extension(website): Extension<Website>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
-    let sidebar_routes = routes::Dashboard::sidebar();
-    views::dashboard::help_dashboard(v, user.into(), sidebar_routes, &user_credits.into())
+    views::dashboard::help_dashboard(v, user.into(), &user_credits.into(), &website, &cc_cookie)
 }
 
 #[debug_handler]
@@ -343,13 +355,14 @@ pub async fn help_partial_dashboard(
 #[debug_handler]
 pub async fn settings_dashboard(
     auth: auth::JWT,
+    ExtractConsentState(cc_cookie): ExtractConsentState,
+    Extension(website): Extension<Website>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
-    let sidebar_routes = routes::Dashboard::sidebar();
-    views::dashboard::settings_dashboard(v, user.into(), sidebar_routes, &user_credits.into())
+    views::dashboard::settings_dashboard(v, user.into(), &user_credits.into(), &website, &cc_cookie)
 }
 
 #[debug_handler]
@@ -366,6 +379,8 @@ pub async fn settings_partial_dashboard(
 #[debug_handler]
 pub async fn training_dashboard(
     auth: auth::JWT,
+    ExtractConsentState(cc_cookie): ExtractConsentState,
+    Extension(website): Extension<Website>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
@@ -377,14 +392,14 @@ pub async fn training_dashboard(
         TrainingRoutes::routes::Models::BASE,
         TrainingRoutes::routes::Models::CHECK_W_ID_W_STATUS
     );
-    let sidebar_routes = routes::Dashboard::sidebar();
     views::dashboard::training_dashboard(
         v,
         user.into(),
+        &user_credits.into(),
         training_models.into(),
         training_route_check,
-        sidebar_routes,
-        &user_credits.into(),
+        &website,
+        &cc_cookie,
     )
 }
 
@@ -412,6 +427,8 @@ pub async fn training_partial_dashboard(
 #[debug_handler]
 pub async fn packs_dashboard(
     auth: auth::JWT,
+    ExtractConsentState(cc_cookie): ExtractConsentState,
+    Extension(website): Extension<Website>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
@@ -419,13 +436,13 @@ pub async fn packs_dashboard(
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     let _packs = load_packs(&ctx.db).await?;
     let packs = Packs::get_packs();
-    let sidebar_routes = routes::Dashboard::sidebar();
     views::dashboard::packs_dashboard(
         v,
         &user.into(),
-        &packs,
-        sidebar_routes,
         &user_credits.into(),
+        &packs,
+        &website,
+        &cc_cookie,
     )
 }
 
@@ -445,6 +462,7 @@ pub async fn packs_partial_dashboard(
 #[debug_handler]
 pub async fn album_deleted_dashboard(
     auth: auth::JWT,
+    ExtractConsentState(cc_cookie): ExtractConsentState,
     State(ctx): State<AppContext>,
     Extension(cache): Extension<Cache>,
     Extension(s3_client): Extension<AwsS3>,
@@ -462,12 +480,13 @@ pub async fn album_deleted_dashboard(
     views::dashboard::photo_dashboard(
         v,
         &user.into(),
+        &user_credits.into(),
         &images,
         training_models.into(),
-        &website,
-        &user_credits.into(),
         is_deleted,
         is_favorite,
+        &website,
+        &cc_cookie,
     )
 }
 
@@ -503,6 +522,7 @@ pub async fn album_deleted_partial_dashboard(
 #[debug_handler]
 pub async fn album_favorite_dashboard(
     auth: auth::JWT,
+    ExtractConsentState(cc_cookie): ExtractConsentState,
     State(ctx): State<AppContext>,
     Extension(cache): Extension<Cache>,
     Extension(s3_client): Extension<AwsS3>,
@@ -521,18 +541,20 @@ pub async fn album_favorite_dashboard(
     views::dashboard::photo_dashboard(
         v,
         &user.into(),
+        &user_credits.into(),
         &images,
         training_models.into(),
-        &website,
-        &user_credits.into(),
         is_deleted,
         is_favorite,
+        &website,
+        &cc_cookie,
     )
 }
 
 #[debug_handler]
 pub async fn album_favorite_partial_dashboard(
     auth: auth::JWT,
+
     State(ctx): State<AppContext>,
     Extension(cache): Extension<Cache>,
     Extension(s3_client): Extension<AwsS3>,
@@ -563,6 +585,7 @@ pub async fn album_favorite_partial_dashboard(
 #[debug_handler]
 pub async fn photo_dashboard(
     auth: auth::JWT,
+    ExtractConsentState(cc_cookie): ExtractConsentState,
     State(ctx): State<AppContext>,
     Extension(cache): Extension<Cache>,
     Extension(s3_client): Extension<AwsS3>,
@@ -580,12 +603,13 @@ pub async fn photo_dashboard(
     views::dashboard::photo_dashboard(
         v,
         &user.into(),
+        &user_credits.into(),
         &images,
         training_models.into(),
-        &website.into(),
-        &user_credits.into(),
         is_deleted,
         is_favorite,
+        &website,
+        &cc_cookie,
     )
 }
 
@@ -619,33 +643,33 @@ pub async fn photo_partial_dashboard(
 }
 
 //Todo Remove for photo dashboard controller
-#[debug_handler]
-async fn render_dashboard(
-    auth: auth::JWT,
-    State(ctx): State<AppContext>,
-    Extension(cache): Extension<Cache>,
-    Extension(s3_client): Extension<AwsS3>,
-    Extension(website): Extension<Website>,
-    ViewEngine(v): ViewEngine<TeraView>,
-) -> Result<impl IntoResponse> {
-    let user_pid = UserPid::new(&auth.claims.pid);
-    let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
-    let training_models = load_item_all_completed(&ctx, user.id).await?;
-    let images = load_first_images(&ctx.db, user.id, false).await?;
-    let mut images: ImageViewList = load_first_images(&ctx.db, user.id, false).await?.into();
-    let images = images.populate_s3_pre_urls(&s3_client, &cache).await;
-    let is_deleted = false;
-    let is_favorite = false;
+// #[debug_handler]
+// async fn render_dashboard(
+//     auth: auth::JWT,
+//     State(ctx): State<AppContext>,
+//     Extension(cache): Extension<Cache>,
+//     Extension(s3_client): Extension<AwsS3>,
+//     Extension(website): Extension<Website>,
+//     ViewEngine(v): ViewEngine<TeraView>,
+// ) -> Result<impl IntoResponse> {
+//     let user_pid = UserPid::new(&auth.claims.pid);
+//     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
+//     let training_models = load_item_all_completed(&ctx, user.id).await?;
+//     let images = load_first_images(&ctx.db, user.id, false).await?;
+//     let mut images: ImageViewList = load_first_images(&ctx.db, user.id, false).await?.into();
+//     let images = images.populate_s3_pre_urls(&s3_client, &cache).await;
+//     let is_deleted = false;
+//     let is_favorite = false;
 
-    views::dashboard::photo_dashboard(
-        v,
-        &user.into(),
-        &images,
-        training_models.into(),
-        &website,
-        &user_credits.into(),
-        is_deleted,
-        is_favorite,
-    )
-}
+//     views::dashboard::photo_dashboard(
+//         v,
+//         &user.into(),
+//         &images,
+//         training_models.into(),
+//         &website,
+//         &user_credits.into(),
+//         is_deleted,
+//         is_favorite,
+//     )
+// }
 //Todo Remove for photo dashboard controller

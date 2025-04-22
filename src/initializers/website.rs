@@ -22,8 +22,8 @@ impl Initializer for Website {
             serde_json::from_value(ctx.config.settings.clone().expect("No settings found"))
                 .expect("Failed to parse settings");
 
-        let website_settings = settings.website;
-        let website = WebsiteInit::init(website_settings);
+        // let website_settings = settings.website;
+        let website = WebsiteInit::init(&settings);
         info!("Website loaded");
         let router = router.layer(Extension(website));
         Ok(router)

@@ -65,13 +65,17 @@
   </button>
 </div>
 
-{% if is_home %}
+{# {% if is_home %}
 <!-- Dashboard button container (NOW centered) -->
 <div
   id="navbar-middle"
   hx-swap-oob="true"
   class="absolute left-1/2 transform -translate-x-1/2 z-10"
 >
+  <a href="/dashboard" class="btn btn-neutral">Dashboard</a>
+</div>
+{% endif %} #} {% if user.name and is_home %}
+<div id="navbar-middle" class="absolute left-1/2 transform -translate-x-1/2 z-10">
   <a href="/dashboard" class="btn btn-neutral">Dashboard</a>
 </div>
 {% endif %}

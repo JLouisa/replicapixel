@@ -14,6 +14,7 @@ use loco_rs::{
 use migration::Migrator;
 use std::path::Path;
 
+use crate::middleware::cookie::CookieConsentLayer;
 #[allow(unused_imports)]
 use crate::{
     controllers, initializers, models::_entities::users, tasks, workers::downloader::DownloadWorker,

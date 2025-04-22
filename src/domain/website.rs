@@ -1,3 +1,4 @@
+use super::settings::Settings;
 use super::{dashboard_sidebar::DashboardSidebar, packs::Packs};
 use crate::controllers::images::routes as ImagesRoute;
 use crate::{
@@ -8,10 +9,23 @@ use derive_more::Constructor;
 use serde::{Deserialize, Serialize};
 use strum::IntoEnumIterator;
 
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
+pub struct GoogleAnalytics {
+    pub google_analytics_id: Option<String>,
+    pub google_analytics_secret: Option<String>,
+}
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
+pub struct MetaPixel {
+    pub meta_pixel_id: Option<String>,
+    pub meta_pixel_secret: Option<String>,
+}
+
 #[derive(Debug, Clone, Deserialize, Serialize, Constructor, Default)]
 pub struct WebsiteSettings {
     pub site: String,
     pub name: String,
+    pub google_analytics: GoogleAnalytics,
+    pub meta_pixel: MetaPixel,
 }
 
 #[derive(Debug, Serialize, Deserialize, Constructor, Clone)]
@@ -55,9 +69,9 @@ pub struct Website {
     pub main_routes: MainRoutes,
 }
 impl Website {
-    pub fn init(settings: WebsiteSettings) -> Website {
+    pub fn init(settings: &Settings) -> Website {
         Website {
-            website_settings: settings,
+            website_settings: settings.website.clone(),
             dashboard_sidebar: DashboardSidebar::init(),
             image_sizes: ImageSize::iter()
                 .map(|s| (s.clone(), s.to_string()))

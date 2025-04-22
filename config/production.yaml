@@ -176,6 +176,12 @@ settings:
   website:
     site: {{ get_env(name="SITE") }} 
     name: {{ get_env(name="NAME") }}
+    google_analytics:
+      google_analytics_id: {{ get_env(name="GOOGLE_ANALYTICS_ID", default="YOUR_GA_ID_ENV") }}
+      google_analytics_secret: {{ get_env(name="GOOGLE_ANALYTICS_CLIENT_SECRET", default="YOUR_GA_SECRET_ENV") }}
+    meta_pixel:
+      meta_pixel_id: {{ get_env(name="META_PIXEL_ID", default="YOUR_PIXEL_ID_ENV") }}
+      meta_pixel_secret: {{ get_env(name="META_PIXEL_SECRET", default="YOUR_PIXEL_SECRET_ENV") }}
   stripe:
     site: {{ get_env(name="SITE") }}
     stripe_secret_key: {{ get_env(name="STRIPE_SECRET_KEY") }} 

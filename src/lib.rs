@@ -4,6 +4,7 @@ pub mod data;
 pub mod domain;
 pub mod initializers;
 pub mod mailers;
+pub mod middleware;
 pub mod models;
 pub mod service;
 pub mod tasks;

@@ -32,8 +32,8 @@
   </div>
 
   <!-- Middle section (Navigation links) -->
-  {% if not is_home %}
   <div id="navbar-middle" class="absolute left-1/2 transform -translate-x-1/2 z-10 bg-base">
+    {% if not is_home %}
     <!-- Search bar container (already centered) -->
     <div class="max-w-md mx-auto">
       <div
@@ -66,13 +66,13 @@
         />
       </div>
     </div>
-  </div>
-  {% else %}
-  <!-- Dashboard button container (NOW centered) -->
-  <div id="navbar-middle" class="absolute left-1/2 transform -translate-x-1/2 z-10">
+    {% else %}
+    <!-- Dashboard button container -->
+    {% if user.name %}
+    <!-- Dashboard button container -->
     <a href="/dashboard" class="btn btn-neutral">Dashboard</a>
+    {% endif %} {% endif %}
   </div>
-  {% endif %}
 
   <!-- End section (User controls) -->
   <div class="flex items-center space-x-4">
@@ -107,6 +107,7 @@
       hx-get="{{ validate_route }}"
       hx-trigger="load once"
       hx-swap="outerHTML"
+      hx-select-oob="#navbar-middle"
       class="flex items-center space-x-2"
     >
       <div class="flex items-center space-x-4">
