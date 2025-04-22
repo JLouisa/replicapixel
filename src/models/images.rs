@@ -365,6 +365,15 @@ impl Model {
         let image = new.update(db).await?;
         Ok(image)
     }
+    pub async fn favorite_image(self, db: &impl ConnectionTrait) -> ModelResult<Model> {
+        let time = chrono::Utc::now().into();
+        let new_bool = !self.is_favorite;
+        let mut new = ActiveModel::from(self);
+        new.is_favorite = ActiveValue::set(new_bool);
+        new.updated_at = ActiveValue::set(time);
+        let image = new.update(db).await?;
+        Ok(image)
+    }
     pub async fn delete_image(self, db: &impl ConnectionTrait) -> ModelResult<Model> {
         let time = chrono::Utc::now().into();
         let mut new = ActiveModel::from(self);

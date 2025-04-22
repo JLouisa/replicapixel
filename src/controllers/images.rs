@@ -21,7 +21,7 @@ use crate::models::users::UserPid;
 use crate::models::{ImageActiveModel, ImageModel, TrainingModelModel, UserCreditModel, UserModel};
 use crate::service::aws::s3::{AwsS3, S3Folders};
 use crate::service::redis::redis::Cache;
-use crate::views::images::{CreditsViewModel, ImageViewList, ImageView};
+use crate::views::images::{CreditsViewModel, ImageView, ImageViewList};
 use crate::{models::_entities::images::Entity, service::fal_ai::fal_client::FalAiClient, views};
 
 #[derive(Clone, Validate, Debug, Deserialize)]
@@ -97,6 +97,8 @@ pub mod routes {
         pub const IMAGE_ID: &'static str = "/{id}";
         pub const IMAGE_RESTORE_ID: &'static str = "/restore/{id}";
         pub const IMAGE_RESTORE: &'static str = "/restore";
+        pub const IMAGE_FAVORITE_ID: &'static str = "/favorite/{id}";
+        pub const IMAGE_FAVORITE: &'static str = "/favorite";
         pub const IMAGE_BASE: &'static str = "";
 
         pub fn check_route() -> String {
@@ -124,6 +126,7 @@ pub fn routes() -> Routes {
         .add(routes::Images::IMAGE_ID, get(get_one))
         .add(routes::Images::IMAGE_ID, delete(remove))
         .add(routes::Images::IMAGE_RESTORE_ID, delete(restore))
+        .add(routes::Images::IMAGE_FAVORITE_ID, patch(favorite))
         .add(routes::Images::IMAGE_INFINITE, get(image_infinite_handler))
         .add(
             routes::Images::IMAGE_S3_UPLOAD_COMPLETE_ID,
@@ -327,6 +330,20 @@ pub async fn generate(
 
     // 4. Render the view using the View Models
     views::images::img_completed(&v, &image_view_models.into(), &website, &credits_view_model)
+}
+
+#[debug_handler]
+pub async fn favorite(
+    auth: auth::JWT,
+    Path(img_pid): Path<Uuid>,
+    State(ctx): State<AppContext>,
+) -> Result<Response> {
+    let (user, img) = load_user_and_image(&ctx.db, &auth.claims.pid, &img_pid).await?;
+    if img.user_id != user.id {
+        return Ok((StatusCode::UNAUTHORIZED).into_response());
+    }
+    img.favorite_image(&ctx.db).await?;
+    Ok((StatusCode::OK).into_response())
 }
 
 #[debug_handler]

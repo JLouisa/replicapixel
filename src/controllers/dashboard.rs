@@ -174,11 +174,6 @@ pub fn routes() -> Routes {
         .add(routes::Dashboard::SETTINGS, get(settings_dashboard))
         .add(routes::Dashboard::HELP_PARTIAL, get(help_partial_dashboard))
         .add(routes::Dashboard::HELP, get(help_dashboard))
-        // .add(
-        //     routes::Dashboard::ACCOUNT_PARTIAL,
-        //     get(account_partial_dashboard),
-        // )
-        // .add(routes::Dashboard::ACCOUNT, get(account_dashboard))
         .add(
             routes::Dashboard::BILLING_PARTIAL,
             get(billing_partial_dashboard),

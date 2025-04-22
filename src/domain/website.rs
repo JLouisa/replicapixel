@@ -1,6 +1,7 @@
 use super::settings::Settings;
 use super::{dashboard_sidebar::DashboardSidebar, packs::Packs};
 use crate::controllers::images::routes as ImagesRoute;
+use crate::models::_entities::sea_orm_active_enums::Language;
 use crate::{
     controllers::dashboard::routes,
     models::_entities::sea_orm_active_enums::{ImageSize, PlanNames},
@@ -64,9 +65,9 @@ pub struct Website {
     pub dashboard_sidebar: DashboardSidebar,
     pub image_sizes: Vec<(ImageSize, String)>,
     pub sidebar_routes: routes::Sidebar,
-    pub packs: Vec<Packs>,
     pub payment_plans: Vec<Plan>,
     pub main_routes: MainRoutes,
+    pub languages: Vec<Language>,
 }
 impl Website {
     pub fn init(settings: &Settings) -> Website {
@@ -76,11 +77,10 @@ impl Website {
             image_sizes: ImageSize::iter()
                 .map(|s| (s.clone(), s.to_string()))
                 .collect::<Vec<_>>(),
-
             sidebar_routes: routes::Dashboard::sidebar(),
-            packs: Packs::get_packs(),
             payment_plans: get_plans(),
             main_routes: MainRoutes::init(),
+            languages: Language::iter().collect(),
         }
     }
 }

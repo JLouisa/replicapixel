@@ -54,6 +54,15 @@
               <line x1="12" x2="12" y1="15" y2="3" />
             </svg>
           </button>
+          <button
+            hx-patch="{{ delete_route }}/{{ image.pid }}"
+            hx-target="#container3-{{ image.pid }}"
+            hx-confirm="Are you sure you want to delete this item?"
+            hx-swap="outerHTML"
+            class="btn btn-secondary"
+          >
+            Favorite {% include "partials/svg/bookmark.html" %}
+          </button>
           {% if is_deleted %}
           <button
             hx-delete="{{ restore_route }}/{{ image.pid }}"
