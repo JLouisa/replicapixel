@@ -2,6 +2,8 @@
 
 pub mod prelude;
 
+pub mod feature_request;
+pub mod feature_vote;
 pub mod handled_fal_events;
 pub mod handled_stripe_events;
 pub mod images;

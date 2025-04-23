@@ -1,0 +1,44 @@
+<form
+  id="feature-form"
+  hx-post="/api/features/add"
+  hx-ext="form-json"
+  hx-disabled-elt="#feature-btn"
+  hx-swap="outerHTML"
+>
+  <div class="form-control w-full">
+    <input
+      id="feature-id"
+      name="user_id"
+      type="number"
+      value="{{user.id}}"
+      hidden
+      class="input input-bordered w-full"
+    />
+    <label class="label" for="feature-title">
+      <span class="label-text">Short, descriptive title</span>
+    </label>
+    <input
+      id="feature-title"
+      name="title"
+      type="text"
+      placeholder="E.g., Funnels, Click tracking"
+      class="input input-bordered w-full"
+    />
+  </div>
+
+  <div class="form-control w-full mt-4">
+    <label class="label" for="feature-description">
+      <span class="label-text">Description</span>
+    </label>
+    <textarea
+      id="feature-description"
+      name="description"
+      class="textarea textarea-bordered h-24 w-full"
+      placeholder="Describe the feature and why it's useful..."
+    ></textarea>
+  </div>
+
+  <div class="card-actions justify-end mt-6">
+    <button id="feature-btn" type="submit" class="btn btn-primary w-full">Suggest feature</button>
+  </div>
+</form>

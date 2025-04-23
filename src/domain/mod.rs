@@ -1,6 +1,7 @@
 pub mod dashboard_sidebar;
 pub mod domain_services;
 pub mod error;
+pub mod features;
 pub mod image;
 pub mod packs;
 pub mod response;

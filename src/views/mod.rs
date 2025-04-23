@@ -1,5 +1,6 @@
 pub mod auth;
 pub mod dashboard;
+pub mod features;
 pub mod home;
 pub mod images;
 pub mod payment;

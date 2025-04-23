@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build:css": "bunx @tailwindcss/cli -i ./input.css -o ../assets/static/css/output.css --minify",
-    "watch:css": "bunx @tailwindcss/cli -i ./input.css -o ../assets/static/css/output.css --watch",
+    "watch:css": "bunx @tailwindcss/cli -i ./input.css -o ../assets/static/css/output.css --minify --watch",
     "build:js": "bun build ./index.ts ./cookie-consent.ts --outdir=../assets/static/js/ --target browser --minify",
     "watch:js": "bun build ./index.ts ./cookie-consent.ts --outdir=../assets/static/js/ --target browser --minify --watch",
     "build": "bun run build:css && bun run build:js",

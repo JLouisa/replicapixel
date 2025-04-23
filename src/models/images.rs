@@ -301,8 +301,41 @@ impl Model {
     pub async fn find_x_images_by_user_id(
         db: &DatabaseConnection,
         id: i32,
-        fav: bool,
+        is_favorite: bool,
+        is_deleted: bool,
         num: u64,
+    ) -> ModelResult<Vec<Self>> {
+        let mut condition = Condition::all().add(images::Column::UserId.eq(id));
+
+        if is_deleted {
+            condition = condition.add(images::Column::DeletedAt.is_not_null());
+        } else {
+            condition = condition.add(images::Column::DeletedAt.is_null());
+            if is_favorite {
+                condition = condition.add(images::Column::IsFavorite.eq(true));
+            }
+        }
+
+        let order_column = if is_deleted {
+            images::Column::DeletedAt
+        } else {
+            images::Column::UpdatedAt
+        };
+
+        let results = Entity::find()
+            .filter(condition)
+            .limit(num)
+            .order_by_desc(order_column)
+            .all(db)
+            .await?;
+
+        Ok(results)
+    }
+
+    pub async fn find_all_by_user_id(
+        db: &DatabaseConnection,
+        id: i32,
+        fav: bool,
     ) -> ModelResult<Vec<Self>> {
         let mut condition = Condition::all()
             .add(images::Column::UserId.eq(id))
@@ -312,40 +345,6 @@ impl Model {
         }
         let results = Entity::find()
             .filter(condition)
-            .limit(num)
-            .order_by_desc(images::Column::UpdatedAt)
-            .all(db)
-            .await?;
-        Ok(results)
-    }
-    pub async fn find_x_images_by_user_id_del(
-        db: &DatabaseConnection,
-        id: i32,
-        num: u64,
-    ) -> ModelResult<Vec<Self>> {
-        let condition = Condition::all()
-            .add(images::Column::UserId.eq(id))
-            .add(images::Column::DeletedAt.is_not_null());
-        let results = Entity::find()
-            .filter(condition)
-            .limit(num)
-            .order_by_desc(images::Column::DeletedAt)
-            .all(db)
-            .await?;
-        Ok(results)
-    }
-    pub async fn find_all_by_user_id(
-        db: &DatabaseConnection,
-        id: i32,
-        fav: bool,
-    ) -> ModelResult<Vec<Self>> {
-        let mut query = Entity::find()
-            .filter(images::Column::UserId.eq(id))
-            .filter(images::Column::DeletedAt.is_null());
-        if fav {
-            query = query.filter(images::Column::IsFavorite.eq(true));
-        }
-        let results = query
             .order_by_desc(images::Column::UpdatedAt)
             .all(db)
             .await?;

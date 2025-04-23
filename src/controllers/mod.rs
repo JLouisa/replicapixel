@@ -7,3 +7,5 @@ pub mod payment;
 pub mod policy;
 pub mod training_models;
 pub mod webhooks;
+
+pub mod features;

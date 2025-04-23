@@ -1,0 +1,30 @@
+<div class="space-y-6">
+  <div class="card bg-base-100 shadow-lg">
+    <div class="card-body p-6">
+      <div class="flex justify-between items-start gap-4">
+        <div class="flex-grow">
+          <div class="flex items-center gap-2 mb-2 flex-wrap">
+            <h3 class="font-semibold">{{ feature.title }}</h3>
+            {% if feature.status == "Completed" %}
+            <span class="badge badge-soft badge-success">{{ feature.status }}</span>
+            {% elif feature.status == "InProgress" %}
+            <span class="badge badge-soft badge-primary">{{ feature.status }}</span>
+            {% elif feature.status == "Suggested" %}
+            <span class="badge badge-soft badge-info">{{ feature.status }}</span>
+            {% elif feature.status == "Planned" %}
+            <span class="badge badge-soft badge-accent">{{ feature.status }}</span>
+            {% elif feature.status == "Rejected" %}
+            <span class="badge badge-soft badge-error">{{ feature.status }}</span>
+            {% endif %}
+          </div>
+          <p class="text-base-content text-opacity-80">{{ feature.description }}</p>
+        </div>
+        <div class="flex-shrink-0">
+          <div class="tooltip tooltip-left" data-tip="Likes">
+            {% include "dashboard/content/features/vote_count_partial.html" %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

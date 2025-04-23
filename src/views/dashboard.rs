@@ -3,6 +3,7 @@ use super::images::{ImageView, ImageViewList};
 use super::training_models::TrainingModelView;
 use crate::controllers::dashboard::routes::Sidebar;
 use crate::domain::dashboard_sidebar::DashboardSidebar;
+use crate::domain::features::FeatureViewList;
 use crate::domain::website::Website;
 use crate::middleware::cookie::CookieConsent;
 use crate::models::packs::PackModelList;
@@ -109,20 +110,20 @@ pub fn notification_partial_dashboard(
     )
 }
 
-pub fn help_dashboard(
+pub fn features_dashboard(
     v: impl ViewRenderer,
     user: UserView,
     credits: &UserCreditsView,
+    features_view: &FeatureViewList,
     website: &Website,
     cc_cookie: &CookieConsent,
 ) -> Result<impl IntoResponse> {
-    let sidebar = DashboardSidebar::init();
     format::render().view(
         &v,
-        "dashboard/content/help/help.html",
+        "dashboard/content/features/features.html",
         data!(
             {
-                "user": user, "credits": credits,
+                "user": user, "credits": credits, "features_view": features_view,
                 "website": website, "sidebar":  website.dashboard_sidebar,
                 "sidebar_routes": website.sidebar_routes,
                 "cc_cookie": cc_cookie
@@ -131,14 +132,20 @@ pub fn help_dashboard(
     )
 }
 
-pub fn help_partial_dashboard(v: impl ViewRenderer, user: UserView) -> Result<impl IntoResponse> {
+pub fn features_partial_dashboard(
+    v: impl ViewRenderer,
+    user: UserView,
+    features_view: &FeatureViewList,
+    website: &Website,
+) -> Result<impl IntoResponse> {
     let sidebar = DashboardSidebar::init();
     format::render().view(
         &v,
-        "dashboard/content/help/help_partial.html",
+        "dashboard/content/features/features_partial.html",
         data!(
             {
-                "sidebar": sidebar, "user": user,
+                "sidebar": website.dashboard_sidebar, "user": user,
+                "features_view": features_view,
             }
         ),
     )

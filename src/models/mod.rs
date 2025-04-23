@@ -53,5 +53,15 @@ pub type NotificationActiveModel = notification::ActiveModel;
 pub type NotificationModel = notification::Model;
 pub type NotificationEntity = notification::Entity;
 
+pub mod feature_request;
+pub type FeatureRequestActiveModel = feature_request::ActiveModel;
+pub type FeatureRequestModel = feature_request::Model;
+pub type FeatureRequestEntity = feature_request::Entity;
+
+pub mod feature_vote;
+pub type FeatureVoteActiveModel = feature_vote::ActiveModel;
+pub type FeatureVoteModel = feature_vote::Model;
+pub type FeatureVoteEntity = feature_vote::Entity;
+
 pub mod join;
 pub mod o_auth2_sessions;

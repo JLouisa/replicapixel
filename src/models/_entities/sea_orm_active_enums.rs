@@ -333,3 +333,18 @@ impl Default for ThemePreference {
         ThemePreference::Dark
     }
 }
+
+#[derive(Debug, Clone, PartialEq, Eq, EnumIter, DeriveActiveEnum, Serialize, Deserialize)]
+#[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "feature_status")]
+pub enum FeatureStatus {
+    #[sea_orm(string_value = "Suggested")]
+    Suggested,
+    #[sea_orm(string_value = "Planned")]
+    Planned,
+    #[sea_orm(string_value = "In_progress")]
+    InProgress,
+    #[sea_orm(string_value = "Completed")]
+    Completed,
+    #[sea_orm(string_value = "Rejected")]
+    Rejected,
+}
