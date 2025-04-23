@@ -336,6 +336,14 @@ impl OAuth2UserTrait<OAuth2UserProfile> for Model {
                 }
                 .insert(&txn)
                 .await?;
+                UserSettingsActiveModel {
+                    user_id: ActiveValue::set(user.id),
+                    enable_notification_email: ActiveValue::set(true),
+                    enable_marketing_email: ActiveValue::set(true),
+                    ..Default::default()
+                }
+                .insert(&txn)
+                .await?;
                 user
             }
             // Do nothing if user exists
