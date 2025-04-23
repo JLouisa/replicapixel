@@ -283,10 +283,10 @@ enum ThemePreference {
 }
 
 enum Status {
+    Completed
+    Training
     Pending
     Processing
-    Training
-    Completed
     Failed
     Cancelled
 

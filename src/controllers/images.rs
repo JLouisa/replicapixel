@@ -126,7 +126,7 @@ pub fn routes() -> Routes {
         .add(routes::Images::IMAGE_ID, get(get_one))
         .add(routes::Images::IMAGE_ID, delete(remove))
         .add(routes::Images::IMAGE_RESTORE_ID, delete(restore))
-        .add(routes::Images::IMAGE_FAVORITE_ID, patch(favorite))
+        .add(routes::Images::IMAGE_FAVORITE_ID, patch(favorite_toggle))
         .add(routes::Images::IMAGE_INFINITE, get(image_infinite_handler))
         .add(
             routes::Images::IMAGE_S3_UPLOAD_COMPLETE_ID,
@@ -177,7 +177,6 @@ async fn image_infinite_handler(
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    tracing::debug!("User successfully scrolled into view.");
     let user_pid = UserPid::new(&auth.claims.pid);
     let user = load_user(&ctx.db, &user_pid).await?;
     let images: ImageViewList = load_images_inf(&ctx.db, &user, &anchor_image_pid, params)
@@ -333,7 +332,7 @@ pub async fn generate(
 }
 
 #[debug_handler]
-pub async fn favorite(
+pub async fn favorite_toggle(
     auth: auth::JWT,
     Path(img_pid): Path<Uuid>,
     State(ctx): State<AppContext>,
@@ -342,7 +341,7 @@ pub async fn favorite(
     if img.user_id != user.id {
         return Ok((StatusCode::UNAUTHORIZED).into_response());
     }
-    img.favorite_image(&ctx.db).await?;
+    img.favorite_image_toggle(&ctx.db).await?;
     Ok((StatusCode::OK).into_response())
 }
 

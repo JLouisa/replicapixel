@@ -365,7 +365,7 @@ impl Model {
         let image = new.update(db).await?;
         Ok(image)
     }
-    pub async fn favorite_image(self, db: &impl ConnectionTrait) -> ModelResult<Model> {
+    pub async fn favorite_image_toggle(self, db: &impl ConnectionTrait) -> ModelResult<Model> {
         let time = chrono::Utc::now().into();
         let new_bool = !self.is_favorite;
         let mut new = ActiveModel::from(self);

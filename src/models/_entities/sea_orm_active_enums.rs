@@ -4,7 +4,18 @@ use serde::{Deserialize, Serialize};
 use strum::{EnumIter, EnumString};
 
 #[derive(
-    Debug, Clone, Copy, Display, PartialEq, Eq, EnumIter, DeriveActiveEnum, Serialize, Deserialize,
+    Debug,
+    Clone,
+    Copy,
+    Display,
+    PartialEq,
+    Eq,
+    EnumIter,
+    DeriveActiveEnum,
+    Serialize,
+    Deserialize,
+    PartialOrd,
+    Ord,
 )]
 #[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "sex")]
 pub enum Sex {
@@ -25,6 +36,8 @@ pub enum Sex {
     Display,
     Serialize,
     Deserialize,
+    PartialOrd,
+    Ord,
 )]
 #[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "plan_names")]
 #[serde(rename_all = "lowercase")]
@@ -38,18 +51,29 @@ pub enum PlanNames {
 }
 
 #[derive(
-    Debug, Clone, Copy, Display, PartialEq, Eq, EnumIter, DeriveActiveEnum, Serialize, Deserialize,
+    Debug,
+    Clone,
+    Copy,
+    Display,
+    PartialEq,
+    Eq,
+    EnumIter,
+    DeriveActiveEnum,
+    Serialize,
+    Deserialize,
+    PartialOrd,
+    Ord,
 )]
 #[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "status")]
 pub enum Status {
+    #[sea_orm(string_value = "Completed")]
+    Completed,
+    #[sea_orm(string_value = "Training")]
+    Training,
     #[sea_orm(string_value = "Pending")]
     Pending,
     #[sea_orm(string_value = "Processing")]
     Processing,
-    #[sea_orm(string_value = "Training")]
-    Training,
-    #[sea_orm(string_value = "Completed")]
-    Completed,
     #[sea_orm(string_value = "Failed")]
     Failed,
     #[sea_orm(string_value = "Cancelled")]
@@ -78,7 +102,9 @@ pub enum ImageFormat {
     Zip,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, EnumIter, DeriveActiveEnum, Serialize, Deserialize)]
+#[derive(
+    Debug, Clone, PartialEq, Eq, EnumIter, DeriveActiveEnum, Serialize, Deserialize, PartialOrd, Ord,
+)]
 #[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "language")]
 pub enum Language {
     #[sea_orm(string_value = "English")]
@@ -108,7 +134,9 @@ impl Default for Language {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, EnumIter, DeriveActiveEnum, Serialize, Deserialize)]
+#[derive(
+    Debug, Clone, PartialEq, Eq, EnumIter, DeriveActiveEnum, Serialize, Deserialize, PartialOrd, Ord,
+)]
 #[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "notification")]
 pub enum Notification {
     #[sea_orm(string_value = "Message")]
@@ -158,6 +186,8 @@ pub enum EyeColor {
     DeriveActiveEnum,
     PartialEq,
     Eq,
+    PartialOrd,
+    Ord,
 )]
 #[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "ethnicity")]
 pub enum Ethnicity {
@@ -196,6 +226,8 @@ pub enum Ethnicity {
     DeriveActiveEnum,
     PartialEq,
     Eq,
+    PartialOrd,
+    Ord,
 )]
 #[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "emotion")]
 pub enum Emotion {
