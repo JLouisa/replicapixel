@@ -30,6 +30,10 @@ pub struct Model {
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
+    #[sea_orm(has_many = "super::feature_request::Entity")]
+    FeatureRequest,
+    #[sea_orm(has_many = "super::feature_vote::Entity")]
+    FeatureVote,
     #[sea_orm(has_many = "super::images::Entity")]
     Images,
     #[sea_orm(has_many = "super::notification::Entity")]
@@ -44,6 +48,18 @@ pub enum Relation {
     UserSettings,
     #[sea_orm(has_many = "super::o_auth2_sessions::Entity")]
     OAuth2Sessions,
+}
+
+impl Related<super::feature_request::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::FeatureRequest.def()
+    }
+}
+
+impl Related<super::feature_vote::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::FeatureVote.def()
+    }
 }
 
 impl Related<super::images::Entity> for Entity {

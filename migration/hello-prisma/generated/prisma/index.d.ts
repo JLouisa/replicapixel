@@ -78,12 +78,33 @@ export type Notification = $Result.DefaultSelection<Prisma.$NotificationPayload>
  * 
  */
 export type UserSettings = $Result.DefaultSelection<Prisma.$UserSettingsPayload>
+/**
+ * Model FeatureRequest
+ * 
+ */
+export type FeatureRequest = $Result.DefaultSelection<Prisma.$FeatureRequestPayload>
+/**
+ * Model FeatureVote
+ * 
+ */
+export type FeatureVote = $Result.DefaultSelection<Prisma.$FeatureVotePayload>
 
 /**
  * Enums
  */
 export namespace $Enums {
-  export const Language: {
+  export const FeatureStatus: {
+  Suggested: 'Suggested',
+  Planned: 'Planned',
+  In_progress: 'In_progress',
+  Completed: 'Completed',
+  Rejected: 'Rejected'
+};
+
+export type FeatureStatus = (typeof FeatureStatus)[keyof typeof FeatureStatus]
+
+
+export const Language: {
   English: 'English',
   Spanish: 'Spanish',
   German: 'German',
@@ -113,10 +134,10 @@ export type ThemePreference = (typeof ThemePreference)[keyof typeof ThemePrefere
 
 
 export const Status: {
+  Completed: 'Completed',
+  Training: 'Training',
   Pending: 'Pending',
   Processing: 'Processing',
-  Training: 'Training',
-  Completed: 'Completed',
   Failed: 'Failed',
   Cancelled: 'Cancelled'
 };
@@ -209,6 +230,10 @@ export const ImageFormat: {
 export type ImageFormat = (typeof ImageFormat)[keyof typeof ImageFormat]
 
 }
+
+export type FeatureStatus = $Enums.FeatureStatus
+
+export const FeatureStatus: typeof $Enums.FeatureStatus
 
 export type Language = $Enums.Language
 
@@ -512,6 +537,26 @@ export class PrismaClient<
     * ```
     */
   get userSettings(): Prisma.UserSettingsDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.featureRequest`: Exposes CRUD operations for the **FeatureRequest** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more FeatureRequests
+    * const featureRequests = await prisma.featureRequest.findMany()
+    * ```
+    */
+  get featureRequest(): Prisma.FeatureRequestDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.featureVote`: Exposes CRUD operations for the **FeatureVote** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more FeatureVotes
+    * const featureVotes = await prisma.featureVote.findMany()
+    * ```
+    */
+  get featureVote(): Prisma.FeatureVoteDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -964,7 +1009,9 @@ export namespace Prisma {
     HandledFalEvent: 'HandledFalEvent',
     seaql_migrations: 'seaql_migrations',
     Notification: 'Notification',
-    UserSettings: 'UserSettings'
+    UserSettings: 'UserSettings',
+    FeatureRequest: 'FeatureRequest',
+    FeatureVote: 'FeatureVote'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -983,7 +1030,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "users" | "oAuth2Session" | "trainingModels" | "userCredits" | "images" | "plans" | "transactions" | "packs" | "handledStripeEvent" | "handledFalEvent" | "seaql_migrations" | "notification" | "userSettings"
+      modelProps: "users" | "oAuth2Session" | "trainingModels" | "userCredits" | "images" | "plans" | "transactions" | "packs" | "handledStripeEvent" | "handledFalEvent" | "seaql_migrations" | "notification" | "userSettings" | "featureRequest" | "featureVote"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1949,6 +1996,154 @@ export namespace Prisma {
           }
         }
       }
+      FeatureRequest: {
+        payload: Prisma.$FeatureRequestPayload<ExtArgs>
+        fields: Prisma.FeatureRequestFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.FeatureRequestFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FeatureRequestPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.FeatureRequestFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FeatureRequestPayload>
+          }
+          findFirst: {
+            args: Prisma.FeatureRequestFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FeatureRequestPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.FeatureRequestFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FeatureRequestPayload>
+          }
+          findMany: {
+            args: Prisma.FeatureRequestFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FeatureRequestPayload>[]
+          }
+          create: {
+            args: Prisma.FeatureRequestCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FeatureRequestPayload>
+          }
+          createMany: {
+            args: Prisma.FeatureRequestCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.FeatureRequestCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FeatureRequestPayload>[]
+          }
+          delete: {
+            args: Prisma.FeatureRequestDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FeatureRequestPayload>
+          }
+          update: {
+            args: Prisma.FeatureRequestUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FeatureRequestPayload>
+          }
+          deleteMany: {
+            args: Prisma.FeatureRequestDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.FeatureRequestUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.FeatureRequestUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FeatureRequestPayload>[]
+          }
+          upsert: {
+            args: Prisma.FeatureRequestUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FeatureRequestPayload>
+          }
+          aggregate: {
+            args: Prisma.FeatureRequestAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateFeatureRequest>
+          }
+          groupBy: {
+            args: Prisma.FeatureRequestGroupByArgs<ExtArgs>
+            result: $Utils.Optional<FeatureRequestGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.FeatureRequestCountArgs<ExtArgs>
+            result: $Utils.Optional<FeatureRequestCountAggregateOutputType> | number
+          }
+        }
+      }
+      FeatureVote: {
+        payload: Prisma.$FeatureVotePayload<ExtArgs>
+        fields: Prisma.FeatureVoteFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.FeatureVoteFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FeatureVotePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.FeatureVoteFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FeatureVotePayload>
+          }
+          findFirst: {
+            args: Prisma.FeatureVoteFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FeatureVotePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.FeatureVoteFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FeatureVotePayload>
+          }
+          findMany: {
+            args: Prisma.FeatureVoteFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FeatureVotePayload>[]
+          }
+          create: {
+            args: Prisma.FeatureVoteCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FeatureVotePayload>
+          }
+          createMany: {
+            args: Prisma.FeatureVoteCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.FeatureVoteCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FeatureVotePayload>[]
+          }
+          delete: {
+            args: Prisma.FeatureVoteDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FeatureVotePayload>
+          }
+          update: {
+            args: Prisma.FeatureVoteUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FeatureVotePayload>
+          }
+          deleteMany: {
+            args: Prisma.FeatureVoteDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.FeatureVoteUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.FeatureVoteUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FeatureVotePayload>[]
+          }
+          upsert: {
+            args: Prisma.FeatureVoteUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FeatureVotePayload>
+          }
+          aggregate: {
+            args: Prisma.FeatureVoteAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateFeatureVote>
+          }
+          groupBy: {
+            args: Prisma.FeatureVoteGroupByArgs<ExtArgs>
+            result: $Utils.Optional<FeatureVoteGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.FeatureVoteCountArgs<ExtArgs>
+            result: $Utils.Optional<FeatureVoteCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2046,6 +2241,8 @@ export namespace Prisma {
     seaql_migrations?: seaql_migrationsOmit
     notification?: NotificationOmit
     userSettings?: UserSettingsOmit
+    featureRequest?: FeatureRequestOmit
+    featureVote?: FeatureVoteOmit
   }
 
   /* Types for Logging */
@@ -2146,6 +2343,8 @@ export namespace Prisma {
     Transactions: number
     oAuth2Sessions: number
     notifications: number
+    featureRequests: number
+    featureVote: number
   }
 
   export type UsersCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2155,6 +2354,8 @@ export namespace Prisma {
     Transactions?: boolean | UsersCountOutputTypeCountTransactionsArgs
     oAuth2Sessions?: boolean | UsersCountOutputTypeCountOAuth2SessionsArgs
     notifications?: boolean | UsersCountOutputTypeCountNotificationsArgs
+    featureRequests?: boolean | UsersCountOutputTypeCountFeatureRequestsArgs
+    featureVote?: boolean | UsersCountOutputTypeCountFeatureVoteArgs
   }
 
   // Custom InputTypes
@@ -2208,6 +2409,20 @@ export namespace Prisma {
    */
   export type UsersCountOutputTypeCountNotificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: NotificationWhereInput
+  }
+
+  /**
+   * UsersCountOutputType without action
+   */
+  export type UsersCountOutputTypeCountFeatureRequestsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FeatureRequestWhereInput
+  }
+
+  /**
+   * UsersCountOutputType without action
+   */
+  export type UsersCountOutputTypeCountFeatureVoteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FeatureVoteWhereInput
   }
 
 
@@ -2301,6 +2516,37 @@ export namespace Prisma {
    */
   export type PacksCountOutputTypeCountImagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ImagesWhereInput
+  }
+
+
+  /**
+   * Count Type FeatureRequestCountOutputType
+   */
+
+  export type FeatureRequestCountOutputType = {
+    featureVote: number
+  }
+
+  export type FeatureRequestCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    featureVote?: boolean | FeatureRequestCountOutputTypeCountFeatureVoteArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * FeatureRequestCountOutputType without action
+   */
+  export type FeatureRequestCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FeatureRequestCountOutputType
+     */
+    select?: FeatureRequestCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * FeatureRequestCountOutputType without action
+   */
+  export type FeatureRequestCountOutputTypeCountFeatureVoteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FeatureVoteWhereInput
   }
 
 
@@ -2585,6 +2831,8 @@ export namespace Prisma {
     oAuth2Sessions?: boolean | Users$oAuth2SessionsArgs<ExtArgs>
     notifications?: boolean | Users$notificationsArgs<ExtArgs>
     settings?: boolean | Users$settingsArgs<ExtArgs>
+    featureRequests?: boolean | Users$featureRequestsArgs<ExtArgs>
+    featureVote?: boolean | Users$featureVoteArgs<ExtArgs>
     _count?: boolean | UsersCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["users"]>
 
@@ -2648,6 +2896,8 @@ export namespace Prisma {
     oAuth2Sessions?: boolean | Users$oAuth2SessionsArgs<ExtArgs>
     notifications?: boolean | Users$notificationsArgs<ExtArgs>
     settings?: boolean | Users$settingsArgs<ExtArgs>
+    featureRequests?: boolean | Users$featureRequestsArgs<ExtArgs>
+    featureVote?: boolean | Users$featureVoteArgs<ExtArgs>
     _count?: boolean | UsersCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UsersIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2663,6 +2913,8 @@ export namespace Prisma {
       oAuth2Sessions: Prisma.$OAuth2SessionPayload<ExtArgs>[]
       notifications: Prisma.$NotificationPayload<ExtArgs>[]
       settings: Prisma.$UserSettingsPayload<ExtArgs> | null
+      featureRequests: Prisma.$FeatureRequestPayload<ExtArgs>[]
+      featureVote: Prisma.$FeatureVotePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -3080,6 +3332,8 @@ export namespace Prisma {
     oAuth2Sessions<T extends Users$oAuth2SessionsArgs<ExtArgs> = {}>(args?: Subset<T, Users$oAuth2SessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OAuth2SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     notifications<T extends Users$notificationsArgs<ExtArgs> = {}>(args?: Subset<T, Users$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     settings<T extends Users$settingsArgs<ExtArgs> = {}>(args?: Subset<T, Users$settingsArgs<ExtArgs>>): Prisma__UserSettingsClient<$Result.GetResult<Prisma.$UserSettingsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    featureRequests<T extends Users$featureRequestsArgs<ExtArgs> = {}>(args?: Subset<T, Users$featureRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FeatureRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    featureVote<T extends Users$featureVoteArgs<ExtArgs> = {}>(args?: Subset<T, Users$featureVoteArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FeatureVotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3671,6 +3925,54 @@ export namespace Prisma {
      */
     include?: UserSettingsInclude<ExtArgs> | null
     where?: UserSettingsWhereInput
+  }
+
+  /**
+   * Users.featureRequests
+   */
+  export type Users$featureRequestsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FeatureRequest
+     */
+    select?: FeatureRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FeatureRequest
+     */
+    omit?: FeatureRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeatureRequestInclude<ExtArgs> | null
+    where?: FeatureRequestWhereInput
+    orderBy?: FeatureRequestOrderByWithRelationInput | FeatureRequestOrderByWithRelationInput[]
+    cursor?: FeatureRequestWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FeatureRequestScalarFieldEnum | FeatureRequestScalarFieldEnum[]
+  }
+
+  /**
+   * Users.featureVote
+   */
+  export type Users$featureVoteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FeatureVote
+     */
+    select?: FeatureVoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FeatureVote
+     */
+    omit?: FeatureVoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeatureVoteInclude<ExtArgs> | null
+    where?: FeatureVoteWhereInput
+    orderBy?: FeatureVoteOrderByWithRelationInput | FeatureVoteOrderByWithRelationInput[]
+    cursor?: FeatureVoteWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FeatureVoteScalarFieldEnum | FeatureVoteScalarFieldEnum[]
   }
 
   /**
@@ -17462,6 +17764,2283 @@ export namespace Prisma {
 
 
   /**
+   * Model FeatureRequest
+   */
+
+  export type AggregateFeatureRequest = {
+    _count: FeatureRequestCountAggregateOutputType | null
+    _avg: FeatureRequestAvgAggregateOutputType | null
+    _sum: FeatureRequestSumAggregateOutputType | null
+    _min: FeatureRequestMinAggregateOutputType | null
+    _max: FeatureRequestMaxAggregateOutputType | null
+  }
+
+  export type FeatureRequestAvgAggregateOutputType = {
+    id: number | null
+    user_id: number | null
+    votes: number | null
+  }
+
+  export type FeatureRequestSumAggregateOutputType = {
+    id: number | null
+    user_id: number | null
+    votes: number | null
+  }
+
+  export type FeatureRequestMinAggregateOutputType = {
+    id: number | null
+    user_id: number | null
+    title: string | null
+    description: string | null
+    status: $Enums.FeatureStatus | null
+    votes: number | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type FeatureRequestMaxAggregateOutputType = {
+    id: number | null
+    user_id: number | null
+    title: string | null
+    description: string | null
+    status: $Enums.FeatureStatus | null
+    votes: number | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type FeatureRequestCountAggregateOutputType = {
+    id: number
+    user_id: number
+    title: number
+    description: number
+    status: number
+    votes: number
+    created_at: number
+    updated_at: number
+    _all: number
+  }
+
+
+  export type FeatureRequestAvgAggregateInputType = {
+    id?: true
+    user_id?: true
+    votes?: true
+  }
+
+  export type FeatureRequestSumAggregateInputType = {
+    id?: true
+    user_id?: true
+    votes?: true
+  }
+
+  export type FeatureRequestMinAggregateInputType = {
+    id?: true
+    user_id?: true
+    title?: true
+    description?: true
+    status?: true
+    votes?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type FeatureRequestMaxAggregateInputType = {
+    id?: true
+    user_id?: true
+    title?: true
+    description?: true
+    status?: true
+    votes?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type FeatureRequestCountAggregateInputType = {
+    id?: true
+    user_id?: true
+    title?: true
+    description?: true
+    status?: true
+    votes?: true
+    created_at?: true
+    updated_at?: true
+    _all?: true
+  }
+
+  export type FeatureRequestAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FeatureRequest to aggregate.
+     */
+    where?: FeatureRequestWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FeatureRequests to fetch.
+     */
+    orderBy?: FeatureRequestOrderByWithRelationInput | FeatureRequestOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: FeatureRequestWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FeatureRequests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FeatureRequests.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned FeatureRequests
+    **/
+    _count?: true | FeatureRequestCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: FeatureRequestAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: FeatureRequestSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: FeatureRequestMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: FeatureRequestMaxAggregateInputType
+  }
+
+  export type GetFeatureRequestAggregateType<T extends FeatureRequestAggregateArgs> = {
+        [P in keyof T & keyof AggregateFeatureRequest]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateFeatureRequest[P]>
+      : GetScalarType<T[P], AggregateFeatureRequest[P]>
+  }
+
+
+
+
+  export type FeatureRequestGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FeatureRequestWhereInput
+    orderBy?: FeatureRequestOrderByWithAggregationInput | FeatureRequestOrderByWithAggregationInput[]
+    by: FeatureRequestScalarFieldEnum[] | FeatureRequestScalarFieldEnum
+    having?: FeatureRequestScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: FeatureRequestCountAggregateInputType | true
+    _avg?: FeatureRequestAvgAggregateInputType
+    _sum?: FeatureRequestSumAggregateInputType
+    _min?: FeatureRequestMinAggregateInputType
+    _max?: FeatureRequestMaxAggregateInputType
+  }
+
+  export type FeatureRequestGroupByOutputType = {
+    id: number
+    user_id: number
+    title: string
+    description: string
+    status: $Enums.FeatureStatus
+    votes: number
+    created_at: Date
+    updated_at: Date
+    _count: FeatureRequestCountAggregateOutputType | null
+    _avg: FeatureRequestAvgAggregateOutputType | null
+    _sum: FeatureRequestSumAggregateOutputType | null
+    _min: FeatureRequestMinAggregateOutputType | null
+    _max: FeatureRequestMaxAggregateOutputType | null
+  }
+
+  type GetFeatureRequestGroupByPayload<T extends FeatureRequestGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<FeatureRequestGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof FeatureRequestGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], FeatureRequestGroupByOutputType[P]>
+            : GetScalarType<T[P], FeatureRequestGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type FeatureRequestSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    user_id?: boolean
+    title?: boolean
+    description?: boolean
+    status?: boolean
+    votes?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+    featureVote?: boolean | FeatureRequest$featureVoteArgs<ExtArgs>
+    _count?: boolean | FeatureRequestCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["featureRequest"]>
+
+  export type FeatureRequestSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    user_id?: boolean
+    title?: boolean
+    description?: boolean
+    status?: boolean
+    votes?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["featureRequest"]>
+
+  export type FeatureRequestSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    user_id?: boolean
+    title?: boolean
+    description?: boolean
+    status?: boolean
+    votes?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["featureRequest"]>
+
+  export type FeatureRequestSelectScalar = {
+    id?: boolean
+    user_id?: boolean
+    title?: boolean
+    description?: boolean
+    status?: boolean
+    votes?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }
+
+  export type FeatureRequestOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "user_id" | "title" | "description" | "status" | "votes" | "created_at" | "updated_at", ExtArgs["result"]["featureRequest"]>
+  export type FeatureRequestInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+    featureVote?: boolean | FeatureRequest$featureVoteArgs<ExtArgs>
+    _count?: boolean | FeatureRequestCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type FeatureRequestIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }
+  export type FeatureRequestIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }
+
+  export type $FeatureRequestPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "FeatureRequest"
+    objects: {
+      user: Prisma.$UsersPayload<ExtArgs>
+      featureVote: Prisma.$FeatureVotePayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      user_id: number
+      title: string
+      description: string
+      status: $Enums.FeatureStatus
+      votes: number
+      created_at: Date
+      updated_at: Date
+    }, ExtArgs["result"]["featureRequest"]>
+    composites: {}
+  }
+
+  type FeatureRequestGetPayload<S extends boolean | null | undefined | FeatureRequestDefaultArgs> = $Result.GetResult<Prisma.$FeatureRequestPayload, S>
+
+  type FeatureRequestCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<FeatureRequestFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: FeatureRequestCountAggregateInputType | true
+    }
+
+  export interface FeatureRequestDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['FeatureRequest'], meta: { name: 'FeatureRequest' } }
+    /**
+     * Find zero or one FeatureRequest that matches the filter.
+     * @param {FeatureRequestFindUniqueArgs} args - Arguments to find a FeatureRequest
+     * @example
+     * // Get one FeatureRequest
+     * const featureRequest = await prisma.featureRequest.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends FeatureRequestFindUniqueArgs>(args: SelectSubset<T, FeatureRequestFindUniqueArgs<ExtArgs>>): Prisma__FeatureRequestClient<$Result.GetResult<Prisma.$FeatureRequestPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one FeatureRequest that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {FeatureRequestFindUniqueOrThrowArgs} args - Arguments to find a FeatureRequest
+     * @example
+     * // Get one FeatureRequest
+     * const featureRequest = await prisma.featureRequest.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends FeatureRequestFindUniqueOrThrowArgs>(args: SelectSubset<T, FeatureRequestFindUniqueOrThrowArgs<ExtArgs>>): Prisma__FeatureRequestClient<$Result.GetResult<Prisma.$FeatureRequestPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FeatureRequest that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FeatureRequestFindFirstArgs} args - Arguments to find a FeatureRequest
+     * @example
+     * // Get one FeatureRequest
+     * const featureRequest = await prisma.featureRequest.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends FeatureRequestFindFirstArgs>(args?: SelectSubset<T, FeatureRequestFindFirstArgs<ExtArgs>>): Prisma__FeatureRequestClient<$Result.GetResult<Prisma.$FeatureRequestPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FeatureRequest that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FeatureRequestFindFirstOrThrowArgs} args - Arguments to find a FeatureRequest
+     * @example
+     * // Get one FeatureRequest
+     * const featureRequest = await prisma.featureRequest.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends FeatureRequestFindFirstOrThrowArgs>(args?: SelectSubset<T, FeatureRequestFindFirstOrThrowArgs<ExtArgs>>): Prisma__FeatureRequestClient<$Result.GetResult<Prisma.$FeatureRequestPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more FeatureRequests that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FeatureRequestFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all FeatureRequests
+     * const featureRequests = await prisma.featureRequest.findMany()
+     * 
+     * // Get first 10 FeatureRequests
+     * const featureRequests = await prisma.featureRequest.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const featureRequestWithIdOnly = await prisma.featureRequest.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends FeatureRequestFindManyArgs>(args?: SelectSubset<T, FeatureRequestFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FeatureRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a FeatureRequest.
+     * @param {FeatureRequestCreateArgs} args - Arguments to create a FeatureRequest.
+     * @example
+     * // Create one FeatureRequest
+     * const FeatureRequest = await prisma.featureRequest.create({
+     *   data: {
+     *     // ... data to create a FeatureRequest
+     *   }
+     * })
+     * 
+     */
+    create<T extends FeatureRequestCreateArgs>(args: SelectSubset<T, FeatureRequestCreateArgs<ExtArgs>>): Prisma__FeatureRequestClient<$Result.GetResult<Prisma.$FeatureRequestPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many FeatureRequests.
+     * @param {FeatureRequestCreateManyArgs} args - Arguments to create many FeatureRequests.
+     * @example
+     * // Create many FeatureRequests
+     * const featureRequest = await prisma.featureRequest.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends FeatureRequestCreateManyArgs>(args?: SelectSubset<T, FeatureRequestCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many FeatureRequests and returns the data saved in the database.
+     * @param {FeatureRequestCreateManyAndReturnArgs} args - Arguments to create many FeatureRequests.
+     * @example
+     * // Create many FeatureRequests
+     * const featureRequest = await prisma.featureRequest.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many FeatureRequests and only return the `id`
+     * const featureRequestWithIdOnly = await prisma.featureRequest.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends FeatureRequestCreateManyAndReturnArgs>(args?: SelectSubset<T, FeatureRequestCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FeatureRequestPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a FeatureRequest.
+     * @param {FeatureRequestDeleteArgs} args - Arguments to delete one FeatureRequest.
+     * @example
+     * // Delete one FeatureRequest
+     * const FeatureRequest = await prisma.featureRequest.delete({
+     *   where: {
+     *     // ... filter to delete one FeatureRequest
+     *   }
+     * })
+     * 
+     */
+    delete<T extends FeatureRequestDeleteArgs>(args: SelectSubset<T, FeatureRequestDeleteArgs<ExtArgs>>): Prisma__FeatureRequestClient<$Result.GetResult<Prisma.$FeatureRequestPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one FeatureRequest.
+     * @param {FeatureRequestUpdateArgs} args - Arguments to update one FeatureRequest.
+     * @example
+     * // Update one FeatureRequest
+     * const featureRequest = await prisma.featureRequest.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends FeatureRequestUpdateArgs>(args: SelectSubset<T, FeatureRequestUpdateArgs<ExtArgs>>): Prisma__FeatureRequestClient<$Result.GetResult<Prisma.$FeatureRequestPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more FeatureRequests.
+     * @param {FeatureRequestDeleteManyArgs} args - Arguments to filter FeatureRequests to delete.
+     * @example
+     * // Delete a few FeatureRequests
+     * const { count } = await prisma.featureRequest.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends FeatureRequestDeleteManyArgs>(args?: SelectSubset<T, FeatureRequestDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FeatureRequests.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FeatureRequestUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many FeatureRequests
+     * const featureRequest = await prisma.featureRequest.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends FeatureRequestUpdateManyArgs>(args: SelectSubset<T, FeatureRequestUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FeatureRequests and returns the data updated in the database.
+     * @param {FeatureRequestUpdateManyAndReturnArgs} args - Arguments to update many FeatureRequests.
+     * @example
+     * // Update many FeatureRequests
+     * const featureRequest = await prisma.featureRequest.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more FeatureRequests and only return the `id`
+     * const featureRequestWithIdOnly = await prisma.featureRequest.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends FeatureRequestUpdateManyAndReturnArgs>(args: SelectSubset<T, FeatureRequestUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FeatureRequestPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one FeatureRequest.
+     * @param {FeatureRequestUpsertArgs} args - Arguments to update or create a FeatureRequest.
+     * @example
+     * // Update or create a FeatureRequest
+     * const featureRequest = await prisma.featureRequest.upsert({
+     *   create: {
+     *     // ... data to create a FeatureRequest
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the FeatureRequest we want to update
+     *   }
+     * })
+     */
+    upsert<T extends FeatureRequestUpsertArgs>(args: SelectSubset<T, FeatureRequestUpsertArgs<ExtArgs>>): Prisma__FeatureRequestClient<$Result.GetResult<Prisma.$FeatureRequestPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of FeatureRequests.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FeatureRequestCountArgs} args - Arguments to filter FeatureRequests to count.
+     * @example
+     * // Count the number of FeatureRequests
+     * const count = await prisma.featureRequest.count({
+     *   where: {
+     *     // ... the filter for the FeatureRequests we want to count
+     *   }
+     * })
+    **/
+    count<T extends FeatureRequestCountArgs>(
+      args?: Subset<T, FeatureRequestCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], FeatureRequestCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a FeatureRequest.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FeatureRequestAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends FeatureRequestAggregateArgs>(args: Subset<T, FeatureRequestAggregateArgs>): Prisma.PrismaPromise<GetFeatureRequestAggregateType<T>>
+
+    /**
+     * Group by FeatureRequest.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FeatureRequestGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends FeatureRequestGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: FeatureRequestGroupByArgs['orderBy'] }
+        : { orderBy?: FeatureRequestGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, FeatureRequestGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFeatureRequestGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the FeatureRequest model
+   */
+  readonly fields: FeatureRequestFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for FeatureRequest.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__FeatureRequestClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UsersDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UsersDefaultArgs<ExtArgs>>): Prisma__UsersClient<$Result.GetResult<Prisma.$UsersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    featureVote<T extends FeatureRequest$featureVoteArgs<ExtArgs> = {}>(args?: Subset<T, FeatureRequest$featureVoteArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FeatureVotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the FeatureRequest model
+   */ 
+  interface FeatureRequestFieldRefs {
+    readonly id: FieldRef<"FeatureRequest", 'Int'>
+    readonly user_id: FieldRef<"FeatureRequest", 'Int'>
+    readonly title: FieldRef<"FeatureRequest", 'String'>
+    readonly description: FieldRef<"FeatureRequest", 'String'>
+    readonly status: FieldRef<"FeatureRequest", 'FeatureStatus'>
+    readonly votes: FieldRef<"FeatureRequest", 'Int'>
+    readonly created_at: FieldRef<"FeatureRequest", 'DateTime'>
+    readonly updated_at: FieldRef<"FeatureRequest", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * FeatureRequest findUnique
+   */
+  export type FeatureRequestFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FeatureRequest
+     */
+    select?: FeatureRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FeatureRequest
+     */
+    omit?: FeatureRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeatureRequestInclude<ExtArgs> | null
+    /**
+     * Filter, which FeatureRequest to fetch.
+     */
+    where: FeatureRequestWhereUniqueInput
+  }
+
+  /**
+   * FeatureRequest findUniqueOrThrow
+   */
+  export type FeatureRequestFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FeatureRequest
+     */
+    select?: FeatureRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FeatureRequest
+     */
+    omit?: FeatureRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeatureRequestInclude<ExtArgs> | null
+    /**
+     * Filter, which FeatureRequest to fetch.
+     */
+    where: FeatureRequestWhereUniqueInput
+  }
+
+  /**
+   * FeatureRequest findFirst
+   */
+  export type FeatureRequestFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FeatureRequest
+     */
+    select?: FeatureRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FeatureRequest
+     */
+    omit?: FeatureRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeatureRequestInclude<ExtArgs> | null
+    /**
+     * Filter, which FeatureRequest to fetch.
+     */
+    where?: FeatureRequestWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FeatureRequests to fetch.
+     */
+    orderBy?: FeatureRequestOrderByWithRelationInput | FeatureRequestOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FeatureRequests.
+     */
+    cursor?: FeatureRequestWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FeatureRequests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FeatureRequests.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FeatureRequests.
+     */
+    distinct?: FeatureRequestScalarFieldEnum | FeatureRequestScalarFieldEnum[]
+  }
+
+  /**
+   * FeatureRequest findFirstOrThrow
+   */
+  export type FeatureRequestFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FeatureRequest
+     */
+    select?: FeatureRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FeatureRequest
+     */
+    omit?: FeatureRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeatureRequestInclude<ExtArgs> | null
+    /**
+     * Filter, which FeatureRequest to fetch.
+     */
+    where?: FeatureRequestWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FeatureRequests to fetch.
+     */
+    orderBy?: FeatureRequestOrderByWithRelationInput | FeatureRequestOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FeatureRequests.
+     */
+    cursor?: FeatureRequestWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FeatureRequests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FeatureRequests.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FeatureRequests.
+     */
+    distinct?: FeatureRequestScalarFieldEnum | FeatureRequestScalarFieldEnum[]
+  }
+
+  /**
+   * FeatureRequest findMany
+   */
+  export type FeatureRequestFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FeatureRequest
+     */
+    select?: FeatureRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FeatureRequest
+     */
+    omit?: FeatureRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeatureRequestInclude<ExtArgs> | null
+    /**
+     * Filter, which FeatureRequests to fetch.
+     */
+    where?: FeatureRequestWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FeatureRequests to fetch.
+     */
+    orderBy?: FeatureRequestOrderByWithRelationInput | FeatureRequestOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing FeatureRequests.
+     */
+    cursor?: FeatureRequestWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FeatureRequests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FeatureRequests.
+     */
+    skip?: number
+    distinct?: FeatureRequestScalarFieldEnum | FeatureRequestScalarFieldEnum[]
+  }
+
+  /**
+   * FeatureRequest create
+   */
+  export type FeatureRequestCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FeatureRequest
+     */
+    select?: FeatureRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FeatureRequest
+     */
+    omit?: FeatureRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeatureRequestInclude<ExtArgs> | null
+    /**
+     * The data needed to create a FeatureRequest.
+     */
+    data: XOR<FeatureRequestCreateInput, FeatureRequestUncheckedCreateInput>
+  }
+
+  /**
+   * FeatureRequest createMany
+   */
+  export type FeatureRequestCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many FeatureRequests.
+     */
+    data: FeatureRequestCreateManyInput | FeatureRequestCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * FeatureRequest createManyAndReturn
+   */
+  export type FeatureRequestCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FeatureRequest
+     */
+    select?: FeatureRequestSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FeatureRequest
+     */
+    omit?: FeatureRequestOmit<ExtArgs> | null
+    /**
+     * The data used to create many FeatureRequests.
+     */
+    data: FeatureRequestCreateManyInput | FeatureRequestCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeatureRequestIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FeatureRequest update
+   */
+  export type FeatureRequestUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FeatureRequest
+     */
+    select?: FeatureRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FeatureRequest
+     */
+    omit?: FeatureRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeatureRequestInclude<ExtArgs> | null
+    /**
+     * The data needed to update a FeatureRequest.
+     */
+    data: XOR<FeatureRequestUpdateInput, FeatureRequestUncheckedUpdateInput>
+    /**
+     * Choose, which FeatureRequest to update.
+     */
+    where: FeatureRequestWhereUniqueInput
+  }
+
+  /**
+   * FeatureRequest updateMany
+   */
+  export type FeatureRequestUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update FeatureRequests.
+     */
+    data: XOR<FeatureRequestUpdateManyMutationInput, FeatureRequestUncheckedUpdateManyInput>
+    /**
+     * Filter which FeatureRequests to update
+     */
+    where?: FeatureRequestWhereInput
+    /**
+     * Limit how many FeatureRequests to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * FeatureRequest updateManyAndReturn
+   */
+  export type FeatureRequestUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FeatureRequest
+     */
+    select?: FeatureRequestSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FeatureRequest
+     */
+    omit?: FeatureRequestOmit<ExtArgs> | null
+    /**
+     * The data used to update FeatureRequests.
+     */
+    data: XOR<FeatureRequestUpdateManyMutationInput, FeatureRequestUncheckedUpdateManyInput>
+    /**
+     * Filter which FeatureRequests to update
+     */
+    where?: FeatureRequestWhereInput
+    /**
+     * Limit how many FeatureRequests to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeatureRequestIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FeatureRequest upsert
+   */
+  export type FeatureRequestUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FeatureRequest
+     */
+    select?: FeatureRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FeatureRequest
+     */
+    omit?: FeatureRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeatureRequestInclude<ExtArgs> | null
+    /**
+     * The filter to search for the FeatureRequest to update in case it exists.
+     */
+    where: FeatureRequestWhereUniqueInput
+    /**
+     * In case the FeatureRequest found by the `where` argument doesn't exist, create a new FeatureRequest with this data.
+     */
+    create: XOR<FeatureRequestCreateInput, FeatureRequestUncheckedCreateInput>
+    /**
+     * In case the FeatureRequest was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<FeatureRequestUpdateInput, FeatureRequestUncheckedUpdateInput>
+  }
+
+  /**
+   * FeatureRequest delete
+   */
+  export type FeatureRequestDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FeatureRequest
+     */
+    select?: FeatureRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FeatureRequest
+     */
+    omit?: FeatureRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeatureRequestInclude<ExtArgs> | null
+    /**
+     * Filter which FeatureRequest to delete.
+     */
+    where: FeatureRequestWhereUniqueInput
+  }
+
+  /**
+   * FeatureRequest deleteMany
+   */
+  export type FeatureRequestDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FeatureRequests to delete
+     */
+    where?: FeatureRequestWhereInput
+    /**
+     * Limit how many FeatureRequests to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * FeatureRequest.featureVote
+   */
+  export type FeatureRequest$featureVoteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FeatureVote
+     */
+    select?: FeatureVoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FeatureVote
+     */
+    omit?: FeatureVoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeatureVoteInclude<ExtArgs> | null
+    where?: FeatureVoteWhereInput
+    orderBy?: FeatureVoteOrderByWithRelationInput | FeatureVoteOrderByWithRelationInput[]
+    cursor?: FeatureVoteWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FeatureVoteScalarFieldEnum | FeatureVoteScalarFieldEnum[]
+  }
+
+  /**
+   * FeatureRequest without action
+   */
+  export type FeatureRequestDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FeatureRequest
+     */
+    select?: FeatureRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FeatureRequest
+     */
+    omit?: FeatureRequestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeatureRequestInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model FeatureVote
+   */
+
+  export type AggregateFeatureVote = {
+    _count: FeatureVoteCountAggregateOutputType | null
+    _avg: FeatureVoteAvgAggregateOutputType | null
+    _sum: FeatureVoteSumAggregateOutputType | null
+    _min: FeatureVoteMinAggregateOutputType | null
+    _max: FeatureVoteMaxAggregateOutputType | null
+  }
+
+  export type FeatureVoteAvgAggregateOutputType = {
+    id: number | null
+    user_id: number | null
+    feature_request_id: number | null
+  }
+
+  export type FeatureVoteSumAggregateOutputType = {
+    id: number | null
+    user_id: number | null
+    feature_request_id: number | null
+  }
+
+  export type FeatureVoteMinAggregateOutputType = {
+    id: number | null
+    user_id: number | null
+    feature_request_id: number | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type FeatureVoteMaxAggregateOutputType = {
+    id: number | null
+    user_id: number | null
+    feature_request_id: number | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type FeatureVoteCountAggregateOutputType = {
+    id: number
+    user_id: number
+    feature_request_id: number
+    created_at: number
+    updated_at: number
+    _all: number
+  }
+
+
+  export type FeatureVoteAvgAggregateInputType = {
+    id?: true
+    user_id?: true
+    feature_request_id?: true
+  }
+
+  export type FeatureVoteSumAggregateInputType = {
+    id?: true
+    user_id?: true
+    feature_request_id?: true
+  }
+
+  export type FeatureVoteMinAggregateInputType = {
+    id?: true
+    user_id?: true
+    feature_request_id?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type FeatureVoteMaxAggregateInputType = {
+    id?: true
+    user_id?: true
+    feature_request_id?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type FeatureVoteCountAggregateInputType = {
+    id?: true
+    user_id?: true
+    feature_request_id?: true
+    created_at?: true
+    updated_at?: true
+    _all?: true
+  }
+
+  export type FeatureVoteAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FeatureVote to aggregate.
+     */
+    where?: FeatureVoteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FeatureVotes to fetch.
+     */
+    orderBy?: FeatureVoteOrderByWithRelationInput | FeatureVoteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: FeatureVoteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FeatureVotes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FeatureVotes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned FeatureVotes
+    **/
+    _count?: true | FeatureVoteCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: FeatureVoteAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: FeatureVoteSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: FeatureVoteMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: FeatureVoteMaxAggregateInputType
+  }
+
+  export type GetFeatureVoteAggregateType<T extends FeatureVoteAggregateArgs> = {
+        [P in keyof T & keyof AggregateFeatureVote]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateFeatureVote[P]>
+      : GetScalarType<T[P], AggregateFeatureVote[P]>
+  }
+
+
+
+
+  export type FeatureVoteGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FeatureVoteWhereInput
+    orderBy?: FeatureVoteOrderByWithAggregationInput | FeatureVoteOrderByWithAggregationInput[]
+    by: FeatureVoteScalarFieldEnum[] | FeatureVoteScalarFieldEnum
+    having?: FeatureVoteScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: FeatureVoteCountAggregateInputType | true
+    _avg?: FeatureVoteAvgAggregateInputType
+    _sum?: FeatureVoteSumAggregateInputType
+    _min?: FeatureVoteMinAggregateInputType
+    _max?: FeatureVoteMaxAggregateInputType
+  }
+
+  export type FeatureVoteGroupByOutputType = {
+    id: number
+    user_id: number
+    feature_request_id: number
+    created_at: Date
+    updated_at: Date
+    _count: FeatureVoteCountAggregateOutputType | null
+    _avg: FeatureVoteAvgAggregateOutputType | null
+    _sum: FeatureVoteSumAggregateOutputType | null
+    _min: FeatureVoteMinAggregateOutputType | null
+    _max: FeatureVoteMaxAggregateOutputType | null
+  }
+
+  type GetFeatureVoteGroupByPayload<T extends FeatureVoteGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<FeatureVoteGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof FeatureVoteGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], FeatureVoteGroupByOutputType[P]>
+            : GetScalarType<T[P], FeatureVoteGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type FeatureVoteSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    user_id?: boolean
+    feature_request_id?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+    featureRequest?: boolean | FeatureRequestDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["featureVote"]>
+
+  export type FeatureVoteSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    user_id?: boolean
+    feature_request_id?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+    featureRequest?: boolean | FeatureRequestDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["featureVote"]>
+
+  export type FeatureVoteSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    user_id?: boolean
+    feature_request_id?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+    featureRequest?: boolean | FeatureRequestDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["featureVote"]>
+
+  export type FeatureVoteSelectScalar = {
+    id?: boolean
+    user_id?: boolean
+    feature_request_id?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }
+
+  export type FeatureVoteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "user_id" | "feature_request_id" | "created_at" | "updated_at", ExtArgs["result"]["featureVote"]>
+  export type FeatureVoteInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+    featureRequest?: boolean | FeatureRequestDefaultArgs<ExtArgs>
+  }
+  export type FeatureVoteIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+    featureRequest?: boolean | FeatureRequestDefaultArgs<ExtArgs>
+  }
+  export type FeatureVoteIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+    featureRequest?: boolean | FeatureRequestDefaultArgs<ExtArgs>
+  }
+
+  export type $FeatureVotePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "FeatureVote"
+    objects: {
+      user: Prisma.$UsersPayload<ExtArgs>
+      featureRequest: Prisma.$FeatureRequestPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      user_id: number
+      feature_request_id: number
+      created_at: Date
+      updated_at: Date
+    }, ExtArgs["result"]["featureVote"]>
+    composites: {}
+  }
+
+  type FeatureVoteGetPayload<S extends boolean | null | undefined | FeatureVoteDefaultArgs> = $Result.GetResult<Prisma.$FeatureVotePayload, S>
+
+  type FeatureVoteCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<FeatureVoteFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: FeatureVoteCountAggregateInputType | true
+    }
+
+  export interface FeatureVoteDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['FeatureVote'], meta: { name: 'FeatureVote' } }
+    /**
+     * Find zero or one FeatureVote that matches the filter.
+     * @param {FeatureVoteFindUniqueArgs} args - Arguments to find a FeatureVote
+     * @example
+     * // Get one FeatureVote
+     * const featureVote = await prisma.featureVote.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends FeatureVoteFindUniqueArgs>(args: SelectSubset<T, FeatureVoteFindUniqueArgs<ExtArgs>>): Prisma__FeatureVoteClient<$Result.GetResult<Prisma.$FeatureVotePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one FeatureVote that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {FeatureVoteFindUniqueOrThrowArgs} args - Arguments to find a FeatureVote
+     * @example
+     * // Get one FeatureVote
+     * const featureVote = await prisma.featureVote.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends FeatureVoteFindUniqueOrThrowArgs>(args: SelectSubset<T, FeatureVoteFindUniqueOrThrowArgs<ExtArgs>>): Prisma__FeatureVoteClient<$Result.GetResult<Prisma.$FeatureVotePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FeatureVote that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FeatureVoteFindFirstArgs} args - Arguments to find a FeatureVote
+     * @example
+     * // Get one FeatureVote
+     * const featureVote = await prisma.featureVote.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends FeatureVoteFindFirstArgs>(args?: SelectSubset<T, FeatureVoteFindFirstArgs<ExtArgs>>): Prisma__FeatureVoteClient<$Result.GetResult<Prisma.$FeatureVotePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first FeatureVote that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FeatureVoteFindFirstOrThrowArgs} args - Arguments to find a FeatureVote
+     * @example
+     * // Get one FeatureVote
+     * const featureVote = await prisma.featureVote.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends FeatureVoteFindFirstOrThrowArgs>(args?: SelectSubset<T, FeatureVoteFindFirstOrThrowArgs<ExtArgs>>): Prisma__FeatureVoteClient<$Result.GetResult<Prisma.$FeatureVotePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more FeatureVotes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FeatureVoteFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all FeatureVotes
+     * const featureVotes = await prisma.featureVote.findMany()
+     * 
+     * // Get first 10 FeatureVotes
+     * const featureVotes = await prisma.featureVote.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const featureVoteWithIdOnly = await prisma.featureVote.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends FeatureVoteFindManyArgs>(args?: SelectSubset<T, FeatureVoteFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FeatureVotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a FeatureVote.
+     * @param {FeatureVoteCreateArgs} args - Arguments to create a FeatureVote.
+     * @example
+     * // Create one FeatureVote
+     * const FeatureVote = await prisma.featureVote.create({
+     *   data: {
+     *     // ... data to create a FeatureVote
+     *   }
+     * })
+     * 
+     */
+    create<T extends FeatureVoteCreateArgs>(args: SelectSubset<T, FeatureVoteCreateArgs<ExtArgs>>): Prisma__FeatureVoteClient<$Result.GetResult<Prisma.$FeatureVotePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many FeatureVotes.
+     * @param {FeatureVoteCreateManyArgs} args - Arguments to create many FeatureVotes.
+     * @example
+     * // Create many FeatureVotes
+     * const featureVote = await prisma.featureVote.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends FeatureVoteCreateManyArgs>(args?: SelectSubset<T, FeatureVoteCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many FeatureVotes and returns the data saved in the database.
+     * @param {FeatureVoteCreateManyAndReturnArgs} args - Arguments to create many FeatureVotes.
+     * @example
+     * // Create many FeatureVotes
+     * const featureVote = await prisma.featureVote.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many FeatureVotes and only return the `id`
+     * const featureVoteWithIdOnly = await prisma.featureVote.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends FeatureVoteCreateManyAndReturnArgs>(args?: SelectSubset<T, FeatureVoteCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FeatureVotePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a FeatureVote.
+     * @param {FeatureVoteDeleteArgs} args - Arguments to delete one FeatureVote.
+     * @example
+     * // Delete one FeatureVote
+     * const FeatureVote = await prisma.featureVote.delete({
+     *   where: {
+     *     // ... filter to delete one FeatureVote
+     *   }
+     * })
+     * 
+     */
+    delete<T extends FeatureVoteDeleteArgs>(args: SelectSubset<T, FeatureVoteDeleteArgs<ExtArgs>>): Prisma__FeatureVoteClient<$Result.GetResult<Prisma.$FeatureVotePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one FeatureVote.
+     * @param {FeatureVoteUpdateArgs} args - Arguments to update one FeatureVote.
+     * @example
+     * // Update one FeatureVote
+     * const featureVote = await prisma.featureVote.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends FeatureVoteUpdateArgs>(args: SelectSubset<T, FeatureVoteUpdateArgs<ExtArgs>>): Prisma__FeatureVoteClient<$Result.GetResult<Prisma.$FeatureVotePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more FeatureVotes.
+     * @param {FeatureVoteDeleteManyArgs} args - Arguments to filter FeatureVotes to delete.
+     * @example
+     * // Delete a few FeatureVotes
+     * const { count } = await prisma.featureVote.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends FeatureVoteDeleteManyArgs>(args?: SelectSubset<T, FeatureVoteDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FeatureVotes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FeatureVoteUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many FeatureVotes
+     * const featureVote = await prisma.featureVote.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends FeatureVoteUpdateManyArgs>(args: SelectSubset<T, FeatureVoteUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more FeatureVotes and returns the data updated in the database.
+     * @param {FeatureVoteUpdateManyAndReturnArgs} args - Arguments to update many FeatureVotes.
+     * @example
+     * // Update many FeatureVotes
+     * const featureVote = await prisma.featureVote.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more FeatureVotes and only return the `id`
+     * const featureVoteWithIdOnly = await prisma.featureVote.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends FeatureVoteUpdateManyAndReturnArgs>(args: SelectSubset<T, FeatureVoteUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FeatureVotePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one FeatureVote.
+     * @param {FeatureVoteUpsertArgs} args - Arguments to update or create a FeatureVote.
+     * @example
+     * // Update or create a FeatureVote
+     * const featureVote = await prisma.featureVote.upsert({
+     *   create: {
+     *     // ... data to create a FeatureVote
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the FeatureVote we want to update
+     *   }
+     * })
+     */
+    upsert<T extends FeatureVoteUpsertArgs>(args: SelectSubset<T, FeatureVoteUpsertArgs<ExtArgs>>): Prisma__FeatureVoteClient<$Result.GetResult<Prisma.$FeatureVotePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of FeatureVotes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FeatureVoteCountArgs} args - Arguments to filter FeatureVotes to count.
+     * @example
+     * // Count the number of FeatureVotes
+     * const count = await prisma.featureVote.count({
+     *   where: {
+     *     // ... the filter for the FeatureVotes we want to count
+     *   }
+     * })
+    **/
+    count<T extends FeatureVoteCountArgs>(
+      args?: Subset<T, FeatureVoteCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], FeatureVoteCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a FeatureVote.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FeatureVoteAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends FeatureVoteAggregateArgs>(args: Subset<T, FeatureVoteAggregateArgs>): Prisma.PrismaPromise<GetFeatureVoteAggregateType<T>>
+
+    /**
+     * Group by FeatureVote.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FeatureVoteGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends FeatureVoteGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: FeatureVoteGroupByArgs['orderBy'] }
+        : { orderBy?: FeatureVoteGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, FeatureVoteGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFeatureVoteGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the FeatureVote model
+   */
+  readonly fields: FeatureVoteFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for FeatureVote.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__FeatureVoteClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UsersDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UsersDefaultArgs<ExtArgs>>): Prisma__UsersClient<$Result.GetResult<Prisma.$UsersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    featureRequest<T extends FeatureRequestDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FeatureRequestDefaultArgs<ExtArgs>>): Prisma__FeatureRequestClient<$Result.GetResult<Prisma.$FeatureRequestPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the FeatureVote model
+   */ 
+  interface FeatureVoteFieldRefs {
+    readonly id: FieldRef<"FeatureVote", 'Int'>
+    readonly user_id: FieldRef<"FeatureVote", 'Int'>
+    readonly feature_request_id: FieldRef<"FeatureVote", 'Int'>
+    readonly created_at: FieldRef<"FeatureVote", 'DateTime'>
+    readonly updated_at: FieldRef<"FeatureVote", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * FeatureVote findUnique
+   */
+  export type FeatureVoteFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FeatureVote
+     */
+    select?: FeatureVoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FeatureVote
+     */
+    omit?: FeatureVoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeatureVoteInclude<ExtArgs> | null
+    /**
+     * Filter, which FeatureVote to fetch.
+     */
+    where: FeatureVoteWhereUniqueInput
+  }
+
+  /**
+   * FeatureVote findUniqueOrThrow
+   */
+  export type FeatureVoteFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FeatureVote
+     */
+    select?: FeatureVoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FeatureVote
+     */
+    omit?: FeatureVoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeatureVoteInclude<ExtArgs> | null
+    /**
+     * Filter, which FeatureVote to fetch.
+     */
+    where: FeatureVoteWhereUniqueInput
+  }
+
+  /**
+   * FeatureVote findFirst
+   */
+  export type FeatureVoteFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FeatureVote
+     */
+    select?: FeatureVoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FeatureVote
+     */
+    omit?: FeatureVoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeatureVoteInclude<ExtArgs> | null
+    /**
+     * Filter, which FeatureVote to fetch.
+     */
+    where?: FeatureVoteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FeatureVotes to fetch.
+     */
+    orderBy?: FeatureVoteOrderByWithRelationInput | FeatureVoteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FeatureVotes.
+     */
+    cursor?: FeatureVoteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FeatureVotes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FeatureVotes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FeatureVotes.
+     */
+    distinct?: FeatureVoteScalarFieldEnum | FeatureVoteScalarFieldEnum[]
+  }
+
+  /**
+   * FeatureVote findFirstOrThrow
+   */
+  export type FeatureVoteFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FeatureVote
+     */
+    select?: FeatureVoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FeatureVote
+     */
+    omit?: FeatureVoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeatureVoteInclude<ExtArgs> | null
+    /**
+     * Filter, which FeatureVote to fetch.
+     */
+    where?: FeatureVoteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FeatureVotes to fetch.
+     */
+    orderBy?: FeatureVoteOrderByWithRelationInput | FeatureVoteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for FeatureVotes.
+     */
+    cursor?: FeatureVoteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FeatureVotes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FeatureVotes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of FeatureVotes.
+     */
+    distinct?: FeatureVoteScalarFieldEnum | FeatureVoteScalarFieldEnum[]
+  }
+
+  /**
+   * FeatureVote findMany
+   */
+  export type FeatureVoteFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FeatureVote
+     */
+    select?: FeatureVoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FeatureVote
+     */
+    omit?: FeatureVoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeatureVoteInclude<ExtArgs> | null
+    /**
+     * Filter, which FeatureVotes to fetch.
+     */
+    where?: FeatureVoteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of FeatureVotes to fetch.
+     */
+    orderBy?: FeatureVoteOrderByWithRelationInput | FeatureVoteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing FeatureVotes.
+     */
+    cursor?: FeatureVoteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` FeatureVotes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` FeatureVotes.
+     */
+    skip?: number
+    distinct?: FeatureVoteScalarFieldEnum | FeatureVoteScalarFieldEnum[]
+  }
+
+  /**
+   * FeatureVote create
+   */
+  export type FeatureVoteCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FeatureVote
+     */
+    select?: FeatureVoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FeatureVote
+     */
+    omit?: FeatureVoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeatureVoteInclude<ExtArgs> | null
+    /**
+     * The data needed to create a FeatureVote.
+     */
+    data: XOR<FeatureVoteCreateInput, FeatureVoteUncheckedCreateInput>
+  }
+
+  /**
+   * FeatureVote createMany
+   */
+  export type FeatureVoteCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many FeatureVotes.
+     */
+    data: FeatureVoteCreateManyInput | FeatureVoteCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * FeatureVote createManyAndReturn
+   */
+  export type FeatureVoteCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FeatureVote
+     */
+    select?: FeatureVoteSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FeatureVote
+     */
+    omit?: FeatureVoteOmit<ExtArgs> | null
+    /**
+     * The data used to create many FeatureVotes.
+     */
+    data: FeatureVoteCreateManyInput | FeatureVoteCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeatureVoteIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FeatureVote update
+   */
+  export type FeatureVoteUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FeatureVote
+     */
+    select?: FeatureVoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FeatureVote
+     */
+    omit?: FeatureVoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeatureVoteInclude<ExtArgs> | null
+    /**
+     * The data needed to update a FeatureVote.
+     */
+    data: XOR<FeatureVoteUpdateInput, FeatureVoteUncheckedUpdateInput>
+    /**
+     * Choose, which FeatureVote to update.
+     */
+    where: FeatureVoteWhereUniqueInput
+  }
+
+  /**
+   * FeatureVote updateMany
+   */
+  export type FeatureVoteUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update FeatureVotes.
+     */
+    data: XOR<FeatureVoteUpdateManyMutationInput, FeatureVoteUncheckedUpdateManyInput>
+    /**
+     * Filter which FeatureVotes to update
+     */
+    where?: FeatureVoteWhereInput
+    /**
+     * Limit how many FeatureVotes to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * FeatureVote updateManyAndReturn
+   */
+  export type FeatureVoteUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FeatureVote
+     */
+    select?: FeatureVoteSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the FeatureVote
+     */
+    omit?: FeatureVoteOmit<ExtArgs> | null
+    /**
+     * The data used to update FeatureVotes.
+     */
+    data: XOR<FeatureVoteUpdateManyMutationInput, FeatureVoteUncheckedUpdateManyInput>
+    /**
+     * Filter which FeatureVotes to update
+     */
+    where?: FeatureVoteWhereInput
+    /**
+     * Limit how many FeatureVotes to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeatureVoteIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * FeatureVote upsert
+   */
+  export type FeatureVoteUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FeatureVote
+     */
+    select?: FeatureVoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FeatureVote
+     */
+    omit?: FeatureVoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeatureVoteInclude<ExtArgs> | null
+    /**
+     * The filter to search for the FeatureVote to update in case it exists.
+     */
+    where: FeatureVoteWhereUniqueInput
+    /**
+     * In case the FeatureVote found by the `where` argument doesn't exist, create a new FeatureVote with this data.
+     */
+    create: XOR<FeatureVoteCreateInput, FeatureVoteUncheckedCreateInput>
+    /**
+     * In case the FeatureVote was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<FeatureVoteUpdateInput, FeatureVoteUncheckedUpdateInput>
+  }
+
+  /**
+   * FeatureVote delete
+   */
+  export type FeatureVoteDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FeatureVote
+     */
+    select?: FeatureVoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FeatureVote
+     */
+    omit?: FeatureVoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeatureVoteInclude<ExtArgs> | null
+    /**
+     * Filter which FeatureVote to delete.
+     */
+    where: FeatureVoteWhereUniqueInput
+  }
+
+  /**
+   * FeatureVote deleteMany
+   */
+  export type FeatureVoteDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which FeatureVotes to delete
+     */
+    where?: FeatureVoteWhereInput
+    /**
+     * Limit how many FeatureVotes to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * FeatureVote without action
+   */
+  export type FeatureVoteDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FeatureVote
+     */
+    select?: FeatureVoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FeatureVote
+     */
+    omit?: FeatureVoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FeatureVoteInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -17682,6 +20261,31 @@ export namespace Prisma {
   };
 
   export type UserSettingsScalarFieldEnum = (typeof UserSettingsScalarFieldEnum)[keyof typeof UserSettingsScalarFieldEnum]
+
+
+  export const FeatureRequestScalarFieldEnum: {
+    id: 'id',
+    user_id: 'user_id',
+    title: 'title',
+    description: 'description',
+    status: 'status',
+    votes: 'votes',
+    created_at: 'created_at',
+    updated_at: 'updated_at'
+  };
+
+  export type FeatureRequestScalarFieldEnum = (typeof FeatureRequestScalarFieldEnum)[keyof typeof FeatureRequestScalarFieldEnum]
+
+
+  export const FeatureVoteScalarFieldEnum: {
+    id: 'id',
+    user_id: 'user_id',
+    feature_request_id: 'feature_request_id',
+    created_at: 'created_at',
+    updated_at: 'updated_at'
+  };
+
+  export type FeatureVoteScalarFieldEnum = (typeof FeatureVoteScalarFieldEnum)[keyof typeof FeatureVoteScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -17962,6 +20566,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'FeatureStatus'
+   */
+  export type EnumFeatureStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FeatureStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'FeatureStatus[]'
+   */
+  export type ListEnumFeatureStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FeatureStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -18003,6 +20621,8 @@ export namespace Prisma {
     oAuth2Sessions?: OAuth2SessionListRelationFilter
     notifications?: NotificationListRelationFilter
     settings?: XOR<UserSettingsNullableScalarRelationFilter, UserSettingsWhereInput> | null
+    featureRequests?: FeatureRequestListRelationFilter
+    featureVote?: FeatureVoteListRelationFilter
   }
 
   export type UsersOrderByWithRelationInput = {
@@ -18027,6 +20647,8 @@ export namespace Prisma {
     oAuth2Sessions?: OAuth2SessionOrderByRelationAggregateInput
     notifications?: NotificationOrderByRelationAggregateInput
     settings?: UserSettingsOrderByWithRelationInput
+    featureRequests?: FeatureRequestOrderByRelationAggregateInput
+    featureVote?: FeatureVoteOrderByRelationAggregateInput
   }
 
   export type UsersWhereUniqueInput = Prisma.AtLeast<{
@@ -18054,6 +20676,8 @@ export namespace Prisma {
     oAuth2Sessions?: OAuth2SessionListRelationFilter
     notifications?: NotificationListRelationFilter
     settings?: XOR<UserSettingsNullableScalarRelationFilter, UserSettingsWhereInput> | null
+    featureRequests?: FeatureRequestListRelationFilter
+    featureVote?: FeatureVoteListRelationFilter
   }, "id" | "pid" | "email" | "api_key">
 
   export type UsersOrderByWithAggregationInput = {
@@ -19066,6 +21690,142 @@ export namespace Prisma {
     theme?: EnumThemePreferenceWithAggregatesFilter<"UserSettings"> | $Enums.ThemePreference
   }
 
+  export type FeatureRequestWhereInput = {
+    AND?: FeatureRequestWhereInput | FeatureRequestWhereInput[]
+    OR?: FeatureRequestWhereInput[]
+    NOT?: FeatureRequestWhereInput | FeatureRequestWhereInput[]
+    id?: IntFilter<"FeatureRequest"> | number
+    user_id?: IntFilter<"FeatureRequest"> | number
+    title?: StringFilter<"FeatureRequest"> | string
+    description?: StringFilter<"FeatureRequest"> | string
+    status?: EnumFeatureStatusFilter<"FeatureRequest"> | $Enums.FeatureStatus
+    votes?: IntFilter<"FeatureRequest"> | number
+    created_at?: DateTimeFilter<"FeatureRequest"> | Date | string
+    updated_at?: DateTimeFilter<"FeatureRequest"> | Date | string
+    user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
+    featureVote?: FeatureVoteListRelationFilter
+  }
+
+  export type FeatureRequestOrderByWithRelationInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    status?: SortOrder
+    votes?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    user?: UsersOrderByWithRelationInput
+    featureVote?: FeatureVoteOrderByRelationAggregateInput
+  }
+
+  export type FeatureRequestWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: FeatureRequestWhereInput | FeatureRequestWhereInput[]
+    OR?: FeatureRequestWhereInput[]
+    NOT?: FeatureRequestWhereInput | FeatureRequestWhereInput[]
+    user_id?: IntFilter<"FeatureRequest"> | number
+    title?: StringFilter<"FeatureRequest"> | string
+    description?: StringFilter<"FeatureRequest"> | string
+    status?: EnumFeatureStatusFilter<"FeatureRequest"> | $Enums.FeatureStatus
+    votes?: IntFilter<"FeatureRequest"> | number
+    created_at?: DateTimeFilter<"FeatureRequest"> | Date | string
+    updated_at?: DateTimeFilter<"FeatureRequest"> | Date | string
+    user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
+    featureVote?: FeatureVoteListRelationFilter
+  }, "id">
+
+  export type FeatureRequestOrderByWithAggregationInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    status?: SortOrder
+    votes?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    _count?: FeatureRequestCountOrderByAggregateInput
+    _avg?: FeatureRequestAvgOrderByAggregateInput
+    _max?: FeatureRequestMaxOrderByAggregateInput
+    _min?: FeatureRequestMinOrderByAggregateInput
+    _sum?: FeatureRequestSumOrderByAggregateInput
+  }
+
+  export type FeatureRequestScalarWhereWithAggregatesInput = {
+    AND?: FeatureRequestScalarWhereWithAggregatesInput | FeatureRequestScalarWhereWithAggregatesInput[]
+    OR?: FeatureRequestScalarWhereWithAggregatesInput[]
+    NOT?: FeatureRequestScalarWhereWithAggregatesInput | FeatureRequestScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"FeatureRequest"> | number
+    user_id?: IntWithAggregatesFilter<"FeatureRequest"> | number
+    title?: StringWithAggregatesFilter<"FeatureRequest"> | string
+    description?: StringWithAggregatesFilter<"FeatureRequest"> | string
+    status?: EnumFeatureStatusWithAggregatesFilter<"FeatureRequest"> | $Enums.FeatureStatus
+    votes?: IntWithAggregatesFilter<"FeatureRequest"> | number
+    created_at?: DateTimeWithAggregatesFilter<"FeatureRequest"> | Date | string
+    updated_at?: DateTimeWithAggregatesFilter<"FeatureRequest"> | Date | string
+  }
+
+  export type FeatureVoteWhereInput = {
+    AND?: FeatureVoteWhereInput | FeatureVoteWhereInput[]
+    OR?: FeatureVoteWhereInput[]
+    NOT?: FeatureVoteWhereInput | FeatureVoteWhereInput[]
+    id?: IntFilter<"FeatureVote"> | number
+    user_id?: IntFilter<"FeatureVote"> | number
+    feature_request_id?: IntFilter<"FeatureVote"> | number
+    created_at?: DateTimeFilter<"FeatureVote"> | Date | string
+    updated_at?: DateTimeFilter<"FeatureVote"> | Date | string
+    user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
+    featureRequest?: XOR<FeatureRequestScalarRelationFilter, FeatureRequestWhereInput>
+  }
+
+  export type FeatureVoteOrderByWithRelationInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    feature_request_id?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    user?: UsersOrderByWithRelationInput
+    featureRequest?: FeatureRequestOrderByWithRelationInput
+  }
+
+  export type FeatureVoteWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    user_id_feature_request_id?: FeatureVoteUser_idFeature_request_idCompoundUniqueInput
+    AND?: FeatureVoteWhereInput | FeatureVoteWhereInput[]
+    OR?: FeatureVoteWhereInput[]
+    NOT?: FeatureVoteWhereInput | FeatureVoteWhereInput[]
+    user_id?: IntFilter<"FeatureVote"> | number
+    feature_request_id?: IntFilter<"FeatureVote"> | number
+    created_at?: DateTimeFilter<"FeatureVote"> | Date | string
+    updated_at?: DateTimeFilter<"FeatureVote"> | Date | string
+    user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
+    featureRequest?: XOR<FeatureRequestScalarRelationFilter, FeatureRequestWhereInput>
+  }, "id" | "user_id_feature_request_id">
+
+  export type FeatureVoteOrderByWithAggregationInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    feature_request_id?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    _count?: FeatureVoteCountOrderByAggregateInput
+    _avg?: FeatureVoteAvgOrderByAggregateInput
+    _max?: FeatureVoteMaxOrderByAggregateInput
+    _min?: FeatureVoteMinOrderByAggregateInput
+    _sum?: FeatureVoteSumOrderByAggregateInput
+  }
+
+  export type FeatureVoteScalarWhereWithAggregatesInput = {
+    AND?: FeatureVoteScalarWhereWithAggregatesInput | FeatureVoteScalarWhereWithAggregatesInput[]
+    OR?: FeatureVoteScalarWhereWithAggregatesInput[]
+    NOT?: FeatureVoteScalarWhereWithAggregatesInput | FeatureVoteScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"FeatureVote"> | number
+    user_id?: IntWithAggregatesFilter<"FeatureVote"> | number
+    feature_request_id?: IntWithAggregatesFilter<"FeatureVote"> | number
+    created_at?: DateTimeWithAggregatesFilter<"FeatureVote"> | Date | string
+    updated_at?: DateTimeWithAggregatesFilter<"FeatureVote"> | Date | string
+  }
+
   export type UsersCreateInput = {
     pid: string
     email: string
@@ -19087,6 +21847,8 @@ export namespace Prisma {
     oAuth2Sessions?: OAuth2SessionCreateNestedManyWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     settings?: UserSettingsCreateNestedOneWithoutUserInput
+    featureRequests?: FeatureRequestCreateNestedManyWithoutUserInput
+    featureVote?: FeatureVoteCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateInput = {
@@ -19111,6 +21873,8 @@ export namespace Prisma {
     oAuth2Sessions?: OAuth2SessionUncheckedCreateNestedManyWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     settings?: UserSettingsUncheckedCreateNestedOneWithoutUserInput
+    featureRequests?: FeatureRequestUncheckedCreateNestedManyWithoutUserInput
+    featureVote?: FeatureVoteUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersUpdateInput = {
@@ -19134,6 +21898,8 @@ export namespace Prisma {
     oAuth2Sessions?: OAuth2SessionUpdateManyWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     settings?: UserSettingsUpdateOneWithoutUserNestedInput
+    featureRequests?: FeatureRequestUpdateManyWithoutUserNestedInput
+    featureVote?: FeatureVoteUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateInput = {
@@ -19158,6 +21924,8 @@ export namespace Prisma {
     oAuth2Sessions?: OAuth2SessionUncheckedUpdateManyWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     settings?: UserSettingsUncheckedUpdateOneWithoutUserNestedInput
+    featureRequests?: FeatureRequestUncheckedUpdateManyWithoutUserNestedInput
+    featureVote?: FeatureVoteUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UsersCreateManyInput = {
@@ -20256,6 +23024,134 @@ export namespace Prisma {
     theme?: EnumThemePreferenceFieldUpdateOperationsInput | $Enums.ThemePreference
   }
 
+  export type FeatureRequestCreateInput = {
+    title: string
+    description: string
+    status?: $Enums.FeatureStatus
+    votes?: number
+    created_at?: Date | string
+    updated_at?: Date | string
+    user: UsersCreateNestedOneWithoutFeatureRequestsInput
+    featureVote?: FeatureVoteCreateNestedManyWithoutFeatureRequestInput
+  }
+
+  export type FeatureRequestUncheckedCreateInput = {
+    id?: number
+    user_id: number
+    title: string
+    description: string
+    status?: $Enums.FeatureStatus
+    votes?: number
+    created_at?: Date | string
+    updated_at?: Date | string
+    featureVote?: FeatureVoteUncheckedCreateNestedManyWithoutFeatureRequestInput
+  }
+
+  export type FeatureRequestUpdateInput = {
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    status?: EnumFeatureStatusFieldUpdateOperationsInput | $Enums.FeatureStatus
+    votes?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UsersUpdateOneRequiredWithoutFeatureRequestsNestedInput
+    featureVote?: FeatureVoteUpdateManyWithoutFeatureRequestNestedInput
+  }
+
+  export type FeatureRequestUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    user_id?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    status?: EnumFeatureStatusFieldUpdateOperationsInput | $Enums.FeatureStatus
+    votes?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    featureVote?: FeatureVoteUncheckedUpdateManyWithoutFeatureRequestNestedInput
+  }
+
+  export type FeatureRequestCreateManyInput = {
+    id?: number
+    user_id: number
+    title: string
+    description: string
+    status?: $Enums.FeatureStatus
+    votes?: number
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type FeatureRequestUpdateManyMutationInput = {
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    status?: EnumFeatureStatusFieldUpdateOperationsInput | $Enums.FeatureStatus
+    votes?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FeatureRequestUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    user_id?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    status?: EnumFeatureStatusFieldUpdateOperationsInput | $Enums.FeatureStatus
+    votes?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FeatureVoteCreateInput = {
+    created_at?: Date | string
+    updated_at?: Date | string
+    user: UsersCreateNestedOneWithoutFeatureVoteInput
+    featureRequest: FeatureRequestCreateNestedOneWithoutFeatureVoteInput
+  }
+
+  export type FeatureVoteUncheckedCreateInput = {
+    id?: number
+    user_id: number
+    feature_request_id: number
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type FeatureVoteUpdateInput = {
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UsersUpdateOneRequiredWithoutFeatureVoteNestedInput
+    featureRequest?: FeatureRequestUpdateOneRequiredWithoutFeatureVoteNestedInput
+  }
+
+  export type FeatureVoteUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    user_id?: IntFieldUpdateOperationsInput | number
+    feature_request_id?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FeatureVoteCreateManyInput = {
+    id?: number
+    user_id: number
+    feature_request_id: number
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type FeatureVoteUpdateManyMutationInput = {
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FeatureVoteUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    user_id?: IntFieldUpdateOperationsInput | number
+    feature_request_id?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -20361,6 +23257,18 @@ export namespace Prisma {
     isNot?: UserSettingsWhereInput | null
   }
 
+  export type FeatureRequestListRelationFilter = {
+    every?: FeatureRequestWhereInput
+    some?: FeatureRequestWhereInput
+    none?: FeatureRequestWhereInput
+  }
+
+  export type FeatureVoteListRelationFilter = {
+    every?: FeatureVoteWhereInput
+    some?: FeatureVoteWhereInput
+    none?: FeatureVoteWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -20387,6 +23295,14 @@ export namespace Prisma {
   }
 
   export type NotificationOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type FeatureRequestOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type FeatureVoteOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -21467,6 +24383,114 @@ export namespace Prisma {
     _max?: NestedEnumThemePreferenceFilter<$PrismaModel>
   }
 
+  export type EnumFeatureStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.FeatureStatus | EnumFeatureStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.FeatureStatus[] | ListEnumFeatureStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FeatureStatus[] | ListEnumFeatureStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumFeatureStatusFilter<$PrismaModel> | $Enums.FeatureStatus
+  }
+
+  export type FeatureRequestCountOrderByAggregateInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    status?: SortOrder
+    votes?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type FeatureRequestAvgOrderByAggregateInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    votes?: SortOrder
+  }
+
+  export type FeatureRequestMaxOrderByAggregateInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    status?: SortOrder
+    votes?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type FeatureRequestMinOrderByAggregateInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    status?: SortOrder
+    votes?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type FeatureRequestSumOrderByAggregateInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    votes?: SortOrder
+  }
+
+  export type EnumFeatureStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FeatureStatus | EnumFeatureStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.FeatureStatus[] | ListEnumFeatureStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FeatureStatus[] | ListEnumFeatureStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumFeatureStatusWithAggregatesFilter<$PrismaModel> | $Enums.FeatureStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumFeatureStatusFilter<$PrismaModel>
+    _max?: NestedEnumFeatureStatusFilter<$PrismaModel>
+  }
+
+  export type FeatureRequestScalarRelationFilter = {
+    is?: FeatureRequestWhereInput
+    isNot?: FeatureRequestWhereInput
+  }
+
+  export type FeatureVoteUser_idFeature_request_idCompoundUniqueInput = {
+    user_id: number
+    feature_request_id: number
+  }
+
+  export type FeatureVoteCountOrderByAggregateInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    feature_request_id?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type FeatureVoteAvgOrderByAggregateInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    feature_request_id?: SortOrder
+  }
+
+  export type FeatureVoteMaxOrderByAggregateInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    feature_request_id?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type FeatureVoteMinOrderByAggregateInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    feature_request_id?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type FeatureVoteSumOrderByAggregateInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    feature_request_id?: SortOrder
+  }
+
   export type TrainingModelsCreateNestedManyWithoutUserInput = {
     create?: XOR<TrainingModelsCreateWithoutUserInput, TrainingModelsUncheckedCreateWithoutUserInput> | TrainingModelsCreateWithoutUserInput[] | TrainingModelsUncheckedCreateWithoutUserInput[]
     connectOrCreate?: TrainingModelsCreateOrConnectWithoutUserInput | TrainingModelsCreateOrConnectWithoutUserInput[]
@@ -21515,6 +24539,20 @@ export namespace Prisma {
     connect?: UserSettingsWhereUniqueInput
   }
 
+  export type FeatureRequestCreateNestedManyWithoutUserInput = {
+    create?: XOR<FeatureRequestCreateWithoutUserInput, FeatureRequestUncheckedCreateWithoutUserInput> | FeatureRequestCreateWithoutUserInput[] | FeatureRequestUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FeatureRequestCreateOrConnectWithoutUserInput | FeatureRequestCreateOrConnectWithoutUserInput[]
+    createMany?: FeatureRequestCreateManyUserInputEnvelope
+    connect?: FeatureRequestWhereUniqueInput | FeatureRequestWhereUniqueInput[]
+  }
+
+  export type FeatureVoteCreateNestedManyWithoutUserInput = {
+    create?: XOR<FeatureVoteCreateWithoutUserInput, FeatureVoteUncheckedCreateWithoutUserInput> | FeatureVoteCreateWithoutUserInput[] | FeatureVoteUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FeatureVoteCreateOrConnectWithoutUserInput | FeatureVoteCreateOrConnectWithoutUserInput[]
+    createMany?: FeatureVoteCreateManyUserInputEnvelope
+    connect?: FeatureVoteWhereUniqueInput | FeatureVoteWhereUniqueInput[]
+  }
+
   export type TrainingModelsUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<TrainingModelsCreateWithoutUserInput, TrainingModelsUncheckedCreateWithoutUserInput> | TrainingModelsCreateWithoutUserInput[] | TrainingModelsUncheckedCreateWithoutUserInput[]
     connectOrCreate?: TrainingModelsCreateOrConnectWithoutUserInput | TrainingModelsCreateOrConnectWithoutUserInput[]
@@ -21561,6 +24599,20 @@ export namespace Prisma {
     create?: XOR<UserSettingsCreateWithoutUserInput, UserSettingsUncheckedCreateWithoutUserInput>
     connectOrCreate?: UserSettingsCreateOrConnectWithoutUserInput
     connect?: UserSettingsWhereUniqueInput
+  }
+
+  export type FeatureRequestUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<FeatureRequestCreateWithoutUserInput, FeatureRequestUncheckedCreateWithoutUserInput> | FeatureRequestCreateWithoutUserInput[] | FeatureRequestUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FeatureRequestCreateOrConnectWithoutUserInput | FeatureRequestCreateOrConnectWithoutUserInput[]
+    createMany?: FeatureRequestCreateManyUserInputEnvelope
+    connect?: FeatureRequestWhereUniqueInput | FeatureRequestWhereUniqueInput[]
+  }
+
+  export type FeatureVoteUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<FeatureVoteCreateWithoutUserInput, FeatureVoteUncheckedCreateWithoutUserInput> | FeatureVoteCreateWithoutUserInput[] | FeatureVoteUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FeatureVoteCreateOrConnectWithoutUserInput | FeatureVoteCreateOrConnectWithoutUserInput[]
+    createMany?: FeatureVoteCreateManyUserInputEnvelope
+    connect?: FeatureVoteWhereUniqueInput | FeatureVoteWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -21669,6 +24721,34 @@ export namespace Prisma {
     update?: XOR<XOR<UserSettingsUpdateToOneWithWhereWithoutUserInput, UserSettingsUpdateWithoutUserInput>, UserSettingsUncheckedUpdateWithoutUserInput>
   }
 
+  export type FeatureRequestUpdateManyWithoutUserNestedInput = {
+    create?: XOR<FeatureRequestCreateWithoutUserInput, FeatureRequestUncheckedCreateWithoutUserInput> | FeatureRequestCreateWithoutUserInput[] | FeatureRequestUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FeatureRequestCreateOrConnectWithoutUserInput | FeatureRequestCreateOrConnectWithoutUserInput[]
+    upsert?: FeatureRequestUpsertWithWhereUniqueWithoutUserInput | FeatureRequestUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: FeatureRequestCreateManyUserInputEnvelope
+    set?: FeatureRequestWhereUniqueInput | FeatureRequestWhereUniqueInput[]
+    disconnect?: FeatureRequestWhereUniqueInput | FeatureRequestWhereUniqueInput[]
+    delete?: FeatureRequestWhereUniqueInput | FeatureRequestWhereUniqueInput[]
+    connect?: FeatureRequestWhereUniqueInput | FeatureRequestWhereUniqueInput[]
+    update?: FeatureRequestUpdateWithWhereUniqueWithoutUserInput | FeatureRequestUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: FeatureRequestUpdateManyWithWhereWithoutUserInput | FeatureRequestUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: FeatureRequestScalarWhereInput | FeatureRequestScalarWhereInput[]
+  }
+
+  export type FeatureVoteUpdateManyWithoutUserNestedInput = {
+    create?: XOR<FeatureVoteCreateWithoutUserInput, FeatureVoteUncheckedCreateWithoutUserInput> | FeatureVoteCreateWithoutUserInput[] | FeatureVoteUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FeatureVoteCreateOrConnectWithoutUserInput | FeatureVoteCreateOrConnectWithoutUserInput[]
+    upsert?: FeatureVoteUpsertWithWhereUniqueWithoutUserInput | FeatureVoteUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: FeatureVoteCreateManyUserInputEnvelope
+    set?: FeatureVoteWhereUniqueInput | FeatureVoteWhereUniqueInput[]
+    disconnect?: FeatureVoteWhereUniqueInput | FeatureVoteWhereUniqueInput[]
+    delete?: FeatureVoteWhereUniqueInput | FeatureVoteWhereUniqueInput[]
+    connect?: FeatureVoteWhereUniqueInput | FeatureVoteWhereUniqueInput[]
+    update?: FeatureVoteUpdateWithWhereUniqueWithoutUserInput | FeatureVoteUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: FeatureVoteUpdateManyWithWhereWithoutUserInput | FeatureVoteUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: FeatureVoteScalarWhereInput | FeatureVoteScalarWhereInput[]
+  }
+
   export type IntFieldUpdateOperationsInput = {
     set?: number
     increment?: number
@@ -21769,6 +24849,34 @@ export namespace Prisma {
     delete?: UserSettingsWhereInput | boolean
     connect?: UserSettingsWhereUniqueInput
     update?: XOR<XOR<UserSettingsUpdateToOneWithWhereWithoutUserInput, UserSettingsUpdateWithoutUserInput>, UserSettingsUncheckedUpdateWithoutUserInput>
+  }
+
+  export type FeatureRequestUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<FeatureRequestCreateWithoutUserInput, FeatureRequestUncheckedCreateWithoutUserInput> | FeatureRequestCreateWithoutUserInput[] | FeatureRequestUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FeatureRequestCreateOrConnectWithoutUserInput | FeatureRequestCreateOrConnectWithoutUserInput[]
+    upsert?: FeatureRequestUpsertWithWhereUniqueWithoutUserInput | FeatureRequestUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: FeatureRequestCreateManyUserInputEnvelope
+    set?: FeatureRequestWhereUniqueInput | FeatureRequestWhereUniqueInput[]
+    disconnect?: FeatureRequestWhereUniqueInput | FeatureRequestWhereUniqueInput[]
+    delete?: FeatureRequestWhereUniqueInput | FeatureRequestWhereUniqueInput[]
+    connect?: FeatureRequestWhereUniqueInput | FeatureRequestWhereUniqueInput[]
+    update?: FeatureRequestUpdateWithWhereUniqueWithoutUserInput | FeatureRequestUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: FeatureRequestUpdateManyWithWhereWithoutUserInput | FeatureRequestUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: FeatureRequestScalarWhereInput | FeatureRequestScalarWhereInput[]
+  }
+
+  export type FeatureVoteUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<FeatureVoteCreateWithoutUserInput, FeatureVoteUncheckedCreateWithoutUserInput> | FeatureVoteCreateWithoutUserInput[] | FeatureVoteUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: FeatureVoteCreateOrConnectWithoutUserInput | FeatureVoteCreateOrConnectWithoutUserInput[]
+    upsert?: FeatureVoteUpsertWithWhereUniqueWithoutUserInput | FeatureVoteUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: FeatureVoteCreateManyUserInputEnvelope
+    set?: FeatureVoteWhereUniqueInput | FeatureVoteWhereUniqueInput[]
+    disconnect?: FeatureVoteWhereUniqueInput | FeatureVoteWhereUniqueInput[]
+    delete?: FeatureVoteWhereUniqueInput | FeatureVoteWhereUniqueInput[]
+    connect?: FeatureVoteWhereUniqueInput | FeatureVoteWhereUniqueInput[]
+    update?: FeatureVoteUpdateWithWhereUniqueWithoutUserInput | FeatureVoteUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: FeatureVoteUpdateManyWithWhereWithoutUserInput | FeatureVoteUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: FeatureVoteScalarWhereInput | FeatureVoteScalarWhereInput[]
   }
 
   export type UsersCreateNestedOneWithoutOAuth2SessionsInput = {
@@ -22114,6 +25222,94 @@ export namespace Prisma {
     upsert?: UsersUpsertWithoutSettingsInput
     connect?: UsersWhereUniqueInput
     update?: XOR<XOR<UsersUpdateToOneWithWhereWithoutSettingsInput, UsersUpdateWithoutSettingsInput>, UsersUncheckedUpdateWithoutSettingsInput>
+  }
+
+  export type UsersCreateNestedOneWithoutFeatureRequestsInput = {
+    create?: XOR<UsersCreateWithoutFeatureRequestsInput, UsersUncheckedCreateWithoutFeatureRequestsInput>
+    connectOrCreate?: UsersCreateOrConnectWithoutFeatureRequestsInput
+    connect?: UsersWhereUniqueInput
+  }
+
+  export type FeatureVoteCreateNestedManyWithoutFeatureRequestInput = {
+    create?: XOR<FeatureVoteCreateWithoutFeatureRequestInput, FeatureVoteUncheckedCreateWithoutFeatureRequestInput> | FeatureVoteCreateWithoutFeatureRequestInput[] | FeatureVoteUncheckedCreateWithoutFeatureRequestInput[]
+    connectOrCreate?: FeatureVoteCreateOrConnectWithoutFeatureRequestInput | FeatureVoteCreateOrConnectWithoutFeatureRequestInput[]
+    createMany?: FeatureVoteCreateManyFeatureRequestInputEnvelope
+    connect?: FeatureVoteWhereUniqueInput | FeatureVoteWhereUniqueInput[]
+  }
+
+  export type FeatureVoteUncheckedCreateNestedManyWithoutFeatureRequestInput = {
+    create?: XOR<FeatureVoteCreateWithoutFeatureRequestInput, FeatureVoteUncheckedCreateWithoutFeatureRequestInput> | FeatureVoteCreateWithoutFeatureRequestInput[] | FeatureVoteUncheckedCreateWithoutFeatureRequestInput[]
+    connectOrCreate?: FeatureVoteCreateOrConnectWithoutFeatureRequestInput | FeatureVoteCreateOrConnectWithoutFeatureRequestInput[]
+    createMany?: FeatureVoteCreateManyFeatureRequestInputEnvelope
+    connect?: FeatureVoteWhereUniqueInput | FeatureVoteWhereUniqueInput[]
+  }
+
+  export type EnumFeatureStatusFieldUpdateOperationsInput = {
+    set?: $Enums.FeatureStatus
+  }
+
+  export type UsersUpdateOneRequiredWithoutFeatureRequestsNestedInput = {
+    create?: XOR<UsersCreateWithoutFeatureRequestsInput, UsersUncheckedCreateWithoutFeatureRequestsInput>
+    connectOrCreate?: UsersCreateOrConnectWithoutFeatureRequestsInput
+    upsert?: UsersUpsertWithoutFeatureRequestsInput
+    connect?: UsersWhereUniqueInput
+    update?: XOR<XOR<UsersUpdateToOneWithWhereWithoutFeatureRequestsInput, UsersUpdateWithoutFeatureRequestsInput>, UsersUncheckedUpdateWithoutFeatureRequestsInput>
+  }
+
+  export type FeatureVoteUpdateManyWithoutFeatureRequestNestedInput = {
+    create?: XOR<FeatureVoteCreateWithoutFeatureRequestInput, FeatureVoteUncheckedCreateWithoutFeatureRequestInput> | FeatureVoteCreateWithoutFeatureRequestInput[] | FeatureVoteUncheckedCreateWithoutFeatureRequestInput[]
+    connectOrCreate?: FeatureVoteCreateOrConnectWithoutFeatureRequestInput | FeatureVoteCreateOrConnectWithoutFeatureRequestInput[]
+    upsert?: FeatureVoteUpsertWithWhereUniqueWithoutFeatureRequestInput | FeatureVoteUpsertWithWhereUniqueWithoutFeatureRequestInput[]
+    createMany?: FeatureVoteCreateManyFeatureRequestInputEnvelope
+    set?: FeatureVoteWhereUniqueInput | FeatureVoteWhereUniqueInput[]
+    disconnect?: FeatureVoteWhereUniqueInput | FeatureVoteWhereUniqueInput[]
+    delete?: FeatureVoteWhereUniqueInput | FeatureVoteWhereUniqueInput[]
+    connect?: FeatureVoteWhereUniqueInput | FeatureVoteWhereUniqueInput[]
+    update?: FeatureVoteUpdateWithWhereUniqueWithoutFeatureRequestInput | FeatureVoteUpdateWithWhereUniqueWithoutFeatureRequestInput[]
+    updateMany?: FeatureVoteUpdateManyWithWhereWithoutFeatureRequestInput | FeatureVoteUpdateManyWithWhereWithoutFeatureRequestInput[]
+    deleteMany?: FeatureVoteScalarWhereInput | FeatureVoteScalarWhereInput[]
+  }
+
+  export type FeatureVoteUncheckedUpdateManyWithoutFeatureRequestNestedInput = {
+    create?: XOR<FeatureVoteCreateWithoutFeatureRequestInput, FeatureVoteUncheckedCreateWithoutFeatureRequestInput> | FeatureVoteCreateWithoutFeatureRequestInput[] | FeatureVoteUncheckedCreateWithoutFeatureRequestInput[]
+    connectOrCreate?: FeatureVoteCreateOrConnectWithoutFeatureRequestInput | FeatureVoteCreateOrConnectWithoutFeatureRequestInput[]
+    upsert?: FeatureVoteUpsertWithWhereUniqueWithoutFeatureRequestInput | FeatureVoteUpsertWithWhereUniqueWithoutFeatureRequestInput[]
+    createMany?: FeatureVoteCreateManyFeatureRequestInputEnvelope
+    set?: FeatureVoteWhereUniqueInput | FeatureVoteWhereUniqueInput[]
+    disconnect?: FeatureVoteWhereUniqueInput | FeatureVoteWhereUniqueInput[]
+    delete?: FeatureVoteWhereUniqueInput | FeatureVoteWhereUniqueInput[]
+    connect?: FeatureVoteWhereUniqueInput | FeatureVoteWhereUniqueInput[]
+    update?: FeatureVoteUpdateWithWhereUniqueWithoutFeatureRequestInput | FeatureVoteUpdateWithWhereUniqueWithoutFeatureRequestInput[]
+    updateMany?: FeatureVoteUpdateManyWithWhereWithoutFeatureRequestInput | FeatureVoteUpdateManyWithWhereWithoutFeatureRequestInput[]
+    deleteMany?: FeatureVoteScalarWhereInput | FeatureVoteScalarWhereInput[]
+  }
+
+  export type UsersCreateNestedOneWithoutFeatureVoteInput = {
+    create?: XOR<UsersCreateWithoutFeatureVoteInput, UsersUncheckedCreateWithoutFeatureVoteInput>
+    connectOrCreate?: UsersCreateOrConnectWithoutFeatureVoteInput
+    connect?: UsersWhereUniqueInput
+  }
+
+  export type FeatureRequestCreateNestedOneWithoutFeatureVoteInput = {
+    create?: XOR<FeatureRequestCreateWithoutFeatureVoteInput, FeatureRequestUncheckedCreateWithoutFeatureVoteInput>
+    connectOrCreate?: FeatureRequestCreateOrConnectWithoutFeatureVoteInput
+    connect?: FeatureRequestWhereUniqueInput
+  }
+
+  export type UsersUpdateOneRequiredWithoutFeatureVoteNestedInput = {
+    create?: XOR<UsersCreateWithoutFeatureVoteInput, UsersUncheckedCreateWithoutFeatureVoteInput>
+    connectOrCreate?: UsersCreateOrConnectWithoutFeatureVoteInput
+    upsert?: UsersUpsertWithoutFeatureVoteInput
+    connect?: UsersWhereUniqueInput
+    update?: XOR<XOR<UsersUpdateToOneWithWhereWithoutFeatureVoteInput, UsersUpdateWithoutFeatureVoteInput>, UsersUncheckedUpdateWithoutFeatureVoteInput>
+  }
+
+  export type FeatureRequestUpdateOneRequiredWithoutFeatureVoteNestedInput = {
+    create?: XOR<FeatureRequestCreateWithoutFeatureVoteInput, FeatureRequestUncheckedCreateWithoutFeatureVoteInput>
+    connectOrCreate?: FeatureRequestCreateOrConnectWithoutFeatureVoteInput
+    upsert?: FeatureRequestUpsertWithoutFeatureVoteInput
+    connect?: FeatureRequestWhereUniqueInput
+    update?: XOR<XOR<FeatureRequestUpdateToOneWithWhereWithoutFeatureVoteInput, FeatureRequestUpdateWithoutFeatureVoteInput>, FeatureRequestUncheckedUpdateWithoutFeatureVoteInput>
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -22579,6 +25775,23 @@ export namespace Prisma {
     _max?: NestedEnumThemePreferenceFilter<$PrismaModel>
   }
 
+  export type NestedEnumFeatureStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.FeatureStatus | EnumFeatureStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.FeatureStatus[] | ListEnumFeatureStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FeatureStatus[] | ListEnumFeatureStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumFeatureStatusFilter<$PrismaModel> | $Enums.FeatureStatus
+  }
+
+  export type NestedEnumFeatureStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FeatureStatus | EnumFeatureStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.FeatureStatus[] | ListEnumFeatureStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.FeatureStatus[] | ListEnumFeatureStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumFeatureStatusWithAggregatesFilter<$PrismaModel> | $Enums.FeatureStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumFeatureStatusFilter<$PrismaModel>
+    _max?: NestedEnumFeatureStatusFilter<$PrismaModel>
+  }
+
   export type TrainingModelsCreateWithoutUserInput = {
     pid: string
     name: string
@@ -22841,6 +26054,60 @@ export namespace Prisma {
     create: XOR<UserSettingsCreateWithoutUserInput, UserSettingsUncheckedCreateWithoutUserInput>
   }
 
+  export type FeatureRequestCreateWithoutUserInput = {
+    title: string
+    description: string
+    status?: $Enums.FeatureStatus
+    votes?: number
+    created_at?: Date | string
+    updated_at?: Date | string
+    featureVote?: FeatureVoteCreateNestedManyWithoutFeatureRequestInput
+  }
+
+  export type FeatureRequestUncheckedCreateWithoutUserInput = {
+    id?: number
+    title: string
+    description: string
+    status?: $Enums.FeatureStatus
+    votes?: number
+    created_at?: Date | string
+    updated_at?: Date | string
+    featureVote?: FeatureVoteUncheckedCreateNestedManyWithoutFeatureRequestInput
+  }
+
+  export type FeatureRequestCreateOrConnectWithoutUserInput = {
+    where: FeatureRequestWhereUniqueInput
+    create: XOR<FeatureRequestCreateWithoutUserInput, FeatureRequestUncheckedCreateWithoutUserInput>
+  }
+
+  export type FeatureRequestCreateManyUserInputEnvelope = {
+    data: FeatureRequestCreateManyUserInput | FeatureRequestCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type FeatureVoteCreateWithoutUserInput = {
+    created_at?: Date | string
+    updated_at?: Date | string
+    featureRequest: FeatureRequestCreateNestedOneWithoutFeatureVoteInput
+  }
+
+  export type FeatureVoteUncheckedCreateWithoutUserInput = {
+    id?: number
+    feature_request_id: number
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type FeatureVoteCreateOrConnectWithoutUserInput = {
+    where: FeatureVoteWhereUniqueInput
+    create: XOR<FeatureVoteCreateWithoutUserInput, FeatureVoteUncheckedCreateWithoutUserInput>
+  }
+
+  export type FeatureVoteCreateManyUserInputEnvelope = {
+    data: FeatureVoteCreateManyUserInput | FeatureVoteCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type TrainingModelsUpsertWithWhereUniqueWithoutUserInput = {
     where: TrainingModelsWhereUniqueInput
     update: XOR<TrainingModelsUpdateWithoutUserInput, TrainingModelsUncheckedUpdateWithoutUserInput>
@@ -23082,6 +26349,63 @@ export namespace Prisma {
     theme?: EnumThemePreferenceFieldUpdateOperationsInput | $Enums.ThemePreference
   }
 
+  export type FeatureRequestUpsertWithWhereUniqueWithoutUserInput = {
+    where: FeatureRequestWhereUniqueInput
+    update: XOR<FeatureRequestUpdateWithoutUserInput, FeatureRequestUncheckedUpdateWithoutUserInput>
+    create: XOR<FeatureRequestCreateWithoutUserInput, FeatureRequestUncheckedCreateWithoutUserInput>
+  }
+
+  export type FeatureRequestUpdateWithWhereUniqueWithoutUserInput = {
+    where: FeatureRequestWhereUniqueInput
+    data: XOR<FeatureRequestUpdateWithoutUserInput, FeatureRequestUncheckedUpdateWithoutUserInput>
+  }
+
+  export type FeatureRequestUpdateManyWithWhereWithoutUserInput = {
+    where: FeatureRequestScalarWhereInput
+    data: XOR<FeatureRequestUpdateManyMutationInput, FeatureRequestUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type FeatureRequestScalarWhereInput = {
+    AND?: FeatureRequestScalarWhereInput | FeatureRequestScalarWhereInput[]
+    OR?: FeatureRequestScalarWhereInput[]
+    NOT?: FeatureRequestScalarWhereInput | FeatureRequestScalarWhereInput[]
+    id?: IntFilter<"FeatureRequest"> | number
+    user_id?: IntFilter<"FeatureRequest"> | number
+    title?: StringFilter<"FeatureRequest"> | string
+    description?: StringFilter<"FeatureRequest"> | string
+    status?: EnumFeatureStatusFilter<"FeatureRequest"> | $Enums.FeatureStatus
+    votes?: IntFilter<"FeatureRequest"> | number
+    created_at?: DateTimeFilter<"FeatureRequest"> | Date | string
+    updated_at?: DateTimeFilter<"FeatureRequest"> | Date | string
+  }
+
+  export type FeatureVoteUpsertWithWhereUniqueWithoutUserInput = {
+    where: FeatureVoteWhereUniqueInput
+    update: XOR<FeatureVoteUpdateWithoutUserInput, FeatureVoteUncheckedUpdateWithoutUserInput>
+    create: XOR<FeatureVoteCreateWithoutUserInput, FeatureVoteUncheckedCreateWithoutUserInput>
+  }
+
+  export type FeatureVoteUpdateWithWhereUniqueWithoutUserInput = {
+    where: FeatureVoteWhereUniqueInput
+    data: XOR<FeatureVoteUpdateWithoutUserInput, FeatureVoteUncheckedUpdateWithoutUserInput>
+  }
+
+  export type FeatureVoteUpdateManyWithWhereWithoutUserInput = {
+    where: FeatureVoteScalarWhereInput
+    data: XOR<FeatureVoteUpdateManyMutationInput, FeatureVoteUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type FeatureVoteScalarWhereInput = {
+    AND?: FeatureVoteScalarWhereInput | FeatureVoteScalarWhereInput[]
+    OR?: FeatureVoteScalarWhereInput[]
+    NOT?: FeatureVoteScalarWhereInput | FeatureVoteScalarWhereInput[]
+    id?: IntFilter<"FeatureVote"> | number
+    user_id?: IntFilter<"FeatureVote"> | number
+    feature_request_id?: IntFilter<"FeatureVote"> | number
+    created_at?: DateTimeFilter<"FeatureVote"> | Date | string
+    updated_at?: DateTimeFilter<"FeatureVote"> | Date | string
+  }
+
   export type UsersCreateWithoutOAuth2SessionsInput = {
     pid: string
     email: string
@@ -23102,6 +26426,8 @@ export namespace Prisma {
     Transactions?: TransactionsCreateNestedManyWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     settings?: UserSettingsCreateNestedOneWithoutUserInput
+    featureRequests?: FeatureRequestCreateNestedManyWithoutUserInput
+    featureVote?: FeatureVoteCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutOAuth2SessionsInput = {
@@ -23125,6 +26451,8 @@ export namespace Prisma {
     Transactions?: TransactionsUncheckedCreateNestedManyWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     settings?: UserSettingsUncheckedCreateNestedOneWithoutUserInput
+    featureRequests?: FeatureRequestUncheckedCreateNestedManyWithoutUserInput
+    featureVote?: FeatureVoteUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersCreateOrConnectWithoutOAuth2SessionsInput = {
@@ -23163,6 +26491,8 @@ export namespace Prisma {
     Transactions?: TransactionsUpdateManyWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     settings?: UserSettingsUpdateOneWithoutUserNestedInput
+    featureRequests?: FeatureRequestUpdateManyWithoutUserNestedInput
+    featureVote?: FeatureVoteUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutOAuth2SessionsInput = {
@@ -23186,6 +26516,8 @@ export namespace Prisma {
     Transactions?: TransactionsUncheckedUpdateManyWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     settings?: UserSettingsUncheckedUpdateOneWithoutUserNestedInput
+    featureRequests?: FeatureRequestUncheckedUpdateManyWithoutUserNestedInput
+    featureVote?: FeatureVoteUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UsersCreateWithoutTrainingModelsInput = {
@@ -23208,6 +26540,8 @@ export namespace Prisma {
     oAuth2Sessions?: OAuth2SessionCreateNestedManyWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     settings?: UserSettingsCreateNestedOneWithoutUserInput
+    featureRequests?: FeatureRequestCreateNestedManyWithoutUserInput
+    featureVote?: FeatureVoteCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutTrainingModelsInput = {
@@ -23231,6 +26565,8 @@ export namespace Prisma {
     oAuth2Sessions?: OAuth2SessionUncheckedCreateNestedManyWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     settings?: UserSettingsUncheckedCreateNestedOneWithoutUserInput
+    featureRequests?: FeatureRequestUncheckedCreateNestedManyWithoutUserInput
+    featureVote?: FeatureVoteUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersCreateOrConnectWithoutTrainingModelsInput = {
@@ -23324,6 +26660,8 @@ export namespace Prisma {
     oAuth2Sessions?: OAuth2SessionUpdateManyWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     settings?: UserSettingsUpdateOneWithoutUserNestedInput
+    featureRequests?: FeatureRequestUpdateManyWithoutUserNestedInput
+    featureVote?: FeatureVoteUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutTrainingModelsInput = {
@@ -23347,6 +26685,8 @@ export namespace Prisma {
     oAuth2Sessions?: OAuth2SessionUncheckedUpdateManyWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     settings?: UserSettingsUncheckedUpdateOneWithoutUserNestedInput
+    featureRequests?: FeatureRequestUncheckedUpdateManyWithoutUserNestedInput
+    featureVote?: FeatureVoteUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ImagesUpsertWithWhereUniqueWithoutTraining_modelInput = {
@@ -23385,6 +26725,8 @@ export namespace Prisma {
     oAuth2Sessions?: OAuth2SessionCreateNestedManyWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     settings?: UserSettingsCreateNestedOneWithoutUserInput
+    featureRequests?: FeatureRequestCreateNestedManyWithoutUserInput
+    featureVote?: FeatureVoteCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutUserCreditsInput = {
@@ -23408,6 +26750,8 @@ export namespace Prisma {
     oAuth2Sessions?: OAuth2SessionUncheckedCreateNestedManyWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     settings?: UserSettingsUncheckedCreateNestedOneWithoutUserInput
+    featureRequests?: FeatureRequestUncheckedCreateNestedManyWithoutUserInput
+    featureVote?: FeatureVoteUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersCreateOrConnectWithoutUserCreditsInput = {
@@ -23446,6 +26790,8 @@ export namespace Prisma {
     oAuth2Sessions?: OAuth2SessionUpdateManyWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     settings?: UserSettingsUpdateOneWithoutUserNestedInput
+    featureRequests?: FeatureRequestUpdateManyWithoutUserNestedInput
+    featureVote?: FeatureVoteUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutUserCreditsInput = {
@@ -23469,6 +26815,8 @@ export namespace Prisma {
     oAuth2Sessions?: OAuth2SessionUncheckedUpdateManyWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     settings?: UserSettingsUncheckedUpdateOneWithoutUserNestedInput
+    featureRequests?: FeatureRequestUncheckedUpdateManyWithoutUserNestedInput
+    featureVote?: FeatureVoteUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UsersCreateWithoutImagesInput = {
@@ -23491,6 +26839,8 @@ export namespace Prisma {
     oAuth2Sessions?: OAuth2SessionCreateNestedManyWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     settings?: UserSettingsCreateNestedOneWithoutUserInput
+    featureRequests?: FeatureRequestCreateNestedManyWithoutUserInput
+    featureVote?: FeatureVoteCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutImagesInput = {
@@ -23514,6 +26864,8 @@ export namespace Prisma {
     oAuth2Sessions?: OAuth2SessionUncheckedCreateNestedManyWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     settings?: UserSettingsUncheckedCreateNestedOneWithoutUserInput
+    featureRequests?: FeatureRequestUncheckedCreateNestedManyWithoutUserInput
+    featureVote?: FeatureVoteUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersCreateOrConnectWithoutImagesInput = {
@@ -23642,6 +26994,8 @@ export namespace Prisma {
     oAuth2Sessions?: OAuth2SessionUpdateManyWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     settings?: UserSettingsUpdateOneWithoutUserNestedInput
+    featureRequests?: FeatureRequestUpdateManyWithoutUserNestedInput
+    featureVote?: FeatureVoteUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutImagesInput = {
@@ -23665,6 +27019,8 @@ export namespace Prisma {
     oAuth2Sessions?: OAuth2SessionUncheckedUpdateManyWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     settings?: UserSettingsUncheckedUpdateOneWithoutUserNestedInput
+    featureRequests?: FeatureRequestUncheckedUpdateManyWithoutUserNestedInput
+    featureVote?: FeatureVoteUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type TrainingModelsUpsertWithoutImagesInput = {
@@ -23878,6 +27234,8 @@ export namespace Prisma {
     oAuth2Sessions?: OAuth2SessionCreateNestedManyWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     settings?: UserSettingsCreateNestedOneWithoutUserInput
+    featureRequests?: FeatureRequestCreateNestedManyWithoutUserInput
+    featureVote?: FeatureVoteCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutTransactionsInput = {
@@ -23901,6 +27259,8 @@ export namespace Prisma {
     oAuth2Sessions?: OAuth2SessionUncheckedCreateNestedManyWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     settings?: UserSettingsUncheckedCreateNestedOneWithoutUserInput
+    featureRequests?: FeatureRequestUncheckedCreateNestedManyWithoutUserInput
+    featureVote?: FeatureVoteUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersCreateOrConnectWithoutTransactionsInput = {
@@ -23983,6 +27343,8 @@ export namespace Prisma {
     oAuth2Sessions?: OAuth2SessionUpdateManyWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     settings?: UserSettingsUpdateOneWithoutUserNestedInput
+    featureRequests?: FeatureRequestUpdateManyWithoutUserNestedInput
+    featureVote?: FeatureVoteUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutTransactionsInput = {
@@ -24006,6 +27368,8 @@ export namespace Prisma {
     oAuth2Sessions?: OAuth2SessionUncheckedUpdateManyWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     settings?: UserSettingsUncheckedUpdateOneWithoutUserNestedInput
+    featureRequests?: FeatureRequestUncheckedUpdateManyWithoutUserNestedInput
+    featureVote?: FeatureVoteUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ImagesCreateWithoutPackInput = {
@@ -24099,6 +27463,8 @@ export namespace Prisma {
     Transactions?: TransactionsCreateNestedManyWithoutUserInput
     oAuth2Sessions?: OAuth2SessionCreateNestedManyWithoutUserInput
     settings?: UserSettingsCreateNestedOneWithoutUserInput
+    featureRequests?: FeatureRequestCreateNestedManyWithoutUserInput
+    featureVote?: FeatureVoteCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutNotificationsInput = {
@@ -24122,6 +27488,8 @@ export namespace Prisma {
     Transactions?: TransactionsUncheckedCreateNestedManyWithoutUserInput
     oAuth2Sessions?: OAuth2SessionUncheckedCreateNestedManyWithoutUserInput
     settings?: UserSettingsUncheckedCreateNestedOneWithoutUserInput
+    featureRequests?: FeatureRequestUncheckedCreateNestedManyWithoutUserInput
+    featureVote?: FeatureVoteUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersCreateOrConnectWithoutNotificationsInput = {
@@ -24160,6 +27528,8 @@ export namespace Prisma {
     Transactions?: TransactionsUpdateManyWithoutUserNestedInput
     oAuth2Sessions?: OAuth2SessionUpdateManyWithoutUserNestedInput
     settings?: UserSettingsUpdateOneWithoutUserNestedInput
+    featureRequests?: FeatureRequestUpdateManyWithoutUserNestedInput
+    featureVote?: FeatureVoteUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutNotificationsInput = {
@@ -24183,6 +27553,8 @@ export namespace Prisma {
     Transactions?: TransactionsUncheckedUpdateManyWithoutUserNestedInput
     oAuth2Sessions?: OAuth2SessionUncheckedUpdateManyWithoutUserNestedInput
     settings?: UserSettingsUncheckedUpdateOneWithoutUserNestedInput
+    featureRequests?: FeatureRequestUncheckedUpdateManyWithoutUserNestedInput
+    featureVote?: FeatureVoteUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UsersCreateWithoutSettingsInput = {
@@ -24205,6 +27577,8 @@ export namespace Prisma {
     Transactions?: TransactionsCreateNestedManyWithoutUserInput
     oAuth2Sessions?: OAuth2SessionCreateNestedManyWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
+    featureRequests?: FeatureRequestCreateNestedManyWithoutUserInput
+    featureVote?: FeatureVoteCreateNestedManyWithoutUserInput
   }
 
   export type UsersUncheckedCreateWithoutSettingsInput = {
@@ -24228,6 +27602,8 @@ export namespace Prisma {
     Transactions?: TransactionsUncheckedCreateNestedManyWithoutUserInput
     oAuth2Sessions?: OAuth2SessionUncheckedCreateNestedManyWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    featureRequests?: FeatureRequestUncheckedCreateNestedManyWithoutUserInput
+    featureVote?: FeatureVoteUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UsersCreateOrConnectWithoutSettingsInput = {
@@ -24266,6 +27642,8 @@ export namespace Prisma {
     Transactions?: TransactionsUpdateManyWithoutUserNestedInput
     oAuth2Sessions?: OAuth2SessionUpdateManyWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
+    featureRequests?: FeatureRequestUpdateManyWithoutUserNestedInput
+    featureVote?: FeatureVoteUpdateManyWithoutUserNestedInput
   }
 
   export type UsersUncheckedUpdateWithoutSettingsInput = {
@@ -24289,6 +27667,333 @@ export namespace Prisma {
     Transactions?: TransactionsUncheckedUpdateManyWithoutUserNestedInput
     oAuth2Sessions?: OAuth2SessionUncheckedUpdateManyWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    featureRequests?: FeatureRequestUncheckedUpdateManyWithoutUserNestedInput
+    featureVote?: FeatureVoteUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UsersCreateWithoutFeatureRequestsInput = {
+    pid: string
+    email: string
+    password: string
+    api_key: string
+    name: string
+    stripe_customer_id?: string | null
+    reset_token?: string | null
+    reset_sent_at?: Date | string | null
+    email_verification_token?: string | null
+    email_verification_sent_at?: Date | string | null
+    email_verified_at?: Date | string | null
+    magicLink_token?: string | null
+    magicLink_expiration?: Date | string | null
+    TrainingModels?: TrainingModelsCreateNestedManyWithoutUserInput
+    UserCredits?: UserCreditsCreateNestedManyWithoutUserInput
+    Images?: ImagesCreateNestedManyWithoutUserInput
+    Transactions?: TransactionsCreateNestedManyWithoutUserInput
+    oAuth2Sessions?: OAuth2SessionCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    settings?: UserSettingsCreateNestedOneWithoutUserInput
+    featureVote?: FeatureVoteCreateNestedManyWithoutUserInput
+  }
+
+  export type UsersUncheckedCreateWithoutFeatureRequestsInput = {
+    id?: number
+    pid: string
+    email: string
+    password: string
+    api_key: string
+    name: string
+    stripe_customer_id?: string | null
+    reset_token?: string | null
+    reset_sent_at?: Date | string | null
+    email_verification_token?: string | null
+    email_verification_sent_at?: Date | string | null
+    email_verified_at?: Date | string | null
+    magicLink_token?: string | null
+    magicLink_expiration?: Date | string | null
+    TrainingModels?: TrainingModelsUncheckedCreateNestedManyWithoutUserInput
+    UserCredits?: UserCreditsUncheckedCreateNestedManyWithoutUserInput
+    Images?: ImagesUncheckedCreateNestedManyWithoutUserInput
+    Transactions?: TransactionsUncheckedCreateNestedManyWithoutUserInput
+    oAuth2Sessions?: OAuth2SessionUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    settings?: UserSettingsUncheckedCreateNestedOneWithoutUserInput
+    featureVote?: FeatureVoteUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UsersCreateOrConnectWithoutFeatureRequestsInput = {
+    where: UsersWhereUniqueInput
+    create: XOR<UsersCreateWithoutFeatureRequestsInput, UsersUncheckedCreateWithoutFeatureRequestsInput>
+  }
+
+  export type FeatureVoteCreateWithoutFeatureRequestInput = {
+    created_at?: Date | string
+    updated_at?: Date | string
+    user: UsersCreateNestedOneWithoutFeatureVoteInput
+  }
+
+  export type FeatureVoteUncheckedCreateWithoutFeatureRequestInput = {
+    id?: number
+    user_id: number
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type FeatureVoteCreateOrConnectWithoutFeatureRequestInput = {
+    where: FeatureVoteWhereUniqueInput
+    create: XOR<FeatureVoteCreateWithoutFeatureRequestInput, FeatureVoteUncheckedCreateWithoutFeatureRequestInput>
+  }
+
+  export type FeatureVoteCreateManyFeatureRequestInputEnvelope = {
+    data: FeatureVoteCreateManyFeatureRequestInput | FeatureVoteCreateManyFeatureRequestInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UsersUpsertWithoutFeatureRequestsInput = {
+    update: XOR<UsersUpdateWithoutFeatureRequestsInput, UsersUncheckedUpdateWithoutFeatureRequestsInput>
+    create: XOR<UsersCreateWithoutFeatureRequestsInput, UsersUncheckedCreateWithoutFeatureRequestsInput>
+    where?: UsersWhereInput
+  }
+
+  export type UsersUpdateToOneWithWhereWithoutFeatureRequestsInput = {
+    where?: UsersWhereInput
+    data: XOR<UsersUpdateWithoutFeatureRequestsInput, UsersUncheckedUpdateWithoutFeatureRequestsInput>
+  }
+
+  export type UsersUpdateWithoutFeatureRequestsInput = {
+    pid?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    api_key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_token?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null
+    email_verification_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    email_verified_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    magicLink_token?: NullableStringFieldUpdateOperationsInput | string | null
+    magicLink_expiration?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    TrainingModels?: TrainingModelsUpdateManyWithoutUserNestedInput
+    UserCredits?: UserCreditsUpdateManyWithoutUserNestedInput
+    Images?: ImagesUpdateManyWithoutUserNestedInput
+    Transactions?: TransactionsUpdateManyWithoutUserNestedInput
+    oAuth2Sessions?: OAuth2SessionUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    settings?: UserSettingsUpdateOneWithoutUserNestedInput
+    featureVote?: FeatureVoteUpdateManyWithoutUserNestedInput
+  }
+
+  export type UsersUncheckedUpdateWithoutFeatureRequestsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    pid?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    api_key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_token?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null
+    email_verification_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    email_verified_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    magicLink_token?: NullableStringFieldUpdateOperationsInput | string | null
+    magicLink_expiration?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    TrainingModels?: TrainingModelsUncheckedUpdateManyWithoutUserNestedInput
+    UserCredits?: UserCreditsUncheckedUpdateManyWithoutUserNestedInput
+    Images?: ImagesUncheckedUpdateManyWithoutUserNestedInput
+    Transactions?: TransactionsUncheckedUpdateManyWithoutUserNestedInput
+    oAuth2Sessions?: OAuth2SessionUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    settings?: UserSettingsUncheckedUpdateOneWithoutUserNestedInput
+    featureVote?: FeatureVoteUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type FeatureVoteUpsertWithWhereUniqueWithoutFeatureRequestInput = {
+    where: FeatureVoteWhereUniqueInput
+    update: XOR<FeatureVoteUpdateWithoutFeatureRequestInput, FeatureVoteUncheckedUpdateWithoutFeatureRequestInput>
+    create: XOR<FeatureVoteCreateWithoutFeatureRequestInput, FeatureVoteUncheckedCreateWithoutFeatureRequestInput>
+  }
+
+  export type FeatureVoteUpdateWithWhereUniqueWithoutFeatureRequestInput = {
+    where: FeatureVoteWhereUniqueInput
+    data: XOR<FeatureVoteUpdateWithoutFeatureRequestInput, FeatureVoteUncheckedUpdateWithoutFeatureRequestInput>
+  }
+
+  export type FeatureVoteUpdateManyWithWhereWithoutFeatureRequestInput = {
+    where: FeatureVoteScalarWhereInput
+    data: XOR<FeatureVoteUpdateManyMutationInput, FeatureVoteUncheckedUpdateManyWithoutFeatureRequestInput>
+  }
+
+  export type UsersCreateWithoutFeatureVoteInput = {
+    pid: string
+    email: string
+    password: string
+    api_key: string
+    name: string
+    stripe_customer_id?: string | null
+    reset_token?: string | null
+    reset_sent_at?: Date | string | null
+    email_verification_token?: string | null
+    email_verification_sent_at?: Date | string | null
+    email_verified_at?: Date | string | null
+    magicLink_token?: string | null
+    magicLink_expiration?: Date | string | null
+    TrainingModels?: TrainingModelsCreateNestedManyWithoutUserInput
+    UserCredits?: UserCreditsCreateNestedManyWithoutUserInput
+    Images?: ImagesCreateNestedManyWithoutUserInput
+    Transactions?: TransactionsCreateNestedManyWithoutUserInput
+    oAuth2Sessions?: OAuth2SessionCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    settings?: UserSettingsCreateNestedOneWithoutUserInput
+    featureRequests?: FeatureRequestCreateNestedManyWithoutUserInput
+  }
+
+  export type UsersUncheckedCreateWithoutFeatureVoteInput = {
+    id?: number
+    pid: string
+    email: string
+    password: string
+    api_key: string
+    name: string
+    stripe_customer_id?: string | null
+    reset_token?: string | null
+    reset_sent_at?: Date | string | null
+    email_verification_token?: string | null
+    email_verification_sent_at?: Date | string | null
+    email_verified_at?: Date | string | null
+    magicLink_token?: string | null
+    magicLink_expiration?: Date | string | null
+    TrainingModels?: TrainingModelsUncheckedCreateNestedManyWithoutUserInput
+    UserCredits?: UserCreditsUncheckedCreateNestedManyWithoutUserInput
+    Images?: ImagesUncheckedCreateNestedManyWithoutUserInput
+    Transactions?: TransactionsUncheckedCreateNestedManyWithoutUserInput
+    oAuth2Sessions?: OAuth2SessionUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    settings?: UserSettingsUncheckedCreateNestedOneWithoutUserInput
+    featureRequests?: FeatureRequestUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UsersCreateOrConnectWithoutFeatureVoteInput = {
+    where: UsersWhereUniqueInput
+    create: XOR<UsersCreateWithoutFeatureVoteInput, UsersUncheckedCreateWithoutFeatureVoteInput>
+  }
+
+  export type FeatureRequestCreateWithoutFeatureVoteInput = {
+    title: string
+    description: string
+    status?: $Enums.FeatureStatus
+    votes?: number
+    created_at?: Date | string
+    updated_at?: Date | string
+    user: UsersCreateNestedOneWithoutFeatureRequestsInput
+  }
+
+  export type FeatureRequestUncheckedCreateWithoutFeatureVoteInput = {
+    id?: number
+    user_id: number
+    title: string
+    description: string
+    status?: $Enums.FeatureStatus
+    votes?: number
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type FeatureRequestCreateOrConnectWithoutFeatureVoteInput = {
+    where: FeatureRequestWhereUniqueInput
+    create: XOR<FeatureRequestCreateWithoutFeatureVoteInput, FeatureRequestUncheckedCreateWithoutFeatureVoteInput>
+  }
+
+  export type UsersUpsertWithoutFeatureVoteInput = {
+    update: XOR<UsersUpdateWithoutFeatureVoteInput, UsersUncheckedUpdateWithoutFeatureVoteInput>
+    create: XOR<UsersCreateWithoutFeatureVoteInput, UsersUncheckedCreateWithoutFeatureVoteInput>
+    where?: UsersWhereInput
+  }
+
+  export type UsersUpdateToOneWithWhereWithoutFeatureVoteInput = {
+    where?: UsersWhereInput
+    data: XOR<UsersUpdateWithoutFeatureVoteInput, UsersUncheckedUpdateWithoutFeatureVoteInput>
+  }
+
+  export type UsersUpdateWithoutFeatureVoteInput = {
+    pid?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    api_key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_token?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null
+    email_verification_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    email_verified_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    magicLink_token?: NullableStringFieldUpdateOperationsInput | string | null
+    magicLink_expiration?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    TrainingModels?: TrainingModelsUpdateManyWithoutUserNestedInput
+    UserCredits?: UserCreditsUpdateManyWithoutUserNestedInput
+    Images?: ImagesUpdateManyWithoutUserNestedInput
+    Transactions?: TransactionsUpdateManyWithoutUserNestedInput
+    oAuth2Sessions?: OAuth2SessionUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    settings?: UserSettingsUpdateOneWithoutUserNestedInput
+    featureRequests?: FeatureRequestUpdateManyWithoutUserNestedInput
+  }
+
+  export type UsersUncheckedUpdateWithoutFeatureVoteInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    pid?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    api_key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_token?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null
+    email_verification_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    email_verified_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    magicLink_token?: NullableStringFieldUpdateOperationsInput | string | null
+    magicLink_expiration?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    TrainingModels?: TrainingModelsUncheckedUpdateManyWithoutUserNestedInput
+    UserCredits?: UserCreditsUncheckedUpdateManyWithoutUserNestedInput
+    Images?: ImagesUncheckedUpdateManyWithoutUserNestedInput
+    Transactions?: TransactionsUncheckedUpdateManyWithoutUserNestedInput
+    oAuth2Sessions?: OAuth2SessionUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    settings?: UserSettingsUncheckedUpdateOneWithoutUserNestedInput
+    featureRequests?: FeatureRequestUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type FeatureRequestUpsertWithoutFeatureVoteInput = {
+    update: XOR<FeatureRequestUpdateWithoutFeatureVoteInput, FeatureRequestUncheckedUpdateWithoutFeatureVoteInput>
+    create: XOR<FeatureRequestCreateWithoutFeatureVoteInput, FeatureRequestUncheckedCreateWithoutFeatureVoteInput>
+    where?: FeatureRequestWhereInput
+  }
+
+  export type FeatureRequestUpdateToOneWithWhereWithoutFeatureVoteInput = {
+    where?: FeatureRequestWhereInput
+    data: XOR<FeatureRequestUpdateWithoutFeatureVoteInput, FeatureRequestUncheckedUpdateWithoutFeatureVoteInput>
+  }
+
+  export type FeatureRequestUpdateWithoutFeatureVoteInput = {
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    status?: EnumFeatureStatusFieldUpdateOperationsInput | $Enums.FeatureStatus
+    votes?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UsersUpdateOneRequiredWithoutFeatureRequestsNestedInput
+  }
+
+  export type FeatureRequestUncheckedUpdateWithoutFeatureVoteInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    user_id?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    status?: EnumFeatureStatusFieldUpdateOperationsInput | $Enums.FeatureStatus
+    votes?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TrainingModelsCreateManyUserInput = {
@@ -24380,6 +28085,23 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     type?: $Enums.NotificationType
+  }
+
+  export type FeatureRequestCreateManyUserInput = {
+    id?: number
+    title: string
+    description: string
+    status?: $Enums.FeatureStatus
+    votes?: number
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type FeatureVoteCreateManyUserInput = {
+    id?: number
+    feature_request_id: number
+    created_at?: Date | string
+    updated_at?: Date | string
   }
 
   export type TrainingModelsUpdateWithoutUserInput = {
@@ -24651,6 +28373,57 @@ export namespace Prisma {
     type?: EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
   }
 
+  export type FeatureRequestUpdateWithoutUserInput = {
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    status?: EnumFeatureStatusFieldUpdateOperationsInput | $Enums.FeatureStatus
+    votes?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    featureVote?: FeatureVoteUpdateManyWithoutFeatureRequestNestedInput
+  }
+
+  export type FeatureRequestUncheckedUpdateWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    status?: EnumFeatureStatusFieldUpdateOperationsInput | $Enums.FeatureStatus
+    votes?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    featureVote?: FeatureVoteUncheckedUpdateManyWithoutFeatureRequestNestedInput
+  }
+
+  export type FeatureRequestUncheckedUpdateManyWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    status?: EnumFeatureStatusFieldUpdateOperationsInput | $Enums.FeatureStatus
+    votes?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FeatureVoteUpdateWithoutUserInput = {
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    featureRequest?: FeatureRequestUpdateOneRequiredWithoutFeatureVoteNestedInput
+  }
+
+  export type FeatureVoteUncheckedUpdateWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    feature_request_id?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FeatureVoteUncheckedUpdateManyWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    feature_request_id?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type ImagesCreateManyTraining_modelInput = {
     id?: number
     pid: string
@@ -24880,6 +28653,33 @@ export namespace Prisma {
     image_url_fal?: NullableStringFieldUpdateOperationsInput | string | null
     is_favorite?: BoolFieldUpdateOperationsInput | boolean
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FeatureVoteCreateManyFeatureRequestInput = {
+    id?: number
+    user_id: number
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type FeatureVoteUpdateWithoutFeatureRequestInput = {
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UsersUpdateOneRequiredWithoutFeatureVoteNestedInput
+  }
+
+  export type FeatureVoteUncheckedUpdateWithoutFeatureRequestInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    user_id?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FeatureVoteUncheckedUpdateManyWithoutFeatureRequestInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    user_id?: IntFieldUpdateOperationsInput | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }

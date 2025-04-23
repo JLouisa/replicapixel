@@ -54,6 +54,10 @@ bunx prisma migrate dev --name <Name the migration>
 bunx prisma migrate reset --force
 bunx prisma db seed
 
+## Create Controller
+
+cargo loco generate controller features --htmx
+
 #
 
 <html>

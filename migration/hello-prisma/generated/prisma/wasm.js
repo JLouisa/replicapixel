@@ -287,6 +287,25 @@ exports.Prisma.UserSettingsScalarFieldEnum = {
   theme: 'theme'
 };
 
+exports.Prisma.FeatureRequestScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
+  title: 'title',
+  description: 'description',
+  status: 'status',
+  votes: 'votes',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.FeatureVoteScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
+  feature_request_id: 'feature_request_id',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -343,10 +362,10 @@ exports.EyeColor = exports.$Enums.EyeColor = {
 };
 
 exports.Status = exports.$Enums.Status = {
+  Completed: 'Completed',
+  Training: 'Training',
   Pending: 'Pending',
   Processing: 'Processing',
-  Training: 'Training',
-  Completed: 'Completed',
   Failed: 'Failed',
   Cancelled: 'Cancelled'
 };
@@ -392,6 +411,14 @@ exports.ThemePreference = exports.$Enums.ThemePreference = {
   System: 'System'
 };
 
+exports.FeatureStatus = exports.$Enums.FeatureStatus = {
+  Suggested: 'Suggested',
+  Planned: 'Planned',
+  In_progress: 'In_progress',
+  Completed: 'Completed',
+  Rejected: 'Rejected'
+};
+
 exports.Prisma.ModelName = {
   Users: 'Users',
   OAuth2Session: 'OAuth2Session',
@@ -405,7 +432,9 @@ exports.Prisma.ModelName = {
   HandledFalEvent: 'HandledFalEvent',
   seaql_migrations: 'seaql_migrations',
   Notification: 'Notification',
-  UserSettings: 'UserSettings'
+  UserSettings: 'UserSettings',
+  FeatureRequest: 'FeatureRequest',
+  FeatureVote: 'FeatureVote'
 };
 
 /**

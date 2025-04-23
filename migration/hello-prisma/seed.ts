@@ -1,4 +1,4 @@
-import { PrismaClient } from "./generated/prisma";
+import { FeatureStatus, PrismaClient } from "./generated/prisma";
 import { v4 as uuidv4 } from "uuid";
 import { faker } from "@faker-js/faker";
 
@@ -364,6 +364,231 @@ async function main() {
         image_url: "https://picsum.photos/id/160/400/500",
       },
     });
+  }
+  {
+    const baseTime = new Date();
+
+    // === Seed Feature Requests ===
+    const featureRequests = [
+      {
+        id: 1,
+        user_id: 1,
+        title: "Sexy Valentine's Day",
+        description: "Generate images for a spicy Valentine's Day surprise.",
+        status: FeatureStatus.Suggested,
+        votes: 25,
+        created_at: baseTime,
+        updated_at: baseTime,
+      },
+      {
+        id: 2,
+        user_id: 2,
+        title: "Valentine's Day",
+        description: "Create romantic imagery suitable for Valentine's Day cards or messages.",
+        status: FeatureStatus.Planned,
+        votes: 14,
+        created_at: baseTime,
+        updated_at: new Date(), // later time
+      },
+      {
+        id: 3,
+        user_id: 1,
+        title: "Tinder Profile Pics",
+        description: "Generate profile pictures optimized for dating apps like Tinder.",
+        status: FeatureStatus.Rejected,
+        votes: 6,
+        created_at: baseTime,
+        updated_at: baseTime,
+      },
+
+      {
+        id: 4,
+        user_id: 1,
+        title: "Professional Head shots",
+        description: "Create professional-looking head shots for LinkedIn or corporate use.",
+        status: FeatureStatus.In_progress,
+        votes: 1,
+        created_at: baseTime,
+        updated_at: baseTime,
+      },
+      {
+        id: 5,
+        user_id: 2,
+        title: "Graduation Themes",
+        description:
+          "Design AI-generated images for graduation parties, caps, gowns, and celebration themes.",
+        status: FeatureStatus.Suggested,
+        votes: 9,
+        created_at: baseTime,
+        updated_at: baseTime,
+      },
+      {
+        id: 6,
+        user_id: 2,
+        title: "AI Pets",
+        description:
+          "Allow users to create realistic images of imaginary pets or enhance real pet photos.",
+        status: FeatureStatus.Planned,
+        votes: 18,
+        created_at: baseTime,
+        updated_at: baseTime,
+      },
+      {
+        id: 7,
+        user_id: 1,
+        title: "Fantasy Armor Sets",
+        description:
+          "Let users generate epic armor looks for fantasy roleplay and cosplay inspiration.",
+        status: FeatureStatus.In_progress,
+        votes: 34,
+        created_at: baseTime,
+        updated_at: baseTime,
+      },
+      {
+        id: 8,
+        user_id: 2,
+        title: "AI Band Posters",
+        description:
+          "Generate creative concert posters or album covers for bands or musical artists.",
+        status: FeatureStatus.Completed,
+        votes: 22,
+        created_at: baseTime,
+        updated_at: baseTime,
+      },
+      {
+        id: 9,
+        user_id: 2,
+        title: "Baby Announcement Themes",
+        description: "Create heartwarming or fun AI images for baby announcements.",
+        status: FeatureStatus.Suggested,
+        votes: 13,
+        created_at: baseTime,
+        updated_at: baseTime,
+      },
+      {
+        id: 10,
+        user_id: 2,
+        title: "Fitness Transformation Templates",
+        description: "Before-and-after image tools or motivational posters with AI help.",
+        status: FeatureStatus.Rejected,
+        votes: 5,
+        created_at: baseTime,
+        updated_at: baseTime,
+      },
+      {
+        id: 11,
+        user_id: 1,
+        title: "Wedding Storybooks",
+        description: "Turn wedding photos into romantic AI-generated storybook scenes.",
+        status: FeatureStatus.Planned,
+        votes: 28,
+        created_at: baseTime,
+        updated_at: baseTime,
+      },
+      {
+        id: 12,
+        user_id: 1,
+        title: "Sci-Fi Portraits",
+        description:
+          "Generate portraits inspired by science fiction aesthetics, like Star Wars or Blade Runner.",
+        status: FeatureStatus.Completed,
+        votes: 41,
+        created_at: baseTime,
+        updated_at: baseTime,
+      },
+      {
+        id: 13,
+        user_id: 2,
+        title: "Cartoon Avatars",
+        description:
+          "Allow users to create fun cartoon versions of themselves in different styles.",
+        status: FeatureStatus.In_progress,
+        votes: 37,
+        created_at: baseTime,
+        updated_at: baseTime,
+      },
+      {
+        id: 14,
+        user_id: 1,
+        title: "Book Cover Generator",
+        description: "Give authors tools to generate stunning book cover visuals.",
+        status: FeatureStatus.Suggested,
+        votes: 19,
+        created_at: baseTime,
+        updated_at: baseTime,
+      },
+    ];
+
+    for (const fr of featureRequests) {
+      await prisma.featureRequest.upsert({
+        where: { id: fr.id },
+        update: {},
+        create: {
+          id: fr.id,
+          user_id: fr.user_id,
+          title: fr.title,
+          description: fr.description,
+          status: fr.status,
+          votes: fr.votes,
+          created_at: fr.created_at,
+          updated_at: fr.updated_at,
+        },
+      });
+    }
+
+    // === Seed Feature Votes for User ID 1 ===
+    const featureVotes = [
+      {
+        id: 1,
+        user_id: 1,
+        feature_request_id: 1,
+        created_at: baseTime,
+        updated_at: baseTime,
+      },
+      {
+        id: 2,
+        user_id: 1,
+        feature_request_id: 3,
+        created_at: baseTime,
+        updated_at: baseTime,
+      },
+      {
+        id: 3,
+        user_id: 1,
+        feature_request_id: 6, // non-existent feature
+        created_at: baseTime,
+        updated_at: baseTime,
+      },
+      {
+        id: 4,
+        user_id: 1,
+        feature_request_id: 5, // "Graduation Themes"
+        created_at: baseTime,
+        updated_at: baseTime,
+      },
+      {
+        id: 5,
+        user_id: 1,
+        feature_request_id: 7, // "Fantasy Armor Sets"
+        created_at: baseTime,
+        updated_at: baseTime,
+      },
+      {
+        id: 6,
+        user_id: 2,
+        feature_request_id: 7, // "Fantasy Armor Sets"
+        created_at: baseTime,
+        updated_at: baseTime,
+      },
+    ];
+
+    for (const vote of featureVotes) {
+      await prisma.featureVote.upsert({
+        where: { id: vote.id },
+        update: {},
+        create: vote,
+      });
+    }
   }
 }
 

@@ -65,6 +65,15 @@ pub fn img_completed(
 }
 
 /// When there is an issue with rendering the view.
+pub fn favorite(v: &impl ViewRenderer, image: &ImageView, website: &Website) -> Result<Response> {
+    format::render().view(
+        v,
+        "dashboard/content/photo/partials/favorite_button.html",
+        data!({"image": image, "favorite_route": website.main_routes.image_favorite}),
+    )
+}
+
+/// When there is an issue with rendering the view.
 pub fn list(v: &impl ViewRenderer, items: &Vec<images::Model>) -> Result<Response> {
     format::render().view(v, "images/list.html", data!({"items": items}))
 }
@@ -115,6 +124,7 @@ pub struct ImageView {
     pub content_type: String,
     pub image_alt: String,
     pub image_status: String,
+    pub is_favorite: bool,
     pub pre_url: Option<String>,
     pub s3_pre_url: Option<String>,
 }
@@ -230,6 +240,7 @@ impl From<ImageModel> for ImageView {
             content_type: img.content_type.to_string(),
             image_alt: img.alt,
             image_status: img.status.to_string(),
+            is_favorite: img.is_favorite,
             pre_url: None,
             s3_pre_url: None,
         }
@@ -247,6 +258,7 @@ impl From<&ImageModel> for ImageView {
             content_type: img.content_type.to_string(),
             image_alt: img.alt.to_owned(),
             image_status: img.status.to_string(),
+            is_favorite: img.is_favorite,
             pre_url: None,
             s3_pre_url: None,
         }
@@ -270,6 +282,7 @@ impl From<ImageNew> for ImageView {
             content_type: img.content_type.to_string(),
             image_alt: img.alt.into_inner(),
             image_status: img.status.to_string(),
+            is_favorite: img.is_favorite,
             pre_url: None,
             s3_pre_url: None,
         }
@@ -287,6 +300,7 @@ impl From<&ImageNew> for ImageView {
             content_type: img.content_type.to_string(),
             image_alt: img.alt.as_ref().to_owned(),
             image_status: img.status.to_string(),
+            is_favorite: img.is_favorite,
             pre_url: None,
             s3_pre_url: None,
         }

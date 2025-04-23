@@ -35,6 +35,7 @@ pub struct MainRoutes {
     pub check: String,
     pub image_s3_complete_upload: String,
     pub image_restore: String,
+    pub image_favorite: String,
 }
 impl MainRoutes {
     pub fn init() -> MainRoutes {
@@ -54,6 +55,11 @@ impl MainRoutes {
                 "{}{}",
                 ImagesRoute::Images::BASE,
                 ImagesRoute::Images::IMAGE_RESTORE
+            ),
+            image_favorite: format!(
+                "{}{}",
+                ImagesRoute::Images::BASE,
+                ImagesRoute::Images::IMAGE_FAVORITE
             ),
         }
     }

@@ -10,7 +10,6 @@ pub struct Model {
     pub id: i32,
     #[sea_orm(unique)]
     pub pid: Uuid,
-    #[sea_orm(column_type = "Text")]
     pub description: String,
     #[sea_orm(column_type = "Text")]
     pub pack_prompts: String,

@@ -1,0 +1,18 @@
+<button
+  hx-patch="/api/features/vote/{{ feature.id }}"
+  hx-swap="outerHTML"
+  id="vote-{{ feature.id }}"
+  class="btn btn-sm {% if feature.is_voted %}btn-secondary{% endif %}"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke-width="1.5"
+    stroke="currentColor"
+    class="w-4 h-4 mr-1"
+  >
+    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+  </svg>
+  {{ feature.votes }}
+</button>

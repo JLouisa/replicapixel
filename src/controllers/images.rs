@@ -336,13 +336,15 @@ pub async fn favorite_toggle(
     auth: auth::JWT,
     Path(img_pid): Path<Uuid>,
     State(ctx): State<AppContext>,
+    Extension(website): Extension<Website>,
+    ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<Response> {
     let (user, img) = load_user_and_image(&ctx.db, &auth.claims.pid, &img_pid).await?;
     if img.user_id != user.id {
         return Ok((StatusCode::UNAUTHORIZED).into_response());
     }
-    img.favorite_image_toggle(&ctx.db).await?;
-    Ok((StatusCode::OK).into_response())
+    let image: ImageView = img.favorite_image_toggle(&ctx.db).await?.into();
+    views::images::favorite(&v, &image, &website)
 }
 
 #[debug_handler]
