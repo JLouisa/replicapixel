@@ -279,6 +279,7 @@ pub fn photo_dashboard(
             "check_route":  website.main_routes.check,
             "delete_route":  website.main_routes.image,
             "restore_route": website.main_routes.image_restore,
+            "favorite_route": website.main_routes.image_favorite,
             "is_deleted": is_deleted,
             "is_favorite": is_favorite,
             "is_initial_load": true,
@@ -306,6 +307,7 @@ pub fn photo_partial_dashboard(
             "check_route": website.main_routes.check,
             "delete_route":  website.main_routes.image,
             "restore_route": website.main_routes.image_restore,
+            "favorite_route": website.main_routes.image_favorite,
             "is_deleted": is_deleted,
             "is_favorite": is_favorite
         }),

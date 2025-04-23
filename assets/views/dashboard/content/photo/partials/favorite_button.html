@@ -1,0 +1,19 @@
+{% if image.is_favorite %}
+<button
+  id="fav-{{ image.pid }}"
+  hx-patch="{{ favorite_route }}/{{ image.pid }}"
+  hx-swap="outerHTML"
+  class="btn"
+>
+  Remove Favorite {% include "partials/svg/bookmark.html" %}
+</button>
+{% else %}
+<button
+  id="fav-{{ image.pid }}"
+  hx-patch="{{ favorite_route }}/{{ image.pid }}"
+  hx-swap="outerHTML"
+  class="btn btn-secondary"
+>
+  Add to Favorites {% include "partials/svg/bookmark.html" %}
+</button>
+{% endif %}

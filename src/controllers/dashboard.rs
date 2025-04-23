@@ -215,6 +215,10 @@ async fn load_first_images(db: &DatabaseConnection, id: i32, fav: bool) -> Resul
     let list = ImageModel::find_x_images_by_user_id(db, id, fav, 30).await?;
     Ok(ImagesModelList::new(list))
 }
+async fn load_first_images_del(db: &DatabaseConnection, id: i32) -> Result<ImagesModelList> {
+    let list = ImageModel::find_x_images_by_user_id_del(db, id, 30).await?;
+    Ok(ImagesModelList::new(list))
+}
 async fn load_images_del(db: &DatabaseConnection, id: i32) -> Result<ImagesModelList> {
     let list = ImageModel::find_all_del_by_user_id(db, id).await?;
     Ok(ImagesModelList::new(list))
@@ -450,8 +454,7 @@ pub async fn album_deleted_dashboard(
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     let training_models: TrainingModelList = TrainingModelList::empty();
-    let images = load_images_del(&ctx.db, user.id).await?;
-    let mut images: ImageViewList = load_first_images(&ctx.db, user.id, false).await?.into();
+    let mut images: ImageViewList = load_first_images_del(&ctx.db, user.id).await?.into();
     let images = images.populate_s3_pre_urls(&s3_client, &cache).await;
     let is_deleted = true;
     let is_favorite = false;
@@ -480,8 +483,7 @@ pub async fn album_deleted_partial_dashboard(
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     let training_models: TrainingModelList = TrainingModelList::empty();
-    let images = load_images_del(&ctx.db, user.id).await?;
-    let mut images: ImageViewList = load_first_images(&ctx.db, user.id, false).await?.into();
+    let mut images: ImageViewList = load_first_images_del(&ctx.db, user.id).await?.into();
     let images = images.populate_s3_pre_urls(&s3_client, &cache).await;
     let is_deleted = true;
     let is_favorite = false;
@@ -510,8 +512,7 @@ pub async fn album_favorite_dashboard(
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     let training_models: TrainingModelList = TrainingModelList::empty();
-    let images = load_first_images(&ctx.db, user.id, true).await?;
-    let mut images: ImageViewList = load_first_images(&ctx.db, user.id, false).await?.into();
+    let mut images: ImageViewList = load_first_images(&ctx.db, user.id, true).await?.into();
     let images = images.populate_s3_pre_urls(&s3_client, &cache).await;
     let is_deleted = false;
     let is_favorite = true;
@@ -542,8 +543,7 @@ pub async fn album_favorite_partial_dashboard(
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     let training_models: TrainingModelList = TrainingModelList::empty();
-    let images = load_first_images(&ctx.db, user.id, true).await?;
-    let mut images: ImageViewList = load_first_images(&ctx.db, user.id, false).await?.into();
+    let mut images: ImageViewList = load_first_images(&ctx.db, user.id, true).await?.into();
     let images = images.populate_s3_pre_urls(&s3_client, &cache).await;
     let is_deleted = false;
     let is_favorite = true;
@@ -619,35 +619,3 @@ pub async fn photo_partial_dashboard(
         is_favorite,
     )
 }
-
-//Todo Remove for photo dashboard controller
-// #[debug_handler]
-// async fn render_dashboard(
-//     auth: auth::JWT,
-//     State(ctx): State<AppContext>,
-//     Extension(cache): Extension<Cache>,
-//     Extension(s3_client): Extension<AwsS3>,
-//     Extension(website): Extension<Website>,
-//     ViewEngine(v): ViewEngine<TeraView>,
-// ) -> Result<impl IntoResponse> {
-//     let user_pid = UserPid::new(&auth.claims.pid);
-//     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
-//     let training_models = load_item_all_completed(&ctx, user.id).await?;
-//     let images = load_first_images(&ctx.db, user.id, false).await?;
-//     let mut images: ImageViewList = load_first_images(&ctx.db, user.id, false).await?.into();
-//     let images = images.populate_s3_pre_urls(&s3_client, &cache).await;
-//     let is_deleted = false;
-//     let is_favorite = false;
-
-//     views::dashboard::photo_dashboard(
-//         v,
-//         &user.into(),
-//         &images,
-//         training_models.into(),
-//         &website,
-//         &user_credits.into(),
-//         is_deleted,
-//         is_favorite,
-//     )
-// }
-//Todo Remove for photo dashboard controller
