@@ -50,7 +50,7 @@ axum-extra = { version = "0.10", features = ["typed-header","form", "cookie-priv
 # Integrations
 aws-config = { version = "1.1.7", features = ["behavior-version-latest"] }
 aws-sdk-s3 = { version = "1.48.0", features = ["behavior-version-latest"] }
-async-stripe = { version = "0.40.2", features = ["runtime-tokio-hyper"] }
+# async-stripe = { version = "0.40.2", features = ["runtime-tokio-hyper"] }
 futures = "0.3.31"
 
 derive_more = { version = "2.0.1", features = ["full"] }
@@ -85,6 +85,23 @@ oauth2 =  {version = "4.0.0", features = [] }
 futures-util = "0.3.31"
 tower = "0.5.2"
 urlencoding = "2.1.3"
+
+[dependencies.async-stripe]
+version = "0.40.2" # Use the version you need
+default-features = false # VERY IMPORTANT: Start fresh
+features = [
+    # Core Runtime & HTTP client
+    "runtime-tokio-hyper",
+    # For handling webhook events and signature verification
+    "webhook-events", # Implies "events", pulls in crypto like hmac, sha2, hex
+    # For Checkout Session create/retrieve
+    "checkout",
+    # For Customer create/retrieve
+    "connect",
+    # For compatibility with types used
+    "uuid",
+    "chrono",
+]
 
 [[bin]]
 name = "pictora-cli"

@@ -15,6 +15,7 @@ use crate::{
     models::{
         transactions::TransactionDomain, users::UserPid, PlanModel, TransactionActiveModel,
         UserModel, _entities::sea_orm_active_enums::PlanNames,
+        join::user_credits_models::load_user_and_credits,
     },
     service::stripe::{stripe::StripeClient, stripe_builder::CheckoutSessionBuilder},
     views,
@@ -210,7 +211,7 @@ pub async fn create_checkout_session_handler(
         .user(&user)
         .plan(&plan.plan_name)
         .transaction_id(&transaction_id)
-        .embedded()
+        // .embedded()
         .build()
         .await?;
     let transaction = TransactionDomain::new(
@@ -236,13 +237,17 @@ pub async fn create_checkout_session_handler(
 }
 
 async fn success_handler(
-    // auth: auth::JWT,
+    auth: auth::JWT,
     params: Query<PaymentRedirectParams>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
+    State(ctx): State<AppContext>,
 ) -> Result<impl IntoResponse> {
-    tracing::error!("User successfully completed payment process.");
-    views::payment::payment_status(v, &website, &params.session_id)
+    tracing::info!("User successfully completed payment process.");
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
+    let validate_route = crate::controllers::auth::routes::Auth::VALIDATE_USER;
+    views::payment::payment_status(v, &website, &params.session_id, &validate_route)
 }
 
 #[debug_handler]
@@ -253,7 +258,7 @@ pub async fn payment_request(
     State(ctx): State<AppContext>,
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
-    let user = load_user(&ctx.db, &user_pid).await?;
+    let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     if user.pid != pid {
         return Err(loco_rs::Error::Message(
             "You are not authorized to access this page".to_string(),
@@ -358,13 +363,13 @@ pub async fn payment_home_partial(
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
-    let user = load_user(&ctx.db, &user_pid).await?;
+    let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     let route = format!(
         "{}{}",
         routes::Payment::BASE,
         routes::Payment::STRIPE_CHECKOUT
     );
-    views::payment::payment_home_partial(v, &website, &user.into(), route)
+    views::payment::payment_home_partial(v, &user.into(), &user_credits.into(), route, &website)
 }
 
 #[debug_handler]
@@ -375,11 +380,11 @@ pub async fn payment_home(
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
-    let user = load_user(&ctx.db, &user_pid).await?;
+    let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     let route = format!(
         "{}{}",
         routes::Payment::BASE,
         routes::Payment::STRIPE_CHECKOUT
     );
-    views::payment::payment_home(v, &website, &user.into(), route)
+    views::payment::payment_home(v, &user.into(), &user_credits.into(), route, &website)
 }

@@ -4,31 +4,43 @@ use crate::{
 };
 use loco_rs::prelude::*;
 
-use super::auth::UserView;
+use super::auth::{UserCreditsView, UserView};
 
 pub fn payment_home_partial(
     v: impl ViewRenderer,
-    website: &Website,
     user: &UserView,
+    credits: &UserCreditsView,
     route: String,
+    website: &Website,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
         "payment/payment_plans/payment_plan_partial.html",
-        data!({"plans": website.payment_plans, "website": website.website_settings, "user_p": user, "payment_route": route}),
+        data!(
+            {
+                "plans": website.payment_plans, "website": website.website_settings,
+                "user": user, "credits": credits, "payment_route": route
+             }
+        ),
     )
 }
 
 pub fn payment_home(
     v: impl ViewRenderer,
-    website: &Website,
     user: &UserView,
+    credits: &UserCreditsView,
     route: String,
+    website: &Website,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
         "payment/payment_plans/payment_plan.html",
-        data!({"plans": website.payment_plans, "website": website.website_settings, "user_p": user, "payment_route": route}),
+        data!(
+            {
+                "plans": website.payment_plans, "website": website.website_settings,
+                "user": user, "credits": credits, "payment_route": route
+            }
+        ),
     )
 }
 
@@ -60,11 +72,12 @@ pub fn payment_status(
     v: impl ViewRenderer,
     website: &Website,
     params: &Option<String>,
+    validate_route: &str,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
         "payment/stripe/stripe_payment.html",
-        data!({"plans": website.payment_plans, "website": website.website_settings, "session_id": params}),
+        data!({"plans": website.payment_plans, "website": website.website_settings, "session_id": params, "validate_route": validate_route}),
     )
 }
 
