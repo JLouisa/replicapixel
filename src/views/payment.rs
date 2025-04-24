@@ -8,39 +8,27 @@ use super::auth::{UserCreditsView, UserView};
 
 pub fn payment_home_partial(
     v: impl ViewRenderer,
+    website: &Website,
     user: &UserView,
     credits: &UserCreditsView,
-    route: String,
-    website: &Website,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
         "payment/payment_plans/payment_plan_partial.html",
-        data!(
-            {
-                "plans": website.payment_plans, "website": website.website_settings,
-                "user": user, "credits": credits, "payment_route": route
-             }
-        ),
+        data!({ "website": website, "user": user, "credits": credits }),
     )
 }
 
 pub fn payment_home(
     v: impl ViewRenderer,
+    website: &Website,
     user: &UserView,
     credits: &UserCreditsView,
-    route: String,
-    website: &Website,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
         "payment/payment_plans/payment_plan.html",
-        data!(
-            {
-                "plans": website.payment_plans, "website": website.website_settings,
-                "user": user, "credits": credits, "payment_route": route
-            }
-        ),
+        data!({ "website": website, "user": user, "credits": credits }),
     )
 }
 
@@ -48,7 +36,7 @@ pub fn payment_success(v: impl ViewRenderer, website: &Website) -> Result<impl I
     format::render().view(
         &v,
         "payment/stripe/stripe_completed_partial.html",
-        data!({"plans": website.payment_plans, "website": website.website_settings}),
+        data!({ "website": website }),
     )
 }
 
@@ -56,7 +44,7 @@ pub fn payment_completed(v: impl ViewRenderer, website: &Website) -> Result<impl
     format::render().view(
         &v,
         "payment/stripe/stripe_completed_partial.html",
-        data!({"plans": website.payment_plans, "website": website.website_settings}),
+        data!({ "website": website }),
     )
 }
 
@@ -64,7 +52,7 @@ pub fn payment_cancel(v: impl ViewRenderer, website: &Website) -> Result<impl In
     format::render().view(
         &v,
         "payment/payment_base.html",
-        data!({"plans": website.payment_plans, "website": website.website_settings}),
+        data!({ "website": website }),
     )
 }
 
@@ -72,12 +60,11 @@ pub fn payment_status(
     v: impl ViewRenderer,
     website: &Website,
     params: &Option<String>,
-    validate_route: &str,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
         "payment/stripe/stripe_payment.html",
-        data!({"plans": website.payment_plans, "website": website.website_settings, "session_id": params, "validate_route": validate_route}),
+        data!({ "website": website, "session_id": params, }),
     )
 }
 
@@ -90,7 +77,7 @@ pub fn checkout_session(
     format::render().view(
         &v,
         "payment/stripe/embedded/checkout.html",
-        data!({ "website": website.website_settings, "stripe_public_key": stripe_publishable_key.as_ref(), "secret": secret.client_secret }),
+        data!({ "website": website, "stripe_public_key": stripe_publishable_key.as_ref(), "secret": secret.client_secret }),
     )
 }
 
@@ -103,7 +90,7 @@ pub fn checkout_session_partial(
     format::render().view(
         &v,
         "payment/stripe/embedded/checkout_partial.html",
-        data!({ "website": website.website_settings, "stripe_public_key": stripe_publishable_key.as_ref(), "secret": secret.client_secret }),
+        data!({ "website": website, "stripe_public_key": stripe_publishable_key.as_ref(), "secret": secret.client_secret }),
     )
 }
 
@@ -111,6 +98,6 @@ pub fn return_session(v: impl ViewRenderer, website: &Website) -> Result<impl In
     format::render().view(
         &v,
         "payment/stripe/embedded/return.html",
-        data!({ "website": website.website_settings}),
+        data!({ "website": website }),
     )
 }

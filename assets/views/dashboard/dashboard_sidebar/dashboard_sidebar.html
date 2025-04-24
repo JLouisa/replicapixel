@@ -6,9 +6,9 @@
     <!-- Album Section -->
     <li class="hover:bg-base-300 tooltip tooltip-right" data-tip="Album">
       <a
-        hx-get="{{ sidebar_routes.photo_partial }}"
+        hx-get="{{ website.website_routes.dashboard_routes.sidebar.photo_partial }}"
         hx-target="#dashboard_content"
-        hx-push-url="{{ sidebar_routes.photo }}"
+        hx-push-url="{{ website.website_routes.dashboard_routes.sidebar.photo }}"
         hx-swap="innerHTML"
         class="h-16 px-6 flex justify-center items-center w-full cursor-pointer"
       >
@@ -18,9 +18,9 @@
     <!-- Model Section -->
     <li class="hover:bg-base-300 tooltip tooltip-right" data-tip="Model">
       <a
-        hx-get="{{ sidebar_routes.training_models_partial }}"
+        hx-get="{{ website.website_routes.dashboard_routes.sidebar.training_models_partial }}"
         hx-target="#dashboard_content"
-        hx-push-url="{{ sidebar_routes.training_models }}"
+        hx-push-url="{{ website.website_routes.dashboard_routes.sidebar.training_models }}"
         hx-swap="innerHTML"
         class="h-16 px-6 flex justify-center items-center w-full cursor-pointer"
       >
@@ -30,9 +30,9 @@
     <!-- Packs Section -->
     <li class="hover:bg-base-300 tooltip tooltip-right" data-tip="Packs">
       <a
-        hx-get="{{ sidebar_routes.packs_partial }}"
+        hx-get="{{ website.website_routes.dashboard_routes.sidebar.packs_partial }}"
         hx-target="#dashboard_content"
-        hx-push-url="{{ sidebar_routes.packs }}"
+        hx-push-url="{{ website.website_routes.dashboard_routes.sidebar.packs }}"
         hx-swap="innerHTML"
         class="h-16 px-6 flex justify-center items-center w-full cursor-pointer"
       >
@@ -42,9 +42,9 @@
     <!-- Favorite Section -->
     <li class="hover:bg-base-300 tooltip tooltip-right cursor-pointer" data-tip="Favorite">
       <a
-        hx-get="{{ sidebar_routes.album_favorite_partial }}"
+        hx-get="{{ website.website_routes.dashboard_routes.sidebar.album_favorite_partial }}"
         hx-target="#dashboard_content"
-        hx-push-url="{{ sidebar_routes.album_favorite }}"
+        hx-push-url="{{ website.website_routes.dashboard_routes.sidebar.album_favorite }}"
         hx-swap="innerHTML"
         class="h-16 px-6 flex justify-center items-center w-full text-base-content"
       >
@@ -54,9 +54,9 @@
     <!-- Deleted Section -->
     <li class="hover:bg-base-300 tooltip tooltip-right cursor-pointer" data-tip="Deleted">
       <a
-        hx-get="{{ sidebar_routes.album_deleted_partial }}"
+        hx-get="{{ website.website_routes.dashboard_routes.sidebar.album_deleted_partial }}"
         hx-target="#dashboard_content"
-        hx-push-url="{{ sidebar_routes.album_deleted }}"
+        hx-push-url="{{ website.website_routes.dashboard_routes.sidebar.album_deleted }}"
         hx-swap="innerHTML"
         class="h-16 px-6 flex justify-center items-center w-full text-base-content"
       >
@@ -69,9 +69,9 @@
       data-tip="Notifications"
     >
       <a
-        hx-get="{{ sidebar_routes.notifications_partial }}"
+        hx-get="{{ website.website_routes.dashboard_routes.sidebar.notifications_partial }}"
         hx-target="#dashboard_content"
-        hx-push-url="{{ sidebar_routes.notifications }}"
+        hx-push-url="{{ website.website_routes.dashboard_routes.sidebar.notifications }}"
         hx-swap="innerHTML"
         class="h-16 px-6 flex justify-center items-center w-full relative text-base-content"
       >
@@ -86,9 +86,9 @@
   <div class="mt-auto h-56 flex flex-col items-center w-full">
     <!-- Features Section -->
     <div
-      hx-get="{{ sidebar_routes.features_partial }}"
+      hx-get="{{ website.website_routes.dashboard_routes.sidebar.features_partial }}"
       hx-target="#dashboard_content"
-      hx-push-url="{{ sidebar_routes.features }}"
+      hx-push-url="{{ website.website_routes.dashboard_routes.sidebar.features }}"
       hx-swap="innerHTML"
       class="h-16 w-full mx-auto flex items-center justify-center hover:bg-base-300 focus:outline-none cursor-pointer tooltip tooltip-right text-base-content"
       data-tip="Features"
@@ -97,9 +97,9 @@
     </div>
     <!-- Settings Section -->
     <div
-      hx-get="{{ sidebar_routes.settings_partial }}"
+      hx-get="{{ website.website_routes.dashboard_routes.sidebar.settings_partial }}"
       hx-target="#dashboard_content"
-      hx-push-url="{{ sidebar_routes.settings }}"
+      hx-push-url="{{ website.website_routes.dashboard_routes.sidebar.settings }}"
       hx-swap="innerHTML"
       class="h-16 w-full mx-auto flex items-center justify-center hover:bg-base-300 focus:outline-none cursor-pointer tooltip tooltip-right text-base-content"
       data-tip="Settings"
@@ -108,7 +108,7 @@
     </div>
     <!-- Logout Section -->
     <div
-      hx-get="{{ sidebar_routes.logout }}"
+      hx-get="{{ website.website_routes.auth_routes.api_logout }}"
       class="h-16 w-full mx-auto flex items-center justify-center hover:bg-red-200 focus:outline-none cursor-pointer tooltip tooltip-right text-base-content"
       data-tip="Logout"
     >

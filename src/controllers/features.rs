@@ -1,11 +1,11 @@
 #![allow(clippy::missing_errors_doc)]
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
-use axum::debug_handler;
+use axum::{debug_handler, Extension};
 use loco_rs::prelude::*;
 
 use crate::{
-    domain::features::FeatureView,
+    domain::{features::FeatureView, website::Website},
     models::{
         feature_request::FeatureParams, users::UserPid, FeatureRequestActiveModel,
         FeatureRequestEntity, FeatureRequestModel, UserModel,
@@ -14,7 +14,23 @@ use crate::{
 };
 
 pub mod routes {
-    use serde::Serialize;
+    use serde::{Deserialize, Serialize};
+
+    #[derive(Debug, Serialize, Deserialize, Clone)]
+    pub struct FeatureRoutes {
+        pub base: String,
+        pub add: String,
+        pub vote: String,
+    }
+    impl FeatureRoutes {
+        pub fn init() -> Self {
+            Self {
+                base: String::from(Features::BASE),
+                add: format!("{}{}", Features::BASE, Features::FEATURE_ADD),
+                vote: format!("{}{}", Features::BASE, Features::FEATURE_VOTE),
+            }
+        }
+    }
 
     #[derive(Clone, Debug, Serialize)]
     pub struct Features;
@@ -22,6 +38,7 @@ pub mod routes {
         pub const BASE: &'static str = "/api/features";
         pub const FEATURE_ADD: &'static str = "/add";
         pub const FEATURE_VOTE_ID: &'static str = "/vote/{id}";
+        pub const FEATURE_VOTE: &'static str = "/vote";
     }
 }
 
@@ -54,6 +71,7 @@ pub async fn add(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
+    Extension(website): Extension<Website>,
     Json(params): Json<FeatureParams>,
 ) -> Result<impl IntoResponse> {
     dbg!(&params);
@@ -72,7 +90,7 @@ pub async fn add(
     };
     params.update(&mut item);
     let item = item.insert(&ctx.db).await?;
-    views::features::form_reset(v, &user.into())
+    views::features::form_reset(v, &website, &user.into())
 }
 
 #[debug_handler]
@@ -80,6 +98,7 @@ pub async fn vote(
     auth: auth::JWT,
     Path(id): Path<i32>,
     State(ctx): State<AppContext>,
+    Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
@@ -87,5 +106,5 @@ pub async fn vote(
     let feature = load_item(&ctx, id).await?;
     let feature_processed = vote_on_feature(&ctx.db, feature.id, user.id).await?;
     let feature_view = FeatureView::process_one(&feature_processed.0, feature_processed.1);
-    views::features::vote_update(v, &feature_view)
+    views::features::vote_update(v, &website, &feature_view)
 }

@@ -37,7 +37,7 @@
       </div>
       <select class="select w-full" x-model="$store.createModelForm.based_on">
         <option value="" disabled selected>Pick a Type</option>
-        {% for type_model in sidebar.create_model.type_model %}
+        {% for type_model in website.website_fields.create_model.type_model %}
         <option value="{{ type_model }}">{{ type_model }}</option>
         {% endfor %}
       </select>
@@ -61,7 +61,7 @@
       <label class="fieldset-label text-black">Sex</label>
       <select class="select w-full" x-model="$store.createModelForm.sex">
         <option value="" disabled selected>Pick a Sex</option>
-        {% for sex in sidebar.create_model.sex %}
+        {% for sex in website.website_fields.create_model.sex %}
         <option value="{{ sex }}">{{ sex | capitalize }}</option>
         {% endfor %}
       </select>
@@ -72,7 +72,7 @@
       <label class="fieldset-label text-black">Ethnicity</label>
       <select class="select w-full" x-model="$store.createModelForm.ethnicity">
         <option value="" disabled selected>Pick a Ethnicity</option>
-        {% for ethnicity in sidebar.create_model.ethnicity %}
+        {% for ethnicity in website.website_fields.create_model.ethnicity %}
         <option value="{{ ethnicity }}">{{ ethnicity }}</option>
         {% endfor %}
       </select>
@@ -83,7 +83,7 @@
       <label class="fieldset-label text-black">Eye Color</label>
       <select class="select w-full" x-model="$store.createModelForm.eye_color">
         <option value="" disabled selected>Pick a Color</option>
-        {% for color in sidebar.create_model.eye_color %}
+        {% for color in website.website_fields.create_model.eye_color %}
         <option value="{{ color }}">{{ color | capitalize }}</option>
         {% endfor %}
       </select>

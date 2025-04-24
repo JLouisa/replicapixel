@@ -1,7 +1,6 @@
 use super::auth::{UserCreditsView, UserView};
 use super::images::{ImageView, ImageViewList};
 use super::training_models::TrainingModelView;
-use crate::controllers::dashboard::routes::Sidebar;
 use crate::domain::dashboard_sidebar::DashboardSidebar;
 use crate::domain::features::FeatureViewList;
 use crate::domain::website::Website;
@@ -14,9 +13,9 @@ use serde::Serialize;
 
 pub fn billing_dashboard(
     v: impl ViewRenderer,
+    website: &Website,
     user: UserView,
     credits: &UserCreditsView,
-    website: &Website,
     cc_cookie: &CookieConsent,
 ) -> Result<impl IntoResponse> {
     format::render().view(
@@ -24,98 +23,55 @@ pub fn billing_dashboard(
         "dashboard/content/billing/billing.html",
         data!(
             {
-                "sidebar":  website.dashboard_sidebar, "user": user,
-                "website": website, "sidebar_routes": website.sidebar_routes,
+                "website": website, "user": user,
                 "credits": credits, "cc_cookie": cc_cookie
             }
         ),
     )
 }
-
 pub fn billing_partial_dashboard(
     v: impl ViewRenderer,
+    website: &Website,
     user: UserView,
 ) -> Result<impl IntoResponse> {
-    let sidebar = DashboardSidebar::init();
     format::render().view(
         &v,
         "dashboard/content/billing/billing_partial.html",
-        data!({"sidebar": sidebar, "user": user}),
-    )
-}
-
-pub fn account_dashboard(
-    v: impl ViewRenderer,
-    user: UserView,
-    credits: &UserCreditsView,
-    website: &Website,
-    cc_cookie: &CookieConsent,
-) -> Result<impl IntoResponse> {
-    format::render().view(
-        &v,
-        "dashboard/content/account/account.html",
-        data!(
-            {
-                "user": user, "credits": credits,
-                "website": website, "sidebar":  website.dashboard_sidebar,
-                "sidebar_routes": website.sidebar_routes,
-                "cc_cookie": cc_cookie
-            }
-        ),
-    )
-}
-
-pub fn account_partial_dashboard(
-    v: impl ViewRenderer,
-    user: UserView,
-) -> Result<impl IntoResponse> {
-    let sidebar = DashboardSidebar::init();
-    format::render().view(
-        &v,
-        "dashboard/content/account/account_partial.html",
-        data!({"sidebar": sidebar, "user": user}),
+        data!({ "website": website, "user": user }),
     )
 }
 
 pub fn notification_dashboard(
     v: impl ViewRenderer,
+    website: &Website,
     user: UserView,
     credits: &UserCreditsView,
-    website: &Website,
     cc_cookie: &CookieConsent,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
         "dashboard/content/notification/notification.html",
-        data!(
-            {
-                "user": user, "credits": credits,
-                "website": website,  "sidebar":  website.dashboard_sidebar,
-                "sidebar_routes": website.sidebar_routes,
-                "cc_cookie": cc_cookie
-            }
-        ),
+        data!({ "website": website, "user": user, "credits": credits }),
     )
 }
-
 pub fn notification_partial_dashboard(
     v: impl ViewRenderer,
+    website: &Website,
     user: UserView,
 ) -> Result<impl IntoResponse> {
-    let sidebar = DashboardSidebar::init();
     format::render().view(
         &v,
         "dashboard/content/notification/notification_partial.html",
-        data!({"sidebar": sidebar, "user": user}),
+        data!({ "website": website, "user": user }),
     )
 }
 
 pub fn features_dashboard(
     v: impl ViewRenderer,
+    website: &Website,
     user: UserView,
     credits: &UserCreditsView,
     features_view: &FeatureViewList,
-    website: &Website,
     cc_cookie: &CookieConsent,
 ) -> Result<impl IntoResponse> {
     format::render().view(
@@ -123,20 +79,17 @@ pub fn features_dashboard(
         "dashboard/content/features/features.html",
         data!(
             {
-                "user": user, "credits": credits, "features_view": features_view,
-                "website": website, "sidebar":  website.dashboard_sidebar,
-                "sidebar_routes": website.sidebar_routes,
-                "cc_cookie": cc_cookie
+                "website": website, "user": user, "credits": credits,
+                "features_view": features_view, "cc_cookie": cc_cookie
             }
         ),
     )
 }
-
 pub fn features_partial_dashboard(
     v: impl ViewRenderer,
+    website: &Website,
     user: UserView,
     features_view: &FeatureViewList,
-    website: &Website,
 ) -> Result<impl IntoResponse> {
     let sidebar = DashboardSidebar::init();
     format::render().view(
@@ -144,7 +97,7 @@ pub fn features_partial_dashboard(
         "dashboard/content/features/features_partial.html",
         data!(
             {
-                "sidebar": website.dashboard_sidebar, "user": user,
+                "website": website, "user": user,
                 "features_view": features_view,
             }
         ),
@@ -153,9 +106,9 @@ pub fn features_partial_dashboard(
 
 pub fn settings_dashboard(
     v: impl ViewRenderer,
+    website: &Website,
     user: UserView,
     credits: &UserCreditsView,
-    website: &Website,
     cc_cookie: &CookieConsent,
 ) -> Result<impl IntoResponse> {
     let sidebar = DashboardSidebar::init();
@@ -164,34 +117,31 @@ pub fn settings_dashboard(
         "dashboard/content/settings/settings.html",
         data!(
             {
-                "user": user, "credits": credits,
-                "website": website, "sidebar":  website.dashboard_sidebar,
-                "sidebar_routes": website.sidebar_routes,
+                "website": website, "user": user, "credits": credits,
                 "cc_cookie": cc_cookie
             }
         ),
     )
 }
-
 pub fn settings_partial_dashboard(
     v: impl ViewRenderer,
+    website: &Website,
     user: UserView,
 ) -> Result<impl IntoResponse> {
     let sidebar = DashboardSidebar::init();
     format::render().view(
         &v,
         "dashboard/content/settings/settings_partial.html",
-        data!({"sidebar": sidebar, "user": user}),
+        data!({"website": website, "user": user}),
     )
 }
 
 pub fn training_dashboard(
     v: impl ViewRenderer,
+    website: &Website,
     user: UserView,
     credits: &UserCreditsView,
     models: Vec<TrainingModelView>,
-    training_route_check: String,
-    website: &Website,
     cc_cookie: &CookieConsent,
 ) -> Result<impl IntoResponse> {
     let sidebar = DashboardSidebar::init();
@@ -201,106 +151,88 @@ pub fn training_dashboard(
         "dashboard/content/training_models/training_models.html",
         data!(
             {
-                "user": user, "credits": credits,
-                "models": models, "training_route_check": training_route_check,
-                "website": website, "sidebar":  website.dashboard_sidebar,
-                "sidebar_routes": website.sidebar_routes,
-                "cc_cookie": cc_cookie
+                "website": website, "user": user, "credits": credits,
+                "models": models, "cc_cookie": cc_cookie
             }
         ),
     )
 }
-
 pub fn training_partial_dashboard(
     v: impl ViewRenderer,
+    website: &Website,
     user: UserView,
     models: Vec<TrainingModelView>,
-    training_route_check: String,
 ) -> Result<impl IntoResponse> {
     let sidebar = DashboardSidebar::init();
     format::render().view(
         &v,
         "dashboard/content/training_models/training_models_partial.html",
-        data!(
-            {
-                "sidebar": sidebar, "user": user,
-                "models": models,
-                "training_route_check": training_route_check
-            }
-        ),
+        data!({ "website": website, "user": user, "models": models }),
     )
 }
 
 pub fn packs_dashboard(
     v: impl ViewRenderer,
+    website: &Website,
     user: &UserView,
     credits: &UserCreditsView,
     packs: PackViewList,
-    website: &Website,
     cc_cookie: &CookieConsent,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
         "dashboard/content/packs/packs.html",
         data!(
-                {
-                    "user": user, "credits": credits, "packs": packs,
-                    "website": website, "sidebar":  website.dashboard_sidebar,
-                    "sidebar_routes": website.sidebar_routes,
-                    "cc_cookie": cc_cookie
-             }
+            {
+                "website": website, "credits": credits, "packs": packs,
+                "cc_cookie": cc_cookie
+            }
         ),
     )
 }
-
 pub fn packs_partial_dashboard(
     v: impl ViewRenderer,
+    website: &Website,
     user: &UserView,
     packs: PackViewList,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
         "dashboard/content/packs/packs_partial.html",
-        data!({"user": user, "packs": packs,  "partial": true}),
+        data!({ "website": website, "packs": packs,  "partial": true }),
     )
 }
 
 pub fn photo_dashboard(
     v: impl ViewRenderer,
+    website: &Website,
     user: &UserView,
     credits: &UserCreditsView,
     images: &ImageViewList,
     training_models: Vec<TrainingModelView>,
     is_deleted: bool,
     is_favorite: bool,
-    website: &Website,
     cc_cookie: &CookieConsent,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
         "dashboard/content/photo/photo.html",
-        data!({"sidebar": &website.dashboard_sidebar,
-            "sidebar_routes": &website.sidebar_routes,
-            "user": user, "images": images, "training_models": training_models,
-            "website": website, "credits": credits,
-            "check_route":  website.main_routes.check,
-            "delete_route":  website.main_routes.image,
-            "restore_route": website.main_routes.image_restore,
-            "favorite_route": website.main_routes.image_favorite,
-            "is_deleted": is_deleted,
-            "is_favorite": is_favorite,
-            "is_initial_load": true,
-            "cc_cookie": cc_cookie
-        }),
+        data!(
+              {
+                  "website": website, "user": user, "images": images,
+                  "training_models": training_models, "credits": credits,
+                  "is_deleted": is_deleted, "is_favorite": is_favorite,
+                  "is_initial_load": true, "cc_cookie": cc_cookie
+              }
+        ),
     )
 }
-
 pub fn photo_partial_dashboard(
     v: impl ViewRenderer,
+    website: &Website,
     user: &UserView,
     images: &ImageViewList,
     training_models: Vec<TrainingModelView>,
-    website: &Website,
     credits: &UserCreditsView,
     is_deleted: bool,
     is_favorite: bool,
@@ -308,16 +240,14 @@ pub fn photo_partial_dashboard(
     format::render().view(
         &v,
         "dashboard/content/photo/photo_partial.html",
-        data!({"user": user, "images": images,
-            "training_models": training_models,
-            "website": website, "credits": credits,
-            "check_route": website.main_routes.check,
-            "delete_route":  website.main_routes.image,
-            "restore_route": website.main_routes.image_restore,
-            "favorite_route": website.main_routes.image_favorite,
-            "is_deleted": is_deleted,
-            "is_favorite": is_favorite
-        }),
+        data!(
+              {
+                "website": website, "images": images,
+                "training_models": training_models,
+                "credits": credits, "is_deleted": is_deleted,
+                "is_favorite": is_favorite
+            }
+        ),
     )
 }
 

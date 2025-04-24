@@ -6,7 +6,8 @@ use loco_rs::{
 };
 use tracing::info;
 
-use crate::domain::{settings::Settings, website::Website as WebsiteInit};
+use crate::domain::settings::Settings;
+use crate::domain::website::Website as WebsiteInit;
 
 #[allow(clippy::module_name_repetitions)]
 pub struct Website;

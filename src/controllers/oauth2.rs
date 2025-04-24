@@ -18,21 +18,57 @@ use axum_session::{DatabasePool, Session, SessionNullPool};
 use serde::de::DeserializeOwned;
 use serde::Deserialize;
 
+use crate::domain::website::Website;
+use crate::models::{o_auth2_sessions, users, users::OAuth2UserProfile};
 use loco_oauth2::controllers::oauth2::{
     callback_jwt as callback_jwt_google, get_authorization_url, google_authorization_url,
     AuthParams,
 };
 use loco_oauth2::OAuth2ClientStore;
 
-use crate::models::{o_auth2_sessions, users, users::OAuth2UserProfile};
+use super::dashboard::routes::Dashboard;
+
+pub mod routes {
+    use serde::{Deserialize, Serialize};
+
+    #[derive(Debug, Serialize, Deserialize, Clone)]
+    pub struct OAuth2Routes {
+        pub base: String,
+        pub google: String,
+        pub github: String,
+    }
+    impl OAuth2Routes {
+        pub fn init() -> Self {
+            Self {
+                base: String::from(OAuth2::BASE),
+                google: String::from(OAuth2::GOOGLE),
+                github: String::from(OAuth2::GITHUB),
+            }
+        }
+    }
+
+    #[derive(Clone, Debug, Serialize)]
+    pub struct OAuth2;
+    impl OAuth2 {
+        pub const BASE: &'static str = "/api/oauth2";
+        pub const PROTECTED: &'static str = "/protected";
+        pub const GOOGLE: &'static str = "/google";
+        pub const GOOGLE_CALLBACK_JWT: &'static str = "/google/callback/jwt";
+        pub const GITHUB: &'static str = "/github";
+        pub const GITHUB_CALLBACK_JWT: &'static str = "/github/callback/jwt";
+    }
+}
 
 pub fn routes() -> Routes {
     Routes::new()
-        .prefix("api/oauth2")
-        .add("/protected", get(protected))
-        .add("/google", get(google_authorization_url::<SessionNullPool>))
+        .prefix(routes::OAuth2::BASE)
+        .add(routes::OAuth2::PROTECTED, get(protected))
         .add(
-            "/google/callback/jwt",
+            routes::OAuth2::GOOGLE,
+            get(google_authorization_url::<SessionNullPool>),
+        )
+        .add(
+            routes::OAuth2::GOOGLE_CALLBACK_JWT,
             get(google_callback_jwt::<
                 OAuth2UserProfile,
                 users::Model,
@@ -40,9 +76,12 @@ pub fn routes() -> Routes {
                 SessionNullPool,
             >),
         )
-        .add("/github", get(github_authorization_url::<SessionNullPool>))
         .add(
-            "/github/callback/jwt",
+            routes::OAuth2::GITHUB,
+            get(github_authorization_url::<SessionNullPool>),
+        )
+        .add(
+            routes::OAuth2::GITHUB_CALLBACK_JWT,
             get(github_callback_jwt::<
                 OAuth2UserProfile,
                 users::Model,
@@ -71,7 +110,7 @@ async fn protected(
         .max_age(time::Duration::seconds(jwt_secret.expiration as i64))
         .build();
 
-    let mut response = Redirect::to("/dashboard").into_response();
+    let mut response = Redirect::to(Dashboard::BASE).into_response();
     response
         .headers_mut()
         .append("Set-Cookie", cookie.to_string().parse().unwrap());
@@ -113,7 +152,7 @@ pub async fn google_callback_jwt<
         .max_age(time::Duration::seconds(jwt_secret.expiration as i64))
         .build();
 
-    let mut response = Redirect::to("/dashboard").into_response();
+    let mut response = Redirect::to(Dashboard::BASE).into_response();
     response
         .headers_mut()
         .append("Set-Cookie", cookie.to_string().parse().unwrap());
@@ -181,7 +220,7 @@ pub async fn github_callback_jwt<
         .max_age(time::Duration::seconds(jwt_secret.expiration as i64))
         .build();
 
-    let mut response = Redirect::to("/dashboard").into_response();
+    let mut response = Redirect::to(Dashboard::BASE).into_response();
     response
         .headers_mut()
         .append("Set-Cookie", cookie.to_string().parse().unwrap());

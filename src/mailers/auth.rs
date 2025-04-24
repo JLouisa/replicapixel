@@ -36,7 +36,7 @@ impl AuthMailer {
                 from: Some("Pictora <jissicko@gmail.com>".to_string()),
                 to: user.email.to_string(),
                 locals: json!({
-                  "company": website.website_settings.name.to_string(),
+                  "company": website.website_basic_info.name.to_string(),
                   "name": user.name,
                   "verifyToken": user.email_verification_token,
                   "domain": ctx.config.server.full_url(),
@@ -75,7 +75,7 @@ impl AuthMailer {
                   "name": user.name,
                   "resetToken": user.reset_token,
                   "domain": ctx.config.server.full_url(),
-                  "company": website.website_settings.name.to_string(),
+                  "company": website.website_basic_info.name.to_string(),
                   "current_year": Local::now().year(),
                   "company_address": "Netherland".to_string(),
                   "twitter_url": "https://twitter.com/".to_string(),

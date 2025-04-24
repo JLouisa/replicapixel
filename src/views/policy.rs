@@ -5,7 +5,7 @@ pub fn cookie(v: impl ViewRenderer, website: &Website) -> Result<impl IntoRespon
     format::render().view(
         &v,
         "policies/cookie-policy.html",
-        data!({"website": website.website_settings}),
+        data!({ "website": website }),
     )
 }
 
@@ -13,7 +13,7 @@ pub fn terms(v: impl ViewRenderer, website: &Website) -> Result<impl IntoRespons
     format::render().view(
         &v,
         "policies/term-conditions.html",
-        data!({"website": website.website_settings}),
+        data!({ "website": website }),
     )
 }
 
@@ -21,6 +21,6 @@ pub fn privacy(v: impl ViewRenderer, website: &Website) -> Result<impl IntoRespo
     format::render().view(
         &v,
         "policies/privacy-policy.html",
-        data!({"website": website.website_settings}),
+        data!({ "website": website }),
     )
 }

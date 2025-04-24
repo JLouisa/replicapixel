@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pictora - Cookie Policy</title>
+    <title>{{ website.website_basic_info.name }} - Cookie Policy</title>
     <style>
       /* Reuse styles from Privacy Policy for consistency */
       body {
@@ -107,14 +107,16 @@
     <h2>1. Introduction</h2>
     <p>
       This Cookie Policy explains how Jissicko Software ("we", "us", "our") uses cookies and similar
-      tracking technologies on our Pictora application and associated website(s) (collectively, the
-      "Service"), accessible via [Your Website URL, e.g., pictora.com]. It explains what these
-      technologies are, why we use them, and your rights to control our use of them.
+      tracking technologies on our {{ website.website_basic_info.name }} application and associated
+      website(s) (collectively, the "Service"), accessible via [Your Website URL, e.g.,
+      pictora.com]. It explains what these technologies are, why we use them, and your rights to
+      control our use of them.
     </p>
     <p>
       This policy should be read alongside our
-      <a href="/privacy-policy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>, which
-      provides more detailed information about how we handle your personal data.
+      <a href="{{ website.website_routes.policy.cookie }}" target="_blank" rel="noopener noreferrer"
+        >Privacy Policy</a
+      >, which provides more detailed information about how we handle your personal data.
     </p>
 
     <h2>2. What Are Cookies?</h2>
@@ -145,17 +147,17 @@
       messages (Marketing).
     </p>
 
-    <h2>4. Types of Cookies Used on Pictora</h2>
+    <h2>4. Types of Cookies Used on {{ website.website_basic_info.name }}</h2>
     <p>We classify the cookies used on our Service as follows:</p>
     <ul>
       <li>
         <p>
           <strong>Necessary Cookies:</strong> These are strictly necessary to provide you with the
-          core services available through Pictora and to use some of its essential features, such as
-          secure login, session management, and security functions. Because these cookies are
-          strictly necessary to deliver the Service, you cannot refuse them without impacting how
-          the Service functions. You can block or delete them by changing your browser settings (see
-          Section 7 below), but this may affect Service functionality.
+          core services available through {{ website.website_basic_info.name }} and to use some of
+          its essential features, such as secure login, session management, and security functions.
+          Because these cookies are strictly necessary to deliver the Service, you cannot refuse
+          them without impacting how the Service functions. You can block or delete them by changing
+          your browser settings (see Section 7 below), but this may affect Service functionality.
         </p>
       </li>
       <li>
@@ -164,9 +166,9 @@
           information about how you use our Service, for instance, which features you use most
           often, how long you spend on certain tasks, and if you receive error messages. This
           information helps us understand usage patterns, improve the performance and usability of
-          Pictora, and enhance our AI models. We use Google Analytics for this purpose. These
-          cookies are only placed and used if you provide your consent via our cookie management
-          tool.
+          {{ website.website_basic_info.name }}, and enhance our AI models. We use Google Analytics
+          for this purpose. These cookies are only placed and used if you provide your consent via
+          our cookie management tool.
         </p>
       </li>
       <li>

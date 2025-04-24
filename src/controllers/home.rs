@@ -8,7 +8,19 @@ use axum::{debug_handler, Extension};
 use loco_rs::{db, prelude::*};
 
 pub mod routes {
-    use serde::Serialize;
+    use serde::{Deserialize, Serialize};
+
+    #[derive(Debug, Serialize, Deserialize, Clone)]
+    pub struct HomeRoutes {
+        pub base: String,
+    }
+    impl HomeRoutes {
+        pub fn init() -> Self {
+            Self {
+                base: String::from(Home::BASE),
+            }
+        }
+    }
 
     #[derive(Clone, Debug, Serialize)]
     pub struct Home;
@@ -30,6 +42,5 @@ pub async fn render_home(
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
     let is_home = true;
-    let validate_route = crate::controllers::auth::routes::Auth::VALIDATE_USER;
-    views::home::home(v, &website, &validate_route, is_home, &cc_cookie)
+    views::home::home(v, &website, is_home, &cc_cookie)
 }

@@ -7,7 +7,25 @@ use axum::{debug_handler, Extension};
 use loco_rs::prelude::*;
 
 pub mod routes {
-    use serde::Serialize;
+    use serde::{Deserialize, Serialize};
+
+    #[derive(Debug, Serialize, Deserialize, Clone)]
+    pub struct PolicyRoutes {
+        pub base: String,
+        pub privacy: String,
+        pub cookie: String,
+        pub terms: String,
+    }
+    impl PolicyRoutes {
+        pub fn init() -> Self {
+            Self {
+                base: String::from(Policy::BASE),
+                privacy: String::from(Policy::PRIVACY),
+                cookie: String::from(Policy::COOKIE),
+                terms: String::from(Policy::TERMS),
+            }
+        }
+    }
 
     #[derive(Clone, Debug, Serialize)]
     pub struct Policy;
@@ -33,7 +51,6 @@ pub async fn cookie(
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
     let is_home = true;
-    let validate_route = crate::controllers::auth::routes::Auth::VALIDATE_USER;
     views::policy::cookie(v, &website)
 }
 
@@ -43,7 +60,6 @@ pub async fn terms(
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
     let is_home = true;
-    let validate_route = crate::controllers::auth::routes::Auth::VALIDATE_USER;
     views::policy::terms(v, &website)
 }
 
@@ -53,6 +69,5 @@ pub async fn privacy(
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
     let is_home = true;
-    let validate_route = crate::controllers::auth::routes::Auth::VALIDATE_USER;
     views::policy::privacy(v, &website)
 }

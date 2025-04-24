@@ -26,9 +26,9 @@
       >
         <li>
           <a
-            hx-get="/dashboard/partial/billing"
+            hx-get="{{ website.website_routes.dashboard_routes.billing_partial }}"
             hx-target="#dashboard_content"
-            hx-push-url="/dashboard/billing"
+            hx-push-url="{{ website.website_routes.dashboard_routes.billing }}"
             hx-swap="innerHTML"
             class="flex px-4 py-3 hover:bg-base-300 cursor-pointer"
           >
@@ -36,7 +36,10 @@
           </a>
         </li>
         <li>
-          <a hx-get="/api/auth/logout" class="flex px-4 py-3 hover:bg-base-300 cursor-pointer">
+          <a
+            hx-get="{{ website.website_routes.auth_routes.api_logout }}"
+            class="flex px-4 py-3 hover:bg-base-300 cursor-pointer"
+          >
             Logout
           </a>
         </li>
@@ -56,6 +59,6 @@
 
 {% if user.name and is_home %}
 <div id="navbar-middle" class="absolute left-1/2 transform -translate-x-1/2 z-10">
-  <a href="/dashboard" class="btn btn-neutral">Dashboard</a>
+  <a href="{{ website.website_routes.dashboard_routes.base }}" class="btn btn-neutral">Dashboard</a>
 </div>
 {% endif %}

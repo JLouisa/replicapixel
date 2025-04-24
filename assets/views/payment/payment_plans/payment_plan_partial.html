@@ -10,7 +10,7 @@
 
     {# {/* Pricing Plans */} #}
     <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-      {%for plan in plans%}
+      {%for plan in website.website_fields.payment_plans%}
       <div
         class="bg-base  rounded-2xl shadow-xl p-8 {%if plan.is_popular%} border-2 border-blue-500 transform scale-105 {%else%} border border-gray-100 hover:border-blue-500 transition-all duration-200 {%endif%}"
       >
@@ -24,7 +24,7 @@
         <div class="flex items-center justify-between mb-8">
           <div>
             <h2 class="text-2xl font-bold  ">{{ plan.plan_type | capitalize }}</h2>
-            <p class="text-gray-500">{{plan.subtitle}}</p>
+            <p class="text-gray-500">{{ plan.subtitle }}</p>
           </div>
           {% if plan.plan_type == "Basic" %} {% include "partials/svg/halfstart.html" %} {% elif
           plan.plan_type == "Premium" %} {% include "partials/svg/rocket.html" %} {% else %} {%
@@ -39,15 +39,15 @@
           {% for feature in plan.features %}
           <li class="flex items-center {%if feature.bold%} font-bold {%endif%}">
             {% include "partials/svg/check.html" %}
-            <span>{{feature.description}}</span>
+            <span>{{ feature.description }}</span>
           </li>
           {% endfor %}
         </ul>
           <button
-            hx-get="{{payment_route}}/partial/{{ user.pid | default(value="x") }}/{{plan.plan_type}}"
+            hx-get="{{ website.website_routes.payment.stripe_checkout_partial_route }}/{{ user.pid | default(value="x") }}/{{plan.plan_type}}"
             hx-target="#checkout"
             hx-swap="outerHTML"
-            hx-push-url="{{payment_route}}/{{ user.pid | default(value="x") }}/{{plan.plan_type}}"
+            hx-push-url="{{ website.website_routes.payment.stripe_checkout_route }}/{{ user.pid | default(value="x") }}/{{plan.plan_type}}"
             class="w-full py-3 px-6 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-medium transition-colors duration-200"
           >
             {{ plan.cta }}

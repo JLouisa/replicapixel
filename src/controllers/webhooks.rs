@@ -3,32 +3,21 @@
 #![allow(clippy::unused_async)]
 use crate::models::_entities::sea_orm_active_enums::Status;
 use crate::models::_entities::training_models;
-use crate::models::users;
-use crate::service::stripe::stripe::StripeClient;
-use crate::service::stripe::stripe_service::{StripeServiceError, StripeWebhookService};
-use axum::body;
-use axum::{
-    debug_handler, http::HeaderMap, http::StatusCode, response::IntoResponse, Extension, Json,
-};
-use loco_rs::prelude::*;
-use training_models::Model as TrainingModel;
-
+use crate::models::{users, TrainingModelModel};
 use crate::service::fal_ai::fal_client::{
     FalAiClient, FluxApiWebhookResponse, StatusResponse, SuccessfulPayload,
 };
-
 use crate::{
-    models::{
-        _entities::training_models::{ActiveModel, Entity, Model},
-        // training_models::Params as TrainingParams,
-    },
+    models::_entities::training_models::{ActiveModel, Entity, Model},
     service::aws::s3::PresignedUrlRequest,
+    service::stripe::stripe::StripeClient,
+    service::stripe::stripe_service::{StripeServiceError, StripeWebhookService},
 };
-
 use axum::{
-    body::Bytes, // Use Bytes to get the raw request body
-    extract::State,
+    body, body::Bytes, debug_handler, extract::State, http::HeaderMap, http::StatusCode,
+    response::IntoResponse, Extension, Json,
 };
+use loco_rs::prelude::*;
 use stripe::{Event, EventObject, EventType, Webhook};
 
 pub mod routes {
@@ -131,7 +120,7 @@ pub async fn fal_ai_training(
     Extension(fal_ai_client): Extension<FalAiClient>,
     Json(response): Json<FluxApiWebhookResponse>,
 ) -> Result<Response> {
-    let train_model = TrainingModel::find_by_request_id(&ctx.db, &response.request_id).await?;
+    let train_model = TrainingModelModel::find_by_request_id(&ctx.db, &response.request_id).await?;
     let train = ActiveModel::from(train_model);
 
     // Check the status of the response

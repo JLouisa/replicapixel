@@ -38,7 +38,25 @@ pub mod routes {
     use serde::{Deserialize, Serialize};
 
     #[derive(Debug, Serialize, Deserialize, Clone)]
-    pub struct Sidebar {
+    pub struct DashboardRoutes {
+        pub base: String,
+        pub billing: String,
+        pub billing_partial: String,
+        pub sidebar: SidebarRoutes,
+    }
+    impl DashboardRoutes {
+        pub fn init() -> Self {
+            Self {
+                base: String::from(Dashboard::BASE),
+                billing: format!("{}{}", Dashboard::BASE, Dashboard::BILLING),
+                billing_partial: format!("{}{}", Dashboard::BASE, Dashboard::BILLING_PARTIAL),
+                sidebar: SidebarRoutes::init(),
+            }
+        }
+    }
+
+    #[derive(Debug, Serialize, Deserialize, Clone)]
+    pub struct SidebarRoutes {
         pub packs: String,
         pub packs_partial: String,
         pub photo: String,
@@ -58,9 +76,9 @@ pub mod routes {
         pub logout: String,
     }
 
-    impl Dashboard {
-        pub fn sidebar() -> Sidebar {
-            Sidebar {
+    impl SidebarRoutes {
+        pub fn init() -> Self {
+            Self {
                 packs: format!("{}{}", Dashboard::BASE, Dashboard::PACKS),
                 packs_partial: format!("{}{}", Dashboard::BASE, Dashboard::PACKS_PARTIAL),
                 photo: format!("{}{}", Dashboard::BASE, Dashboard::PHOTO),
@@ -291,18 +309,18 @@ pub async fn billing_dashboard(
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
-    views::dashboard::billing_dashboard(v, user.into(), &user_credits.into(), &website, &cc_cookie)
+    views::dashboard::billing_dashboard(v, &website, user.into(), &user_credits.into(), &cc_cookie)
 }
-
 #[debug_handler]
 pub async fn billing_partial_dashboard(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
+    Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
     let user = load_user(&ctx.db, &user_pid).await?;
-    views::dashboard::billing_partial_dashboard(v, user.into())
+    views::dashboard::billing_partial_dashboard(v, &website, user.into())
 }
 
 #[debug_handler]
@@ -317,22 +335,22 @@ pub async fn notification_dashboard(
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     views::dashboard::notification_dashboard(
         v,
+        &website,
         user.into(),
         &user_credits.into(),
-        &website,
         &cc_cookie,
     )
 }
-
 #[debug_handler]
 pub async fn notification_partial_dashboard(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
+    Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
     let user = load_user(&ctx.db, &user_pid).await?;
-    views::dashboard::notification_partial_dashboard(v, user.into())
+    views::dashboard::notification_partial_dashboard(v, &website, user.into())
 }
 
 #[debug_handler]
@@ -350,14 +368,13 @@ pub async fn features_dashboard(
     let features_view = FeatureViewList::convert(features, votes);
     views::dashboard::features_dashboard(
         v,
+        &website,
         user.into(),
         &user_credits.into(),
         &features_view,
-        &website,
         &cc_cookie,
     )
 }
-
 #[debug_handler]
 pub async fn features_partial_dashboard(
     auth: auth::JWT,
@@ -370,7 +387,7 @@ pub async fn features_partial_dashboard(
     let features = load_features(&ctx.db).await?;
     let votes = load_votes(&ctx.db, user.id).await?;
     let features_view = FeatureViewList::convert(features, votes);
-    views::dashboard::features_partial_dashboard(v, user.into(), &features_view, &website)
+    views::dashboard::features_partial_dashboard(v, &website, user.into(), &features_view)
 }
 
 #[debug_handler]
@@ -383,18 +400,18 @@ pub async fn settings_dashboard(
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
-    views::dashboard::settings_dashboard(v, user.into(), &user_credits.into(), &website, &cc_cookie)
+    views::dashboard::settings_dashboard(v, &website, user.into(), &user_credits.into(), &cc_cookie)
 }
-
 #[debug_handler]
 pub async fn settings_partial_dashboard(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
+    Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
     let user = load_user(&ctx.db, &user_pid).await?;
-    views::dashboard::settings_partial_dashboard(v, user.into())
+    views::dashboard::settings_partial_dashboard(v, &website, user.into())
 }
 
 #[debug_handler]
@@ -408,41 +425,25 @@ pub async fn training_dashboard(
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, user_credits, training_models) =
         load_user_credit_training(&ctx.db, &user_pid).await?;
-    let training_route_check = format!(
-        "{}{}",
-        TrainingRoutes::routes::Models::BASE,
-        TrainingRoutes::routes::Models::CHECK_W_ID_W_STATUS
-    );
     views::dashboard::training_dashboard(
         v,
+        &website,
         user.into(),
         &user_credits.into(),
         training_models.into(),
-        training_route_check,
-        &website,
         &cc_cookie,
     )
 }
-
 #[debug_handler]
 pub async fn training_partial_dashboard(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
+    Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, training_models) = load_user_and_training(&ctx.db, &user_pid).await?;
-    let training_route_check = format!(
-        "{}{}",
-        TrainingRoutes::routes::Models::BASE,
-        TrainingRoutes::routes::Models::CHECK_W_ID_W_STATUS
-    );
-    views::dashboard::training_partial_dashboard(
-        v,
-        user.into(),
-        training_models.into(),
-        training_route_check,
-    )
+    views::dashboard::training_partial_dashboard(v, &website, user.into(), training_models.into())
 }
 
 #[debug_handler]
@@ -458,24 +459,24 @@ pub async fn packs_dashboard(
     let packs = load_packs(&ctx.db).await?;
     views::dashboard::packs_dashboard(
         v,
+        &website,
         &user.into(),
         &user_credits.into(),
         packs.into(),
-        &website,
         &cc_cookie,
     )
 }
-
 #[debug_handler]
 pub async fn packs_partial_dashboard(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
+    Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
     let user = load_user(&ctx.db, &user_pid).await?;
     let packs = load_packs(&ctx.db).await?;
-    views::dashboard::packs_partial_dashboard(v, &user.into(), packs.into())
+    views::dashboard::packs_partial_dashboard(v, &website, &user.into(), packs.into())
 }
 
 #[debug_handler]
@@ -499,17 +500,16 @@ pub async fn album_deleted_dashboard(
     let images = images.populate_s3_pre_urls(&s3_client, &cache).await;
     views::dashboard::photo_dashboard(
         v,
+        &website,
         &user.into(),
         &user_credits.into(),
         &images,
         training_models.into(),
         is_deleted,
         is_favorite,
-        &website,
         &cc_cookie,
     )
 }
-
 #[debug_handler]
 pub async fn album_deleted_partial_dashboard(
     auth: auth::JWT,
@@ -530,10 +530,10 @@ pub async fn album_deleted_partial_dashboard(
     let images = images.populate_s3_pre_urls(&s3_client, &cache).await;
     views::dashboard::photo_partial_dashboard(
         v,
+        &website,
         &user.into(),
         &images,
         training_models.into(),
-        &website,
         &user_credits.into(),
         is_deleted,
         is_favorite,
@@ -562,21 +562,19 @@ pub async fn album_favorite_dashboard(
 
     views::dashboard::photo_dashboard(
         v,
+        &website,
         &user.into(),
         &user_credits.into(),
         &images,
         training_models.into(),
         is_deleted,
         is_favorite,
-        &website,
         &cc_cookie,
     )
 }
-
 #[debug_handler]
 pub async fn album_favorite_partial_dashboard(
     auth: auth::JWT,
-
     State(ctx): State<AppContext>,
     Extension(cache): Extension<Cache>,
     Extension(s3_client): Extension<AwsS3>,
@@ -595,10 +593,10 @@ pub async fn album_favorite_partial_dashboard(
 
     views::dashboard::photo_partial_dashboard(
         v,
+        &website,
         &user.into(),
         &images,
         training_models.into(),
-        &website,
         &user_credits.into(),
         is_deleted,
         is_favorite,
@@ -627,17 +625,16 @@ pub async fn photo_dashboard(
 
     views::dashboard::photo_dashboard(
         v,
+        &website,
         &user.into(),
         &user_credits.into(),
         &images,
         training_models.into(),
         is_deleted,
         is_favorite,
-        &website,
         &cc_cookie,
     )
 }
-
 #[debug_handler]
 pub async fn photo_partial_dashboard(
     auth: auth::JWT,
@@ -659,10 +656,10 @@ pub async fn photo_partial_dashboard(
 
     views::dashboard::photo_partial_dashboard(
         v,
+        &website,
         &user.into(),
         &images,
         training_models.into(),
-        &website,
         &user_credits.into(),
         is_deleted,
         is_favorite,

@@ -23,7 +23,33 @@ use crate::{
 use axum::{http::StatusCode, response::IntoResponse};
 
 pub mod routes {
-    use serde::Serialize;
+    use serde::{Deserialize, Serialize};
+
+    #[derive(Debug, Serialize, Deserialize, Clone)]
+    pub struct PaymentRoutes {
+        pub base: String,
+        pub stripe_checkout_route: String,
+        pub stripe_checkout_partial_route: String,
+        pub stripe_payment_status_route: String,
+    }
+    impl PaymentRoutes {
+        pub fn init() -> Self {
+            Self {
+                base: String::from(Payment::BASE),
+                stripe_checkout_route: format!("{}{}", Payment::BASE, Payment::STRIPE_CHECKOUT),
+                stripe_checkout_partial_route: format!(
+                    "{}{}",
+                    Payment::BASE,
+                    Payment::STRIPE_CHECKOUT_PARTIAL
+                ),
+                stripe_payment_status_route: format!(
+                    "{}{}",
+                    Payment::BASE,
+                    Payment::STRIPE_PAYMENT_STATUS
+                ),
+            }
+        }
+    }
 
     #[derive(Clone, Debug, Serialize)]
     pub struct Payment;
@@ -36,8 +62,8 @@ pub mod routes {
         pub const API_STRIPE_PAYMENT_PLAN_REQUEST: &'static str = "/plan/{pid}/{plan}";
         pub const API_STRIPE_PAYMENT_PLAN: &'static str = "/plan";
         pub const API_STRIPE_PAYMENT_PLAN_PARTIAL: &'static str = "/partial/plan";
-        pub const STRIPE_PAYMENT_STATUS: &'static str = "/processing/status/{session_id}";
-
+        pub const STRIPE_PAYMENT_STATUS_ID: &'static str = "/processing/status/{session_id}";
+        pub const STRIPE_PAYMENT_STATUS: &'static str = "/processing/status";
         pub const STRIPE_CREATE_CHECKOUT: &'static str = "/create-checkout-session";
         pub const STRIPE_CHECKOUT: &'static str = "/checkout";
         pub const STRIPE_CHECKOUT_PARTIAL: &'static str = "/checkout/partial";
@@ -57,7 +83,10 @@ pub fn routes() -> Routes {
         )
         .add(routes::Payment::API_STRIPE_SUCCESS, get(success_handler)) // Route for the success URL
         .add(routes::Payment::API_STRIPE_CANCEL, get(cancel_handler)) // Route for the cancel URL
-        .add(routes::Payment::STRIPE_PAYMENT_STATUS, get(status_handler)) // Route for the cancel URL
+        .add(
+            routes::Payment::STRIPE_PAYMENT_STATUS_ID,
+            get(status_handler),
+        ) // Route for the cancel URL
         .add(
             routes::Payment::API_STRIPE_PAYMENT_PLAN_REQUEST,
             get(payment_request),
@@ -246,8 +275,7 @@ async fn success_handler(
     tracing::info!("User successfully completed payment process.");
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
-    let validate_route = crate::controllers::auth::routes::Auth::VALIDATE_USER;
-    views::payment::payment_status(v, &website, &params.session_id, &validate_route)
+    views::payment::payment_status(v, &website, &params.session_id)
 }
 
 #[debug_handler]
@@ -291,21 +319,6 @@ pub async fn payment_request(
     };
     Ok(Redirect::to(&session).into_response())
 }
-
-// async fn status_embedded_handler(
-//     Path(session_id_str): Path<String>,
-//     Extension(stripe_client): Extension<StripeClient>,
-// ) -> Result<impl IntoResponse> {
-//     // 2. Parse Session ID
-//     let session_id = CheckoutSessionId::from_str(session_id_str.as_str()).map_err(|_| {
-//         tracing::warn!(session_id = %session_id_str, "Received invalid session_id format.");
-//         loco_rs::Error::BadRequest(format!("Invalid session_id format: {}", session_id_str))
-//     })?;
-
-//     let session = StripeStatusService::handle_status(&session_id, &stripe_client).await?;
-
-//     format::json(session)
-// }
 
 async fn status_handler(
     Path(session_id_str): Path<String>,
@@ -351,7 +364,6 @@ async fn cancel_handler(
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
     tracing::info!("User cancelled payment process.");
-    // Render a cancellation view/template
     views::payment::payment_cancel(v, &website)
 }
 
@@ -364,12 +376,7 @@ pub async fn payment_home_partial(
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
-    let route = format!(
-        "{}{}",
-        routes::Payment::BASE,
-        routes::Payment::STRIPE_CHECKOUT
-    );
-    views::payment::payment_home_partial(v, &user.into(), &user_credits.into(), route, &website)
+    views::payment::payment_home_partial(v, &website, &user.into(), &user_credits.into())
 }
 
 #[debug_handler]
@@ -381,10 +388,5 @@ pub async fn payment_home(
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
-    let route = format!(
-        "{}{}",
-        routes::Payment::BASE,
-        routes::Payment::STRIPE_CHECKOUT
-    );
-    views::payment::payment_home(v, &user.into(), &user_credits.into(), route, &website)
+    views::payment::payment_home(v, &website, &user.into(), &user_credits.into())
 }

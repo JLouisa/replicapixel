@@ -222,7 +222,11 @@
             </div>
 
             <!-- Privacy -->
-            <a href="/policy/privacy" target="_blank" class="px-4 pb-4 pt-2">
+            <a
+              href="{{ website.website_routes.policy.privacy }}"
+              target="_blank"
+              class="px-4 pb-4 pt-2"
+            >
               <div class="flex items-center gap-3 p-4 bg-base-200 rounded-lg">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -248,8 +252,8 @@
               </div>
             </a>
 
-            <!-- Account -->
-            <a href="/policy/terms-and-conditions" target="_blank" class="p-4">
+            <!-- Terms and Conditions -->
+            <a href="{{ website.website_routes.policy.terms }}" target="_blank" class="p-4">
               <div class="flex items-center gap-3 p-4 bg-base-200 rounded-lg">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

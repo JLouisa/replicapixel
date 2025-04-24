@@ -2,6 +2,7 @@
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
 use crate::domain::response::{handle_general_response, handle_general_response_text};
+use crate::domain::website::Website;
 use crate::models::_entities::sea_orm_active_enums::Status;
 use crate::models::_entities::training_models::{ActiveModel, Entity, Model};
 use crate::models::join::user_credits_models::load_user_and_training;
@@ -12,22 +13,41 @@ use crate::service::aws::s3::{AwsS3, PresignedUrlRequest, PresignedUrlSafe, S3Ke
 use crate::service::fal_ai::fal_client::FalAiClient;
 use crate::views;
 use crate::views::training_models::TrainingModelView;
-use axum::{debug_handler, Extension};
-use axum::{http::StatusCode, response::IntoResponse, Json};
+use axum::{debug_handler, http::StatusCode, response::IntoResponse, Extension, Json};
 use loco_rs::prelude::*;
 
 pub mod routes {
-    use serde::Serialize;
+    use serde::{Deserialize, Serialize};
+
+    #[derive(Debug, Serialize, Deserialize, Clone)]
+    pub struct TrainingModelRoutes {
+        pub base: String,
+        pub check_id_status: String,
+        pub upload: String,
+    }
+    impl TrainingModelRoutes {
+        pub fn init() -> Self {
+            Self {
+                base: String::from(TrainingModel::BASE),
+                check_id_status: format!("{}{}", TrainingModel::BASE, TrainingModel::CHECK),
+                upload: format!(
+                    "{}{}",
+                    TrainingModel::BASE,
+                    TrainingModel::TRAINING_MODELS_UPLOAD
+                ),
+            }
+        }
+    }
 
     #[derive(Clone, Debug, Serialize)]
-    pub struct Models;
-    impl Models {
+    pub struct TrainingModel;
+    impl TrainingModel {
         pub const BASE: &'static str = "/api/models";
         pub const CHECK_ID_STATUS: &'static str = "/check/{id}/{status}";
-        pub const CHECK_W_ID_W_STATUS: &'static str = "/check";
-        pub const TRAINING_MODELS_ID: &'static str = "/{id}";
-        pub const TRAINING_MODELS_UPLOAD: &'static str = "/upload";
+        pub const CHECK: &'static str = "/check";
         pub const TRAINING_COMPLETED_ID: &'static str = "/upload/completed/{id}";
+        pub const TRAINING_MODELS_UPLOAD: &'static str = "/upload";
+        pub const TRAINING_MODELS_ID: &'static str = "/{id}";
         pub const TRAINING_MODELS: &'static str = "/";
         pub const TRAINING_MODELS_BASE: &'static str = "";
     }
@@ -35,20 +55,20 @@ pub mod routes {
 
 pub fn routes() -> Routes {
     Routes::new()
-        .prefix(routes::Models::BASE)
-        .add(routes::Models::TRAINING_MODELS, get(list))
-        .add(routes::Models::TRAINING_MODELS, post(add))
-        .add(routes::Models::CHECK_ID_STATUS, get(check_model))
-        .add(routes::Models::TRAINING_MODELS_ID, get(get_one))
-        .add(routes::Models::TRAINING_MODELS_ID, delete(remove))
-        .add(routes::Models::TRAINING_MODELS_ID, put(update))
-        .add(routes::Models::TRAINING_MODELS_ID, patch(update))
+        .prefix(routes::TrainingModel::BASE)
+        .add(routes::TrainingModel::TRAINING_MODELS, get(list))
+        .add(routes::TrainingModel::TRAINING_MODELS, post(add))
+        .add(routes::TrainingModel::CHECK_ID_STATUS, get(check_model))
+        .add(routes::TrainingModel::TRAINING_MODELS_ID, get(get_one))
+        .add(routes::TrainingModel::TRAINING_MODELS_ID, delete(remove))
+        .add(routes::TrainingModel::TRAINING_MODELS_ID, put(update))
+        .add(routes::TrainingModel::TRAINING_MODELS_ID, patch(update))
         .add(
-            routes::Models::TRAINING_MODELS_UPLOAD,
+            routes::TrainingModel::TRAINING_MODELS_UPLOAD,
             post(upload_training),
         )
         .add(
-            routes::Models::TRAINING_COMPLETED_ID,
+            routes::TrainingModel::TRAINING_COMPLETED_ID,
             patch(upload_training_completed),
         )
 }
@@ -154,24 +174,16 @@ pub async fn upload_training_completed(
 pub async fn check_model(
     Path((id, status)): Path<(i32, Status)>,
     State(ctx): State<AppContext>,
+    Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<Response> {
     let model = load_item(&ctx, id).await?;
-
     // Check if status matches
     if status == model.training_status {
         return Ok(StatusCode::NO_CONTENT.into_response());
     }
-
-    let training_route_check = format!(
-        "{}{}",
-        routes::Models::BASE,
-        routes::Models::CHECK_W_ID_W_STATUS
-    );
-
     let model_view: TrainingModelView = model.into();
-
-    views::training_models::training_models_update(v, &model_view, &training_route_check)
+    views::training_models::training_models_update(v, &website, &model_view)
 }
 
 //? ====== REST API ======

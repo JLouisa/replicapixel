@@ -22,54 +22,42 @@ pub fn img_infinite_loading(
     format::render().view(
         v,
         "dashboard/content/photo/image_partial.html",
-        data!(
-            {
-                "images": images,
-                "check_route": website.main_routes.check,
-                "delete_route":  website.main_routes.image,
-            }
-        ),
+        data!({"website": website, "images": images }),
     )
 }
 
 pub fn one(
     v: &impl ViewRenderer,
+    website: &Website,
     credits: &CreditsViewModel,
     image_list: &ImageViewList,
-    check_route: &str,
 ) -> Result<Response> {
     format::render().view(
         v,
         "dashboard/content/photo/image_loading_partial.html",
-        data!({"credits": credits, "image_list": image_list, "check_route": check_route}),
+        data!({ "website": website, "credits": credits, "images": image_list }),
     )
 }
 
 pub fn img_completed(
     v: &impl ViewRenderer,
-    images: &ImageViewList,
     website: &Website,
+    images: &ImageViewList,
     credits: &CreditsViewModel,
 ) -> Result<Response> {
     format::render().view(
         v,
         "dashboard/content/photo/image_partial.html",
-        data!(
-            {
-                "credits": credits,"images": images,
-                "check_route": website.main_routes.check,
-                "delete_route":  website.main_routes.image,
-            }
-        ),
+        data!({ "website": website, "credits": credits, "images": images }),
     )
 }
 
 /// When there is an issue with rendering the view.
-pub fn favorite(v: &impl ViewRenderer, image: &ImageView, website: &Website) -> Result<Response> {
+pub fn favorite(v: &impl ViewRenderer, website: &Website, image: &ImageView) -> Result<Response> {
     format::render().view(
         v,
         "dashboard/content/photo/partials/favorite_button.html",
-        data!({"image": image, "favorite_route": website.main_routes.image_favorite}),
+        data!({ "website": website, "image": image }),
     )
 }
 

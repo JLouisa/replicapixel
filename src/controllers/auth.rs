@@ -30,7 +30,39 @@ use axum_extra::extract::cookie::{Cookie as AxumCookie, SameSite};
 pub static EMAIL_DOMAIN_RE: OnceLock<Regex> = OnceLock::new();
 
 pub mod routes {
-    use serde::Serialize;
+    use serde::{Deserialize, Serialize};
+
+    #[derive(Debug, Serialize, Deserialize, Clone)]
+    pub struct AuthRoutes {
+        pub login: String,
+        pub login_partial: String,
+        pub api_login: String,
+        pub register: String,
+        pub register_partial: String,
+        pub api_register: String,
+        pub forgot: String,
+        pub forgot_partial: String,
+        pub api_forgot: String,
+        pub api_logout: String,
+        pub validate_route: String,
+    }
+    impl AuthRoutes {
+        pub fn init() -> Self {
+            Self {
+                login: String::from(Auth::LOGIN),
+                login_partial: String::from(Auth::LOGIN_PARTIAL),
+                api_login: String::from(Auth::API_LOGIN),
+                register: String::from(Auth::REGISTER),
+                register_partial: String::from(Auth::REGISTER_PARTIAL),
+                api_register: String::from(Auth::API_REGISTER),
+                forgot: String::from(Auth::FORGOT),
+                forgot_partial: String::from(Auth::FORGOT_PARTIAL),
+                api_forgot: String::from(Auth::API_FORGOT),
+                api_logout: String::from(Auth::API_LOGOUT),
+                validate_route: String::from(Auth::API_VALIDATE_USER),
+            }
+        }
+    }
 
     #[derive(Clone, Debug, Serialize)]
     pub struct Auth;
@@ -52,7 +84,7 @@ pub mod routes {
         pub const API_MAGIC_LINK: &'static str = "/api/auth/magic-link";
         pub const API_MAGIC_LINK_W_TOKEN: &'static str = "/api/auth/magic";
         pub const API_MAGIC_LINK_TOKEN: &'static str = "/api/auth/magic/{token}";
-        pub const VALIDATE_USER: &'static str = "/validate-user";
+        pub const API_VALIDATE_USER: &'static str = "api/auth/validate-user";
     }
 }
 
@@ -73,7 +105,7 @@ pub fn routes() -> Routes {
         .add(routes::Auth::API_CURRENT, get(current))
         .add(routes::Auth::API_MAGIC_LINK, post(magic_link))
         .add(routes::Auth::API_MAGIC_LINK_W_TOKEN, get(magic_link_verify))
-        .add(routes::Auth::VALIDATE_USER, get(validate_user))
+        .add(routes::Auth::API_VALIDATE_USER, get(validate_user))
 }
 
 fn get_allow_email_domain_re() -> &'static Regex {
@@ -102,6 +134,7 @@ pub struct MagicLinkParams {
 pub async fn validate_user(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
+    Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
@@ -115,11 +148,10 @@ pub async fn validate_user(
                 .into_response());
         }
     };
-    let validate_route = routes::Auth::VALIDATE_USER;
     format::render().view(
         &v,
         "partials/navbar/navbar_user_partial.html",
-        data!({"user": user, "credits": user_credits, "validate_route": validate_route, "is_home": true}),
+        data!({"website": website, "user": user, "credits": user_credits, "is_home": true}),
     )
 }
 

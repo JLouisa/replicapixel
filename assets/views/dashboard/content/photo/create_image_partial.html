@@ -67,7 +67,7 @@
           class="select select-bordered select-sm w-full bg-base-100"
           :disabled="$store.imageGenForm.isLoading"
         >
-          {% for image_size in website.image_sizes %} {% if not loop.last %}
+          {% for image_size in website.website_fields.image_sizes %} {% if not loop.last %}
           <option value="{{ image_size.0 }}">{{ image_size.1 }}</option>
           {% endif %} {% endfor %}
         </select>

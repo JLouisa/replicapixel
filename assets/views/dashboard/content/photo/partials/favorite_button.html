@@ -1,7 +1,7 @@
 {% if image.is_favorite %}
 <button
   id="fav-{{ image.pid }}"
-  hx-patch="{{ favorite_route }}/{{ image.pid }}"
+  hx-patch="{{ website.website_routes.image.image_favorite }}/{{ image.pid }}"
   hx-swap="outerHTML"
   class="btn"
 >
@@ -10,7 +10,7 @@
 {% else %}
 <button
   id="fav-{{ image.pid }}"
-  hx-patch="{{ favorite_route }}/{{ image.pid }}"
+  hx-patch="{{ website.website_routes.image.image_favorite }}/{{ image.pid }}"
   hx-swap="outerHTML"
   class="btn btn-secondary"
 >

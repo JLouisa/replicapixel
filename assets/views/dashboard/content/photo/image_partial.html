@@ -1,7 +1,7 @@
 {% for image in images %} {% if image.image_status == "Completed" or image.image_status ==
 "Processing" %} {# COMPLETED IMAGE CELL #} {% if loop.last %}
 <div
-  hx-get="/api/images/infinite/{{ image.pid }}{% if is_deleted %}?deleted=true{% endif %}{% if is_favorite %}?favorite=true{% endif %}"
+  hx-get="{{ website.website_routes.image.api_image_infinite }}/{{ image.pid }}{% if is_deleted %}?deleted=true{% endif %}{% if is_favorite %}?favorite=true{% endif %}"
   hx-trigger="intersect once"
   hx-swap="afterend"
   id="container3-{{ image.pid }}"
@@ -50,7 +50,7 @@
         uploadImageFromUrlToS3(
           "{{ image.image_url_fal }}",
           "{{image.pre_url}}",
-          "/api/images/upload/complete/{{ image.pid }}"
+          "{{ website.website_routes.image.api_image_s3_complete_upload }}/{{ image.pid }}"
         );
       </script>
       {% endif %}
@@ -59,7 +59,7 @@
   {# End image-container for completed image #} {% else %} {# LOADING PLACEHOLDER CELL #}
   <div
     id="placeholder-{{ image.pid }}"
-    hx-get="{{ check_route }}/{{ image.pid }}"
+    hx-get="{{ website.website_routes.image.check }}/{{ image.pid }}"
     hx-trigger="load, every 2s"
     hx-swap="outerHTML"
     class="relative select-none flex items-center justify-center aspect-square rounded-lg shadow-md overflow-hidden bg-neutral animate-pulse"

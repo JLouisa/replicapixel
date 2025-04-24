@@ -1,7 +1,15 @@
-use super::settings::Settings;
-use super::{dashboard_sidebar::DashboardSidebar, packs::Packs};
+use crate::controllers::dashboard::routes::DashboardRoutes;
 use crate::controllers::images::routes as ImagesRoute;
+use crate::controllers::{
+    auth::routes::AuthRoutes, dashboard::routes::SidebarRoutes, features::routes::FeatureRoutes,
+    home::routes::HomeRoutes, images::routes::ImageRoutes, oauth2::routes::OAuth2Routes,
+    payment::routes::PaymentRoutes, policy::routes::PolicyRoutes,
+    training_models::routes::TrainingModelRoutes,
+};
+use crate::domain::dashboard_sidebar::DashboardSidebar;
+use crate::domain::settings::Settings;
 use crate::models::_entities::sea_orm_active_enums::Language;
+use crate::models::_entities::sea_orm_active_enums::{BasedOn, Emotion, Ethnicity, EyeColor, Sex};
 use crate::{
     controllers::dashboard::routes,
     models::_entities::sea_orm_active_enums::{ImageSize, PlanNames},
@@ -9,6 +17,34 @@ use crate::{
 use derive_more::Constructor;
 use serde::{Deserialize, Serialize};
 use strum::IntoEnumIterator;
+
+#[derive(Debug, Serialize, Deserialize, Constructor, Clone)]
+pub struct WebsiteRoutes {
+    pub auth_routes: AuthRoutes,
+    pub dashboard_routes: DashboardRoutes,
+    pub feature_routes: FeatureRoutes,
+    pub home: HomeRoutes,
+    pub image: ImageRoutes,
+    pub oauth2: OAuth2Routes,
+    pub payment: PaymentRoutes,
+    pub policy: PolicyRoutes,
+    pub training_models: TrainingModelRoutes,
+}
+impl WebsiteRoutes {
+    pub fn init() -> Self {
+        Self {
+            auth_routes: AuthRoutes::init(),
+            dashboard_routes: DashboardRoutes::init(),
+            feature_routes: FeatureRoutes::init(),
+            home: HomeRoutes::init(),
+            image: ImageRoutes::init(),
+            oauth2: OAuth2Routes::init(),
+            payment: PaymentRoutes::init(),
+            policy: PolicyRoutes::init(),
+            training_models: TrainingModelRoutes::init(),
+        }
+    }
+}
 
 #[derive(Debug, Clone, Deserialize, Serialize, Default)]
 pub struct GoogleAnalytics {
@@ -22,71 +58,60 @@ pub struct MetaPixel {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize, Constructor, Default)]
-pub struct WebsiteSettings {
+pub struct WebsiteBasicInfo {
     pub site: String,
     pub name: String,
     pub google_analytics: GoogleAnalytics,
     pub meta_pixel: MetaPixel,
 }
 
-#[derive(Debug, Serialize, Deserialize, Constructor, Clone)]
-pub struct MainRoutes {
-    pub image: String,
-    pub check: String,
-    pub image_s3_complete_upload: String,
-    pub image_restore: String,
-    pub image_favorite: String,
+#[derive(Debug, Clone, Deserialize, Serialize, Constructor, Default)]
+pub struct WebsiteFormFields {
+    pub image_sizes: Vec<(ImageSize, String)>,
+    pub payment_plans: Vec<Plan>,
+    pub languages: Vec<Language>,
+    pub create_model: CreateModel,
 }
-impl MainRoutes {
-    pub fn init() -> MainRoutes {
-        MainRoutes {
-            image: String::from(ImagesRoute::Images::BASE),
-            check: format!(
-                "{}{}/test",
-                ImagesRoute::Images::BASE,
-                ImagesRoute::Images::IMAGE_CHECK
-            ),
-            image_s3_complete_upload: format!(
-                "{}{}",
-                ImagesRoute::Images::BASE,
-                ImagesRoute::Images::IMAGE_S3_UPLOAD_COMPLETE
-            ),
-            image_restore: format!(
-                "{}{}",
-                ImagesRoute::Images::BASE,
-                ImagesRoute::Images::IMAGE_RESTORE
-            ),
-            image_favorite: format!(
-                "{}{}",
-                ImagesRoute::Images::BASE,
-                ImagesRoute::Images::IMAGE_FAVORITE
-            ),
+
+#[derive(Clone, Debug, Serialize, Deserialize, Default)]
+pub struct CreateModel {
+    type_model: Vec<BasedOn>,
+    ethnicity: Vec<Ethnicity>,
+    eye_color: Vec<EyeColor>,
+    emotion: Vec<Emotion>,
+    sex: Vec<Sex>,
+}
+impl CreateModel {
+    pub fn init() -> Self {
+        Self {
+            type_model: BasedOn::iter().collect(),
+            sex: Sex::iter().collect(),
+            ethnicity: Ethnicity::iter().collect(),
+            eye_color: EyeColor::iter().collect(),
+            emotion: Emotion::iter().collect(),
         }
     }
 }
 
 #[derive(Debug, Serialize, Deserialize, Constructor, Clone)]
 pub struct Website {
-    pub website_settings: WebsiteSettings,
-    pub dashboard_sidebar: DashboardSidebar,
-    pub image_sizes: Vec<(ImageSize, String)>,
-    pub sidebar_routes: routes::Sidebar,
-    pub payment_plans: Vec<Plan>,
-    pub main_routes: MainRoutes,
-    pub languages: Vec<Language>,
+    pub website_basic_info: WebsiteBasicInfo,
+    pub website_routes: WebsiteRoutes,
+    pub website_fields: WebsiteFormFields,
 }
 impl Website {
     pub fn init(settings: &Settings) -> Website {
         Website {
-            website_settings: settings.website.clone(),
-            dashboard_sidebar: DashboardSidebar::init(),
-            image_sizes: ImageSize::iter()
-                .map(|s| (s.clone(), s.to_string()))
-                .collect::<Vec<_>>(),
-            sidebar_routes: routes::Dashboard::sidebar(),
-            payment_plans: get_plans(),
-            main_routes: MainRoutes::init(),
-            languages: Language::iter().collect(),
+            website_basic_info: settings.website.clone(),
+            website_routes: WebsiteRoutes::init(),
+            website_fields: WebsiteFormFields {
+                image_sizes: ImageSize::iter()
+                    .map(|s| (s.clone(), s.to_string()))
+                    .collect::<Vec<_>>(),
+                payment_plans: get_plans(),
+                languages: Language::iter().collect(),
+                create_model: CreateModel::init(),
+            },
         }
     }
 }

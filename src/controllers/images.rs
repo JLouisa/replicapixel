@@ -24,6 +24,94 @@ use crate::service::redis::redis::Cache;
 use crate::views::images::{CreditsViewModel, ImageView, ImageViewList};
 use crate::{models::_entities::images::Entity, service::fal_ai::fal_client::FalAiClient, views};
 
+pub mod routes {
+    use serde::{Deserialize, Serialize};
+
+    #[derive(Debug, Serialize, Deserialize, Clone)]
+    pub struct ImageRoutes {
+        pub base: String,
+        pub check: String,
+        pub image_restore: String,
+        pub image_favorite: String,
+        pub api_image_infinite: String,
+        pub api_image_s3_complete_upload: String,
+    }
+    impl ImageRoutes {
+        pub fn init() -> Self {
+            Self {
+                base: String::from(Images::BASE),
+                check: format!("{}{}/test", Images::BASE, Images::IMAGE_CHECK),
+                image_restore: format!("{}{}", Images::BASE, Images::IMAGE_RESTORE),
+                image_favorite: format!("{}{}", Images::BASE, Images::IMAGE_FAVORITE),
+                api_image_infinite: format!("{}{}", Images::BASE, Images::IMAGE_INFINITE),
+                api_image_s3_complete_upload: format!(
+                    "{}{}",
+                    Images::BASE,
+                    Images::IMAGE_S3_UPLOAD_COMPLETE
+                ),
+            }
+        }
+    }
+
+    #[derive(Clone, Debug, Serialize)]
+    pub struct Images;
+    impl Images {
+        pub const BASE: &'static str = "/api/images";
+        pub const IMAGE: &'static str = "/";
+        pub const IMAGE_S3_UPLOAD_COMPLETE_ID: &'static str = "/upload/complete/{id}";
+        pub const IMAGE_S3_UPLOAD_COMPLETE: &'static str = "/upload/complete";
+        pub const IMAGE_INFINITE_ID: &'static str = "/infinite/{id}";
+        pub const IMAGE_INFINITE: &'static str = "/infinite";
+        pub const IMAGE_GENERATE_TEST: &'static str = "/generate/test";
+        pub const IMAGE_GENERATE: &'static str = "/generate";
+        pub const IMAGE_CHECK_TEST: &'static str = "/check/test/{id}";
+        pub const IMAGE_CHECK_ID: &'static str = "/check/{id}";
+        pub const IMAGE_CHECK: &'static str = "/check";
+        pub const IMAGE_ID: &'static str = "/{id}";
+        pub const IMAGE_RESTORE_ID: &'static str = "/restore/{id}";
+        pub const IMAGE_RESTORE: &'static str = "/restore";
+        pub const IMAGE_FAVORITE_ID: &'static str = "/favorite/{id}";
+        pub const IMAGE_FAVORITE: &'static str = "/favorite";
+        pub const IMAGE_BASE: &'static str = "";
+
+        pub fn check_route() -> String {
+            use crate::controllers::images;
+
+            let check_route = format!(
+                "{}{}/test",
+                images::routes::Images::BASE,
+                images::routes::Images::IMAGE_CHECK
+            );
+            check_route
+        }
+    }
+}
+
+pub fn routes() -> Routes {
+    Routes::new()
+        .prefix(routes::Images::BASE)
+        .add(routes::Images::IMAGE, get(list))
+        // .add(routes::Images::IMAGE, post(add))
+        .add(routes::Images::IMAGE_GENERATE_TEST, post(generate))
+        // .add(routes::Images::IMAGE_GENERATE, post(generate_img))
+        .add(routes::Images::IMAGE_CHECK_TEST, get(check_test))
+        .add(routes::Images::IMAGE_CHECK_ID, get(check_img))
+        .add(routes::Images::IMAGE_ID, get(get_one))
+        .add(routes::Images::IMAGE_ID, delete(remove))
+        .add(routes::Images::IMAGE_RESTORE_ID, delete(restore))
+        .add(routes::Images::IMAGE_FAVORITE_ID, patch(favorite_toggle))
+        .add(
+            routes::Images::IMAGE_INFINITE_ID,
+            get(image_infinite_handler),
+        )
+        .add(
+            routes::Images::IMAGE_S3_UPLOAD_COMPLETE_ID,
+            patch(img_s3_upload_completed),
+        )
+    // .add(routes::Images::IMAGE_ID, put(update))
+    // .add(routes::Images::IMAGE_ID, patch(update))
+}
+
 #[derive(Clone, Validate, Debug, Deserialize)]
 pub struct ImageGenRequestParams {
     pub training_model_id: i32,
@@ -76,64 +164,6 @@ impl ImageGenRequestParams {
 pub struct ImageLoadingParams {
     pub deleted: Option<bool>,
     pub favorite: Option<bool>,
-}
-
-pub mod routes {
-    use serde::Serialize;
-
-    #[derive(Clone, Debug, Serialize)]
-    pub struct Images;
-    impl Images {
-        pub const BASE: &'static str = "/api/images";
-        pub const IMAGE: &'static str = "/";
-        pub const IMAGE_S3_UPLOAD_COMPLETE: &'static str = "/upload/complete";
-        pub const IMAGE_S3_UPLOAD_COMPLETE_ID: &'static str = "/upload/complete/{id}";
-        pub const IMAGE_GENERATE: &'static str = "/generate";
-        pub const IMAGE_INFINITE: &'static str = "/infinite/{id}";
-        pub const IMAGE_GENERATE_TEST: &'static str = "/generate/test";
-        pub const IMAGE_CHECK_TEST: &'static str = "/check/test/{id}";
-        pub const IMAGE_CHECK_ID: &'static str = "/check/{id}";
-        pub const IMAGE_CHECK: &'static str = "/check";
-        pub const IMAGE_ID: &'static str = "/{id}";
-        pub const IMAGE_RESTORE_ID: &'static str = "/restore/{id}";
-        pub const IMAGE_RESTORE: &'static str = "/restore";
-        pub const IMAGE_FAVORITE_ID: &'static str = "/favorite/{id}";
-        pub const IMAGE_FAVORITE: &'static str = "/favorite";
-        pub const IMAGE_BASE: &'static str = "";
-
-        pub fn check_route() -> String {
-            use crate::controllers::images;
-
-            let check_route = format!(
-                "{}{}/test",
-                images::routes::Images::BASE,
-                images::routes::Images::IMAGE_CHECK
-            );
-            check_route
-        }
-    }
-}
-
-pub fn routes() -> Routes {
-    Routes::new()
-        .prefix(routes::Images::BASE)
-        .add(routes::Images::IMAGE, get(list))
-        // .add(routes::Images::IMAGE, post(add))
-        .add(routes::Images::IMAGE_GENERATE_TEST, post(generate))
-        // .add(routes::Images::IMAGE_GENERATE, post(generate_img))
-        .add(routes::Images::IMAGE_CHECK_TEST, get(check_test))
-        .add(routes::Images::IMAGE_CHECK_ID, get(check_img))
-        .add(routes::Images::IMAGE_ID, get(get_one))
-        .add(routes::Images::IMAGE_ID, delete(remove))
-        .add(routes::Images::IMAGE_RESTORE_ID, delete(restore))
-        .add(routes::Images::IMAGE_FAVORITE_ID, patch(favorite_toggle))
-        .add(routes::Images::IMAGE_INFINITE, get(image_infinite_handler))
-        .add(
-            routes::Images::IMAGE_S3_UPLOAD_COMPLETE_ID,
-            patch(img_s3_upload_completed),
-        )
-    // .add(routes::Images::IMAGE_ID, put(update))
-    // .add(routes::Images::IMAGE_ID, patch(update))
 }
 
 // async fn load_user(db: &DatabaseConnection, pid: &str) -> Result<UserModel> {
@@ -256,8 +286,8 @@ pub async fn check_test(
 
         return views::images::img_completed(
             &v,
-            &ImageViewList::new(vec![image]),
             &website,
+            &ImageViewList::new(vec![image]),
             &user_credits_view,
         );
     }
@@ -293,8 +323,8 @@ pub async fn check_img(
 
         return views::images::img_completed(
             &v,
-            &ImageViewList::new(vec![image]),
             &website,
+            &ImageViewList::new(vec![image]),
             &user_credits_view,
         );
     }
@@ -328,7 +358,7 @@ pub async fn generate(
     let image_view_models: Vec<ImageView> = saved_images.into();
 
     // 4. Render the view using the View Models
-    views::images::img_completed(&v, &image_view_models.into(), &website, &credits_view_model)
+    views::images::img_completed(&v, &website, &image_view_models.into(), &credits_view_model)
 }
 
 #[debug_handler]
@@ -344,7 +374,7 @@ pub async fn favorite_toggle(
         return Ok((StatusCode::UNAUTHORIZED).into_response());
     }
     let image: ImageView = img.favorite_image_toggle(&ctx.db).await?.into();
-    views::images::favorite(&v, &image, &website)
+    views::images::favorite(&v, &website, &image)
 }
 
 #[debug_handler]

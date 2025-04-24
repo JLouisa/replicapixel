@@ -3,18 +3,26 @@ use loco_rs::prelude::*;
 
 use super::auth::UserView;
 
-pub fn vote_update(v: impl ViewRenderer, feature: &FeatureView) -> Result<impl IntoResponse> {
+pub fn vote_update(
+    v: impl ViewRenderer,
+    website: &Website,
+    feature: &FeatureView,
+) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
         "dashboard/content/features/vote_count_partial.html",
-        data!({"feature": feature}),
+        data!({ "website": website, "feature": feature }),
     )
 }
 
-pub fn form_reset(v: impl ViewRenderer, user: &UserView) -> Result<impl IntoResponse> {
+pub fn form_reset(
+    v: impl ViewRenderer,
+    website: &Website,
+    user: &UserView,
+) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
         "dashboard/content/features/feature_form.html",
-        data!({"user": user}),
+        data!({ "website": website, "user": user }),
     )
 }

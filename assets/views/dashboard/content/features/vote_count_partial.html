@@ -1,5 +1,5 @@
 <button
-  hx-patch="/api/features/vote/{{ feature.id }}"
+  hx-patch="{{ website.website_routes.feature_routes.vote }}/{{ feature.id }}"
   hx-swap="outerHTML"
   id="vote-{{ feature.id }}"
   class="btn btn-sm {% if feature.is_voted %}btn-secondary{% endif %}"
