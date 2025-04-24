@@ -1,0 +1,75 @@
+{% if checkout_status == "Processing" %}
+<div
+  id="stripestatus"
+  hx-get="{{ website.website_routes.payment.stripe_payment_status_route }}/{{session_id}}"
+  hx-trigger="every 4s"
+  hx-swap="outerHTML"
+  class="min-h-screen bg-base-200 flex items-center justify-center p-4"
+>
+  <div class="card w-full max-w-md bg-base-100 shadow-xl">
+    <div class="card-body items-center text-center">
+      <div class="mb-6" id="iconContainer">{% include "partials/svg/processing.html" %}</div>
+      <h2 class="card-title text-2xl mb-2 justify-center" id="statusText">Processing Payment...</h2>
+      <p class="text-base-content/80" id="messageText">
+        Please wait while we process your payment...
+      </p>
+    </div>
+  </div>
+</div>
+
+{% elif checkout_status == "Succeeded" %}
+<div class="min-h-screen bg-base-200 flex items-center justify-center p-4">
+  <div class="card w-full max-w-md bg-base-100 shadow-xl">
+    <div class="card-body items-center text-center">
+      <div class="mb-6 text-success" id="iconContainer">
+        {% include "partials/svg/completed_checked.html" %}
+      </div>
+      <h2 class="card-title text-2xl mb-2 justify-center" id="statusText">Payment Successful!</h2>
+      <p class="text-base-content/80" id="messageText">
+        Thank you for your purchase! You will receive a confirmation email shortly.
+      </p>
+      <button
+        id="returnButton"
+        class="btn btn-primary mt-6 hidden"
+        onclick="window.location.href = '{{ website.website_routes.home.base }}'"
+      >
+        Return to Homepage
+      </button>
+    </div>
+  </div>
+
+  <script>
+    setTimeout(() => {
+      window.location.href = "{{ website.website_routes.dashboard_routes.base }}";
+    }, 3000);
+  </script>
+</div>
+
+{% elif checkout_status == "Cancelled" %}
+<div class="min-h-screen bg-base-200 flex items-center justify-center p-4">
+  <div class="card w-full max-w-md bg-base-100 shadow-xl">
+    <div class="card-body items-center text-center">
+      <div class="mb-6 text-warning" id="iconContainer">
+        {% include "partials/svg/checkout_cancelled.html" %}
+      </div>
+      <h2 class="card-title text-2xl mb-2 justify-center" id="statusText">Payment Cancelled!</h2>
+      <p class="text-base-content/80" id="messageText">
+        Forgot to add something to your cart? Shop around then come back to pay!
+      </p>
+      <button
+        id="returnButton"
+        class="btn btn-primary mt-6 hidden"
+        onclick="window.location.href = '{{ website.website_routes.home.base }}'"
+      >
+        Return to Homepage
+      </button>
+    </div>
+  </div>
+
+  <script>
+    setTimeout(() => {
+      window.location.href = "{{ website.website_routes.payment.payment_plans }}";
+    }, 2000);
+  </script>
+</div>
+{% endif %}

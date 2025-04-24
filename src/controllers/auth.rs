@@ -84,7 +84,7 @@ pub mod routes {
         pub const API_MAGIC_LINK: &'static str = "/api/auth/magic-link";
         pub const API_MAGIC_LINK_W_TOKEN: &'static str = "/api/auth/magic";
         pub const API_MAGIC_LINK_TOKEN: &'static str = "/api/auth/magic/{token}";
-        pub const API_VALIDATE_USER: &'static str = "api/auth/validate-user";
+        pub const API_VALIDATE_USER: &'static str = "/api/auth/validate-user";
     }
 }
 

@@ -1,7 +1,7 @@
 #![allow(clippy::missing_errors_doc)]
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
-use axum::{debug_handler, extract::Query, response::Redirect, Extension};
+use axum::{debug_handler, extract::Query, http::HeaderMap, response::Redirect, Extension};
 use derive_more::Constructor;
 use loco_rs::{controller::ErrorDetail, prelude::*};
 use serde::{Deserialize, Serialize};
@@ -13,8 +13,10 @@ pub struct PaymentController;
 use crate::{
     domain::website::Website,
     models::{
-        transactions::TransactionDomain, users::UserPid, PlanModel, TransactionActiveModel,
-        UserModel, _entities::sea_orm_active_enums::PlanNames,
+        transactions::TransactionDomain,
+        users::UserPid,
+        PlanModel, TransactionActiveModel, UserModel,
+        _entities::sea_orm_active_enums::{CheckOutStatus, PlanNames},
         join::user_credits_models::load_user_and_credits,
     },
     service::stripe::{stripe::StripeClient, stripe_builder::CheckoutSessionBuilder},
@@ -31,6 +33,8 @@ pub mod routes {
         pub stripe_checkout_route: String,
         pub stripe_checkout_partial_route: String,
         pub stripe_payment_status_route: String,
+        pub payment_plans: String,
+        pub payment_plans_partial: String,
     }
     impl PaymentRoutes {
         pub fn init() -> Self {
@@ -47,6 +51,12 @@ pub mod routes {
                     Payment::BASE,
                     Payment::STRIPE_PAYMENT_STATUS
                 ),
+                payment_plans: format!("{}{}", Payment::BASE, Payment::PAYMENT_PLAN),
+                payment_plans_partial: format!(
+                    "{}{}",
+                    Payment::BASE,
+                    Payment::PAYMENT_PLAN_PARTIAL
+                ),
             }
         }
     }
@@ -60,8 +70,8 @@ pub mod routes {
         pub const API_STRIPE_CANCEL: &'static str = "/cancel";
         pub const API_STRIPE_RETURN: &'static str = "/return";
         pub const API_STRIPE_PAYMENT_PLAN_REQUEST: &'static str = "/plan/{pid}/{plan}";
-        pub const API_STRIPE_PAYMENT_PLAN: &'static str = "/plan";
-        pub const API_STRIPE_PAYMENT_PLAN_PARTIAL: &'static str = "/partial/plan";
+        pub const PAYMENT_PLAN: &'static str = "/plan";
+        pub const PAYMENT_PLAN_PARTIAL: &'static str = "/partial/plan";
         pub const STRIPE_PAYMENT_STATUS_ID: &'static str = "/processing/status/{session_id}";
         pub const STRIPE_PAYMENT_STATUS: &'static str = "/processing/status";
         pub const STRIPE_CREATE_CHECKOUT: &'static str = "/create-checkout-session";
@@ -76,34 +86,21 @@ pub mod routes {
 pub fn routes() -> Routes {
     Routes::new()
         .prefix(routes::Payment::BASE)
-        .add(routes::Payment::API_STRIPE_PAYMENT_PLAN, get(payment_home))
+        .add(routes::Payment::PAYMENT_PLAN, get(payment_home))
         .add(
-            routes::Payment::API_STRIPE_PAYMENT_PLAN_PARTIAL,
+            routes::Payment::PAYMENT_PLAN_PARTIAL,
             get(payment_home_partial),
         )
-        .add(routes::Payment::API_STRIPE_SUCCESS, get(success_handler)) // Route for the success URL
-        .add(routes::Payment::API_STRIPE_CANCEL, get(cancel_handler)) // Route for the cancel URL
+        .add(
+            routes::Payment::API_STRIPE_PAYMENT_PLAN_REQUEST,
+            get(create_checkout_session),
+        )
+        .add(routes::Payment::API_STRIPE_SUCCESS, get(success_handler))
+        .add(routes::Payment::API_STRIPE_CANCEL, get(cancel_handler))
         .add(
             routes::Payment::STRIPE_PAYMENT_STATUS_ID,
             get(status_handler),
-        ) // Route for the cancel URL
-        .add(
-            routes::Payment::API_STRIPE_PAYMENT_PLAN_REQUEST,
-            get(payment_request),
         )
-        .add(routes::Payment::STRIPE_CHECKOUT_ID, get(checkout_handler)) // Route for the cancel URL
-        .add(
-            routes::Payment::STRIPE_CHECKOUT_ID_PARTIAL,
-            get(checkout_partial_handler),
-        ) // Route for the cancel URL
-        .add(
-            routes::Payment::STRIPE_CREATE_CHECKOUT,
-            post(create_checkout_session_handler),
-        )
-        .add(
-            routes::Payment::STRIPE_CHECKOUT_RETURN,
-            get(checkout_return_handler),
-        ) // Route for the cancel URL
 }
 
 async fn load_user(db: &DatabaseConnection, pid: &UserPid) -> Result<UserModel> {
@@ -133,153 +130,8 @@ pub struct ClientSecret {
     pub client_secret: String,
 }
 
-async fn checkout_return_handler(
-    Extension(website): Extension<Website>,
-    ViewEngine(v): ViewEngine<TeraView>,
-) -> Result<impl IntoResponse> {
-    tracing::error!("User successfully completed payment process.");
-    views::payment::return_session(v, &website)
-}
-
-async fn checkout_partial_handler(
-    Path((pid, plan)): Path<(Uuid, PlanNames)>,
-    Extension(website): Extension<Website>,
-    Extension(stripe_client): Extension<StripeClient>,
-    State(ctx): State<AppContext>,
-    ViewEngine(v): ViewEngine<TeraView>,
-) -> Result<impl IntoResponse> {
-    let user_pid = UserPid::new(pid);
-    let user = load_user(&ctx.db, &user_pid).await?;
-    let plan = load_plan(&ctx.db, &plan).await?;
-    let transaction_id = uuid::Uuid::new_v4();
-    let stripe_checkout = CheckoutSessionBuilder::new(&stripe_client, &ctx.db)
-        .user(&user)
-        .plan(&plan.plan_name)
-        .transaction_id(&transaction_id)
-        .embedded()
-        .build()
-        .await?;
-    let transaction = TransactionDomain::new(
-        transaction_id,
-        &user,
-        plan,
-        stripe_checkout.currency.clone(),
-        stripe_checkout.id.to_string(),
-    );
-    let _transaction = save_txn(&ctx.db, &transaction).await?;
-
-    let secret = match stripe_checkout.client_secret {
-        Some(secret) => secret,
-        None => {
-            return Err(loco_rs::Error::Message(
-                "Unable to create checkout session".to_string(),
-            ));
-        }
-    };
-
-    let secret = ClientSecret::new(secret);
-    views::payment::checkout_session_partial(
-        v,
-        &website,
-        &stripe_client.stripe_publishable_key,
-        secret,
-    )
-}
-
-async fn checkout_handler(
-    Path((pid, plan)): Path<(Uuid, PlanNames)>,
-    Extension(website): Extension<Website>,
-    Extension(stripe_client): Extension<StripeClient>,
-    State(ctx): State<AppContext>,
-    ViewEngine(v): ViewEngine<TeraView>,
-) -> Result<impl IntoResponse> {
-    let user_pid = UserPid::new(pid);
-    let user = load_user(&ctx.db, &user_pid).await?;
-    let plan = load_plan(&ctx.db, &plan).await?;
-    let transaction_id = uuid::Uuid::new_v4();
-    let stripe_checkout = CheckoutSessionBuilder::new(&stripe_client, &ctx.db)
-        .user(&user)
-        .plan(&plan.plan_name)
-        .transaction_id(&transaction_id)
-        .embedded()
-        .build()
-        .await?;
-    let transaction = TransactionDomain::new(
-        transaction_id,
-        &user,
-        plan,
-        stripe_checkout.currency.clone(),
-        stripe_checkout.id.to_string(),
-    );
-    let _transaction = save_txn(&ctx.db, &transaction).await?;
-
-    let secret = match stripe_checkout.client_secret {
-        Some(secret) => secret,
-        None => {
-            return Err(loco_rs::Error::Message(
-                "Unable to create checkout session".to_string(),
-            ));
-        }
-    };
-
-    let secret = ClientSecret::new(secret);
-    views::payment::checkout_session(v, &website, &stripe_client.stripe_publishable_key, secret)
-}
-
 #[debug_handler]
-pub async fn create_checkout_session_handler(
-    Extension(stripe_client): Extension<StripeClient>,
-    State(ctx): State<AppContext>,
-) -> Result<impl IntoResponse> {
-    let user_pid = UserPid::new("ab5e796c-a2cd-458e-ad6b-c3a898f44bd1");
-    let user = load_user(&ctx.db, &user_pid).await?;
-    let plan = PlanNames::Basic;
-    let plan = load_plan(&ctx.db, &plan).await?;
-    let transaction_id = uuid::Uuid::new_v4();
-    let stripe_checkout = CheckoutSessionBuilder::new(&stripe_client, &ctx.db)
-        .user(&user)
-        .plan(&plan.plan_name)
-        .transaction_id(&transaction_id)
-        // .embedded()
-        .build()
-        .await?;
-    let transaction = TransactionDomain::new(
-        transaction_id,
-        &user,
-        plan,
-        stripe_checkout.currency.clone(),
-        stripe_checkout.id.to_string(),
-    );
-    let _transaction = save_txn(&ctx.db, &transaction).await?;
-
-    let secret = match stripe_checkout.client_secret {
-        Some(secret) => secret,
-        None => {
-            return Err(loco_rs::Error::Message(
-                "Unable to create checkout session".to_string(),
-            ));
-        }
-    };
-
-    let secret = ClientSecret::new(secret);
-    format::json(secret)
-}
-
-async fn success_handler(
-    auth: auth::JWT,
-    params: Query<PaymentRedirectParams>,
-    Extension(website): Extension<Website>,
-    ViewEngine(v): ViewEngine<TeraView>,
-    State(ctx): State<AppContext>,
-) -> Result<impl IntoResponse> {
-    tracing::info!("User successfully completed payment process.");
-    let user_pid = UserPid::new(&auth.claims.pid);
-    let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
-    views::payment::payment_status(v, &website, &params.session_id)
-}
-
-#[debug_handler]
-pub async fn payment_request(
+pub async fn create_checkout_session(
     auth: auth::JWT,
     Path((pid, plan)): Path<(Uuid, PlanNames)>,
     Extension(stripe_client): Extension<StripeClient>,
@@ -307,7 +159,7 @@ pub async fn payment_request(
         stripe_checkout.currency.clone(),
         stripe_checkout.id.to_string(),
     );
-    let _transaction = save_txn(&ctx.db, &transaction).await?;
+    let _transaction = save_txn(&ctx.db, &transaction).await?; //Todo Change to fail gracefully and continue with payment. Add the transaction on webhook
 
     let session = match stripe_checkout.url {
         Some(session) => session,
@@ -317,7 +169,29 @@ pub async fn payment_request(
             ))
         }
     };
-    Ok(Redirect::to(&session).into_response())
+    let mut headers = HeaderMap::new();
+    headers.insert("HX-Redirect", session.parse().unwrap());
+    Ok((StatusCode::OK, headers).into_response())
+}
+
+async fn success_handler(
+    params: Query<PaymentRedirectParams>,
+    Extension(website): Extension<Website>,
+    ViewEngine(v): ViewEngine<TeraView>,
+    State(ctx): State<AppContext>,
+) -> Result<impl IntoResponse> {
+    tracing::info!("User successfully completed payment process.");
+    let status = CheckOutStatus::Processing;
+    views::payment::stripe_status(v, &website, &params.session_id, status)
+}
+
+async fn cancel_handler(
+    Extension(website): Extension<Website>,
+    ViewEngine(v): ViewEngine<TeraView>,
+) -> Result<impl IntoResponse> {
+    tracing::info!("User cancelled payment process.");
+    let status = CheckOutStatus::Cancelled;
+    views::payment::stripe_status(v, &website, &None, status)
 }
 
 async fn status_handler(
@@ -327,56 +201,34 @@ async fn status_handler(
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
     dbg!(&session_id_str);
-    // 2. Parse Session ID
+    // 1. Parse Session ID
     let session_id = CheckoutSessionId::from_str(session_id_str.as_str()).map_err(|_| {
         tracing::warn!(session_id = %session_id_str, "Received invalid session_id format.");
         loco_rs::Error::BadRequest(format!("Invalid session_id format: {}", session_id_str))
     })?;
 
-    // 4. Retrieve Session from Stripe
+    // 2. Retrieve Session from Stripe
     tracing::info!(session_id = %session_id_str, "Retrieving checkout session from Stripe...");
-    let session =
-        CheckoutSession::retrieve(&stripe_client.client, &session_id, &[] /* expand */)
-            .await
-            .map_err(|_| loco_rs::Error::Message(String::from("Error checking storage: 101")))?;
+    let session = CheckoutSession::retrieve(&stripe_client.client, &session_id, &[])
+        .await
+        .map_err(|_| loco_rs::Error::Message(String::from("Error checking storage: 101")))?;
 
-    // 5. Check Session Status (Crucial!)
+    // 3. Check Session Status (Crucial!)
     let is_successful = session.payment_status == CheckoutSessionPaymentStatus::Paid
         || session.status == Some(CheckoutSessionStatus::Complete);
 
+    // 4. Redirect Appropriately
     if is_successful {
         tracing::info!(session_id = %session_id_str, "Checkout session verified successfully via redirect.");
-
-        views::payment::payment_success(v, &website)
+        let status = CheckOutStatus::Succeeded;
+        views::payment::stripe_status_partials(v, &website, status)
     } else {
         tracing::warn!(session_id = %session_id_str, status = ?session.status, payment_status = ?session.payment_status, "Redirected session is not yet successful.");
-
         Err(loco_rs::Error::CustomError(
             StatusCode::NO_CONTENT,
             ErrorDetail::new("NO CONTENT", "Redirected session is not yet successful."),
         ))
     }
-}
-
-// --- Cancel Handler ---
-async fn cancel_handler(
-    Extension(website): Extension<Website>,
-    ViewEngine(v): ViewEngine<TeraView>,
-) -> Result<impl IntoResponse> {
-    tracing::info!("User cancelled payment process.");
-    views::payment::payment_cancel(v, &website)
-}
-
-#[debug_handler]
-pub async fn payment_home_partial(
-    auth: auth::JWT,
-    State(ctx): State<AppContext>,
-    Extension(website): Extension<Website>,
-    ViewEngine(v): ViewEngine<TeraView>,
-) -> Result<impl IntoResponse> {
-    let user_pid = UserPid::new(&auth.claims.pid);
-    let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
-    views::payment::payment_home_partial(v, &website, &user.into(), &user_credits.into())
 }
 
 #[debug_handler]
@@ -390,3 +242,146 @@ pub async fn payment_home(
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     views::payment::payment_home(v, &website, &user.into(), &user_credits.into())
 }
+#[debug_handler]
+pub async fn payment_home_partial(
+    auth: auth::JWT,
+    State(ctx): State<AppContext>,
+    Extension(website): Extension<Website>,
+    ViewEngine(v): ViewEngine<TeraView>,
+) -> Result<impl IntoResponse> {
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
+    views::payment::payment_home_partial(v, &website, &user.into(), &user_credits.into())
+}
+
+// ===================== Embedded Code ======================
+// async fn checkout_return_handler(
+//     Extension(website): Extension<Website>,
+//     ViewEngine(v): ViewEngine<TeraView>,
+// ) -> Result<impl IntoResponse> {
+//     tracing::error!("User successfully completed payment process.");
+//     views::payment::return_session(v, &website)
+// }
+
+// async fn checkout_partial_handler(
+//     Path((pid, plan)): Path<(Uuid, PlanNames)>,
+//     Extension(website): Extension<Website>,
+//     Extension(stripe_client): Extension<StripeClient>,
+//     State(ctx): State<AppContext>,
+//     ViewEngine(v): ViewEngine<TeraView>,
+// ) -> Result<impl IntoResponse> {
+//     let user_pid = UserPid::new(pid);
+//     let user = load_user(&ctx.db, &user_pid).await?;
+//     let plan = load_plan(&ctx.db, &plan).await?;
+//     let transaction_id = uuid::Uuid::new_v4();
+//     let stripe_checkout = CheckoutSessionBuilder::new(&stripe_client, &ctx.db)
+//         .user(&user)
+//         .plan(&plan.plan_name)
+//         .transaction_id(&transaction_id)
+//         .embedded()
+//         .build()
+//         .await?;
+//     let transaction = TransactionDomain::new(
+//         transaction_id,
+//         &user,
+//         plan,
+//         stripe_checkout.currency.clone(),
+//         stripe_checkout.id.to_string(),
+//     );
+//     let _transaction = save_txn(&ctx.db, &transaction).await?;
+
+//     let secret = match stripe_checkout.client_secret {
+//         Some(secret) => secret,
+//         None => {
+//             return Err(loco_rs::Error::Message(
+//                 "Unable to create checkout session".to_string(),
+//             ));
+//         }
+//     };
+
+//     let secret = ClientSecret::new(secret);
+//     views::payment::checkout_session_partial(
+//         v,
+//         &website,
+//         &stripe_client.stripe_publishable_key,
+//         secret,
+//     )
+// }
+
+// async fn checkout_handler(
+//     Path((pid, plan)): Path<(Uuid, PlanNames)>,
+//     Extension(website): Extension<Website>,
+//     Extension(stripe_client): Extension<StripeClient>,
+//     State(ctx): State<AppContext>,
+//     ViewEngine(v): ViewEngine<TeraView>,
+// ) -> Result<impl IntoResponse> {
+//     let user_pid = UserPid::new(pid);
+//     let user = load_user(&ctx.db, &user_pid).await?;
+//     let plan = load_plan(&ctx.db, &plan).await?;
+//     let transaction_id = uuid::Uuid::new_v4();
+//     let stripe_checkout = CheckoutSessionBuilder::new(&stripe_client, &ctx.db)
+//         .user(&user)
+//         .plan(&plan.plan_name)
+//         .transaction_id(&transaction_id)
+//         .embedded()
+//         .build()
+//         .await?;
+//     let transaction = TransactionDomain::new(
+//         transaction_id,
+//         &user,
+//         plan,
+//         stripe_checkout.currency.clone(),
+//         stripe_checkout.id.to_string(),
+//     );
+//     let _transaction = save_txn(&ctx.db, &transaction).await?;
+
+//     let secret = match stripe_checkout.client_secret {
+//         Some(secret) => secret,
+//         None => {
+//             return Err(loco_rs::Error::Message(
+//                 "Unable to create checkout session".to_string(),
+//             ));
+//         }
+//     };
+
+//     let secret = ClientSecret::new(secret);
+//     views::payment::checkout_session(v, &website, &stripe_client.stripe_publishable_key, secret)
+// }
+
+// #[debug_handler]
+// pub async fn create_checkout_session_handler(
+//     Extension(stripe_client): Extension<StripeClient>,
+//     State(ctx): State<AppContext>,
+// ) -> Result<impl IntoResponse> {
+//     let user_pid = UserPid::new("ab5e796c-a2cd-458e-ad6b-c3a898f44bd1");
+//     let user = load_user(&ctx.db, &user_pid).await?;
+//     let plan = PlanNames::Basic;
+//     let plan = load_plan(&ctx.db, &plan).await?;
+//     let transaction_id = uuid::Uuid::new_v4();
+//     let stripe_checkout = CheckoutSessionBuilder::new(&stripe_client, &ctx.db)
+//         .user(&user)
+//         .plan(&plan.plan_name)
+//         .transaction_id(&transaction_id)
+//         .build()
+//         .await?;
+//     let transaction = TransactionDomain::new(
+//         transaction_id,
+//         &user,
+//         plan,
+//         stripe_checkout.currency.clone(),
+//         stripe_checkout.id.to_string(),
+//     );
+//     let _transaction = save_txn(&ctx.db, &transaction).await?;
+
+//     let secret = match stripe_checkout.client_secret {
+//         Some(secret) => secret,
+//         None => {
+//             return Err(loco_rs::Error::Message(
+//                 "Unable to create checkout session".to_string(),
+//             ));
+//         }
+//     };
+
+//     let secret = ClientSecret::new(secret);
+//     format::json(secret)
+// }
