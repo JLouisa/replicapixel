@@ -1,8 +1,10 @@
 <div id="navbar-user">
   <div class="flex items-center space-x-4">
+    {#
     <div class="hidden md:inline-flex items-center hover:text-base-600 select-none">
       <span>Hi {{user.name}}</span>
     </div>
+    #} {% include "partials/parts/cta_button.html" %}
     <div class="hidden md:inline-flex items-center hover:text-base-600 select-none">
       {% include "partials/svg/model_svg.html" %}
       <span id="user_model_credits" class="ml-1">{{ credits.model_amount }}</span>

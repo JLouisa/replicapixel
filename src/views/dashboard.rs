@@ -161,13 +161,14 @@ pub fn training_partial_dashboard(
     v: impl ViewRenderer,
     website: &Website,
     user: UserView,
+    credits: &UserCreditsView,
     models: Vec<TrainingModelView>,
 ) -> Result<impl IntoResponse> {
     let sidebar = DashboardSidebar::init();
     format::render().view(
         &v,
         "dashboard/content/training_models/training_models_partial.html",
-        data!({ "website": website, "user": user, "models": models }),
+        data!({ "website": website, "user": user, "credits": credits, "models": models }),
     )
 }
 

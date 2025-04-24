@@ -442,8 +442,15 @@ pub async fn training_partial_dashboard(
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
-    let (user, training_models) = load_user_and_training(&ctx.db, &user_pid).await?;
-    views::dashboard::training_partial_dashboard(v, &website, user.into(), training_models.into())
+    let (user, user_credits, training_models) =
+        load_user_credit_training(&ctx.db, &user_pid).await?;
+    views::dashboard::training_partial_dashboard(
+        v,
+        &website,
+        user.into(),
+        &user_credits.into(),
+        training_models.into(),
+    )
 }
 
 #[debug_handler]

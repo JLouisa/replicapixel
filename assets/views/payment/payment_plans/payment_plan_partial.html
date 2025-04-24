@@ -44,16 +44,15 @@
           {% endfor %}
         </ul>
           <button
-            hx-get="{{ website.website_routes.payment.stripe_checkout_partial_route }}/{{ user.pid | default(value="x") }}/{{plan.plan_type}}"
-            hx-target="#checkout"
-            hx-swap="outerHTML"
-            hx-push-url="{{ website.website_routes.payment.stripe_checkout_route }}/{{ user.pid | default(value="x") }}/{{plan.plan_type}}"
-            class="w-full py-3 px-6 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-medium transition-colors duration-200"
+            hx-get="{{ website.website_routes.payment.payment_plans }}/{{ user.pid | default(value="x") }}/{{plan.plan_type}}"
+            hx-push-url="{{ website.website_routes.payment.stripe_checkout_route }}/{{ user.pid | default(value="x") }}/{{plan.plan_type}}" 
+            hx-disabled-elt=".checkout-button"
+            class="checkout-button w-full py-3 px-6 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-medium transition-colors duration-200 cursor-pointer"
           >
             {{ plan.cta }}
           </button>
       </div>
-      {%endfor%} {# {/* Payment Security Notice */} #}
+      {%endfor%} 
     </div>
     <div class="mt-12 text-center">
       <p class="flex items-center justify-center text-gray-500 text-sm">

@@ -45,6 +45,40 @@
         font-family: "Inter", sans-serif;
       }
     </style>
+    <style>
+      @keyframes shine {
+        0% {
+          transform: translateX(-100%) skewX(-20deg);
+          opacity: 0.6;
+        }
+        80% {
+          opacity: 0.6;
+        }
+        100% {
+          transform: translateX(100%) skewX(-20deg);
+          opacity: 0;
+        }
+      }
+
+      .animate-shine-active::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          to right,
+          rgba(255, 255, 255, 0) 0%,
+          rgba(255, 255, 255, 1) 50%,
+          rgba(255, 255, 255, 0) 100%
+        );
+        opacity: 0;
+        transform: translateX(-100%) skewX(-20deg);
+        animation: shine 1.2s ease-out;
+        pointer-events: none;
+      }
+    </style>
     {% block head %}{% endblock head %}
   </head>
   <body class="bg-base-100">
@@ -54,7 +88,9 @@
       {% block navbar %} {% include "partials/navbar/navbar.html" %} {% endblock navbar %}
 
       <!-- Page Content Block -->
-      <div class="flex-1 overflow-hidden">{% block content %}{% endblock content %}</div>
+      <div id="page-content" class="flex-1 overflow-hidden">
+        {% block content %}{% endblock content %}
+      </div>
     </div>
 
     <!-- Toast Notifications -->
