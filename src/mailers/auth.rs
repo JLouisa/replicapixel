@@ -7,6 +7,7 @@ use chrono::Local;
 use loco_rs::prelude::*;
 use serde_json::json;
 
+use crate::domain::website::WebsiteBasicInfo;
 use crate::{domain::website::Website, models::users};
 
 static welcome: Dir<'_> = include_dir!("src/mailers/auth/welcome");
@@ -27,16 +28,16 @@ impl AuthMailer {
     pub async fn send_welcome(
         ctx: &AppContext,
         user: &users::Model,
-        website: &Website,
+        website: &WebsiteBasicInfo,
     ) -> Result<()> {
         Self::mail_template(
             ctx,
             &welcome,
             mailer::Args {
-                from: Some("Pictora <jissicko@gmail.com>".to_string()),
+                from: Some(website.from_mail()),
                 to: user.email.to_string(),
                 locals: json!({
-                  "company": website.website_basic_info.name.to_string(),
+                  "company": website.name.to_string(),
                   "name": user.name,
                   "verifyToken": user.email_verification_token,
                   "domain": ctx.config.server.full_url(),
@@ -54,7 +55,6 @@ impl AuthMailer {
 
         Ok(())
     }
-
     /// Sending forgot password email
     ///
     /// # Errors
@@ -63,19 +63,19 @@ impl AuthMailer {
     pub async fn forgot_password(
         ctx: &AppContext,
         user: &users::Model,
-        website: &Website,
+        website: &WebsiteBasicInfo,
     ) -> Result<()> {
         Self::mail_template(
             ctx,
             &forgot,
             mailer::Args {
-                from: Some("Pictora <jissicko@gmail.com>".to_string()),
+                from: Some(website.from_mail()),
                 to: user.email.to_string(),
                 locals: json!({
                   "name": user.name,
                   "resetToken": user.reset_token,
                   "domain": ctx.config.server.full_url(),
-                  "company": website.website_basic_info.name.to_string(),
+                  "company": website.name.to_string(),
                   "current_year": Local::now().year(),
                   "company_address": "Netherland".to_string(),
                   "twitter_url": "https://twitter.com/".to_string(),
@@ -99,13 +99,13 @@ impl AuthMailer {
     pub async fn send_magic_link(
         ctx: &AppContext,
         user: &users::Model,
-        website: &Website,
+        website: &WebsiteBasicInfo,
     ) -> Result<()> {
         Self::mail_template(
             ctx,
             &magic_link,
             mailer::Args {
-                from: Some("Pictora <jissicko@gmail.com>".to_string()),
+                from: Some(website.from_mail()),
                 to: user.email.to_string(),
                 locals: json!({
                   "name": user.name,

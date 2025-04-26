@@ -59,10 +59,17 @@ pub struct MetaPixel {
 
 #[derive(Debug, Clone, Deserialize, Serialize, Constructor, Default)]
 pub struct WebsiteBasicInfo {
-    pub site: String,
     pub name: String,
+    pub site: String,
+    pub site_domain: String,
+    pub from_email: String,
     pub google_analytics: GoogleAnalytics,
     pub meta_pixel: MetaPixel,
+}
+impl WebsiteBasicInfo {
+    pub fn from_mail(&self) -> String {
+        format!("{} <{}@{}>", self.name, self.from_email, self.site_domain)
+    }
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize, Constructor, Default)]

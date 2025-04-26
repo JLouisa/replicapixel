@@ -1,5 +1,6 @@
 use crate::{
     controllers::webhooks::routes::Webhooks,
+    domain::website::{Website, WebsiteBasicInfo},
     models::{
         _entities::sea_orm_active_enums::{ImageFormat, ImageSize},
         images::{ImageNew, ImageNewList},
@@ -38,8 +39,8 @@ pub struct FalAiClient {
 }
 
 impl FalAiClient {
-    pub fn new(settings: &FalAiSettings) -> Self {
-        let site = "http://localhost:5150";
+    pub fn new(settings: &FalAiSettings, website: &WebsiteBasicInfo) -> Self {
+        let site = website.site.to_owned();
         let image_webhook = format!("{}{}", Webhooks::BASE, Webhooks::API_FAL_AI_IMAGE);
         let training_model_webhook = format!("{}{}", Webhooks::BASE, Webhooks::API_FAL_AI_TRAINING);
         Self {

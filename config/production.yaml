@@ -62,7 +62,7 @@ mailer:
       user:  {{get_env(name="EMAIL_AUTH_USER")}}
       password:  {{get_env(name="EMAIL_AUTH_PASSWORD")}}
     # Override the SMTP hello name (default is the machine's hostname)
-      hello_name:  {{get_env(name="EMAIL_AUTH_HELLO_NAME")}}
+      hello_name:  {{get_env(name="NAME")}}
 
 # Initializers Configuration
 initializers:
@@ -174,8 +174,10 @@ settings:
     training_model_url: {{ get_env(name="FAL_TRAINING_MODEL_URL") }} 
     webhook_url: {{ get_env(name="FAL_WEBHOOK_URL") }}
   website:
-    site: {{ get_env(name="SITE") }} 
+    site: {{ get_env(name="SITE") }}
+    site_domain: {{ get_env(name="SITE_DOMAIN") }}
     name: {{ get_env(name="NAME") }}
+    from_email: {{ get_env(name="FROM_EMAIL") }}
     google_analytics:
       google_analytics_id: {{ get_env(name="GOOGLE_ANALYTICS_ID", default="YOUR_GA_ID_ENV") }}
       google_analytics_secret: {{ get_env(name="GOOGLE_ANALYTICS_CLIENT_SECRET", default="YOUR_GA_SECRET_ENV") }}

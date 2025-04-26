@@ -72,3 +72,8 @@ cargo loco generate controller features --htmx
 
 </html>
   #
+
+## Run Server with Worker for Mail
+
+cargo loco start --server-and-worker
+cargo loco watch --server-and-worker

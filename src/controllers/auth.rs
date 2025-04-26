@@ -106,6 +106,9 @@ pub fn routes() -> Routes {
         .add(routes::Auth::API_MAGIC_LINK, post(magic_link))
         .add(routes::Auth::API_MAGIC_LINK_W_TOKEN, get(magic_link_verify))
         .add(routes::Auth::API_VALIDATE_USER, get(validate_user))
+        .add("/api/auth/test/welcome", get(test_welcome_mail))
+        .add("/api/auth/test/forgot_password", get(test_forgot_password))
+        .add("/api/auth/test/magic_link", get(test_magic_link))
 }
 
 fn get_allow_email_domain_re() -> &'static Regex {
@@ -128,6 +131,43 @@ pub struct ResetParams {
 #[derive(Debug, Deserialize, Serialize)]
 pub struct MagicLinkParams {
     pub email: String,
+}
+
+#[debug_handler]
+pub async fn test_welcome_mail(
+    // auth: auth::JWT,
+    State(ctx): State<AppContext>,
+    Extension(website): Extension<Website>,
+    ViewEngine(v): ViewEngine<TeraView>,
+) -> Result<impl IntoResponse> {
+    let user_pid = UserPid::new("ab5e796c-a2cd-458e-ad6b-c3a898f44bd1");
+    let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
+    AuthMailer::send_welcome(&ctx, &user, &website.website_basic_info).await?;
+    Ok((StatusCode::OK).into_response())
+}
+#[debug_handler]
+pub async fn test_forgot_password(
+    // auth: auth::JWT,
+    State(ctx): State<AppContext>,
+    Extension(website): Extension<Website>,
+    ViewEngine(v): ViewEngine<TeraView>,
+) -> Result<impl IntoResponse> {
+    let user_pid = UserPid::new("ab5e796c-a2cd-458e-ad6b-c3a898f44bd1");
+    let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
+    AuthMailer::forgot_password(&ctx, &user, &website.website_basic_info).await?;
+    Ok((StatusCode::OK).into_response())
+}
+#[debug_handler]
+pub async fn test_magic_link(
+    // auth: auth::JWT,
+    State(ctx): State<AppContext>,
+    Extension(website): Extension<Website>,
+    ViewEngine(v): ViewEngine<TeraView>,
+) -> Result<impl IntoResponse> {
+    let user_pid = UserPid::new("ab5e796c-a2cd-458e-ad6b-c3a898f44bd1");
+    let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
+    AuthMailer::send_magic_link(&ctx, &user, &website.website_basic_info).await?;
+    Ok((StatusCode::OK).into_response())
 }
 
 #[debug_handler]
@@ -209,7 +249,7 @@ async fn register(
         .set_email_verification_sent(&ctx.db)
         .await?;
 
-    AuthMailer::send_welcome(&ctx, &user, &website).await?;
+    AuthMailer::send_welcome(&ctx, &user, &website.website_basic_info).await?;
 
     let mut headers = HeaderMap::new();
     headers.insert("HX-Redirect", "/login".parse().unwrap()); // HTMX Redirect
@@ -260,7 +300,7 @@ async fn forgot(
         .set_forgot_password_sent(&ctx.db)
         .await?;
 
-    AuthMailer::forgot_password(&ctx, &user, &website).await?;
+    AuthMailer::forgot_password(&ctx, &user, &website.website_basic_info).await?;
 
     format::render().view(
         &v,
@@ -398,7 +438,8 @@ async fn magic_link(
     };
 
     let user = user.into_active_model().create_magic_link(&ctx.db).await?;
-    AuthMailer::send_magic_link(&ctx, &user, &website).await?;
+
+    AuthMailer::send_magic_link(&ctx, &user, &website.website_basic_info).await?;
 
     format::empty_json()
 }

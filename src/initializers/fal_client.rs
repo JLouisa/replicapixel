@@ -21,7 +21,7 @@ impl Initializer for FalAi {
             serde_json::from_value(ctx.config.settings.clone().expect("No settings found"))
                 .expect("Failed to parse settings");
 
-        let fal_ai_client = FalAiClient::new(&fal_ai_settings.fal_ai);
+        let fal_ai_client = FalAiClient::new(&fal_ai_settings.fal_ai, &fal_ai_settings.website);
 
         let router = router.layer(Extension(fal_ai_client));
         Ok(router)
