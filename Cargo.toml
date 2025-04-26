@@ -1,11 +1,11 @@
 [workspace]
 
 [package]
-name = "pictora"
+name = "replicapixel"
 version = "0.1.0"
 edition = "2021"
 publish = false
-default-run = "pictora-cli"
+default-run = "replicapixel-cli"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -103,7 +103,7 @@ features = [
 ]
 
 [[bin]]
-name = "pictora-cli"
+name = "replicapixel-cli"
 path = "src/bin/main.rs"
 required-features = []
 

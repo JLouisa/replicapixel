@@ -1,6 +1,6 @@
 #[allow(unused_imports)]
 use loco_rs::{cli::playground, prelude::*};
-use pictora::app::App;
+use replicapixel::app::App;
 
 #[tokio::main]
 async fn main() -> loco_rs::Result<()> {
