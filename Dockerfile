@@ -39,12 +39,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends wget && rm -rf 
 # Copy required assets and configuration from the builder stage
 COPY --from=builder /usr/src/assets assets
 COPY --from=builder /usr/src/config config
-COPY --from=builder /usr/src/target/x86_64-unknown-linux-musl/release/pictora-cli /usr/src/pictora
+COPY --from=builder /usr/src/target/x86_64-unknown-linux-musl/release/replicapixel-cli /usr/src/replicapixel
 
 # Expose the Loco app port
 EXPOSE 3000
 
 # Set the entrypoint for the container
-ENTRYPOINT ["/usr/src/pictora"]
-CMD ["start", "-e", "production"]
+ENTRYPOINT ["/usr/src/replicapixel"]
+CMD ["start", "--server-and-worker", "-e", "production"]
 

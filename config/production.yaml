@@ -174,9 +174,9 @@ settings:
     training_model_url: {{ get_env(name="FAL_TRAINING_MODEL_URL") }} 
     webhook_url: {{ get_env(name="FAL_WEBHOOK_URL") }}
   website:
+    name: {{ get_env(name="NAME") }}
     site: {{ get_env(name="SITE") }}
     site_domain: {{ get_env(name="SITE_DOMAIN") }}
-    name: {{ get_env(name="NAME") }}
     from_email: {{ get_env(name="FROM_EMAIL") }}
     google_analytics:
       google_analytics_id: {{ get_env(name="GOOGLE_ANALYTICS_ID", default="YOUR_GA_ID_ENV") }}
