@@ -34,7 +34,7 @@ FROM debian:bookworm-slim AS runtime
 WORKDIR /usr/src
 
 # Install wget for health checks
-RUN apt-get update && apt-get install -y --no-install-recommends wget && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends wget ca-certificates && rm -rf /var/lib/apt/lists/*
 
 # Copy required assets and configuration from the builder stage
 COPY --from=builder /usr/src/assets assets
