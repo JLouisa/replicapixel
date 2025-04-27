@@ -23,7 +23,7 @@ pub struct TransactionDomain {
 impl TransactionDomain {
     pub fn new(
         user: &UserModel,
-        plan: PlanModel,
+        plan: &PlanModel,
         currency: Option<Currency>,
         payment_id: String,
         payment_amount: i64,

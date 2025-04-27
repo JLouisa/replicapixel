@@ -35,7 +35,6 @@ pub struct CheckoutSessionBuilder<'a> {
     mode: CheckoutSessionMode,
     currency: Currency,
     provided_metadata: Option<Metadata>,
-    // transaction_id: Option<&'a uuid::Uuid>,
 }
 
 impl<'a> CheckoutSessionBuilder<'a> {
@@ -49,7 +48,6 @@ impl<'a> CheckoutSessionBuilder<'a> {
             mode: CheckoutSessionMode::Payment,
             currency: Currency::USD,
             provided_metadata: None,
-            // transaction_id: None,
         }
     }
 
@@ -78,39 +76,18 @@ impl<'a> CheckoutSessionBuilder<'a> {
         self
     }
 
-    // pub fn transaction_id(&mut self, id: &'a Uuid) -> &mut Self {
-    //     self.transaction_id = Some(id);
-    //     self
-    // }
-
     pub fn metadata(&mut self) -> &mut Self {
-        // let user = match self.user {
-        //     Some(user) => user,
-        //     None => return self,
-        // };
         let plan = match self.plan {
             Some(plan) => plan,
             None => return self,
         };
-        // let transaction_id = match self.transaction_id {
-        //     Some(id) => id,
-        //     None => return self,
-        // };
-        let meta = Metadata::from([("plan".to_string(), plan.to_string())]);
-        self.provided_metadata = Some(meta);
+        self.provided_metadata = Some(self.process_metadata(plan));
         self
     }
 
     fn process_metadata(&self, plan: &PlanNames) -> Metadata {
         let mut session_metadata = Metadata::new();
         session_metadata.insert("plan".to_string(), plan.to_string());
-
-        // // Optional: Merge with other metadata if you have self.provided_metadata
-        // if let Some(provided) = &self.provided_metadata {
-        //     for (key, value) in provided.iter() {
-        //         session_metadata.insert(key.clone(), value.clone());
-        //     }
-        // }
         session_metadata
     }
 
@@ -126,7 +103,6 @@ impl<'a> CheckoutSessionBuilder<'a> {
             None => self.process_metadata(plan),
         };
 
-        // let session_metadata = self.process_metadata(plan, user, transaction_id);
         let checkout_session = self
             .client
             .create_checkout(

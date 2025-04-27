@@ -154,7 +154,7 @@ impl Plan {
             features: vec![
                 Feature {
                     bold: Some(true),
-                    description: "60 AI Photos (credits)".to_owned(),
+                    description: "50 AI Photos (credits)".to_owned(),
                 },
                 Feature {
                     bold: Some(true),
@@ -191,7 +191,7 @@ impl Plan {
             features: vec![
                 Feature {
                     bold: Some(true),
-                    description: "300 AI Photos (credits)".to_owned(),
+                    description: "250 AI Photos (credits)".to_owned(),
                 },
                 Feature {
                     bold: Some(true),

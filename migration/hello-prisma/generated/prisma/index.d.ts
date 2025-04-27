@@ -9001,7 +9001,7 @@ export namespace Prisma {
     id: number | null
     credit_amount: number | null
     model_amount: number | null
-    price_cents: number | null
+    price_cents: bigint | null
   }
 
   export type PlansMinAggregateOutputType = {
@@ -9011,7 +9011,7 @@ export namespace Prisma {
     plan_name: $Enums.PlanNames | null
     credit_amount: number | null
     model_amount: number | null
-    price_cents: number | null
+    price_cents: bigint | null
     stripe_price_id: string | null
     subtitle: string | null
     cta: string | null
@@ -9027,7 +9027,7 @@ export namespace Prisma {
     plan_name: $Enums.PlanNames | null
     credit_amount: number | null
     model_amount: number | null
-    price_cents: number | null
+    price_cents: bigint | null
     stripe_price_id: string | null
     subtitle: string | null
     cta: string | null
@@ -9212,7 +9212,7 @@ export namespace Prisma {
     plan_name: $Enums.PlanNames
     credit_amount: number
     model_amount: number
-    price_cents: number
+    price_cents: bigint
     stripe_price_id: string
     subtitle: string
     features: string[]
@@ -9331,7 +9331,7 @@ export namespace Prisma {
       plan_name: $Enums.PlanNames
       credit_amount: number
       model_amount: number
-      price_cents: number
+      price_cents: bigint
       stripe_price_id: string
       subtitle: string
       features: string[]
@@ -9769,7 +9769,7 @@ export namespace Prisma {
     readonly plan_name: FieldRef<"Plans", 'PlanNames'>
     readonly credit_amount: FieldRef<"Plans", 'Int'>
     readonly model_amount: FieldRef<"Plans", 'Int'>
-    readonly price_cents: FieldRef<"Plans", 'Int'>
+    readonly price_cents: FieldRef<"Plans", 'BigInt'>
     readonly stripe_price_id: FieldRef<"Plans", 'String'>
     readonly subtitle: FieldRef<"Plans", 'String'>
     readonly features: FieldRef<"Plans", 'String[]'>
@@ -10234,7 +10234,7 @@ export namespace Prisma {
     plan_id: number | null
     credit_amount: number | null
     model_amount: number | null
-    payment_amount: number | null
+    payment_amount: bigint | null
   }
 
   export type TransactionsMinAggregateOutputType = {
@@ -10244,7 +10244,7 @@ export namespace Prisma {
     plan_id: number | null
     credit_amount: number | null
     model_amount: number | null
-    payment_amount: number | null
+    payment_amount: bigint | null
     currency: string | null
     payment_id: string | null
     status: $Enums.Status | null
@@ -10259,7 +10259,7 @@ export namespace Prisma {
     plan_id: number | null
     credit_amount: number | null
     model_amount: number | null
-    payment_amount: number | null
+    payment_amount: bigint | null
     currency: string | null
     payment_id: string | null
     status: $Enums.Status | null
@@ -10441,7 +10441,7 @@ export namespace Prisma {
     plan_id: number
     credit_amount: number
     model_amount: number
-    payment_amount: number
+    payment_amount: bigint
     currency: string
     payment_id: string
     status: $Enums.Status
@@ -10561,7 +10561,7 @@ export namespace Prisma {
       plan_id: number
       credit_amount: number
       model_amount: number
-      payment_amount: number
+      payment_amount: bigint
       currency: string
       payment_id: string
       status: $Enums.Status
@@ -10998,7 +10998,7 @@ export namespace Prisma {
     readonly plan_id: FieldRef<"Transactions", 'Int'>
     readonly credit_amount: FieldRef<"Transactions", 'Int'>
     readonly model_amount: FieldRef<"Transactions", 'Int'>
-    readonly payment_amount: FieldRef<"Transactions", 'Int'>
+    readonly payment_amount: FieldRef<"Transactions", 'BigInt'>
     readonly currency: FieldRef<"Transactions", 'String'>
     readonly payment_id: FieldRef<"Transactions", 'String'>
     readonly status: FieldRef<"Transactions", 'Status'>
@@ -21182,7 +21182,7 @@ export namespace Prisma {
     plan_name?: EnumPlanNamesFilter<"Plans"> | $Enums.PlanNames
     credit_amount?: IntFilter<"Plans"> | number
     model_amount?: IntFilter<"Plans"> | number
-    price_cents?: IntFilter<"Plans"> | number
+    price_cents?: BigIntFilter<"Plans"> | bigint | number
     stripe_price_id?: StringFilter<"Plans"> | string
     subtitle?: StringFilter<"Plans"> | string
     features?: StringNullableListFilter<"Plans">
@@ -21222,7 +21222,7 @@ export namespace Prisma {
     NOT?: PlansWhereInput | PlansWhereInput[]
     credit_amount?: IntFilter<"Plans"> | number
     model_amount?: IntFilter<"Plans"> | number
-    price_cents?: IntFilter<"Plans"> | number
+    price_cents?: BigIntFilter<"Plans"> | bigint | number
     subtitle?: StringFilter<"Plans"> | string
     features?: StringNullableListFilter<"Plans">
     cta?: StringFilter<"Plans"> | string
@@ -21264,7 +21264,7 @@ export namespace Prisma {
     plan_name?: EnumPlanNamesWithAggregatesFilter<"Plans"> | $Enums.PlanNames
     credit_amount?: IntWithAggregatesFilter<"Plans"> | number
     model_amount?: IntWithAggregatesFilter<"Plans"> | number
-    price_cents?: IntWithAggregatesFilter<"Plans"> | number
+    price_cents?: BigIntWithAggregatesFilter<"Plans"> | bigint | number
     stripe_price_id?: StringWithAggregatesFilter<"Plans"> | string
     subtitle?: StringWithAggregatesFilter<"Plans"> | string
     features?: StringNullableListFilter<"Plans">
@@ -21284,7 +21284,7 @@ export namespace Prisma {
     plan_id?: IntFilter<"Transactions"> | number
     credit_amount?: IntFilter<"Transactions"> | number
     model_amount?: IntFilter<"Transactions"> | number
-    payment_amount?: IntFilter<"Transactions"> | number
+    payment_amount?: BigIntFilter<"Transactions"> | bigint | number
     currency?: StringFilter<"Transactions"> | string
     payment_id?: StringFilter<"Transactions"> | string
     status?: EnumStatusFilter<"Transactions"> | $Enums.Status
@@ -21321,7 +21321,7 @@ export namespace Prisma {
     plan_id?: IntFilter<"Transactions"> | number
     credit_amount?: IntFilter<"Transactions"> | number
     model_amount?: IntFilter<"Transactions"> | number
-    payment_amount?: IntFilter<"Transactions"> | number
+    payment_amount?: BigIntFilter<"Transactions"> | bigint | number
     currency?: StringFilter<"Transactions"> | string
     payment_id?: StringFilter<"Transactions"> | string
     status?: EnumStatusFilter<"Transactions"> | $Enums.Status
@@ -21361,7 +21361,7 @@ export namespace Prisma {
     plan_id?: IntWithAggregatesFilter<"Transactions"> | number
     credit_amount?: IntWithAggregatesFilter<"Transactions"> | number
     model_amount?: IntWithAggregatesFilter<"Transactions"> | number
-    payment_amount?: IntWithAggregatesFilter<"Transactions"> | number
+    payment_amount?: BigIntWithAggregatesFilter<"Transactions"> | bigint | number
     currency?: StringWithAggregatesFilter<"Transactions"> | string
     payment_id?: StringWithAggregatesFilter<"Transactions"> | string
     status?: EnumStatusWithAggregatesFilter<"Transactions"> | $Enums.Status
@@ -22490,7 +22490,7 @@ export namespace Prisma {
     plan_name: $Enums.PlanNames
     credit_amount: number
     model_amount: number
-    price_cents: number
+    price_cents: bigint | number
     stripe_price_id: string
     subtitle: string
     features?: PlansCreatefeaturesInput | string[]
@@ -22508,7 +22508,7 @@ export namespace Prisma {
     plan_name: $Enums.PlanNames
     credit_amount: number
     model_amount: number
-    price_cents: number
+    price_cents: bigint | number
     stripe_price_id: string
     subtitle: string
     features?: PlansCreatefeaturesInput | string[]
@@ -22525,7 +22525,7 @@ export namespace Prisma {
     plan_name?: EnumPlanNamesFieldUpdateOperationsInput | $Enums.PlanNames
     credit_amount?: IntFieldUpdateOperationsInput | number
     model_amount?: IntFieldUpdateOperationsInput | number
-    price_cents?: IntFieldUpdateOperationsInput | number
+    price_cents?: BigIntFieldUpdateOperationsInput | bigint | number
     stripe_price_id?: StringFieldUpdateOperationsInput | string
     subtitle?: StringFieldUpdateOperationsInput | string
     features?: PlansUpdatefeaturesInput | string[]
@@ -22543,7 +22543,7 @@ export namespace Prisma {
     plan_name?: EnumPlanNamesFieldUpdateOperationsInput | $Enums.PlanNames
     credit_amount?: IntFieldUpdateOperationsInput | number
     model_amount?: IntFieldUpdateOperationsInput | number
-    price_cents?: IntFieldUpdateOperationsInput | number
+    price_cents?: BigIntFieldUpdateOperationsInput | bigint | number
     stripe_price_id?: StringFieldUpdateOperationsInput | string
     subtitle?: StringFieldUpdateOperationsInput | string
     features?: PlansUpdatefeaturesInput | string[]
@@ -22561,7 +22561,7 @@ export namespace Prisma {
     plan_name: $Enums.PlanNames
     credit_amount: number
     model_amount: number
-    price_cents: number
+    price_cents: bigint | number
     stripe_price_id: string
     subtitle: string
     features?: PlansCreatefeaturesInput | string[]
@@ -22577,7 +22577,7 @@ export namespace Prisma {
     plan_name?: EnumPlanNamesFieldUpdateOperationsInput | $Enums.PlanNames
     credit_amount?: IntFieldUpdateOperationsInput | number
     model_amount?: IntFieldUpdateOperationsInput | number
-    price_cents?: IntFieldUpdateOperationsInput | number
+    price_cents?: BigIntFieldUpdateOperationsInput | bigint | number
     stripe_price_id?: StringFieldUpdateOperationsInput | string
     subtitle?: StringFieldUpdateOperationsInput | string
     features?: PlansUpdatefeaturesInput | string[]
@@ -22594,7 +22594,7 @@ export namespace Prisma {
     plan_name?: EnumPlanNamesFieldUpdateOperationsInput | $Enums.PlanNames
     credit_amount?: IntFieldUpdateOperationsInput | number
     model_amount?: IntFieldUpdateOperationsInput | number
-    price_cents?: IntFieldUpdateOperationsInput | number
+    price_cents?: BigIntFieldUpdateOperationsInput | bigint | number
     stripe_price_id?: StringFieldUpdateOperationsInput | string
     subtitle?: StringFieldUpdateOperationsInput | string
     features?: PlansUpdatefeaturesInput | string[]
@@ -22608,7 +22608,7 @@ export namespace Prisma {
     pid: string
     credit_amount: number
     model_amount: number
-    payment_amount: number
+    payment_amount: bigint | number
     currency: string
     payment_id: string
     status: $Enums.Status
@@ -22625,7 +22625,7 @@ export namespace Prisma {
     plan_id: number
     credit_amount: number
     model_amount: number
-    payment_amount: number
+    payment_amount: bigint | number
     currency: string
     payment_id: string
     status: $Enums.Status
@@ -22637,7 +22637,7 @@ export namespace Prisma {
     pid?: StringFieldUpdateOperationsInput | string
     credit_amount?: IntFieldUpdateOperationsInput | number
     model_amount?: IntFieldUpdateOperationsInput | number
-    payment_amount?: IntFieldUpdateOperationsInput | number
+    payment_amount?: BigIntFieldUpdateOperationsInput | bigint | number
     currency?: StringFieldUpdateOperationsInput | string
     payment_id?: StringFieldUpdateOperationsInput | string
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -22654,7 +22654,7 @@ export namespace Prisma {
     plan_id?: IntFieldUpdateOperationsInput | number
     credit_amount?: IntFieldUpdateOperationsInput | number
     model_amount?: IntFieldUpdateOperationsInput | number
-    payment_amount?: IntFieldUpdateOperationsInput | number
+    payment_amount?: BigIntFieldUpdateOperationsInput | bigint | number
     currency?: StringFieldUpdateOperationsInput | string
     payment_id?: StringFieldUpdateOperationsInput | string
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -22669,7 +22669,7 @@ export namespace Prisma {
     plan_id: number
     credit_amount: number
     model_amount: number
-    payment_amount: number
+    payment_amount: bigint | number
     currency: string
     payment_id: string
     status: $Enums.Status
@@ -22681,7 +22681,7 @@ export namespace Prisma {
     pid?: StringFieldUpdateOperationsInput | string
     credit_amount?: IntFieldUpdateOperationsInput | number
     model_amount?: IntFieldUpdateOperationsInput | number
-    payment_amount?: IntFieldUpdateOperationsInput | number
+    payment_amount?: BigIntFieldUpdateOperationsInput | bigint | number
     currency?: StringFieldUpdateOperationsInput | string
     payment_id?: StringFieldUpdateOperationsInput | string
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -22696,7 +22696,7 @@ export namespace Prisma {
     plan_id?: IntFieldUpdateOperationsInput | number
     credit_amount?: IntFieldUpdateOperationsInput | number
     model_amount?: IntFieldUpdateOperationsInput | number
-    payment_amount?: IntFieldUpdateOperationsInput | number
+    payment_amount?: BigIntFieldUpdateOperationsInput | bigint | number
     currency?: StringFieldUpdateOperationsInput | string
     payment_id?: StringFieldUpdateOperationsInput | string
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -23998,6 +23998,17 @@ export namespace Prisma {
     not?: NestedEnumPlanNamesFilter<$PrismaModel> | $Enums.PlanNames
   }
 
+  export type BigIntFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntFilter<$PrismaModel> | bigint | number
+  }
+
   export type StringNullableListFilter<$PrismaModel = never> = {
     equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
     has?: string | StringFieldRefInput<$PrismaModel> | null
@@ -24077,6 +24088,22 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumPlanNamesFilter<$PrismaModel>
     _max?: NestedEnumPlanNamesFilter<$PrismaModel>
+  }
+
+  export type BigIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntWithAggregatesFilter<$PrismaModel> | bigint | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedBigIntFilter<$PrismaModel>
+    _min?: NestedBigIntFilter<$PrismaModel>
+    _max?: NestedBigIntFilter<$PrismaModel>
   }
 
   export type PlansScalarRelationFilter = {
@@ -24228,17 +24255,6 @@ export namespace Prisma {
     processed_at?: SortOrder
   }
 
-  export type BigIntFilter<$PrismaModel = never> = {
-    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
-    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
-    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    not?: NestedBigIntFilter<$PrismaModel> | bigint | number
-  }
-
   export type seaql_migrationsCountOrderByAggregateInput = {
     version?: SortOrder
     applied_at?: SortOrder
@@ -24260,22 +24276,6 @@ export namespace Prisma {
 
   export type seaql_migrationsSumOrderByAggregateInput = {
     applied_at?: SortOrder
-  }
-
-  export type BigIntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
-    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
-    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    not?: NestedBigIntWithAggregatesFilter<$PrismaModel> | bigint | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedBigIntFilter<$PrismaModel>
-    _min?: NestedBigIntFilter<$PrismaModel>
-    _max?: NestedBigIntFilter<$PrismaModel>
   }
 
   export type EnumNotificationTypeFilter<$PrismaModel = never> = {
@@ -25108,6 +25108,14 @@ export namespace Prisma {
     set?: $Enums.PlanNames
   }
 
+  export type BigIntFieldUpdateOperationsInput = {
+    set?: bigint | number
+    increment?: bigint | number
+    decrement?: bigint | number
+    multiply?: bigint | number
+    divide?: bigint | number
+  }
+
   export type PlansUpdatefeaturesInput = {
     set?: string[]
     push?: string | string[]
@@ -25209,14 +25217,6 @@ export namespace Prisma {
     update?: ImagesUpdateWithWhereUniqueWithoutPackInput | ImagesUpdateWithWhereUniqueWithoutPackInput[]
     updateMany?: ImagesUpdateManyWithWhereWithoutPackInput | ImagesUpdateManyWithWhereWithoutPackInput[]
     deleteMany?: ImagesScalarWhereInput | ImagesScalarWhereInput[]
-  }
-
-  export type BigIntFieldUpdateOperationsInput = {
-    set?: bigint | number
-    increment?: bigint | number
-    decrement?: bigint | number
-    multiply?: bigint | number
-    divide?: bigint | number
   }
 
   export type UsersCreateNestedOneWithoutNotificationsInput = {
@@ -25722,16 +25722,6 @@ export namespace Prisma {
     not?: NestedEnumPlanNamesFilter<$PrismaModel> | $Enums.PlanNames
   }
 
-  export type NestedEnumPlanNamesWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.PlanNames | EnumPlanNamesFieldRefInput<$PrismaModel>
-    in?: $Enums.PlanNames[] | ListEnumPlanNamesFieldRefInput<$PrismaModel>
-    notIn?: $Enums.PlanNames[] | ListEnumPlanNamesFieldRefInput<$PrismaModel>
-    not?: NestedEnumPlanNamesWithAggregatesFilter<$PrismaModel> | $Enums.PlanNames
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumPlanNamesFilter<$PrismaModel>
-    _max?: NestedEnumPlanNamesFilter<$PrismaModel>
-  }
-
   export type NestedBigIntFilter<$PrismaModel = never> = {
     equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
     in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
@@ -25741,6 +25731,16 @@ export namespace Prisma {
     gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
     gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
     not?: NestedBigIntFilter<$PrismaModel> | bigint | number
+  }
+
+  export type NestedEnumPlanNamesWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PlanNames | EnumPlanNamesFieldRefInput<$PrismaModel>
+    in?: $Enums.PlanNames[] | ListEnumPlanNamesFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PlanNames[] | ListEnumPlanNamesFieldRefInput<$PrismaModel>
+    not?: NestedEnumPlanNamesWithAggregatesFilter<$PrismaModel> | $Enums.PlanNames
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPlanNamesFilter<$PrismaModel>
+    _max?: NestedEnumPlanNamesFilter<$PrismaModel>
   }
 
   export type NestedBigIntWithAggregatesFilter<$PrismaModel = never> = {
@@ -25978,7 +25978,7 @@ export namespace Prisma {
     pid: string
     credit_amount: number
     model_amount: number
-    payment_amount: number
+    payment_amount: bigint | number
     currency: string
     payment_id: string
     status: $Enums.Status
@@ -25993,7 +25993,7 @@ export namespace Prisma {
     plan_id: number
     credit_amount: number
     model_amount: number
-    payment_amount: number
+    payment_amount: bigint | number
     currency: string
     payment_id: string
     status: $Enums.Status
@@ -26290,7 +26290,7 @@ export namespace Prisma {
     plan_id?: IntFilter<"Transactions"> | number
     credit_amount?: IntFilter<"Transactions"> | number
     model_amount?: IntFilter<"Transactions"> | number
-    payment_amount?: IntFilter<"Transactions"> | number
+    payment_amount?: BigIntFilter<"Transactions"> | bigint | number
     currency?: StringFilter<"Transactions"> | string
     payment_id?: StringFilter<"Transactions"> | string
     status?: EnumStatusFilter<"Transactions"> | $Enums.Status
@@ -27167,7 +27167,7 @@ export namespace Prisma {
     pid: string
     credit_amount: number
     model_amount: number
-    payment_amount: number
+    payment_amount: bigint | number
     currency: string
     payment_id: string
     status: $Enums.Status
@@ -27182,7 +27182,7 @@ export namespace Prisma {
     user_id: number
     credit_amount: number
     model_amount: number
-    payment_amount: number
+    payment_amount: bigint | number
     currency: string
     payment_id: string
     status: $Enums.Status
@@ -27222,7 +27222,7 @@ export namespace Prisma {
     plan_name: $Enums.PlanNames
     credit_amount: number
     model_amount: number
-    price_cents: number
+    price_cents: bigint | number
     stripe_price_id: string
     subtitle: string
     features?: PlansCreatefeaturesInput | string[]
@@ -27239,7 +27239,7 @@ export namespace Prisma {
     plan_name: $Enums.PlanNames
     credit_amount: number
     model_amount: number
-    price_cents: number
+    price_cents: bigint | number
     stripe_price_id: string
     subtitle: string
     features?: PlansCreatefeaturesInput | string[]
@@ -27325,7 +27325,7 @@ export namespace Prisma {
     plan_name?: EnumPlanNamesFieldUpdateOperationsInput | $Enums.PlanNames
     credit_amount?: IntFieldUpdateOperationsInput | number
     model_amount?: IntFieldUpdateOperationsInput | number
-    price_cents?: IntFieldUpdateOperationsInput | number
+    price_cents?: BigIntFieldUpdateOperationsInput | bigint | number
     stripe_price_id?: StringFieldUpdateOperationsInput | string
     subtitle?: StringFieldUpdateOperationsInput | string
     features?: PlansUpdatefeaturesInput | string[]
@@ -27342,7 +27342,7 @@ export namespace Prisma {
     plan_name?: EnumPlanNamesFieldUpdateOperationsInput | $Enums.PlanNames
     credit_amount?: IntFieldUpdateOperationsInput | number
     model_amount?: IntFieldUpdateOperationsInput | number
-    price_cents?: IntFieldUpdateOperationsInput | number
+    price_cents?: BigIntFieldUpdateOperationsInput | bigint | number
     stripe_price_id?: StringFieldUpdateOperationsInput | string
     subtitle?: StringFieldUpdateOperationsInput | string
     features?: PlansUpdatefeaturesInput | string[]
@@ -28101,7 +28101,7 @@ export namespace Prisma {
     plan_id: number
     credit_amount: number
     model_amount: number
-    payment_amount: number
+    payment_amount: bigint | number
     currency: string
     payment_id: string
     status: $Enums.Status
@@ -28325,7 +28325,7 @@ export namespace Prisma {
     pid?: StringFieldUpdateOperationsInput | string
     credit_amount?: IntFieldUpdateOperationsInput | number
     model_amount?: IntFieldUpdateOperationsInput | number
-    payment_amount?: IntFieldUpdateOperationsInput | number
+    payment_amount?: BigIntFieldUpdateOperationsInput | bigint | number
     currency?: StringFieldUpdateOperationsInput | string
     payment_id?: StringFieldUpdateOperationsInput | string
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -28340,7 +28340,7 @@ export namespace Prisma {
     plan_id?: IntFieldUpdateOperationsInput | number
     credit_amount?: IntFieldUpdateOperationsInput | number
     model_amount?: IntFieldUpdateOperationsInput | number
-    payment_amount?: IntFieldUpdateOperationsInput | number
+    payment_amount?: BigIntFieldUpdateOperationsInput | bigint | number
     currency?: StringFieldUpdateOperationsInput | string
     payment_id?: StringFieldUpdateOperationsInput | string
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -28354,7 +28354,7 @@ export namespace Prisma {
     plan_id?: IntFieldUpdateOperationsInput | number
     credit_amount?: IntFieldUpdateOperationsInput | number
     model_amount?: IntFieldUpdateOperationsInput | number
-    payment_amount?: IntFieldUpdateOperationsInput | number
+    payment_amount?: BigIntFieldUpdateOperationsInput | bigint | number
     currency?: StringFieldUpdateOperationsInput | string
     payment_id?: StringFieldUpdateOperationsInput | string
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -28565,7 +28565,7 @@ export namespace Prisma {
     user_id: number
     credit_amount: number
     model_amount: number
-    payment_amount: number
+    payment_amount: bigint | number
     currency: string
     payment_id: string
     status: $Enums.Status
@@ -28577,7 +28577,7 @@ export namespace Prisma {
     pid?: StringFieldUpdateOperationsInput | string
     credit_amount?: IntFieldUpdateOperationsInput | number
     model_amount?: IntFieldUpdateOperationsInput | number
-    payment_amount?: IntFieldUpdateOperationsInput | number
+    payment_amount?: BigIntFieldUpdateOperationsInput | bigint | number
     currency?: StringFieldUpdateOperationsInput | string
     payment_id?: StringFieldUpdateOperationsInput | string
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -28592,7 +28592,7 @@ export namespace Prisma {
     user_id?: IntFieldUpdateOperationsInput | number
     credit_amount?: IntFieldUpdateOperationsInput | number
     model_amount?: IntFieldUpdateOperationsInput | number
-    payment_amount?: IntFieldUpdateOperationsInput | number
+    payment_amount?: BigIntFieldUpdateOperationsInput | bigint | number
     currency?: StringFieldUpdateOperationsInput | string
     payment_id?: StringFieldUpdateOperationsInput | string
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -28606,7 +28606,7 @@ export namespace Prisma {
     user_id?: IntFieldUpdateOperationsInput | number
     credit_amount?: IntFieldUpdateOperationsInput | number
     model_amount?: IntFieldUpdateOperationsInput | number
-    payment_amount?: IntFieldUpdateOperationsInput | number
+    payment_amount?: BigIntFieldUpdateOperationsInput | bigint | number
     currency?: StringFieldUpdateOperationsInput | string
     payment_id?: StringFieldUpdateOperationsInput | string
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status

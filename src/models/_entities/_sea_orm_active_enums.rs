@@ -348,3 +348,10 @@ pub enum FeatureStatus {
     #[sea_orm(string_value = "Rejected")]
     Rejected,
 }
+
+#[derive(Serialize, Debug, Clone, EnumString)]
+pub enum CheckOutStatus {
+    Succeeded,
+    Cancelled,
+    Processing,
+}

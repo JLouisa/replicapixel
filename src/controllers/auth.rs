@@ -3,11 +3,15 @@
 #![allow(clippy::unused_async)]
 use crate::{
     domain::website::Website,
-    mailers::auth::AuthMailer,
+    mailers::{
+        auth::AuthMailer,
+        transaction::{CheckoutCompletedEmailData, CheckoutMailer},
+    },
     models::{
         _entities::users,
         join::user_credits_models::load_user_and_credits,
         users::{LoginParams, RegisterError, RegisterParams, UserPid},
+        PlanModel, TransactionModel,
     },
     service::stripe::stripe::StripeClient,
     views::auth::{CurrentResponse, LoginResponse},
@@ -106,15 +110,24 @@ pub fn routes() -> Routes {
         .add(routes::Auth::API_MAGIC_LINK, post(magic_link))
         .add(routes::Auth::API_MAGIC_LINK_W_TOKEN, get(magic_link_verify))
         .add(routes::Auth::API_VALIDATE_USER, get(validate_user))
-        .add("/api/auth/test/welcome", get(test_welcome_mail))
-        .add("/api/auth/test/forgot_password", get(test_forgot_password))
-        .add("/api/auth/test/magic_link", get(test_magic_link))
+    // .add("/api/auth/test/welcome", get(test_welcome_mail))
+    // .add("/api/auth/test/forgot_password", get(test_forgot_password))
+    // .add("/api/auth/test/magic_link", get(test_magic_link))
+    // .add("/api/auth/test/transaction", get(test_transaction))
 }
 
 fn get_allow_email_domain_re() -> &'static Regex {
     EMAIL_DOMAIN_RE.get_or_init(|| {
         Regex::new(r"@example\.com$|@gmail\.com$").expect("Failed to compile regex")
     })
+}
+async fn load_plan(db: &impl ConnectionTrait, name: &String) -> Result<PlanModel> {
+    let item = PlanModel::find_by_name_string(db, &name).await?;
+    Ok(item)
+}
+async fn load_transaction(db: &impl ConnectionTrait, name: &Uuid) -> Result<TransactionModel> {
+    let item = TransactionModel::find_by_pid(name, db).await?;
+    Ok(item)
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -133,6 +146,31 @@ pub struct MagicLinkParams {
     pub email: String,
 }
 
+#[debug_handler]
+pub async fn test_transaction(
+    // auth: auth::JWT,
+    State(ctx): State<AppContext>,
+    Extension(website): Extension<Website>,
+    ViewEngine(v): ViewEngine<TeraView>,
+) -> Result<impl IntoResponse> {
+    let user_pid = UserPid::new("ab5e796c-a2cd-458e-ad6b-c3a898f44bd1");
+    let transaction_pid: Uuid = "c8b9233b-e18d-482d-9307-ed0c1b694cd7".parse().unwrap();
+    let plan_name_str = "Premium".to_string();
+
+    let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
+    let plan = load_plan(&ctx.db, &plan_name_str).await?;
+    let transaction = load_transaction(&ctx.db, &transaction_pid).await?;
+
+    let collection = CheckoutCompletedEmailData {
+        user,
+        transaction,
+        plan,
+        stripe_receipt_url: None,
+    };
+
+    CheckoutMailer::send_checkout_completed(&ctx, &website.website_basic_info, &collection).await?;
+    Ok((StatusCode::OK).into_response())
+}
 #[debug_handler]
 pub async fn test_welcome_mail(
     // auth: auth::JWT,

@@ -166,7 +166,7 @@ settings:
   #   cloud_secret_access_key: {{ get_env(name="CLOUD_SECRET_ACCESS_KEY") }} 
   #   r2:
   #     cloud_region: {{ get_env(name="CLOUD_S3_REGION") }} 
-  #     cloud_bucket: {{ get_env(name="CLOUD_S3_BUCKET_NAME") }} 
+  #     cloud_bucket: {{ get_env(name="AWS_S3_BUCKET_NAME") }} 
   #     access_time: {{ get_env(name="CLOUD_S3_ACCESS_TIME") }} 
   fal_ai:
     fal_key: {{ get_env(name="FAL_AI_KEY") }} 

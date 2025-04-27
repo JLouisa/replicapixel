@@ -1,6 +1,8 @@
 #![allow(clippy::missing_errors_doc)]
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
+use crate::domain::website::Website;
+use crate::mailers::transaction::{CheckoutCompletedEmailData, CheckoutMailer};
 use crate::models::_entities::sea_orm_active_enums::Status;
 use crate::models::_entities::training_models;
 use crate::models::{users, TrainingModelModel};
@@ -50,30 +52,29 @@ async fn load_item_by_request_id(ctx: &AppContext, id: &Uuid) -> Result<Model> {
 pub async fn stripe(
     Extension(stripe_client): Extension<StripeClient>,
     State(ctx): State<AppContext>,
+    Extension(website): Extension<Website>,
     headers: HeaderMap,
     body: String,
 ) -> Result<Response> {
     // 1. Extract the Stripe signature
-    let signature = match headers
+    let signature = headers
         .get("stripe-signature")
         .and_then(|v| v.to_str().ok())
-    {
-        Some(sig) => sig,
-        None => return Err(StripeServiceError::SignatureError)?,
-    };
+        .ok_or(StripeServiceError::SignatureError)?;
 
-    // 2. Extract the Stripe event
-    let event = match Webhook::construct_event(
+    // 2. Construct the Stripe event
+    let event = Webhook::construct_event(
         &body,
         signature,
         &stripe_client.settings.stripe_webhook_secret,
-    ) {
-        Ok(evt) => evt,
-        Err(e) => return Err(StripeServiceError::SignatureVerifyError(e.to_string()))?,
-    };
+    )
+    .map_err(|e| StripeServiceError::SignatureVerifyError(e.to_string()))?;
 
-    // 3. Handle the specific event type
-    StripeWebhookService::handle_webhook(event, &ctx).await?;
+    // 3. Handle the webhook event
+    if let Some(email_data) = StripeWebhookService::handle_webhook(event, &ctx).await? {
+        CheckoutMailer::send_checkout_completed(&ctx, &website.website_basic_info, &email_data)
+            .await?;
+    }
 
     // 4. Acknowledge receipt to Stripe
     Ok((StatusCode::OK).into_response())

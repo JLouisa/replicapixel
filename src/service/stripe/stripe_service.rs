@@ -3,6 +3,7 @@
 #![allow(clippy::unused_async)]
 use loco_rs::prelude::*;
 
+use crate::mailers::transaction::CheckoutCompletedEmailData;
 use crate::models::_entities::sea_orm_active_enums::{PlanNames, Status};
 use crate::models::join::user_credits_models::{load_user_and_credits, JoinError};
 use crate::models::transactions::TransactionDomain;
@@ -110,9 +111,9 @@ async fn extract_and_process_metadata(
         tracing::error!("Webhook {}: Missing metadata", &session.id);
         loco_rs::Error::BadRequest("Missing metadata".into())
     })?;
-    let plan_name_str = metadata.get("plan_name").ok_or_else(|| {
-        tracing::error!("Webhook {}: Missing plan_name in metadata", &session.id);
-        loco_rs::Error::BadRequest("Missing plan_name".into())
+    let plan_name_str = metadata.get("plan").ok_or_else(|| {
+        tracing::error!("Webhook {}: Missing plan in metadata", &session.id);
+        loco_rs::Error::BadRequest("Missing plan".into())
     })?;
 
     let (user, user_credits) = load_user_and_credits(db_txn, &user_pid).await?;
@@ -123,7 +124,10 @@ async fn extract_and_process_metadata(
 
 pub struct StripeWebhookService;
 impl StripeWebhookService {
-    pub async fn handle_webhook(event: Event, ctx: &AppContext) -> Result<(), StripeServiceError> {
+    pub async fn handle_webhook(
+        event: Event,
+        ctx: &AppContext,
+    ) -> Result<Option<CheckoutCompletedEmailData>, StripeServiceError> {
         match event.type_ {
             EventType::CheckoutSessionCompleted => {
                 if let EventObject::CheckoutSession(session) = event.data.object {
@@ -137,7 +141,7 @@ impl StripeWebhookService {
                                     "Webhook {}: Event already handled (HSE found).",
                                     &session_id
                                 );
-                                return Ok(()); // Success, already done.
+                                return Ok(None); // Success, already done.
                             }
 
                             // --- Start Database Transaction ---
@@ -159,7 +163,7 @@ impl StripeWebhookService {
 
                             let transaction = TransactionDomain::new(
                                 &user,
-                                plan,
+                                &plan,
                                 session.currency,
                                 session_id.to_string(),
                                 amount,
@@ -184,21 +188,28 @@ impl StripeWebhookService {
 
                             //Todo send_confirmation_email(user.email, &session_id).await?;
 
-                            return Ok(());
+                            let email_data = CheckoutCompletedEmailData {
+                                user,
+                                transaction: saved_transaction,
+                                plan,
+                                stripe_receipt_url: None,
+                            };
+
+                            return Ok(Some(email_data));
                         }
                         CheckoutSessionPaymentStatus::NoPaymentRequired => {
                             tracing::info!(
                                 "No payment required for checkout session {}",
                                 &session_id
                             );
-                            return Ok(());
+                            return Ok(None);
                         }
                         CheckoutSessionPaymentStatus::Unpaid => {
                             tracing::info!(
                                 "Payment unpaid/failed for checkout session {}.",
                                 &session_id,
                             );
-                            return Ok(());
+                            return Ok(None);
                         }
                     }
                 }
@@ -212,17 +223,17 @@ impl StripeWebhookService {
                     // TODO: Handle successful payment (e.g., if not using Checkout Sessions)
                 } else {
                     tracing::error!("Mismatched event object for PaymentIntentSucceeded");
-                    return Ok(());
+                    return Ok(None);
                 }
             }
             // ... handle other events like payment_intent.payment_failed, invoice.paid, etc.
             _ => {
                 // Log unhandled event types for debugging/future implementation
                 tracing::warn!("Received unhandled Stripe event type: {}", event.type_);
-                return Ok(());
+                return Ok(None);
             }
         }
 
-        return Ok(());
+        return Ok(None);
     }
 }
