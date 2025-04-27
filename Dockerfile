@@ -1,5 +1,5 @@
 # Stage 1: Chef Base - Installs dependencies needed for building
-FROM lukemathwalker/cargo-chef:v0.1.64-rust-1.83.0 AS chef
+FROM lukemathwalker/cargo-chef:latest-rust-1.83.0 AS chef
 
 WORKDIR /usr/src/
 
