@@ -1,5 +1,5 @@
 # Stage 1: Chef Base - Installs dependencies needed for building
-FROM lukemathwalker/cargo-chef:latest-rust-1.83.0 AS chef
+FROM lukemathwalker/cargo-chef:latest-rust-1.83.0@sha256:4d3858029892a324ce199006b7272cff35ab35ebd4ac7cc78575976976708b64 AS chef
 
 WORKDIR /usr/src/
 
@@ -38,7 +38,7 @@ RUN rustup target add x86_64-unknown-linux-musl
 RUN cargo build --release --target x86_64-unknown-linux-musl --locked
 
 # Stage 4: Runtime - Create the final minimal image
-FROM debian:bookworm-slim AS runtime
+FROM debian:bookworm-slim@sha256:b1211f6d19afd012477bd34fdcabb6b663d680e0f4b0537da6e6b0fd057a3ec3 AS runtime
 WORKDIR /usr/src
 
 # Install only what's needed for runtime
@@ -53,6 +53,10 @@ RUN adduser --disabled-password --gecos "" appuser
 COPY --from=builder /usr/src/assets ./assets
 COPY --from=builder /usr/src/config ./config
 COPY --from=builder /usr/src/target/x86_64-unknown-linux-musl/release/replicapixel-cli /usr/src/replicapixel
+
+# Set ownership for all copied files and executable permission for the binary
+RUN chown -R appuser:appuser /usr/src/assets /usr/src/config /usr/src/replicapixel \
+    && chmod +x /usr/src/replicapixel
 
 # Expose the Loco app port
 EXPOSE 3000
