@@ -79,6 +79,7 @@ impl From<StripeServiceError> for LocoError {
             StripeServiceError::DbErr(_) => LocoError::InternalServerError,
             StripeServiceError::DbModel(_) => LocoError::InternalServerError,
             StripeServiceError::LocoErr(loco_err) => LocoError::from(loco_err),
+            StripeServiceError::JoinError(loco_err) => LocoError::from(loco_err),
         }
     }
 }

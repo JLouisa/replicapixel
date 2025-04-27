@@ -140,13 +140,13 @@ impl StripeClient {
         &self,
         user: &UserModel,
         plan: &PlanNames,
-        transaction_id: String,
         mode: &CheckoutSessionMode,
         ui_mode: &CheckoutSessionUiMode,
         currency: &Currency,
         metadata: Metadata,
         txn: &impl ConnectionTrait,
     ) -> Result<CheckoutSession, StripeClientError> {
+        let user_pid_str = user.pid.to_string();
         let customer_id: CustomerId = match user.stripe_customer_id.to_owned() {
             Some(existing_stripe_id_str) => CustomerId::from_str(&existing_stripe_id_str)?,
             None => {
@@ -173,7 +173,7 @@ impl StripeClient {
                 true => Some(self.stripe_url.stripe_success_url.as_ref()),
                 false => None,
             },
-            client_reference_id: Some(&transaction_id),
+            client_reference_id: Some(&user_pid_str),
             mode: Some(*mode),
             ui_mode: Some(*ui_mode),
             currency: Some(*currency),

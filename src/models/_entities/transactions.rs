@@ -15,6 +15,7 @@ pub struct Model {
     pub plan_id: i32,
     pub credit_amount: i32,
     pub model_amount: i32,
+    pub payment_amount: i64,
     pub currency: String,
     pub payment_id: String,
     pub status: Status,

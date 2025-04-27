@@ -17,7 +17,7 @@ pub struct Model {
     pub plan_name: PlanNames,
     pub credit_amount: i32,
     pub model_amount: i32,
-    pub price_cents: i32,
+    pub price_cents: i64,
     #[sea_orm(column_type = "Text", unique)]
     pub stripe_price_id: String,
     pub subtitle: String,

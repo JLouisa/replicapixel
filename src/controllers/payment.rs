@@ -24,6 +24,8 @@ use crate::{
 };
 use axum::{http::StatusCode, response::IntoResponse};
 
+use super::auth::routes::Auth as AuthRoutes;
+
 pub mod routes {
     use serde::{Deserialize, Serialize};
 
@@ -111,13 +113,6 @@ async fn load_plan(db: &DatabaseConnection, name: &PlanNames) -> Result<PlanMode
     let item = PlanModel::find_by_name(db, &name).await?;
     Ok(item)
 }
-async fn save_txn(
-    db: &DatabaseConnection,
-    transaction: &TransactionDomain,
-) -> Result<TransactionActiveModel> {
-    let item = TransactionActiveModel::save(db, &transaction).await?;
-    Ok(item)
-}
 
 #[derive(Deserialize, Debug)]
 struct PaymentRedirectParams {
@@ -139,27 +134,20 @@ pub async fn create_checkout_session(
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
+
+    let mut headers = HeaderMap::new();
     if user.pid != pid {
-        return Err(loco_rs::Error::Message(
-            "You are not authorized to access this page".to_string(),
-        ));
+        headers.insert("HX-Redirect", AuthRoutes::LOGIN.parse().unwrap());
+        return Ok((StatusCode::OK, headers).into_response());
     }
     let plan = load_plan(&ctx.db, &plan).await?;
-    let transaction_id = uuid::Uuid::new_v4();
+
     let stripe_checkout = CheckoutSessionBuilder::new(&stripe_client, &ctx.db)
         .user(&user)
         .plan(&plan.plan_name)
-        .transaction_id(&transaction_id)
+        .metadata()
         .build()
         .await?;
-    let transaction = TransactionDomain::new(
-        transaction_id,
-        &user,
-        plan,
-        stripe_checkout.currency.clone(),
-        stripe_checkout.id.to_string(),
-    );
-    let _transaction = save_txn(&ctx.db, &transaction).await?; //Todo Change to fail gracefully and continue with payment. Add the transaction on webhook
 
     let session = match stripe_checkout.url {
         Some(session) => session,
@@ -169,7 +157,6 @@ pub async fn create_checkout_session(
             ))
         }
     };
-    let mut headers = HeaderMap::new();
     headers.insert("HX-Redirect", session.parse().unwrap());
     Ok((StatusCode::OK, headers).into_response())
 }

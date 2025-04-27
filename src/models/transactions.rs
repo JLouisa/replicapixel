@@ -4,7 +4,7 @@ use super::{
     _entities::{sea_orm_active_enums::Status, transactions},
 };
 use loco_rs::prelude::*;
-use sea_orm::{entity::prelude::*, ActiveValue};
+use sea_orm::{entity::prelude::*, ActiveValue, Condition};
 use stripe::Currency;
 pub type Transactions = Entity;
 
@@ -15,30 +15,33 @@ pub struct TransactionDomain {
     pub plan_id: i32,
     pub credit_amount: i32,
     pub model_amount: i32,
+    pub payment_amount: i64,
     pub currency: String,
     pub payment_id: String,
     pub status: Status,
 }
 impl TransactionDomain {
     pub fn new(
-        pid: uuid::Uuid,
         user: &UserModel,
         plan: PlanModel,
         currency: Option<Currency>,
         payment_id: String,
+        payment_amount: i64,
+        status: Option<Status>,
     ) -> Self {
         Self {
-            pid,
+            pid: Uuid::new_v4(),
             user_id: user.id,
             plan_id: plan.id,
             credit_amount: plan.credit_amount,
             model_amount: plan.model_amount,
+            payment_amount: payment_amount,
             currency: match currency {
                 Some(info) => info.to_string(),
                 None => Currency::USD.to_string(),
             },
             payment_id,
-            status: Status::default(),
+            status: status.unwrap_or_default(),
         }
     }
     pub fn update(&self, item: &mut TransactionActiveModel) {
@@ -69,20 +72,21 @@ impl ActiveModelBehavior for ActiveModel {
 
 // implement your write-oriented logic here
 impl ActiveModel {
-    pub async fn save(db: &impl ConnectionTrait, item: &TransactionDomain) -> ModelResult<Self> {
+    pub async fn save(db: &impl ConnectionTrait, item: &TransactionDomain) -> ModelResult<Model> {
         let transaction = ActiveModel {
             pid: ActiveValue::set(item.pid.clone()),
             user_id: ActiveValue::set(item.user_id.clone()),
             plan_id: ActiveValue::set(item.plan_id.clone()),
             credit_amount: ActiveValue::set(item.credit_amount.clone()),
             model_amount: ActiveValue::set(item.model_amount.clone()),
+            payment_amount: ActiveValue::set(item.payment_amount.clone()),
             currency: ActiveValue::set(item.currency.clone()),
             payment_id: ActiveValue::set(item.payment_id.clone()),
             status: ActiveValue::set(item.status),
             ..Default::default()
         };
         let transaction = transaction.insert(db).await?;
-        Ok(transaction.into())
+        Ok(transaction)
     }
 
     pub async fn status_completed(mut self, db: &impl ConnectionTrait) -> ModelResult<Model> {
@@ -119,15 +123,17 @@ impl Model {
         Ok(updated)
     }
     pub async fn find_by_pid(pid: &Uuid, db: &impl ConnectionTrait) -> ModelResult<Self> {
-        let user = Entity::find()
-            .filter(
-                model::query::condition()
-                    .eq(transactions::Column::Pid, pid.clone())
-                    .build(),
-            )
-            .one(db)
-            .await?;
+        let condition = Condition::all().add(transactions::Column::Pid.eq(pid.clone()));
+        let user = Entity::find().filter(condition).one(db).await?;
         user.ok_or_else(|| ModelError::EntityNotFound)
+    }
+    pub async fn find_by_pid_webhook(
+        pid: &Uuid,
+        db: &impl ConnectionTrait,
+    ) -> ModelResult<Option<Self>> {
+        let condition = Condition::all().add(transactions::Column::Pid.eq(pid.clone()));
+        let user = Entity::find().filter(condition).one(db).await?;
+        Ok(user)
     }
     pub async fn find_by_id(db: &DatabaseConnection, id: i32) -> ModelResult<Self> {
         let user = Entity::find()

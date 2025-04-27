@@ -151,7 +151,7 @@ model Plans {
   plan_name                       PlanNames       @unique
   credit_amount                   Int
   model_amount                    Int
-  price_cents                     Int
+  price_cents                     BigInt
   stripe_price_id                 String          @unique
   subtitle                        String          @db.VarChar(255)
   features                        String[]        @db.Text @default([])
@@ -172,6 +172,7 @@ model Transactions {
   plan_id                         Int     
   credit_amount                   Int     
   model_amount                    Int     
+  payment_amount                  BigInt
   currency                        String          @db.VarChar(16)
   payment_id                      String          @db.VarChar(255)
   status                          Status      

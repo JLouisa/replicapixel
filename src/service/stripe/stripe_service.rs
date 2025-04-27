@@ -1,12 +1,21 @@
 #![allow(clippy::missing_errors_doc)]
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
-use crate::models::_entities::sea_orm_active_enums::Status;
-use crate::models::{StripeEventActiveModel, StripeEventModel, TransactionModel, UserCreditModel};
 use loco_rs::prelude::*;
 
+use crate::models::_entities::sea_orm_active_enums::{PlanNames, Status};
+use crate::models::join::user_credits_models::{load_user_and_credits, JoinError};
+use crate::models::transactions::TransactionDomain;
+use crate::models::users::UserPid;
+use crate::models::{
+    PlanModel, StripeEventActiveModel, StripeEventModel, TransactionActiveModel, TransactionModel,
+    UserCreditModel, UserModel,
+};
+
+use std::collections::HashMap;
 use stripe::{CheckoutSessionPaymentStatus, Event, EventObject, EventType};
 use thiserror::Error;
+use tracing::{error, info};
 
 #[derive(Debug, Error)]
 pub enum StripeServiceError {
@@ -32,6 +41,8 @@ pub enum StripeServiceError {
     DbModel(#[from] ModelError),
     #[error("Internal client error: {0}")]
     LocoErr(#[from] loco_rs::Error),
+    #[error("Internal client error: {0}")]
+    JoinError(#[from] JoinError),
 }
 
 async fn update_txn_completed(
@@ -48,8 +59,11 @@ async fn update_txn_failed(
     let item = TransactionModel::status_failed(item, db).await?;
     Ok(item)
 }
-async fn load_txn(pid: &uuid::Uuid, db: &impl ConnectionTrait) -> Result<TransactionModel> {
-    let item = TransactionModel::find_by_pid(&pid, db).await?;
+async fn load_txn_webhook(
+    pid: &uuid::Uuid,
+    db: &impl ConnectionTrait,
+) -> Result<Option<TransactionModel>> {
+    let item = TransactionModel::find_by_pid_webhook(&pid, db).await?;
     Ok(item)
 }
 async fn load_credits(id: i32, db: &impl ConnectionTrait) -> Result<UserCreditModel> {
@@ -64,101 +78,127 @@ async fn create_hse(id: &str, db: &impl ConnectionTrait) -> Result<StripeEventAc
     let item = StripeEventActiveModel::save(id, db).await?;
     Ok(item)
 }
-pub struct StripeWebhookService;
+async fn load_plan(db: &impl ConnectionTrait, name: &String) -> Result<PlanModel> {
+    let item = PlanModel::find_by_name_string(db, &name).await?;
+    Ok(item)
+}
+async fn save_txn(
+    db: &impl ConnectionTrait,
+    transaction: &TransactionDomain,
+) -> Result<TransactionModel> {
+    let item = TransactionActiveModel::save(db, &transaction).await?;
+    Ok(item)
+}
 
+async fn extract_and_process_metadata(
+    db_txn: &impl ConnectionTrait,
+    session: &stripe::CheckoutSession,
+) -> Result<(UserModel, UserCreditModel, PlanModel), StripeServiceError> {
+    let user_pid = UserPid::new(
+        session
+            .client_reference_id
+            .as_deref()
+            .ok_or(StripeServiceError::TransactionIdMissing)?
+            .parse::<Uuid>()
+            .map_err(|e| {
+                tracing::error!("Webhook {}: Invalid user_pid format '{}'", &session.id, e);
+                loco_rs::Error::BadRequest("Invalid user_pid format".into())
+            })?,
+    );
+
+    let metadata = session.metadata.as_ref().ok_or_else(|| {
+        tracing::error!("Webhook {}: Missing metadata", &session.id);
+        loco_rs::Error::BadRequest("Missing metadata".into())
+    })?;
+    let plan_name_str = metadata.get("plan_name").ok_or_else(|| {
+        tracing::error!("Webhook {}: Missing plan_name in metadata", &session.id);
+        loco_rs::Error::BadRequest("Missing plan_name".into())
+    })?;
+
+    let (user, user_credits) = load_user_and_credits(db_txn, &user_pid).await?;
+    let plan = load_plan(db_txn, &plan_name_str).await?;
+
+    Ok((user, user_credits, plan))
+}
+
+pub struct StripeWebhookService;
 impl StripeWebhookService {
     pub async fn handle_webhook(event: Event, ctx: &AppContext) -> Result<(), StripeServiceError> {
         match event.type_ {
             EventType::CheckoutSessionCompleted => {
                 if let EventObject::CheckoutSession(session) = event.data.object {
-                    let session_id = session.id;
-                    let transaction_id = session
-                        .client_reference_id
-                        .as_deref() // Get as &str
-                        .ok_or(StripeServiceError::TransactionIdMissing)?;
-                    let transaction_id = Uuid::parse_str(transaction_id)?;
-
-                    // let session_map = session
-                    //     .metadata
-                    //     .as_ref()
-                    //     .ok_or(StripeServiceError::MetadataMissing)?;
-                    // let plan = session_map.get("plan");
-                    // let user_id = session_map.get("user_id");
-                    // let email = session_map.get("email");
+                    let session_id = session.id.clone();
                     match session.payment_status {
                         CheckoutSessionPaymentStatus::Paid => {
-                            // 0. Check if the transaction has already been handled
-                            let hse = load_hse(&session_id.to_string(), &ctx.db).await;
-                            if hse.is_ok() {
-                                return Ok(());
+                            // --- Idempotency Check (Essential) ---
+                            let hse_check = load_hse(&session_id, &ctx.db).await;
+                            if hse_check.is_ok() {
+                                tracing::info!(
+                                    "Webhook {}: Event already handled (HSE found).",
+                                    &session_id
+                                );
+                                return Ok(()); // Success, already done.
                             }
 
-                            // 1. Get the transaction
-                            let load_transaction = load_txn(&transaction_id, &ctx.db).await?;
-                            if load_transaction.status == Status::Completed {
-                                return Ok(());
-                            }
-
+                            // --- Start Database Transaction ---
                             let db_txn = ctx.db.begin().await?;
 
-                            // 2. Update order/payment record in DB
-                            let complete_transaction =
-                                update_txn_completed(load_transaction, &db_txn).await?;
-                            // 3. Update credits
-                            let credits =
-                                load_credits(complete_transaction.user_id, &db_txn).await?;
-                            // Update credits
-                            credits
-                                .update_credits_with_transaction(complete_transaction, &db_txn)
+                            // Extract and process Metadata
+                            let (user, mut user_credits, plan) =
+                                extract_and_process_metadata(&db_txn, &session).await?;
+
+                            // --- Create the Transaction Record ---
+                            let amount = session.amount_total.ok_or_else(|| {
+                                let msg = format!(
+                                    "Webhook {}: Missing amount_total for Paid session!",
+                                    &session.id
+                                );
+                                tracing::error!(msg);
+                                loco_rs::Error::BadRequest(msg.into())
+                            })?;
+
+                            let transaction = TransactionDomain::new(
+                                &user,
+                                plan,
+                                session.currency,
+                                session_id.to_string(),
+                                amount,
+                                Some(Status::Completed),
+                            );
+
+                            // Save the newly created transaction record
+                            let saved_transaction = save_txn(&db_txn, &transaction).await?;
+
+                            // --- Update User Credits/Entitlements ---
+                            user_credits
+                                .update_credits_with_transaction(&saved_transaction, &db_txn)
                                 .await?;
-                            // 4. Create a handled stripe event
+
+                            // --- Create Handled Stripe Event (for Idempotency) ---
                             create_hse(&session_id.to_string(), &db_txn).await?;
 
-                            // 5. Optionally send confirmation email
-                            // send_confirmation_email(email, &session_id).await?;
-
+                            // --- Commit Database Transaction ---
                             db_txn.commit().await?;
+
+                            tracing::info!("Webhook {}: Successfully processed. Transaction {} created and credits updated for user {}.", &session_id, &saved_transaction.pid, user.pid);
+
+                            //Todo send_confirmation_email(user.email, &session_id).await?;
+
                             return Ok(());
                         }
                         CheckoutSessionPaymentStatus::NoPaymentRequired => {
-                            println!("No payment required for checkout session {}", &session_id);
+                            tracing::info!(
+                                "No payment required for checkout session {}",
+                                &session_id
+                            );
                             return Ok(());
                         }
                         CheckoutSessionPaymentStatus::Unpaid => {
-                            tracing::warn!(
-                                "Payment unpaid/failed for checkout session {}. Internal Tx ID: {}",
+                            tracing::info!(
+                                "Payment unpaid/failed for checkout session {}.",
                                 &session_id,
-                                transaction_id
                             );
-
-                            // 1. Get the transaction
-                            let internal_tx = load_txn(&transaction_id, &ctx.db).await?;
-
-                            if internal_tx.status == Status::Pending {
-                                tracing::info!(
-                                    "Updating internal transaction {} status to Failed for unpaid session {}.",
-                                    transaction_id,
-                                    session_id
-                                );
-
-                                // 2. Begin DB transaction
-                                let db_txn = ctx.db.begin().await?;
-
-                                // 3. Update internal transaction status
-                                update_txn_failed(internal_tx, &db_txn).await?;
-
-                                // 4. End DB transaction
-                                db_txn.commit().await?;
-                            } else {
-                                // Transaction was already Completed, Failed, etc. - no action needed.
-                                tracing::info!(
-                                    "Internal transaction {} already in status {:?}. No status change needed for unpaid session {}.",
-                                    transaction_id,
-                                    internal_tx.status,
-                                    session_id
-                                );
-                                return Ok(());
-                            }
+                            return Ok(());
                         }
                     }
                 }

@@ -229,6 +229,7 @@ exports.Prisma.TransactionsScalarFieldEnum = {
   plan_id: 'plan_id',
   credit_amount: 'credit_amount',
   model_amount: 'model_amount',
+  payment_amount: 'payment_amount',
   currency: 'currency',
   payment_id: 'payment_id',
   status: 'status',

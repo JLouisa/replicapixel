@@ -182,7 +182,7 @@ pub async fn load_user_and_training(
 }
 
 pub async fn load_user_and_credits(
-    db: &DatabaseConnection,
+    db: &impl ConnectionTrait,
     pid: &UserPid,
 ) -> Result<(UserModel, UserCreditModel), JoinError> {
     let pid_string = pid.as_ref().to_string();

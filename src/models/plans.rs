@@ -52,6 +52,20 @@ impl Model {
             .await?;
         user.ok_or_else(|| ModelError::EntityNotFound)
     }
+    pub async fn find_by_name_string(
+        db: &impl ConnectionTrait,
+        name: &String,
+    ) -> ModelResult<Self> {
+        let user = Entity::find()
+            .filter(
+                model::query::condition()
+                    .eq(plans::Column::Name, name.to_owned())
+                    .build(),
+            )
+            .one(db)
+            .await?;
+        user.ok_or_else(|| ModelError::EntityNotFound)
+    }
 }
 
 // implement your write-oriented logic here

@@ -174,7 +174,7 @@ impl Model {
     }
     pub async fn update_credits_with_transaction(
         self,
-        txn: TransactionModel,
+        txn: &TransactionModel,
         db: &impl ConnectionTrait,
     ) -> ModelResult<Model> {
         let new_credit_amount = txn.credit_amount.clone() + self.credit_amount.clone();
