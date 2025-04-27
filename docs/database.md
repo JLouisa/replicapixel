@@ -77,3 +77,4 @@ cargo loco generate controller features --htmx
 
 cargo loco start --server-and-worker
 cargo loco watch --server-and-worker
+bun run dev

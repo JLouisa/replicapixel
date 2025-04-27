@@ -20,17 +20,7 @@
       rel="stylesheet"
     />
 
-    <!-- Cookie Consent -->
-    {% if cc_cookie.cookie_exists %}
-    <!-- Google Analytics -->
-    {% if cc_cookie.analytics %} {% include "partials/cookie/analytics.html" %} {% endif %}
-    <!-- Meta Pixel -->
-    {% if cc_cookie.marketing %} {% include "partials/cookie/marketing.html" %} {% endif %} {% else
-    %} {# --- COOKIE EXISTS: Load Main App Bundle + Conditional Tracking --- #}
-    <link href="/static/js/cookie-consent.css" rel="stylesheet" type="text/css" />
-    <script src="/static/js/cookie-consent.js" defer></script>
-    <!-- End Cookie Consent -->
-    {% endif %}
+    {% include "partials/cookie/consent.html" %}
 
     <script>
       // Apply theme on page load
@@ -38,6 +28,13 @@
       if (userTheme) {
         document.documentElement.setAttribute("data-theme", userTheme);
       }
+
+      window.__APP_ENV__ = {
+        hostname: location.hostname,
+        apiBaseUrl: "{{ website.website_basic_info.site }}",
+        isLocal: location.hostname === "localhost" || location.hostname === "127.0.0.1",
+      };
+      console.log("HTML Layout: ", window.__APP_ENV__);
     </script>
     <style>
       /* Apply the font globally */

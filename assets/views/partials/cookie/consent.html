@@ -1,0 +1,14 @@
+<!-- Cookie Consent -->
+{% if cc_cookie.cookie_exists %}
+<!-- Google Analytics -->
+{% if cc_cookie.analytics %}
+<!-- {% include "partials/cookie/analytics.html" %} -->
+{% endif %}
+<!-- Meta Pixel -->
+{% if cc_cookie.marketing %}
+<!-- {% include "partials/cookie/marketing.html" %} -->
+{% endif %} {% else %} {# --- COOKIE EXISTS: Load Main App Bundle + Conditional Tracking --- #}
+<link href="/static/js/cookie-consent.css" rel="stylesheet" type="text/css" />
+<script src="/static/js/cookie-consent.js" defer></script>
+<!-- End Cookie Consent -->
+{% endif %}

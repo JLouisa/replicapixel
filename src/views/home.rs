@@ -8,7 +8,7 @@ pub fn home(
     is_home: bool,
     cc_cookie: &CookieConsent,
 ) -> Result<impl IntoResponse> {
-    let concent_scripts = website..;
+    // let concent_scripts = website..;
     format::render().view(
         &v,
         "home/home.html",

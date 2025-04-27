@@ -3,9 +3,17 @@ import { TrainingModelFormClass } from "./lib/type/trainingModelForm";
 import { DAL } from "./lib/api";
 import { createBatches, createZip } from "./lib/utils";
 import { ImageGenFormClass, type ImageGenForm } from "./lib/type/ImageGenForm";
-// import { set } from "valibot";
 
-console.log("Testing should work");
+declare global {
+  interface Window {
+    __APP_ENV__: {
+      apiBaseUrl: string;
+      isLocal: boolean;
+    };
+    htmx: any;
+  }
+}
+console.log("Index Environment: ", window.__APP_ENV__.apiBaseUrl);
 
 enum Stores {
   Image = "image",
@@ -257,18 +265,7 @@ declare module "alpinejs" {
   }
 }
 
-declare global {
-  interface Window {
-    htmx: any;
-  }
-}
-
 async function oAuth2(provider: string) {
-  const DEFAULT_BASE_URL =
-    window.location.hostname === "localhost"
-      ? "http://localhost:5150"
-      : "https://pictora.jonathanlouisa.nl";
-
   try {
     const response = await fetch(`/api/oauth2/${provider}`);
     if (!response.ok) {

@@ -429,7 +429,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/home/jay/Desktop/dev/pictora/migration/hello-prisma/generated/prisma",
+      "value": "/home/jay/Desktop/dev/replicapixel/migration/hello-prisma/generated/prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -443,7 +443,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/home/jay/Desktop/dev/pictora/migration/hello-prisma/prisma/schema.prisma",
+    "sourceFilePath": "/home/jay/Desktop/dev/replicapixel/migration/hello-prisma/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {

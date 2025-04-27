@@ -469,25 +469,40 @@ async fn magic_link_verify(
 #[debug_handler]
 pub async fn get_login(
     ViewEngine(v): ViewEngine<TeraView>,
+    Extension(website): Extension<Website>,
     State(_ctx): State<AppContext>,
 ) -> Result<Response> {
-    format::render().view(&v, "auth/login/login_form.html", data!({}))
+    format::render().view(
+        &v,
+        "auth/login/login_form.html",
+        data!({"website": website}),
+    )
 }
 
 #[debug_handler]
 pub async fn get_register(
     ViewEngine(v): ViewEngine<TeraView>,
+    Extension(website): Extension<Website>,
     State(_ctx): State<AppContext>,
 ) -> Result<Response> {
-    format::render().view(&v, "auth/register/register_form.html", data!({}))
+    format::render().view(
+        &v,
+        "auth/register/register_form.html",
+        data!({"website": website}),
+    )
 }
 
 #[debug_handler]
 pub async fn get_forgot(
     ViewEngine(v): ViewEngine<TeraView>,
+    Extension(website): Extension<Website>,
     State(_ctx): State<AppContext>,
 ) -> Result<Response> {
-    format::render().view(&v, "auth/forgot/forgot_form.html", data!({}))
+    format::render().view(
+        &v,
+        "auth/forgot/forgot_form.html",
+        data!({"website": website}),
+    )
 }
 
 #[debug_handler]
