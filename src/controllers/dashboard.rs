@@ -47,7 +47,7 @@ pub mod routes {
     impl DashboardRoutes {
         pub fn init() -> Self {
             Self {
-                base: String::from(Dashboard::BASE),
+                base: format!("{}", Dashboard::BASE),
                 billing: format!("{}{}", Dashboard::BASE, Dashboard::BILLING),
                 billing_partial: format!("{}{}", Dashboard::BASE, Dashboard::BILLING_PARTIAL),
                 sidebar: SidebarRoutes::init(),
