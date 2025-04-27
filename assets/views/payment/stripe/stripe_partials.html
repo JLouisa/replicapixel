@@ -31,7 +31,7 @@
       <button
         id="returnButton"
         class="btn btn-primary mt-6 hidden"
-        onclick="window.location.href = '{{ website.website_routes.dashboard_routes.base }}'"
+        onclick="window.location.href = '{{ website.website_routes.dashboard_routes.base | safe }}'"
       >
         Return to Homepage
       </button>
@@ -40,7 +40,7 @@
 
   <script>
     setTimeout(() => {
-      window.location.href = "/dashboard";
+      window.location.href = "{{ website.website_routes.dashboard_routes.base | safe }}";
     }, 3000);
   </script>
 </div>
@@ -59,7 +59,7 @@
       <button
         id="returnButton"
         class="btn btn-primary mt-6 hidden"
-        onclick="window.location.href = '{{ website.website_routes.home.base }}'"
+        onclick="window.location.href = '{{ website.website_routes.home.base | safe }}'"
       >
         Return to Homepage
       </button>
@@ -68,7 +68,7 @@
 
   <script>
     setTimeout(() => {
-      window.location.href = "{{ website.website_routes.payment.payment_plans }}";
+      window.location.href = "{{ website.website_routes.payment.payment_plans | safe }}";
     }, 2000);
   </script>
 </div>
