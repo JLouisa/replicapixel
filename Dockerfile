@@ -12,8 +12,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 FROM chef AS planner
 WORKDIR /usr/src/
 
-# Copy only Cargo files first (better caching)
+# Copy root Cargo files
 COPY Cargo.toml Cargo.lock ./
+COPY migration/Cargo.toml ./migration/Cargo.toml
+
 # Compute a lock-like file for our project dependencies
 RUN cargo chef prepare --recipe-path recipe.json
 
