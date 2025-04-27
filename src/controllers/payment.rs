@@ -140,7 +140,12 @@ pub async fn create_checkout_session(
         headers.insert("HX-Redirect", AuthRoutes::LOGIN.parse().unwrap());
         return Ok((StatusCode::OK, headers).into_response());
     }
-    let plan = load_plan(&ctx.db, &plan).await?;
+
+    // Load plan, but give nicer error if not found
+    let plan = load_plan(&ctx.db, &plan).await.map_err(|e| {
+        tracing::error!("Failed to load plan: {:?}", e);
+        loco_rs::Error::BadRequest("Invalid plan selected.".into())
+    })?;
 
     let stripe_checkout = CheckoutSessionBuilder::new(&stripe_client, &ctx.db)
         .user(&user)
@@ -149,15 +154,15 @@ pub async fn create_checkout_session(
         .build()
         .await?;
 
-    let session = match stripe_checkout.url {
-        Some(session) => session,
-        None => {
-            return Err(loco_rs::Error::Message(
-                "Stripe Checkout Session created without a URL".to_string(),
-            ))
-        }
-    };
-    headers.insert("HX-Redirect", session.parse().unwrap());
+    let session = stripe_checkout.url.ok_or_else(|| {
+        loco_rs::Error::Message("Stripe Checkout Session created without a URL".to_string())
+    })?;
+
+    let session_url = session
+        .parse()
+        .map_err(|_| loco_rs::Error::Message("Failed to parse Stripe session URL".into()))?;
+
+    headers.insert("HX-Redirect", session_url);
     Ok((StatusCode::OK, headers).into_response())
 }
 

@@ -76,8 +76,14 @@ impl From<StripeServiceError> for LocoError {
                 StatusCode::BAD_REQUEST,
                 ErrorDetail::new("ParseIdError", &field.to_string()),
             ),
-            StripeServiceError::DbErr(_) => LocoError::InternalServerError,
-            StripeServiceError::DbModel(_) => LocoError::InternalServerError,
+            StripeServiceError::DbErr(e) => LocoError::CustomError(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                ErrorDetail::new("Db", &e.to_string()),
+            ),
+            StripeServiceError::DbModel(e) => LocoError::CustomError(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                ErrorDetail::new("Db2", &e.to_string()),
+            ),
             StripeServiceError::LocoErr(loco_err) => LocoError::from(loco_err),
             StripeServiceError::JoinError(loco_err) => LocoError::from(loco_err),
         }
