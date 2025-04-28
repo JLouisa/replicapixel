@@ -1,0 +1,32 @@
+<div class="flex items-center justify-between py-3">
+  <div class="flex items-center gap-4">
+    <span class="text-primary"> {% include "partials/svg/bell.html" %} </span>
+    <div>
+      <label for="email_notifications_toggle" class="font-medium cursor-pointer"
+        >Marketing emails</label
+      >
+      <p class="text-sm text-base-content/60">Receive emails about new products and features.</p>
+    </div>
+  </div>
+  <div>
+    <span
+      id="marketing-notification-spinner"
+      class="htmx-indicator loading loading-spinner loading-sm ml-2"
+    ></span>
+    <input
+      type="checkbox"
+      id="email_notifications_toggle"
+      name="notify_enabled"
+      class="toggle toggle-primary"
+      {#
+      hx-patch="{{ website.website_routes.settings.update_marketing | safe }}/{{ settings.enable_marketing_email }}"
+      #}
+      hx-trigger="change"
+      hx-indicator="#marketing-notification-spinner"
+      hx-swap="none"
+      {#
+      checked="{{ settings.enable_marketing_email }}"
+      #}
+    />
+  </div>
+</div>

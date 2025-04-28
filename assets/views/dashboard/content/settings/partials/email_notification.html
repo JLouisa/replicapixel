@@ -1,0 +1,32 @@
+<div class="flex items-center justify-between py-3">
+  <div class="flex items-center gap-4">
+    <span class="text-primary"> {% include "partials/svg/bell.html" %} </span>
+    <div>
+      <label for="email_notifications_toggle" class="font-medium cursor-pointer"
+        >Email notifications</label
+      >
+      <p class="text-sm text-base-content/60">Receive emails about your account activity.</p>
+    </div>
+  </div>
+  <div>
+    <span
+      id="notification-spinner"
+      class="htmx-indicator loading loading-spinner loading-sm ml-2"
+    ></span>
+    <input
+      type="checkbox"
+      id="email_notifications_toggle"
+      name="notify_enabled"
+      class="toggle toggle-primary"
+      {#
+      hx-patch="{{ website.website_routes.settings.update_notifications | safe }}/{{ settings.enable_notification_email }}"
+      #}
+      hx-trigger="change"
+      hx-indicator="#notification-spinner"
+      hx-swap="none"
+      {#
+      checked="{{ settings.enable_notification_email }}"
+      #}
+    />
+  </div>
+</div>
