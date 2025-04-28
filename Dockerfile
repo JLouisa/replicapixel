@@ -65,8 +65,8 @@ EXPOSE 3000
 USER appuser
 
 # Optional: Healthcheck to verify container is alive
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/_health || exit 1
+# HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+#   CMD wget --no-verbose --tries=1 --spider http://localhost:3000/_health || exit 1
 
 # Set the entrypoint for the container
 ENTRYPOINT ["/usr/src/replicapixel"]
