@@ -17,9 +17,9 @@
       id="img-{{ image.pid }}"
       class="absolute inset-0 w-full h-full object-cover cursor-pointer duration-300 ease-in-out hover:scale-105"
       onclick="document.getElementById('modal-{{ image.training_model_id }}-{{ image.pid }}').showModal()"
-      src="{{  image.s3_pre_url | default(value= image.image_url_fal) }}"
+      src="{{  image.s3_pre_url | default(value= image.image_url_fal) | safe }}"
       alt="{{ image.image_alt }}"
-      onerror="this.onerror=null; this.src='{{ image.image_url_fal }}';"
+      onerror="this.onerror=null; this.src='{{ image.image_url_fal | safe }}';"
       loading="lazy"
     />
     <dialog id="modal-{{ image.training_model_id }}-{{ image.pid }}" class="modal">
@@ -27,13 +27,13 @@
         <img
           id="modal-img-{{ image.pid }}"
           class="h-auto max-w-full rounded-lg shadow-md mx-auto"
-          src="{{  image.s3_pre_url | default(value= image.image_url_fal) }}"
-          onerror="this.onerror=null; this.src='{{ image.image_url_fal }}';"
+          src="{{  image.s3_pre_url | default(value= image.image_url_fal) | safe }}"
+          onerror="this.onerror=null; this.src='{{ image.image_url_fal | safe }}';"
           alt="{{ image.image_alt }}"
         />
         <div class="flex items-center justify-center sm:justify-end gap-3 mt-4">
           <button
-            onclick="downloadImage('{{  image.s3_pre_url | default(value= image.image_url_fal) }}', '{{ image.pid }}.{{ image.content_type }}')"
+            onclick="downloadImage('{{  image.s3_pre_url | default(value= image.image_url_fal) | safe }}', '{{ image.pid }}.{{ image.content_type }}')"
             class="btn btn-primary"
           >
             Download {% include "partials/svg/download.html" %}
@@ -48,8 +48,8 @@
       {% if image.image_status == "Processing" and not image.image_url_s3 and image.pre_url %}
       <script>
         uploadImageFromUrlToS3(
-          "{{ image.image_url_fal }}",
-          "{{image.pre_url}}",
+          "{{ image.image_url_fal | safe }}",
+          "{{ image.pre_url | safe }}",
           "{{ website.website_routes.image.api_image_s3_complete_upload | safe }}/{{ image.pid }}"
         );
       </script>
