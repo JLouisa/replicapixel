@@ -1,7 +1,6 @@
-use derive_more::Display;
 use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
-use strum::{EnumIter, EnumString};
+use strum::{Display, EnumIter, EnumString};
 
 #[derive(
     Debug,
@@ -153,16 +152,7 @@ pub enum Notification {
 }
 
 #[derive(
-    Debug,
-    Clone,
-    Copy,
-    PartialEq,
-    Eq,
-    EnumIter,
-    Serialize,
-    Deserialize,
-    strum_macros::Display,
-    DeriveActiveEnum,
+    Debug, Clone, Copy, PartialEq, Eq, EnumIter, Serialize, Deserialize, Display, DeriveActiveEnum,
 )]
 #[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "eye_color")]
 pub enum EyeColor {
@@ -192,7 +182,7 @@ impl Default for EyeColor {
     Serialize,
     Deserialize,
     EnumIter,
-    strum_macros::Display,
+    Display,
     DeriveActiveEnum,
     PartialEq,
     Eq,
@@ -237,7 +227,7 @@ impl Default for Ethnicity {
     Serialize,
     Deserialize,
     EnumIter,
-    strum_macros::Display,
+    Display,
     DeriveActiveEnum,
     PartialEq,
     Eq,
@@ -263,16 +253,7 @@ pub enum Emotion {
 }
 
 #[derive(
-    Clone,
-    Copy,
-    Debug,
-    Serialize,
-    Deserialize,
-    EnumIter,
-    strum_macros::Display,
-    DeriveActiveEnum,
-    PartialEq,
-    Eq,
+    Clone, Copy, Debug, Serialize, Deserialize, EnumIter, Display, DeriveActiveEnum, PartialEq, Eq,
 )]
 #[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "based_on")]
 pub enum BasedOn {
@@ -301,7 +282,7 @@ impl Default for BasedOn {
     EnumIter,
     PartialEq,
     Eq,
-    strum_macros::Display,
+    Display,
     DeriveActiveEnum,
 )]
 #[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "image_size")]

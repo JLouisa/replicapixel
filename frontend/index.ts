@@ -246,14 +246,14 @@ Alpine.store(Stores.ImageGenForm, {
   },
 });
 
-interface UploaderStore {
-  uploadImageFromUrlToS3(imageUrl: string, presignedUrl: string, notifyBackendUrl: string): void;
-}
+// interface UploaderStore {
+//   uploadImageFromUrlToS3(imageUrl: string, presignedUrl: string, notifyBackendUrl: string): void;
+// }
 
-// Register Alpine store
-Alpine.store(Stores.Uploader, {
-  uploadImageFromUrlToS3: DAL.uploadImageFromUrlToS3,
-});
+// // Register Alpine store
+// Alpine.store(Stores.Uploader, {
+//   uploadImageFromUrlToS3: DAL.uploadImageFromUrlToS3,
+// });
 
 // You might need to explicitly tell TypeScript about the store on the Alpine object
 // if you haven't extended the Alpine interface globally.
@@ -261,7 +261,7 @@ declare module "alpinejs" {
   interface Stores {
     toast: ToastStore;
     imageGenForm: ImageGenFormStore;
-    uploader: UploaderStore;
+    // uploader: UploaderStore;
   }
 }
 

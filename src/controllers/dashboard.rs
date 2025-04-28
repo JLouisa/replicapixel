@@ -20,6 +20,7 @@ use crate::models::{
     UserCreditModel, UserModel,
 };
 use crate::service::aws::s3::AwsS3;
+use crate::service::fal_ai::fal_client::FalAiClient;
 use crate::service::redis::redis::Cache;
 use crate::views;
 use crate::views::images::{ImageView, ImageViewList};

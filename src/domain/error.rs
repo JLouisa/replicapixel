@@ -135,7 +135,7 @@ impl From<ImageGenerationError> for loco_rs::Error {
                 loco_rs::Error::NotFound
             }
             ImageGenerationError::UserCreditsNotFound => loco_rs::Error::NotFound,
-            ImageGenerationError::FalAiError(_) => loco_rs::Error::InternalServerError,
+            ImageGenerationError::FalAiClientError(e) => e,
             ImageGenerationError::DatabaseError(db_err) => loco_rs::Error::DB(db_err),
             ImageGenerationError::ConfigError(msg) => loco_rs::Error::CustomError(
                 StatusCode::PAYMENT_REQUIRED,

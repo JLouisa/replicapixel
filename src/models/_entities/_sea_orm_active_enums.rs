@@ -1,7 +1,6 @@
-use derive_more::Display;
 use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
-use strum::{EnumIter, EnumString};
+use strum::{Display, EnumIter, EnumString};
 
 #[derive(
     Debug,
@@ -23,6 +22,11 @@ pub enum Sex {
     Male,
     #[sea_orm(string_value = "Female")]
     Female,
+}
+impl Default for Sex {
+    fn default() -> Self {
+        Sex::Male
+    }
 }
 
 #[derive(
@@ -148,16 +152,7 @@ pub enum Notification {
 }
 
 #[derive(
-    Debug,
-    Clone,
-    Copy,
-    PartialEq,
-    Eq,
-    EnumIter,
-    Serialize,
-    Deserialize,
-    strum_macros::Display,
-    DeriveActiveEnum,
+    Debug, Clone, Copy, PartialEq, Eq, EnumIter, Serialize, Deserialize, Display, DeriveActiveEnum,
 )]
 #[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "eye_color")]
 pub enum EyeColor {
@@ -174,6 +169,11 @@ pub enum EyeColor {
     #[sea_orm(string_value = "Red")]
     Red,
 }
+impl Default for EyeColor {
+    fn default() -> Self {
+        EyeColor::Brown
+    }
+}
 
 #[derive(
     Clone,
@@ -182,7 +182,7 @@ pub enum EyeColor {
     Serialize,
     Deserialize,
     EnumIter,
-    strum_macros::Display,
+    Display,
     DeriveActiveEnum,
     PartialEq,
     Eq,
@@ -214,6 +214,11 @@ pub enum Ethnicity {
     #[strum(to_string = "Middle Eastern")]
     MiddleEastern,
 }
+impl Default for Ethnicity {
+    fn default() -> Self {
+        Ethnicity::White
+    }
+}
 
 #[derive(
     Clone,
@@ -222,7 +227,7 @@ pub enum Ethnicity {
     Serialize,
     Deserialize,
     EnumIter,
-    strum_macros::Display,
+    Display,
     DeriveActiveEnum,
     PartialEq,
     Eq,
@@ -248,16 +253,7 @@ pub enum Emotion {
 }
 
 #[derive(
-    Clone,
-    Copy,
-    Debug,
-    Serialize,
-    Deserialize,
-    EnumIter,
-    strum_macros::Display,
-    DeriveActiveEnum,
-    PartialEq,
-    Eq,
+    Clone, Copy, Debug, Serialize, Deserialize, EnumIter, Display, DeriveActiveEnum, PartialEq, Eq,
 )]
 #[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "based_on")]
 pub enum BasedOn {
@@ -270,6 +266,11 @@ pub enum BasedOn {
     #[strum(to_string = "Create a new AI influencer")]
     CreateInfluencerAI,
 }
+impl Default for BasedOn {
+    fn default() -> Self {
+        BasedOn::RealPerson
+    }
+}
 
 #[derive(
     Clone,
@@ -281,7 +282,7 @@ pub enum BasedOn {
     EnumIter,
     PartialEq,
     Eq,
-    strum_macros::Display,
+    Display,
     DeriveActiveEnum,
 )]
 #[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "image_size")]

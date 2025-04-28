@@ -21,8 +21,6 @@ pub enum ImageGenerationError {
     UserNotFound,
     #[error("User not found")]
     UserCreditsNotFound,
-    #[error("Fal.ai API error: {0}")]
-    FalAiError(String),
     #[error("Database error: {0}")]
     DatabaseError(#[from] DbErr),
     #[error("Database error: {0}")]
@@ -31,6 +29,8 @@ pub enum ImageGenerationError {
     ConfigError(String),
     #[error("Failed to update credits: {0}")]
     CreditUpdateError(String),
+    #[error("Fal AI client error: {0}")]
+    FalAiClientError(#[from] loco_rs::Error),
 }
 
 pub struct ImageGenerationService;
@@ -47,49 +47,45 @@ impl ImageGenerationService {
 
         let mut user_credits = UserCreditModel::find_by_user_id(&txn, user.id).await?;
 
-        if (user_credits.credit_amount) < params.num_images as i32 {
+        if user_credits.credit_amount < params.num_images as i32 {
             txn.rollback().await?;
             return Err(ImageGenerationError::InsufficientCredits);
         }
 
         let image_list = params.process(&training_model, &user.pid);
 
-        // // --- External API Interaction (Moved from Controller) ---
-        // let fal_response = fal_ai_client
-        //     .send_image_queue_many_async(image_list.clone())
-        //     .await?;
+        // External API Interaction
+        let fal_response = fal_ai_client
+            .send_image_queue_many_async(image_list.clone())
+            .await?;
 
-        // let fal_response = fal_ai_client
-        //     .retry(fal_response, image_list)
-        //     .await?;
+        let fal_response = fal_ai_client.retry(fal_response, image_list).await?;
 
-        // // --- Persist Results ---
-        // fal_response
-        //     .save_all(&txn)
-        //     .await?;
+        // Persist Results
+        fal_response.save_all(&txn).await?;
 
-        // // --- Business Logic: Update Credits (Moved from Controller) ---
-        // let credits_to_deduct = fal_response.as_ref().len() as i32;
-        // user_credits.credit_amount -= credits_to_deduct;
+        // Business Logic: Update Credits
+        let credits_to_deduct = fal_response.as_ref().len() as i32;
+        user_credits.credit_amount -= credits_to_deduct;
 
-        //Todo ==================================== Remove ====================================
-        image_list.save_all(&txn).await?;
-        //Todo ==================================== Remove ====================================
+        // // ==================================== Remove ====================================
+        // image_list.save_all(&txn).await?;
+        // // ==================================== Remove ====================================
 
         // Update credits using an active model
         let updated_credits_model = user_credits
-            .update_credits_with_image_list(&image_list, &txn)
+            .update_credits_with_image_list(&fal_response, &txn)
             .await?;
 
         dbg!(&updated_credits_model);
 
         txn.commit().await?;
 
-        //Todo ==================================== Remove ====================================
-        Ok((updated_credits_model, image_list))
-        //Todo ==================================== Remove ====================================
+        // // ==================================== Remove ====================================
+        // Ok((updated_credits_model, image_list))
+        // // ==================================== Remove ====================================
 
-        // Ok((updated_credits_model, fal_response))
+        Ok((updated_credits_model, fal_response))
     }
 }
 

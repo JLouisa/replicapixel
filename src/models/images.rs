@@ -1,6 +1,7 @@
 use crate::controllers::images::ImageLoadingParams;
 use crate::domain::url::Url;
 use crate::service::aws::s3::S3Key;
+use crate::views::images::{ImageView, ImageViewList};
 
 use super::users::{User, UserPid};
 pub use super::ImageModel;
@@ -364,13 +365,26 @@ impl Model {
             .await?;
         Ok(list)
     }
+    pub async fn find_by_request_id(
+        db: &DatabaseConnection,
+        request_id: &str,
+    ) -> ModelResult<Self> {
+        let condition = Condition::all().add(images::Column::FalAiRequestId.eq(request_id));
+        let image = Entity::find()
+            .filter(condition)
+            .one(db)
+            .await?
+            .ok_or_else(|| ModelError::EntityNotFound);
+        image
+    }
     pub async fn update_fal_image_url(
         self,
-        url: &Url,
         db: &impl ConnectionTrait,
+        url: Option<String>,
+        status: Status,
     ) -> ModelResult<Model> {
         let mut new = ActiveModel::from(self);
-        new.image_url_fal = ActiveValue::set(Some(url.as_ref().to_owned()));
+        new.image_url_fal = ActiveValue::set(url);
         new.status = ActiveValue::set(Status::Processing);
         let image = new.update(db).await?;
         Ok(image)

@@ -40,7 +40,7 @@ pub mod routes {
         pub fn init() -> Self {
             Self {
                 base: String::from(Images::BASE),
-                check: format!("{}{}/test", Images::BASE, Images::IMAGE_CHECK),
+                check: format!("{}{}", Images::BASE, Images::IMAGE_CHECK),
                 image_restore: format!("{}{}", Images::BASE, Images::IMAGE_RESTORE),
                 image_favorite: format!("{}{}", Images::BASE, Images::IMAGE_FAVORITE),
                 api_image_infinite: format!("{}{}", Images::BASE, Images::IMAGE_INFINITE),
@@ -64,7 +64,8 @@ pub mod routes {
         pub const IMAGE_INFINITE: &'static str = "/infinite";
         pub const IMAGE_GENERATE_TEST: &'static str = "/generate/test";
         pub const IMAGE_GENERATE: &'static str = "/generate";
-        pub const IMAGE_CHECK_TEST: &'static str = "/check/test/{id}";
+        pub const IMAGE_CHECK_TEST_ID: &'static str = "/check/test/{id}";
+        pub const IMAGE_CHECK_TEST: &'static str = "/check/test";
         pub const IMAGE_CHECK_ID: &'static str = "/check/{id}";
         pub const IMAGE_CHECK: &'static str = "/check";
         pub const IMAGE_ID: &'static str = "/{id}";
@@ -94,7 +95,7 @@ pub fn routes() -> Routes {
         // .add(routes::Images::IMAGE, post(add))
         .add(routes::Images::IMAGE_GENERATE_TEST, post(generate))
         // .add(routes::Images::IMAGE_GENERATE, post(generate_img))
-        .add(routes::Images::IMAGE_CHECK_TEST, get(check_test))
+        // .add(routes::Images::IMAGE_CHECK_TEST, get(check_test))
         .add(routes::Images::IMAGE_CHECK_ID, get(check_img))
         .add(routes::Images::IMAGE_ID, get(get_one))
         .add(routes::Images::IMAGE_ID, delete(remove))
@@ -249,8 +250,54 @@ pub async fn img_s3_upload_completed(
     Ok((StatusCode::OK).into_response())
 }
 
+// #[debug_handler]
+// pub async fn check_test(
+//     auth: auth::JWT,
+//     Path(pid): Path<Uuid>,
+//     State(ctx): State<AppContext>,
+//     Extension(website): Extension<Website>,
+//     Extension(s3_client): Extension<AwsS3>,
+//     ViewEngine(v): ViewEngine<TeraView>,
+// ) -> Result<Response> {
+//     use rand::Rng;
+//     let (user, mut image) = load_user_and_image(&ctx.db, &auth.claims.pid, &pid).await?;
+
+//     if image.user_id != user.id {
+//         return Err(Error::Unauthorized("Unauthorized".to_string()));
+//     }
+//     let change = rand::rng().random_range(0..=3);
+//     if change == 0 {
+//         let image_url_fal = Url::new("https://v3.fal.media/files/panda/ycu2NDkTawQBdmgZDAF3g_ffb513c9074146009320fa60e64beaab.jpg".to_string());
+//         image.image_url_fal = Some(image_url_fal.as_ref().to_owned());
+//         image.status = Status::Processing;
+//         image
+//             .clone()
+//             .update_fal_image_url(&image_url_fal, &ctx.db)
+//             .await?;
+//     }
+//     if image.status == Status::Processing {
+//         let user_credits = load_credits(&ctx.db, user.id).await?;
+//         let user_credits_view: CreditsViewModel = user_credits.into();
+//         let image: ImageView = image.into();
+//         let image: ImageView = image
+//             .clone()
+//             .set_pre_url(&user.pid, &s3_client)
+//             .await
+//             .unwrap_or_else(|_| image);
+
+//         return views::images::img_completed(
+//             &v,
+//             &website,
+//             &ImageViewList::new(vec![image]),
+//             &user_credits_view,
+//         );
+//     }
+
+//     Ok((StatusCode::NO_CONTENT).into_response())
+// }
+
 #[debug_handler]
-pub async fn check_test(
+pub async fn check_img(
     auth: auth::JWT,
     Path(pid): Path<Uuid>,
     State(ctx): State<AppContext>,
@@ -258,22 +305,12 @@ pub async fn check_test(
     Extension(s3_client): Extension<AwsS3>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<Response> {
-    use rand::Rng;
     let (user, mut image) = load_user_and_image(&ctx.db, &auth.claims.pid, &pid).await?;
 
     if image.user_id != user.id {
         return Err(Error::Unauthorized("Unauthorized".to_string()));
     }
-    let change = rand::rng().random_range(0..=3);
-    if change == 0 {
-        let image_url_fal = Url::new("https://v3.fal.media/files/panda/ycu2NDkTawQBdmgZDAF3g_ffb513c9074146009320fa60e64beaab.jpg".to_string());
-        image.image_url_fal = Some(image_url_fal.as_ref().to_owned());
-        image.status = Status::Processing;
-        image
-            .clone()
-            .update_fal_image_url(&image_url_fal, &ctx.db)
-            .await?;
-    }
+
     if image.status == Status::Processing {
         let user_credits = load_credits(&ctx.db, user.id).await?;
         let user_credits_view: CreditsViewModel = user_credits.into();
@@ -296,42 +333,6 @@ pub async fn check_test(
 }
 
 #[debug_handler]
-pub async fn check_img(
-    auth: auth::JWT,
-    Path(pid): Path<Uuid>,
-    State(ctx): State<AppContext>,
-    Extension(website): Extension<Website>,
-    Extension(s3_client): Extension<AwsS3>,
-    ViewEngine(v): ViewEngine<TeraView>,
-) -> Result<Response> {
-    let user_pid = UserPid::new(&auth.claims.pid);
-    let image = load_item_pid(&ctx, pid).await?;
-    let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
-
-    if image.user_id != user.id {
-        return Err(Error::Unauthorized("Unauthorized".to_string()));
-    }
-
-    if image.status == Status::Completed {
-        let user_credits_view: CreditsViewModel = user_credits.into();
-        let image: ImageView = image.into();
-        let image: ImageView = image
-            .clone()
-            .set_pre_url(&user.pid, &s3_client)
-            .await
-            .unwrap_or_else(|_| image);
-
-        return views::images::img_completed(
-            &v,
-            &website,
-            &ImageViewList::new(vec![image]),
-            &user_credits_view,
-        );
-    }
-    Ok((StatusCode::NO_CONTENT).into_response())
-}
-
-#[debug_handler]
 pub async fn generate(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
@@ -343,7 +344,7 @@ pub async fn generate(
     // 0. Validate request payload format
     request.validate()?;
 
-    // 1. Load User
+    // 1. Load User and Training Model
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, training_model) =
         load_user_and_one_training_model(&ctx.db, &user_pid, request.training_model_id).await?;
@@ -353,12 +354,8 @@ pub async fn generate(
         ImageGenerationService::generate(&ctx, &fal_ai_client, request, &user, &training_model)
             .await?;
 
-    // 3. Prepare Data for the View using safe View Models
-    let credits_view_model = CreditsViewModel::from(&updated_credits);
-    let image_view_models: Vec<ImageView> = saved_images.into();
-
-    // 4. Render the view using the View Models
-    views::images::img_completed(&v, &website, &image_view_models.into(), &credits_view_model)
+    // 3. Render the view using the View Models
+    views::images::img_completed(&v, &website, &saved_images.into(), &updated_credits.into())
 }
 
 #[debug_handler]

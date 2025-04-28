@@ -139,6 +139,7 @@ model Images {
 
   @@index([pid], name: "idx-images-pid")
   @@index([user_id], name: "idx-images-user_id")
+  @@index([fal_ai_request_id], name: "idx-fal_ai_request_id-pid")
   @@index([training_model_id], name: "idx-images-training_model_id")
   @@index([created_at], name: "idx-images-created_at")
   @@index([updated_at], name: "idx-images-updated_at")

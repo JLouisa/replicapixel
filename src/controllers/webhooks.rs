@@ -4,8 +4,8 @@
 use crate::domain::website::Website;
 use crate::mailers::transaction::{CheckoutCompletedEmailData, CheckoutMailer};
 use crate::models::_entities::sea_orm_active_enums::Status;
-use crate::models::_entities::training_models;
-use crate::models::{users, TrainingModelModel};
+use crate::models::_entities::{images, training_models};
+use crate::models::{users, ImageModel, TrainingModelModel};
 use crate::service::fal_ai::fal_client::{
     FalAiClient, FluxApiWebhookResponse, StatusResponse, SuccessfulPayload,
 };
@@ -48,49 +48,47 @@ pub mod routes {
 pub fn routes() -> Routes {
     Routes::new()
         .prefix(routes::Webhooks::BASE)
-        .add(
-            routes::Webhooks::API_FAL_AI_TRAINING,
-            post(webhook_training_handler),
-        )
-        .add(
-            routes::Webhooks::API_FAL_AI_IMAGE,
-            post(webhook_image_handler),
-        )
+        .add(routes::Webhooks::API_FAL_AI_TRAINING, post(fal_ai_training))
+        .add(routes::Webhooks::API_FAL_AI_IMAGE, post(fal_ai_image))
         .add(routes::Webhooks::API_STRIPE, post(stripe))
 }
 
-async fn load_item_by_request_id(ctx: &AppContext, id: &Uuid) -> Result<Model> {
-    let item = training_models::Model::find_by_request_id(&ctx.db, id).await?;
+async fn load_model_by_request_id(ctx: &AppContext, id: &str) -> Result<TrainingModelModel> {
+    let item = TrainingModelModel::find_by_request_id(&ctx.db, id).await?;
+    Ok(item)
+}
+async fn load_image_by_request_id(ctx: &AppContext, id: &str) -> Result<ImageModel> {
+    let item = ImageModel::find_by_request_id(&ctx.db, id).await?;
     Ok(item)
 }
 
-async fn webhook_training_handler(bytes: Bytes) -> Result<Response> {
-    let body_string = String::from_utf8_lossy(&bytes);
+// async fn webhook_training_handler(bytes: Bytes) -> Result<Response> {
+//     let body_string = String::from_utf8_lossy(&bytes);
 
-    // Debug the raw body
-    dbg!("Training", &body_string);
+//     // Debug the raw body
+//     dbg!("Training", &body_string);
 
-    // Log the raw body
-    tracing::info!("Received Fal Training Webhook: {}", &body_string);
-    tracing::warn!("Received Fal Training Webhook: {}", &body_string);
-    tracing::error!("Received Fal Training Webhook: {}", &body_string);
+//     // Log the raw body
+//     tracing::info!("Received Fal Training Webhook: {}", &body_string);
+//     tracing::warn!("Received Fal Training Webhook: {}", &body_string);
+//     tracing::error!("Received Fal Training Webhook: {}", &body_string);
 
-    Ok((StatusCode::OK).into_response())
-}
+//     Ok((StatusCode::OK).into_response())
+// }
 
-async fn webhook_image_handler(bytes: Bytes) -> Result<Response> {
-    let body_string = String::from_utf8_lossy(&bytes);
+// async fn webhook_image_handler(bytes: Bytes) -> Result<Response> {
+//     let body_string = String::from_utf8_lossy(&bytes);
 
-    // Debug the raw body
-    dbg!("Image", &body_string);
+//     // Debug the raw body
+//     dbg!("Image", &body_string);
 
-    // Log the raw body
-    tracing::info!("Received Fal Image Webhook: {}", &body_string);
-    tracing::warn!("Received Fal Image Webhook: {}", &body_string);
-    tracing::error!("Received Fal Image Webhook: {}", &body_string);
+//     // Log the raw body
+//     tracing::info!("Received Fal Image Webhook: {}", &body_string);
+//     tracing::warn!("Received Fal Image Webhook: {}", &body_string);
+//     tracing::error!("Received Fal Image Webhook: {}", &body_string);
 
-    Ok((StatusCode::OK).into_response())
-}
+//     Ok((StatusCode::OK).into_response())
+// }
 
 #[debug_handler]
 pub async fn stripe(
@@ -127,36 +125,50 @@ pub async fn stripe(
 #[debug_handler]
 pub async fn fal_ai_image(
     State(ctx): State<AppContext>,
-    // Extension(fal_ai_client): Extension<FalAiClient>,
+    Extension(fal_ai_client): Extension<FalAiClient>,
     Json(response): Json<FluxApiWebhookResponse>,
-) -> impl IntoResponse {
-    let training_model = match load_item_by_request_id(&ctx, &response.request_id).await {
+) -> Result<Response> {
+    let image = match load_image_by_request_id(&ctx, &response.request_id).await {
         Ok(model) => model,
         Err(e) => {
-            return (StatusCode::LENGTH_REQUIRED, "Model not found".to_string()).into_response()
+            return Ok((StatusCode::OK, "Model not found".to_string()).into_response());
         }
     };
-    // let user = users::Model::find_by_pid(&ctx.db, &training_model.)
-    //     .await
-    //     .unwrap();
     // Check the status of the response
-    match response.status {
+    let image_url = match response.status {
         StatusResponse::Ok => {
             // If the status is OK, check if there's a payload
             if let Some(ref payload) = response.payload {
-                let success_payload = response.successful_img();
-                (StatusCode::OK, Json(success_payload)).into_response()
+                let image_url = response.successful_img().image_url();
+                image_url
             } else {
-                // If there's no payload, return the payload error
-                (StatusCode::OK, Json(response.payload_error)).into_response()
+                // If there's no payload, get payload directly
+                let result = fal_ai_client
+                    .request_result_image(&response.request_id)
+                    .await
+                    .map_err(|_| {
+                        loco_rs::Error::Message("Error processing Result Request: 103".to_string())
+                    })?
+                    .image_url();
+                result
             }
         }
         StatusResponse::Error => {
             // If the status is Error, return the error payload
             let error_payload = response.error();
-            (StatusCode::OK, Json(error_payload)).into_response()
+            image
+                .update_fal_image_url(&ctx.db, None, Status::Failed)
+                .await?;
+            return Ok((StatusCode::OK).into_response());
         }
-    }
+    };
+
+    // Update the image
+    image
+        .update_fal_image_url(&ctx.db, Some(image_url.into_inner()), Status::Processing)
+        .await?;
+
+    Ok((StatusCode::OK, "Payload successfully processed").into_response())
 }
 
 #[debug_handler]
@@ -178,12 +190,13 @@ pub async fn fal_ai_training(
             } else {
                 // If there's no payload, get payload directly
                 let result = fal_ai_client
-                    .request_result(&response.request_id)
+                    .request_result_training(&response.request_id)
                     .await
                     .map_err(|_| {
                         loco_rs::Error::Message("Error processing Result Request: 103".to_string())
-                    })?;
-                result.diffusers_lora_file.url
+                    })?
+                    .lora();
+                result
             }
         }
         StatusResponse::Error => {

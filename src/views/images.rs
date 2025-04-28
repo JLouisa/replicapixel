@@ -253,11 +253,11 @@ impl From<&ImageModel> for ImageView {
     }
 }
 
-impl From<ImageNewList> for Vec<ImageView> {
-    fn from(list: ImageNewList) -> Vec<ImageView> {
-        list.into_inner().iter().map(ImageView::from).collect()
-    }
-}
+// impl From<ImageNewList> for Vec<ImageView> {
+//     fn from(list: ImageNewList) -> Vec<ImageView> {
+//         list.into_inner().iter().map(ImageView::from).collect()
+//     }
+// }
 impl From<ImageNew> for ImageView {
     fn from(img: ImageNew) -> Self {
         Self {
@@ -327,6 +327,11 @@ impl ImageViewList {
 }
 impl From<ImagesModelList> for ImageViewList {
     fn from(list: ImagesModelList) -> ImageViewList {
+        Self(list.into_inner().iter().map(ImageView::from).collect())
+    }
+}
+impl From<ImageNewList> for ImageViewList {
+    fn from(list: ImageNewList) -> ImageViewList {
         Self(list.into_inner().iter().map(ImageView::from).collect())
     }
 }

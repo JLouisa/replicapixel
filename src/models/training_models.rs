@@ -7,11 +7,11 @@ use super::{
     },
 };
 use derive_more::{AsRef, Constructor};
-use sea_orm::{entity::prelude::*, QueryOrder};
+use sea_orm::{entity::prelude::*, Condition, QueryOrder};
 use serde::{Deserialize, Serialize};
 pub type TrainingModels = Entity;
 
-use crate::service::fal_ai::fal_client::FluxQueueResponse;
+use crate::service::fal_ai::fal_client::{FluxQueueResponse, QueueResponse};
 use crate::service::{aws::s3::S3Key, fal_ai::fal_client::FluxResponse};
 use loco_rs::prelude::*;
 
@@ -227,19 +227,11 @@ impl Model {
 
     pub async fn find_by_request_id(
         db: &DatabaseConnection,
-        request_id: &Uuid,
+        request_id: &str,
     ) -> ModelResult<Self> {
-        let training = training_models::Entity::find()
-            .filter(
-                model::query::condition()
-                    .eq(
-                        training_models::Column::FalAiRequestId,
-                        request_id.to_string(),
-                    )
-                    .build(),
-            )
-            .one(db)
-            .await?;
+        let condition =
+            Condition::all().add(training_models::Column::FalAiRequestId.eq(request_id));
+        let training = Entity::find().filter(condition).one(db).await?;
         training.ok_or_else(|| ModelError::EntityNotFound)
     }
 }
@@ -294,7 +286,7 @@ impl ActiveModel {
     pub async fn update_with_fal_ai_webhook_training_response(
         mut self,
         db: &DatabaseConnection,
-        fal: &FluxResponse,
+        fal: &QueueResponse,
     ) -> ModelResult<Model> {
         self.fal_ai_request_id = ActiveValue::Set(Some(fal.request_id.clone()));
         self.training_status = ActiveValue::Set(Status::Training);

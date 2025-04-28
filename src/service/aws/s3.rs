@@ -210,7 +210,7 @@ impl AwsS3 {
         Ok(pre_url)
     }
 
-    // Generate a presigned URL
+    //Todo HERE Generate a presigned URL
     pub async fn presigned_save_url(
         &self,
         user_id: &Uuid,
@@ -224,6 +224,8 @@ impl AwsS3 {
         };
         let key = self.create_s3_key(user_id, &folder, &url_request.name, &url_request.file_type);
         let pre_url = self.generate_save_presigned_url(&key, time).await?;
+
+        dbg!(&key);
         Ok((pre_url, key))
     }
 
@@ -343,7 +345,7 @@ impl AwsS3 {
             id.to_string(),
             folder.get_folder_str(),
             item_name.to_string(),
-            file_format
+            file_format.to_string()
         );
         S3Key::new(key)
     }
