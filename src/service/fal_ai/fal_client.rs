@@ -52,9 +52,9 @@ impl FalAiClient {
             fal_key: settings.fal_key.to_string(),
             image_url: settings.generate_image_url.to_string(),
             training_url: settings.training_model_url.to_string(),
-            webhook_image: format!("{}/{}/{}", &settings.webhook_url, &site, image_webhook),
+            webhook_image: format!("{}{}{}", &settings.webhook_url, &site, image_webhook),
             webhook_training: format!(
-                "{}/{}/{}",
+                "{}{}{}",
                 &settings.webhook_url, site, training_model_webhook
             ),
         }
