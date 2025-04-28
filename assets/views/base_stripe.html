@@ -8,20 +8,11 @@
     </title>
     <link rel="icon" type="image/png" href="/static/favicon.png" />
     <link href="/static/css/output.css" rel="stylesheet" type="text/css" />
-    <script src="/static/js/index.js" defer></script>
     <script src="/static/js/htmx/htmx.min.js"></script>
-    <script src="/static/js/htmx/extensions/htmx-ext-form-json.js"></script>
-    <link rel="stylesheet" href="style.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    {% block stripe %} {% endblock stripe %}
 
-    <!-- Cookie Consent -->
-    {% include "partials/cookie/consent.html" %}
+    {% block stripe %}
+    <script src="https://js.stripe.com/v3/" defer></script>
+    {% endblock stripe %}
 
     <script>
       // Apply theme on page load
@@ -83,29 +74,35 @@
     <!-- Main Layout Container -->
     <div id="app" class="flex flex-col h-screen overflow-hidden">
       <!-- Navbar Block -->
-      {% block navbar %} {% include "partials/navbar/navbar.html" %} {% endblock navbar %}
+      {% block navbar %} {% endblock navbar %}
 
       <!-- Page Content Block -->
       <div id="page-content" class="flex-1 overflow-hidden">
-        {% block content %}{% endblock content %}
+        {% block content %}
+        <div
+          id="stripestatus"
+          hx-get="{{ link | lower | safe }}"
+          hx-push-url="{{ link | lower | safe }}"
+          hx-trigger="load"
+          hx-swap="outerHTML"
+          class="min-h-screen bg-base-200 flex items-center justify-center p-4"
+        >
+          <div class="card w-full max-w-md bg-base-100 shadow-xl">
+            <div class="card-body items-center text-center">
+              <div class="mb-6" id="iconContainer">
+                {% include "partials/svg/processing.html" %}
+              </div>
+              <h2 class="card-title text-2xl mb-2 justify-center" id="statusText">
+                Preparing Payment...
+              </h2>
+              <p class="text-base-content/80" id="messageText">
+                Please wait while we preparing your payment...
+              </p>
+            </div>
+          </div>
+        </div>
+        {% endblock content %}
       </div>
-    </div>
-
-    <!-- Toast Notifications -->
-    <div
-      x-data
-      x-show="$store.toast.isVisible"
-      x-transition:enter="transition transform ease-out duration-300"
-      x-transition:enter-start="translate-y-full"
-      x-transition:enter-end="translate-y-0"
-      x-transition:leave="transition transform ease-in duration-300"
-      x-transition:leave-start="translate-y-0"
-      x-transition:leave-end="translate-y-full"
-      x-cloak
-      class="fixed bottom-5 right-5 px-4 py-2 rounded shadow-lg text-white"
-      :class="$store.toast.isError ? 'bg-red-500' : 'bg-green-700'"
-    >
-      <span x-text="$store.toast.message"></span>
     </div>
 
     <!-- Javascript -->

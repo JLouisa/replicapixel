@@ -31,9 +31,9 @@
         <form method="dialog">
           <!-- if there is a button in form, it will close the modal -->
           <button
-            hx-get="{{ website.website_routes.dashboard_routes.sidebar.photo_partial }}"
+            hx-get="{{ website.website_routes.dashboard_routes.sidebar.photo_partial | safe }}"
             hx-target="#dashboard_content"
-            hx-push-url="{{ website.website_routes.dashboard_routes.sidebar.photo }}"
+            hx-push-url="{{ website.website_routes.dashboard_routes.sidebar.photo | safe }}"
             hx-swap="innerHTML"
             class="btn"
           >

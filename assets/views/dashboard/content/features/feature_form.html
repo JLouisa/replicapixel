@@ -1,6 +1,6 @@
 <form
   id="feature-form"
-  hx-post="{{ website.website_routes.feature_routes.add }}"
+  hx-post="{{ website.website_routes.feature_routes.add | safe }}"
   hx-ext="form-json"
   hx-disabled-elt="#feature-btn"
   hx-swap="outerHTML"

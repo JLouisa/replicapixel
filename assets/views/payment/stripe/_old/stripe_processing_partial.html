@@ -1,6 +1,6 @@
 <div
   id="stripestatus"
-  hx-get="{{ website.website_routes.payment.stripe_payment_status_route }}/{{session_id}}"
+  hx-get="{{ website.website_routes.payment.stripe_payment_status_route | safe }}/{{session_id}}"
   hx-trigger="every 4s"
   hx-swap="outerHTML"
   class="min-h-screen bg-gray-50 flex items-center justify-center p-4"

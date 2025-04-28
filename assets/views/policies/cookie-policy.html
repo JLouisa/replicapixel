@@ -114,7 +114,10 @@
     </p>
     <p>
       This policy should be read alongside our
-      <a href="{{ website.website_routes.policy.cookie }}" target="_blank" rel="noopener noreferrer"
+      <a
+        href="{{ website.website_routes.policy.cookie | safe }}"
+        target="_blank"
+        rel="noopener noreferrer"
         >Privacy Policy</a
       >, which provides more detailed information about how we handle your personal data.
     </p>

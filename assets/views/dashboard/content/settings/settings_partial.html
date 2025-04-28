@@ -223,7 +223,7 @@
 
             <!-- Privacy -->
             <a
-              href="{{ website.website_routes.policy.privacy }}"
+              href="{{ website.website_routes.policy.privacy | safe }}"
               target="_blank"
               class="px-4 pb-4 pt-2"
             >
@@ -253,7 +253,7 @@
             </a>
 
             <!-- Terms and Conditions -->
-            <a href="{{ website.website_routes.policy.terms }}" target="_blank" class="p-4">
+            <a href="{{ website.website_routes.policy.terms | safe }}" target="_blank" class="p-4">
               <div class="flex items-center gap-3 p-4 bg-base-200 rounded-lg">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

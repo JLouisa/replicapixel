@@ -33,6 +33,14 @@ pub fn payment_home(
     )
 }
 
+pub fn prepare(v: impl ViewRenderer, website: &Website, link: &str) -> Result<impl IntoResponse> {
+    format::render().view(
+        &v,
+        "base_stripe.html",
+        data!({ "website": website, "link": link  }),
+    )
+}
+
 pub fn stripe_status(
     v: impl ViewRenderer,
     website: &Website,

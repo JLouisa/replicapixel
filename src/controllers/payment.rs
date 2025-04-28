@@ -68,6 +68,8 @@ pub mod routes {
     impl Payment {
         pub const BASE: &'static str = "/payment";
         pub const API_PAYMENT_BASE: &'static str = "/";
+        pub const API_STRIPE_PREPARE_ID: &'static str = "/prepare/{pid}/{plan}";
+        pub const API_STRIPE_PREPARE: &'static str = "/prepare";
         pub const API_STRIPE_SUCCESS: &'static str = "/success";
         pub const API_STRIPE_CANCEL: &'static str = "/cancel";
         pub const API_STRIPE_RETURN: &'static str = "/return";
@@ -97,6 +99,7 @@ pub fn routes() -> Routes {
             routes::Payment::API_STRIPE_PAYMENT_PLAN_REQUEST,
             get(create_checkout_session),
         )
+        .add(routes::Payment::API_STRIPE_PREPARE_ID, get(prepare_handler))
         .add(routes::Payment::API_STRIPE_SUCCESS, get(success_handler))
         .add(routes::Payment::API_STRIPE_CANCEL, get(cancel_handler))
         .add(
@@ -123,6 +126,25 @@ struct PaymentRedirectParams {
 #[serde(rename_all = "camelCase")]
 pub struct ClientSecret {
     pub client_secret: String,
+}
+
+#[debug_handler]
+pub async fn prepare_handler(
+    auth: auth::JWT,
+    Path((pid, plan)): Path<(Uuid, PlanNames)>,
+    Extension(stripe_client): Extension<StripeClient>,
+    State(ctx): State<AppContext>,
+    Extension(website): Extension<Website>,
+    ViewEngine(v): ViewEngine<TeraView>,
+) -> Result<impl IntoResponse> {
+    let link = format!(
+        "{}{}/{}/{}",
+        routes::Payment::BASE,
+        routes::Payment::PAYMENT_PLAN,
+        pid,
+        plan
+    );
+    views::payment::prepare(v, &website, &link)
 }
 
 #[debug_handler]

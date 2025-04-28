@@ -1,6 +1,6 @@
 {% if is_deleted %}
 <button
-  hx-delete="{{ website.website_routes.image.image_restore }}/{{ image.pid }}"
+  hx-delete="{{ website.website_routes.image.image_restore | safe }}/{{ image.pid }}"
   hx-target="#container3-{{ image.pid }}"
   hx-confirm="Are you sure you want to delete this item?"
   hx-swap="outerHTML"
@@ -10,7 +10,7 @@
 </button>
 {% else %}
 <button
-  hx-delete="{{ website.website_routes.image.base }}/{{ image.pid }}"
+  hx-delete="{{ website.website_routes.image.base | safe }}/{{ image.pid }}"
   hx-target="#container3-{{ image.pid }}"
   hx-confirm="Are you sure you want to delete this item?"
   hx-swap="outerHTML"

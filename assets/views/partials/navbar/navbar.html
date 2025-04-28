@@ -17,14 +17,14 @@
 <nav class="flex items-center justify-between px-4 py-2 md:shadow-lg relative z-20">
   <!-- Start section (Logo/Brand) -->
   <div class="flex items-center flex-shrink-0">
-    <a class="h-6 w-6 mx-auto" href="{{ website.website_routes.home.base }}">
+    <a class="h-6 w-6 mx-auto" href="{{ website.website_routes.home.base | safe }}">
       <img
         class="h-6 w-6 mx-auto"
         src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Svelte_Logo.svg/512px-Svelte_Logo.svg.png"
         alt="svelte logo"
       />
     </a>
-    <a href="{{ website.website_routes.home.base }}">
+    <a href="{{ website.website_routes.home.base | safe }}">
       <div class="text-lg font-bold ml-4 cursor-pointer select-none">
         {{ website.website_basic_info.name | default(value= "ReplicaPixel") }}
       </div>
@@ -70,7 +70,7 @@
     <!-- Dashboard button container -->
     {% if user.name %}
     <!-- Dashboard button container -->
-    <a href="{{ website.website_routes.dashboard_routes.base }}" class="btn btn-neutral"
+    <a href="{{ website.website_routes.dashboard_routes.base | safe }}" class="btn btn-neutral"
       >Dashboard</a
     >
     {% endif %} {% endif %}
@@ -87,17 +87,19 @@
     </label>
     {% if user.name %} {% include "partials/navbar/navbar_user_partial.html" %} {% else %}
     <div
-      hx-get="{{ website.website_routes.auth_routes.validate_route }}"
+      hx-get="{{ website.website_routes.auth_routes.validate_route | safe }}"
       hx-trigger="load once"
       hx-swap="outerHTML"
       hx-select-oob="#navbar-middle"
       class="flex items-center space-x-2"
     >
       <div class="flex items-center space-x-4">
-        <a href="{{ website.website_routes.auth_routes.login }}" class="btn btn-neutral">Login</a>
+        <a href="{{ website.website_routes.auth_routes.login | safe }}" class="btn btn-neutral"
+          >Login</a
+        >
       </div>
       <div class="flex items-center space-x-4">
-        <a href="{{ website.website_routes.auth_routes.register }}" class="btn btn-neutral"
+        <a href="{{ website.website_routes.auth_routes.register | safe }}" class="btn btn-neutral"
           >Sign Up</a
         >
       </div>

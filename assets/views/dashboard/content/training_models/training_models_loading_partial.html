@@ -2,7 +2,7 @@
   id="{{ model.id }}"
   class="w-72 shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl {% if model.training_status == 'Completed' %} bg-green-100 text-green-900 {% elif model.training_status == 'Training' %} bg-blue-100 text-blue-900 {% elif model.training_status == 'Failed' %} bg-red-100 text-red-900 {% else %} bg-white text-gray-900 {% endif %}"
   {% if model.training_status not in ['Completed', 'Failed'] %}
-  hx-get="{{ website.website_routes.training_models.check_id_status }}/{{ model.id }}/{{ model.training_status }}"
+  hx-get="{{ website.website_routes.training_models.check_id_status | safe }}/{{ model.id }}/{{ model.training_status }}"
   hx-trigger="every 8s"
   hx-swap="outerHTML"
   {% endif %}
