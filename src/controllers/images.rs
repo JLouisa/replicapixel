@@ -20,6 +20,7 @@ use crate::models::join::user_image::load_user_and_image;
 use crate::models::users::UserPid;
 use crate::models::{ImageActiveModel, ImageModel, TrainingModelModel, UserCreditModel, UserModel};
 use crate::service::aws::s3::{AwsS3, S3Folders};
+use crate::service::fal_ai::fal_client::Lora;
 use crate::service::redis::redis::Cache;
 use crate::views::images::{CreditsViewModel, ImageView, ImageViewList};
 use crate::{models::_entities::images::Entity, service::fal_ai::fal_client::FalAiClient, views};
@@ -131,6 +132,13 @@ impl ImageGenRequestParams {
     pub fn process(self, model: &TrainingModelModel, user_pid: &Uuid) -> ImageNewList {
         let sys_prompt = self.prompt.formatted_prompt(model);
         let alt = AltText::from(&self.prompt);
+        let lora = match model.tensor_path.clone() {
+            Some(p) => vec![Lora {
+                path: p,
+                scale: 1.0,
+            }],
+            None => vec![],
+        };
         (0..self.num_images)
             .map(|_| {
                 let uuid = Uuid::new_v4();
@@ -154,6 +162,7 @@ impl ImageGenRequestParams {
                     image_s3_key: s3_key,
                     is_favorite: false,
                     deleted_at: None,
+                    loras: lora.clone(),
                 }
             })
             .collect::<Vec<ImageNew>>()
@@ -320,12 +329,14 @@ pub async fn check_img(
             .set_pre_url(&user.pid, &s3_client)
             .await
             .unwrap_or_else(|_| image);
+        let is_image_gen = Some(true);
 
         return views::images::img_completed(
             &v,
             &website,
             &ImageViewList::new(vec![image]),
             &user_credits_view,
+            is_image_gen,
         );
     }
 
@@ -353,9 +364,15 @@ pub async fn generate(
     let (updated_credits, saved_images) =
         ImageGenerationService::generate(&ctx, &fal_ai_client, request, &user, &training_model)
             .await?;
-
+    let is_image_gen = Some(true);
     // 3. Render the view using the View Models
-    views::images::img_completed(&v, &website, &saved_images.into(), &updated_credits.into())
+    views::images::img_completed(
+        &v,
+        &website,
+        &saved_images.into(),
+        &updated_credits.into(),
+        is_image_gen,
+    )
 }
 
 #[debug_handler]

@@ -44,11 +44,12 @@ pub fn img_completed(
     website: &Website,
     images: &ImageViewList,
     credits: &CreditsViewModel,
+    is_image_gen: Option<bool>,
 ) -> Result<Response> {
     format::render().view(
         v,
         "dashboard/content/photo/image_partial.html",
-        data!({ "website": website, "credits": credits, "images": images }),
+        data!({ "website": website, "credits": credits, "images": images, "is_image_gen": is_image_gen }),
     )
 }
 

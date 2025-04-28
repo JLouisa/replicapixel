@@ -137,8 +137,8 @@ impl FalAiClient {
     ) -> Result<QueueResponse, FalAiClientError> {
         let response = self
             .client
-            // .post("https://queue.fal.run/fal-ai/flux-lora-fast-training?fal_webhook=https://replicapixel.com/api/webhooks/fal-ai/training")
-            .post(format!("{}{}", &self.training_url, &self.webhook_training))
+            .post("https://queue.fal.run/fal-ai/flux-lora-fast-training?fal_webhook=https://replicapixel.com/api/webhooks/fal-ai/training")
+            // .post(format!("{}{}", &self.training_url, &self.webhook_training))
             .header("Authorization", format!("Key {}", &self.fal_key))
             .header("Content-Type", "application/json")
             .json(&prompt)
@@ -173,8 +173,8 @@ impl FalAiClient {
     ) -> Result<QueueResponse, FalAiClientError> {
         let response = self
             .client
-            // .post("https://queue.fal.run/fal-ai/flux-lora?fal_webhook=https://replicapixel.com/api/webhooks/fal-ai/image")
-            .post(format!("{}{}", &self.image_url, &self.webhook_image))
+            .post("https://queue.fal.run/fal-ai/flux-lora?fal_webhook=https://replicapixel.com/api/webhooks/fal-ai/image")
+            // .post(format!("{}{}", &self.image_url, &self.webhook_image))
             .header("Authorization", format!("Key {}", &self.fal_key))
             .header("Content-Type", "application/json")
             .json(&body)
@@ -427,8 +427,10 @@ pub struct SuccessfulPayload {
     pub has_nsfw_concepts: Option<Vec<bool>>,
 }
 impl SuccessfulPayload {
-    pub fn image_url(&self) -> Url {
-        Url::new(self.images[0].url.to_owned())
+    pub fn image_url(&self) -> Option<String> {
+        self.images
+            .first()
+            .map(|first_image| first_image.url.clone())
     }
 }
 
@@ -520,8 +522,14 @@ pub struct QueueResponse {
     pub queue_position: usize,
 }
 
+#[derive(Clone, Debug, Serialize, PartialEq)]
+pub struct Lora {
+    pub path: String,
+    pub scale: f32,
+}
+
 /// Represents a request to generate images using Flux Lora.
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Debug)]
 pub struct FluxLoraImageGenerate {
     pub prompt: String,
     pub image_size: ImageSize,
@@ -531,6 +539,7 @@ pub struct FluxLoraImageGenerate {
     pub num_images: u8,
     pub enable_safety_checker: bool,
     pub output_format: ImageFormat,
+    pub loras: Vec<Lora>,
 }
 impl From<ImageNew> for FluxLoraImageGenerate {
     fn from(value: ImageNew) -> Self {
@@ -542,6 +551,7 @@ impl From<ImageNew> for FluxLoraImageGenerate {
             num_images: 1,
             enable_safety_checker: true,
             output_format: ImageFormat::Jpeg,
+            loras: value.loras,
         }
     }
 }

@@ -1,6 +1,7 @@
 use crate::controllers::images::ImageLoadingParams;
 use crate::domain::url::Url;
 use crate::service::aws::s3::S3Key;
+use crate::service::fal_ai::fal_client::Lora;
 use crate::views::images::{ImageView, ImageViewList};
 
 use super::users::{User, UserPid};
@@ -40,6 +41,7 @@ pub struct ImageNew {
     pub image_url_fal: Option<String>,
     pub is_favorite: bool,
     pub deleted_at: Option<DateTimeWithTimeZone>,
+    pub loras: Vec<Lora>,
 }
 impl ImageNew {
     pub fn update(&self, item: &mut ActiveModel) {
@@ -106,9 +108,10 @@ impl UserPrompt {
 impl UserPrompt {
     pub fn formatted_prompt(&self, training_model: &TrainingModelModel) -> SysPrompt {
         let sys_prompt = format!(
-            "{} {}. The subject is a {} {} {} with {} eyes, aged {}. {}.",
+            "{} {}. {} is a {} {} {} with {} eyes, aged {}. {}.",
             training_model.trigger_word,
             self.0,
+            training_model.trigger_word,
             training_model.ethnicity,
             training_model.sex,
             if training_model.bald {
@@ -120,6 +123,10 @@ impl UserPrompt {
             training_model.age,
             training_model.based_on.to_string()
         );
+        SysPrompt(sys_prompt)
+    }
+    pub fn formatted_prompt_lean(&self, training_model: &TrainingModelModel) -> SysPrompt {
+        let sys_prompt = format!("{} {}", training_model.trigger_word, self.0,);
         SysPrompt(sys_prompt)
     }
 }

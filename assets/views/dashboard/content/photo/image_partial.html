@@ -1,5 +1,5 @@
 {% for image in images %} {% if image.image_status == "Completed" or image.image_status ==
-"Processing" %} {# COMPLETED IMAGE CELL #} {% if loop.last %}
+"Processing" %} {# COMPLETED IMAGE CELL #} {% if loop.last and not is_image_gen %}
 <div
   hx-get="{{ website.website_routes.image.api_image_infinite | safe }}/{{ image.pid }}{% if is_deleted %}?deleted=true{% endif %}{% if is_favorite %}?favorite=true{% endif %}"
   hx-trigger="intersect once"

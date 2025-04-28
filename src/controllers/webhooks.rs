@@ -165,7 +165,7 @@ pub async fn fal_ai_image(
 
     // Update the image
     image
-        .update_fal_image_url(&ctx.db, Some(image_url.into_inner()), Status::Processing)
+        .update_fal_image_url(&ctx.db, image_url, Status::Processing)
         .await?;
 
     Ok((StatusCode::OK, "Payload successfully processed").into_response())
