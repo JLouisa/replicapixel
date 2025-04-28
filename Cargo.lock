@@ -5068,6 +5068,7 @@ dependencies = [
  "fluent-templates",
  "futures",
  "futures-util",
+ "hyper 0.14.32",
  "include_dir",
  "insta",
  "loco-oauth2",

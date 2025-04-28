@@ -16,11 +16,21 @@ use crate::{
     service::stripe::stripe_service::{StripeServiceError, StripeWebhookService},
 };
 use axum::{
-    body, body::Bytes, debug_handler, extract::State, http::HeaderMap, http::StatusCode,
-    response::IntoResponse, Extension, Json,
+    body,
+    body::{Bytes, HttpBody},
+    debug_handler,
+    extract::State,
+    http::HeaderMap,
+    http::StatusCode,
+    response::IntoResponse,
+    Extension, Json,
 };
 use loco_rs::prelude::*;
 use stripe::{Event, EventObject, EventType, Webhook};
+
+use axum::extract::FromRequest;
+use axum::http::Request;
+use hyper::Body;
 
 pub mod routes {
     use serde::Serialize;
@@ -38,14 +48,48 @@ pub mod routes {
 pub fn routes() -> Routes {
     Routes::new()
         .prefix(routes::Webhooks::BASE)
-        .add(routes::Webhooks::API_FAL_AI_TRAINING, post(fal_ai_training))
-        .add(routes::Webhooks::API_FAL_AI_IMAGE, post(fal_ai_image))
+        .add(
+            routes::Webhooks::API_FAL_AI_TRAINING,
+            post(webhook_training_handler),
+        )
+        .add(
+            routes::Webhooks::API_FAL_AI_IMAGE,
+            post(webhook_image_handler),
+        )
         .add(routes::Webhooks::API_STRIPE, post(stripe))
 }
 
 async fn load_item_by_request_id(ctx: &AppContext, id: &Uuid) -> Result<Model> {
     let item = training_models::Model::find_by_request_id(&ctx.db, id).await?;
     Ok(item)
+}
+
+async fn webhook_training_handler(bytes: Bytes) -> Result<Response> {
+    let body_string = String::from_utf8_lossy(&bytes);
+
+    // Debug the raw body
+    dbg!("Training", &body_string);
+
+    // Log the raw body
+    tracing::info!("Received Fal Training Webhook: {}", &body_string);
+    tracing::warn!("Received Fal Training Webhook: {}", &body_string);
+    tracing::error!("Received Fal Training Webhook: {}", &body_string);
+
+    Ok((StatusCode::OK).into_response())
+}
+
+async fn webhook_image_handler(bytes: Bytes) -> Result<Response> {
+    let body_string = String::from_utf8_lossy(&bytes);
+
+    // Debug the raw body
+    dbg!("Image", &body_string);
+
+    // Log the raw body
+    tracing::info!("Received Fal Image Webhook: {}", &body_string);
+    tracing::warn!("Received Fal Image Webhook: {}", &body_string);
+    tracing::error!("Received Fal Image Webhook: {}", &body_string);
+
+    Ok((StatusCode::OK).into_response())
 }
 
 #[debug_handler]
