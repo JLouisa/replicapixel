@@ -145,11 +145,24 @@ impl FalAiClient {
             .map_err(|e| {
                 tracing::error!("Failed to process training schema: {:?}", e);
                 loco_rs::Error::Message("Error processing training model schema: 100".to_string())
-            })?
-            .json::<FluxResponse>()
-            .await?;
+            })?;
+        // .json::<FluxResponse>()
+        // .await?;
 
-        Ok(response)
+        dbg!("FluxQueueResponse", &response);
+        let text = response.text().await.map_err(|e| {
+            tracing::error!("Failed to read response body: {:?}", e);
+            loco_rs::Error::Message("Error reading response body".to_string())
+        })?;
+
+        tracing::warn!("Raw response from FAL AI API: {}", text); // 🔥 This logs what’s actually returned
+
+        let parsed_response: FluxResponse = serde_json::from_str(&text).map_err(|e| {
+            tracing::error!("Failed to parse response body: {:?}", e);
+            loco_rs::Error::Message("Error decoding response body".to_string())
+        })?;
+
+        Ok(parsed_response)
     }
 
     pub async fn send_image_queue_webhook(
@@ -444,8 +457,8 @@ impl FluxApiWebhookResponse {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct FluxResponse {
-    request_id: String,
-    gateway_request_id: String,
+    pub request_id: String,
+    pub gateway_request_id: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]

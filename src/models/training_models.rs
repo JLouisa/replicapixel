@@ -11,8 +11,8 @@ use sea_orm::{entity::prelude::*, QueryOrder};
 use serde::{Deserialize, Serialize};
 pub type TrainingModels = Entity;
 
-use crate::service::aws::s3::S3Key;
 use crate::service::fal_ai::fal_client::FluxQueueResponse;
+use crate::service::{aws::s3::S3Key, fal_ai::fal_client::FluxResponse};
 use loco_rs::prelude::*;
 
 fn default_as_true() -> bool {
@@ -285,6 +285,16 @@ impl ActiveModel {
         mut self,
         db: &DatabaseConnection,
         fal: &FluxQueueResponse,
+    ) -> ModelResult<Model> {
+        self.fal_ai_request_id = ActiveValue::Set(Some(fal.request_id.clone()));
+        self.training_status = ActiveValue::Set(Status::Training);
+        Ok(self.update(db).await?)
+    }
+
+    pub async fn update_with_fal_ai_webhook_training_response(
+        mut self,
+        db: &DatabaseConnection,
+        fal: &FluxResponse,
     ) -> ModelResult<Model> {
         self.fal_ai_request_id = ActiveValue::Set(Some(fal.request_id.clone()));
         self.training_status = ActiveValue::Set(Status::Training);

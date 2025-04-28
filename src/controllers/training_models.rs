@@ -154,12 +154,12 @@ pub async fn upload_training_completed(
 
     // Send training model to Fal AI Queue
     let queue = fal_ai_client
-        .send_training_queue_test(&train_schema)
+        .send_training_queue_webhook(&train_schema)
         .await?;
 
     // Save Fal AI response in Database
     let _train_model = ActiveModel::from(train)
-        .update_with_fal_ai_response(&ctx.db, &queue)
+        .update_with_fal_ai_webhook_training_response(&ctx.db, &queue)
         .await?;
 
     // Send response back to user
