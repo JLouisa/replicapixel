@@ -15,6 +15,10 @@ use crate::service::aws::s3::S3Key;
 use crate::service::fal_ai::fal_client::FluxQueueResponse;
 use loco_rs::prelude::*;
 
+fn default_as_true() -> bool {
+    true
+}
+
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct TrainingModelClient {
     pub id: i32,
@@ -54,7 +58,7 @@ impl From<TrainingModelModel> for TrainingModelClient {
 
 #[derive(Clone, Debug, Deserialize)]
 pub struct TrainingForm {
-    #[serde(default = "Uuid::new_v4")]
+    #[serde(default = "Uuid::new_v4", skip_deserializing)]
     pub pid: Uuid,
     pub name: String,
     pub sex: Sex,
@@ -65,16 +69,14 @@ pub struct TrainingForm {
     pub ethnicity: Ethnicity,
     pub based_on: BasedOn,
     pub file_type: ImageFormat,
-    #[serde(default)]
-    pub training_status: Status,
-    #[serde(default = "cuid2::slug")]
+    #[serde(default = "cuid2::slug", skip_deserializing)]
     pub slug: String,
     training_images: Option<serde_json::Value>,
     pub consent: bool,
 }
 
 impl TrainingForm {
-    pub fn from_from(&self, user: &UserModel, s3_key: &S3Key) -> TrainingModelParams {
+    pub fn from_form(&self, user: &UserModel, s3_key: &S3Key) -> TrainingModelParams {
         let tw = format!("{}-{}", &self.name, &self.slug);
         TrainingModelParams {
             pid: self.pid,
@@ -85,23 +87,16 @@ impl TrainingForm {
             eye_color: self.eye_color,
             bald: self.bald,
             steps: self.creative,
-            create_mask: true,
-            is_style: false,
             s3_key: s3_key.as_ref().to_owned(),
             based_on: self.based_on,
             ethnicity: self.ethnicity,
-            is_verified: false,
-            training_status: self.training_status,
             trigger_word: tw,
-            fal_ai_request_id: None,
-            tensor_path: None,
-            thumbnail: None,
-            training_images: self.training_images.clone(),
+            ..Default::default()
         }
     }
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize, Default)]
 pub struct TrainingModelParams {
     pub pid: Uuid,
     pub user_id: i32,
@@ -111,13 +106,17 @@ pub struct TrainingModelParams {
     pub eye_color: EyeColor,
     pub bald: bool,
     pub steps: i32,
+    #[serde(default = "default_as_true")]
     pub create_mask: bool,
+    #[serde(default)]
     pub is_style: bool,
     pub based_on: BasedOn,
     pub ethnicity: Ethnicity,
     pub trigger_word: String,
     pub s3_key: String,
+    #[serde(default)]
     pub training_status: Status,
+    #[serde(default)]
     pub is_verified: bool,
     pub fal_ai_request_id: Option<String>,
     pub tensor_path: Option<String>,

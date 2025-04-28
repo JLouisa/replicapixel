@@ -1,4 +1,4 @@
-use derive_more::{Display, From};
+use derive_more::{AsRef, Display, From};
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 use validator::ValidateUrl;
@@ -11,7 +11,7 @@ pub enum UrlError {
     Other(String),
 }
 
-#[derive(Debug, Serialize, Deserialize, Display, From, Clone)]
+#[derive(Debug, Serialize, Deserialize, Display, AsRef, From, Clone)]
 pub struct Url(String);
 
 impl Url {
@@ -47,11 +47,5 @@ impl Url {
 
     pub fn many_to_string(urls: &Vec<Url>) -> Vec<String> {
         urls.iter().map(|url| url.as_ref().to_owned()).collect()
-    }
-}
-
-impl AsRef<String> for Url {
-    fn as_ref(&self) -> &String {
-        &self.0
     }
 }

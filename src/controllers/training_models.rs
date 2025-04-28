@@ -8,9 +8,9 @@ use crate::models::_entities::training_models::{ActiveModel, Entity, Model};
 use crate::models::join::user_credits_models::load_user_and_training;
 use crate::models::training_models::{TrainingForm, TrainingModelParams};
 use crate::models::users::UserPid;
-use crate::models::{TrainingModelModel, UserModel};
+use crate::models::{TrainingModelActiveModel, TrainingModelModel, UserModel};
 use crate::service::aws::s3::{AwsS3, PresignedUrlRequest, PresignedUrlSafe, S3Key};
-use crate::service::fal_ai::fal_client::FalAiClient;
+use crate::service::fal_ai::fal_client::{FalAiClient, FluxLoraTrainingSchema};
 use crate::views;
 use crate::views::training_models::TrainingModelView;
 use axum::{debug_handler, http::StatusCode, response::IntoResponse, Extension, Json};
@@ -93,15 +93,19 @@ pub async fn upload_training(
 ) -> Result<impl IntoResponse> {
     let user = UserModel::find_by_pid(&ctx.db, &auth.claims.pid).await?;
 
+    //1. Generate Pre-Signed URL
     let pre_url_request: PresignedUrlRequest = form.clone().into();
-    let (pre_url, _) = s3_client
+    let (pre_url, s3_key) = s3_client
         .presigned_save_url(&user.pid, &pre_url_request, None)
         .await
         .map_err(|_| loco_rs::Error::Message(String::from("Generating Pre-sign URL error: 101")))?;
 
-    // Create and save Training Model in Database
-    let pre_sign_response = PresignedUrlSafe::from_request(pre_url_request, pre_url);
+    //2. Create and save Training Model in Database
+    let training_params: TrainingModelParams = form.from_form(&user, &s3_key);
+    TrainingModelActiveModel::save(&ctx.db, &training_params).await?;
 
+    //3. Create Pre-Signed URL
+    let pre_sign_response = PresignedUrlSafe::from_request(pre_url_request, pre_url);
     Ok(handle_general_response(
         StatusCode::OK,
         Some(pre_sign_response),
@@ -118,8 +122,12 @@ pub async fn upload_training_completed(
     Extension(fal_ai_client): Extension<FalAiClient>,
     State(ctx): State<AppContext>,
 ) -> Result<Response> {
-    let (user, train) = load_user_and_training(&ctx.db, &&UserPid::new(&auth.claims.pid)).await?;
-    let train = TrainingModelModel::find_by_pid(&ctx.db, &training_model_id).await?;
+    let user = UserModel::find_by_pid(&ctx.db, &auth.claims.pid)
+        .await
+        .map_err(|e| loco_rs::Error::Message(format!("Error Getting user: {} ", e)))?;
+    let train = TrainingModelModel::find_by_pid(&ctx.db, &training_model_id)
+        .await
+        .map_err(|e| loco_rs::Error::Message(format!("Error Getting Training Model: {} ", e)))?;
     let s3_key: S3Key = S3Key::new(&train.s3_key);
 
     let exists = s3_client
@@ -137,37 +145,36 @@ pub async fn upload_training_completed(
     }
     let train = ActiveModel::from(train).upload_completed(&ctx.db).await?;
 
-    // let exp_time = Some(60 * 60 * 3); // 3 hours
-    // let pre_url = match s3_client.get_object_pre(&s3_key, exp_time).await {
-    //     Ok(url) => url,
-    //     Err(e) => return Ok((StatusCode::INTERNAL_SERVER_ERROR, e.to_string()).into_response()),
-    // };
-    // let mut train_schema: FluxLoraTrainingSchema = train.clone().into();
-    // train_schema.images_data_url = pre_url.into_inner();
+    let exp_time = Some(60 * 60 * 3); // 3 hours
+    let pre_url = match s3_client.get_object_pre(&s3_key, exp_time).await {
+        Ok(url) => url,
+        Err(e) => return Ok((StatusCode::INTERNAL_SERVER_ERROR, e.to_string()).into_response()),
+    };
+    let mut train_schema = FluxLoraTrainingSchema::from_training(train.clone(), pre_url);
 
-    // // Send training model to Fal AI Queue
-    // let queue = fal_ai_client
-    //     .send_training_queue_test(&train_schema)
-    //     .await?;
+    // Send training model to Fal AI Queue
+    let queue = fal_ai_client
+        .send_training_queue_test(&train_schema)
+        .await?;
 
-    // // Save Fal AI response in Database
-    // let _train_model = ActiveModel::from(train)
-    //     .update_with_fal_ai_response(&ctx.db, &queue)
-    //     .await?;
-
-    // // Send response back to user
-    // Ok(handle_general_response(
-    //     StatusCode::OK,
-    //     Some(queue),
-    //     Some("Successfully saved".into()),
-    // )
-    // .into_response())
+    // Save Fal AI response in Database
+    let _train_model = ActiveModel::from(train)
+        .update_with_fal_ai_response(&ctx.db, &queue)
+        .await?;
 
     // Send response back to user
-    Ok(
-        handle_general_response_text(StatusCode::OK, None, Some("Successfully saved".into()))
-            .into_response(),
+    Ok(handle_general_response(
+        StatusCode::OK,
+        Some(queue),
+        Some("Successfully saved".into()),
     )
+    .into_response())
+
+    // // Send response back to user
+    // Ok(
+    //     handle_general_response_text(StatusCode::OK, None, Some("Successfully saved".into()))
+    //         .into_response(),
+    // )
 }
 
 #[debug_handler]

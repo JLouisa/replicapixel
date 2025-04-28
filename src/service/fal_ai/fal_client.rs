@@ -1,9 +1,13 @@
 use crate::{
-    controllers::webhooks::routes::Webhooks,
-    domain::website::{Website, WebsiteBasicInfo},
+    controllers::{images, webhooks::routes::Webhooks},
+    domain::{
+        url::Url,
+        website::{Website, WebsiteBasicInfo},
+    },
     models::{
         _entities::sea_orm_active_enums::{ImageFormat, ImageSize},
         images::{ImageNew, ImageNewList},
+        TrainingModelModel,
     },
 };
 use futures::future::join_all;
@@ -484,8 +488,19 @@ pub struct FluxLoraTrainingSchema {
     pub images_data_url: String,
     pub trigger_word: String,
     pub steps: i32,
-    pub create_masks: bool,
+    pub create_mask: bool,
     pub is_style: bool,
+}
+impl FluxLoraTrainingSchema {
+    pub fn from_training(value: TrainingModelModel, images_data_url: Url) -> Self {
+        Self {
+            images_data_url: images_data_url.into_inner(),
+            trigger_word: value.trigger_word,
+            steps: value.steps,
+            create_mask: value.create_mask,
+            is_style: value.is_style,
+        }
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug)]

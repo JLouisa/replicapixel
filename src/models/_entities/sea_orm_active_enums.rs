@@ -24,6 +24,11 @@ pub enum Sex {
     #[sea_orm(string_value = "Female")]
     Female,
 }
+impl Default for Sex {
+    fn default() -> Self {
+        Sex::Male
+    }
+}
 
 #[derive(
     Debug,
@@ -174,6 +179,11 @@ pub enum EyeColor {
     #[sea_orm(string_value = "Red")]
     Red,
 }
+impl Default for EyeColor {
+    fn default() -> Self {
+        EyeColor::Brown
+    }
+}
 
 #[derive(
     Clone,
@@ -213,6 +223,11 @@ pub enum Ethnicity {
     #[serde(rename = "Middle Eastern")]
     #[strum(to_string = "Middle Eastern")]
     MiddleEastern,
+}
+impl Default for Ethnicity {
+    fn default() -> Self {
+        Ethnicity::White
+    }
 }
 
 #[derive(
@@ -269,6 +284,11 @@ pub enum BasedOn {
     #[serde(rename = "Create a new AI influencer")]
     #[strum(to_string = "Create a new AI influencer")]
     CreateInfluencerAI,
+}
+impl Default for BasedOn {
+    fn default() -> Self {
+        BasedOn::RealPerson
+    }
 }
 
 #[derive(
