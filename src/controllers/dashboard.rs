@@ -21,7 +21,7 @@ use crate::models::{
 };
 use crate::service::aws::s3::AwsS3;
 use crate::service::fal_ai::fal_client::FalAiClient;
-use crate::service::redis::redis::Cache;
+use crate::service::redis::redis::RedisCacheDriver;
 use crate::views;
 use crate::views::images::{ImageView, ImageViewList};
 use axum::Extension;
@@ -145,6 +145,7 @@ pub mod routes {
 
         pub const DASHBOARD_TEST_SET: &'static str = "/test/set";
         pub const DASHBOARD_TEST_GET: &'static str = "/test/get";
+        pub const DASHBOARD_TEST_CLEAR: &'static str = "/test/clear";
         pub const DASHBOARD_TEST: &'static str = "/test";
     }
 }
@@ -208,13 +209,13 @@ pub fn routes() -> Routes {
         )
         .add(routes::Dashboard::BILLING, get(billing_dashboard))
         .add(
-            routes::Dashboard::DASHBOARD_TEST_SET,
-            get(dashboard_test_set),
+            routes::Dashboard::DASHBOARD_TEST_CLEAR,
+            get(dashboard_test_clear),
         )
-        .add(
-            routes::Dashboard::DASHBOARD_TEST_GET,
-            get(dashboard_test_get),
-        )
+        // .add(
+        //     routes::Dashboard::DASHBOARD_TEST_GET,
+        //     get(dashboard_test_get),
+        // )
         .add(routes::Dashboard::DASHBOARD_TEST, post(dashboard_test))
         .layer(CookieConsentLayer::new())
 }
@@ -281,8 +282,8 @@ pub async fn dashboard_test(Json(params): Json<RegisterParams>) -> Result<impl I
 }
 
 #[debug_handler]
-pub async fn dashboard_test_set(Extension(cache): Extension<Cache>) -> Result<impl IntoResponse> {
-    match cache.set("testing:1", "Testing Number 2", Some(120)).await {
+pub async fn dashboard_test_clear(State(ctx): State<AppContext>) -> Result<impl IntoResponse> {
+    match ctx.cache.clear().await {
         Ok(_) => {
             return Ok((StatusCode::OK).into_response());
         }
@@ -293,16 +294,18 @@ pub async fn dashboard_test_set(Extension(cache): Extension<Cache>) -> Result<im
     };
 }
 
-#[debug_handler]
-pub async fn dashboard_test_get(Extension(cache): Extension<Cache>) -> Result<impl IntoResponse> {
-    let _ = match cache.get("testing:1").await {
-        Ok(e) => return format::json(e),
-        Err(e) => {
-            println!("Error: {}", e);
-            return Ok((StatusCode::NOT_FOUND).into_response());
-        }
-    };
-}
+// #[debug_handler]
+// pub async fn dashboard_test_get(
+//     Extension(cache): Extension<RedisCacheDriver>,
+// ) -> Result<impl IntoResponse> {
+//     let _ = match cache.get("testing:1").await {
+//         Ok(e) => return format::json(e),
+//         Err(e) => {
+//             println!("Error: {}", e);
+//             return Ok((StatusCode::NOT_FOUND).into_response());
+//         }
+//     };
+// }
 
 #[debug_handler]
 pub async fn billing_dashboard(
@@ -506,8 +509,8 @@ pub async fn album_deleted_dashboard(
     auth: auth::JWT,
     ExtractConsentState(cc_cookie): ExtractConsentState,
     State(ctx): State<AppContext>,
-    Extension(cache): Extension<Cache>,
     Extension(s3_client): Extension<AwsS3>,
+    Extension(cache): Extension<RedisCacheDriver>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
@@ -536,8 +539,8 @@ pub async fn album_deleted_dashboard(
 pub async fn album_deleted_partial_dashboard(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
-    Extension(cache): Extension<Cache>,
     Extension(s3_client): Extension<AwsS3>,
+    Extension(cache): Extension<RedisCacheDriver>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
@@ -567,8 +570,8 @@ pub async fn album_favorite_dashboard(
     auth: auth::JWT,
     ExtractConsentState(cc_cookie): ExtractConsentState,
     State(ctx): State<AppContext>,
-    Extension(cache): Extension<Cache>,
     Extension(s3_client): Extension<AwsS3>,
+    Extension(cache): Extension<RedisCacheDriver>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
@@ -598,8 +601,8 @@ pub async fn album_favorite_dashboard(
 pub async fn album_favorite_partial_dashboard(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
-    Extension(cache): Extension<Cache>,
     Extension(s3_client): Extension<AwsS3>,
+    Extension(cache): Extension<RedisCacheDriver>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
@@ -630,8 +633,8 @@ pub async fn photo_dashboard(
     auth: auth::JWT,
     ExtractConsentState(cc_cookie): ExtractConsentState,
     State(ctx): State<AppContext>,
-    Extension(cache): Extension<Cache>,
     Extension(s3_client): Extension<AwsS3>,
+    Extension(cache): Extension<RedisCacheDriver>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
@@ -661,8 +664,8 @@ pub async fn photo_dashboard(
 pub async fn photo_partial_dashboard(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
-    Extension(cache): Extension<Cache>,
     Extension(s3_client): Extension<AwsS3>,
+    Extension(cache): Extension<RedisCacheDriver>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {

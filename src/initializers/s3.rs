@@ -17,13 +17,8 @@ impl Initializer for S3 {
     }
 
     async fn after_routes(&self, router: AxumRouter, ctx: &AppContext) -> Result<AxumRouter> {
-        let s3_settings: Settings =
-            serde_json::from_value(ctx.config.settings.clone().expect("No settings found"))
-                .expect("Failed to parse settings");
-
-        let aws_client = AwsS3::new(&s3_settings.aws).await;
-
-        let router = router.layer(Extension(aws_client));
+        let s3_client = Settings::init(&ctx).aws_s3().await;
+        let router = router.layer(Extension(s3_client));
         Ok(router)
     }
 }

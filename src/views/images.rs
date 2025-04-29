@@ -12,7 +12,7 @@ use crate::models::images::{ImageNew, ImagesModelList};
 use crate::models::{ImageModel, UserCreditModel};
 use crate::models::{_entities::images, images::ImageNewList};
 use crate::service::aws::s3::{AwsError, AwsS3, S3Key};
-use crate::service::redis::redis::{Cache, RedisDbError};
+use crate::service::redis::redis::{Cache, RedisCacheDriver, RedisDbError};
 
 pub fn img_infinite_loading(
     v: &impl ViewRenderer,
@@ -141,7 +141,7 @@ impl ImageView {
         });
         try_join_all(futures).await
     }
-    pub async fn get_pre_url(mut self, s3_client: &AwsS3, cache: &Cache) -> Self {
+    pub async fn get_pre_url(mut self, s3_client: &AwsS3, cache: &RedisCacheDriver) -> Self {
         // Early exit if there isn't an image URL or S3 key
         if self.image_url_fal.is_none() || self.image_s3_key.is_empty() {
             return self;
@@ -221,7 +221,11 @@ impl ImageView {
 
     //     self
     // }
-    pub async fn get_pre_url_many(list: Vec<Self>, s3_client: &AwsS3, cache: &Cache) -> Vec<Self> {
+    pub async fn get_pre_url_many(
+        list: Vec<Self>,
+        s3_client: &AwsS3,
+        cache: &RedisCacheDriver,
+    ) -> Vec<Self> {
         let futures = list.into_iter().map(|image| async move {
             if image.image_url_fal.is_some() && image.image_status == Status::Completed.to_string()
             {
@@ -235,7 +239,11 @@ impl ImageView {
     }
 }
 impl ImageView {
-    pub async fn get_pre_url_mut(&mut self, s3_client: &AwsS3, cache: &Cache) -> &mut Self {
+    pub async fn get_pre_url_mut(
+        &mut self,
+        s3_client: &AwsS3,
+        cache: &RedisCacheDriver,
+    ) -> &mut Self {
         if self.image_url_fal.is_none() || self.image_s3_key.is_empty() {
             tracing::trace!(
                 "Skipping pre_url for {}: missing url_fal or s3_key",
@@ -296,7 +304,7 @@ impl ImageView {
             }
         }
 
-        self
+        self // Return the (potentially) modified self
     }
 }
 
@@ -382,14 +390,18 @@ impl ImageViewList {
     pub fn as_mut_vec(&mut self) -> &mut Vec<ImageView> {
         &mut self.0
     }
-    pub async fn populate_s3_pre_urls(mut self, s3_client: &AwsS3, cache: &Cache) -> Self {
+    pub async fn populate_s3_pre_urls(
+        mut self,
+        s3_client: &AwsS3,
+        cache: &RedisCacheDriver,
+    ) -> Self {
         self.get_pre_url_many(s3_client, cache).await;
         self
     }
     pub async fn get_pre_url_many(
         &mut self,
         s3_client: &AwsS3,
-        cache: &Cache,
+        cache: &RedisCacheDriver,
     ) -> Result<(), RedisDbError> {
         let futures = self.as_mut_vec().iter_mut().map(|image| async move {
             if image.image_url_fal.is_some() && image.image_status == Status::Completed.to_string()

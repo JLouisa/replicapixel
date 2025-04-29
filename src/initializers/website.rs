@@ -4,7 +4,6 @@ use loco_rs::{
     app::{AppContext, Initializer},
     Result,
 };
-use tracing::info;
 
 use crate::domain::settings::Settings;
 use crate::domain::website::Website as WebsiteInit;
@@ -19,13 +18,7 @@ impl Initializer for Website {
     }
 
     async fn after_routes(&self, router: AxumRouter, ctx: &AppContext) -> Result<AxumRouter> {
-        let settings: Settings =
-            serde_json::from_value(ctx.config.settings.clone().expect("No settings found"))
-                .expect("Failed to parse settings");
-
-        // let website_settings = settings.website;
-        let website = WebsiteInit::init(&settings);
-        info!("Website loaded");
+        let website = Settings::init(&ctx).website();
         let router = router.layer(Extension(website));
         Ok(router)
     }

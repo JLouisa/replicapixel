@@ -21,7 +21,7 @@ use crate::models::users::UserPid;
 use crate::models::{ImageActiveModel, ImageModel, TrainingModelModel, UserCreditModel, UserModel};
 use crate::service::aws::s3::{AwsS3, S3Folders};
 use crate::service::fal_ai::fal_client::Lora;
-use crate::service::redis::redis::Cache;
+use crate::service::redis::redis::RedisCacheDriver;
 use crate::views::images::{CreditsViewModel, ImageView, ImageViewList};
 use crate::{models::_entities::images::Entity, service::fal_ai::fal_client::FalAiClient, views};
 
@@ -211,7 +211,7 @@ async fn image_infinite_handler(
     auth: auth::JWT,
     Path(anchor_image_pid): Path<Uuid>,
     Query(params): Query<ImageLoadingParams>,
-    Extension(cache): Extension<Cache>,
+    Extension(cache): Extension<RedisCacheDriver>,
     Extension(website): Extension<Website>,
     Extension(s3_client): Extension<AwsS3>,
     State(ctx): State<AppContext>,

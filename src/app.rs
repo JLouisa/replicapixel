@@ -14,10 +14,13 @@ use loco_rs::{
 use migration::Migrator;
 use std::path::Path;
 
-use crate::middleware::cookie::CookieConsentLayer;
 #[allow(unused_imports)]
 use crate::{
     controllers, initializers, models::_entities::users, tasks, workers::downloader::DownloadWorker,
+};
+use crate::{
+    domain::settings::Settings, middleware::cookie::CookieConsentLayer,
+    service::redis::redis::RedisCacheDriver,
 };
 
 pub struct App;
@@ -90,10 +93,10 @@ impl Hooks for App {
             .await?;
         Ok(())
     }
-    // async fn after_context(ctx: AppContext) -> Result<AppContext> {
-    //     Ok(AppContext {
-    //         cache: cache::Cache::new(cache::drivers::inmem::new()).into(),
-    //         ..ctx
-    //     })
-    // }
+    async fn after_context(ctx: AppContext) -> Result<AppContext> {
+        Ok(AppContext {
+            cache: cache::Cache::new(Box::new(Settings::init(&ctx).redis().await)).into(),
+            ..ctx
+        })
+    }
 }
