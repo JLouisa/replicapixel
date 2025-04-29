@@ -12,6 +12,7 @@ use crate::{
             user_settings,
         },
     },
+    views,
 };
 use axum::{debug_handler, http::StatusCode, response::IntoResponse, Extension, Json};
 use loco_rs::prelude::*;
@@ -41,6 +42,7 @@ pub mod routes {
     pub struct Settings;
     impl Settings {
         pub const BASE: &'static str = "/settings";
+        pub const API_EMAIL_BOOL: &'static str = "/email/{bool}";
         pub const API_EMAIL: &'static str = "/email";
         pub const API_MARKETING: &'static str = "/marketing";
         pub const API_DARK_MODE: &'static str = "/dark-mode";
@@ -50,7 +52,15 @@ pub mod routes {
 pub fn routes() -> Routes {
     Routes::new()
         .prefix(routes::Settings::BASE)
-        .add(routes::Settings::API_EMAIL, patch(settings_email))
+        .add(
+            routes::Settings::API_MARKETING,
+            patch(update_marketing_notifications),
+        )
+        .add(routes::Settings::API_DARK_MODE, patch(update_dark_mode))
+        .add(
+            routes::Settings::API_EMAIL_BOOL,
+            patch(update_email_notifications),
+        )
 }
 
 async fn load_user_settings(db: &DatabaseConnection, user_id: i32) -> Result<UserSettingsModel> {
@@ -59,16 +69,44 @@ async fn load_user_settings(db: &DatabaseConnection, user_id: i32) -> Result<Use
 }
 
 #[debug_handler]
-pub async fn settings_email(
+pub async fn update_marketing_notifications(
     auth: auth::JWT,
+    Path(bool): Path<bool>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
     State(ctx): State<AppContext>,
 ) -> Result<impl IntoResponse> {
-    // let is_home = true;
-    // let user_pid = UserPid::new(&auth.claims.pid);
-    // let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
-    // let user_settings = load_user_settings(&ctx.db, user.id).await?;
-    // views::home::home(v, &website, is_home)
-    format::empty()
+    let new_bool = !bool;
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
+    let user_settings = load_user_settings(&ctx.db, user.id).await?;
+    views::settings::email_notification(v, &website, &user_settings.into())
+}
+#[debug_handler]
+pub async fn update_email_notifications(
+    auth: auth::JWT,
+    Path(bool): Path<bool>,
+    Extension(website): Extension<Website>,
+    ViewEngine(v): ViewEngine<TeraView>,
+    State(ctx): State<AppContext>,
+) -> Result<impl IntoResponse> {
+    let new_bool = !bool;
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
+    let user_settings = load_user_settings(&ctx.db, user.id).await?;
+    views::settings::email_notification(v, &website, &user_settings.into())
+}
+#[debug_handler]
+pub async fn update_dark_mode(
+    auth: auth::JWT,
+    Path(bool): Path<bool>,
+    Extension(website): Extension<Website>,
+    ViewEngine(v): ViewEngine<TeraView>,
+    State(ctx): State<AppContext>,
+) -> Result<impl IntoResponse> {
+    let new_bool = !bool;
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
+    let user_settings = load_user_settings(&ctx.db, user.id).await?;
+    views::settings::email_notification(v, &website, &user_settings.into())
 }

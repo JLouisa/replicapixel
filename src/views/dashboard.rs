@@ -1,5 +1,6 @@
 use super::auth::{UserCreditsView, UserView};
 use super::images::{ImageView, ImageViewList};
+use super::settings::UserSettingsView;
 use super::training_models::TrainingModelView;
 use crate::domain::dashboard_sidebar::DashboardSidebar;
 use crate::domain::features::FeatureViewList;
@@ -285,25 +286,5 @@ pub struct PackViewList(pub Vec<PackView>);
 impl From<PackModelList> for PackViewList {
     fn from(p: PackModelList) -> Self {
         Self(p.0.into_iter().map(|x| x.into()).collect())
-    }
-}
-
-#[derive(Debug, Serialize, Clone, Constructor)]
-pub struct UserSettingsView {
-    pub user_id: i32,
-    pub enable_notification_email: bool,
-    pub enable_marketing_email: bool,
-    pub language: Language,
-    pub theme: ThemePreference,
-}
-impl From<UserSettingsModel> for UserSettingsView {
-    fn from(value: UserSettingsModel) -> Self {
-        Self {
-            user_id: value.user_id,
-            enable_notification_email: value.enable_notification_email,
-            enable_marketing_email: value.enable_marketing_email,
-            language: value.language,
-            theme: value.theme,
-        }
     }
 }

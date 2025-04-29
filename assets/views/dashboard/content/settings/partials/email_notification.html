@@ -13,18 +13,6 @@
       id="notification-spinner"
       class="htmx-indicator loading loading-spinner loading-sm ml-2"
     ></span>
-    <input
-      type="checkbox"
-      id="email_notifications_toggle"
-      name="notify_enabled"
-      class="toggle toggle-primary"
-      hx-patch="{{ website.website_routes.settings.update_notifications | safe }}/{{ user_settings.enable_notification_email }}"
-      hx-trigger="change"
-      hx-indicator="#notification-spinner"
-      hx-swap="none"
-      {#
-      checked="{{ user_settings.enable_notification_email }}"
-      #}
-    />
+    {% include "dashboard/content/settings/partials/email_notification_input.html" %}
   </div>
 </div>

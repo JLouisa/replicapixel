@@ -1,5 +1,9 @@
 use derive_more::Constructor;
-use redis::{aio::MultiplexedConnection, AsyncCommands, Client, RedisResult};
+use redis::{
+    aio::MultiplexedConnection,
+    io::tcp::{socket2::TcpKeepalive, TcpSettings},
+    AsyncCommands, AsyncConnectionConfig, Client, IntoConnectionInfo, RedisResult,
+};
 use serde::Deserialize;
 use strum::{AsRefStr, EnumString};
 use thiserror::Error;
@@ -7,6 +11,8 @@ use thiserror::Error;
 use crate::views::images::{ImageView, ImageViewList};
 
 pub type Cache = Redis;
+
+use std::time::Duration;
 
 #[derive(Debug, Error)]
 pub enum RedisDbError {
@@ -50,12 +56,35 @@ pub struct Redis {
 
 impl Redis {
     pub async fn new(config: &RedisSettings) -> RedisResult<Self> {
-        let client_instance = Client::open(config.redis_url.as_str())?;
-        let connection = client_instance
-            .get_multiplexed_tokio_connection() // Use the tokio version
+        // 1. Create the basic client
+        let client = Client::open(config.redis_url.as_str())?;
+
+        // 2. Configure TCP Keepalives
+        let keep_alive_settings = TcpKeepalive::new()
+            .with_interval(Duration::from_secs(60))
+            .with_retries(5);
+
+        // 3. Configure TCP Keepalives within TcpSettings
+        let tcp_settings = TcpSettings::default().set_keepalive(keep_alive_settings);
+
+        // 4. Create AsyncConnectionConfig with the custom TcpSettings
+        let connection_config = AsyncConnectionConfig::new().set_tcp_settings(tcp_settings);
+
+        // 5. Get the connection using the method that takes the config
+        let connection = client
+            .get_multiplexed_async_connection_with_config(&connection_config)
             .await?;
-        Ok(Redis { client: connection })
+
+        Ok(Self { client: connection })
     }
+    // pub async fn new(config: &RedisSettings) -> RedisResult<Self> {
+    //     let client_instance = Client::open(config.redis_url.as_str())?;
+    //     let connection = client_instance
+    //         .get_multiplexed_tokio_connection() // Use the tokio version
+    //         .await?;
+    //     Ok(Redis { client: connection })
+    // }
+
     /// Sets the value of a key.
     pub async fn set(&self, key: &str, value: &str, seconds: Option<usize>) -> RedisResult<()> {
         let mut conn = self.client.clone();
