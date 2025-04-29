@@ -554,9 +554,14 @@ pub async fn partial_login(
 #[debug_handler]
 pub async fn partial_register(
     ViewEngine(v): ViewEngine<TeraView>,
+    Extension(website): Extension<Website>,
     State(_ctx): State<AppContext>,
 ) -> Result<Response> {
-    format::render().view(&v, "auth/register/register_partial.html", data!({}))
+    format::render().view(
+        &v,
+        "auth/register/register_partial.html",
+        data!({"website": website}),
+    )
 }
 
 #[debug_handler]

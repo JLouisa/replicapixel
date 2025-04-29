@@ -1,0 +1,20 @@
+<div class="flex items-center justify-between py-3">
+  <div class="flex items-center gap-4">
+    <span class="text-primary"> {% include "partials/svg/globe.html" %} </span>
+    <div>
+      <h2 class="font-medium">Language</h2>
+      <p class="text-sm text-base-content/70">Select your preferred language</p>
+    </div>
+  </div>
+  <div>
+    <span
+      id="notification-spinner"
+      class="htmx-indicator loading loading-spinner loading-sm ml-2"
+    ></span>
+    <select class="select select-bordered w-32" value="{language}">
+      <option value="english">English</option>
+      <option value="spanish">Spanish</option>
+      <option value="french">French</option>
+    </select>
+  </div>
+</div>

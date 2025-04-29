@@ -14,10 +14,10 @@ use crate::models::join::user_credits_models::{
 };
 use crate::models::packs::PackModelList;
 use crate::models::training_models::TrainingModelList;
-use crate::models::users::{RegisterParams, UserPid};
+use crate::models::users::{RegisterParams, User, UserPid};
 use crate::models::{
     FeatureRequestModel, FeatureVoteModel, ImageModel, PackModel, TrainingModelModel,
-    UserCreditModel, UserModel,
+    UserCreditModel, UserModel, UserSettingsModel,
 };
 use crate::service::aws::s3::AwsS3;
 use crate::service::fal_ai::fal_client::FalAiClient;
@@ -269,6 +269,10 @@ async fn load_votes(db: &DatabaseConnection, user_id: i32) -> Result<FeatureVote
     let list = FeatureVoteModel::load_all_votes(&db, user_id).await?;
     Ok(list)
 }
+async fn load_user_settings(db: &DatabaseConnection, user_id: i32) -> Result<UserSettingsModel> {
+    let user_settings = UserSettingsModel::find_by_user_id(db, user_id).await?;
+    Ok(user_settings)
+}
 
 #[debug_handler]
 pub async fn dashboard_test(Json(params): Json<RegisterParams>) -> Result<impl IntoResponse> {
@@ -385,6 +389,7 @@ pub async fn features_partial_dashboard(
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
     let user = load_user(&ctx.db, &user_pid).await?;
+    let user_settings = load_user_settings(&ctx.db, user.id).await?;
     let features = load_features(&ctx.db).await?;
     let votes = load_votes(&ctx.db, user.id).await?;
     let features_view = FeatureViewList::convert(features, votes);
@@ -401,7 +406,15 @@ pub async fn settings_dashboard(
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
-    views::dashboard::settings_dashboard(v, &website, user.into(), &user_credits.into(), &cc_cookie)
+    let user_settings = load_user_settings(&ctx.db, user.id).await?;
+    views::dashboard::settings_dashboard(
+        v,
+        &website,
+        &user.into(),
+        &user_credits.into(),
+        &user_settings.into(),
+        &cc_cookie,
+    )
 }
 #[debug_handler]
 pub async fn settings_partial_dashboard(
@@ -412,7 +425,8 @@ pub async fn settings_partial_dashboard(
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
     let user = load_user(&ctx.db, &user_pid).await?;
-    views::dashboard::settings_partial_dashboard(v, &website, user.into())
+    let user_settings = load_user_settings(&ctx.db, user.id).await?;
+    views::dashboard::settings_partial_dashboard(v, &website, &user.into(), &user_settings.into())
 }
 
 #[debug_handler]

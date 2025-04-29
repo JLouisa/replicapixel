@@ -1,5 +1,9 @@
-use sea_orm::entity::prelude::*;
-pub use super::_entities::user_settings::{ActiveModel, Model, Entity};
+use loco_rs::prelude::*;
+use sea_orm::{entity::prelude::*, Condition};
+
+use super::_entities::user_settings;
+pub use super::_entities::user_settings::{ActiveModel, Entity, Model};
+use loco_rs::model::ModelError;
 pub type UserSettings = Entity;
 
 #[async_trait::async_trait]
@@ -19,7 +23,13 @@ impl ActiveModelBehavior for ActiveModel {
 }
 
 // implement your read-oriented logic here
-impl Model {}
+impl Model {
+    pub async fn find_by_user_id(db: &impl ConnectionTrait, user_id: i32) -> ModelResult<Model> {
+        let condition = Condition::all().add(user_settings::Column::UserId.eq(user_id));
+        let user_settings = Entity::find().filter(condition).one(db).await?;
+        user_settings.ok_or_else(|| ModelError::EntityNotFound)
+    }
+}
 
 // implement your write-oriented logic here
 impl ActiveModel {}

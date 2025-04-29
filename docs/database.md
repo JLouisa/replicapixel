@@ -39,6 +39,8 @@ cargo loco g migration AddPack_idToImages packs:references
 
 ## Script:
 
+cargo loco generate controller settings --htmx
+
 You can apply it:
 
 $ cargo loco db migrate

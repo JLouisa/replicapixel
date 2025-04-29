@@ -9,3 +9,4 @@ pub mod training_models;
 pub mod webhooks;
 
 pub mod features;
+pub mod settings;

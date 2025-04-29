@@ -20,9 +20,9 @@ pub mod routes {
         pub fn init() -> Self {
             Self {
                 base: String::from(Policy::BASE),
-                privacy: String::from(Policy::PRIVACY),
-                cookie: String::from(Policy::COOKIE),
-                terms: String::from(Policy::TERMS),
+                privacy: format!("{}{}", Policy::BASE, Policy::PRIVACY),
+                cookie: format!("{}{}", Policy::BASE, Policy::COOKIE),
+                terms: format!("{}{}", Policy::BASE, Policy::TERMS),
             }
         }
     }

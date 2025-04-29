@@ -1,0 +1,28 @@
+<div class="flex items-center justify-between py-3">
+  <div class="flex items-center gap-4">
+    <span class="text-primary"> {% include "partials/svg/bell.html" %} </span>
+    <div>
+      <label for="email_notifications_toggle" class="font-medium cursor-pointer">Dark Mode</label>
+      <p class="text-sm text-base-content/60">Toggle dark mode appearance.</p>
+    </div>
+  </div>
+  <div>
+    <span
+      id="theme-notification-spinner"
+      class="htmx-indicator loading loading-spinner loading-sm ml-2"
+    ></span>
+    <input
+      type="checkbox"
+      id="email_notifications_toggle"
+      name="notify_enabled"
+      class="toggle toggle-primary"
+      hx-patch="{{ website.website_routes.settings.dark_mode | safe }}/{{ user_settings.theme }}"
+      hx-trigger="change"
+      hx-indicator="#theme-notification-spinner"
+      hx-swap="none"
+      {#
+      checked="{% if user_settings.theme == dark %} checked {% endif %}"
+      #}
+    />
+  </div>
+</div>
