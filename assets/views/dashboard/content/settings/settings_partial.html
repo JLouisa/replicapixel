@@ -55,135 +55,26 @@
         </div>
       </div>
 
-      {% if Oauth %}
+      {% if is_oauth %}
       <!-- Password Section -->
-      <div class="card bg-base-100 shadow mb-6">
-        <div class="card-body">
-          <h2 class="text-lg font-medium mb-4">Password</h2>
-          <div class="grid gap-2">
-            <div class="relative">
-              <input
-                class="appearance-none border pl-12 border-gray-100 shadow-sm focus:shadow-md focus:placeholder-gray-600 transition w-full rounded-md py-3 text-gray-600 leading-tight focus:outline-none focus:ring-gray-600 focus:shadow-outline"
-                id="current_password"
-                name="current_password"
-                type="password"
-                placeholder="Current password"
-              />
-              <div class="absolute left-0 inset-y-0 flex items-center">
-                {% include "partials/svg/lock.html" %}
-              </div>
-            </div>
-            <p class="text-red-600 mt-2">
-              {% if errors %} {% for password in errors.password %} - {{password}} {% endfor %} {%
-              endif %}
-            </p>
-            <div class="relative">
-              <input
-                class="appearance-none border pl-12 border-gray-100 shadow-sm focus:shadow-md focus:placeholder-gray-600 transition w-full rounded-md py-3 text-gray-600 leading-tight focus:outline-none focus:ring-gray-600 focus:shadow-outline"
-                id="password"
-                name="password"
-                type="password"
-                placeholder="Password"
-              />
-              <div class="absolute left-0 inset-y-0 flex items-center">
-                {% include "partials/svg/lock.html" %}
-              </div>
-            </div>
-            <p class="text-red-600 mt-2">
-              {% if errors %} {% for password in errors.password %} - {{password}} {% endfor %} {%
-              endif %}
-            </p>
-            <div class="relative">
-              <input
-                class="appearance-none border pl-12 border-gray-100 shadow-sm focus:shadow-md focus:placeholder-gray-600 transition w-full rounded-md py-3 text-gray-600 leading-tight focus:outline-none focus:ring-gray-600 focus:shadow-outline"
-                id="confirm_password"
-                name="confirm_password"
-                type="password"
-                placeholder="Confirm Password"
-              />
-              <div class="absolute left-0 inset-y-0 flex items-center">
-                {% include "partials/svg/lock.html" %}
-              </div>
-            </div>
-            <p class="text-red-600 mt-2">
-              {% if errors %} {% for password in errors.password_confirm %} - {{password}} {% endfor
-              %} {% endif %}
-            </p>
-            <!-- Save Button -->
-            <button class="btn btn-primary">Change Password</button>
-          </div>
-        </div>
-      </div>
-      {% endif %}
+      {% include "dashboard/content/settings/partials/password_settings.html" %} {% endif %}
 
       <!-- Notifications Section -->
       <div class="card bg-base-100 shadow mb-6">
         <div class="card-body">
           <h2 class="text-lg font-medium mb-4">Settings</h2>
           <div class="p-6 space-y-6">
-            {#
-            <!-- Email Notifications -->
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                {% include "partials/svg/bell.html" %}
-                <div>
-                  <h2 class="font-medium">Email notifications</h2>
-                  <p class="text-sm text-base-content/60">
-                    Receive emails about your account activity
-                  </p>
-                </div>
-              </div>
-              <input type="checkbox" class="toggle toggle-primary" checked="{notifications}" />
-            </div>
-            #}
-
             <!-- Email Notifications -->
             {% include "dashboard/content/settings/partials/email_notification.html" %}
 
             <!-- Marketing Notifications -->
-            {% include "dashboard/content/settings/partials/marketing_notification.html" %} {#
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                {% include "partials/svg/mail.html" %}
-                <div>
-                  <h2 class="font-medium">Marketing emails</h2>
-                  <p class="text-sm text-base-content/60">
-                    Receive emails about new products and features
-                  </p>
-                </div>
-              </div>
-              <input type="checkbox" class="toggle toggle-primary" checked="{notifications}" />
-            </div>
-            #}
+            {% include "dashboard/content/settings/partials/marketing_notification.html" %}
 
             <!-- Dark Mode -->
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                {% if darkMode %} {% include "partials/svg/sun.html" %} {% else %} {% include
-                "partials/svg/moon.html" %} {% endif %}
-                <div>
-                  <h2 class="font-medium">Dark Mode</h2>
-                  <p class="text-sm text-base-content/70">Toggle dark mode appearance</p>
-                </div>
-              </div>
-              <input type="checkbox" class="toggle toggle-primary" checked="{darkMode}" />
-            </div>
+            {% include "dashboard/content/settings/partials/dark_mode.html" %}
 
             <!-- Language -->
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                {% include "partials/svg/globe.html" %}
-                <div>
-                  <h2 class="font-medium">Language</h2>
-                  <p class="text-sm text-base-content/70">Select your preferred language</p>
-                </div>
-              </div>
-              <select class="select select-bordered w-32" value="{language}">
-                <option value="english">English</option>
-                <option value="spanish">Spanish</option>
-                <option value="french">French</option>
-              </select>
-            </div>
+            {% include "dashboard/content/settings/partials/language.html" %}
 
             <!-- Privacy -->
             <a

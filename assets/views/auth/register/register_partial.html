@@ -158,10 +158,19 @@
     <div class="mt-4 flex items-center justify-between text-gray-500">
       <p class="mt-4 text-sm text-gray-500">
         By signing up, you agree to our
-        <a href="/policy/terms-and-conditions" target="_blank" class="text-primary"
+        <a
+          href="{{ website.website_routes.policy.terms | safe }}"
+          target="_blank"
+          class="text-primary"
           >Terms of Service</a
         >
-        and <a href="/policy/privacy" target="_blank" class="text-primary">Privacy Policy</a>.
+        and
+        <a
+          href="{{ website.website_routes.policy.privacy | safe }}"
+          target="_blank"
+          class="text-primary"
+          >Privacy Policy</a
+        >.
       </p>
     </div>
     <div class="flex flex-col items-center justify-center mt-8">

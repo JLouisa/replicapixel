@@ -24,6 +24,8 @@ pub enum RedisDbError {
     SetValueFailed,
     #[error("Authentication failed")]
     AuthenticationFailed,
+    #[error("Not found")]
+    NotFound,
 }
 
 #[derive(Debug, Clone, EnumString, AsRefStr)]
@@ -82,20 +84,25 @@ impl Cache {
     }
     pub async fn get_s3_pre_url(&self, key: &ImageView) -> Result<String, RedisDbError> {
         let mut conn = self.client.clone();
-        let value: String = conn.get(key.pid.to_string()).await?;
-        Ok(value)
-    }
-    pub async fn populate_s3_pre_urls(
-        &self,
-        items: &mut ImageViewList,
-    ) -> Result<(), RedisDbError> {
-        let mut conn = self.client.clone();
 
-        for item in items.as_mut_vec().iter_mut() {
-            let url: String = conn.get(item.pid.to_string()).await?;
-            item.s3_pre_url = Some(url);
-        }
+        let value: Option<String> = conn
+            .get(key.pid.to_string())
+            .await
+            .map_err(RedisDbError::from)?;
 
-        Ok(())
+        value.ok_or(RedisDbError::NotFound)
     }
+    // pub async fn populate_s3_pre_urls(
+    //     &self,
+    //     items: &mut ImageViewList,
+    // ) -> Result<(), RedisDbError> {
+    //     let mut conn = self.client.clone();
+
+    //     for item in items.as_mut_vec().iter_mut() {
+    //         let url: String = conn.get(item.pid.to_string()).await?;
+    //         item.s3_pre_url = Some(url);
+    //     }
+
+    //     Ok(())
+    // }
 }

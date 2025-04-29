@@ -4,8 +4,13 @@
 use crate::{
     domain::website::Website,
     models::{
-        join::user_credits_models::load_user_and_credits, users::UserPid, UserSettingsModel,
-        _entities::user_settings,
+        join::user_credits_models::load_user_and_credits,
+        users::UserPid,
+        UserSettingsModel,
+        _entities::{
+            sea_orm_active_enums::{Language, ThemePreference},
+            user_settings,
+        },
     },
 };
 use axum::{debug_handler, http::StatusCode, response::IntoResponse, Extension, Json};

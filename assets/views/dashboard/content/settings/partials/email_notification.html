@@ -1,6 +1,6 @@
 <div class="flex items-center justify-between py-3">
   <div class="flex items-center gap-4">
-    <span class="text-primary"> {% include "partials/svg/bell.html" %} </span>
+    <span class="text-primary"> {% include "partials/svg/mail.html" %} </span>
     <div>
       <label for="email_notifications_toggle" class="font-medium cursor-pointer"
         >Email notifications</label
@@ -18,14 +18,12 @@
       id="email_notifications_toggle"
       name="notify_enabled"
       class="toggle toggle-primary"
-      {#
-      hx-patch="{{ website.website_routes.settings.update_notifications | safe }}/{{ settings.enable_notification_email }}"
-      #}
+      hx-patch="{{ website.website_routes.settings.update_notifications | safe }}/{{ user_settings.enable_notification_email }}"
       hx-trigger="change"
       hx-indicator="#notification-spinner"
       hx-swap="none"
       {#
-      checked="{{ settings.enable_notification_email }}"
+      checked="{{ user_settings.enable_notification_email }}"
       #}
     />
   </div>

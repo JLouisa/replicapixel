@@ -18,14 +18,12 @@
       id="email_notifications_toggle"
       name="notify_enabled"
       class="toggle toggle-primary"
-      {#
-      hx-patch="{{ website.website_routes.settings.update_marketing | safe }}/{{ settings.enable_marketing_email }}"
-      #}
+      hx-patch="{{ website.website_routes.settings.update_marketing | safe }}/{{ user_settings.enable_marketing_email }}"
       hx-trigger="change"
       hx-indicator="#marketing-notification-spinner"
       hx-swap="none"
       {#
-      checked="{{ settings.enable_marketing_email }}"
+      checked="{{ user_settings.enable_marketing_email }}"
       #}
     />
   </div>

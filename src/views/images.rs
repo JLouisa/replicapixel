@@ -172,37 +172,55 @@ impl ImageView {
 
         self
     }
-    pub async fn get_pre_url_mut(&mut self, s3_client: &AwsS3, cache: &Cache) -> &mut Self {
-        // Early exit if there isn't an image URL or S3 key
-        if self.image_url_fal.is_none() || self.image_s3_key.is_empty() {
-            return self;
-        }
+    // pub async fn get_pre_url_mut(&mut self, s3_client: &AwsS3, cache: &Cache) -> &mut Self {
+    //     // Early exit if there isn't an image URL or S3 key
+    //     if self.image_url_fal.is_none() || self.image_s3_key.is_empty() {
+    //         return self;
+    //     }
 
-        let s3_key = S3Key::new(self.image_s3_key.clone());
+    //     let s3_key = S3Key::new(self.image_s3_key.clone());
 
-        // Try getting from cache
-        match cache.get_s3_pre_url(&self).await {
-            Ok(pre_url) => {
-                tracing::info!("Using cached pre_url: {}", self.pid);
-                self.s3_pre_url = Some(pre_url);
-            }
-            Err(_) => {
-                // Fallback: generate new URL and set it in cache
-                match s3_client.get_object_pre(&s3_key, None).await {
-                    Ok(url) => {
-                        tracing::info!("Generating new pre_url: {}", self.pid);
-                        self.s3_pre_url = Some(url.into_inner());
-                        let _ = cache.set_s3_pre_url(&self).await;
-                    }
-                    Err(err) => {
-                        tracing::warn!("Failed to generate pre_url for {}: {:?}", self.pid, err);
-                    }
-                }
-            }
-        }
+    //     // Try getting from cache
+    //     match cache.get_s3_pre_url(&self).await {
+    //         Ok(pre_url) => {
+    //             tracing::info!("Using cached pre_url: {}", self.pid);
+    //             self.s3_pre_url = Some(pre_url);
+    //         }
+    //         Err(e) => {
+    //             tracing::error!("Generating new pre_url: {}", e);
+    //             // Fallback: generate new URL and set it in cache
+    //             match s3_client.get_object_pre(&s3_key, None).await {
+    //                 Ok(url) => {
+    //                     tracing::info!("Generating new pre_url: {}", self.pid);
+    //                     let url_str = url.into_inner();
+    //                     self.s3_pre_url = Some(url_str.clone()); // Clone here if needed below
 
-        self
-    }
+    //                     // ***Explicitly handle the cache set result***
+    //                     match cache.set_s3_pre_url(&self).await {
+    //                         Ok(()) => {
+    //                             tracing::debug!("Successfully cached pre_url for {}", self.pid);
+    //                         }
+    //                         Err(err) => {
+    //                             // Log the error! Now you'll know *why* it wasn't cached.
+    //                             tracing::error!(
+    //                                 "Failed to cache pre_url for {}: {:?}",
+    //                                 self.pid,
+    //                                 err
+    //                             );
+    //                             // Decide if you want to clear self.s3_pre_url here
+    //                             // if caching failed, or leave it as is for the current request.
+    //                         }
+    //                     }
+    //                 }
+    //                 Err(err) => {
+    //                     tracing::warn!("Failed to generate pre_url for {}: {:?}", self.pid, err);
+    //                 }
+    //             }
+    //         }
+    //     }
+
+    //     self
+    // }
     pub async fn get_pre_url_many(list: Vec<Self>, s3_client: &AwsS3, cache: &Cache) -> Vec<Self> {
         let futures = list.into_iter().map(|image| async move {
             if image.image_url_fal.is_some() && image.image_status == Status::Completed.to_string()
@@ -214,6 +232,71 @@ impl ImageView {
         });
 
         join_all(futures).await
+    }
+}
+impl ImageView {
+    pub async fn get_pre_url_mut(&mut self, s3_client: &AwsS3, cache: &Cache) -> &mut Self {
+        if self.image_url_fal.is_none() || self.image_s3_key.is_empty() {
+            tracing::trace!(
+                "Skipping pre_url for {}: missing url_fal or s3_key",
+                self.pid
+            );
+            return self;
+        }
+        // Optional: Add status check if pre-signed URLs only make sense for completed images
+        if self.image_status != Status::Completed.to_string() {
+            tracing::trace!("Skipping pre_url for {}: status is not Completed", self.pid);
+            return self;
+        }
+
+        let s3_key = S3Key::new(self.image_s3_key.clone());
+
+        // --- Refined Cache Get Logic ---
+        match cache.get_s3_pre_url(&self).await {
+            Ok(pre_url) => {
+                tracing::info!("Using cached pre_url for: {}", self.pid);
+                self.s3_pre_url = Some(pre_url);
+            }
+            Err(RedisDbError::NotFound) => {
+                tracing::info!("Cache miss for pre_url: {}. Generating new one.", self.pid);
+
+                // Proceed to generate a new URL
+                match s3_client.get_object_pre(&s3_key, None).await {
+                    Ok(url) => {
+                        tracing::debug!("Successfully generated new pre_url for: {}", self.pid);
+                        let url_str = url.into_inner();
+                        self.s3_pre_url = Some(url_str.clone());
+
+                        // Attempt to cache the newly generated URL
+                        match cache.set_s3_pre_url(&self).await {
+                            Ok(()) => {
+                                tracing::debug!("Successfully cached new pre_url for {}", self.pid);
+                            }
+                            Err(cache_set_err) => {
+                                tracing::error!(
+                                    "Failed to cache newly generated pre_url for {}: {:?}",
+                                    self.pid,
+                                    cache_set_err
+                                );
+                            }
+                        }
+                    }
+                    Err(s3_err) => {
+                        tracing::warn!("Failed to generate pre_url for {}: {:?}", self.pid, s3_err);
+                    }
+                }
+            }
+            // --- Other Cache Error (Connection, Protocol, Timeout, etc.) ---
+            Err(other_cache_err) => {
+                tracing::error!(
+                    "Failed to retrieve pre_url from cache for {} due to cache error: {:?}. Skipping S3 generation for this request.",
+                    self.pid,
+                    other_cache_err
+                );
+            }
+        }
+
+        self
     }
 }
 
@@ -253,12 +336,6 @@ impl From<&ImageModel> for ImageView {
         }
     }
 }
-
-// impl From<ImageNewList> for Vec<ImageView> {
-//     fn from(list: ImageNewList) -> Vec<ImageView> {
-//         list.into_inner().iter().map(ImageView::from).collect()
-//     }
-// }
 impl From<ImageNew> for ImageView {
     fn from(img: ImageNew) -> Self {
         Self {

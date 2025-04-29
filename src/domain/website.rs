@@ -1,5 +1,6 @@
 use crate::controllers::dashboard::routes::DashboardRoutes;
 use crate::controllers::images::routes as ImagesRoute;
+use crate::controllers::settings::routes::SettingRoutes;
 use crate::controllers::{
     auth::routes::AuthRoutes, dashboard::routes::SidebarRoutes, features::routes::FeatureRoutes,
     home::routes::HomeRoutes, images::routes::ImageRoutes, oauth2::routes::OAuth2Routes,
@@ -29,6 +30,7 @@ pub struct WebsiteRoutes {
     pub payment: PaymentRoutes,
     pub policy: PolicyRoutes,
     pub training_models: TrainingModelRoutes,
+    pub settings: SettingRoutes,
 }
 impl WebsiteRoutes {
     pub fn init() -> Self {
@@ -42,6 +44,7 @@ impl WebsiteRoutes {
             payment: PaymentRoutes::init(),
             policy: PolicyRoutes::init(),
             training_models: TrainingModelRoutes::init(),
+            settings: SettingRoutes::init(),
         }
     }
 }

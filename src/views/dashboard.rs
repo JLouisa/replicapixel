@@ -5,8 +5,9 @@ use crate::domain::dashboard_sidebar::DashboardSidebar;
 use crate::domain::features::FeatureViewList;
 use crate::domain::website::Website;
 use crate::middleware::cookie::CookieConsent;
+use crate::models::_entities::sea_orm_active_enums::{Language, ThemePreference};
 use crate::models::packs::PackModelList;
-use crate::models::PackModel;
+use crate::models::{PackModel, UserSettingsModel};
 use derive_more::{AsRef, Constructor};
 use loco_rs::prelude::*;
 use serde::Serialize;
@@ -107,8 +108,9 @@ pub fn features_partial_dashboard(
 pub fn settings_dashboard(
     v: impl ViewRenderer,
     website: &Website,
-    user: UserView,
+    user: &UserView,
     credits: &UserCreditsView,
+    user_settings: &UserSettingsView,
     cc_cookie: &CookieConsent,
 ) -> Result<impl IntoResponse> {
     let sidebar = DashboardSidebar::init();
@@ -118,7 +120,7 @@ pub fn settings_dashboard(
         data!(
             {
                 "website": website, "user": user, "credits": credits,
-                "cc_cookie": cc_cookie
+                "cc_cookie": cc_cookie, "user_settings": user_settings
             }
         ),
     )
@@ -126,13 +128,14 @@ pub fn settings_dashboard(
 pub fn settings_partial_dashboard(
     v: impl ViewRenderer,
     website: &Website,
-    user: UserView,
+    user: &UserView,
+    user_settings: &UserSettingsView,
 ) -> Result<impl IntoResponse> {
     let sidebar = DashboardSidebar::init();
     format::render().view(
         &v,
         "dashboard/content/settings/settings_partial.html",
-        data!({"website": website, "user": user}),
+        data!({"website": website, "user": user, "user_settings": user_settings}),
     )
 }
 
@@ -282,5 +285,25 @@ pub struct PackViewList(pub Vec<PackView>);
 impl From<PackModelList> for PackViewList {
     fn from(p: PackModelList) -> Self {
         Self(p.0.into_iter().map(|x| x.into()).collect())
+    }
+}
+
+#[derive(Debug, Serialize, Clone, Constructor)]
+pub struct UserSettingsView {
+    pub user_id: i32,
+    pub enable_notification_email: bool,
+    pub enable_marketing_email: bool,
+    pub language: Language,
+    pub theme: ThemePreference,
+}
+impl From<UserSettingsModel> for UserSettingsView {
+    fn from(value: UserSettingsModel) -> Self {
+        Self {
+            user_id: value.user_id,
+            enable_notification_email: value.enable_notification_email,
+            enable_marketing_email: value.enable_marketing_email,
+            language: value.language,
+            theme: value.theme,
+        }
     }
 }
