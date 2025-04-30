@@ -192,11 +192,11 @@ pub async fn create_checkout_session(
 }
 
 async fn success_handler(
-    _auth: auth::JWT,
+    // _auth: auth::JWT,
     params: Query<PaymentRedirectParams>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
-    State(_): State<AppContext>,
+    // State(_): State<AppContext>,
 ) -> Result<impl IntoResponse> {
     tracing::info!("User successfully completed payment process.");
     let status = CheckOutStatus::Processing;

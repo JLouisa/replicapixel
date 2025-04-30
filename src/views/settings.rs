@@ -9,6 +9,8 @@ use derive_more::Constructor;
 use loco_rs::prelude::*;
 use serde::Serialize;
 
+use super::auth::UserView;
+
 pub fn email_notification(
     v: impl ViewRenderer,
     website: &Website,
@@ -42,6 +44,19 @@ pub fn dark_mode(
         &v,
         "dashboard/content/settings/partials/dark_mode_input.html",
         data!({ "website": website, "user_settings": user_settings }),
+    )
+}
+
+pub fn password_change(
+    v: impl ViewRenderer,
+    website: &Website,
+    user: &UserView,
+    msg: Option<String>,
+) -> Result<impl IntoResponse> {
+    format::render().view(
+        &v,
+        "dashboard/content/settings/partials/password_settings_partial.html",
+        data!({ "website": website, "user": user, "msg": msg }),
     )
 }
 

@@ -63,5 +63,9 @@ pub type FeatureVoteActiveModel = feature_vote::ActiveModel;
 pub type FeatureVoteModel = feature_vote::Model;
 pub type FeatureVoteEntity = feature_vote::Entity;
 
-pub mod join;
 pub mod o_auth2_sessions;
+pub type OAuth2SessionActiveModel = o_auth2_sessions::ActiveModel;
+pub type OAuth2SessionModel = o_auth2_sessions::Model;
+pub type OAuth2SessionEntity = o_auth2_sessions::Entity;
+
+pub mod join;

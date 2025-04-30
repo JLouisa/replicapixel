@@ -5,17 +5,23 @@ use super::training_models::TrainingModelView;
 use crate::domain::features::FeatureViewList;
 use crate::domain::website::Website;
 use crate::middleware::cookie::CookieConsent;
+use crate::models::_entities::sea_orm_active_enums::{PlanNames, Status};
 use crate::models::packs::PackModelList;
-use crate::models::PackModel;
+use crate::models::transactions::TransactionModelList;
+use crate::models::{PackModel, TransactionModel};
 use derive_more::{AsRef, Constructor};
 use loco_rs::prelude::*;
+use rust_decimal::prelude::*;
 use serde::Serialize;
+
+use chrono::{DateTime, Local, Utc};
 
 pub fn billing_dashboard(
     v: impl ViewRenderer,
     website: &Website,
     user: UserView,
     credits: &UserCreditsView,
+    orders: &TransactionViewList,
     cc_cookie: &CookieConsent,
 ) -> Result<impl IntoResponse> {
     format::render().view(
@@ -24,7 +30,8 @@ pub fn billing_dashboard(
         data!(
             {
                 "website": website, "user": user,
-                "credits": credits, "cc_cookie": cc_cookie
+                "credits": credits, "cc_cookie": cc_cookie,
+                "orders": orders
             }
         ),
     )
@@ -33,11 +40,12 @@ pub fn billing_partial_dashboard(
     v: impl ViewRenderer,
     website: &Website,
     user: UserView,
+    orders: &TransactionViewList,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
         "dashboard/content/billing/billing_partial.html",
-        data!({ "website": website, "user": user }),
+        data!({ "website": website, "user": user,  "orders": orders }),
     )
 }
 
@@ -114,6 +122,7 @@ pub fn settings_dashboard(
     credits: &UserCreditsView,
     user_settings: &UserSettingsView,
     cc_cookie: &CookieConsent,
+    is_oauth: bool,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
@@ -121,7 +130,8 @@ pub fn settings_dashboard(
         data!(
             {
                 "website": website, "user": user, "credits": credits,
-                "cc_cookie": cc_cookie, "user_settings": user_settings
+                "cc_cookie": cc_cookie, "user_settings": user_settings,
+                "is_oauth": is_oauth
             }
         ),
     )
@@ -131,11 +141,17 @@ pub fn settings_partial_dashboard(
     website: &Website,
     user: &UserView,
     user_settings: &UserSettingsView,
+    is_oauth: bool,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
         "dashboard/content/settings/settings_partial.html",
-        data!({"website": website, "user": user, "user_settings": user_settings}),
+        data!(
+            {
+                "website": website, "user": user, "user_settings": user_settings,
+                "is_oauth": is_oauth
+            }
+        ),
     )
 }
 
@@ -280,5 +296,52 @@ pub struct PackViewList(pub Vec<PackView>);
 impl From<PackModelList> for PackViewList {
     fn from(p: PackModelList) -> Self {
         Self(p.0.into_iter().map(|x| x.into()).collect())
+    }
+}
+
+#[derive(Clone, Debug, Serialize, Constructor)]
+pub struct TransactionView {
+    pub id: i32,
+    pub pid: Uuid,
+    pub user_id: i32,
+    pub plan: PlanNames,
+    pub credit_amount: i32,
+    pub model_amount: i32,
+    pub currency: String,
+    pub status: Status,
+    pub created_at: String,
+    pub payment_amount: Decimal,
+}
+impl TransactionView {
+    pub fn from_model(t: TransactionModel, p: PlanNames) -> Self {
+        Self {
+            id: t.id,
+            pid: t.pid,
+            user_id: t.user_id,
+            plan: p,
+            credit_amount: t.credit_amount,
+            model_amount: t.model_amount,
+            currency: t.currency,
+            status: t.status,
+            created_at: format!(
+                "{} (UTC)",
+                t.created_at.naive_utc().format("%Y-%m-%d %H:%M")
+            ),
+            payment_amount: Decimal::new(t.payment_amount, 2),
+        }
+    }
+}
+
+#[derive(Debug, Serialize, Clone, Constructor, AsRef)]
+pub struct TransactionViewList(Vec<TransactionView>);
+impl TransactionViewList {
+    pub fn from_model(t: TransactionModelList, p: PlanNames) -> Self {
+        Self(
+            t.as_ref()
+                .into_iter()
+                .cloned()
+                .map(|x| TransactionView::from_model(x, p.clone()))
+                .collect(),
+        )
     }
 }

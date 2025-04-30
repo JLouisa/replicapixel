@@ -4,6 +4,7 @@
 use crate::domain::features::FeatureViewList;
 use crate::domain::website::Website;
 use crate::middleware::cookie::{CookieConsentLayer, ExtractConsentState};
+use crate::models::_entities::sea_orm_active_enums::PlanNames;
 use crate::models::feature_request::FeatureRequestModelList;
 use crate::models::feature_vote::FeatureVoteModelList;
 use crate::models::images::ImagesModelList;
@@ -13,13 +14,16 @@ use crate::models::join::user_credits_models::{
 };
 use crate::models::packs::PackModelList;
 use crate::models::training_models::TrainingModelList;
+use crate::models::transactions::TransactionModelList;
 use crate::models::users::{RegisterParams, UserPid};
 use crate::models::{
-    FeatureRequestModel, FeatureVoteModel, ImageModel, PackModel, TrainingModelModel, UserModel,
+    FeatureRequestModel, FeatureVoteModel, ImageModel, OAuth2SessionModel, PackModel,
+    TrainingModelModel, TransactionModel, UserModel,
 };
 use crate::service::aws::s3::AwsS3;
 use crate::service::redis::redis::RedisCacheDriver;
 use crate::views;
+use crate::views::dashboard::TransactionViewList;
 use crate::views::images::ImageViewList;
 use axum::Extension;
 use axum::{debug_handler, extract::State, response::IntoResponse};
@@ -261,10 +265,20 @@ async fn load_votes(db: &DatabaseConnection, user_id: i32) -> Result<FeatureVote
     let list = FeatureVoteModel::load_all_votes(&db, user_id).await?;
     Ok(list)
 }
+async fn is_oauth(db: &DatabaseConnection, user_id: i32) -> Result<bool> {
+    let is_oauth = OAuth2SessionModel::is_find_by_user_id(db, user_id).await?;
+    dbg!(&is_oauth);
+    Ok(is_oauth)
+}
 // async fn load_user_settings(db: &DatabaseConnection, user_id: i32) -> Result<UserSettingsModel> {
 //     let user_settings = UserSettingsModel::find_by_user_id(db, user_id).await?;
 //     Ok(user_settings)
 // }
+
+async fn load_transactions(db: &DatabaseConnection, user_id: i32) -> Result<TransactionModelList> {
+    let list = TransactionModel::find_all_user_txn(db, user_id).await?;
+    Ok(list)
+}
 
 #[debug_handler]
 pub async fn dashboard_test(Json(params): Json<RegisterParams>) -> Result<impl IntoResponse> {
@@ -308,7 +322,16 @@ pub async fn billing_dashboard(
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
-    views::dashboard::billing_dashboard(v, &website, user.into(), &user_credits.into(), &cc_cookie)
+    let orders = load_transactions(&ctx.db, user.id).await?;
+    let orders_view = TransactionViewList::from_model(orders, PlanNames::Premium);
+    views::dashboard::billing_dashboard(
+        v,
+        &website,
+        user.into(),
+        &user_credits.into(),
+        &orders_view,
+        &cc_cookie,
+    )
 }
 #[debug_handler]
 pub async fn billing_partial_dashboard(
@@ -319,7 +342,9 @@ pub async fn billing_partial_dashboard(
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
     let user = load_user(&ctx.db, &user_pid).await?;
-    views::dashboard::billing_partial_dashboard(v, &website, user.into())
+    let orders = load_transactions(&ctx.db, user.id).await?;
+    let orders_view = TransactionViewList::from_model(orders, PlanNames::Premium);
+    views::dashboard::billing_partial_dashboard(v, &website, user.into(), &orders_view)
 }
 
 #[debug_handler]
@@ -400,6 +425,7 @@ pub async fn settings_dashboard(
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, user_credits, user_settings) =
         load_user_credits_settings(&ctx.db, &user_pid).await?;
+    let is_oauth = is_oauth(&ctx.db, user.id).await?;
     views::dashboard::settings_dashboard(
         v,
         &website,
@@ -407,6 +433,7 @@ pub async fn settings_dashboard(
         &user_credits.into(),
         &user_settings.into(),
         &cc_cookie,
+        is_oauth,
     )
 }
 #[debug_handler]
@@ -418,7 +445,14 @@ pub async fn settings_partial_dashboard(
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, user_settings) = load_user_and_settings(&ctx.db, &user_pid).await?;
-    views::dashboard::settings_partial_dashboard(v, &website, &user.into(), &user_settings.into())
+    let is_oauth = is_oauth(&ctx.db, user.id).await?;
+    views::dashboard::settings_partial_dashboard(
+        v,
+        &website,
+        &user.into(),
+        &user_settings.into(),
+        is_oauth,
+    )
 }
 
 #[debug_handler]
