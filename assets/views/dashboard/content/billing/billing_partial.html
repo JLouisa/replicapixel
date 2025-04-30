@@ -1,51 +1,70 @@
 <div class="container mx-auto px-4 py-8 max-w-7xl">
-  <!-- Page Header -->
   <div class="mb-8">
-    <h1 class="text-3xl font-bold text-gray-900">Order History</h1>
-    <p class="text-gray-600 mt-2">View your recent purchases and order status</p>
+    <h1 class="text-3xl font-bold text-base-content">Order History</h1>
+    <p class="text-base-content/70 mt-2">View your recent purchases and order status</p>
   </div>
 
-  <!-- Orders List -->
   <div class="space-y-6">
     {% if orders %} {% for order in orders %}
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-      <div class="p-6">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+    <div class="bg-base-100 rounded-lg shadow-sm border border-base-300/50">
+      <div class="p-4 sm:p-6">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div class="mb-4 md:mb-0">
-            <div class="flex items-center space-x-4">
-              <span class="text-sm font-medium text-gray-900"> Order #{{order.id}} </span>
+            <div class="flex flex-wrap items-center gap-x-4 gap-y-1">
+              <span class="text-sm font-medium text-base-content"> Order #{{order.id}} </span>
               {% if order.status == 'Completed' %}
-              <div class="badge badge-success">{{order.status}}</div>
+              <div class="badge badge-success badge-sm sm:badge-md">{{order.status}}</div>
               {% elif order.status == 'Processing' %}
-              <div class="badge badge-info">{{order.status}}</div>
+              <div class="badge badge-info badge-sm sm:badge-md">{{order.status}}</div>
               {% elif order.status == 'Failed' %}
-              <div class="badge badge-error">{{order.status}}</div>
+              <div class="badge badge-error badge-sm sm:badge-md">{{order.status}}</div>
               {% elif order.status == 'Cancelled' %}
-              <div class="badge badge-secondary">{{order.status}}</div>
+              <div class="badge badge-warning badge-sm sm:badge-md">{{order.status}}</div>
+              {% elif order.status == 'Delivered' %}
+              <div class="badge badge-success badge-sm sm:badge-md">{{order.status}}</div>
               {% else %}
-              <div class="badge badge-neutral">{{order.status}}</div>
+              <div class="badge badge-neutral badge-sm sm:badge-md">{{order.status}}</div>
               {% endif %}
             </div>
-            <p class="text-sm text-gray-500 mt-1">Order Date: {{order.created_at}}</p>
+            <p class="text-xs sm:text-sm text-base-content/60 mt-1">
+              Order Date: {{order.created_at}}
+            </p>
           </div>
-          <div class="text-right flex gap-2 items-center justify-center">
-            <p class="text-lg font-semibold text-gray-900">${{order.payment_amount}}</p>
-            <div>
-              <div class="btn btn-primary">View</div>
-              <div class="btn btn-primary">Receipts</div>
+
+          <div
+            class="flex flex-col items-start sm:flex-row sm:items-center sm:justify-end gap-2 sm:gap-4 w-full sm:w-auto"
+          >
+            <p
+              class="text-lg font-semibold text-base-content text-left sm:text-right w-full sm:w-auto"
+            >
+              ${{order.payment_amount}}
+            </p>
+            <div
+              class="flex flex-row gap-2 flex-wrap justify-start sm:justify-end w-full sm:w-auto"
+            >
+              <button disabled href="/order/{{order.id}}" class="btn btn-primary btn-sm">
+                View
+              </button>
+              <button disabled href="/order/{{order.id}}/receipt" class="btn btn-primary btn-sm">
+                Receipt
+              </button>
             </div>
           </div>
         </div>
       </div>
     </div>
     {% endfor %} {% else %}
-    <div class="text-center text-base-content/60 p-10">No orders found.</div>
+    <div
+      class="text-center text-base-content/60 p-10 bg-base-100 rounded-lg border border-base-300/50"
+    >
+      No orders found.
+    </div>
     {% endif %}
   </div>
 
   {% if orders and orders | length >= 5 %}
   <div class="flex items-center justify-center mt-8">
-    <div class="btn btn-primary">Load more</div>
+    <button class="btn btn-primary w-full sm:w-auto">Load more</button>
   </div>
   {% endif %}
 </div>

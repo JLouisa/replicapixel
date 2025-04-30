@@ -67,7 +67,7 @@ pub struct TrainingForm {
     pub bald: bool,
     pub creative: i32,
     pub ethnicity: Ethnicity,
-    pub based_on: BasedOn,
+    pub based_on: bool,
     pub file_type: ImageFormat,
     #[serde(default = "cuid2::slug", skip_deserializing)]
     pub slug: String,
@@ -88,7 +88,10 @@ impl TrainingForm {
             bald: self.bald,
             steps: self.creative,
             s3_key: s3_key.as_ref().to_owned(),
-            based_on: self.based_on,
+            based_on: match self.based_on {
+                true => BasedOn::RealPerson,
+                false => BasedOn::CreateInfluencerAI,
+            },
             ethnicity: self.ethnicity,
             trigger_word: tw,
             ..Default::default()

@@ -1,0 +1,255 @@
+<div class="py-12 px-4 sm:px-6">
+  <div class="w-full max-w-2xl mx-auto animate-fade-in">
+    <form
+      id="uploadForm"
+      class="bg-base-100 shadow-lg rounded-xl p-6 md:p-8"
+      x-data
+      @submit.prevent="$store.createModelForm.submit()"
+      enctype="multipart/form-data"
+    >
+      <div class="mb-8 text-center">
+        <div
+          class="inline-flex items-center justify-center w-16 h-16 bg-primary/10 text-primary rounded-full mb-4"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="text-primary"
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="17 8 12 3 7 8" />
+            <line x1="12" y1="3" x2="12" y2="15" />
+          </svg>
+        </div>
+        <h1 class="text-3xl font-bold text-base-content mb-2">Create Training Model</h1>
+        <p class="text-base-content/70 max-w-md mx-auto">
+          Enter details and upload photos for your model.
+        </p>
+      </div>
+
+      <div class="space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="form-control w-full">
+            <label for="name" class="label">
+              <span class="label-text font-medium text-base-content/90">
+                Model Name<span class="text-error ml-1">*</span>
+              </span>
+            </label>
+            <input
+              id="name"
+              class="input input-bordered w-full"
+              type="text"
+              placeholder="e.g., My Casual Look"
+              required
+              x-model="$store.createModelForm.name"
+            />
+          </div>
+
+          <div class="form-control w-full">
+            <label for="age" class="label">
+              <span class="label-text font-medium text-base-content/90">
+                Your Age<span class="text-error ml-1">*</span>
+              </span>
+            </label>
+            <input
+              id="age"
+              class="input input-bordered w-full"
+              type="number"
+              placeholder="Enter age (18-120)"
+              min="18"
+              max="120"
+              required
+              x-model="$store.createModelForm.age"
+            />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="form-control w-full">
+            <label for="sex" class="label">
+              <span class="label-text font-medium text-base-content/90">
+                Sex<span class="text-error ml-1">*</span>
+              </span>
+            </label>
+            <select
+              id="sex"
+              class="select select-bordered w-full"
+              required
+              x-model="$store.createModelForm.sex"
+            >
+              <option value="" disabled selected>Select Sex</option>
+              {% for sex in website.website_fields.create_model.sex %}
+              <option value="{{ sex }}">{{ sex | capitalize }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="form-control w-full">
+            <label for="eyeColor" class="label">
+              <span class="label-text font-medium text-base-content/90">
+                Eye Color<span class="text-error ml-1">*</span>
+              </span>
+            </label>
+            <select
+              id="eyeColor"
+              class="select select-bordered w-full"
+              required
+              x-model="$store.createModelForm.eye_color"
+            >
+              <option value="" disabled selected>Select Eye Color</option>
+              {% for color in website.website_fields.create_model.eye_color %}
+              <option value="{{ color }}">{{ color | capitalize }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="form-control w-full">
+            <label for="ethnicity" class="label">
+              <span class="label-text font-medium text-base-content/90">
+                Ethnicity<span class="text-error ml-1">*</span>
+              </span>
+            </label>
+            <select
+              id="ethnicity"
+              class="select select-bordered w-full"
+              required
+              x-model="$store.createModelForm.ethnicity"
+            >
+              <option value="" disabled selected>Select Ethnicity</option>
+              {% for ethnicity in website.website_fields.create_model.ethnicity %}
+              <option value="{{ ethnicity }}">{{ ethnicity }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="form-control w-full">
+            <label for="bald" class="label">
+              <span class="label-text font-medium text-base-content/90">
+                Bald<span class="text-error ml-1">*</span>
+              </span>
+            </label>
+            <select
+              id="bald"
+              class="select select-bordered w-full"
+              required
+              x-model="$store.createModelForm.bald"
+            >
+              <option value="" disabled selected>Select Option</option>
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="w-full">
+          <div class="flex items-center justify-between ml-2 mb-1">
+            <label class="label-text font-medium text-base-content/90">Upload Your Photos</label>
+            <div
+              class="badge badge-neutral badge-sm tooltip"
+              data-tip="Photo Requirements: 10+ recent photos of only you. Include close-ups & full body shots. Vary backgrounds, angles, clothing, expressions. NO screenshots, hats, sunglasses, heavy makeup, filters, group shots, animals, low quality, or cropped faces."
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 16v-4" />
+                <path d="M12 8h.01" />
+              </svg>
+            </div>
+          </div>
+          <p class="text-xs text-base-content/60 ml-2 mb-1">
+            Minimum 10 photos required, featuring only you.
+          </p>
+          <input
+            type="file"
+            class="file-input file-input-bordered w-full"
+            multiple
+            accept="image/jpeg,image/png"
+            x-on:change="$store.createModelForm.handleFileSelection($event)"
+            aria-label="Upload Your Photos"
+          />
+        </div>
+
+        <div class="form-control">
+          <label class="label cursor-pointer justify-start gap-3">
+            <input
+              id="isRealPerson"
+              class="checkbox checkbox-primary"
+              type="checkbox"
+              x-model="$store.createModelForm.based_on"
+            />
+            <span class="label-text text-base-content/90">Based on a real person?</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="space-y-3 pt-2">
+        <div class="form-control">
+          <label class="label cursor-pointer justify-start gap-3">
+            <input
+              id="termsAgreed"
+              class="checkbox checkbox-primary"
+              type="checkbox"
+              required
+              x-model="$store.createModelForm.consent"
+            />
+            <span class="label-text text-base-content/90">
+              I agree to the
+              <a href="#" class="link link-primary hover:link-hover"
+                >Model Creation Consent Agreement</a
+              >
+              <span class="text-error ml-1">*</span>
+            </span>
+          </label>
+        </div>
+
+        <div class="pt-4">
+          <button
+            hx-get="{{ website.website_routes.dashboard_routes.sidebar.training_models_partial | safe }}"
+            hx-push-url="{{ website.website_routes.dashboard_routes.sidebar.training_models | safe }}"
+            hx-target="#dashboard_content"
+            type="button"
+            class="btn btn-neutral w-full"
+          >
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary w-full mt-4">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" y1="3" x2="12" y2="15" />
+            </svg>
+            Create & Upload Model
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

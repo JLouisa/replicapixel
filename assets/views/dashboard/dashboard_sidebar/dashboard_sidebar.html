@@ -3,18 +3,6 @@
   <ul class="flex flex-col">
     <!-- Top Items Section -->
 
-    <!-- Album Section -->
-    <li class="hover:bg-base-300 tooltip tooltip-right" data-tip="Album">
-      <a
-        hx-get="{{ website.website_routes.dashboard_routes.sidebar.photo_partial | safe }}"
-        hx-target="#dashboard_content"
-        hx-push-url="{{ website.website_routes.dashboard_routes.sidebar.photo | safe }}"
-        hx-swap="innerHTML"
-        class="h-16 px-6 flex justify-center items-center w-full cursor-pointer"
-      >
-        {% include "partials/svg/album.html" %}
-      </a>
-    </li>
     <!-- Model Section -->
     <li class="hover:bg-base-300 tooltip tooltip-right" data-tip="Model">
       <a
@@ -37,6 +25,18 @@
         class="h-16 px-6 flex justify-center items-center w-full cursor-pointer"
       >
         {% include "partials/svg/pack.html" %}
+      </a>
+    </li>
+    <!-- Album Section -->
+    <li class="hover:bg-base-300 tooltip tooltip-right" data-tip="Album">
+      <a
+        hx-get="{{ website.website_routes.dashboard_routes.sidebar.photo_partial | safe }}"
+        hx-target="#dashboard_content"
+        hx-push-url="{{ website.website_routes.dashboard_routes.sidebar.photo | safe }}"
+        hx-swap="innerHTML"
+        class="h-16 px-6 flex justify-center items-center w-full cursor-pointer"
+      >
+        {% include "partials/svg/album.html" %}
       </a>
     </li>
     <!-- Favorite Section -->
@@ -83,7 +83,7 @@
   </ul>
 
   <!-- Bottom Items Section -->
-  <div class="mt-auto h-56 flex flex-col items-center w-full">
+  <div class="mt-auto h-72 flex flex-col items-center w-full">
     <!-- Features Section -->
     <div
       hx-get="{{ website.website_routes.dashboard_routes.sidebar.features_partial | safe }}"
@@ -94,6 +94,17 @@
       data-tip="Features"
     >
       {% include "partials/svg/feedback.html" %}
+    </div>
+    <!-- Order History Section -->
+    <div
+      hx-get="{{ website.website_routes.dashboard_routes.billing_partial | safe }}"
+      hx-target="#dashboard_content"
+      hx-push-url="{{ website.website_routes.dashboard_routes.billing | safe }}"
+      hx-swap="innerHTML"
+      class="h-16 w-full mx-auto flex items-center justify-center hover:bg-base-300 focus:outline-none cursor-pointer tooltip tooltip-right text-base-content"
+      data-tip="Order History"
+    >
+      {% include "partials/svg/order_history.html" %}
     </div>
     <!-- Settings Section -->
     <div

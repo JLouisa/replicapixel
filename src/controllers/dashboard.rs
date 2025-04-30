@@ -38,6 +38,8 @@ pub mod routes {
         pub base: String,
         pub billing: String,
         pub billing_partial: String,
+        pub create_training_models: String,
+        pub create_training_models_partial: String,
         pub sidebar: SidebarRoutes,
     }
     impl DashboardRoutes {
@@ -46,6 +48,17 @@ pub mod routes {
                 base: format!("{}", Dashboard::BASE),
                 billing: format!("{}{}", Dashboard::BASE, Dashboard::BILLING),
                 billing_partial: format!("{}{}", Dashboard::BASE, Dashboard::BILLING_PARTIAL),
+
+                create_training_models: format!(
+                    "{}{}",
+                    Dashboard::BASE,
+                    Dashboard::CREATE_TRAINING_MODELS
+                ),
+                create_training_models_partial: format!(
+                    "{}{}",
+                    Dashboard::BASE,
+                    Dashboard::CREATE_TRAINING_MODELS_PARTIAL
+                ),
                 sidebar: SidebarRoutes::init(),
             }
         }
@@ -53,6 +66,8 @@ pub mod routes {
 
     #[derive(Debug, Serialize, Deserialize, Clone)]
     pub struct SidebarRoutes {
+        pub training_models: String,
+        pub training_models_partial: String,
         pub packs: String,
         pub packs_partial: String,
         pub photo: String,
@@ -61,8 +76,6 @@ pub mod routes {
         pub album_favorite_partial: String,
         pub album_deleted: String,
         pub album_deleted_partial: String,
-        pub training_models: String,
-        pub training_models_partial: String,
         pub settings: String,
         pub settings_partial: String,
         pub notifications: String,
@@ -75,6 +88,12 @@ pub mod routes {
     impl SidebarRoutes {
         pub fn init() -> Self {
             Self {
+                training_models: format!("{}{}", Dashboard::BASE, Dashboard::TRAINING_MODELS),
+                training_models_partial: format!(
+                    "{}{}",
+                    Dashboard::BASE,
+                    Dashboard::TRAINING_MODELS_PARTIAL
+                ),
                 packs: format!("{}{}", Dashboard::BASE, Dashboard::PACKS),
                 packs_partial: format!("{}{}", Dashboard::BASE, Dashboard::PACKS_PARTIAL),
                 photo: format!("{}{}", Dashboard::BASE, Dashboard::PHOTO),
@@ -91,12 +110,7 @@ pub mod routes {
                     Dashboard::BASE,
                     Dashboard::ALBUM_DELETED_PARTIAL
                 ),
-                training_models: format!("{}{}", Dashboard::BASE, Dashboard::TRAINING_MODELS),
-                training_models_partial: format!(
-                    "{}{}",
-                    Dashboard::BASE,
-                    Dashboard::TRAINING_MODELS_PARTIAL
-                ),
+
                 settings: format!("{}{}", Dashboard::BASE, Dashboard::SETTINGS),
                 settings_partial: format!("{}{}", Dashboard::BASE, Dashboard::SETTINGS_PARTIAL),
                 notifications: format!("{}{}", Dashboard::BASE, Dashboard::NOTIFICATIONS),
@@ -127,6 +141,8 @@ pub mod routes {
         pub const ALBUM_DELETED_PARTIAL: &'static str = "/partial/album/deleted";
         pub const TRAINING_MODELS: &'static str = "/models";
         pub const TRAINING_MODELS_PARTIAL: &'static str = "/partial/models";
+        pub const CREATE_TRAINING_MODELS: &'static str = "/models/create";
+        pub const CREATE_TRAINING_MODELS_PARTIAL: &'static str = "/partial/models/create";
         pub const SETTINGS: &'static str = "/settings";
         pub const SETTINGS_PARTIAL: &'static str = "/partial/settings";
         pub const NOTIFICATIONS: &'static str = "/notifications";
@@ -203,15 +219,19 @@ pub fn routes() -> Routes {
             get(billing_partial_dashboard),
         )
         .add(routes::Dashboard::BILLING, get(billing_dashboard))
+        .add(routes::Dashboard::DASHBOARD_TEST, post(dashboard_test))
+        .add(
+            routes::Dashboard::CREATE_TRAINING_MODELS,
+            get(new_training_dashboard),
+        )
+        .add(
+            routes::Dashboard::CREATE_TRAINING_MODELS_PARTIAL,
+            get(new_training_dashboard_partials),
+        )
         .add(
             routes::Dashboard::DASHBOARD_TEST_CLEAR,
             get(dashboard_test_clear),
         )
-        // .add(
-        //     routes::Dashboard::DASHBOARD_TEST_GET,
-        //     get(dashboard_test_get),
-        // )
-        .add(routes::Dashboard::DASHBOARD_TEST, post(dashboard_test))
         .layer(CookieConsentLayer::new())
 }
 
@@ -280,6 +300,18 @@ async fn load_transactions(db: &DatabaseConnection, user_id: i32) -> Result<Tran
     Ok(list)
 }
 
+// #[debug_handler]
+// pub async fn dashboard_test_get(
+//     Extension(cache): Extension<RedisCacheDriver>,
+// ) -> Result<impl IntoResponse> {
+//     let _ = match cache.get("testing:1").await {
+//         Ok(e) => return format::json(e),
+//         Err(e) => {
+//             println!("Error: {}", e);
+//             return Ok((StatusCode::NOT_FOUND).into_response());
+//         }
+//     };
+// }
 #[debug_handler]
 pub async fn dashboard_test(Json(params): Json<RegisterParams>) -> Result<impl IntoResponse> {
     dbg!(params);
@@ -298,19 +330,6 @@ pub async fn dashboard_test_clear(State(ctx): State<AppContext>) -> Result<impl 
         }
     };
 }
-
-// #[debug_handler]
-// pub async fn dashboard_test_get(
-//     Extension(cache): Extension<RedisCacheDriver>,
-// ) -> Result<impl IntoResponse> {
-//     let _ = match cache.get("testing:1").await {
-//         Ok(e) => return format::json(e),
-//         Err(e) => {
-//             println!("Error: {}", e);
-//             return Ok((StatusCode::NOT_FOUND).into_response());
-//         }
-//     };
-// }
 
 #[debug_handler]
 pub async fn billing_dashboard(
@@ -469,9 +488,9 @@ pub async fn training_dashboard(
     views::dashboard::training_dashboard(
         v,
         &website,
-        user.into(),
+        &user.into(),
         &user_credits.into(),
-        training_models.into(),
+        &training_models.into(),
         &cc_cookie,
     )
 }
@@ -488,9 +507,50 @@ pub async fn training_partial_dashboard(
     views::dashboard::training_partial_dashboard(
         v,
         &website,
-        user.into(),
+        &user.into(),
         &user_credits.into(),
-        training_models.into(),
+        &training_models.into(),
+    )
+}
+
+#[debug_handler]
+pub async fn new_training_dashboard(
+    auth: auth::JWT,
+    ExtractConsentState(cc_cookie): ExtractConsentState,
+    Extension(website): Extension<Website>,
+    State(ctx): State<AppContext>,
+    ViewEngine(v): ViewEngine<TeraView>,
+) -> Result<impl IntoResponse> {
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let (user, user_credits, training_models) =
+        load_user_credit_training(&ctx.db, &user_pid).await?;
+    views::dashboard::create_training_dashboard(
+        v,
+        &website,
+        &user.into(),
+        &user_credits.into(),
+        &training_models.into(),
+        &cc_cookie,
+    )
+}
+#[debug_handler]
+pub async fn new_training_dashboard_partials(
+    auth: auth::JWT,
+    ExtractConsentState(cc_cookie): ExtractConsentState,
+    Extension(website): Extension<Website>,
+    State(ctx): State<AppContext>,
+    ViewEngine(v): ViewEngine<TeraView>,
+) -> Result<impl IntoResponse> {
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let (user, user_credits, training_models) =
+        load_user_credit_training(&ctx.db, &user_pid).await?;
+    views::dashboard::create_training_dashboard_partial(
+        v,
+        &website,
+        &user.into(),
+        &user_credits.into(),
+        &training_models.into(),
+        &cc_cookie,
     )
 }
 

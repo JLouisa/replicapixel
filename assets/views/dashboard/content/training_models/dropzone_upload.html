@@ -1,0 +1,31 @@
+<!-- 1. Wrap in a form element -->
+<!-- Keep your original container structure -->
+<div id="my-awesome-dropzone">
+  <div
+    class="bg-base-200/60 rounded-box flex flex-col justify-center border-2 border-base-content/20 border-dashed dz-message"
+    data-dz-message
+  >
+    <!-- This div will now act as the clickable area AND the message -->
+    <div class="text-center cursor-pointer p-12" data-file-upload-trigger="">
+      <p class="text-base-content/50 mb-3 text-sm">Choose files with a size up to 2MB.</p>
+      <!-- You can keep your button styling, Dropzone uses the parent -->
+      <button type="button" class="btn btn-soft btn-sm btn-primary text-nowrap pointer-events-none">
+        <!-- pointer-events-none prevents double click handling -->
+        <span class="icon-[tabler--file-upload] size-4.5 shrink-0"></span> Drag & Drop to Upload
+      </button>
+      <p class="text-base-content/50 my-2 text-xs">or</p>
+      <p class="link link-animated link-primary font-medium text-sm">Browse</p>
+
+      <!-- 2. Add a place to display the file count -->
+      <p class="text-base-content/60 mt-4 text-xs">
+        Files chosen: <span id="file-count" class="font-medium">0</span>
+      </p>
+    </div>
+
+    <!-- 3. Specify where Dropzone should render previews -->
+    <div
+      class="previews-container mx-auto mb-8 px-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 empty:m-0"
+      data-file-upload-previews=""
+    ></div>
+  </div>
+</div>

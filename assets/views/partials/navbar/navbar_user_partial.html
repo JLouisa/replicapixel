@@ -26,6 +26,7 @@
       <ul
         class="child transition duration-300 md:absolute top-full right-0 md:w-48 md:shadow-lg md:rounded-b bg-base-100 z-20"
       >
+        {#
         <li>
           <a
             hx-get="{{ website.website_routes.dashboard_routes.billing_partial | safe }}"
@@ -37,6 +38,7 @@
             Billing & Plans
           </a>
         </li>
+        #}
         <li>
           <a
             hx-get="{{ website.website_routes.auth_routes.api_logout | safe }}"

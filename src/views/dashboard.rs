@@ -11,10 +11,7 @@ use crate::models::transactions::TransactionModelList;
 use crate::models::{PackModel, TransactionModel};
 use derive_more::{AsRef, Constructor};
 use loco_rs::prelude::*;
-use rust_decimal::prelude::*;
 use serde::Serialize;
-
-use chrono::{DateTime, Local, Utc};
 
 pub fn billing_dashboard(
     v: impl ViewRenderer,
@@ -158,9 +155,9 @@ pub fn settings_partial_dashboard(
 pub fn training_dashboard(
     v: impl ViewRenderer,
     website: &Website,
-    user: UserView,
+    user: &UserView,
     credits: &UserCreditsView,
-    models: Vec<TrainingModelView>,
+    models: &Vec<TrainingModelView>,
     cc_cookie: &CookieConsent,
 ) -> Result<impl IntoResponse> {
     format::render().view(
@@ -177,14 +174,52 @@ pub fn training_dashboard(
 pub fn training_partial_dashboard(
     v: impl ViewRenderer,
     website: &Website,
-    user: UserView,
+    user: &UserView,
     credits: &UserCreditsView,
-    models: Vec<TrainingModelView>,
+    models: &Vec<TrainingModelView>,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
         "dashboard/content/training_models/training_models_partial.html",
         data!({ "website": website, "user": user, "credits": credits, "models": models }),
+    )
+}
+pub fn create_training_dashboard(
+    v: impl ViewRenderer,
+    website: &Website,
+    user: &UserView,
+    credits: &UserCreditsView,
+    models: &Vec<TrainingModelView>,
+    cc_cookie: &CookieConsent,
+) -> Result<impl IntoResponse> {
+    format::render().view(
+        &v,
+        "dashboard/content/training_models/extend_training_model_form.html",
+        data!(
+            {
+                "website": website, "user": user, "credits": credits,
+                "models": models, "cc_cookie": cc_cookie
+            }
+        ),
+    )
+}
+pub fn create_training_dashboard_partial(
+    v: impl ViewRenderer,
+    website: &Website,
+    user: &UserView,
+    credits: &UserCreditsView,
+    models: &Vec<TrainingModelView>,
+    cc_cookie: &CookieConsent,
+) -> Result<impl IntoResponse> {
+    format::render().view(
+        &v,
+        "dashboard/content/training_models/training_model_form.html",
+        data!(
+            {
+                "website": website, "user": user, "credits": credits,
+                "models": models, "cc_cookie": cc_cookie
+            }
+        ),
     )
 }
 

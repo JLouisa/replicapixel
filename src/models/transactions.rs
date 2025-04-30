@@ -5,7 +5,7 @@ use super::{
 };
 use derive_more::{AsRef, Constructor};
 use loco_rs::prelude::*;
-use sea_orm::{entity::prelude::*, ActiveValue, Condition};
+use sea_orm::{entity::prelude::*, ActiveValue, Condition, QueryOrder};
 use stripe::Currency;
 pub type Transactions = Entity;
 
@@ -155,7 +155,12 @@ impl Model {
         user_id: i32,
     ) -> ModelResult<TransactionModelList> {
         let condition = Condition::all().add(transactions::Column::UserId.eq(user_id));
-        let list = Entity::find().filter(condition).all(db).await?;
+        let order_column = transactions::Column::CreatedAt;
+        let list = Entity::find()
+            .filter(condition)
+            .order_by_desc(order_column)
+            .all(db)
+            .await?;
         Ok(TransactionModelList::new(list))
     }
 }
