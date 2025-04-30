@@ -13,7 +13,7 @@ const TrainingModelFormSchema = object({
     ),
     string(),
   ]),
-  based_on: string(),
+  based_on: boolean(),
   ethnicity: pipe(string(), length(8, "Ethnicity is required")),
   eye_color: pipe(string(), length(8, "Eye color is required")),
   creative: union([pipe(number(), minValue(100, "Creative must be a positive number")), string()]),
@@ -33,7 +33,7 @@ export class TrainingModelFormClass implements TrainingModelFormData {
     public name: string,
     public sex: string,
     public age: number | string,
-    public based_on: string,
+    public based_on: boolean,
     public ethnicity: string,
     public eye_color: string,
     public creative: number | string,
@@ -63,6 +63,6 @@ export class TrainingModelFormClass implements TrainingModelFormData {
   }
 
   static inti(): TrainingModelFormClass {
-    return new TrainingModelFormClass("", "", "", "", "", "", 40, false, false);
+    return new TrainingModelFormClass("", "", "", true, "", "", 40, false, false);
   }
 }

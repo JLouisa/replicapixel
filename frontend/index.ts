@@ -1,7 +1,7 @@
 import Alpine from "alpinejs";
 import { TrainingModelFormClass } from "./lib/type/trainingModelForm";
 import { DAL } from "./lib/api";
-import { createBatches, createZip } from "./lib/utils";
+import { createBatches, createZip, ensureBoolean } from "./lib/utils";
 import { ImageGenFormClass, type ImageGenForm } from "./lib/type/ImageGenForm";
 
 declare global {
@@ -36,10 +36,10 @@ Alpine.store("createModelForm", {
   name: "",
   sex: "",
   age: 18,
-  based_on: "",
   ethnicity: "",
   eye_color: "",
   creative: 1000,
+  based_on: true,
   bald: false,
   consent: false,
   files: [] as File[],
@@ -50,11 +50,11 @@ Alpine.store("createModelForm", {
     this.name = "";
     this.sex = "";
     this.age = 18;
-    this.based_on = "";
     this.ethnicity = "";
     this.eye_color = "";
     this.creative = 1000;
     this.bald = false;
+    this.based_on = true;
     this.consent = false;
     this.files = [];
     this.zip = null;
@@ -79,7 +79,7 @@ Alpine.store("createModelForm", {
       ethnicity: this.ethnicity,
       eye_color: this.eye_color,
       creative: this.creative ?? 40,
-      bald: this.bald,
+      bald: ensureBoolean(this.bald),
       consent: this.consent,
       file_type: TrainingModelFormClass.file_type,
     });
@@ -87,9 +87,11 @@ Alpine.store("createModelForm", {
     console.log("Model Data:", modelData);
 
     // Create and upload to S3
-    const item = await DAL.Complete.S3UploadTrainingModel.saveToS3(modelData, this.zip);
+    // const item = await DAL.Complete.S3UploadTrainingModel.saveToS3(modelData, this.zip);
 
-    console.log("Success: ", item);
+    await DAL.Complete.Htmx.getTrainingModels();
+
+    // console.log("Success: ", item);
     this.reset();
   },
 

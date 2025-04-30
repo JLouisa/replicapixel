@@ -13,6 +13,7 @@ console.log("API Default Base URL: ", DEFAULT_BASE_URL);
 enum Api {
   Upload = "/api/models",
   Image = "/api/images",
+  Dashboard = "/dashboard",
 }
 
 enum AddOnUrl {
@@ -33,6 +34,11 @@ const BackendUrl = {
   Image: {
     Base: Api.Image,
     GenerateImage: Api.Image + "/generate/test",
+  },
+  Dashboard: {
+    Base: Api.Dashboard,
+    trainingModelPartial: Api.Dashboard + "/partial/models",
+    trainingModel: Api.Dashboard + "/models",
   },
 };
 
@@ -186,6 +192,84 @@ const backendApi = {
       throw error;
     }
   },
+  async getHTMX(url: string, target: string, swapStyle: string, config?: Options) {
+    try {
+      const response = await axiosInstance.get<string>(url, config);
+
+      // --- Manual OOB Processing ---
+      // 1. Create a temporary, disconnected container for the response HTML
+      const tempContainer = document.createElement("div");
+      tempContainer.innerHTML = response.data;
+
+      // 2. Find all OOB elements within the temporary container
+      const oobElements = tempContainer.querySelectorAll("[hx-swap-oob]");
+
+      // 3. Process each OOB element
+      oobElements.forEach((oobElement) => {
+        const oobAttrValue = oobElement.getAttribute("hx-swap-oob");
+        let oobSwapStyle = "outerHTML"; // Default swap style for OOB
+        let oobTargetSelector = "#" + oobElement.id; // Default target is the element's own ID
+
+        // Check for custom OOB swap styles/selectors if needed
+        // Basic parsing example (can be expanded based on htmx source logic)
+        if (oobAttrValue && oobAttrValue !== "true") {
+          if (oobAttrValue.includes(":")) {
+            const parts = oobAttrValue.split(":", 2);
+            oobSwapStyle = parts[0] || oobSwapStyle;
+            oobTargetSelector = parts[1] || oobTargetSelector;
+          } else {
+            oobSwapStyle = oobAttrValue; // Only swap style was specified
+          }
+        }
+
+        // Find the actual target(s) in the main document
+        const oobTargets = document.querySelectorAll(oobTargetSelector);
+
+        if (oobTargets.length > 0) {
+          // Remove the OOB attribute before swapping to avoid issues
+          // Note: We swap the element itself from the temp container
+          oobElement.removeAttribute("hx-swap-oob");
+
+          oobTargets.forEach((target) => {
+            // Use htmx.swap for each OOB target
+            // Pass the OOB element's outerHTML as the content
+            window.htmx.swap(target, oobElement.outerHTML, { swapStyle: oobSwapStyle });
+          });
+
+          // Remove the OOB element from the temp container so it's not part of the main swap
+          oobElement.remove();
+        } else {
+          // Target not found, log an error or warning
+          console.warn(`Target not found for selector: ${oobTargetSelector}`);
+          // Still remove it from the temp container
+          oobElement.remove();
+        }
+      });
+
+      // --- Main Swap ---
+
+      // 4. Find the main target element *after* OOB processing
+      const mainTargetElement = document.getElementById(target);
+      if (!mainTargetElement) {
+        console.error(`Target element ${target} not found!`);
+        DAL.Toast.error("An unexpected error occurred (gallery missing). Refresh the page.");
+        return; // Exit if the target doesn't exist
+      }
+
+      // 5. Get the remaining HTML from the temp container (OOB elements are gone)
+      const remainingContent = tempContainer.innerHTML;
+
+      // 6. Perform the main swap with the remaining content
+      window.htmx.swap(mainTargetElement, remainingContent, { swapStyle });
+
+      // Optional: Process scripts if htmx.swap doesn't automatically (it usually does)
+      // window.htmx.process(mainTargetElement); // Might be needed if the swapped content has hx-* attributes
+    } catch (error) {
+      console.error("Fetch request failed:", error);
+      DAL.Toast.error("An unexpected error occurred. Please try again.");
+      throw error;
+    }
+  },
   async postHTMX(
     url: string,
     payload: ImageGenForm,
@@ -274,19 +358,32 @@ const backendApi = {
 
 export const DAL = {
   Backend: {
-    ImageGeneration: {
-      async generateImage(payload: ImageGenForm, target: string, swapStyle: string) {
-        console.log(BackendUrl.Image.GenerateImage);
+    htmx: {
+      async getHtmx(url: string, target: string, swapStyle: string) {
         try {
-          return await backendApi.postHTMX(
-            BackendUrl.Image.GenerateImage,
-            payload,
-            target,
-            swapStyle
-          );
+          return await backendApi.getHTMX(url, target, swapStyle);
         } catch (error) {
-          return DAL.handleError("Something went wrong generating image. Code: 1000", error, false);
+          return DAL.handleError("Something went wrong uploading image", error, false);
         }
+      },
+      ImageGeneration: {
+        async generateImage(payload: ImageGenForm, target: string, swapStyle: string) {
+          console.log(BackendUrl.Image.GenerateImage);
+          try {
+            return await backendApi.postHTMX(
+              BackendUrl.Image.GenerateImage,
+              payload,
+              target,
+              swapStyle
+            );
+          } catch (error) {
+            return DAL.handleError(
+              "Something went wrong generating image. Code: 1000",
+              error,
+              false
+            );
+          }
+        },
       },
     },
     UploadService: {
@@ -332,7 +429,19 @@ export const DAL = {
     Htmx: {
       async imageGenerationHtmx(payload: ImageGenForm, target: string, swapStyle: string) {
         try {
-          return await DAL.Backend.ImageGeneration.generateImage(payload, target, swapStyle);
+          return await DAL.Backend.htmx.ImageGeneration.generateImage(payload, target, swapStyle);
+        } catch (error) {
+          return DAL.handleError("Something went wrong uploading image", error, false);
+        }
+      },
+      async getTrainingModels() {
+        const url = BackendUrl.Dashboard.trainingModelPartial;
+        const target = "#dashboard_content";
+        const swap = "innerHTML";
+        try {
+          return await window.htmx.ajax("GET", url, { target, swap }).then((_: any) => {
+            window.history.pushState({}, "", BackendUrl.Dashboard.trainingModel);
+          });
         } catch (error) {
           return DAL.handleError("Something went wrong uploading image", error, false);
         }
