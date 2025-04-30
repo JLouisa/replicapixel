@@ -5,14 +5,13 @@ use futures::future::{join_all, try_join_all};
 use serde::Serialize;
 use uuid::Uuid;
 
-use crate::domain::url::Url;
 use crate::domain::website::Website;
 use crate::models::_entities::sea_orm_active_enums::Status;
 use crate::models::images::{ImageNew, ImagesModelList};
 use crate::models::{ImageModel, UserCreditModel};
 use crate::models::{_entities::images, images::ImageNewList};
 use crate::service::aws::s3::{AwsError, AwsS3, S3Key};
-use crate::service::redis::redis::{Cache, RedisCacheDriver, RedisDbError};
+use crate::service::redis::redis::{RedisCacheDriver, RedisDbError};
 
 pub fn img_infinite_loading(
     v: &impl ViewRenderer,
@@ -118,23 +117,20 @@ pub struct ImageView {
     pub s3_pre_url: Option<String>,
 }
 impl ImageView {
-    pub async fn set_pre_url(self, user_id: &Uuid, s3_client: &AwsS3) -> Result<Self, AwsError> {
-        let pre_url = s3_client
-            .auto_upload_img_presigned_url(user_id, &self)
-            .await?;
+    pub async fn set_pre_url(self, s3_client: &AwsS3) -> Result<Self, AwsError> {
+        let pre_url = s3_client.auto_upload_img_presigned_url(&self).await?;
         let mut new_self = self;
         new_self.pre_url = Some(pre_url.into_inner());
         Ok(new_self)
     }
     pub async fn set_pre_url_many(
         list: Vec<Self>,
-        user_id: &Uuid,
         s3_client: &AwsS3,
     ) -> Result<Vec<Self>, AwsError> {
         let futures = list.into_iter().map(|image| async move {
             if image.image_url_fal.is_some() && image.image_status == Status::Processing.to_string()
             {
-                image.set_pre_url(user_id, s3_client).await
+                image.set_pre_url(s3_client).await
             } else {
                 Ok(image)
             }
@@ -395,7 +391,15 @@ impl ImageViewList {
         s3_client: &AwsS3,
         cache: &RedisCacheDriver,
     ) -> Self {
-        self.get_pre_url_many(s3_client, cache).await;
+        match self.get_pre_url_many(s3_client, cache).await {
+            Ok(()) => {}
+            Err(get_pre_url_many_err) => {
+                tracing::error!(
+                    "Failed to generate pre_url for all images due to cache error: {:?}. Skipping S3 generation for this request.",
+                    get_pre_url_many_err
+                );
+            }
+        };
         self
     }
     pub async fn get_pre_url_many(
@@ -411,7 +415,7 @@ impl ImageViewList {
             }
             image
         });
-        let updated_images = join_all(futures).await;
+        join_all(futures).await;
         Ok(())
     }
 }

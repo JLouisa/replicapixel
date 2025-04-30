@@ -50,7 +50,6 @@ pub async fn cookie(
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let is_home = true;
     views::policy::cookie(v, &website)
 }
 
@@ -59,7 +58,6 @@ pub async fn terms(
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let is_home = true;
     views::policy::terms(v, &website)
 }
 
@@ -68,6 +66,5 @@ pub async fn privacy(
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let is_home = true;
     views::policy::privacy(v, &website)
 }

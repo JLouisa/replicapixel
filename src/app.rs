@@ -14,13 +14,10 @@ use loco_rs::{
 use migration::Migrator;
 use std::path::Path;
 
+use crate::domain::settings::Settings;
 #[allow(unused_imports)]
 use crate::{
     controllers, initializers, models::_entities::users, tasks, workers::downloader::DownloadWorker,
-};
-use crate::{
-    domain::settings::Settings, middleware::cookie::CookieConsentLayer,
-    service::redis::redis::RedisCacheDriver,
 };
 
 pub struct App;

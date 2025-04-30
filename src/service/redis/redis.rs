@@ -2,16 +2,16 @@ use async_trait::async_trait;
 use derive_more::Constructor;
 use loco_rs::cache::{drivers::CacheDriver, CacheError, CacheResult};
 use redis::{
-    aio::{ConnectionManagerConfig, MultiplexedConnection},
+    aio::ConnectionManagerConfig,
     io::tcp::{socket2::TcpKeepalive, TcpSettings},
-    AsyncCommands, AsyncConnectionConfig, Client, IntoConnectionInfo, RedisResult,
+    AsyncCommands, Client, IntoConnectionInfo, RedisResult,
 };
 use serde::Deserialize;
 use std::{sync::Arc, time::Duration};
 use strum::{AsRefStr, EnumString};
 use thiserror::Error;
 
-use crate::views::images::{ImageView, ImageViewList};
+use crate::views::images::ImageView;
 
 pub type Cache = Arc<loco_rs::cache::Cache>;
 pub type RedisDbResult<T> = std::result::Result<T, RedisDbError>;
@@ -82,6 +82,9 @@ impl RedisCacheDriver {
         let client = Client::open(connection_info)?;
         let manager = ConnectionManager::new_with_config(client, config).await?;
         Ok(manager)
+    }
+    pub fn redis_settings(&self) -> &RedisSettings {
+        &self.settings
     }
 }
 

@@ -5,7 +5,7 @@ use loco_rs::{
     Result,
 };
 
-use crate::{domain::settings::Settings, service::redis::redis::RedisCacheDriver};
+use crate::domain::settings::Settings;
 
 #[allow(clippy::module_name_repetitions)]
 pub struct RedisClient;

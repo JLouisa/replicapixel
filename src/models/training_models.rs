@@ -11,8 +11,8 @@ use sea_orm::{entity::prelude::*, Condition, QueryOrder};
 use serde::{Deserialize, Serialize};
 pub type TrainingModels = Entity;
 
+use crate::service::aws::s3::S3Key;
 use crate::service::fal_ai::fal_client::{FluxQueueResponse, QueueResponse};
-use crate::service::{aws::s3::S3Key, fal_ai::fal_client::FluxResponse};
 use loco_rs::prelude::*;
 
 fn default_as_true() -> bool {
@@ -71,7 +71,7 @@ pub struct TrainingForm {
     pub file_type: ImageFormat,
     #[serde(default = "cuid2::slug", skip_deserializing)]
     pub slug: String,
-    training_images: Option<serde_json::Value>,
+    pub training_images: Option<serde_json::Value>,
     pub consent: bool,
 }
 

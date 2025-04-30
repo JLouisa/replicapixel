@@ -4,7 +4,7 @@
 use loco_rs::prelude::*;
 
 use crate::mailers::transaction::CheckoutCompletedEmailData;
-use crate::models::_entities::sea_orm_active_enums::{PlanNames, Status};
+use crate::models::_entities::sea_orm_active_enums::Status;
 use crate::models::join::user_credits_models::{load_user_and_credits, JoinError};
 use crate::models::transactions::TransactionDomain;
 use crate::models::users::UserPid;
@@ -13,10 +13,9 @@ use crate::models::{
     UserCreditModel, UserModel,
 };
 
-use std::collections::HashMap;
 use stripe::{CheckoutSessionPaymentStatus, Event, EventObject, EventType};
 use thiserror::Error;
-use tracing::{error, info};
+use tracing::error;
 
 #[derive(Debug, Error)]
 pub enum StripeServiceError {
@@ -46,31 +45,31 @@ pub enum StripeServiceError {
     JoinError(#[from] JoinError),
 }
 
-async fn update_txn_completed(
-    item: TransactionModel,
-    db: &impl ConnectionTrait,
-) -> Result<TransactionModel> {
-    let item = TransactionModel::status_completed(item, db).await?;
-    Ok(item)
-}
-async fn update_txn_failed(
-    item: TransactionModel,
-    db: &impl ConnectionTrait,
-) -> Result<TransactionModel> {
-    let item = TransactionModel::status_failed(item, db).await?;
-    Ok(item)
-}
-async fn load_txn_webhook(
-    pid: &uuid::Uuid,
-    db: &impl ConnectionTrait,
-) -> Result<Option<TransactionModel>> {
-    let item = TransactionModel::find_by_pid_webhook(&pid, db).await?;
-    Ok(item)
-}
-async fn load_credits(id: i32, db: &impl ConnectionTrait) -> Result<UserCreditModel> {
-    let item = UserCreditModel::find_by_user_id(db, id).await?;
-    Ok(item)
-}
+// async fn update_txn_completed(
+//     item: TransactionModel,
+//     db: &impl ConnectionTrait,
+// ) -> Result<TransactionModel> {
+//     let item = TransactionModel::status_completed(item, db).await?;
+//     Ok(item)
+// }
+// async fn update_txn_failed(
+//     item: TransactionModel,
+//     db: &impl ConnectionTrait,
+// ) -> Result<TransactionModel> {
+//     let item = TransactionModel::status_failed(item, db).await?;
+//     Ok(item)
+// }
+// async fn load_txn_webhook(
+//     pid: &uuid::Uuid,
+//     db: &impl ConnectionTrait,
+// ) -> Result<Option<TransactionModel>> {
+//     let item = TransactionModel::find_by_pid_webhook(&pid, db).await?;
+//     Ok(item)
+// }
+// async fn load_credits(id: i32, db: &impl ConnectionTrait) -> Result<UserCreditModel> {
+//     let item = UserCreditModel::find_by_user_id(db, id).await?;
+//     Ok(item)
+// }
 async fn load_hse(id: &str, db: &impl ConnectionTrait) -> Result<StripeEventModel> {
     let item = StripeEventModel::find_by_session_id(id, db).await?;
     Ok(item)
@@ -148,7 +147,7 @@ impl StripeWebhookService {
                             let db_txn = ctx.db.begin().await?;
 
                             // Extract and process Metadata
-                            let (user, mut user_credits, plan) =
+                            let (user, user_credits, plan) =
                                 extract_and_process_metadata(&db_txn, &session).await?;
 
                             // --- Create the Transaction Record ---

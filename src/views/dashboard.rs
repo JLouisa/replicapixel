@@ -1,14 +1,12 @@
 use super::auth::{UserCreditsView, UserView};
-use super::images::{ImageView, ImageViewList};
+use super::images::ImageViewList;
 use super::settings::UserSettingsView;
 use super::training_models::TrainingModelView;
-use crate::domain::dashboard_sidebar::DashboardSidebar;
 use crate::domain::features::FeatureViewList;
 use crate::domain::website::Website;
 use crate::middleware::cookie::CookieConsent;
-use crate::models::_entities::sea_orm_active_enums::{Language, ThemePreference};
 use crate::models::packs::PackModelList;
-use crate::models::{PackModel, UserSettingsModel};
+use crate::models::PackModel;
 use derive_more::{AsRef, Constructor};
 use loco_rs::prelude::*;
 use serde::Serialize;
@@ -53,7 +51,11 @@ pub fn notification_dashboard(
     format::render().view(
         &v,
         "dashboard/content/notification/notification.html",
-        data!({ "website": website, "user": user, "credits": credits }),
+        data!(
+            {
+                "website": website, "user": user,
+                "credits": credits, "cc_cookie": cc_cookie
+        }),
     )
 }
 pub fn notification_partial_dashboard(
@@ -93,7 +95,6 @@ pub fn features_partial_dashboard(
     user: UserView,
     features_view: &FeatureViewList,
 ) -> Result<impl IntoResponse> {
-    let sidebar = DashboardSidebar::init();
     format::render().view(
         &v,
         "dashboard/content/features/features_partial.html",
@@ -114,7 +115,6 @@ pub fn settings_dashboard(
     user_settings: &UserSettingsView,
     cc_cookie: &CookieConsent,
 ) -> Result<impl IntoResponse> {
-    let sidebar = DashboardSidebar::init();
     format::render().view(
         &v,
         "dashboard/content/settings/settings.html",
@@ -132,7 +132,6 @@ pub fn settings_partial_dashboard(
     user: &UserView,
     user_settings: &UserSettingsView,
 ) -> Result<impl IntoResponse> {
-    let sidebar = DashboardSidebar::init();
     format::render().view(
         &v,
         "dashboard/content/settings/settings_partial.html",
@@ -148,8 +147,6 @@ pub fn training_dashboard(
     models: Vec<TrainingModelView>,
     cc_cookie: &CookieConsent,
 ) -> Result<impl IntoResponse> {
-    let sidebar = DashboardSidebar::init();
-    // let models: Vec<TrainingModelView> = Vec::new();
     format::render().view(
         &v,
         "dashboard/content/training_models/training_models.html",
@@ -168,7 +165,6 @@ pub fn training_partial_dashboard(
     credits: &UserCreditsView,
     models: Vec<TrainingModelView>,
 ) -> Result<impl IntoResponse> {
-    let sidebar = DashboardSidebar::init();
     format::render().view(
         &v,
         "dashboard/content/training_models/training_models_partial.html",
@@ -190,7 +186,7 @@ pub fn packs_dashboard(
         data!(
             {
                 "website": website, "credits": credits, "packs": packs,
-                "cc_cookie": cc_cookie
+                "cc_cookie": cc_cookie, "user": user,
             }
         ),
     )
@@ -198,7 +194,6 @@ pub fn packs_dashboard(
 pub fn packs_partial_dashboard(
     v: impl ViewRenderer,
     website: &Website,
-    user: &UserView,
     packs: PackViewList,
 ) -> Result<impl IntoResponse> {
     format::render().view(
@@ -235,7 +230,6 @@ pub fn photo_dashboard(
 pub fn photo_partial_dashboard(
     v: impl ViewRenderer,
     website: &Website,
-    user: &UserView,
     images: &ImageViewList,
     training_models: Vec<TrainingModelView>,
     credits: &UserCreditsView,

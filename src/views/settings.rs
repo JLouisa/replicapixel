@@ -1,12 +1,10 @@
 use crate::{
     domain::website::Website,
-    middleware::cookie::CookieConsent,
     models::{
         UserSettingsModel,
         _entities::sea_orm_active_enums::{Language, ThemePreference},
     },
 };
-use axum::Extension;
 use derive_more::Constructor;
 use loco_rs::prelude::*;
 use serde::Serialize;
@@ -19,7 +17,7 @@ pub fn email_notification(
     format::render().view(
         &v,
         "dashboard/content/settings/partials/email_notification_input.html",
-        data!({ "website": website,  }),
+        data!({ "website": website, "user_settings": user_settings }),
     )
 }
 
@@ -31,7 +29,7 @@ pub fn marketing_notifications(
     format::render().view(
         &v,
         "dashboard/content/settings/partials/marketing_notification_input.html",
-        data!({ "website": website,  }),
+        data!({ "website": website, "user_settings": user_settings  }),
     )
 }
 
@@ -43,7 +41,7 @@ pub fn dark_mode(
     format::render().view(
         &v,
         "dashboard/content/settings/partials/dark_mode_input.html",
-        data!({ "website": website,  }),
+        data!({ "website": website, "user_settings": user_settings }),
     )
 }
 

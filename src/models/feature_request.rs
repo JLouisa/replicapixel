@@ -1,15 +1,14 @@
 use loco_rs::prelude::*;
 use sea_orm::entity::prelude::*;
-use sea_orm::{Condition, QuerySelect};
+use sea_orm::QuerySelect;
 
 use super::FeatureVoteActiveModel;
 pub use super::_entities::feature_request;
 pub use super::_entities::feature_request::{ActiveModel, Entity, Model};
 use derive_more::{AsRef, Constructor};
 use serde::Deserialize;
-use strum::AsRefStr;
 pub type FeatureRequest = Entity;
-use sea_orm::{entity::prelude::*, QueryOrder};
+use sea_orm::QueryOrder;
 
 #[async_trait::async_trait]
 impl ActiveModelBehavior for ActiveModel {

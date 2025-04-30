@@ -1,4 +1,4 @@
-use loco_rs::{auth::jwt, hash, prelude::*};
+use loco_rs::prelude::*;
 use sea_orm::entity::prelude::*;
 
 // src/models/o_auth2_sessions.rs
@@ -10,7 +10,7 @@ use loco_oauth2::{
     models::oauth2_sessions::OAuth2SessionsTrait,
 };
 
-use chrono::{DateTime, FixedOffset, Local, Utc};
+use chrono::{DateTime, FixedOffset, Utc};
 
 #[async_trait]
 impl OAuth2SessionsTrait<users::Model> for Model {

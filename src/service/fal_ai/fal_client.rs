@@ -1,9 +1,6 @@
 use crate::{
-    controllers::{images, webhooks::routes::Webhooks},
-    domain::{
-        url::Url,
-        website::{Website, WebsiteBasicInfo},
-    },
+    controllers::webhooks::routes::Webhooks,
+    domain::{url::Url, website::WebsiteBasicInfo},
     models::{
         _entities::sea_orm_active_enums::{ImageFormat, ImageSize},
         images::{ImageNew, ImageNewList},
@@ -16,7 +13,6 @@ use reqwest::Client as ReqwestClient;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use strum_macros::Display;
-use uuid::Uuid;
 
 #[derive(Debug, Clone, Deserialize, Serialize, Default)]
 pub struct FalAiSettings {

@@ -1,7 +1,7 @@
 #![allow(clippy::missing_errors_doc)]
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
-use axum::{debug_handler, extract::Query, http::HeaderMap, response::Redirect, Extension};
+use axum::{debug_handler, extract::Query, http::HeaderMap, Extension};
 use derive_more::Constructor;
 use loco_rs::{controller::ErrorDetail, prelude::*};
 use serde::{Deserialize, Serialize};
@@ -13,11 +13,11 @@ pub struct PaymentController;
 use crate::{
     domain::website::Website,
     models::{
-        transactions::TransactionDomain,
         users::UserPid,
-        PlanModel, TransactionActiveModel, UserModel,
+        PlanModel,
         _entities::sea_orm_active_enums::{CheckOutStatus, PlanNames},
         join::user_credits_models::load_user_and_credits,
+        UserModel,
     },
     service::stripe::{stripe::StripeClient, stripe_builder::CheckoutSessionBuilder},
     views,
@@ -108,12 +108,16 @@ pub fn routes() -> Routes {
         )
 }
 
-async fn load_user(db: &DatabaseConnection, pid: &UserPid) -> Result<UserModel> {
-    let item = UserModel::find_by_pid(db, &pid.as_ref().to_string()).await?;
-    Ok(item)
-}
+// async fn load_user(db: &DatabaseConnection, pid: &UserPid) -> Result<UserModel> {
+//     let item = UserModel::find_by_pid(db, &pid.as_ref().to_string()).await?;
+//     Ok(item)
+// }
 async fn load_plan(db: &DatabaseConnection, name: &PlanNames) -> Result<PlanModel> {
     let item = PlanModel::find_by_name(db, &name).await?;
+    Ok(item)
+}
+async fn load_user(db: &DatabaseConnection, user_pid: &UserPid) -> Result<UserModel> {
+    let item = UserModel::find_by_pid(db, user_pid.as_ref()).await?;
     Ok(item)
 }
 
@@ -130,10 +134,9 @@ pub struct ClientSecret {
 
 #[debug_handler]
 pub async fn prepare_handler(
-    auth: auth::JWT,
+    _auth: auth::JWT,
     Path((pid, plan)): Path<(Uuid, PlanNames)>,
-    Extension(stripe_client): Extension<StripeClient>,
-    State(ctx): State<AppContext>,
+    State(_ctx): State<AppContext>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
@@ -155,7 +158,7 @@ pub async fn create_checkout_session(
     State(ctx): State<AppContext>,
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
-    let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
+    let user = load_user(&ctx.db, &user_pid).await?;
 
     let mut headers = HeaderMap::new();
     if user.pid != pid {
@@ -189,10 +192,11 @@ pub async fn create_checkout_session(
 }
 
 async fn success_handler(
+    _auth: auth::JWT,
     params: Query<PaymentRedirectParams>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
-    State(ctx): State<AppContext>,
+    State(_): State<AppContext>,
 ) -> Result<impl IntoResponse> {
     tracing::info!("User successfully completed payment process.");
     let status = CheckOutStatus::Processing;

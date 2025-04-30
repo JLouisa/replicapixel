@@ -11,7 +11,7 @@ use crate::{
         _entities::users,
         join::user_credits_models::load_user_and_credits,
         users::{LoginParams, RegisterError, RegisterParams, UserPid},
-        PlanModel, TransactionModel,
+        PlanModel, TransactionModel, UserModel,
     },
     service::stripe::stripe::StripeClient,
     views::auth::{CurrentResponse, LoginResponse},
@@ -129,6 +129,10 @@ async fn load_transaction(db: &impl ConnectionTrait, name: &Uuid) -> Result<Tran
     let item = TransactionModel::find_by_pid(name, db).await?;
     Ok(item)
 }
+async fn load_user(db: &DatabaseConnection, user_pid: &UserPid) -> Result<UserModel> {
+    let item = UserModel::find_by_pid(db, user_pid.as_ref()).await?;
+    Ok(item)
+}
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct ForgotParams {
@@ -148,16 +152,13 @@ pub struct MagicLinkParams {
 
 #[debug_handler]
 pub async fn test_transaction(
-    // auth: auth::JWT,
     State(ctx): State<AppContext>,
     Extension(website): Extension<Website>,
-    ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new("ab5e796c-a2cd-458e-ad6b-c3a898f44bd1");
     let transaction_pid: Uuid = "c8b9233b-e18d-482d-9307-ed0c1b694cd7".parse().unwrap();
     let plan_name_str = "Premium".to_string();
-
-    let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
+    let user = load_user(&ctx.db, &user_pid).await?;
     let plan = load_plan(&ctx.db, &plan_name_str).await?;
     let transaction = load_transaction(&ctx.db, &transaction_pid).await?;
 
@@ -173,37 +174,31 @@ pub async fn test_transaction(
 }
 #[debug_handler]
 pub async fn test_welcome_mail(
-    // auth: auth::JWT,
     State(ctx): State<AppContext>,
     Extension(website): Extension<Website>,
-    ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new("ab5e796c-a2cd-458e-ad6b-c3a898f44bd1");
-    let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
+    let user = load_user(&ctx.db, &user_pid).await?;
     AuthMailer::send_welcome(&ctx, &user, &website.website_basic_info).await?;
     Ok((StatusCode::OK).into_response())
 }
 #[debug_handler]
 pub async fn test_forgot_password(
-    // auth: auth::JWT,
     State(ctx): State<AppContext>,
     Extension(website): Extension<Website>,
-    ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new("ab5e796c-a2cd-458e-ad6b-c3a898f44bd1");
-    let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
+    let user = load_user(&ctx.db, &user_pid).await?;
     AuthMailer::forgot_password(&ctx, &user, &website.website_basic_info).await?;
     Ok((StatusCode::OK).into_response())
 }
 #[debug_handler]
 pub async fn test_magic_link(
-    // auth: auth::JWT,
     State(ctx): State<AppContext>,
     Extension(website): Extension<Website>,
-    ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new("ab5e796c-a2cd-458e-ad6b-c3a898f44bd1");
-    let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
+    let user = load_user(&ctx.db, &user_pid).await?;
     AuthMailer::send_magic_link(&ctx, &user, &website.website_basic_info).await?;
     Ok((StatusCode::OK).into_response())
 }

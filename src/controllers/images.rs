@@ -1,21 +1,17 @@
 #![allow(clippy::missing_errors_doc)]
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
-use axum::{debug_handler, extract::Query, response::Redirect, Extension};
+use axum::{debug_handler, extract::Query, Extension};
 use axum::{http::StatusCode, response::IntoResponse, Json};
 use loco_rs::prelude::*;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 use uuid::Uuid;
 
-use crate::controllers::images;
 use crate::domain::domain_services::image_generation::ImageGenerationService;
-use crate::domain::url::Url;
 use crate::domain::website::Website;
 use crate::models::_entities::sea_orm_active_enums::{ImageFormat, ImageSize, Status};
 use crate::models::images::{AltText, ImageNew, ImageNewList, ImagesModelList, UserPrompt};
-use crate::models::join::user_credits_models::{
-    load_user_and_credits, load_user_and_one_training_model,
-};
+use crate::models::join::user_credits_models::load_user_and_one_training_model;
 use crate::models::join::user_image::load_user_and_image;
 use crate::models::users::UserPid;
 use crate::models::{ImageActiveModel, ImageModel, TrainingModelModel, UserCreditModel, UserModel};
@@ -252,7 +248,7 @@ pub async fn img_s3_upload_completed(
     }
 
     ImageActiveModel::from(image)
-        .upload_s3_completed(&s3_key, &ctx.db)
+        .upload_s3_completed(&ctx.db)
         .await
         .ok();
 
@@ -314,7 +310,7 @@ pub async fn check_img(
     Extension(s3_client): Extension<AwsS3>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<Response> {
-    let (user, mut image) = load_user_and_image(&ctx.db, &auth.claims.pid, &pid).await?;
+    let (user, image) = load_user_and_image(&ctx.db, &auth.claims.pid, &pid).await?;
 
     if image.user_id != user.id {
         return Err(Error::Unauthorized("Unauthorized".to_string()));
@@ -326,7 +322,7 @@ pub async fn check_img(
         let image: ImageView = image.into();
         let image: ImageView = image
             .clone()
-            .set_pre_url(&user.pid, &s3_client)
+            .set_pre_url(&s3_client)
             .await
             .unwrap_or_else(|_| image);
         let is_image_gen = Some(true);

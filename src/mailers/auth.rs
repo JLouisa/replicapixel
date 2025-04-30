@@ -1,14 +1,13 @@
 // auth mailer
 #![allow(non_upper_case_globals)]
 
-use axum::Extension;
 use chrono::Datelike;
 use chrono::Local;
 use loco_rs::prelude::*;
 use serde_json::json;
 
 use crate::domain::website::WebsiteBasicInfo;
-use crate::{domain::website::Website, models::users};
+use crate::models::users;
 
 static welcome: Dir<'_> = include_dir!("src/mailers/auth/welcome");
 static forgot: Dir<'_> = include_dir!("src/mailers/auth/forgot");

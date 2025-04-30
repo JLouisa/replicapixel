@@ -1,9 +1,8 @@
 use std::collections::HashSet;
 
-use chrono::{DateTime, FixedOffset, Utc};
+use chrono::{FixedOffset, Utc};
 use sea_orm::prelude::DateTimeWithTimeZone;
-use serde::{Deserialize, Serialize};
-use uuid::Uuid;
+use serde::Serialize;
 
 use crate::models::{
     FeatureRequestModel, FeatureVoteModel, _entities::sea_orm_active_enums::FeatureStatus,

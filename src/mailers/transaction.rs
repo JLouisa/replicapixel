@@ -1,15 +1,13 @@
 #![allow(non_upper_case_globals)]
 
 use crate::{
-    domain::website::{Website, WebsiteBasicInfo},
-    models::{transactions::TransactionDomain, PlanModel, TransactionModel, UserModel},
+    domain::website::WebsiteBasicInfo,
+    models::{PlanModel, TransactionModel, UserModel},
 };
 use chrono::{Datelike, Utc};
 use loco_rs::prelude::*;
 use rust_decimal::Decimal;
 use serde_json::json;
-use std::fmt::Write; // For formatting currency
-use uuid::Uuid; // For mock transaction ID
 
 static checkout_completed: Dir<'_> = include_dir!("src/mailers/transaction/checkout_completed");
 

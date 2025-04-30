@@ -1,11 +1,5 @@
-<input
-  type="checkbox"
-  id="email_notifications_toggle"
-  name="notify_enabled"
-  class="toggle toggle-primary"
-  hx-patch="{{ website.website_routes.settings.dark_mode | safe }}/{{ user_settings.theme }}"
-  hx-trigger="change"
-  hx-indicator="#theme-notification-spinner"
-  hx-swap="none"
-  checked="{% if user_settings.theme == 'dark' %} true {% else %} false {% endif %}"
-/>
+<input type="checkbox" id="email_notifications_toggle" name="notify_enabled" class="toggle
+toggle-primary" hx-patch="{{ website.website_routes.settings.dark_mode | safe }}/{%if
+user_settings.theme == 'dark'%}true{% else %}false{% endif %}" hx-trigger="change"
+hx-indicator="#theme-notification-spinner" {% if user_settings.theme == 'dark' %} checked {% endif
+%} />

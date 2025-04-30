@@ -6,7 +6,6 @@ use loco_rs::{
 };
 
 use crate::domain::settings::Settings;
-use crate::domain::website::Website as WebsiteInit;
 
 #[allow(clippy::module_name_repetitions)]
 pub struct Website;

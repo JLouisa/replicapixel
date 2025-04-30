@@ -1,3 +1,4 @@
+use super::domain_services::image_generation::ImageGenerationError;
 use crate::{
     models::join::user_credits_models::JoinError,
     service::stripe::{
@@ -6,12 +7,8 @@ use crate::{
     },
 };
 use axum::http::StatusCode;
+use loco_rs::controller::ErrorDetail;
 use loco_rs::prelude::Error as LocoError;
-use loco_rs::{controller::ErrorDetail, model::ModelError};
-use sea_orm::DbErr;
-use thiserror::Error;
-
-use super::domain_services::image_generation::ImageGenerationError;
 
 impl From<StripeClientError> for LocoError {
     fn from(err: StripeClientError) -> Self {
@@ -107,6 +104,7 @@ impl From<JoinError> for LocoError {
                 ErrorDetail::new("Invalid Id Format", "User Signature Invalid"),
             ),
             JoinError::CreditsMissingInvariant(_) => LocoError::NotFound,
+            JoinError::SettingsMissingInvariant(_) => LocoError::NotFound,
             JoinError::ParseIdError(parse_err) => LocoError::CustomError(
                 StatusCode::BAD_REQUEST,
                 ErrorDetail::new("Error", &parse_err.to_string()),

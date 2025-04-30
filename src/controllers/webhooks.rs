@@ -2,35 +2,20 @@
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
 use crate::domain::website::Website;
-use crate::mailers::transaction::{CheckoutCompletedEmailData, CheckoutMailer};
+use crate::mailers::transaction::CheckoutMailer;
 use crate::models::_entities::sea_orm_active_enums::Status;
-use crate::models::_entities::{images, training_models};
-use crate::models::{users, ImageModel, TrainingModelModel};
-use crate::service::fal_ai::fal_client::{
-    FalAiClient, FluxApiWebhookResponse, StatusResponse, SuccessfulPayload,
-};
+use crate::models::{ImageModel, TrainingModelActiveModel, TrainingModelModel};
+use crate::service::fal_ai::fal_client::{FalAiClient, FluxApiWebhookResponse, StatusResponse};
 use crate::{
-    models::_entities::training_models::{ActiveModel, Entity, Model},
-    service::aws::s3::PresignedUrlRequest,
     service::stripe::stripe::StripeClient,
     service::stripe::stripe_service::{StripeServiceError, StripeWebhookService},
 };
 use axum::{
-    body,
-    body::{Bytes, HttpBody},
-    debug_handler,
-    extract::State,
-    http::HeaderMap,
-    http::StatusCode,
-    response::IntoResponse,
+    debug_handler, extract::State, http::HeaderMap, http::StatusCode, response::IntoResponse,
     Extension, Json,
 };
 use loco_rs::prelude::*;
-use stripe::{Event, EventObject, EventType, Webhook};
-
-use axum::extract::FromRequest;
-use axum::http::Request;
-use hyper::Body;
+use stripe::Webhook;
 
 pub mod routes {
     use serde::Serialize;
@@ -53,10 +38,10 @@ pub fn routes() -> Routes {
         .add(routes::Webhooks::API_STRIPE, post(stripe))
 }
 
-async fn load_model_by_request_id(ctx: &AppContext, id: &str) -> Result<TrainingModelModel> {
-    let item = TrainingModelModel::find_by_request_id(&ctx.db, id).await?;
-    Ok(item)
-}
+// async fn load_model_by_request_id(ctx: &AppContext, id: &str) -> Result<TrainingModelModel> {
+//     let item = TrainingModelModel::find_by_request_id(&ctx.db, id).await?;
+//     Ok(item)
+// }
 async fn load_image_by_request_id(ctx: &AppContext, id: &str) -> Result<ImageModel> {
     let item = ImageModel::find_by_request_id(&ctx.db, id).await?;
     Ok(item)
@@ -130,7 +115,7 @@ pub async fn fal_ai_image(
 ) -> Result<Response> {
     let image = match load_image_by_request_id(&ctx, &response.request_id).await {
         Ok(model) => model,
-        Err(e) => {
+        Err(_) => {
             return Ok((StatusCode::OK, "Model not found".to_string()).into_response());
         }
     };
@@ -138,7 +123,7 @@ pub async fn fal_ai_image(
     let image_url = match response.status {
         StatusResponse::Ok => {
             // If the status is OK, check if there's a payload
-            if let Some(ref payload) = response.payload {
+            if let Some(ref _payload) = response.payload {
                 let image_url = response.successful_img().image_url();
                 image_url
             } else {
@@ -155,7 +140,7 @@ pub async fn fal_ai_image(
         }
         StatusResponse::Error => {
             // If the status is Error, return the error payload
-            let error_payload = response.error();
+            // let error_payload = response.error();
             image
                 .update_fal_image_url(&ctx.db, None, Status::Failed)
                 .await?;
@@ -178,7 +163,7 @@ pub async fn fal_ai_training(
     Json(response): Json<FluxApiWebhookResponse>,
 ) -> Result<Response> {
     let train_model = TrainingModelModel::find_by_request_id(&ctx.db, &response.request_id).await?;
-    let train = ActiveModel::from(train_model);
+    let train = TrainingModelActiveModel::from(train_model);
 
     // Check the status of the response
     let tensor_path_lora = match &response.status {
@@ -201,7 +186,7 @@ pub async fn fal_ai_training(
         }
         StatusResponse::Error => {
             // If the status is Error, return the error payload
-            let error_payload = response.error();
+            // let error_payload = response.error();
             train
                 .update_fal_ai_webhook_training(&ctx.db, None, Status::Failed)
                 .await?;

@@ -5,7 +5,13 @@
   class="toggle toggle-primary"
   hx-patch="{{ website.website_routes.settings.update_notifications | safe }}/{{ user_settings.enable_notification_email }}"
   hx-trigger="change"
-  hx-indicator="#notification-spinner"
-  hx-swap="none"
-  checked="{{ user_settings.enable_notification_email }}"
+  hx-indicator="#email-notification-spinner"
+  {%
+  if
+  user_settings.enable_notification_email
+  %}
+  checked
+  {%
+  endif
+  %}
 />

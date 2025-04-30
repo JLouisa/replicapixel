@@ -5,7 +5,7 @@ use loco_rs::{
     Result,
 };
 
-use crate::{domain::settings::Settings, service::aws::s3::AwsS3};
+use crate::domain::settings::Settings;
 
 #[allow(clippy::module_name_repetitions)]
 pub struct S3;
