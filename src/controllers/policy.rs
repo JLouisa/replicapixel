@@ -15,6 +15,7 @@ pub mod routes {
         pub privacy: String,
         pub cookie: String,
         pub terms: String,
+        pub model_consent: String,
     }
     impl PolicyRoutes {
         pub fn init() -> Self {
@@ -23,6 +24,7 @@ pub mod routes {
                 privacy: format!("{}{}", Policy::BASE, Policy::PRIVACY),
                 cookie: format!("{}{}", Policy::BASE, Policy::COOKIE),
                 terms: format!("{}{}", Policy::BASE, Policy::TERMS),
+                model_consent: format!("{}{}", Policy::BASE, Policy::MODEL_CONSENT),
             }
         }
     }
@@ -34,6 +36,7 @@ pub mod routes {
         pub const PRIVACY: &'static str = "/privacy";
         pub const COOKIE: &'static str = "/cookie";
         pub const TERMS: &'static str = "/terms-and-conditions";
+        pub const MODEL_CONSENT: &'static str = "/model-consent";
     }
 }
 
@@ -43,6 +46,15 @@ pub fn routes() -> Routes {
         .add(routes::Policy::PRIVACY, get(privacy))
         .add(routes::Policy::TERMS, get(terms))
         .add(routes::Policy::COOKIE, get(cookie))
+        .add(routes::Policy::MODEL_CONSENT, get(model_consent))
+}
+
+#[debug_handler]
+pub async fn model_consent(
+    Extension(website): Extension<Website>,
+    ViewEngine(v): ViewEngine<TeraView>,
+) -> Result<impl IntoResponse> {
+    views::policy::model_consent(v, &website)
 }
 
 #[debug_handler]

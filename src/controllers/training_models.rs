@@ -101,9 +101,11 @@ pub async fn upload_training(
     //2. Create and save Training Model in Database
     let training_params: TrainingModelParams = form.from_form(&user, &s3_key);
     dbg!(&training_params);
+
+    //3. Save Training Model
     TrainingModelActiveModel::save(&ctx.db, &training_params).await?;
 
-    //3. Create Pre-Signed URL
+    //4. Create Pre-Signed URL
     let pre_sign_response = PresignedUrlSafe::from_request(pre_url_request, pre_url);
     Ok(handle_general_response(
         StatusCode::OK,
@@ -159,17 +161,15 @@ pub async fn upload_training_completed(
         .await?;
 
     // Send response back to user
-    Ok(handle_general_response(
-        StatusCode::OK,
-        Some(queue),
-        Some("Successfully saved".into()),
+    Ok(
+        handle_general_response_text(StatusCode::OK, None, Some("Successfully saved".into()))
+            .into_response(),
     )
-    .into_response())
 
     // // Send response back to user
     // Ok(handle_general_response(
     //     StatusCode::OK,
-    //     Some(train_schema),
+    //     Some(train),
     //     Some("Successfully saved".into()),
     // )
     // .into_response())
