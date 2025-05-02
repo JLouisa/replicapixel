@@ -158,11 +158,11 @@ Alpine.store(Stores.CreateModelForm, {
       console.log("Zip Data:", this.zip);
 
       // Create and upload to S3
-      // await DAL.Complete.S3UploadTrainingModel.saveToS3(modelData, this.zip);
+      await DAL.Complete.S3UploadTrainingModel.saveToS3(modelData, this.zip);
       Alpine.store(Stores.Toast).success("New Model Successfully Created");
 
       // Get training models html
-      // await DAL.Complete.Htmx.getTrainingModels();
+      await DAL.Complete.Htmx.getTrainingModels();
 
       this.reset();
     } catch (error) {
