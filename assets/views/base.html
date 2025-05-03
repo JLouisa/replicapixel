@@ -11,14 +11,8 @@
     <script src="/static/js/index.js" defer></script>
     <script src="/static/js/htmx/htmx.min.js"></script>
     <script src="/static/js/htmx/extensions/htmx-ext-form-json.js"></script>
-    {#
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    #} {% block stripe %} {% endblock stripe %}
+
+    {% block stripe %} {% endblock stripe %}
 
     <!-- Cookie Consent -->
     {% include "partials/cookie/consent.html" %}
@@ -78,19 +72,21 @@
     </style>
     {% block head %}{% endblock head %}
   </head>
-  <body class="bg-base-100">
+  <body>
     <!-- Main Layout Container -->
-    {#
-    <div id="app" class="flex flex-col h-screen overflow-hidden">
-      <!-- Navbar Block -->
-      {% block navbar %} {% include "partials/navbar/navbar.html" %} {% endblock navbar %}
+    <div id="app">
+      {% block home %}
+      <div class="flex flex-col h-screen overflow-hidden">
+        <!-- Navbar Block -->
+        {% block navbar %} {% include "partials/navbar/navbar.html" %} {% endblock navbar %}
 
-      <!-- Page Content Block -->
-      <div id="page-content" class="flex-1 overflow-hidden">
-        {% block content %}{% endblock content %}
+        <!-- Page Content Block -->
+        <div id="page-content" class="flex-1 overflow-hidden">
+          {% block content %}{% endblock content %}
+        </div>
       </div>
+      {% endblock home %}
     </div>
-    #} {% block content %}{% endblock content %}
 
     <!-- Toast Notifications -->
     <div
