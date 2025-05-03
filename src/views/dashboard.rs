@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use super::auth::{UserCreditsView, UserView};
 use super::images::ImageViewList;
 use super::settings::UserSettingsView;
@@ -8,7 +10,7 @@ use crate::middleware::cookie::CookieConsent;
 use crate::models::_entities::sea_orm_active_enums::{PlanNames, Status};
 use crate::models::packs::PackModelList;
 use crate::models::transactions::TransactionModelList;
-use crate::models::{PackModel, TransactionModel};
+use crate::models::{PackModel, PlanModel, TransactionModel};
 use derive_more::{AsRef, Constructor};
 use loco_rs::prelude::*;
 use serde::Serialize;
@@ -370,12 +372,21 @@ impl TransactionView {
 #[derive(Debug, Serialize, Clone, Constructor, AsRef)]
 pub struct TransactionViewList(Vec<TransactionView>);
 impl TransactionViewList {
-    pub fn from_model(t: TransactionModelList, p: PlanNames) -> Self {
+    pub fn from_model(t: TransactionModelList, p: HashMap<i32, PlanModel>) -> Self {
         Self(
             t.as_ref()
                 .into_iter()
                 .cloned()
-                .map(|x| TransactionView::from_model(x, p.clone()))
+                .map(|x| {
+                    let plan_name = match p.get(&x.plan_id) {
+                        Some(p) => PlanNames::from(p.plan_name.clone()),
+                        None => {
+                            tracing::error!("Transaction has invalid plan_id {}", x.plan_id);
+                            PlanNames::Max
+                        }
+                    };
+                    TransactionView::from_model(x, plan_name)
+                })
                 .collect(),
         )
     }

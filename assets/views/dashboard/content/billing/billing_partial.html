@@ -42,12 +42,94 @@
             <div
               class="flex flex-row gap-2 flex-wrap justify-start sm:justify-end w-full sm:w-auto"
             >
-              <button disabled href="/order/{{order.id}}" class="btn btn-primary btn-sm">
+              {% if order.status == 'Completed' or order.status == 'Processing' or order.status ==
+              'Processing' or order.status == 'Pending' %}
+              <button
+                class="btn btn-primary btn-sm"
+                onclick="document.getElementById('order-{{ order.pid }}').showModal()"
+              >
                 View
               </button>
-              <button disabled href="/order/{{order.id}}/receipt" class="btn btn-primary btn-sm">
-                Receipt
-              </button>
+              <dialog id="order-{{ order.pid }}" class="modal">
+                <div class="modal-box w-11/12 max-w-2xl">
+                  <h3 class="text-lg font-bold mb-4">Order Details</h3>
+
+                  <div class="space-y-3">
+                    {# --- Basic Info --- #}
+                    <div class="flex justify-between items-center">
+                      <span class="font-medium text-gray-600">Order ID:</span>
+                      <span class="font-mono text-sm">#{{ order.id }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                      <span class="font-medium text-gray-600">Date Placed:</span>
+                      {# Adjust the format string as needed #}
+                      <span>{{ order.created_at }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                      <span class="font-medium text-gray-600">Status:</span>
+                      {# Use a helper to display status nicely, maybe add badges later #}
+                      <span
+                        class="badge {% if order.status == 'Completed' %}badge-success{% elif order.status == 'Pending' %}badge-warning{% elif order.status == 'Failed' %}badge-error{% else %}badge-ghost{% endif %}"
+                      >
+                        {{ order.status }}
+                      </span>
+                    </div>
+
+                    {# --- Plan & Credits --- #}
+                    <div class="divider my-1"></div>
+                    <div class="flex justify-between items-center">
+                      <span class="font-medium text-gray-600">Plan:</span>
+                      {# Check if related plan data (e.g., name) is available #} {% if order.plan
+                      and order.plan %}
+                      <span>{{ order.plan | capitalize }}</span>
+                      {% else %}
+                      <span class="text-sm italic">(Plan ID: {{ order.plan_id }})</span>
+                      {% endif %}
+                    </div>
+                    <div class="flex justify-between items-center">
+                      <span class="font-medium text-gray-600">Credits Purchased:</span>
+                      <span>{{ order.credit_amount }} Credits</span>
+                    </div>
+                    {% if order.model_amount > 0 %} {# Optionally show model amount if used #}
+                    <div class="flex justify-between items-center">
+                      <span class="font-medium text-gray-600">Model Amount Purchased:</span>
+                      <span>{{ order.model_amount }} Models</span>
+                    </div>
+                    {% endif %} {# --- Payment --- #}
+                    <div class="divider my-1"></div>
+                    <div class="flex justify-between items-center">
+                      <span class="font-medium text-gray-600">Amount Paid:</span>
+                      <span class="font-semibold"> ${{ order.payment_amount }} </span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                      <span class="font-medium text-gray-600">Payment ID:</span>
+                      {# Shorten or hide if too technical, useful for support #}
+                      <span class="font-mono text-xs" title="{{ order.pid }}"
+                        >{{ order.pid | truncate(length=20, end="...") }}</span
+                      >
+                    </div>
+                  </div>
+
+                  {# --- Actions --- #}
+                  <div class="modal-action mt-6">
+                    {% if order.status == 'Completed' %}
+                    <a
+                      href="#"
+                      onclick="fetchAndOpenReceipt(event, '{{ order.pid }}')"
+                      class="btn btn-primary btn-sm"
+                    >
+                      View Receipt
+                    </a>
+                    {% endif %}
+                  </div>
+                </div>
+
+                {# Click outside to close backdrop #}
+                <form method="dialog" class="modal-backdrop">
+                  <button>close</button>
+                </form>
+              </dialog>
+              {% endif %}
             </div>
           </div>
         </div>
@@ -67,4 +149,19 @@
     <button class="btn btn-primary w-full sm:w-auto">Load more</button>
   </div>
   {% endif %}
+
+  <script>
+    async function fetchAndOpenReceipt(event, orderPid) {
+      event.preventDefault();
+      try {
+        const res = await fetch(
+          `{{ website.website_routes.payment.payment_stripe_url_from_order | safe }}/${orderPid}`
+        );
+        const url = await res.text();
+        window.open(url, "_blank");
+      } catch (err) {
+        console.error("Failed to fetch receipt link:", err);
+      }
+    }
+  </script>
 </div>

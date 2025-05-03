@@ -311,6 +311,21 @@ impl AwsS3 {
         }
     }
 
+    /// Delete an object from a bucket.
+    pub async fn remove_object_s3_key(&self, key: &S3Key) -> Result<(), AwsError> {
+        match self
+            .client
+            .delete_object()
+            .bucket(&self.settings.s3.bucket_name)
+            .key(key.as_ref())
+            .send()
+            .await
+        {
+            Ok(_) => Ok(()), // If the request succeeds, the object exists
+            Err(e) => Err(AwsError::S3DeletionError(e)), // Wrap the error in Err
+        }
+    }
+
     pub fn create_full_path(&self, key: &S3Key) -> Url {
         Url::new(format!(
             "https://{}.s3.{}.amazonaws.com/{}",

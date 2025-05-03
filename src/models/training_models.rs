@@ -18,6 +18,9 @@ use loco_rs::prelude::*;
 fn default_as_true() -> bool {
     true
 }
+fn default_steps() -> i32 {
+    2000
+}
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct TrainingModelClient {
@@ -92,6 +95,7 @@ impl TrainingForm {
             },
             ethnicity: self.ethnicity,
             trigger_word: tw,
+            steps: 2000,
             ..Default::default()
         }
     }
@@ -106,6 +110,7 @@ pub struct TrainingModelParams {
     pub age: i16,
     pub eye_color: EyeColor,
     pub bald: bool,
+    #[serde(default = "default_steps")]
     pub steps: i32,
     #[serde(default = "default_as_true")]
     pub create_mask: bool,
@@ -124,6 +129,7 @@ pub struct TrainingModelParams {
     pub thumbnail: Option<String>,
     pub training_images: Option<serde_json::Value>,
 }
+
 impl TrainingModelParams {
     pub fn update(&self, item: &mut TrainingModelActiveModel) {
         item.pid = Set(self.pid.clone());
@@ -294,7 +300,7 @@ impl ActiveModel {
         Ok(self.update(db).await?)
     }
 
-    pub async fn update_fal_ai_webhook_training(
+    pub async fn update_fal_ai_training_webhook(
         mut self,
         db: &DatabaseConnection,
         tensor_path: Option<String>,
@@ -305,6 +311,5 @@ impl ActiveModel {
         Ok(self.update(db).await?)
     }
 }
-
 // implement your custom finders, selectors oriented logic here
 impl Entity {}

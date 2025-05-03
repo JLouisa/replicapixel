@@ -13,7 +13,6 @@ declare global {
     htmx: any;
   }
 }
-console.log("Index Environment: ", window.__APP_ENV__.apiBaseUrl);
 
 enum Stores {
   Image = "image",
@@ -27,12 +26,15 @@ interface ToastStore {
   message: string;
   isVisible: boolean;
   isError: boolean;
+  isWarn: boolean;
   success(message: string, duration?: number): this;
+  warn(message: string, duration?: number): this;
   error(message: string, duration?: number): this;
 }
 
 Alpine.store(Stores.Toast, {
   isVisible: false,
+  isWarn: false,
   isError: false,
   message: "",
   success(this: ToastStore, message: string, duration = 5000): ToastStore {
@@ -45,6 +47,13 @@ Alpine.store(Stores.Toast, {
   error(this: ToastStore, message: string, duration = 5000): ToastStore {
     this.isVisible = true;
     this.isError = true;
+    this.message = message;
+    setTimeout(() => (this.isVisible = false), duration);
+    return this;
+  },
+  warn(this: ToastStore, message: string, duration = 5000): ToastStore {
+    this.isVisible = true;
+    this.isWarn = true;
     this.message = message;
     setTimeout(() => (this.isVisible = false), duration);
     return this;
@@ -75,11 +84,12 @@ interface CreateModelFormStore extends TrainingModelFormClass {
   addFiles(e: Event): void;
   humanFileSize(size: number): string;
   removeFile(index: number): void;
-  dropFile(e: DragEvent): void;
+  reorderFilesOnDrop(e: DragEvent): void;
   dragEnterFile(e: DragEvent): void;
   dragStartFile(e: DragEvent): void;
   loadFilePreview(file: File): string | null;
   revokePreviewUrls(): void;
+  handleFileDrop(e: DragEvent): void;
 }
 
 Alpine.store(Stores.CreateModelForm, {
@@ -153,9 +163,6 @@ Alpine.store(Stores.CreateModelForm, {
         consent: this.consent,
         file_type: TrainingModelFormClass.file_type,
       });
-      console.log("Model Data:", modelData);
-      console.log("Files Data:", this.files);
-      console.log("Zip Data:", this.zip);
 
       // Create and upload to S3
       await DAL.Complete.S3UploadTrainingModel.saveToS3(modelData, this.zip);
@@ -188,15 +195,13 @@ Alpine.store(Stores.CreateModelForm, {
     );
 
     if (newFiles.length < input.files.length) {
-      Alpine.store("toast").error(
-        `Skipped ${input.files.length - newFiles.length} duplicate files`
-      );
+      Alpine.store("toast").warn(`Skipped ${input.files.length - newFiles.length} duplicate files`);
     }
 
     if (newFiles.length) {
       this.files = newFiles; // Replace existing files
     } else if (input.files.length) {
-      Alpine.store("toast").error("All selected files are duplicates");
+      Alpine.store("toast").warn("All selected files are duplicates");
     }
   },
 
@@ -241,7 +246,7 @@ Alpine.store(Stores.CreateModelForm, {
     this.files.splice(index, 1);
   },
 
-  dropFile(this: CreateModelFormStore, e: DragEvent): void {
+  reorderFilesOnDrop(this: CreateModelFormStore, e: DragEvent): void {
     e.preventDefault();
     if (this.fileDragging !== null && this.fileDropping !== null) {
       const removed = this.files.splice(this.fileDragging, 1);
@@ -284,6 +289,54 @@ Alpine.store(Stores.CreateModelForm, {
     this.fileDropping = null;
     this.revokePreviewUrls();
   },
+  handleFileDrop(this: CreateModelFormStore, e: DragEvent): void {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (e.dataTransfer?.files && e.dataTransfer.files.length > 0) {
+      const droppedFiles = Array.from(e.dataTransfer.files);
+
+      // Filter for allowed types
+      const imageFiles = droppedFiles.filter(
+        (file) => file.type === "image/png" || file.type === "image/jpeg"
+      );
+
+      if (imageFiles.length < droppedFiles.length) {
+        Alpine.store(Stores.Toast).error(
+          `Skipped ${droppedFiles.length - imageFiles.length} non-image files.`
+        );
+      }
+
+      // Check for duplicates against existing files
+      const newFiles = imageFiles.filter(
+        (newFile) =>
+          !this.files.some(
+            (existingFile) =>
+              existingFile.name === newFile.name &&
+              existingFile.size === newFile.size &&
+              existingFile.lastModified === newFile.lastModified
+          )
+      );
+
+      if (newFiles.length < imageFiles.length) {
+        Alpine.store(Stores.Toast).warn(
+          `Skipped ${imageFiles.length - newFiles.length} duplicate files`
+        );
+      }
+
+      // Check if there are actually new files to add
+      if (newFiles.length > 0) {
+        const originalLength = this.files.length;
+        this.files = [...this.files, ...newFiles];
+      } else if (imageFiles.length > 0) {
+        Alpine.store(Stores.Toast).warn("All dropped files are duplicates or not images.");
+      }
+    }
+
+    // Reset dragging state
+    this.fileDragging = null;
+    this.fileDropping = null;
+  },
 });
 
 // Define the structure of the store's state and methods
@@ -309,9 +362,7 @@ Alpine.store(Stores.ImageGenForm, {
   isLoading: false,
   selectedModelId: "",
 
-  init() {
-    console.log("ImageGenForm store initialized");
-  },
+  init() {},
   reset(this: ImageGenFormStore): void {
     (this.advancedOptionsOpen = false), (this.isLoading = false);
   },

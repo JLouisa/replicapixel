@@ -26,12 +26,14 @@ pub mod routes {
     pub struct Home;
     impl Home {
         pub const BASE: &'static str = "/";
+        pub const BASE2: &'static str = "/home2";
     }
 }
 
 pub fn routes() -> Routes {
     Routes::new()
         .add(routes::Home::BASE, get(render_home))
+        .add(routes::Home::BASE2, get(render_home2))
         .layer(CookieConsentLayer::new())
 }
 
@@ -43,4 +45,14 @@ pub async fn render_home(
 ) -> Result<impl IntoResponse> {
     let is_home = true;
     views::home::home(v, &website, is_home, &cc_cookie)
+}
+
+#[debug_handler]
+pub async fn render_home2(
+    ExtractConsentState(cc_cookie): ExtractConsentState,
+    Extension(website): Extension<Website>,
+    ViewEngine(v): ViewEngine<TeraView>,
+) -> Result<impl IntoResponse> {
+    let is_home = true;
+    views::home::home2(v, &website, is_home, &cc_cookie)
 }

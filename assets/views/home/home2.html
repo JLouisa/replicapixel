@@ -1,0 +1,2116 @@
+{% extends "base.html" %} {% block title %}ReplicaPixel | Homepage {% endblock title %} {% block
+content %}
+<div class="bg-[#191e24] h-[7606px] relative overflow-hidden">
+  {#
+  <div
+    class="rounded-[50%] w-[407.01px] h-[407.01px] absolute left-[1087.59px] top-[6772.53px]"
+    style="
+      background: linear-gradient(180deg, rgba(255, 123, 202, 1) 0%, rgba(96, 93, 255, 1) 100%);
+      transform-origin: 0 0;
+      transform: rotate(136.069deg) scale(1, 1);
+      filter: blur(127.58px);
+    "
+  ></div>
+  <div
+    class="rounded-[50%] w-[297.81px] h-[297.81px] absolute left-[1077.85px] top-[7043.51px]"
+    style="
+      background: linear-gradient(
+        180deg,
+        rgba(242, 47, 176, 1) 0%,
+        rgba(96, 93, 255, 1) 100%,
+        rgba(112, 97, 163, 1) 100%
+      );
+      transform-origin: 0 0;
+      transform: rotate(113.869deg) scale(1, 1);
+      filter: blur(63.79px);
+    "
+  ></div>
+  <div
+    class="rounded-[50%] w-[407.01px] h-[407.01px] absolute left-[1087.2px] top-[583.11px]"
+    style="
+      background: linear-gradient(180deg, rgba(244, 48, 152, 1) 0%, rgba(96, 93, 255, 1) 100%);
+      transform-origin: 0 0;
+      transform: rotate(138.178deg) scale(1, 1);
+      filter: blur(127.58px);
+    "
+  ></div>
+  <div
+    class="rounded-[50%] w-[297.81px] h-[297.81px] absolute left-[1040.12px] top-[584.03px]"
+    style="
+      background: linear-gradient(
+        180deg,
+        rgba(242, 47, 176, 1) 0%,
+        rgba(96, 93, 255, 1) 100%,
+        rgba(112, 97, 163, 1) 100%
+      );
+      transform-origin: 0 0;
+      transform: rotate(113.869deg) scale(1, 1);
+      filter: blur(63.79px);
+    "
+  ></div>
+  #}
+  <!-- Header -->
+  {% include "home/sections/navbar.html" %}
+
+  <!-- Hero -->
+  {% include "home/sections/hero.html" %} {# {% include "home/sections/businesses.html" %} #}
+  <div
+    class="bg-[rgba(255,255,255,0.03)] pt-6 pb-6 flex flex-col gap-8 items-center justify-start w-[1600px] absolute left-0 top-[1079px]"
+  >
+    <div
+      class="text-gray-black-200 text-center font-['BricolageGrotesque-Regular',_sans-serif] text-lg leading-[160%] font-normal relative self-stretch"
+    >
+      Helping creators &amp; businesses everywhere work easier
+    </div>
+    <div class="flex flex-row gap-[60px] items-center justify-start shrink-0 relative">
+      <div class="p-[2.78px] shrink-0 w-[127.84px] h-[44.74px] relative overflow-hidden">
+        <svg
+          class="w-[95%] h-[80.56%] absolute right-[2.5%] left-[2.5%] bottom-[9.72%] top-[9.72%] overflow-visible"
+          width="122"
+          height="37"
+          viewBox="0 0 122 37"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M33.7104 23.7745C31.7357 23.7745 29.8855 22.9384 28.2043 21.5774L28.6135 19.6561L28.6313 19.5849C28.996 17.539 30.1523 14.1055 33.7104 14.1055C36.379 14.1055 38.5494 16.2759 38.5494 18.9444C38.5405 21.6041 36.3701 23.7745 33.7104 23.7745ZM33.7104 9.20421C29.165 9.20421 25.6425 12.1574 24.2104 17.0142C22.0221 13.7319 20.3676 9.7913 19.3981 6.47339H14.5057V19.2024C14.5057 21.7109 12.4598 23.7567 9.95136 23.7567C7.44292 23.7567 5.39703 21.7109 5.39703 19.2024V6.47339H0.504672V19.2024C0.486881 24.415 4.72989 28.6936 9.94247 28.6936C15.155 28.6936 19.3981 24.415 19.3981 19.2024V17.0676C20.3498 19.0512 21.5151 21.0526 22.9294 22.8316L19.9318 36.9216H24.9398L27.1102 26.7011C29.0138 27.9197 31.202 28.6847 33.7104 28.6847C39.0742 28.6847 43.4418 24.2905 43.4418 18.9267C43.4418 13.5718 39.0742 9.20421 33.7104 9.20421Z"
+            fill="white"
+            fill-opacity="0.8"
+          />
+          <path
+            d="M58.3753 9.75545L61.533 22.4845L65.0111 9.75545H69.1562L63.8102 28.1507H59.6651L56.3827 15.3416L53.1093 28.1418H48.9641L43.6181 9.74656H47.7633L51.2413 22.4756L54.3991 9.74656H58.3753V9.75545ZM79.0744 9.20395C73.6928 9.20395 69.3341 13.5715 69.3341 18.9442C69.3341 24.3258 73.7017 28.6844 79.0744 28.6844C84.456 28.6844 88.8235 24.3258 88.8235 18.9442C88.8235 13.5626 84.456 9.20395 79.0744 9.20395ZM79.0744 24.6816C75.9077 24.6816 73.3459 22.1198 73.3459 18.9531C73.3459 15.7864 75.9166 13.2246 79.0744 13.2246C82.2411 13.2246 84.8029 15.7864 84.8029 18.9531C84.8029 22.1109 82.2411 24.6816 79.0744 24.6816ZM100.663 13.8739C97.8788 13.8739 95.6283 16.1333 95.6283 18.9086V28.1418H91.4565V9.75545H95.6283V12.5841C95.6283 12.5841 97.4073 9.74656 101.063 9.74656H102.344V13.8739H100.663ZM114.664 18.2326C117.626 16.5603 119.636 13.3847 119.636 9.74656H115.465C115.465 12.8154 112.974 15.3061 109.905 15.3061H109.345V0.878052H105.173V28.1418H109.345V19.4779H109.843C110.252 19.4779 110.786 19.7448 111.026 20.0739L116.95 28.1418H121.949L114.664 18.2326Z"
+            fill="white"
+            fill-opacity="0.8"
+          />
+        </svg>
+      </div>
+      <svg
+        class="shrink-0 w-[141.73px] h-[40.49px] relative overflow-visible"
+        width="142"
+        height="42"
+        viewBox="0 0 142 42"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M32.9772 4.02695C33.5137 4.02457 34.0455 4.1317 34.5421 4.34236C35.0387 4.55302 35.4904 4.86303 35.8715 5.2547C36.2526 5.64642 36.5555 6.11211 36.763 6.62522C36.9705 7.13833 37.0786 7.68879 37.081 8.24523V33.5637C37.0774 34.1201 36.9682 34.6703 36.7596 35.183C36.551 35.6956 36.247 36.1606 35.8651 36.5514C35.4832 36.9423 35.0308 37.2513 34.5338 37.4608C34.0367 37.6703 33.5047 37.7761 32.9681 37.7726H8.30937C7.77205 37.7761 7.23932 37.67 6.74169 37.4599C6.24401 37.2498 5.79123 36.94 5.40919 36.5482C5.02715 36.1563 4.72339 35.6902 4.51534 35.1765C4.30724 34.6628 4.19894 34.1115 4.19656 33.5543V8.24523C4.19894 7.68802 4.30724 7.13676 4.51534 6.62306C4.72339 6.10932 5.02715 5.64323 5.40919 5.25137C5.79123 4.85956 6.24401 4.54974 6.74169 4.33966C7.23932 4.12954 7.77205 4.02331 8.30937 4.02695H32.9772ZM9.63032 27.669L9.5687 27.6721C9.28083 27.6949 9.01339 27.8348 8.82459 28.0613C8.73294 28.1732 8.66351 28.3028 8.62028 28.4426C8.57704 28.5824 8.56084 28.7296 8.57258 28.876C8.58437 29.0222 8.62383 29.1647 8.6888 29.2952C8.75377 29.4256 8.84291 29.5415 8.95116 29.6361C9.1229 29.7861 13.1634 33.2825 20.6207 33.2825C28.078 33.2825 32.1456 29.7673 32.2902 29.6173L32.2993 29.6267C32.5125 29.4332 32.6436 29.1603 32.6638 28.8671C32.6842 28.574 32.5921 28.2844 32.4077 28.0613C32.2161 27.8363 31.9474 27.6977 31.6587 27.675C31.3701 27.6522 31.0842 27.7471 30.862 27.9395C30.8258 27.9676 27.165 31.0422 20.6116 31.0422C14.0582 31.0422 10.4245 27.9863 10.3612 27.9395C10.1415 27.7453 9.85657 27.6492 9.5687 27.6721L9.63032 27.669ZM117.221 14.6562C120.688 14.6562 122.187 17.0441 122.187 20.8783C122.187 24.7627 120.671 27.1003 117.221 27.1003C113.706 27.1003 112.237 24.7627 112.237 20.8783C112.237 17.1116 113.721 14.6562 117.221 14.6562ZM20.6568 8.51704C20.3668 8.51704 20.0886 8.63654 19.8834 8.84927C19.6783 9.06196 19.5631 9.35046 19.5631 9.65129V25.9616C19.5631 26.2624 19.6783 26.5509 19.8834 26.7636C20.0886 26.9763 20.3668 27.0958 20.6568 27.0958C20.9469 27.0958 21.2251 26.9763 21.4302 26.7636C21.6353 26.5509 21.7506 26.2624 21.7506 25.9616V9.65129C21.7506 9.35046 21.6353 9.06196 21.4302 8.84927C21.2251 8.63654 20.9469 8.51704 20.6568 8.51704ZM105.578 14.6562C106.852 14.6562 107.836 14.9594 108.577 15.615C109.222 16.1528 109.69 16.9102 109.964 17.9697C110.109 18.5246 109.738 19.0796 109.126 19.1974C108.545 19.2981 108.078 18.9114 107.9 18.3565C107.707 17.8187 107.448 17.4319 107.142 17.162C106.723 16.7752 106.207 16.607 105.529 16.607C104.804 16.607 104.175 16.8256 103.707 17.313C103.03 18.019 102.739 19.281 102.739 20.8783C102.739 22.4595 103.014 23.7204 103.723 24.4264C104.191 24.9138 104.804 25.1323 105.513 25.1323C106.255 25.1323 106.819 24.9309 107.287 24.4767C107.528 24.241 107.739 23.9389 107.884 23.5854C108.094 23.0637 108.529 22.677 109.093 22.8119C109.657 22.9469 110.013 23.5179 109.835 24.0729C109.544 24.9973 109.045 25.7376 108.368 26.2422C107.626 26.7971 106.707 27.0831 105.546 27.0831C104.063 27.0831 103.127 26.6289 102.417 25.9905C101.208 24.8634 100.659 23.098 100.659 20.8783C100.659 18.6414 101.191 16.8931 102.385 15.7832C103.127 15.1105 104.126 14.6562 105.578 14.6562ZM90.6476 14.8401L90.711 14.8416H94.5323C97.1613 14.8416 98.2574 16.6242 98.2574 18.44C98.2574 20.1424 97.3226 21.4061 95.7137 21.7685L95.6284 21.7867L97.6441 25.5191C97.9186 26.0065 97.7409 26.6289 97.1766 26.9321C96.6453 27.2092 96.0684 27.0127 95.7845 26.5571L95.758 26.5122L93.5164 22.1906H91.3882L91.4044 25.8565C91.4044 26.4286 90.9855 26.8989 90.3884 26.8989C89.8261 26.8989 89.4154 26.4565 89.3903 25.9098L89.3891 25.8565V16.17C89.3891 15.3395 89.811 14.8581 90.5857 14.8405L90.6476 14.8401ZM56.4931 14.8405C57.509 14.8405 57.9279 15.4126 58.3315 16.2535L60.3306 20.3405L62.0399 24.3096L61.9918 20.5087L61.9756 15.9182C61.9756 15.3461 62.3945 14.8759 62.9915 14.8759C63.5706 14.8748 63.99 15.3451 63.99 15.9172V24.9984C63.99 26.2261 63.3614 26.916 62.3616 26.916H62.2815C61.3304 26.916 60.8782 26.344 60.4755 25.503L58.4436 21.3828L56.6375 17.1287L56.6861 21.2489L56.7023 25.8394C56.7023 26.4115 56.2834 26.8817 55.6863 26.8817C55.1059 26.8817 54.687 26.4104 54.687 25.8394V16.7581C54.687 15.6311 55.3156 14.8405 56.4125 14.8405H56.4931ZM49.9613 14.8748C50.5417 14.8748 50.9611 15.3461 50.9611 15.9172V25.8555C50.9611 26.4275 50.5417 26.8978 49.9451 26.8978C49.3647 26.8978 48.9453 26.4264 48.9453 25.8555V15.9172C48.9453 15.3451 49.3647 14.8748 49.9613 14.8748ZM136.055 14.8759C137.183 14.8759 137.812 15.5818 137.812 16.8438L137.829 25.8394C137.829 26.4115 137.409 26.8817 136.813 26.8817C136.232 26.8817 135.813 26.4104 135.813 25.8394V21.3325L135.862 16.9434L134.458 21.4L133.04 25.789C132.798 26.5625 132.298 26.8657 131.669 26.8657C131.008 26.8657 130.524 26.5464 130.266 25.773L128.815 21.4011L127.476 17.012L127.524 21.3336V25.8404C127.524 26.4125 127.105 26.8828 126.508 26.8828C125.928 26.8828 125.509 26.4115 125.509 25.8404V16.8438C125.509 15.599 126.154 14.8759 127.283 14.8759C128.347 14.8759 128.944 15.464 129.282 16.5406L130.765 21.1311L131.668 24.2592L132.587 21.1311L134.071 16.5406C134.41 15.464 134.99 14.8759 136.055 14.8759ZM74.5685 14.8759C75.0841 14.8759 75.5035 15.2797 75.5035 15.8678C75.5035 16.4399 75.0841 16.8427 74.5685 16.8427H72.0691V25.8394C72.0691 26.4115 71.6502 26.8817 71.0531 26.8817C70.4732 26.8817 70.0538 26.4104 70.0538 25.8394V16.8427H67.5544C67.0388 16.8427 66.6199 16.4389 66.6199 15.8507C66.6199 15.2786 67.0388 14.8759 67.5544 14.8759H74.5685ZM79.4544 14.8416H85.2595C85.7752 14.8416 86.194 15.2615 86.194 15.8336C86.194 16.4057 85.7752 16.8084 85.2595 16.8084H80.1311V19.7009H84.6625C85.1628 19.7009 85.5655 20.0876 85.5655 20.6426C85.5655 21.1975 85.1628 21.5842 84.6625 21.5842H80.1311V24.9138H85.2595C85.7752 24.9138 86.194 25.3338 86.194 25.9058C86.194 26.4779 85.7752 26.8807 85.2595 26.8807H79.4058C78.5676 26.8817 78.1005 26.3943 78.132 25.503V16.17C78.132 15.2958 78.5995 14.8084 79.4544 14.8416ZM15.2062 9.1357C14.9152 9.12036 14.63 9.22515 14.4133 9.42713C14.1964 9.62915 14.0656 9.91194 14.0492 10.2137V25.2117C14.0492 25.5125 14.1644 25.801 14.3696 26.0137C14.5747 26.2264 14.8529 26.3459 15.143 26.3459C15.433 26.3459 15.7112 26.2264 15.9164 26.0137C16.1214 25.801 16.2367 25.5125 16.2367 25.2117V10.2137C16.2237 9.93372 16.1112 9.66866 15.921 9.4696C15.7307 9.27055 15.4761 9.15159 15.2062 9.1357ZM26.0803 9.07946C25.7902 9.07946 25.5121 9.19897 25.3069 9.4117C25.1018 9.62438 24.9866 9.91288 24.9866 10.2137V25.2117C24.9866 25.5125 25.1018 25.801 25.3069 26.0137C25.5121 26.2264 25.7902 26.3459 26.0803 26.3459C26.3704 26.3459 26.6486 26.2264 26.8537 26.0137C27.0588 25.801 27.174 25.5125 27.174 25.2117V10.2137C27.174 9.91288 27.0588 9.62438 26.8537 9.4117C26.6486 9.19897 26.3704 9.07946 26.0803 9.07946ZM117.204 16.6242C115.317 16.6242 114.318 18.0201 114.318 20.8783C114.318 23.7375 115.285 25.1323 117.204 25.1323C119.107 25.1323 120.123 23.7364 120.123 20.8783C120.123 18.019 119.123 16.6242 117.204 16.6242ZM31.5761 11.3292C31.286 11.3292 31.0078 11.4487 30.8027 11.6614C30.5976 11.8741 30.4824 12.1626 30.4824 12.4634V22.5964C30.4824 22.8972 30.5976 23.1857 30.8027 23.3984C31.0078 23.6111 31.286 23.7306 31.5761 23.7306C31.8662 23.7306 32.1444 23.6111 32.3495 23.3984C32.5546 23.1857 32.6698 22.8972 32.6698 22.5964V12.4634C32.6698 12.1626 32.5546 11.8741 32.3495 11.6614C32.1444 11.4487 31.8662 11.3292 31.5761 11.3292ZM9.71948 11.3854C9.42841 11.3701 9.14329 11.4749 8.9265 11.6768C8.70968 11.8789 8.57879 12.1616 8.56246 12.4634V22.5777C8.56246 22.8785 8.67769 23.167 8.88281 23.3797C9.08794 23.5924 9.36614 23.7119 9.65622 23.7119C9.94629 23.7119 10.2245 23.5924 10.4296 23.3797C10.6347 23.167 10.7499 22.8785 10.7499 22.5777V12.4634C10.737 12.1834 10.6245 11.9184 10.4342 11.7193C10.2439 11.5202 9.98931 11.4013 9.71948 11.3854ZM94.5634 16.8074H91.3868V20.2891H94.5796C95.6603 20.2891 96.2246 19.5659 96.2246 18.5397C96.2246 17.5134 95.6275 16.8074 94.5634 16.8074Z"
+          fill="white"
+          fill-opacity="0.8"
+        />
+      </svg>
+      <div class="p-[2.78px] shrink-0 w-[163.27px] h-[34.99px] relative overflow-hidden">
+        <img
+          class="h-[auto] absolute left-[1.54px] top-[2.92px] overflow-visible"
+          src="group1.svg"
+        />
+      </div>
+      <img
+        class="shrink-0 w-[127.84px] h-[44.74px] relative overflow-visible"
+        src="other-company3.svg"
+      />
+      <img
+        class="shrink-0 w-[160.49px] h-[35.66px] relative overflow-visible"
+        src="other-company4.svg"
+      />
+      <img
+        class="shrink-0 w-[163.27px] h-[34.99px] relative overflow-visible"
+        src="other-company5.svg"
+      />
+      <img
+        class="shrink-0 w-[157.71px] h-[36.4px] relative overflow-visible"
+        src="other-company6.svg"
+      />
+      <div class="p-[2.78px] shrink-0 w-[119.5px] h-[47.8px] relative overflow-hidden">
+        <img
+          class="h-[auto] absolute left-[2.99px] top-[5.09px] overflow-visible"
+          src="group2.svg"
+        />
+      </div>
+      <div class="p-[2.78px] shrink-0 w-[141.73px] h-[40.49px] relative overflow-hidden">
+        <img
+          class="w-[92.92%] h-[83.33%] absolute right-[3.54%] left-[3.54%] bottom-[8.33%] top-[8.33%] overflow-visible"
+          src="group3.svg"
+        />
+      </div>
+    </div>
+  </div>
+
+  {# {% include "home/sections/gallery.html" %} #}
+  <div
+    class="pr-[200px] pl-[200px] flex flex-col gap-12 items-center justify-center w-[1600px] absolute left-[50%] top-[2535.8px]"
+    style="translate: -50%"
+  >
+    <div class="flex flex-col gap-3 items-center justify-center self-stretch shrink-0 relative">
+      <div
+        class="rounded-[99px] pt-1 pr-4 pb-1 pl-2.5 flex flex-row gap-2 items-center justify-start shrink-0 relative"
+      >
+        <img class="shrink-0 w-[17px] h-4 relative overflow-visible" src="icon-container2.svg" />
+        {% include "partials/svg/triple_stars.html" %}
+        <div
+          class="text-w text-center font-['Inter-Regular',_sans-serif] text-sm leading-none font-normal relative flex items-center justify-center"
+        >
+          Ai Studio
+        </div>
+      </div>
+      <div class="flex flex-col gap-4 items-center justify-center self-stretch shrink-0 relative">
+        <div
+          class="text-w text-center font-['BricolageGrotesque-Medium',_sans-serif] text-5xl leading-[110%] font-medium relative w-[1062px]"
+        >
+          The Ultimate AI Photo Studio
+        </div>
+        <div
+          class="text-[#f8fdfe] text-center font-['Inter-Regular',_sans-serif] text-lg leading-[140%] font-normal relative"
+        >
+          Flawless, studio-quality AI photos every time.
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-col gap-0 items-center justify-start self-stretch shrink-0 relative">
+      <div class="flex flex-row gap-6 items-center justify-start shrink-0 relative">
+        <div class="flex flex-col gap-[22px] items-start justify-start shrink-0 relative">
+          <div
+            class="rounded-2xl flex flex-col gap-6 items-start justify-center shrink-0 w-[280px] h-[247px] relative overflow-hidden"
+          >
+            <img
+              class="rounded-lg self-stretch flex-1 relative"
+              style="object-fit: cover"
+              src="../../static/images/gallery_small.png"
+            />
+          </div>
+          <div
+            class="rounded-2xl flex flex-col gap-6 items-start justify-center shrink-0 w-[280px] h-[430px] relative overflow-hidden"
+          >
+            <img
+              class="rounded-lg self-stretch shrink-0 h-[430px] relative"
+              style="object-fit: cover"
+              src="../../static/images/gallery_big.png"
+            />
+          </div>
+          <div
+            class="rounded-2xl flex flex-col gap-6 items-start justify-center shrink-0 w-[280px] h-[247px] relative overflow-hidden"
+          >
+            <img
+              class="rounded-lg self-stretch flex-1 relative"
+              style="object-fit: cover"
+              src="../../static/images/gallery_small.png"
+            />
+          </div>
+          <div
+            class="rounded-2xl flex flex-col gap-6 items-start justify-center shrink-0 w-[280px] h-[520px] relative overflow-hidden"
+          >
+            <img
+              class="rounded-lg self-stretch shrink-0 h-[520px] relative"
+              style="object-fit: cover"
+              src="../../static/images/gallery_big.png"
+            />
+          </div>
+        </div>
+        <div class="flex flex-col gap-[22px] items-start justify-start shrink-0 relative">
+          <div
+            class="rounded-2xl flex flex-col gap-6 items-start justify-center shrink-0 w-[280px] h-[400px] relative overflow-hidden"
+          >
+            <img
+              class="rounded-lg self-stretch flex-1 relative"
+              style="object-fit: cover"
+              src="../../static/images/gallery_big.png"
+            />
+          </div>
+          <div
+            class="rounded-2xl flex flex-col gap-6 items-start justify-center shrink-0 w-[280px] h-[247px] relative overflow-hidden"
+          >
+            <img
+              class="rounded-lg self-stretch flex-1 relative"
+              style="object-fit: cover"
+              src="../../static/images/gallery_small.png"
+            />
+          </div>
+          <div
+            class="rounded-2xl flex flex-col gap-6 items-start justify-center shrink-0 w-[280px] h-[400px] relative overflow-hidden"
+          >
+            <img
+              class="rounded-lg self-stretch shrink-0 h-[430px] relative"
+              style="object-fit: cover"
+              src="../../static/images/gallery_big.png"
+            />
+          </div>
+          <div
+            class="rounded-2xl flex flex-col gap-6 items-start justify-center shrink-0 w-[280px] h-[247px] relative overflow-hidden"
+          >
+            <img
+              class="rounded-lg self-stretch flex-1 relative"
+              style="object-fit: cover"
+              src="../../static/images/gallery_small.png"
+            />
+          </div>
+        </div>
+        <div class="flex flex-col gap-[22px] items-start justify-start shrink-0 relative">
+          <div
+            class="rounded-2xl flex flex-col gap-6 items-start justify-center shrink-0 w-[280px] h-[247px] relative overflow-hidden"
+          >
+            <img
+              class="rounded-lg self-stretch flex-1 relative"
+              style="object-fit: cover"
+              src="../../static/images/gallery_small.png"
+            />
+          </div>
+          <div
+            class="rounded-2xl flex flex-col gap-6 items-start justify-center shrink-0 w-[280px] h-[430px] relative overflow-hidden"
+          >
+            <img
+              class="rounded-lg self-stretch flex-1 relative"
+              style="object-fit: cover"
+              src="../../static/images/gallery_big.png"
+            />
+          </div>
+          <div
+            class="rounded-2xl flex flex-col gap-6 items-start justify-center shrink-0 w-[280px] h-[247px] relative overflow-hidden"
+          >
+            <img
+              class="rounded-lg self-stretch flex-1 relative"
+              style="object-fit: cover"
+              src="../../static/images/gallery_small.png"
+            />
+          </div>
+          <div
+            class="rounded-2xl flex flex-col gap-6 items-start justify-center shrink-0 w-[280px] h-[520px] relative overflow-hidden"
+          >
+            <img
+              class="rounded-lg self-stretch flex-1 relative"
+              style="object-fit: cover"
+              src="../../static/images/gallery_big.png"
+            />
+          </div>
+        </div>
+        <div class="flex flex-col gap-[22px] items-start justify-start shrink-0 relative">
+          <div
+            class="rounded-2xl flex flex-col gap-6 items-start justify-center shrink-0 w-[280px] h-[400px] relative overflow-hidden"
+          >
+            <img
+              class="rounded-lg self-stretch flex-1 relative"
+              style="object-fit: cover"
+              src="../../static/images/gallery_big.png"
+            />
+          </div>
+          <div
+            class="rounded-2xl flex flex-col gap-6 items-start justify-center shrink-0 w-[280px] h-[247px] relative overflow-hidden"
+          >
+            <img
+              class="rounded-lg self-stretch flex-1 relative"
+              style="object-fit: cover"
+              src="../../static/images/gallery_small.png"
+            />
+          </div>
+          <div
+            class="rounded-2xl flex flex-col gap-6 items-start justify-center shrink-0 w-[280px] h-[400px] relative overflow-hidden"
+          >
+            <img
+              class="rounded-lg self-stretch shrink-0 h-[430px] relative"
+              style="object-fit: cover"
+              src="../../static/images/gallery_big.png"
+            />
+          </div>
+          <div
+            class="rounded-2xl flex flex-col gap-6 items-start justify-center shrink-0 w-[280px] h-[247px] relative overflow-hidden"
+          >
+            <img
+              class="rounded-lg self-stretch flex-1 relative"
+              style="object-fit: cover"
+              src="../../static/images/gallery_small.png"
+            />
+          </div>
+        </div>
+        <div class="flex flex-col gap-[22px] items-start justify-start shrink-0 relative">
+          <div
+            class="rounded-2xl flex flex-col gap-6 items-start justify-center shrink-0 w-[280px] h-[247px] relative overflow-hidden"
+          >
+            <img
+              class="rounded-lg self-stretch flex-1 relative"
+              style="object-fit: cover"
+              src="../../static/images/gallery_small.png"
+            />
+          </div>
+          <div
+            class="rounded-2xl flex flex-col gap-6 items-start justify-center shrink-0 w-[280px] h-[430px] relative overflow-hidden"
+          >
+            <img
+              class="rounded-lg self-stretch flex-1 relative"
+              style="object-fit: cover"
+              src="../../static/images/gallery_big.png"
+            />
+          </div>
+          <div
+            class="rounded-2xl flex flex-col gap-6 items-start justify-center shrink-0 w-[280px] h-[247px] relative overflow-hidden"
+          >
+            <img
+              class="rounded-lg self-stretch flex-1 relative"
+              style="object-fit: cover"
+              src="../../static/images/gallery_small.png"
+            />
+          </div>
+          <div
+            class="rounded-2xl flex flex-col gap-6 items-start justify-center shrink-0 w-[280px] h-[520px] relative overflow-hidden"
+          >
+            <img
+              class="rounded-lg self-stretch flex-1 relative"
+              style="object-fit: cover"
+              src="../../static/images/gallery_big.png"
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="shrink-0 w-[1609px] h-[789px] absolute left-[50%] bottom-[-898.84px]"
+        style="
+          background: linear-gradient(
+            179.62deg,
+            rgba(25, 30, 36, 1) 15.26377648115158%,
+            rgba(9, 9, 11, 0) 51.08548402786255%
+          );
+          translate: -50%;
+          transform-origin: 0 0;
+          transform: rotate(0deg) scale(1, -1);
+        "
+      ></div>
+    </div>
+  </div>
+
+  <div
+    class="rounded-[50%] w-[407.01px] h-[407.01px] absolute left-[1534.51px] top-[1541.11px]"
+    style="
+      background: linear-gradient(180deg, rgba(255, 123, 202, 1) 0%, rgba(96, 93, 255, 1) 100%);
+      transform-origin: 0 0;
+      transform: rotate(138.178deg) scale(1, 1);
+      filter: blur(127.58px);
+    "
+  ></div>
+  <div
+    class="rounded-[50%] w-[297.81px] h-[297.81px] absolute left-[1487.43px] top-[1542.03px]"
+    style="
+      background: linear-gradient(
+        180deg,
+        rgba(244, 48, 152, 1) 0%,
+        rgba(96, 93, 255, 1) 100%,
+        rgba(112, 97, 163, 1) 100%
+      );
+      transform-origin: 0 0;
+      transform: rotate(113.869deg) scale(1, 1);
+      filter: blur(63.79px);
+    "
+  ></div>
+  <div
+    class="rounded-[50%] w-[407.01px] h-[407.01px] absolute left-[1032.52px] top-[2299.11px]"
+    style="
+      background: linear-gradient(180deg, rgba(255, 123, 202, 1) 0%, rgba(96, 93, 255, 1) 100%);
+      transform-origin: 0 0;
+      transform: rotate(138.178deg) scale(1, 1);
+      filter: blur(127.58px);
+    "
+  ></div>
+  <div
+    class="rounded-[50%] w-[297.81px] h-[297.81px] absolute left-[985.44px] top-[2300.03px]"
+    style="
+      background: linear-gradient(
+        180deg,
+        rgba(244, 48, 152, 1) 0%,
+        rgba(96, 93, 255, 1) 100%,
+        rgba(112, 97, 163, 1) 100%
+      );
+      transform-origin: 0 0;
+      transform: rotate(113.869deg) scale(1, 1);
+      filter: blur(63.79px);
+    "
+  ></div>
+
+  {# {% include "home/sections/pro_head_shot.html" %} #}
+  <div
+    class="flex flex-row gap-12 items-center justify-center w-[1200px] h-[372px] absolute left-[50%] top-[1335.8px]"
+    style="translate: -50%"
+  >
+    <div class="flex flex-col gap-3 items-start justify-start flex-1 relative">
+      <div
+        class="rounded-[99px] pt-1 pr-4 pb-1 pl-2.5 flex flex-row gap-2 items-center justify-start shrink-0 relative"
+      >
+        <img class="shrink-0 w-[17px] h-4 relative overflow-visible" src="icon-container3.svg" />
+        <div
+          class="text-w text-center font-['Inter-Regular',_sans-serif] text-sm leading-none font-normal relative flex items-center justify-center"
+        >
+          AI-Portraits
+        </div>
+      </div>
+      <div class="flex flex-col gap-8 items-start justify-start self-stretch shrink-0 relative">
+        <div class="flex flex-col gap-4 items-start justify-start shrink-0 relative">
+          <div
+            class="text-w text-left font-['BricolageGrotesque-Medium',_sans-serif] text-5xl leading-[120%] font-medium relative w-[432px]"
+          >
+            AI-Powered Pro Headshots
+          </div>
+          <div
+            class="text-[#f8fdfe] text-left font-['Inter-Regular',_sans-serif] text-lg leading-[160%] font-normal relative w-[568px]"
+          >
+            Upload a selfie. Get 8 studio-quality portraits in 60 seconds.
+          </div>
+        </div>
+        <div
+          class="bg-p rounded-[50px] pt-4 pr-6 pb-4 pl-8 flex flex-row gap-4 items-center justify-center shrink-0 h-14 relative"
+        >
+          <div
+            class="text-w text-center font-['Inter-Medium',_sans-serif] text-base leading-none font-medium relative flex items-center justify-center"
+            style="letter-spacing: -0.01em"
+          >
+            Create My Pro Portrait Now
+          </div>
+          <img class="shrink-0 w-[17px] h-4 relative overflow-visible" src="icon-container4.svg" />
+        </div>
+      </div>
+    </div>
+    <img
+      class="rounded-xl self-stretch flex-1 relative"
+      style="object-fit: cover"
+      src="image-310.png"
+    />
+    <div
+      class="bg-2nd-button rounded-[99px] pt-2 pr-3 pb-2 pl-3 flex flex-row gap-0 items-center justify-center shrink-0 absolute left-[939px] top-[324px]"
+    >
+      <div
+        class="text-[#edf1fe] text-center font-['Poppins-Regular',_sans-serif] text-base leading-none font-normal relative flex items-center justify-center"
+      >
+        After
+      </div>
+    </div>
+    <div
+      class="bg-[rgba(0,0,0,0.40)] rounded-tl-xl rounded-bl-xl shrink-0 w-72 h-[372px] absolute left-[624px] top-0"
+    ></div>
+    <img
+      class="shrink-0 w-[86.2px] h-20 absolute left-[875px] top-[150px] overflow-visible"
+      style="aspect-ratio: 86.2/80"
+      src="svg-xml-base-64-phn-2-zy-bjb-g-fzcz-0-ia-w-5-sa-w-5-l-lw-jsb-2-nr-i-gxn-om-fua-w-1-hd-g-ut-w-3-no-y-wtl-xz-jz-x-2-vhc-2-uta-w-5-fa-w-5-ma-w-5-pd-g-vd-ig-fic-29-sd-x-rl-ih-rvc-c-00-mi-ugb-g-vmd-c-00-nc-ugdy-0-y-ns-ige-g-1-sbn-m-9-imh-0-d-ha-6-ly-93-d-3-cudz-mub-3-jn-lz-iw-md-avc-3-zn-ii-b-4-b-ww-6-c-3-bh-y-2-u-9-in-by-zx-nlcn-zl-i-10.svg"
+    />
+    <div
+      class="bg-[rgba(255,255,255,0.20)] rounded-[99px] pt-2 pr-3 pb-2 pl-3 flex flex-row gap-0 items-center justify-center shrink-0 absolute left-[809px] top-[323.67px]"
+      style="transform-origin: 0 0; transform: rotate(0deg) scale(1, 1)"
+    >
+      <div
+        class="text-[#edf1fe] text-center font-['Poppins-Regular',_sans-serif] text-base leading-none font-normal relative flex items-center justify-center"
+      >
+        Before
+      </div>
+    </div>
+  </div>
+
+  {# {% include "home/sections/instant_styles.html" %} #}
+  <div
+    class="pr-[200px] pl-[200px] flex flex-col gap-12 items-center justify-center w-[1600px] absolute left-[50%] top-[1827.8px]"
+    style="translate: -50%"
+  >
+    <div class="flex flex-col gap-3 items-center justify-center self-stretch shrink-0 relative">
+      <div
+        class="rounded-[99px] pt-1 pr-4 pb-1 pl-2.5 flex flex-row gap-2 items-center justify-start shrink-0 relative"
+      >
+        <img
+          class="shrink-0 w-[17px] h-4 relative overflow-visible"
+          src="../../static/images/image2.png"
+        />
+        <div
+          class="text-w text-center font-['Inter-Regular',_sans-serif] text-sm leading-none font-normal relative flex items-center justify-center"
+        >
+          Features
+        </div>
+      </div>
+      <div class="flex flex-col gap-4 items-center justify-center self-stretch shrink-0 relative">
+        <div
+          class="text-w text-center font-['BricolageGrotesque-Medium',_sans-serif] text-5xl leading-[110%] font-medium relative w-[1062px]"
+        >
+          Instant Style AI Portraits
+        </div>
+        <div
+          class="text-[#f8fdfe] text-center font-['Inter-Regular',_sans-serif] text-lg leading-[140%] font-normal relative w-[770px]"
+        >
+          Upload once. Get 8 pro-grade portraits in your perfect style.
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-row gap-6 items-center justify-start self-stretch shrink-0 relative">
+      <div
+        class="bg-[rgba(255,255,255,0.05)] rounded-2xl border-solid border-[rgba(255,255,255,0.13)] border p-6 flex flex-col gap-6 items-start justify-center flex-1 relative overflow-hidden"
+      >
+        <div class="flex flex-col gap-6 items-start justify-start self-stretch shrink-0 relative">
+          <div class="flex flex-col gap-3 items-start justify-start self-stretch shrink-0 relative">
+            <div
+              class="text-[#ffffff] text-left font-['BricolageGrotesque-SemiBold',_sans-serif] text-2xl leading-none font-semibold relative w-[333px]"
+            >
+              Corporate Ready
+            </div>
+            <div
+              class="text-background-disabled-0 text-left font-['Inter-Regular',_sans-serif] text-base leading-[160%] font-normal relative self-stretch"
+            >
+              Flawless suits, ideal lighting – LinkedIn-perfect in seconds.
+            </div>
+          </div>
+        </div>
+        <div
+          class="flex flex-row gap-0 items-center justify-start shrink-0 w-[336px] h-[250px] relative"
+        >
+          <img
+            class="rounded-tl-xl rounded-bl-xl self-stretch flex-1 relative"
+            style="
+              background: linear-gradient(to left, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2));
+              object-fit: cover;
+            "
+            src="image-311.png"
+          />
+          <img
+            class="rounded-tr-xl rounded-br-xl self-stretch flex-1 relative"
+            style="object-fit: cover"
+            src="image-330.png"
+          />
+        </div>
+      </div>
+      <div
+        class="bg-[rgba(255,255,255,0.05)] rounded-2xl border-solid border-[rgba(255,255,255,0.13)] border p-6 flex flex-col gap-6 items-start justify-center flex-1 relative overflow-hidden"
+      >
+        <div class="flex flex-col gap-6 items-start justify-start self-stretch shrink-0 relative">
+          <div class="flex flex-col gap-3 items-start justify-start self-stretch shrink-0 relative">
+            <div
+              class="text-[#ffffff] text-center font-['BricolageGrotesque-SemiBold',_sans-serif] text-2xl leading-none font-semibold relative"
+            >
+              Creative Edge
+            </div>
+            <div
+              class="text-background-disabled-0 text-left font-['Inter-Regular',_sans-serif] text-base leading-[160%] font-normal relative self-stretch"
+            >
+              Artist, influencer, or visionary – styled for your vibe.
+            </div>
+          </div>
+        </div>
+        <div
+          class="flex flex-row gap-0 items-center justify-start shrink-0 w-[336px] h-[250px] relative"
+        >
+          <img
+            class="rounded-tl-xl rounded-bl-xl self-stretch flex-1 relative"
+            style="
+              background: linear-gradient(to left, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2));
+              object-fit: cover;
+            "
+            src="image-312.png"
+          />
+          <img
+            class="rounded-tr-xl rounded-br-xl self-stretch flex-1 relative"
+            style="object-fit: cover"
+            src="image-331.png"
+          />
+        </div>
+      </div>
+      <div
+        class="bg-[rgba(255,255,255,0.05)] rounded-2xl border-solid border-[rgba(255,255,255,0.13)] border p-6 flex flex-col gap-6 items-start justify-center flex-1 relative overflow-hidden"
+      >
+        <div class="flex flex-col gap-6 items-start justify-start self-stretch shrink-0 relative">
+          <div class="flex flex-col gap-3 items-start justify-start self-stretch shrink-0 relative">
+            <div
+              class="text-[#ffffff] text-center font-['BricolageGrotesque-SemiBold',_sans-serif] text-2xl leading-none font-semibold relative"
+            >
+              Fantasy Twist
+            </div>
+            <div
+              class="text-background-disabled-0 text-left font-['Inter-Regular',_sans-serif] text-base leading-[160%] font-normal relative self-stretch"
+            >
+              Game character, cyberpunk, or royal avatar – just for fun.
+            </div>
+          </div>
+        </div>
+        <div
+          class="flex flex-row gap-0 items-center justify-start shrink-0 w-[336px] h-[250px] relative"
+        >
+          <img
+            class="rounded-tl-xl rounded-bl-xl self-stretch flex-1 relative"
+            style="
+              background: linear-gradient(to left, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2));
+              object-fit: cover;
+            "
+            src="image-313.png"
+          />
+          <img
+            class="rounded-tr-xl rounded-br-xl self-stretch flex-1 relative"
+            style="object-fit: cover"
+            src="image-332.png"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="w-[100px] h-[100px] absolute left-[713px] top-[2601px] overflow-hidden"></div>
+  <div
+    class="rounded-[50%] w-[407.01px] h-[407.01px] absolute left-[1275.2px] top-[5333.11px]"
+    style="
+      background: linear-gradient(180deg, rgba(255, 123, 202, 1) 0%, rgba(96, 93, 255, 1) 100%);
+      transform-origin: 0 0;
+      transform: rotate(138.178deg) scale(1, 1);
+      filter: blur(127.58px);
+    "
+  ></div>
+  <div
+    class="rounded-[50%] w-[297.81px] h-[297.81px] absolute left-[1228.12px] top-[5334.03px]"
+    style="
+      background: linear-gradient(
+        180deg,
+        rgba(242, 47, 176, 1) 0%,
+        rgba(96, 93, 255, 1) 100%,
+        rgba(112, 97, 163, 1) 100%
+      );
+      transform-origin: 0 0;
+      transform: rotate(113.869deg) scale(1, 1);
+      filter: blur(63.79px);
+    "
+  ></div>
+
+  {# {% include "home/sections/payment_plans.html" %} #} {#
+  <div
+    class="pr-[200px] pb-6 pl-[200px] flex flex-col gap-12 items-center justify-center w-[1600px] absolute left-[50%] top-[4343.8px]"
+    style="translate: -50%"
+  >
+    <div class="flex flex-col gap-12 items-center justify-center shrink-0 w-[1200px] relative">
+      <div
+        class="flex flex-col gap-3 items-center justify-center self-stretch shrink-0 h-[139px] relative"
+      >
+        <div
+          class="rounded-[99px] pt-1 pr-4 pb-1 pl-2.5 flex flex-row gap-2 items-center justify-start shrink-0 relative"
+        >
+          <img class="shrink-0 w-[17px] h-4 relative overflow-visible" src="icon-container6.svg" />
+          <div
+            class="text-w text-center font-['Inter-Regular',_sans-serif] text-sm leading-none font-normal relative flex items-center justify-center"
+          >
+            Pricing
+          </div>
+        </div>
+        <div class="flex flex-col gap-4 items-center justify-center self-stretch shrink-0 relative">
+          <div
+            class="text-w text-center font-['BricolageGrotesque-Medium',_sans-serif] text-5xl leading-[110%] font-medium relative w-[1062px]"
+          >
+            Choose Your Plan
+          </div>
+          <div
+            class="text-[#f8fdfe] text-center font-['Inter-Regular',_sans-serif] text-lg leading-[140%] font-normal relative w-[770px]"
+          >
+            Select the perfect plan for your needs
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-row gap-6 items-center justify-center self-stretch shrink-0 relative">
+        <div
+          class="bg-[rgba(255,255,255,0.03)] rounded-xl border-solid border-[rgba(255,255,255,0.10)] border flex flex-col gap-0 items-center justify-center flex-1 relative overflow-hidden"
+        >
+          <div
+            class="pt-8 pr-6 pb-8 pl-6 flex flex-col gap-3 items-center justify-center self-stretch shrink-0 relative"
+          >
+            <div
+              class="flex flex-col gap-6 items-center justify-center shrink-0 w-[314px] relative"
+            >
+              <div
+                class="flex flex-col gap-2 items-start justify-start self-stretch shrink-0 relative"
+              >
+                <div
+                  class="text-w text-center font-['BricolageGrotesque-Medium',_sans-serif] text-[32px] leading-[120%] font-medium relative self-stretch"
+                >
+                  Basic
+                </div>
+                <div
+                  class="text-gray-black-50 text-center font-['Inter-Regular',_sans-serif] text-lg leading-[120%] font-normal relative self-stretch"
+                >
+                  For individuals &amp; testing
+                </div>
+              </div>
+              <div
+                class="text-w text-center font-['Inter-SemiBold',_sans-serif] text-5xl leading-[120%] font-semibold relative self-stretch"
+              >
+                $9.99
+              </div>
+            </div>
+          </div>
+          <div
+            class="border-solid border-[rgba(255,255,255,0.10)] border-t border-r-[0] border-b-[0] border-l-[0] shrink-0 w-[328px] h-0 relative"
+            style="margin-top: -1px"
+          ></div>
+          <div
+            class="pt-8 pr-6 pb-8 pl-6 flex flex-col gap-8 items-center justify-center self-stretch shrink-0 relative"
+          >
+            <div
+              class="flex flex-col gap-4 items-start justify-start self-stretch shrink-0 relative"
+            >
+              <div
+                class="flex flex-row gap-2 items-center justify-start self-stretch shrink-0 relative"
+              >
+                {% include 'partials/svg/check2.html' %}
+                <div
+                  class="text-w text-left font-['Inter-Medium',_sans-serif] text-lg leading-none font-medium relative flex items-center justify-start"
+                >
+                  50 AI Photo Credits
+                </div>
+              </div>
+              <div
+                class="flex flex-row gap-2 items-center justify-start self-stretch shrink-0 relative"
+              >
+                {% include 'partials/svg/check2.html' %}
+                <div
+                  class="text-w text-left font-['Inter-Medium',_sans-serif] text-lg leading-none font-medium relative flex items-center justify-start"
+                >
+                  1 AI Model
+                </div>
+              </div>
+              <div
+                class="flex flex-row gap-2 items-center justify-start self-stretch shrink-0 relative"
+              >
+                {% include 'partials/svg/check2.html' %}
+                <div
+                  class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-lg leading-none font-normal relative flex items-center justify-start"
+                >
+                  No Monthly Subscription
+                </div>
+              </div>
+              <div
+                class="flex flex-row gap-2 items-center justify-start self-stretch shrink-0 relative"
+              >
+                {% include 'partials/svg/check2.html' %}
+                <div
+                  class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-lg leading-none font-normal relative flex items-center justify-start"
+                >
+                  Use Any Photo Pack
+                </div>
+              </div>
+              <div
+                class="flex flex-row gap-2 items-center justify-start self-stretch shrink-0 relative"
+              >
+                {% include 'partials/svg/check2.html' %}
+                <div
+                  class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-lg leading-none font-normal relative flex items-center justify-start"
+                >
+                  No Watermarks
+                </div>
+              </div>
+              <div
+                class="flex flex-row gap-2 items-center justify-start self-stretch shrink-0 relative"
+              >
+                {% include 'partials/svg/check2.html' %}
+                <div
+                  class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-lg leading-none font-normal relative flex items-center justify-start"
+                >
+                  24/7 Support
+                </div>
+              </div>
+            </div>
+            <div
+              class="flex flex-col gap-4 items-start justify-start self-stretch shrink-0 relative"
+            >
+              <div
+                class="bg-p rounded-xl pt-4 pr-8 pb-4 pl-8 flex flex-row gap-3 items-center justify-center self-stretch shrink-0 relative"
+                style="box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.04)"
+              >
+                <div
+                  class="text-w text-center font-['Inter-Medium',_sans-serif] text-base leading-none font-medium relative flex items-center justify-center"
+                >
+                  Choose Basic
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="bg-[rgba(255,255,255,0.08)] rounded-xl border-[1.5px] border-solid flex flex-col gap-0 items-center justify-start shrink-0 w-[400px] relative overflow-hidden"
+          style="
+            border-image: linear-gradient(
+              113deg,
+              rgba(96, 93, 255, 1) 0%,
+              rgba(244, 48, 152, 1) 100%
+            );
+            border-image-slice: 1;
+          "
+        >
+          <div
+            class="pt-8 pr-6 pb-8 pl-6 flex flex-col gap-3 items-center justify-center self-stretch shrink-0 relative"
+          >
+            <div
+              class="flex flex-col gap-6 items-center justify-center shrink-0 w-[314px] relative"
+            >
+              <div
+                class="flex flex-col gap-2 items-start justify-start self-stretch shrink-0 relative"
+              >
+                <div
+                  class="text-w text-center font-['BricolageGrotesque-Medium',_sans-serif] text-[32px] leading-[120%] font-medium relative self-stretch"
+                >
+                  Premium
+                </div>
+                <div
+                  class="text-gray-black-50 text-center font-['Inter-Regular',_sans-serif] text-lg leading-[120%] font-normal relative self-stretch"
+                >
+                  For creators &amp; small teams
+                </div>
+              </div>
+              <div
+                class="text-w text-center font-['Inter-SemiBold',_sans-serif] text-5xl leading-[120%] font-semibold relative self-stretch"
+              >
+                $39.99
+              </div>
+            </div>
+          </div>
+          <div
+            class="border-solid border-[rgba(255,255,255,0.10)] border-t border-r-[0] border-b-[0] border-l-[0] shrink-0 w-[328px] h-0 relative"
+            style="margin-top: -1px"
+          ></div>
+          <div
+            class="pt-8 pr-6 pb-8 pl-6 flex flex-col gap-8 items-center justify-start self-stretch shrink-0 relative"
+          >
+            <div
+              class="flex flex-col gap-4 items-start justify-start self-stretch shrink-0 relative"
+            >
+              <div
+                class="flex flex-row gap-2 items-center justify-start self-stretch shrink-0 relative"
+              >
+                {% include 'partials/svg/check2.html' %}
+                <div
+                  class="text-w text-left font-['Inter-Medium',_sans-serif] text-lg leading-none font-medium relative flex items-center justify-start"
+                >
+                  250 AI Photo Credits
+                </div>
+              </div>
+              <div
+                class="flex flex-row gap-2 items-center justify-start self-stretch shrink-0 relative"
+              >
+                {% include 'partials/svg/check2.html' %}
+                <div
+                  class="text-w text-left font-['Inter-Medium',_sans-serif] text-lg leading-none font-medium relative flex items-center justify-start"
+                >
+                  7 AI Models
+                </div>
+              </div>
+              <div
+                class="flex flex-row gap-2 items-center justify-start self-stretch shrink-0 relative"
+              >
+                {% include 'partials/svg/check2.html' %}
+                <div
+                  class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-lg leading-none font-normal relative flex items-center justify-start"
+                >
+                  No Monthly Subscription
+                </div>
+              </div>
+              <div
+                class="flex flex-row gap-2 items-center justify-start self-stretch shrink-0 relative"
+              >
+                {% include 'partials/svg/check2.html' %}
+                <div
+                  class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-lg leading-none font-normal relative flex items-center justify-start"
+                >
+                  Use Any Photo Pack
+                </div>
+              </div>
+              <div
+                class="flex flex-row gap-2 items-center justify-start self-stretch shrink-0 relative"
+              >
+                {% include 'partials/svg/check2.html' %}
+                <div
+                  class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-lg leading-none font-normal relative flex items-center justify-start"
+                >
+                  No Watermarks
+                </div>
+              </div>
+              <div
+                class="flex flex-row gap-2 items-center justify-start self-stretch shrink-0 relative"
+              >
+                {% include 'partials/svg/check2.html' %}
+                <div
+                  class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-lg leading-none font-normal relative flex items-center justify-start"
+                >
+                  Priority processing
+                </div>
+              </div>
+              <div
+                class="flex flex-row gap-2 items-center justify-start self-stretch shrink-0 relative"
+              >
+                {% include 'partials/svg/check2.html' %}
+                <div
+                  class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-lg leading-none font-normal relative flex items-center justify-start"
+                >
+                  24/7 Support
+                </div>
+              </div>
+            </div>
+            <div
+              class="flex flex-col gap-4 items-start justify-start self-stretch shrink-0 relative"
+            >
+              <div
+                class="bg-2nd-button rounded-xl pt-4 pr-8 pb-4 pl-8 flex flex-row gap-3 items-center justify-center self-stretch shrink-0 relative"
+                style="box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.04)"
+              >
+                <div
+                  class="text-w text-center font-['Inter-Medium',_sans-serif] text-base leading-none font-medium relative flex items-center justify-center"
+                >
+                  Choose Premium
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="bg-[rgba(255,255,255,0.02)] rounded-xl border-solid border-[rgba(255,255,255,0.10)] border flex flex-col gap-0 items-center justify-center flex-1 relative overflow-hidden"
+        >
+          <div
+            class="pt-8 pr-6 pb-8 pl-6 flex flex-col gap-3 items-center justify-center self-stretch shrink-0 relative"
+          >
+            <div
+              class="flex flex-col gap-6 items-center justify-center shrink-0 w-[314px] relative"
+            >
+              <div
+                class="flex flex-col gap-2 items-start justify-start self-stretch shrink-0 relative"
+              >
+                <div
+                  class="text-w text-center font-['BricolageGrotesque-Medium',_sans-serif] text-[32px] leading-[120%] font-medium relative self-stretch"
+                >
+                  Enterprise
+                </div>
+                <div
+                  class="text-gray-black-50 text-center font-['Inter-Regular',_sans-serif] text-lg leading-[120%] font-normal relative self-stretch"
+                >
+                  For agencies &amp; heavy users
+                </div>
+              </div>
+              <div
+                class="text-w text-center font-['Inter-SemiBold',_sans-serif] text-5xl leading-[120%] font-semibold relative self-stretch"
+              >
+                $99.99
+              </div>
+            </div>
+          </div>
+          <div
+            class="border-solid border-[rgba(255,255,255,0.10)] border-t border-r-[0] border-b-[0] border-l-[0] shrink-0 w-[328px] h-0 relative"
+            style="margin-top: -1px"
+          ></div>
+          <div
+            class="pt-8 pr-6 pb-8 pl-6 flex flex-col gap-8 items-center justify-center self-stretch shrink-0 relative"
+          >
+            <div
+              class="flex flex-col gap-4 items-start justify-start self-stretch shrink-0 relative"
+            >
+              <div
+                class="flex flex-row gap-2 items-center justify-start self-stretch shrink-0 relative"
+              >
+                {% include 'partials/svg/check2.html' %}
+                <div
+                  class="text-w text-left font-['Inter-Medium',_sans-serif] text-lg leading-none font-medium relative flex items-center justify-start"
+                >
+                  1100 AI Photo Credits
+                </div>
+              </div>
+              <div
+                class="flex flex-row gap-2 items-center justify-start self-stretch shrink-0 relative"
+              >
+                {% include 'partials/svg/check2.html' %}
+                <div
+                  class="text-w text-left font-['Inter-Medium',_sans-serif] text-lg leading-none font-medium relative flex items-center justify-start"
+                >
+                  16 AI Models
+                </div>
+              </div>
+              <div
+                class="flex flex-row gap-2 items-center justify-start self-stretch shrink-0 relative"
+              >
+                {% include 'partials/svg/check2.html' %}
+                <div
+                  class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-lg leading-none font-normal relative flex items-center justify-start"
+                >
+                  No Monthly Subscription
+                </div>
+              </div>
+              <div
+                class="flex flex-row gap-2 items-center justify-start self-stretch shrink-0 relative"
+              >
+                {% include 'partials/svg/check2.html' %}
+                <div
+                  class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-lg leading-none font-normal relative flex items-center justify-start"
+                >
+                  Use Any Photo Pack
+                </div>
+              </div>
+              <div
+                class="flex flex-row gap-2 items-center justify-start self-stretch shrink-0 relative"
+              >
+                {% include 'partials/svg/check2.html' %}
+                <div
+                  class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-lg leading-none font-normal relative flex items-center justify-start"
+                >
+                  No Watermarks
+                </div>
+              </div>
+              <div
+                class="flex flex-row gap-2 items-center justify-start self-stretch shrink-0 relative"
+              >
+                {% include 'partials/svg/check2.html' %}
+                <div
+                  class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-lg leading-none font-normal relative flex items-center justify-start"
+                >
+                  24/7 Support
+                </div>
+              </div>
+            </div>
+            <div
+              class="flex flex-col gap-4 items-start justify-start self-stretch shrink-0 relative"
+            >
+              <div
+                class="bg-2nd-button rounded-xl pt-4 pr-8 pb-4 pl-8 flex flex-row gap-3 items-center justify-center self-stretch shrink-0 relative"
+                style="box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.04)"
+              >
+                <div
+                  class="text-w text-center font-['Inter-Medium',_sans-serif] text-base leading-none font-medium relative flex items-center justify-center"
+                >
+                  Choose Premium
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="rounded-[99px] pt-1.5 pr-4 pb-1.5 pl-4 flex flex-row gap-0 items-center justify-center shrink-0 absolute left-[629px] top-[175.2px]"
+        style="
+          background: var(
+            --gr1,
+            linear-gradient(90deg, rgba(96, 93, 255, 1) 0%, rgba(244, 48, 152, 1) 100%)
+          );
+        "
+      >
+        <div
+          class="text-[#ffffff] text-center font-['Inter-Medium',_sans-serif] text-xs leading-none font-medium relative flex items-center justify-center"
+        >
+          Most Popular
+        </div>
+      </div>
+    </div>
+  </div>
+  #} {# {% include "home/sections/creators_review.html" %} #} {#
+  <div
+    class="flex flex-col gap-12 items-center justify-start w-[2170px] absolute left-[50%] top-[5296.8px]"
+    style="translate: -50%"
+  >
+    <div class="flex flex-col gap-3 items-center justify-center self-stretch shrink-0 relative">
+      <div
+        class="rounded-[99px] pt-1 pr-4 pb-1 pl-2.5 flex flex-row gap-2 items-center justify-start shrink-0 relative"
+      >
+        <img class="shrink-0 w-[17px] h-4 relative overflow-visible" src="icon-container7.svg" />
+        <div
+          class="text-w text-center font-['Inter-Regular',_sans-serif] text-sm leading-none font-normal relative flex items-center justify-center"
+        >
+          Ai Studio
+        </div>
+      </div>
+      <div class="flex flex-col gap-4 items-center justify-center self-stretch shrink-0 relative">
+        <div
+          class="text-w text-center font-['BricolageGrotesque-Medium',_sans-serif] text-5xl leading-[120%] font-medium relative w-[1062px]"
+        >
+          What Creators Are Saying
+        </div>
+        <div
+          class="text-[#f8fdfe] text-center font-['Inter-Regular',_sans-serif] text-lg leading-[160%] font-normal relative"
+        >
+          Studio-quality AI photos with perfect likeness every time.
+        </div>
+      </div>
+    </div>
+    <div class="self-stretch shrink-0 h-[564px] relative">
+      <div class="flex flex-row gap-5 items-center justify-start absolute left-40 top-0">
+        <div
+          class="bg-[rgba(255,255,255,0.05)] rounded-2xl border-solid border-[rgba(255,255,255,0.13)] border p-6 flex flex-col gap-6 items-start justify-center shrink-0 w-[386px] relative"
+        >
+          <div class="flex flex-col gap-4 items-start justify-start shrink-0 relative">
+            <div class="flex gap-2">{% include "partials/svg/stars.html" %}</div>
+
+            <div class="flex flex-col gap-8 items-start justify-start shrink-0 relative">
+              <div
+                class="text-background-disabled-0 text-left font-['Inter-Medium',_sans-serif] text-base leading-[160%] font-medium relative w-[331px]"
+              >
+                AI hiring tools have completely transformed our process, enabling us to find top
+                candidates in a fraction of the time.
+              </div>
+              <div class="flex flex-row gap-3 items-center justify-start shrink-0 relative">
+                <div class="avatar">
+                  <div
+                    class="ring-primary ring-offset-base-100 w-24 rounded-full ring-2 ring-offset-2"
+                  >
+                    <img src="https://img.daisyui.com/images/profile/demo/spiderperson@192.webp" />
+                  </div>
+                </div>
+                <div class="flex flex-col gap-2 items-start justify-start shrink-0 relative">
+                  <div
+                    class="text-w text-left font-['Gellix-Medium',_sans-serif] text-xl leading-none font-medium relative"
+                  >
+                    Devon Lane
+                  </div>
+                  <div
+                    class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-base leading-none font-normal relative"
+                  >
+                    CEO
+                  </div>
+                </div>
+              </div>
+              <div class="shrink-0 w-6 h-6 absolute left-[307px] top-[139px] overflow-hidden">
+                {% include "partials/svg/quote.html" %}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="bg-[rgba(255,255,255,0.05)] rounded-2xl border-solid border-[rgba(255,255,255,0.13)] border p-6 flex flex-col gap-6 items-start justify-center shrink-0 w-[386px] h-[270px] relative"
+        >
+          <div class="flex flex-col gap-4 items-start justify-start shrink-0 relative">
+            <div class="flex gap-2">{% include "partials/svg/stars.html" %}</div>
+
+            <div class="flex flex-col gap-8 items-start justify-start shrink-0 relative">
+              <div
+                class="text-background-disabled-0 text-left font-['Inter-Medium',_sans-serif] text-base leading-[160%] font-medium relative w-[331px]"
+              >
+                Using AI in our recruitment has significantly improved efficiency, and allowed us to
+                source talent globally.
+              </div>
+              <div class="flex flex-row gap-3 items-center justify-start shrink-0 relative">
+                <div class="avatar">
+                  <div
+                    class="ring-primary ring-offset-base-100 w-24 rounded-full ring-2 ring-offset-2"
+                  >
+                    <img src="https://img.daisyui.com/images/profile/demo/spiderperson@192.webp" />
+                  </div>
+                </div>
+                <div class="flex flex-col gap-2 items-start justify-start shrink-0 relative">
+                  <div
+                    class="text-w text-left font-['Gellix-Medium',_sans-serif] text-xl leading-none font-medium relative"
+                  >
+                    Annette Black
+                  </div>
+                  <div
+                    class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-base leading-none font-normal relative"
+                  >
+                    CTO
+                  </div>
+                </div>
+              </div>
+              <div class="shrink-0 w-6 h-6 absolute left-[307px] top-[139px] overflow-hidden">
+                {% include "partials/svg/quote.html" %}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="bg-[rgba(255,255,255,0.05)] rounded-2xl border-solid border-[rgba(255,255,255,0.13)] border p-6 flex flex-col gap-6 items-start justify-center shrink-0 w-[386px] h-[270px] relative"
+        >
+          <div class="flex flex-col gap-4 items-start justify-start shrink-0 relative">
+            <div class="flex gap-2">{% include "partials/svg/stars.html" %}</div>
+
+            <div class="flex flex-col gap-8 items-start justify-start shrink-0 relative">
+              <div
+                class="text-background-disabled-0 text-left font-['Inter-Medium',_sans-serif] text-base leading-[160%] font-medium relative w-[331px]"
+              >
+                AI has helped us reduce hiring costs while ensuring we consistently hire the best
+                candidates.
+              </div>
+              <div class="flex flex-row gap-3 items-center justify-start shrink-0 relative">
+                <div class="avatar">
+                  <div
+                    class="ring-primary ring-offset-base-100 w-24 rounded-full ring-2 ring-offset-2"
+                  >
+                    <img src="https://img.daisyui.com/images/profile/demo/spiderperson@192.webp" />
+                  </div>
+                </div>
+                <div class="flex flex-col gap-2 items-start justify-start shrink-0 relative">
+                  <div
+                    class="text-w text-left font-['Gellix-Medium',_sans-serif] text-xl leading-none font-medium relative"
+                  >
+                    Eleanor Pena
+                  </div>
+                  <div
+                    class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-base leading-none font-normal relative"
+                  >
+                    CFO
+                  </div>
+                </div>
+              </div>
+              <div class="shrink-0 w-6 h-6 absolute left-[307px] top-[139px] overflow-hidden">
+                {% include "partials/svg/quote.html" %}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="bg-[rgba(255,255,255,0.05)] rounded-2xl border-solid border-[rgba(255,255,255,0.13)] border p-6 flex flex-col gap-6 items-start justify-center shrink-0 w-[386px] h-[270px] relative"
+        >
+          <div class="flex flex-col gap-4 items-start justify-start shrink-0 relative">
+            <div class="flex gap-2">{% include "partials/svg/stars.html" %}</div>
+
+            <div class="flex flex-col gap-8 items-start justify-start shrink-0 relative">
+              <div
+                class="text-background-disabled-0 text-left font-['Inter-Medium',_sans-serif] text-base leading-[160%] font-medium relative w-[331px]"
+              >
+                AI has helped us reduce hiring costs while ensuring we consistently hire the best
+                candidates.
+              </div>
+              <div class="flex flex-row gap-3 items-center justify-start shrink-0 relative">
+                <div class="avatar">
+                  <div
+                    class="ring-primary ring-offset-base-100 w-24 rounded-full ring-2 ring-offset-2"
+                  >
+                    <img src="https://img.daisyui.com/images/profile/demo/spiderperson@192.webp" />
+                  </div>
+                </div>
+                <div class="flex flex-col gap-2 items-start justify-start shrink-0 relative">
+                  <div
+                    class="text-w text-left font-['Gellix-Medium',_sans-serif] text-xl leading-none font-medium relative"
+                  >
+                    Eleanor Pena
+                  </div>
+                  <div
+                    class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-base leading-none font-normal relative"
+                  >
+                    CFO
+                  </div>
+                </div>
+              </div>
+              <div class="shrink-0 w-6 h-6 absolute left-[307px] top-[139px] overflow-hidden">
+                {% include "partials/svg/quote.html" %}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="bg-[rgba(255,255,255,0.05)] rounded-2xl border-solid border-[rgba(255,255,255,0.13)] border p-6 flex flex-col gap-6 items-start justify-center shrink-0 w-[386px] h-[270px] relative"
+        >
+          <div class="flex flex-col gap-4 items-start justify-start shrink-0 relative">
+            <div class="flex gap-2">{% include "partials/svg/stars.html" %}</div>
+
+            <div class="flex flex-col gap-8 items-start justify-start shrink-0 relative">
+              <div
+                class="text-background-disabled-0 text-left font-['Poppins-Medium',_sans-serif] text-base leading-[160%] font-medium relative w-[331px]"
+              >
+                AI has helped us reduce hiring costs while ensuring we consistently hire the best
+                candidates.
+              </div>
+              <div class="flex flex-row gap-3 items-center justify-start shrink-0 relative">
+                <div class="avatar">
+                  <div
+                    class="ring-primary ring-offset-base-100 w-24 rounded-full ring-2 ring-offset-2"
+                  >
+                    <img src="https://img.daisyui.com/images/profile/demo/spiderperson@192.webp" />
+                  </div>
+                </div>
+                <div class="flex flex-col gap-2 items-start justify-start shrink-0 relative">
+                  <div
+                    class="text-w text-left font-['Gellix-Medium',_sans-serif] text-xl leading-none font-medium relative"
+                  >
+                    Eleanor Pena
+                  </div>
+                  <div
+                    class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-base leading-none font-normal relative"
+                  >
+                    CFO
+                  </div>
+                </div>
+              </div>
+              <div class="shrink-0 w-6 h-6 absolute left-[307px] top-[139px] overflow-hidden">
+                {% include "partials/svg/quote.html" %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-row gap-5 items-center justify-start absolute left-0 top-[294px]">
+        <div
+          class="bg-[rgba(255,255,255,0.05)] rounded-2xl border-solid border-[rgba(255,255,255,0.13)] border p-6 flex flex-col gap-6 items-start justify-center shrink-0 w-[386px] relative"
+        >
+          <div class="flex flex-col gap-4 items-start justify-start shrink-0 relative">
+            <div class="flex gap-2">{% include "partials/svg/stars.html" %}</div>
+
+            <div class="flex flex-col gap-8 items-start justify-start shrink-0 relative">
+              <div
+                class="text-background-disabled-0 text-left font-['Poppins-Medium',_sans-serif] text-base leading-[160%] font-medium relative w-[331px]"
+              >
+                Using AI in our recruitment has significantly improved efficiency, minimized bias,
+                and allowed us to source talent globally.
+              </div>
+              <div class="flex flex-row gap-3 items-center justify-start shrink-0 relative">
+                <div class="avatar">
+                  <div
+                    class="ring-primary ring-offset-base-100 w-24 rounded-full ring-2 ring-offset-2"
+                  >
+                    <img src="https://img.daisyui.com/images/profile/demo/spiderperson@192.webp" />
+                  </div>
+                </div>
+                <div class="flex flex-col gap-2 items-start justify-start shrink-0 relative">
+                  <div
+                    class="text-w text-left font-['Gellix-Medium',_sans-serif] text-xl leading-none font-medium relative"
+                  >
+                    Jenny Wilson
+                  </div>
+                  <div
+                    class="text-gray-black-50 text-left font-['Inter-Medium',_sans-serif] text-lg leading-none font-medium relative"
+                  >
+                    Doctor
+                  </div>
+                </div>
+              </div>
+              <div class="shrink-0 w-6 h-6 absolute left-[307px] top-[139px] overflow-hidden">
+                {% include "partials/svg/quote.html" %}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="bg-[rgba(255,255,255,0.05)] rounded-2xl border-solid border-[rgba(255,255,255,0.13)] border p-6 flex flex-col gap-6 items-start justify-center shrink-0 w-[386px] h-[270px] relative"
+        >
+          <div class="flex flex-col gap-4 items-start justify-start shrink-0 relative">
+            <div class="flex gap-2">{% include "partials/svg/stars.html" %}</div>
+
+            <div class="flex flex-col gap-8 items-start justify-start shrink-0 relative">
+              <div
+                class="text-background-disabled-0 text-left font-['Inter-Medium',_sans-serif] text-base leading-[160%] font-medium relative w-[331px]"
+              >
+                AI has made our hiring process seamless and efficient, identifying the best
+                candidates quickly and accurately.
+              </div>
+              <div class="flex flex-row gap-3 items-center justify-start shrink-0 relative">
+                <div class="avatar">
+                  <div
+                    class="ring-primary ring-offset-base-100 w-24 rounded-full ring-2 ring-offset-2"
+                  >
+                    <img src="https://img.daisyui.com/images/profile/demo/spiderperson@192.webp" />
+                  </div>
+                </div>
+                <div class="flex flex-col gap-2 items-start justify-start shrink-0 relative">
+                  <div
+                    class="text-w text-left font-['Gellix-Medium',_sans-serif] text-xl leading-none font-medium relative"
+                  >
+                    Cameron Williamson
+                  </div>
+                  <div
+                    class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-base leading-none font-normal relative"
+                  >
+                    COO
+                  </div>
+                </div>
+              </div>
+              <div class="shrink-0 w-6 h-6 absolute left-[307px] top-[139px] overflow-hidden">
+                {% include "partials/svg/quote.html" %}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="bg-[rgba(255,255,255,0.05)] rounded-2xl border-solid border-[rgba(255,255,255,0.13)] border p-6 flex flex-col gap-6 items-start justify-center shrink-0 w-[386px] relative"
+        >
+          <div class="flex flex-col gap-4 items-start justify-start shrink-0 relative">
+            <div class="flex gap-2">{% include "partials/svg/stars.html" %}</div>
+
+            <div class="flex flex-col gap-8 items-start justify-start shrink-0 relative">
+              <div
+                class="text-background-disabled-0 text-left font-['Inter-Medium',_sans-serif] text-base leading-[160%] font-medium relative w-[331px]"
+              >
+                Using AI in our recruitment has significantly improved efficiency, minimized bias,
+                and allowed us to source talent globally.
+              </div>
+              <div class="flex flex-row gap-3 items-center justify-start shrink-0 relative">
+                <div class="avatar">
+                  <div
+                    class="ring-primary ring-offset-base-100 w-24 rounded-full ring-2 ring-offset-2"
+                  >
+                    <img src="https://img.daisyui.com/images/profile/demo/spiderperson@192.webp" />
+                  </div>
+                </div>
+                <div class="flex flex-col gap-2 items-start justify-start shrink-0 relative">
+                  <div
+                    class="text-w text-left font-['Gellix-Medium',_sans-serif] text-xl leading-none font-medium relative"
+                  >
+                    Kathryn Murphy
+                  </div>
+                  <div
+                    class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-base leading-none font-normal relative"
+                  >
+                    CEO
+                  </div>
+                </div>
+              </div>
+              <div class="shrink-0 w-6 h-6 absolute left-[307px] top-[139px] overflow-hidden">
+                {% include "partials/svg/quote.html" %}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="bg-[rgba(255,255,255,0.05)] rounded-2xl border-solid border-[rgba(255,255,255,0.13)] border p-6 flex flex-col gap-6 items-start justify-center shrink-0 w-[386px] relative"
+        >
+          <div class="flex flex-col gap-4 items-start justify-start shrink-0 relative">
+            <div class="flex gap-2">{% include "partials/svg/stars.html" %}</div>
+
+            <div class="flex flex-col gap-8 items-start justify-start shrink-0 relative">
+              <div
+                class="text-background-disabled-0 text-left font-['Inter-Medium',_sans-serif] text-base leading-[160%] font-medium relative w-[331px]"
+              >
+                Using AI in our recruitment has significantly improved efficiency, minimized bias,
+                and allowed us to source talent globally.
+              </div>
+              <div class="flex flex-row gap-3 items-center justify-start shrink-0 relative">
+                <div class="avatar">
+                  <div
+                    class="ring-primary ring-offset-base-100 w-24 rounded-full ring-2 ring-offset-2"
+                  >
+                    <img src="https://img.daisyui.com/images/profile/demo/spiderperson@192.webp" />
+                  </div>
+                </div>
+                <div class="flex flex-col gap-2 items-start justify-start shrink-0 relative">
+                  <div
+                    class="text-w text-left font-['Gellix-Medium',_sans-serif] text-xl leading-none font-medium relative"
+                  >
+                    Kathryn Murphy
+                  </div>
+                  <div
+                    class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-base leading-none font-normal relative"
+                  >
+                    CEO
+                  </div>
+                </div>
+              </div>
+              <div class="shrink-0 w-6 h-6 absolute left-[307px] top-[139px] overflow-hidden">
+                {% include "partials/svg/quote.html" %}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="bg-[rgba(255,255,255,0.05)] rounded-2xl border-solid border-[rgba(255,255,255,0.13)] border p-6 flex flex-col gap-6 items-start justify-center shrink-0 w-[386px] relative"
+        >
+          <div class="flex flex-col gap-4 items-start justify-start shrink-0 relative">
+            <div class="flex gap-2">{% include "partials/svg/stars.html" %}</div>
+
+            <div class="flex flex-col gap-8 items-start justify-start shrink-0 relative">
+              <div
+                class="text-background-disabled-0 text-left font-['Inter-Medium',_sans-serif] text-base leading-[160%] font-medium relative w-[331px]"
+              >
+                Using AI in our recruitment has significantly improved efficiency, minimized bias,
+                and allowed us to source talent globally.
+              </div>
+              <div class="flex flex-row gap-3 items-center justify-start shrink-0 relative">
+                <div class="avatar">
+                  <div
+                    class="ring-primary ring-offset-base-100 w-24 rounded-full ring-2 ring-offset-2"
+                  >
+                    <img src="https://img.daisyui.com/images/profile/demo/spiderperson@192.webp" />
+                  </div>
+                </div>
+                <div class="flex flex-col gap-2 items-start justify-start shrink-0 relative">
+                  <div
+                    class="text-w text-left font-['Gellix-Medium',_sans-serif] text-xl leading-none font-medium relative"
+                  >
+                    Kathryn Murphy
+                  </div>
+                  <div
+                    class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-base leading-none font-normal relative"
+                  >
+                    CEO
+                  </div>
+                </div>
+              </div>
+              <div class="shrink-0 w-6 h-6 absolute left-[307px] top-[139px] overflow-hidden">
+                {% include "partials/svg/quote.html" %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  #} {# {% include "home/sections/cta.html" %} #} {#
+  <div
+    class="bg-[rgba(0,0,0,0.29)] rounded-2xl pt-16 pr-[140px] pb-16 pl-[140px] flex flex-col gap-[39px] items-center justify-start w-[1200px] absolute left-[50%] top-[6167.8px] overflow-hidden"
+    style="translate: -50%"
+  >
+    <div class="shrink-0 w-[843.06px] h-[843.06px] static" style="opacity: 0.46">
+      <div
+        class="rounded-[50%] w-[637.24px] h-[637.24px] absolute left-[1049.85px] top-[275.87px]"
+        style="
+          background: linear-gradient(180deg, rgba(244, 48, 152, 1) 0%, rgba(96, 93, 255, 1) 100%);
+          transform-origin: 0 0;
+          transform: rotate(138.178deg) scale(1, 1);
+          filter: blur(199.75px);
+        "
+      ></div>
+      <div
+        class="rounded-[50%] w-[466.27px] h-[466.27px] absolute left-[976.14px] top-[277.3px]"
+        style="
+          background: linear-gradient(
+            180deg,
+            rgba(244, 48, 152, 1) 0%,
+            rgba(96, 93, 255, 1) 100%,
+            rgba(112, 97, 163, 1) 100%
+          );
+          transform-origin: 0 0;
+          transform: rotate(113.869deg) scale(1, 1);
+          filter: blur(99.87px);
+        "
+      ></div>
+    </div>
+    <div class="flex flex-col gap-8 items-center justify-start shrink-0 relative">
+      <div class="flex flex-col gap-3 items-center justify-start shrink-0 relative">
+        <div
+          class="rounded-[99px] pt-1 pr-4 pb-1 pl-2.5 flex flex-row gap-2 items-center justify-start shrink-0 relative"
+        >
+          <img class="shrink-0 w-[17px] h-4 relative overflow-visible" src="icon-container8.svg" />
+          <div
+            class="text-w text-center font-['Inter-Regular',_sans-serif] text-sm leading-none font-normal relative flex items-center justify-center"
+          >
+            Unleash Your Creativity with AI
+          </div>
+        </div>
+        <div class="flex flex-col gap-4 items-center justify-start shrink-0 relative">
+          <div
+            class="text-w text-center font-['BricolageGrotesque-Bold',_sans-serif] text-[32px] leading-10 font-bold relative"
+          >
+            Get Started with ReplicaPixeI
+          </div>
+          <div
+            class="text-gray-black-50 text-center font-['Inter-Regular',_sans-serif] text-base leading-[120%] font-normal relative w-[440px]"
+          >
+            Transform your selfies into stunning studio-quality photos in just a few clicks.
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-col gap-3 items-center justify-start shrink-0 relative">
+        <div
+          class="bg-2nd-button rounded-[50px] pt-[18px] pr-4 pb-[18px] pl-6 flex flex-row gap-4 items-center justify-center shrink-0 h-14 relative"
+        >
+          <div
+            class="text-w text-center font-['Inter-Medium',_sans-serif] text-base leading-none font-medium relative flex items-center justify-center"
+            style="letter-spacing: -0.01em"
+          >
+            Try Free for 7 Days
+          </div>
+          <img class="shrink-0 w-[17px] h-4 relative overflow-visible" src="icon-container9.svg" />
+        </div>
+        <div class="shrink-0 w-[896px] h-5 relative">
+          <img class="w-4 h-4 absolute left-[365px] top-[1.39px] overflow-visible" src="svg0.svg" />
+          <div
+            class="text-[#b0c4b4] text-center font-['Inter-Regular',_sans-serif] text-[12.25px] leading-5 font-normal absolute left-[calc(50%_-_67px)] top-0 w-[146.18px] h-5"
+          >
+            No credit card required
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="flex flex-col gap-4 items-start justify-start shrink-0 absolute left-[27.43px] top-[-164.95px]"
+      style="transform-origin: 0 0; transform: rotate(8.374deg) scale(1, 1)"
+    >
+      <div
+        class="flex flex-row gap-[7.93px] items-center justify-start shrink-0 w-[260px] relative"
+      >
+        <div
+          class="rounded-[3.96px] flex flex-col gap-[11.89px] items-start justify-center flex-1 h-[172.45px] relative overflow-hidden"
+        >
+          <img
+            class="rounded-[3.96px] shrink-0 w-[126.04px] h-[172.45px] relative"
+            style="object-fit: cover; aspect-ratio: 126.04/172.45"
+            src="image20.png"
+          />
+        </div>
+        <div
+          class="rounded-[3.96px] flex flex-col gap-[11.89px] items-start justify-center flex-1 h-[172.45px] relative overflow-hidden"
+        >
+          <img
+            class="rounded-[3.96px] shrink-0 w-[126.04px] h-[172.45px] relative"
+            style="object-fit: cover; aspect-ratio: 126.04/172.45"
+            src="image21.png"
+          />
+        </div>
+      </div>
+      <div
+        class="flex flex-row gap-[7.93px] items-center justify-start shrink-0 w-[260px] relative"
+      >
+        <div
+          class="rounded-[3.96px] flex flex-col gap-[11.89px] items-start justify-center flex-1 h-[172.45px] relative overflow-hidden"
+        >
+          <img
+            class="rounded-[3.96px] shrink-0 w-[126.04px] h-[172.45px] relative"
+            style="object-fit: cover; aspect-ratio: 126.04/172.45"
+            src="image22.png"
+          />
+        </div>
+        <div
+          class="rounded-[3.96px] flex flex-col gap-[11.89px] items-start justify-center flex-1 h-[172.45px] relative overflow-hidden"
+        >
+          <img
+            class="rounded-[3.96px] shrink-0 w-[126.04px] h-[172.45px] relative"
+            style="object-fit: cover; aspect-ratio: 126.04/172.45"
+            src="image23.png"
+          />
+        </div>
+      </div>
+      <div class="flex flex-row gap-4 items-center justify-start shrink-0 relative">
+        <div
+          class="rounded-lg flex flex-col gap-6 items-start justify-center shrink-0 w-[122px] h-[167px] relative overflow-hidden"
+          style="aspect-ratio: 122/167"
+        >
+          <img
+            class="rounded-lg self-stretch flex-1 relative"
+            style="object-fit: cover"
+            src="image24.png"
+          />
+        </div>
+        <div
+          class="rounded-lg flex flex-col gap-6 items-start justify-center shrink-0 w-[122px] h-[167px] relative overflow-hidden"
+          style="aspect-ratio: 122/167"
+        >
+          <img
+            class="rounded-lg self-stretch flex-1 relative"
+            style="object-fit: cover"
+            src="image25.png"
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      class="flex flex-col gap-4 items-start justify-start shrink-0 absolute left-[1003.38px] top-[-174.75px]"
+      style="transform-origin: 0 0; transform: rotate(7.701deg) scale(1, 1)"
+    >
+      <div class="flex flex-row gap-4 items-center justify-start shrink-0 relative">
+        <div
+          class="rounded-lg flex flex-col gap-6 items-start justify-center shrink-0 w-[122px] h-[167px] relative overflow-hidden"
+          style="aspect-ratio: 122/167"
+        >
+          <img
+            class="rounded-lg self-stretch flex-1 relative"
+            style="object-fit: cover"
+            src="image26.png"
+          />
+        </div>
+        <div
+          class="rounded-lg flex flex-col gap-6 items-start justify-center shrink-0 w-[122px] h-[167px] relative overflow-hidden"
+          style="aspect-ratio: 122/167"
+        >
+          <img
+            class="rounded-lg self-stretch flex-1 relative"
+            style="object-fit: cover"
+            src="image27.png"
+          />
+        </div>
+      </div>
+      <div
+        class="flex flex-row gap-[7.93px] items-center justify-start shrink-0 w-[260px] relative"
+      >
+        <div
+          class="rounded-[3.96px] flex flex-col gap-[11.89px] items-start justify-center flex-1 h-[172.45px] relative overflow-hidden"
+        >
+          <img
+            class="rounded-[3.96px] shrink-0 w-[126.04px] h-[172.45px] relative"
+            style="object-fit: cover; aspect-ratio: 126.04/172.45"
+            src="image28.png"
+          />
+        </div>
+        <div
+          class="rounded-[3.96px] flex flex-col gap-[11.89px] items-start justify-center flex-1 h-[172.45px] relative overflow-hidden"
+        >
+          <img
+            class="rounded-[3.96px] shrink-0 w-[126.04px] h-[172.45px] relative"
+            style="object-fit: cover; aspect-ratio: 126.04/172.45"
+            src="image29.png"
+          />
+        </div>
+      </div>
+      <div
+        class="flex flex-row gap-[7.93px] items-center justify-start shrink-0 w-[260px] relative"
+      >
+        <div
+          class="rounded-[3.96px] flex flex-col gap-[11.89px] items-start justify-center flex-1 h-[172.45px] relative overflow-hidden"
+        >
+          <img
+            class="rounded-[3.96px] shrink-0 w-[126.04px] h-[172.45px] relative"
+            style="object-fit: cover; aspect-ratio: 126.04/172.45"
+            src="image30.png"
+          />
+        </div>
+        <div
+          class="rounded-[3.96px] flex flex-col gap-[11.89px] items-start justify-center flex-1 h-[172.45px] relative overflow-hidden"
+        >
+          <img
+            class="rounded-[3.96px] shrink-0 w-[126.04px] h-[172.45px] relative"
+            style="object-fit: cover; aspect-ratio: 126.04/172.45"
+            src="image31.png"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+  #} {# {% include "home/sections/footer.html" %} #} {#
+  <div
+    class="flex flex-col gap-4 items-start justify-start w-[1600px] absolute left-[50%] top-[6665.8px]"
+    style="translate: -50%"
+  >
+    <div class="flex flex-col gap-12 items-center justify-start self-stretch shrink-0 relative">
+      <div class="flex flex-col gap-3 items-center justify-start self-stretch shrink-0 relative">
+        <div
+          class="text-center font-['BricolageGrotesque-SemiBold',_sans-serif] text-5xl leading-[120%] font-semibold relative self-stretch"
+        >
+          <span>
+            <span class="replica-pixe-i-creators-span">#</span>
+            <span class="replica-pixe-i-creators-span2"> ReplicaPixeICreators </span>
+          </span>
+        </div>
+      </div>
+      <div
+        class="flex flex-row gap-[13px] items-start justify-start self-stretch shrink-0 h-[348px] relative"
+      >
+        <div
+          class="rounded-lg flex flex-col gap-6 items-start justify-center self-stretch flex-1 relative overflow-hidden"
+        >
+          <img
+            class="rounded-lg self-stretch flex-1 relative"
+            style="object-fit: cover"
+            src="image32.png"
+          />
+        </div>
+        <div
+          class="rounded-lg flex flex-col gap-6 items-start justify-center self-stretch flex-1 relative overflow-hidden"
+        >
+          <img
+            class="rounded-lg self-stretch flex-1 relative"
+            style="object-fit: cover"
+            src="image33.png"
+          />
+        </div>
+        <div
+          class="rounded-lg flex flex-col gap-6 items-start justify-center self-stretch flex-1 relative overflow-hidden"
+        >
+          <img
+            class="rounded-lg self-stretch flex-1 relative"
+            style="object-fit: cover"
+            src="image34.png"
+          />
+        </div>
+        <div
+          class="rounded-lg flex flex-col gap-6 items-start justify-center self-stretch flex-1 relative overflow-hidden"
+        >
+          <img
+            class="rounded-lg self-stretch flex-1 relative"
+            style="object-fit: cover"
+            src="image35.png"
+          />
+        </div>
+        <div
+          class="rounded-lg flex flex-col gap-6 items-start justify-center self-stretch flex-1 relative overflow-hidden"
+        >
+          <img
+            class="rounded-lg self-stretch flex-1 relative"
+            style="object-fit: cover"
+            src="image36.png"
+          />
+        </div>
+        <div
+          class="rounded-lg flex flex-col gap-6 items-start justify-center self-stretch flex-1 relative overflow-hidden"
+        >
+          <img
+            class="rounded-lg self-stretch flex-1 relative"
+            style="object-fit: cover"
+            src="image37.png"
+          />
+        </div>
+        <div
+          class="bg-w rounded-[50px] pt-[18px] pr-4 pb-[18px] pl-6 flex flex-row gap-4 items-center justify-center shrink-0 h-14 absolute left-[50%] top-[146px]"
+          style="translate: -50%"
+        >
+          <div
+            class="text-center font-['-',_sans-serif] text-base leading-none font-normal relative flex items-center justify-center"
+            style="
+              background: linear-gradient(
+                90deg,
+                rgba(96, 93, 255, 1) 11.018333584070206%,
+                rgba(244, 48, 152, 1) 100%
+              );
+              background-clip: text;
+              -webkit-background-clip: text;
+              -webkit-text-fill-color: transparent;
+              letter-spacing: -0.01em;
+            "
+          >
+            <span>
+              <span class="label-4-span">Follow @</span>
+              <span class="label-4-span2">ReplicaPixeI</span>
+            </span>
+          </div>
+          <img class="shrink-0 w-[17px] h-4 relative overflow-visible" src="icon-container10.svg" />
+        </div>
+      </div>
+    </div>
+    <div
+      class="bg-[rgba(255,255,255,0.06)] pt-[88px] pr-[200px] pb-[88px] pl-[200px] flex flex-col gap-2.5 items-center justify-center self-stretch shrink-0 relative overflow-hidden"
+    >
+      <div
+        class="flex flex-col gap-[46px] items-center justify-start self-stretch shrink-0 relative"
+      >
+        <div class="flex flex-col gap-7 items-center justify-start self-stretch shrink-0 relative">
+          <div class="flex flex-row items-center justify-between self-stretch shrink-0 relative">
+            <div class="flex flex-row gap-[100px] items-start justify-start flex-1 relative">
+              <div class="flex flex-col gap-8 items-start justify-start shrink-0 relative">
+                <div class="flex flex-col gap-4 items-start justify-start shrink-0 relative">
+                  <div
+                    class="flex flex-row gap-[8.53px] items-center justify-center shrink-0 relative"
+                  >
+                    <img
+                      class="shrink-0 w-[26.67px] h-[32.08px] relative"
+                      style="object-fit: cover; aspect-ratio: 26.67/32.08"
+                      src="svelte-logo-svg-11.png"
+                    />
+                    <div
+                      class="text-w text-center font-['BricolageGrotesque-SemiBold',_sans-serif] text-[21.33333396911621px] leading-none font-semibold relative"
+                    >
+                      ReplicaPixeI
+                    </div>
+                  </div>
+                  <div
+                    class="text-gray-black-100 text-left font-['Inter-Regular',_sans-serif] text-base leading-[26px] font-normal relative w-[363px]"
+                  >
+                    Transform your images with AI-powered precision. No skills required, just
+                    stunning results.
+                  </div>
+                </div>
+                <div class="flex flex-row gap-5 items-center justify-start shrink-0 relative">
+                  <div
+                    class="rounded-[26px] border-solid border-[transparent] border flex flex-row gap-2.5 items-center justify-start flex-wrap content-center shrink-0 relative"
+                  >
+                    <div class="shrink-0 w-[18px] h-[18px] relative overflow-hidden">
+                      <img
+                        class="w-[84.62%] h-[87.5%] absolute right-[7.7%] left-[7.68%] bottom-[6.25%] top-[6.25%] overflow-visible"
+                        src="group14.svg"
+                      />
+                    </div>
+                  </div>
+                  <div
+                    class="rounded-[26px] border-solid border-[transparent] border flex flex-row gap-2.5 items-center justify-start flex-wrap content-center shrink-0 relative"
+                  >
+                    <div class="shrink-0 w-[18px] h-[18px] relative overflow-hidden">
+                      <img
+                        class="w-[100%] h-[81.25%] absolute right-[0%] left-[0%] bottom-[9.38%] top-[9.38%] overflow-visible"
+                        src="group15.svg"
+                      />
+                    </div>
+                  </div>
+                  <div
+                    class="rounded-[26px] border-solid border-[transparent] border flex flex-row gap-2.5 items-center justify-start flex-wrap content-center shrink-0 relative"
+                  >
+                    <div class="shrink-0 w-[18px] h-[18px] relative overflow-hidden">
+                      <img
+                        class="w-[100%] h-[99.83%] absolute right-[0%] left-[0%] bottom-[0.09%] top-[0.09%] overflow-visible"
+                        src="group16.svg"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="flex flex-row items-start justify-between flex-1 relative">
+                <div class="flex flex-col gap-4 items-start justify-start shrink-0 relative">
+                  <div
+                    class="text-w text-left font-['BricolageGrotesque-Bold',_sans-serif] text-[22px] font-bold relative self-stretch"
+                  >
+                    Company
+                  </div>
+                  <div
+                    class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-base leading-[120%] font-normal relative self-stretch"
+                  >
+                    Features
+                  </div>
+                  <div
+                    class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-base leading-[120%] font-normal relative self-stretch"
+                  >
+                    Studio
+                  </div>
+                </div>
+                <div class="flex flex-col gap-4 items-start justify-start shrink-0 relative">
+                  <div
+                    class="text-w text-left font-['BricolageGrotesque-Bold',_sans-serif] text-[22px] font-bold relative self-stretch"
+                  >
+                    Product
+                  </div>
+                  <div
+                    class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-base leading-[120%] font-normal relative self-stretch"
+                  >
+                    Pricing
+                  </div>
+                  <div
+                    class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-base leading-[120%] font-normal relative self-stretch"
+                  >
+                    Templates
+                  </div>
+                  <div
+                    class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-base leading-[120%] font-normal relative self-stretch"
+                  >
+                    API
+                  </div>
+                  <div
+                    class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-base leading-[120%] font-normal relative self-stretch"
+                  >
+                    Apps
+                  </div>
+                </div>
+                <div class="flex flex-col gap-4 items-start justify-start shrink-0 relative">
+                  <div
+                    class="text-w text-left font-['BricolageGrotesque-Bold',_sans-serif] text-[22px] font-bold relative self-stretch"
+                  >
+                    Resources
+                  </div>
+                  <div
+                    class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-base leading-[120%] font-normal relative self-stretch"
+                  >
+                    Documentation
+                  </div>
+                  <div
+                    class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-base leading-[120%] font-normal relative self-stretch"
+                  >
+                    Guides
+                  </div>
+                  <div
+                    class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-base leading-[120%] font-normal relative self-stretch"
+                  >
+                    Blog
+                  </div>
+                  <div
+                    class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-base leading-[120%] font-normal relative self-stretch"
+                  >
+                    Community
+                  </div>
+                  <div
+                    class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-base leading-[120%] font-normal relative self-stretch"
+                  >
+                    Support
+                  </div>
+                </div>
+                <div class="flex flex-col gap-4 items-start justify-start shrink-0 relative">
+                  <div
+                    class="text-w text-left font-['BricolageGrotesque-Bold',_sans-serif] text-[22px] font-bold relative self-stretch"
+                  >
+                    Legal
+                  </div>
+                  <div
+                    class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-base leading-[120%] font-normal relative self-stretch"
+                  >
+                    Privacy
+                  </div>
+                  <div
+                    class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-base leading-[120%] font-normal relative self-stretch"
+                  >
+                    Terms
+                  </div>
+                  <div
+                    class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-base leading-[120%] font-normal relative self-stretch"
+                  >
+                    Cookie Policy
+                  </div>
+                  <div
+                    class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-base leading-[120%] font-normal relative self-stretch"
+                  >
+                    GDPR
+                  </div>
+                  <div
+                    class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-base leading-[120%] font-normal relative self-stretch"
+                  >
+                    Licenses
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="border-solid border-[rgba(248,250,251,0.20)] border-t border-r-[0] border-b-[0] border-l-[0] self-stretch shrink-0 h-0 relative"
+            style="margin-top: -1px; transform-origin: 0 0; transform: rotate(0deg) scale(1, 1)"
+          ></div>
+        </div>
+        <div class="flex flex-row items-center justify-between self-stretch shrink-0 relative">
+          <div
+            class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-base leading-[120%] font-normal relative"
+          >
+            © 2025 ReplicaPixeI. All rights reserved.
+          </div>
+          <div class="flex flex-row gap-[38px] items-center justify-start shrink-0 relative">
+            <div
+              class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-base leading-[120%] font-normal relative"
+            >
+              Terms
+            </div>
+            <div
+              class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-base leading-[120%] font-normal relative"
+            >
+              Privacy
+            </div>
+            <div
+              class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-base leading-[120%] font-normal relative"
+            >
+              Cookies
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  #}
+</div>
+
+<div class="bg-[#191e24] relative overflow-hidden">
+  <!-- Header -->
+  {% include "home/sections/navbar.html" %}
+
+  <!-- Hero -->
+  {% include "home/sections/hero.html" %}
+
+  <!-- Businesses -->
+  {% include "home/sections/businesses.html" %}
+
+  <!-- Instant styles -->
+  {% include "home/sections/instant_styles.html" %}
+
+  <!-- Gallery -->
+  {% include "home/sections/gallery.html" %}
+
+  <!-- payment plans -->
+  {% include "home/sections/payment_plans.html" %}
+  <div class="flex flex-col items-center gap-12 w-full max-w-[2170px] mx-auto mt-24 mb-16">
+    <div class="flex flex-col items-center gap-3 w-full">
+      <div class="flex items-center gap-2 rounded-full px-4 py-1">
+        {% include "partials/svg/triple_stars.html" %}
+        <div class="text-w text-sm font-normal font-sans text-center">Ai Studio</div>
+      </div>
+
+      <div class="flex flex-col items-center gap-4 w-full">
+        <div class="text-w text-5xl font-medium leading-[120%] text-center font-brico w-[1062px]">
+          What Creators Are Saying
+        </div>
+        <div class="text-[#f8fdfe] text-lg font-normal leading-[160%] text-center font-sans">
+          Studio-quality AI photos with perfect likeness every time.
+        </div>
+      </div>
+    </div>
+
+    <div class="relative w-full h-[564px]">
+      <div class="flex gap-5 items-center mb-[30px] pl-40">
+        {% include "home/sections/creator_reviews.html/review_big.html" %}
+        <!-- review -->
+        {% include "home/sections/creator_reviews.html/review_small.html" %}
+        <!-- review -->
+        {% include "home/sections/creator_reviews.html/review_big.html" %}
+        <!-- review -->
+        {% include "home/sections/creator_reviews.html/review_small.html" %}
+        <!-- review -->
+        {% include "home/sections/creator_reviews.html/review_small.html" %}
+      </div>
+
+      <div class="flex gap-5 items-center">
+        {% include "home/sections/creator_reviews.html/review_big.html" %}
+        <!-- review -->
+        {% include "home/sections/creator_reviews.html/review_small.html" %}
+        <!-- review -->
+        {% include "home/sections/creator_reviews.html/review_big.html" %}
+        <!-- review -->
+        {% include "home/sections/creator_reviews.html/review_big.html" %}
+        <!-- review -->
+        {% include "home/sections/creator_reviews.html/review_small.html" %}
+      </div>
+    </div>
+  </div>
+
+  {% include "home/sections/footer.html" %} {% endblock content %}
+</div>

@@ -4,11 +4,10 @@ import type { Options } from "redaxios";
 import { PreSignUrlRequestClass, type PreSignUrlRequest } from "./type/presignedUrlRequest_type";
 import { ServerResponseClass, ServerResponseSchema, type ServerResponse } from "./type/response";
 import type { TrainingModelFormClass } from "./type/trainingModelForm";
-import type { ImageGenForm, ImageGenFormClass } from "./type/ImageGenForm";
+import type { ImageGenForm } from "./type/ImageGenForm";
 import Alpine from "alpinejs";
 
 const DEFAULT_BASE_URL = window.__APP_ENV__.apiBaseUrl;
-console.log("API Default Base URL: ", DEFAULT_BASE_URL);
 
 enum Api {
   Upload = "/api/models",

@@ -15,7 +15,10 @@ impl From<StripeClientError> for LocoError {
         tracing::error!(error.cause = ?err, "Stripe client error occurred");
 
         match err {
-            StripeClientError::StripeApi(_) => LocoError::InternalServerError,
+            StripeClientError::StripeApi(e) => LocoError::CustomError(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                ErrorDetail::new("Error", &e.to_string()),
+            ),
             StripeClientError::Database(_) => LocoError::InternalServerError,
             StripeClientError::DbModel(_) => LocoError::InternalServerError,
             StripeClientError::ParseId(parse_err) => LocoError::CustomError(
@@ -91,13 +94,17 @@ impl From<JoinError> for LocoError {
     fn from(err: JoinError) -> Self {
         tracing::error!(error.cause = ?err, "Checkout builder error occurred");
         match err {
-            JoinError::Database(_) => LocoError::CustomError(
+            JoinError::Database(e) => LocoError::CustomError(
                 StatusCode::INTERNAL_SERVER_ERROR,
-                ErrorDetail::new("Internal Server Error", "Internal Server Error DB"),
+                ErrorDetail::new("Internal Server Error", &e.to_string()),
             ),
             JoinError::UserNotFound(_) => LocoError::CustomError(
                 StatusCode::NOT_FOUND,
                 ErrorDetail::new("UserNotFound", "User Not Found"),
+            ),
+            JoinError::OrderNotFound(_) => LocoError::CustomError(
+                StatusCode::NOT_FOUND,
+                ErrorDetail::new("OrderNotFound", "Order Not Found"),
             ),
             JoinError::InvalidPidFormat(_) => LocoError::CustomError(
                 StatusCode::INTERNAL_SERVER_ERROR,

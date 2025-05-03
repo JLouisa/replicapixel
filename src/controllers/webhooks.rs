@@ -5,6 +5,7 @@ use crate::domain::website::Website;
 use crate::mailers::transaction::CheckoutMailer;
 use crate::models::_entities::sea_orm_active_enums::Status;
 use crate::models::{ImageModel, TrainingModelActiveModel, TrainingModelModel};
+use crate::service::aws::s3::{AwsS3, S3Key};
 use crate::service::fal_ai::fal_client::{FalAiClient, FluxApiWebhookResponse, StatusResponse};
 use crate::{
     service::stripe::stripe::StripeClient,
@@ -160,6 +161,7 @@ pub async fn fal_ai_image(
 pub async fn fal_ai_training(
     State(ctx): State<AppContext>,
     Extension(fal_ai_client): Extension<FalAiClient>,
+    Extension(s3_client): Extension<AwsS3>,
     Json(response): Json<FluxApiWebhookResponse>,
 ) -> Result<Response> {
     let train_model = TrainingModelModel::find_by_request_id(&ctx.db, &response.request_id).await?;
@@ -187,16 +189,22 @@ pub async fn fal_ai_training(
         StatusResponse::Error => {
             // If the status is Error, return the error payload
             // let error_payload = response.error();
-            train
-                .update_fal_ai_webhook_training(&ctx.db, None, Status::Failed)
+            let train = train
+                .update_fal_ai_training_webhook(&ctx.db, None, Status::Failed)
                 .await?;
+            s3_client
+                .remove_object_s3_key(&S3Key::new(&train.s3_key))
+                .await
+                .map_err(|_| {
+                    loco_rs::Error::Message("Error processing Result Request: 103".to_string())
+                })?;
             return Ok((StatusCode::OK).into_response());
         }
     };
 
     // If the status is OK, check if there's a payload
     train
-        .update_fal_ai_webhook_training(&ctx.db, Some(tensor_path_lora), Status::Completed)
+        .update_fal_ai_training_webhook(&ctx.db, Some(tensor_path_lora), Status::Completed)
         .await?;
 
     //Todo Send Email to client that their model is finished training

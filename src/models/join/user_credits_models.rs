@@ -33,6 +33,8 @@ pub enum JoinError {
     ImageNotFound(String),
     #[error("User not found for PID: {0}")]
     TrainingModelNotFound(i32),
+    #[error("Order not found for PID: {0}")]
+    OrderNotFound(String),
 }
 
 // Bugged

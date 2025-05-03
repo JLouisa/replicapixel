@@ -7,6 +7,10 @@
     <div
       x-ref="dnd"
       class="relative flex flex-col text-base-content/80 border border-gray-300 border-dashed rounded cursor-pointer"
+      @dragover.prevent="$el.classList.add('border-primary', 'ring-4', 'ring-primary', 'ring-inset'); $el.classList.remove('border-base-300')"
+      @dragleave="$el.classList.remove('border-primary', 'ring-4', 'ring-primary', 'ring-inset'); $el.classList.add('border-base-300')"
+      @drop.prevent="$store.createModelForm.handleFileDrop($event); $el.classList.remove('border-primary', 'ring-4', 'ring-primary', 'ring-inset'); $el.classList.add('border-base-300')"
+      @drop.prevent="$store.createModelForm.reorderFilesOnDrop($event); $el.classList.remove('border-primary', 'ring-4', 'ring-primary', 'ring-inset'); $el.classList.add('border-base-300')"
     >
       <input
         accept="image/png, image/jpeg"
@@ -14,13 +18,10 @@
         multiple
         class="absolute inset-0 z-50 w-full h-full p-0 m-0 outline-none opacity-0 cursor-pointer"
         @change="$store.createModelForm.addFiles($event)"
-        @dragover="$refs.dnd.classList.add('border-primary', 'ring-4', 'ring-primary', 'ring-inset'); $refs.dnd.classList.remove('border-base-300')"
-        @dragleave="$refs.dnd.classList.remove('border-primary', 'ring-4', 'ring-primary', 'ring-inset'); $refs.dnd.classList.add('border-base-300')"
-        @drop="$store.createModelForm.dropFile($event); $refs.dnd.classList.remove('border-primary', 'ring-4', 'ring-primary', 'ring-inset'); $refs.dnd.classList.add('border-base-300')"
         title=""
       />
       <div
-        class="cursor-pointer p-12 flex justify-center bg-base-100 border border-dashed border-base-300 rounded-xl hover:border-neutral"
+        class="cursor-pointer p-12 flex justify-center bg-base-100 border border-dashed border-base-300 rounded-xl hover:border-neutral pointer-events-none"
       >
         <div class="text-center pointer-events-none">
           {% include "partials/svg/dropzone.html" %}
@@ -46,7 +47,7 @@
     <template x-if="$store.createModelForm.files.length > 0">
       <div
         class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-4"
-        @drop.prevent="$store.createModelForm.dropFile($event)"
+        @drop.prevent="$store.createModelForm.reorderFilesOnDrop($event)"
         @dragover.prevent="$event.dataTransfer.dropEffect = 'move'"
       >
         <template x-for="(file, index) in $store.createModelForm.files" :key="index">

@@ -66,6 +66,10 @@ impl Model {
             .await?;
         user.ok_or_else(|| ModelError::EntityNotFound)
     }
+    pub async fn find_all(db: &impl ConnectionTrait) -> ModelResult<Vec<Self>> {
+        let plans = Entity::find().all(db).await?;
+        Ok(plans)
+    }
 }
 
 // implement your write-oriented logic here

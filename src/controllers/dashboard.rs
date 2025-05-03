@@ -4,7 +4,6 @@
 use crate::domain::features::FeatureViewList;
 use crate::domain::website::Website;
 use crate::middleware::cookie::{CookieConsentLayer, ExtractConsentState};
-use crate::models::_entities::sea_orm_active_enums::PlanNames;
 use crate::models::feature_request::FeatureRequestModelList;
 use crate::models::feature_vote::FeatureVoteModelList;
 use crate::models::images::ImagesModelList;
@@ -17,7 +16,7 @@ use crate::models::training_models::TrainingModelList;
 use crate::models::transactions::TransactionModelList;
 use crate::models::users::{RegisterParams, UserPid};
 use crate::models::{
-    FeatureRequestModel, FeatureVoteModel, ImageModel, OAuth2SessionModel, PackModel,
+    FeatureRequestModel, FeatureVoteModel, ImageModel, OAuth2SessionModel, PackModel, PlanModel,
     TrainingModelModel, TransactionModel, UserModel,
 };
 use crate::service::aws::s3::AwsS3;
@@ -29,6 +28,8 @@ use axum::Extension;
 use axum::{debug_handler, extract::State, response::IntoResponse};
 use loco_rs::prelude::*;
 use reqwest::StatusCode;
+
+use std::collections::HashMap;
 
 pub mod routes {
     use serde::{Deserialize, Serialize};
@@ -294,10 +295,19 @@ async fn is_oauth(db: &DatabaseConnection, user_id: i32) -> Result<bool> {
 //     let user_settings = UserSettingsModel::find_by_user_id(db, user_id).await?;
 //     Ok(user_settings)
 // }
-
 async fn load_transactions(db: &DatabaseConnection, user_id: i32) -> Result<TransactionModelList> {
     let list = TransactionModel::find_all_user_txn(db, user_id).await?;
     Ok(list)
+}
+async fn load_plans(db: &DatabaseConnection) -> Result<HashMap<i32, PlanModel>> {
+    let list = PlanModel::find_all(db).await?;
+    let mut map: HashMap<i32, PlanModel> = HashMap::new();
+
+    for item in list {
+        map.insert(item.id, item);
+    }
+
+    Ok(map)
 }
 
 // #[debug_handler]
@@ -342,7 +352,8 @@ pub async fn billing_dashboard(
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     let orders = load_transactions(&ctx.db, user.id).await?;
-    let orders_view = TransactionViewList::from_model(orders, PlanNames::Premium);
+    let plans = load_plans(&ctx.db).await?;
+    let orders_view = TransactionViewList::from_model(orders, plans);
     views::dashboard::billing_dashboard(
         v,
         &website,
@@ -362,7 +373,8 @@ pub async fn billing_partial_dashboard(
     let user_pid = UserPid::new(&auth.claims.pid);
     let user = load_user(&ctx.db, &user_pid).await?;
     let orders = load_transactions(&ctx.db, user.id).await?;
-    let orders_view = TransactionViewList::from_model(orders, PlanNames::Premium);
+    let plans = load_plans(&ctx.db).await?;
+    let orders_view = TransactionViewList::from_model(orders, plans);
     views::dashboard::billing_partial_dashboard(v, &website, user.into(), &orders_view)
 }
 

@@ -103,10 +103,12 @@ pub async fn upload_training(
     dbg!(&training_params);
 
     //3. Save Training Model
-    TrainingModelActiveModel::save(&ctx.db, &training_params).await?;
+    let training_model = TrainingModelActiveModel::save(&ctx.db, &training_params).await?;
+    dbg!(&training_model);
 
     //4. Create Pre-Signed URL
     let pre_sign_response = PresignedUrlSafe::from_request(pre_url_request, pre_url);
+
     Ok(handle_general_response(
         StatusCode::OK,
         Some(pre_sign_response),

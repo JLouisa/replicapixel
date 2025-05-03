@@ -7,21 +7,18 @@
       {% block title %}{{ website.name | default(value= "ReplicaPixel App") }}{% endblock title %}
     </title>
     <link rel="icon" type="image/png" href="/static/favicon.png" />
-    {#
-    <link href="/static/css/dropzone.min.css" rel="stylesheet" type="text/css" />
-    #}
     <link href="/static/css/output.css" rel="stylesheet" type="text/css" />
     <script src="/static/js/index.js" defer></script>
     <script src="/static/js/htmx/htmx.min.js"></script>
     <script src="/static/js/htmx/extensions/htmx-ext-form-json.js"></script>
+    {#
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <script src="https://unpkg.com/create-file-list"></script>
-    {% block stripe %} {% endblock stripe %}
+    #} {% block stripe %} {% endblock stripe %}
 
     <!-- Cookie Consent -->
     {% include "partials/cookie/consent.html" %}
@@ -38,7 +35,6 @@
         apiBaseUrl: "{{ website.website_basic_info.site | safe }}",
         isLocal: location.hostname === "localhost" || location.hostname === "127.0.0.1",
       };
-      console.log("HTML Layout: ", window.__APP_ENV__);
     </script>
     <style>
       /* Apply the font globally */
@@ -84,6 +80,7 @@
   </head>
   <body class="bg-base-100">
     <!-- Main Layout Container -->
+    {#
     <div id="app" class="flex flex-col h-screen overflow-hidden">
       <!-- Navbar Block -->
       {% block navbar %} {% include "partials/navbar/navbar.html" %} {% endblock navbar %}
@@ -93,6 +90,7 @@
         {% block content %}{% endblock content %}
       </div>
     </div>
+    #} {% block content %}{% endblock content %}
 
     <!-- Toast Notifications -->
     <div
@@ -106,7 +104,7 @@
       x-transition:leave-end="translate-y-full"
       x-cloak
       class="fixed bottom-5 right-5 px-4 py-2 rounded shadow-lg text-white"
-      :class="$store.toast.isError ? 'bg-red-500' : 'bg-green-700'"
+      :class="$store.toast.isError ? 'bg-red-500' : $store.toast.isWarn ? 'bg-orange-500' : 'bg-green-700'"
     >
       <span x-text="$store.toast.message"></span>
     </div>
