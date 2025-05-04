@@ -1,78 +1,101 @@
 {% extends "base.html" %} {% block title %}{{ website.website_basic_info.name }} | Homepage {%
 endblock title %} {% block navbar %}{% endblock navbar %} {% block home %}
 
-<div class="bg-[#191e24] relative overflow-hidden">
-  <!-- Header -->
-  {% include "home/sections/navbar.html" %}
+<div class="drawer drawer-end">
+  <input id="my-drawer-3" type="checkbox" class="drawer-toggle" />
+  <div class="drawer-content flex flex-col">
+    <!-- Navbar -->
+    {% include "home/sections/navbar.html" %}
 
-  <!-- Hero -->
-  {% include "home/sections/hero.html" %}
+    <!-- Page content here -->
+    <div class="relative bg-bg-web overflow-hidden">
+      <!-- Hero -->
+      {% include "home/sections/hero.html" %}
 
-  <!-- Businesses -->
-  {% include "home/sections/businesses.html" %}
+      <!-- Businesses -->
+      {% include "home/sections/businesses.html" %}
 
-  <!-- Pro Head Shot -->
-  {% include "home/sections/pro_head_shot.html" %}
+      <!-- Pro Head Shot -->
+      {% include "home/sections/pro_head_shot.html" %}
 
-  <!-- Gallery -->
-  {% include "home/sections/gallery.html" %}
+      <!-- Gallery -->
+      {% include "home/sections/gallery.html" %}
 
-  <!-- Instant styles -->
-  {% include "home/sections/instant_styles.html" %}
+      <!-- Instant styles -->
+      {% include "home/sections/instant_styles.html" %}
 
-  <!-- payment plans -->
-  {% include "home/sections/payment_plans.html" %}
-  <div class="flex flex-col items-center gap-12 w-full max-w-[2170px] mx-auto mt-24 mb-16">
-    <div class="flex flex-col items-center gap-3 w-full">
-      <div class="flex items-center gap-2 rounded-full px-4 py-1">
-        {% include "partials/svg/triple_stars.html" %}
-        <div class="text-w text-sm font-normal font-sans text-center">Ai Studio</div>
-      </div>
+      <!-- payment plans -->
+      {% include "home/sections/payment_plans.html" %}
+      <div class="flex flex-col items-center gap-12 w-full max-w-[2170px] mx-auto mt-24 mb-16">
+        <div class="flex flex-col items-center gap-3 w-full">
+          <div class="flex items-center gap-2 rounded-full px-4 py-1">
+            {% include "partials/svg/triple_stars.html" %}
+            <div class="text-w text-sm font-normal font-sans text-center">Ai Studio</div>
+          </div>
 
-      <div class="flex flex-col items-center gap-4 w-full">
-        <div class="text-w text-5xl font-medium leading-[120%] text-center font-brico w-[1062px]">
-          What Creators Are Saying
+          <div class="flex flex-col items-center gap-4 w-full">
+            <div
+              class="text-w text-5xl font-medium leading-[120%] text-center font-brico w-[1062px]"
+            >
+              What Creators Are Saying
+            </div>
+            <div class="text-[#f8fdfe] text-lg font-normal leading-[160%] text-center font-sans">
+              Studio-quality AI photos with perfect likeness every time.
+            </div>
+          </div>
         </div>
-        <div class="text-[#f8fdfe] text-lg font-normal leading-[160%] text-center font-sans">
-          Studio-quality AI photos with perfect likeness every time.
+
+        <div class="relative w-full h-[564px]">
+          <div class="flex gap-5 items-center mb-[30px] pl-40">
+            {% include "home/sections/creator_reviews.html/review_big.html" %}
+            <!-- review -->
+            {% include "home/sections/creator_reviews.html/review_small.html" %}
+            <!-- review -->
+            {% include "home/sections/creator_reviews.html/review_big.html" %}
+            <!-- review -->
+            {% include "home/sections/creator_reviews.html/review_small.html" %}
+            <!-- review -->
+            {% include "home/sections/creator_reviews.html/review_small.html" %}
+          </div>
+
+          <div class="flex gap-5 items-center">
+            {% include "home/sections/creator_reviews.html/review_big.html" %}
+            <!-- review -->
+            {% include "home/sections/creator_reviews.html/review_small.html" %}
+            <!-- review -->
+            {% include "home/sections/creator_reviews.html/review_big.html" %}
+            <!-- review -->
+            {% include "home/sections/creator_reviews.html/review_big.html" %}
+            <!-- review -->
+            {% include "home/sections/creator_reviews.html/review_small.html" %}
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="relative w-full h-[564px]">
-      <div class="flex gap-5 items-center mb-[30px] pl-40">
-        {% include "home/sections/creator_reviews.html/review_big.html" %}
-        <!-- review -->
-        {% include "home/sections/creator_reviews.html/review_small.html" %}
-        <!-- review -->
-        {% include "home/sections/creator_reviews.html/review_big.html" %}
-        <!-- review -->
-        {% include "home/sections/creator_reviews.html/review_small.html" %}
-        <!-- review -->
-        {% include "home/sections/creator_reviews.html/review_small.html" %}
-      </div>
+      <!-- Call to Action -->
+      {% include "home/sections/cta.html" %}
 
-      <div class="flex gap-5 items-center">
-        {% include "home/sections/creator_reviews.html/review_big.html" %}
-        <!-- review -->
-        {% include "home/sections/creator_reviews.html/review_small.html" %}
-        <!-- review -->
-        {% include "home/sections/creator_reviews.html/review_big.html" %}
-        <!-- review -->
-        {% include "home/sections/creator_reviews.html/review_big.html" %}
-        <!-- review -->
-        {% include "home/sections/creator_reviews.html/review_small.html" %}
-      </div>
+      <!-- Creators -->
+      {% include "home/sections/creators.html" %}
+
+      <!-- Footer -->
+      {% include "home/sections/footer.html" %}
     </div>
   </div>
-
-  <!-- Call to Action -->
-  {% include "home/sections/cta.html" %}
-
-  <!-- Creators -->
-  {% include "home/sections/creators.html" %}
-
-  <!-- Footer -->
-  {% include "home/sections/footer.html" %}
+  <div class="drawer-side z-20">
+    <label for="my-drawer-3" aria-label="close sidebar" class="drawer-overlay"></label>
+    <ul class="menu bg-base-200 min-h-full w-40 p-4">
+      <!-- Sidebar content here -->
+      <li><a href="#" class="p-2 text-white text-base hover:text-gray-300">Home</a></li>
+      <li><a href="#" class="p-2 text-white text-base hover:text-gray-300">Features</a></li>
+      <li><a href="#" class="p-2 text-white text-base hover:text-gray-300">Studio</a></li>
+      <li><a href="#pricing" class="p-2 text-white text-base hover:text-gray-300">Pricing</a></li>
+      <li><a href="/login" class="p-2 text-white text-base hover:text-gray-300">Login</a></li>
+    </ul>
+    <label for="my-drawer-3" class="block p-4 text-white hover:text-gray-300">
+      {% include "partials/svg/x.html" %}
+    </label>
+  </div>
 </div>
+
 {% endblock home %}

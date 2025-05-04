@@ -1,51 +1,44 @@
 <nav
-  class="fixed left-0 right-0 z-10 bg-white/2 rounded-full border border-solid border-slate-50/10 backdrop-blur-lg py-4 px-8 flex flex-row items-center justify-between max-w-7xl w-full mx-auto mt-16"
+  class="fixed inset-x-0 top-4 lg:top-16 z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between border border-slate-50/10 rounded-full backdrop-blur-lg bg-white/5"
 >
-  <div class="flex flex-row gap-4 items-center justify-center shrink-0 relative">
-    <span>{% include "partials/svg/logo.html" %}</span>
-    <div class="text-w text-center text-4xl leading-none font-semibold relative">
-      <span class="font-bricon"> {{ website.website_basic_info.name }}</span>
-    </div>
+  <div class="flex flex-row items-center justify-center shrink-0 relative gap-2 md:gap-3 lg:gap-4">
+    <span class="shrink-0 w-10 h-10 lg:w-12 lg:h-12 relative"
+      >{% include "partials/svg/logo.html" %}</span
+    >
+    <span class="hidden sm:block text-w text-center font-bricon font-semibold relative sm:text-4xl">
+      {{ website.website_basic_info.name }}
+    </span>
   </div>
-  <div class="flex flex-row gap-12 items-center justify-start">
-    <ul class="flex flex-row gap-8 items-center">
-      <li>
-        <a
-          href="#"
-          class="p-2 text-white text-base hover:text-gray-300 focus:text-gray-300 transition-colors duration-150"
-        >
-          Home
-        </a>
-      </li>
 
-      <li>
-        <a
-          href="#"
-          class="p-2 text-white text-base hover:text-gray-300 focus:text-gray-300 transition-colors duration-150"
-        >
-          Features
-        </a>
-      </li>
-
-      <li>
-        <a
-          href="#"
-          class="p-2 text-white text-base hover:text-gray-300 focus:text-gray-300 transition-colors duration-150"
-          aria-current="page"
-        >
-          Studio
-        </a>
-      </li>
-
-      <li>
-        <a
-          href="#pricing"
-          class="p-2 text-white text-base hover:text-gray-300 focus:text-gray-300 transition-colors duration-150"
-        >
-          Pricing
-        </a>
-      </li>
+  <!-- Desktop nav -->
+  <div class="hidden lg:flex items-center gap-12">
+    <ul class="flex flex-row gap-8 items-center font-semibold">
+      <li><a href="#" class="p-2 text-white text-base hover:text-gray-300">Home</a></li>
+      <li><a href="#" class="p-2 text-white text-base hover:text-gray-300">Features</a></li>
+      <li><a href="#" class="p-2 text-white text-base hover:text-gray-300">Studio</a></li>
+      <li><a href="#pricing" class="p-2 text-white text-base hover:text-gray-300">Pricing</a></li>
     </ul>
     <div>{% include "partials/parts/cta_btn_home.html" %}</div>
+  </div>
+
+  <!-- ✅ Mobile nav toggle — placed outside the hidden desktop nav -->
+  <div class="lg:hidden flex justify-center items-center">
+    <div>{% include "partials/parts/cta_btn_home.html" %}</div>
+    <label for="my-drawer-3" class="btn btn-square btn-ghost">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="w-24 h-24"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4 6h16M4 12h16M4 18h16"
+        />
+      </svg>
+    </label>
   </div>
 </nav>
