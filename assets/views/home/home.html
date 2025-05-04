@@ -1,9 +1,9 @@
 {% extends "base.html" %} {% block title %}{{ website.website_basic_info.name }} | Homepage {%
 endblock title %} {% block navbar %}{% endblock navbar %} {% block home %}
 
-<div class="drawer drawer-end xs:p-2 md:p-0">
+<div class="drawer drawer-end xs:p-2 md:p-0 w-full">
   <input id="my-drawer-3" type="checkbox" class="drawer-toggle" />
-  <div class="drawer-content flex flex-col">
+  <div class="drawer-content flex flex-col w-full">
     <!-- Navbar -->
     {% include "home/sections/navbar.html" %}
 
