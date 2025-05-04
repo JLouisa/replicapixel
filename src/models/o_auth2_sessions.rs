@@ -1,5 +1,5 @@
-use loco_rs::{auth::jwt, hash, prelude::*};
-use sea_orm::entity::prelude::*;
+use loco_rs::prelude::*;
+use sea_orm::{entity::prelude::*, Condition};
 
 // src/models/o_auth2_sessions.rs
 pub use super::_entities::o_auth2_sessions::{self, ActiveModel, Entity, Model};
@@ -10,7 +10,7 @@ use loco_oauth2::{
     models::oauth2_sessions::OAuth2SessionsTrait,
 };
 
-use chrono::{DateTime, FixedOffset, Local, Utc};
+use chrono::{DateTime, FixedOffset, Utc};
 
 #[async_trait]
 impl OAuth2SessionsTrait<users::Model> for Model {
@@ -97,7 +97,17 @@ impl ActiveModelBehavior for ActiveModel {
 }
 
 // implement your read-oriented logic here
-impl Model {}
+impl Model {
+    pub async fn is_find_by_user_id(db: &impl ConnectionTrait, user_id: i32) -> ModelResult<bool> {
+        let condition = Condition::all().add(o_auth2_sessions::Column::UserId.eq(user_id));
+        let is_oauth = Entity::find().filter(condition).one(db).await?;
+        dbg!(&is_oauth);
+        match is_oauth {
+            Some(_) => Ok(true),
+            None => Ok(false),
+        }
+    }
+}
 
 // implement your write-oriented logic here
 impl ActiveModel {}

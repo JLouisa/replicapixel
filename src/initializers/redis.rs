@@ -5,7 +5,7 @@ use loco_rs::{
     Result,
 };
 
-use crate::{domain::settings::Settings, service::redis::redis::Redis};
+use crate::domain::settings::Settings;
 
 #[allow(clippy::module_name_repetitions)]
 pub struct RedisClient;
@@ -17,18 +17,7 @@ impl Initializer for RedisClient {
     }
 
     async fn after_routes(&self, router: AxumRouter, ctx: &AppContext) -> Result<AxumRouter> {
-        let settings: Settings = serde_json::from_value(
-            ctx.config
-                .settings
-                .clone()
-                .expect("No redis settings found"),
-        )
-        .expect("Failed to parse redis settings");
-
-        let redis_client = Redis::new(&settings.redis)
-            .await
-            .expect("Failed to create redis client");
-
+        let redis_client = Settings::init(&ctx).redis().await;
         let router = router.layer(Extension(redis_client));
         Ok(router)
     }

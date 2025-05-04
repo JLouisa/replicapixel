@@ -1,10 +1,8 @@
-use loco_oauth2::base_oauth2::AuthorizationCode;
 use loco_oauth2::controllers::middleware::OAuth2CookieUser;
-use loco_oauth2::error::OAuth2ClientError;
 use std::fmt::Debug;
 use tokio::sync::MutexGuard;
 
-use loco_oauth2::grants::authorization_code::{Client, GrantTrait};
+use loco_oauth2::grants::authorization_code::GrantTrait;
 use loco_oauth2::models::oauth2_sessions::OAuth2SessionsTrait;
 use loco_oauth2::models::users::OAuth2UserTrait;
 use loco_rs::prelude::*;
@@ -18,7 +16,6 @@ use axum_session::{DatabasePool, Session, SessionNullPool};
 use serde::de::DeserializeOwned;
 use serde::Deserialize;
 
-use crate::domain::website::Website;
 use crate::models::{o_auth2_sessions, users, users::OAuth2UserProfile};
 use loco_oauth2::controllers::oauth2::{
     callback_jwt as callback_jwt_google, get_authorization_url, google_authorization_url,

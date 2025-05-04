@@ -5,7 +5,7 @@ use loco_rs::{
     Result,
 };
 
-use crate::{domain::settings::Settings, service::stripe::stripe::StripeClient};
+use crate::domain::settings::Settings;
 
 #[allow(clippy::module_name_repetitions)]
 pub struct Stripe;
@@ -17,12 +17,7 @@ impl Initializer for Stripe {
     }
 
     async fn after_routes(&self, router: AxumRouter, ctx: &AppContext) -> Result<AxumRouter> {
-        let stripe_settings: Settings =
-            serde_json::from_value(ctx.config.settings.clone().expect("No settings found"))
-                .expect("Failed to parse settings");
-
-        let stripe_client = StripeClient::new(&stripe_settings.stripe);
-
+        let stripe_client = Settings::init(&ctx).stripe().await;
         let router = router.layer(Extension(stripe_client));
         Ok(router)
     }

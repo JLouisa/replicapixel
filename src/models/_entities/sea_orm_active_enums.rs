@@ -323,10 +323,13 @@ impl Default for ImageSize {
 #[serde(rename_all = "lowercase")]
 pub enum ThemePreference {
     #[sea_orm(string_value = "Light")]
+    #[strum(to_string = "light")]
     Light,
     #[sea_orm(string_value = "Dark")]
+    #[strum(to_string = "dark")]
     Dark,
     #[sea_orm(string_value = "System")]
+    #[strum(to_string = "system")]
     System,
 }
 impl Default for ThemePreference {

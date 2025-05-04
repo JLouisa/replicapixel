@@ -1,0 +1,18 @@
+<input
+  type="checkbox"
+  id="marketing_notifications_toggle"
+  name="notify_enabled"
+  class="toggle toggle-primary"
+  hx-patch="{{ website.website_routes.settings.update_marketing | safe }}/{{ user_settings.enable_marketing_email }}"
+  hx-trigger="change"
+  hx-swap="outerHTML"
+  hx-indicator="#marketing-notification-spinner"
+  {%
+  if
+  user_settings.enable_marketing_email
+  %}
+  checked
+  {%
+  endif
+  %}
+/>

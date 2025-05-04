@@ -1,0 +1,205 @@
+<div class="py-12 px-4 sm:px-6">
+  <div class="w-full max-w-2xl mx-auto animate-fade-in">
+    <form
+      id="uploadForm"
+      class="bg-base-100 shadow-lg rounded-xl p-6 md:p-8"
+      x-data
+      @submit.prevent="$store.createModelForm.submit()"
+      enctype="multipart/form-data"
+    >
+      <div class="mb-2 text-center">
+        <div
+          class="inline-flex items-center justify-center w-16 h-16 bg-primary/10 text-primary rounded-full mb-4"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="text-primary"
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="17 8 12 3 7 8" />
+            <line x1="12" y1="3" x2="12" y2="15" />
+          </svg>
+        </div>
+        <h1 class="text-3xl font-bold text-base-content">Create Model</h1>
+        {#
+        <p class="text-base-content/70 max-w-md mx-auto">
+          Enter details and upload photos for your model.
+        </p>
+        #}
+      </div>
+
+      <div class="space-y-1">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="form-control w-full">
+            <label for="name" class="label"> </label>
+            <input
+              id="name"
+              {#
+              class="input input-bordered w-full"
+              #}
+              class="appearance-none border pl-12 border-gray-100 shadow-sm focus:shadow-md focus:placeholder-gray-600 transition rounded-md w-full py-3 text-gray-600 leading-tight focus:outline-none focus:ring-gray-600 focus:shadow-outline"
+              type="text"
+              placeholder="Model Name"
+              required
+              x-model="$store.createModelForm.name"
+            />
+            <div class="absolute left-0 inset-y-0 flex items-center"></div>
+          </div>
+
+          <div class="form-control w-full">
+            <label for="age" class="label"> </label>
+            <input
+              id="age"
+              class="appearance-none border pl-12 border-gray-100 shadow-sm focus:shadow-md focus:placeholder-gray-600 transition rounded-md w-full py-3 text-gray-600 leading-tight focus:outline-none focus:ring-gray-600 focus:shadow-outline"
+              type="number"
+              placeholder="Enter age (18-120)"
+              min="18"
+              max="120"
+              required
+              x-model="$store.createModelForm.age"
+            />
+            <div class="absolute left-0 inset-y-0 flex items-center"></div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="form-control w-full">
+            <label for="sex" class="label"> </label>
+            <select
+              id="sex"
+              class="appearance-none cursor-pointer border pl-12 border-gray-100 shadow-sm focus:shadow-md focus:placeholder-gray-600 transition rounded-md w-full py-3 text-gray-600 leading-tight focus:outline-none focus:ring-gray-600 focus:shadow-outline"
+              required
+              x-model="$store.createModelForm.sex"
+            >
+              <option value="" disabled selected>Select Sex</option>
+              {% for sex in website.website_fields.create_model.sex %}
+              <option value="{{ sex }}">{{ sex | capitalize }}</option>
+              {% endfor %}
+            </select>
+            <div class="absolute left-0 inset-y-0 flex items-center"></div>
+          </div>
+
+          <div class="form-control w-full">
+            <label for="eyeColor" class="label"> </label>
+            <select
+              id="eyeColor"
+              class="appearance-none cursor-pointer border pl-12 border-gray-100 shadow-sm focus:shadow-md focus:placeholder-gray-600 transition rounded-md w-full py-3 text-gray-600 leading-tight focus:outline-none focus:ring-gray-600 focus:shadow-outline"
+              required
+              x-model="$store.createModelForm.eye_color"
+            >
+              <option value="" disabled selected>Select Eye Color</option>
+              {% for color in website.website_fields.create_model.eye_color %}
+              <option value="{{ color }}">{{ color | capitalize }}</option>
+              {% endfor %}
+            </select>
+            <div class="absolute left-0 inset-y-0 flex items-center"></div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="form-control w-full">
+            <label for="ethnicity" class="label"> </label>
+            <select
+              id="ethnicity"
+              class="appearance-none border cursor-pointer pl-12 border-gray-100 shadow-sm focus:shadow-md focus:placeholder-gray-600 transition rounded-md w-full py-3 text-gray-600 leading-tight focus:outline-none focus:ring-gray-600 focus:shadow-outline"
+              required
+              x-model="$store.createModelForm.ethnicity"
+            >
+              <option value="" disabled selected>Select Ethnicity</option>
+              {% for ethnicity in website.website_fields.create_model.ethnicity %}
+              <option value="{{ ethnicity }}">{{ ethnicity }}</option>
+              {% endfor %}
+            </select>
+            <div class="absolute left-0 inset-y-0 flex items-center"></div>
+          </div>
+
+          <div class="form-control w-full">
+            <label for="bald" class="label"> </label>
+            <select
+              id="bald"
+              class="appearance-none border cursor-pointer pl-12 border-gray-100 shadow-sm focus:shadow-md focus:placeholder-gray-600 transition rounded-md w-full py-3 text-gray-600 leading-tight focus:outline-none focus:ring-gray-600 focus:shadow-outline"
+              required
+              x-model="$store.createModelForm.bald"
+            >
+              <option value="" disabled selected>Are you bald?</option>
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select>
+            <div class="absolute left-0 inset-y-0 flex items-center"></div>
+          </div>
+        </div>
+
+        <div class="w-full my-8">
+          {% include "dashboard/content/training_models/dropzone.html" %}
+        </div>
+
+        <div class="form-control">
+          <label class="label cursor-pointer justify-start gap-3">
+            <input
+              id="isRealPerson"
+              class="checkbox checkbox-primary"
+              type="checkbox"
+              x-model="$store.createModelForm.based_on"
+            />
+            <span class="label-text text-base-content/90">Based on a real person?</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="space-y-3 pt-2">
+        <div class="form-control">
+          <label class="label cursor-pointer justify-start gap-3">
+            <input
+              id="termsAgreed"
+              class="checkbox checkbox-primary"
+              type="checkbox"
+              required
+              x-model="$store.createModelForm.consent"
+            />
+            <span class="label-text text-base-content/90">
+              I agree to the
+              <a
+                href="{{ website.website_routes.policy.model_consent | safe }}"
+                target="_blank"
+                class="link link-primary hover:link-hover"
+                >Model Creation Consent Agreement</a
+              >
+              <span class="text-error ml-1">*</span>
+            </span>
+          </label>
+        </div>
+
+        <button
+          type="submit"
+          :disabled="$store.createModelForm.isSubmitting"
+          class="btn btn-primary w-full mt-4"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="17 8 12 3 7 8" />
+            <line x1="12" y1="3" x2="12" y2="15" />
+          </svg>
+          Create & Upload Model
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

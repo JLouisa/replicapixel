@@ -1,0 +1,122 @@
+<div class="bg-base-100 rounded w-full my-8">
+  <div
+    x-data="{}"
+    x-init="$store.createModelForm.resetFiles()"
+    class="relative flex flex-col p-4 text-base-content/80 border border-gray-300 rounded"
+  >
+    <div
+      x-ref="dnd"
+      class="relative flex flex-col text-base-content/80 border border-gray-300 border-dashed rounded cursor-pointer"
+      @dragover.prevent="$el.classList.add('border-primary', 'ring-4', 'ring-primary', 'ring-inset'); $el.classList.remove('border-base-300')"
+      @dragleave="$el.classList.remove('border-primary', 'ring-4', 'ring-primary', 'ring-inset'); $el.classList.add('border-base-300')"
+      @drop.prevent="$store.createModelForm.handleFileDrop($event); $el.classList.remove('border-primary', 'ring-4', 'ring-primary', 'ring-inset'); $el.classList.add('border-base-300')"
+      @drop.prevent="$store.createModelForm.reorderFilesOnDrop($event); $el.classList.remove('border-primary', 'ring-4', 'ring-primary', 'ring-inset'); $el.classList.add('border-base-300')"
+    >
+      <input
+        accept="image/png, image/jpeg"
+        type="file"
+        multiple
+        class="absolute inset-0 z-50 w-full h-full p-0 m-0 outline-none opacity-0 cursor-pointer"
+        @change="$store.createModelForm.addFiles($event)"
+        title=""
+      />
+      <div
+        class="cursor-pointer p-12 flex justify-center bg-base-100 border border-dashed border-base-300 rounded-xl hover:border-neutral pointer-events-none"
+      >
+        <div class="text-center pointer-events-none">
+          {% include "partials/svg/dropzone.html" %}
+          <div
+            class="mt-4 flex flex-wrap justify-center text-sm text-base-content/80 pointer-events-none"
+          >
+            <span class="pe-1 font-medium text-base-content">Drop your file here or</span>
+            <span class="link link-primary font-semibold">browse</span>
+          </div>
+          <p class="mt-1 text-xs text-base-content/60 pointer-events-none">
+            <span
+              class="font-semibold"
+              :class="$store.createModelForm.files.length === 0 ? '' : ($store.createModelForm.files.length < 10) ? 'text-error' : 'text-green-700'"
+              x-text="$store.createModelForm.files.length >= 10
+                ? 'You reached the minimum number of photos required'
+                : 'Minimum ' + (10 - $store.createModelForm.files.length) + ' more photo(s) required'"
+            ></span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <template x-if="$store.createModelForm.files.length > 0">
+      <div
+        class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-4"
+        @drop.prevent="$store.createModelForm.reorderFilesOnDrop($event)"
+        @dragover.prevent="$event.dataTransfer.dropEffect = 'move'"
+      >
+        <template x-for="(file, index) in $store.createModelForm.files" :key="index">
+          <div
+            class="relative flex flex-col items-center overflow-hidden text-center bg-base-200 border border-base-300 rounded cursor-move select-none"
+            style="padding-top: 100%"
+            @dragstart="$store.createModelForm.dragStartFile($event, index)"
+            @dragend="$store.createModelForm.fileDragging = null"
+            :class="{'border-primary ring-2 ring-primary': $store.createModelForm.fileDragging == index}"
+            draggable="true"
+            :data-index="index"
+          >
+            <button
+              class="absolute top-0 right-0 z-50 p-1 bg-base-100 rounded-bl focus:outline-none hover:bg-error hover:text-error-content transition-colors"
+              type="button"
+              @click="$store.createModelForm.removeFile(index)"
+            >
+              <svg
+                class="w-4 h-4"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                />
+              </svg>
+            </button>
+
+            <template x-if="file.type.includes('image/')">
+              <img
+                class="absolute inset-0 z-0 object-cover w-full h-full border-4 border-base-100 preview rounded"
+                :src="$store.createModelForm.loadFilePreview(file)"
+              />
+            </template>
+
+            <template x-if="file.type.includes('video/')">
+              <video
+                class="absolute inset-0 object-cover w-full h-full border-4 border-base-100 pointer-events-none preview rounded"
+                controls
+              >
+                <source :src="loadFile(localFiles[index])" type="video/mp4" />
+              </video>
+            </template>
+
+            <div
+              class="absolute bottom-0 left-0 right-0 flex flex-col p-2 text-xs bg-base-100 bg-opacity-50"
+            >
+              <span class="w-full font-bold text-base-content truncate" x-text="file.name"></span>
+              <span
+                class="text-xs text-base-content/80"
+                x-text="$store.createModelForm.humanFileSize(file.size)"
+                >Loading</span
+              >
+            </div>
+
+            <div
+              class="absolute inset-0 z-40 transition-colors duration-300"
+              @dragenter="$store.createModelForm.dragEnterFile($event, index)"
+              @dragleave="$store.createModelForm.fileDropping = null"
+              :class="{'bg-primary/50': $store.createModelForm.fileDropping == index && $store.createModelForm.fileDragging != index}"
+            ></div>
+          </div>
+        </template>
+      </div>
+    </template>
+  </div>
+</div>

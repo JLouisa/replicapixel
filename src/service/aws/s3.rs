@@ -199,11 +199,7 @@ impl AwsS3 {
     }
 
     // Generate a presigned URL
-    pub async fn auto_upload_img_presigned_url(
-        &self,
-        user_pid: &Uuid,
-        image: &ImageView,
-    ) -> Result<Url, AwsError> {
+    pub async fn auto_upload_img_presigned_url(&self, image: &ImageView) -> Result<Url, AwsError> {
         let key = S3Key::new(image.image_s3_key.to_owned());
         let time = Some(300);
         let pre_url = self.generate_save_presigned_url(&key, time).await?;
@@ -307,6 +303,21 @@ impl AwsS3 {
             .delete_object()
             .bucket(&self.settings.s3.bucket_name)
             .key(s3_location_key)
+            .send()
+            .await
+        {
+            Ok(_) => Ok(()), // If the request succeeds, the object exists
+            Err(e) => Err(AwsError::S3DeletionError(e)), // Wrap the error in Err
+        }
+    }
+
+    /// Delete an object from a bucket.
+    pub async fn remove_object_s3_key(&self, key: &S3Key) -> Result<(), AwsError> {
+        match self
+            .client
+            .delete_object()
+            .bucket(&self.settings.s3.bucket_name)
+            .key(key.as_ref())
             .send()
             .await
         {

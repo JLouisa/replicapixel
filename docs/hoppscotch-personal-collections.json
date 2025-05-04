@@ -23,7 +23,7 @@
             },
             "body": {
               "contentType": "application/json",
-              "body": "{\n  \"request_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"gateway_request_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"status\": \"OK\",\n  \"payload\": {\n    \"diffusers_lora_file\": {\n      \"url\": \"https://url.to/image.png\",\n      \"content_type\": \"image/png\",\n      \"file_name\": \"z9RV14K95DvU.png\",\n      \"file_size\": 4404019\n    },\n    \"config_file\": {\n      \"url\": \"\",\n      \"content_type\": \"image/png\",\n      \"file_name\": \"z9RV14K95DvU.png\",\n      \"file_size\": 4404019\n    }\n  }\n}\n\n"
+              "body": "{\n  \"request_id\": \"2b37f874-a5d0-48f9-829d-3fdf36c12f12\",\n  \"gateway_request_id\": \"2b37f874-a5d0-48f9-829d-3fdf36c12f12\",\n  \"status\": \"OK\",\n  \"payload\": {\n  \"config_file\": {\n    \"url\": \"https://v3.fal.media/files/koala/rKnb6hu6kxHKhYpbhtQmL_config.json\",\n    \"file_name\": \"config.json\",\n    \"file_size\": 852,\n    \"content_type\": \"application/octet-stream\"\n  },\n  \"diffusers_lora_file\": {\n    \"url\": \"https://v3.fal.media/files/monkey/NAZ2IXZTtYeWC7h4tfBSg_pytorch_lora_weights.safetensors\",\n    \"file_name\": \"pytorch_lora_weights.safetensors\",\n    \"file_size\": 89745224,\n    \"content_type\": \"application/octet-stream\"\n  },\n  \"debug_preprocessed_output\": null\n}\n}\n\n"
             },
             "requestVariables": [],
             "responses": {}
@@ -67,22 +67,221 @@
             },
             "requestVariables": [],
             "responses": {}
+          },
+          {
+            "v": "11",
+            "name": "training success 2",
+            "method": "POST",
+            "endpoint": "http://localhost:5150/api/webhooks/fal-ai/training",
+            "params": [],
+            "headers": [],
+            "preRequestScript": "",
+            "testScript": "",
+            "auth": {
+              "authType": "inherit",
+              "authActive": true
+            },
+            "body": {
+              "contentType": "application/json",
+              "body": "{\n  \"request_id\": \"b68e0ad0-8048-4184-9f69-eb63bf18f76c\",\n  \"gateway_request_id\": \"b68e0ad0-8048-4184-9f69-eb63bf18f76c\",\n  \"status\": \"OK\",\n  \"error\": null,\n  \"payload\": {\n    \"diffusers_lora_file\": {\n      \"url\": \"https://v3.fal.media/files/penguin/jbAfBP9Q0cxq4bxK9hqjM_pytorch_lora_weights.safetensors\",\n      \"content_type\": \"application/octet-stream\",\n      \"file_name\": \"pytorch_lora_weights.safetensors\",\n      \"file_size\": 89745224\n    },\n    \"config_file\": {\n      \"url\": \"https://v3.fal.media/files/rabbit/0Dw_1X4eUiNYXJWAouD3Y_config.json\",\n      \"content_type\": \"application/octet-stream\",\n      \"file_name\": \"config.json\",\n      \"file_size\": 848\n    },\n    \"debug_preprocessed_output\": null\n  }\n}\n\n"
+            },
+            "requestVariables": [],
+            "responses": {}
           }
         ],
         "auth": {
-          "authActive": true,
-          "authType": "inherit"
+          "authType": "inherit",
+          "authActive": true
         },
         "headers": [],
         "_ref_id": "coll_m8kibr13_8547bf6f-fa8b-4262-acba-0e7efc584bb1"
+      },
+      {
+        "v": 6,
+        "name": "Images",
+        "folders": [],
+        "requests": [
+          {
+            "v": "11",
+            "name": "Iamge Gen Test",
+            "method": "POST",
+            "endpoint": "http://localhost:5150/api/images/generate/test",
+            "params": [],
+            "headers": [],
+            "preRequestScript": "",
+            "testScript": "",
+            "auth": {
+              "authType": "inherit",
+              "authActive": true
+            },
+            "body": {
+              "contentType": "application/json",
+              "body": "{\n  \"prompt\":\"asdfasdfasdf\",\n  \"training_model_id\":4,\n  \"num_inference_steps\":4000,\n  \"num_images\":4,\n  \"image_size\":\"512x512 (Square)\"\n}\n\n"
+            },
+            "requestVariables": [],
+            "responses": {}
+          },
+          {
+            "v": "11",
+            "name": "Image Success",
+            "method": "POST",
+            "endpoint": "http://localhost:5150/api/webhooks/fal-ai/image",
+            "params": [],
+            "headers": [],
+            "preRequestScript": "",
+            "testScript": "",
+            "auth": {
+              "authType": "inherit",
+              "authActive": true
+            },
+            "body": {
+              "contentType": "application/json",
+              "body": "{\n  \"request_id\": \"56471db6-43bf-44cb-adb0-6325d73aba00\",\n  \"gateway_request_id\": \"56471db6-43bf-44cb-adb0-6325d73aba00\",\n  \"status\": \"OK\",\n  \"error\": null,\n  \"payload\": {\n    \"images\": [\n      {\n        \"url\": \"https://v3.fal.media/files/penguin/D8WVryJNJeEbFsuEbgyp__e628dd1920174a2ea03b24e77910ec9b.jpg\",\n        \"width\": 512,\n        \"height\": 512,\n        \"content_type\": \"image/jpeg\"\n      }\n    ],\n    \"timings\": {\n      \"inference\": 2.255587690975517\n    },\n    \"seed\": 14446009878647117701,\n    \"has_nsfw_concepts\": [false],\n    \"prompt\": \"Fayna-mn6sw9hi92 A serene midnight beach scene, walking barefoot along the shoreline with long flowy dress blending with the ocean breeze. Moonlight reflects on the wet sand, creating a silver path, while faint bioluminescent plankton glows in the waves.. The subject is a Black Female with Brown eyes, aged 31. Based on a real person.\"\n  }\n}\n\n\n"
+            },
+            "requestVariables": [],
+            "responses": {}
+          }
+        ],
+        "auth": {
+          "authType": "inherit",
+          "authActive": true
+        },
+        "headers": [],
+        "_ref_id": "coll_m8utuh23_daa3e55e-44e4-426d-9066-31f1b29ed25b"
       }
     ],
     "requests": [],
+    "auth": {
+      "authType": "none",
+      "authActive": true
+    },
+    "headers": [],
+    "_ref_id": "coll_m8kibkhl_1459ae90-3f2e-43d8-b884-09c59e3140b6"
+  },
+  {
+    "v": 6,
+    "name": "Sent Mail",
+    "folders": [],
+    "requests": [
+      {
+        "v": "11",
+        "name": "Welcome Mail",
+        "method": "GET",
+        "endpoint": "http://localhost:5150/api/auth/test/welcome",
+        "params": [],
+        "headers": [],
+        "preRequestScript": "",
+        "testScript": "",
+        "auth": {
+          "authType": "inherit",
+          "authActive": true
+        },
+        "body": {
+          "contentType": null,
+          "body": null
+        },
+        "requestVariables": [],
+        "responses": {}
+      },
+      {
+        "v": "11",
+        "name": "Forgot Password",
+        "method": "GET",
+        "endpoint": "http://localhost:5150/api/auth/test/forgot_password",
+        "params": [],
+        "headers": [],
+        "preRequestScript": "",
+        "testScript": "",
+        "auth": {
+          "authType": "inherit",
+          "authActive": true
+        },
+        "body": {
+          "contentType": null,
+          "body": null
+        },
+        "requestVariables": [],
+        "responses": {}
+      },
+      {
+        "v": "11",
+        "name": "Magic Link",
+        "method": "GET",
+        "endpoint": "http://localhost:5150/api/auth/test/magic_link",
+        "params": [],
+        "headers": [],
+        "preRequestScript": "",
+        "testScript": "",
+        "auth": {
+          "authType": "inherit",
+          "authActive": true
+        },
+        "body": {
+          "contentType": null,
+          "body": null
+        },
+        "requestVariables": [],
+        "responses": {}
+      },
+      {
+        "v": "11",
+        "name": "Transaction Stripe Completed",
+        "method": "GET",
+        "endpoint": "http://localhost:5150/api/auth/test/transaction",
+        "params": [],
+        "headers": [],
+        "preRequestScript": "",
+        "testScript": "",
+        "auth": {
+          "authType": "inherit",
+          "authActive": true
+        },
+        "body": {
+          "contentType": null,
+          "body": null
+        },
+        "requestVariables": [],
+        "responses": {}
+      }
+    ],
     "auth": {
       "authActive": true,
       "authType": "none"
     },
     "headers": [],
-    "_ref_id": "coll_m8kibkhl_1459ae90-3f2e-43d8-b884-09c59e3140b6"
+    "_ref_id": "coll_m9xphsw6_43e2c66a-4c3a-414f-afba-2659d5110308"
+  },
+  {
+    "v": 6,
+    "name": "Test",
+    "folders": [],
+    "requests": [
+      {
+        "v": "11",
+        "name": "Clear Redis Cache",
+        "method": "GET",
+        "endpoint": "http://localhost:5150/dashboard/test/clear",
+        "params": [],
+        "headers": [],
+        "preRequestScript": "",
+        "testScript": "",
+        "auth": {
+          "authType": "inherit",
+          "authActive": true
+        },
+        "body": {
+          "contentType": null,
+          "body": null
+        },
+        "requestVariables": [],
+        "responses": {}
+      }
+    ],
+    "auth": {
+      "authType": "none",
+      "authActive": true
+    },
+    "headers": [],
+    "_ref_id": "coll_ma2v2gd5_23e9945d-1699-462c-8024-190ca46d449a"
   }
 ]

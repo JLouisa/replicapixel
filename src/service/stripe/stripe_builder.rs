@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use super::stripe::{StripeClient, StripeClientError};
 use crate::models::{UserModel, _entities::sea_orm_active_enums::PlanNames};
 use sea_orm::DatabaseConnection;
@@ -9,7 +7,6 @@ use stripe::{
     StripeError,
 };
 use thiserror::Error;
-use uuid::Uuid;
 
 #[derive(Error, Debug)]
 pub enum StripeCheckoutBuilderErr {

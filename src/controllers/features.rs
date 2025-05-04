@@ -89,7 +89,7 @@ pub async fn add(
         ..Default::default()
     };
     params.update(&mut item);
-    let item = item.insert(&ctx.db).await?;
+    item.insert(&ctx.db).await?;
     views::features::form_reset(v, &website, &user.into())
 }
 

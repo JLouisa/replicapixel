@@ -1,14 +1,9 @@
-use crate::controllers::training_models::routes;
-use crate::domain::dashboard_sidebar::DashboardSidebar;
 use crate::domain::website::Website;
 use crate::models::_entities::sea_orm_active_enums::Status;
 use crate::models::_entities::training_models::Model as TrainingModel;
 use crate::models::training_models::TrainingModelList;
 use loco_rs::prelude::*;
 use serde::Serialize;
-
-use super::auth::UserView;
-use super::images::ImageView;
 
 pub fn training_models_update(
     v: impl ViewRenderer,

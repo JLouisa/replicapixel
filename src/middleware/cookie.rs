@@ -1,5 +1,4 @@
 use axum::{
-    body::Body,
     extract::{FromRequestParts, Request},
     http,
     response::Response,
@@ -10,10 +9,8 @@ use loco_rs::prelude::*;
 use serde::{Deserialize, Serialize};
 use serde_json;
 use std::{
-    collections::HashMap,
+    // collections::HashMap,
     convert::Infallible,
-    future::Future,
-    pin::Pin,
     task::{Context, Poll},
 };
 use tower::{Layer, Service};
@@ -44,14 +41,14 @@ impl Default for CookieConsent {
 #[serde(rename_all = "camelCase")]
 struct CookieConsentData {
     categories: Option<Vec<String>>,
-    revision: Option<u32>,
-    data: Option<serde_json::Value>,
-    consent_timestamp: Option<String>,
-    consent_id: Option<String>,
-    services: Option<HashMap<String, Vec<String>>>,
-    language_code: Option<String>,
-    last_consent_timestamp: Option<String>,
-    expiration_time: Option<i64>,
+    // revision: Option<u32>,
+    // data: Option<serde_json::Value>,
+    // consent_timestamp: Option<String>,
+    // consent_id: Option<String>,
+    // services: Option<HashMap<String, Vec<String>>>,
+    // language_code: Option<String>,
+    // last_consent_timestamp: Option<String>,
+    // expiration_time: Option<i64>,
 }
 
 #[derive(Clone)]

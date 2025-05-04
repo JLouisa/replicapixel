@@ -10,11 +10,14 @@ use crate::{
     models::{
         _entities::users,
         join::user_credits_models::load_user_and_credits,
-        users::{LoginParams, RegisterError, RegisterParams, UserPid},
-        PlanModel, TransactionModel,
+        users::{LoginParams, PasswordChangeParams, RegisterError, RegisterParams, UserPid},
+        PlanModel, TransactionModel, UserModel,
     },
     service::stripe::stripe::StripeClient,
-    views::auth::{CurrentResponse, LoginResponse},
+    views::{
+        self,
+        auth::{CurrentResponse, LoginResponse},
+    },
 };
 use axum::{
     debug_handler,
@@ -49,6 +52,7 @@ pub mod routes {
         pub api_forgot: String,
         pub api_logout: String,
         pub validate_route: String,
+        pub change_password: String,
     }
     impl AuthRoutes {
         pub fn init() -> Self {
@@ -64,6 +68,7 @@ pub mod routes {
                 api_forgot: String::from(Auth::API_FORGOT),
                 api_logout: String::from(Auth::API_LOGOUT),
                 validate_route: String::from(Auth::API_VALIDATE_USER),
+                change_password: String::from(Auth::API_PASSWORD_CHANGE),
             }
         }
     }
@@ -89,6 +94,8 @@ pub mod routes {
         pub const API_MAGIC_LINK_W_TOKEN: &'static str = "/api/auth/magic";
         pub const API_MAGIC_LINK_TOKEN: &'static str = "/api/auth/magic/{token}";
         pub const API_VALIDATE_USER: &'static str = "/api/auth/validate-user";
+        pub const API_PASSWORD_CHANGE_ID: &'static str = "/api/auth/password-change/{id}";
+        pub const API_PASSWORD_CHANGE: &'static str = "/api/auth/password-change";
     }
 }
 
@@ -110,6 +117,7 @@ pub fn routes() -> Routes {
         .add(routes::Auth::API_MAGIC_LINK, post(magic_link))
         .add(routes::Auth::API_MAGIC_LINK_W_TOKEN, get(magic_link_verify))
         .add(routes::Auth::API_VALIDATE_USER, get(validate_user))
+        .add(routes::Auth::API_PASSWORD_CHANGE_ID, post(change_password))
     // .add("/api/auth/test/welcome", get(test_welcome_mail))
     // .add("/api/auth/test/forgot_password", get(test_forgot_password))
     // .add("/api/auth/test/magic_link", get(test_magic_link))
@@ -127,6 +135,10 @@ async fn load_plan(db: &impl ConnectionTrait, name: &String) -> Result<PlanModel
 }
 async fn load_transaction(db: &impl ConnectionTrait, name: &Uuid) -> Result<TransactionModel> {
     let item = TransactionModel::find_by_pid(name, db).await?;
+    Ok(item)
+}
+async fn load_user(db: &DatabaseConnection, user_pid: &UserPid) -> Result<UserModel> {
+    let item = UserModel::find_by_pid(db, user_pid.as_ref()).await?;
     Ok(item)
 }
 
@@ -148,16 +160,13 @@ pub struct MagicLinkParams {
 
 #[debug_handler]
 pub async fn test_transaction(
-    // auth: auth::JWT,
     State(ctx): State<AppContext>,
     Extension(website): Extension<Website>,
-    ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new("ab5e796c-a2cd-458e-ad6b-c3a898f44bd1");
     let transaction_pid: Uuid = "c8b9233b-e18d-482d-9307-ed0c1b694cd7".parse().unwrap();
     let plan_name_str = "Premium".to_string();
-
-    let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
+    let user = load_user(&ctx.db, &user_pid).await?;
     let plan = load_plan(&ctx.db, &plan_name_str).await?;
     let transaction = load_transaction(&ctx.db, &transaction_pid).await?;
 
@@ -173,39 +182,67 @@ pub async fn test_transaction(
 }
 #[debug_handler]
 pub async fn test_welcome_mail(
-    // auth: auth::JWT,
     State(ctx): State<AppContext>,
     Extension(website): Extension<Website>,
-    ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new("ab5e796c-a2cd-458e-ad6b-c3a898f44bd1");
-    let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
+    let user = load_user(&ctx.db, &user_pid).await?;
     AuthMailer::send_welcome(&ctx, &user, &website.website_basic_info).await?;
     Ok((StatusCode::OK).into_response())
 }
 #[debug_handler]
 pub async fn test_forgot_password(
-    // auth: auth::JWT,
     State(ctx): State<AppContext>,
     Extension(website): Extension<Website>,
-    ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new("ab5e796c-a2cd-458e-ad6b-c3a898f44bd1");
-    let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
+    let user = load_user(&ctx.db, &user_pid).await?;
     AuthMailer::forgot_password(&ctx, &user, &website.website_basic_info).await?;
     Ok((StatusCode::OK).into_response())
 }
 #[debug_handler]
 pub async fn test_magic_link(
-    // auth: auth::JWT,
+    State(ctx): State<AppContext>,
+    Extension(website): Extension<Website>,
+) -> Result<impl IntoResponse> {
+    let user_pid = UserPid::new("ab5e796c-a2cd-458e-ad6b-c3a898f44bd1");
+    let user = load_user(&ctx.db, &user_pid).await?;
+    AuthMailer::send_magic_link(&ctx, &user, &website.website_basic_info).await?;
+    Ok((StatusCode::OK).into_response())
+}
+#[debug_handler]
+pub async fn change_password(
+    auth: auth::JWT,
+    Path(pid): Path<Uuid>,
     State(ctx): State<AppContext>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
+    Json(params): Json<PasswordChangeParams>,
 ) -> Result<impl IntoResponse> {
-    let user_pid = UserPid::new("ab5e796c-a2cd-458e-ad6b-c3a898f44bd1");
-    let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
-    AuthMailer::send_magic_link(&ctx, &user, &website.website_basic_info).await?;
-    Ok((StatusCode::OK).into_response())
+    params.validate()?;
+
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let user = load_user(&ctx.db, &user_pid).await?;
+
+    if user.pid != pid {
+        return Err(Error::Unauthorized(
+            "Unauthorized to change password".to_string(),
+        ));
+    };
+
+    let valid = user.verify_password(&params.current_password);
+
+    if !valid {
+        let msg = Some(String::from("There was an error with your password"));
+        return views::settings::password_change(v, &website, &user.into(), msg);
+    }
+
+    let user = user
+        .into_active_model()
+        .reset_password(&ctx.db, &params.password)
+        .await?;
+
+    views::settings::password_change(v, &website, &user.into(), None)
 }
 
 #[debug_handler]

@@ -1,57 +1,78 @@
-{% extends "base.html" %} {% block title %} Homepage {% endblock title %} {% block content %} {#
-<!-- Navbar -->
-{% block navbar %} {% include "partials/navbar/navbar.html" %} {% endblock navbar %} #}
+{% extends "base.html" %} {% block title %}{{ website.website_basic_info.name }} | Homepage {%
+endblock title %} {% block navbar %}{% endblock navbar %} {% block home %}
 
-<!-- Hero -->
-<div class="hero bg-base-200 min-h-screen">
-  <div class="hero-content text-center">
-    <div class="max-w-md">
-      <h1 class="text-5xl font-bold">Hello there</h1>
-      <p class="py-6">
-        Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem
-        quasi. In deleniti eaque aut repudiandae et a id nisi.
-      </p>
-      <button
-        hx-get="/info"
-        class="btn btn-primary"
-        hx-on::before-request="alert('Making a request!')"
-        hx-on::after-request="alert('Done making a request!')"
-      >
-        Get Started
-      </button>
-      <button
-        class="btn btn-secondary"
-        hx-post="/your-endpoint"
-        hx-trigger="click"
-        hx-swap="outerHTML"
-        hx-indicator="#loading-indicator"
-        x-data="{ disabled: false }"
-        x-bind:disabled="disabled"
-        @htmx:config-request="disabled = true"
-        @htmx:response-error="disabled = false"
-      >
-        Submit
-      </button>
+<div class="bg-[#191e24] relative overflow-hidden">
+  <!-- Header -->
+  {% include "home/sections/navbar.html" %}
 
-      <img id="loading-indicator" class="htmx-indicator" src="/img/bars.svg" />
+  <!-- Hero -->
+  {% include "home/sections/hero.html" %}
+
+  <!-- Businesses -->
+  {% include "home/sections/businesses.html" %}
+
+  <!-- Pro Head Shot -->
+  {% include "home/sections/pro_head_shot.html" %}
+
+  <!-- Gallery -->
+  {% include "home/sections/gallery.html" %}
+
+  <!-- Instant styles -->
+  {% include "home/sections/instant_styles.html" %}
+
+  <!-- payment plans -->
+  {% include "home/sections/payment_plans.html" %}
+  <div class="flex flex-col items-center gap-12 w-full max-w-[2170px] mx-auto mt-24 mb-16">
+    <div class="flex flex-col items-center gap-3 w-full">
+      <div class="flex items-center gap-2 rounded-full px-4 py-1">
+        {% include "partials/svg/triple_stars.html" %}
+        <div class="text-w text-sm font-normal font-sans text-center">Ai Studio</div>
+      </div>
+
+      <div class="flex flex-col items-center gap-4 w-full">
+        <div class="text-w text-5xl font-medium leading-[120%] text-center font-brico w-[1062px]">
+          What Creators Are Saying
+        </div>
+        <div class="text-[#f8fdfe] text-lg font-normal leading-[160%] text-center font-sans">
+          Studio-quality AI photos with perfect likeness every time.
+        </div>
+      </div>
     </div>
-    <form
-      hx-post="/your-endpoint"
-      hx-trigger="submit"
-      hx-swap="outerHTML"
-      hx-indicator="#loading-indicator"
-      x-data="{ disabled: false }"
-      @htmx:config-request="disabled = true"
-      @htmx:response-error="disabled = false"
-      @htmx:after-request="if (event.detail.xhr.status !== 200) disabled = false"
-    >
-      <input type="text" name="name" required placeholder="Enter name" />
 
-      <button class="btn btn-primary" type="submit" x-bind:disabled="disabled">Submit</button>
+    <div class="relative w-full h-[564px]">
+      <div class="flex gap-5 items-center mb-[30px] pl-40">
+        {% include "home/sections/creator_reviews.html/review_big.html" %}
+        <!-- review -->
+        {% include "home/sections/creator_reviews.html/review_small.html" %}
+        <!-- review -->
+        {% include "home/sections/creator_reviews.html/review_big.html" %}
+        <!-- review -->
+        {% include "home/sections/creator_reviews.html/review_small.html" %}
+        <!-- review -->
+        {% include "home/sections/creator_reviews.html/review_small.html" %}
+      </div>
 
-      <span id="loading-indicator" class="htmx-indicator">Loading...</span>
-    </form>
+      <div class="flex gap-5 items-center">
+        {% include "home/sections/creator_reviews.html/review_big.html" %}
+        <!-- review -->
+        {% include "home/sections/creator_reviews.html/review_small.html" %}
+        <!-- review -->
+        {% include "home/sections/creator_reviews.html/review_big.html" %}
+        <!-- review -->
+        {% include "home/sections/creator_reviews.html/review_big.html" %}
+        <!-- review -->
+        {% include "home/sections/creator_reviews.html/review_small.html" %}
+      </div>
+    </div>
   </div>
-</div>
 
-{% endblock content %}
+  <!-- Call to Action -->
+  {% include "home/sections/cta.html" %}
+
+  <!-- Creators -->
+  {% include "home/sections/creators.html" %}
+
+  <!-- Footer -->
+  {% include "home/sections/footer.html" %}
+</div>
+{% endblock home %}

@@ -1,25 +1,29 @@
 #![allow(clippy::missing_errors_doc)]
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
-use axum::{debug_handler, extract::Query, http::HeaderMap, response::Redirect, Extension};
+use axum::{debug_handler, extract::Query, http::HeaderMap, Extension};
 use derive_more::Constructor;
 use loco_rs::{controller::ErrorDetail, prelude::*};
 use serde::{Deserialize, Serialize};
 use std::str::FromStr;
 use stripe::{
-    CheckoutSession, CheckoutSessionId, CheckoutSessionPaymentStatus, CheckoutSessionStatus,
+    Charge, CheckoutSession, CheckoutSessionId, CheckoutSessionPaymentStatus,
+    CheckoutSessionStatus, Client, Expandable, PaymentIntent,
 };
 pub struct PaymentController;
 use crate::{
     domain::website::Website,
     models::{
-        transactions::TransactionDomain,
         users::UserPid,
-        PlanModel, TransactionActiveModel, UserModel,
+        PlanModel,
         _entities::sea_orm_active_enums::{CheckOutStatus, PlanNames},
-        join::user_credits_models::load_user_and_credits,
+        join::{user_credits_models::load_user_and_credits, user_order::load_user_and_order},
+        UserModel,
     },
-    service::stripe::{stripe::StripeClient, stripe_builder::CheckoutSessionBuilder},
+    service::stripe::{
+        stripe::{StripeClient, StripeClientError},
+        stripe_builder::CheckoutSessionBuilder,
+    },
     views,
 };
 use axum::{http::StatusCode, response::IntoResponse};
@@ -37,6 +41,7 @@ pub mod routes {
         pub stripe_payment_status_route: String,
         pub payment_plans: String,
         pub payment_plans_partial: String,
+        pub payment_stripe_url_from_order: String,
     }
     impl PaymentRoutes {
         pub fn init() -> Self {
@@ -59,6 +64,11 @@ pub mod routes {
                     Payment::BASE,
                     Payment::PAYMENT_PLAN_PARTIAL
                 ),
+                payment_stripe_url_from_order: format!(
+                    "{}{}",
+                    Payment::BASE,
+                    Payment::STRIPE_RECEIPT_FROM_ORDER
+                ),
             }
         }
     }
@@ -76,6 +86,8 @@ pub mod routes {
         pub const API_STRIPE_PAYMENT_PLAN_REQUEST: &'static str = "/plan/{pid}/{plan}";
         pub const PAYMENT_PLAN: &'static str = "/plan";
         pub const PAYMENT_PLAN_PARTIAL: &'static str = "/partial/plan";
+        pub const STRIPE_RECEIPT_FROM_ORDER_ID: &'static str = "/order/receipt/{order_id}";
+        pub const STRIPE_RECEIPT_FROM_ORDER: &'static str = "/order/receipt";
         pub const STRIPE_PAYMENT_STATUS_ID: &'static str = "/processing/status/{session_id}";
         pub const STRIPE_PAYMENT_STATUS: &'static str = "/processing/status";
         pub const STRIPE_CREATE_CHECKOUT: &'static str = "/create-checkout-session";
@@ -106,14 +118,22 @@ pub fn routes() -> Routes {
             routes::Payment::STRIPE_PAYMENT_STATUS_ID,
             get(status_handler),
         )
+        .add(
+            routes::Payment::STRIPE_RECEIPT_FROM_ORDER_ID,
+            get(get_receipt_url_for_order),
+        )
 }
 
-async fn load_user(db: &DatabaseConnection, pid: &UserPid) -> Result<UserModel> {
-    let item = UserModel::find_by_pid(db, &pid.as_ref().to_string()).await?;
-    Ok(item)
-}
+// async fn load_user(db: &DatabaseConnection, pid: &UserPid) -> Result<UserModel> {
+//     let item = UserModel::find_by_pid(db, &pid.as_ref().to_string()).await?;
+//     Ok(item)
+// }
 async fn load_plan(db: &DatabaseConnection, name: &PlanNames) -> Result<PlanModel> {
     let item = PlanModel::find_by_name(db, &name).await?;
+    Ok(item)
+}
+async fn load_user(db: &DatabaseConnection, user_pid: &UserPid) -> Result<UserModel> {
+    let item = UserModel::find_by_pid(db, user_pid.as_ref()).await?;
     Ok(item)
 }
 
@@ -128,12 +148,71 @@ pub struct ClientSecret {
     pub client_secret: String,
 }
 
+async fn get_receipt_url_for_order(
+    auth: auth::JWT,
+    Path(order_pid): Path<Uuid>,
+    State(_ctx): State<AppContext>,
+    Extension(stripe_client): Extension<StripeClient>,
+) -> Result<impl IntoResponse> {
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let client = Client::new(stripe_client.settings.stripe_secret_key);
+    let (_, order) = load_user_and_order(&_ctx.db, &user_pid, &order_pid).await?;
+
+    // 1. Retrieve the checkout session
+    let checkout_session = CheckoutSessionId::from_str(&order.payment_id)
+        .map_err(|e| StripeClientError::ParseId(e))?;
+    let session = CheckoutSession::retrieve(&client, &checkout_session, &[])
+        .await
+        .map_err(|e| StripeClientError::StripeApi(e))?;
+
+    // 2. Extract the PaymentIntent ID
+    let payment_intent_expandable = session.payment_intent.ok_or(StripeClientError::Internal(
+        "Payment intent missing".to_owned(),
+    ))?;
+    let pi_id = match payment_intent_expandable {
+        Expandable::Id(id) => id,
+        Expandable::Object(pi) => pi.id,
+    };
+
+    // 3. Retrieve the PaymentIntent
+    let payment_intent = PaymentIntent::retrieve(&client, &pi_id, &[])
+        .await
+        .map_err(|e| StripeClientError::StripeApi(e))?;
+
+    // 4. Extract the *latest* Charge ID from the PaymentIntent
+    let latest_charge_expandable =
+        payment_intent
+            .latest_charge
+            .ok_or(StripeClientError::Internal(
+                "Payment intent has no associated charge (payment might be pending or failed)"
+                    .to_owned(),
+            ))?;
+    let charge_id = match latest_charge_expandable {
+        Expandable::Id(id) => id,
+        Expandable::Object(ch) => ch.id,
+    };
+
+    // 5. Retrieve the Charge object using the Charge ID
+    let charge = Charge::retrieve(&client, &charge_id, &[])
+        .await
+        .map_err(|e| StripeClientError::StripeApi(e))?;
+
+    // 6. Get receipt_url from the charge
+    let receipt_url = charge.receipt_url.ok_or(StripeClientError::Internal(
+        "Charge found, but it does not have a receipt URL (charge might be uncaptured, failed, or type doesn't support receipts)"
+            .to_owned(),
+    ))?;
+
+    dbg!(&receipt_url);
+
+    return Ok((StatusCode::OK, receipt_url).into_response());
+}
+
 #[debug_handler]
 pub async fn prepare_handler(
-    auth: auth::JWT,
+    _auth: auth::JWT,
     Path((pid, plan)): Path<(Uuid, PlanNames)>,
-    Extension(stripe_client): Extension<StripeClient>,
-    State(ctx): State<AppContext>,
+    State(_ctx): State<AppContext>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
@@ -155,7 +234,7 @@ pub async fn create_checkout_session(
     State(ctx): State<AppContext>,
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
-    let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
+    let user = load_user(&ctx.db, &user_pid).await?;
 
     let mut headers = HeaderMap::new();
     if user.pid != pid {
@@ -189,10 +268,11 @@ pub async fn create_checkout_session(
 }
 
 async fn success_handler(
+    // _auth: auth::JWT,
     params: Query<PaymentRedirectParams>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
-    State(ctx): State<AppContext>,
+    // State(_): State<AppContext>,
 ) -> Result<impl IntoResponse> {
     tracing::info!("User successfully completed payment process.");
     let status = CheckOutStatus::Processing;

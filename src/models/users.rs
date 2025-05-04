@@ -156,6 +156,13 @@ impl RegisterParams {
         validate
     }
 }
+#[derive(Debug, Serialize, Deserialize, Validate)]
+pub struct PasswordChangeParams {
+    pub current_password: String,
+    #[validate(must_match(other = "confirm_password", message = "Passwords do not match"))]
+    pub password: String,
+    pub confirm_password: String,
+}
 
 #[derive(Debug, Clone, Constructor, AsRef, From)]
 pub struct UserId(i32);

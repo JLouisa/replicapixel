@@ -1,8 +1,8 @@
 import Alpine from "alpinejs";
 import { TrainingModelFormClass } from "./lib/type/trainingModelForm";
 import { DAL } from "./lib/api";
-import { createBatches, createZip } from "./lib/utils";
-import { ImageGenFormClass, type ImageGenForm } from "./lib/type/ImageGenForm";
+import { createBatches, createZip, ensureBoolean } from "./lib/utils";
+import { ImageGenFormClass } from "./lib/type/ImageGenForm";
 
 declare global {
   interface Window {
@@ -13,104 +13,28 @@ declare global {
     htmx: any;
   }
 }
-console.log("Index Environment: ", window.__APP_ENV__.apiBaseUrl);
 
 enum Stores {
   Image = "image",
   Toast = "toast",
   ImageGenForm = "imageGenForm",
   Uploader = "uploader",
+  CreateModelForm = "createModelForm",
 }
-
-interface CreateModelFormStore extends TrainingModelFormClass {
-  files: File[];
-  zip: File | null;
-  image_zip_url: string;
-
-  reset(): void;
-  submit(): Promise<void>;
-  handleFileSelection(event: Event): void;
-}
-
-Alpine.store("createModelForm", {
-  name: "",
-  sex: "",
-  age: 18,
-  based_on: "",
-  ethnicity: "",
-  eye_color: "",
-  creative: 1000,
-  bald: false,
-  consent: false,
-  files: [] as File[],
-  zip: null as File | null,
-  image_zip_url: "",
-
-  reset(this: CreateModelFormStore): void {
-    this.name = "";
-    this.sex = "";
-    this.age = 18;
-    this.based_on = "";
-    this.ethnicity = "";
-    this.eye_color = "";
-    this.creative = 1000;
-    this.bald = false;
-    this.consent = false;
-    this.files = [];
-    this.zip = null;
-    this.image_zip_url = "";
-  },
-
-  async submit(this: CreateModelFormStore): Promise<void> {
-    if (!this.files.length || this.files.length < 2) {
-      console.error("No files selected.");
-      return;
-    }
-
-    // Create zip
-    this.zip = await createZip(this.files, this.name);
-
-    // Ensure `TrainingModelForm.create()` and `APIClient` exist
-    const modelData = TrainingModelFormClass.create({
-      name: this.name,
-      sex: this.sex,
-      age: this.age ?? 18,
-      based_on: this.based_on,
-      ethnicity: this.ethnicity,
-      eye_color: this.eye_color,
-      creative: this.creative ?? 40,
-      bald: this.bald,
-      consent: this.consent,
-      file_type: TrainingModelFormClass.file_type,
-    });
-
-    console.log("Model Data:", modelData);
-
-    // Create and upload to S3
-    const item = await DAL.Complete.S3UploadTrainingModel.saveToS3(modelData, this.zip);
-
-    console.log("Success: ", item);
-    this.reset();
-  },
-
-  handleFileSelection(this: CreateModelFormStore, event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files) {
-      this.files = Array.from(input.files);
-    }
-  },
-});
 
 interface ToastStore {
   message: string;
   isVisible: boolean;
   isError: boolean;
+  isWarn: boolean;
   success(message: string, duration?: number): this;
+  warn(message: string, duration?: number): this;
   error(message: string, duration?: number): this;
 }
 
 Alpine.store(Stores.Toast, {
   isVisible: false,
+  isWarn: false,
   isError: false,
   message: "",
   success(this: ToastStore, message: string, duration = 5000): ToastStore {
@@ -127,6 +51,292 @@ Alpine.store(Stores.Toast, {
     setTimeout(() => (this.isVisible = false), duration);
     return this;
   },
+  warn(this: ToastStore, message: string, duration = 5000): ToastStore {
+    this.isVisible = true;
+    this.isWarn = true;
+    this.message = message;
+    setTimeout(() => (this.isVisible = false), duration);
+    return this;
+  },
+});
+
+interface CreateModelFormStore extends TrainingModelFormClass {
+  name: string;
+  sex: string;
+  age: number | string;
+  ethnicity: string;
+  eye_color: string;
+  based_on: boolean;
+  bald: boolean | string;
+  consent: boolean;
+
+  files: File[];
+  zip: File | null;
+  fileDragging: number | null;
+  fileDropping: number | null;
+  isSubmitting: boolean;
+  previewUrls: string[];
+
+  reset(): void;
+  resetFiles(): void;
+  submit(): Promise<void>;
+  handleFileSelection(event: Event): void;
+  addFiles(e: Event): void;
+  humanFileSize(size: number): string;
+  removeFile(index: number): void;
+  reorderFilesOnDrop(e: DragEvent): void;
+  dragEnterFile(e: DragEvent): void;
+  dragStartFile(e: DragEvent): void;
+  loadFilePreview(file: File): string | null;
+  revokePreviewUrls(): void;
+  handleFileDrop(e: DragEvent): void;
+}
+
+Alpine.store(Stores.CreateModelForm, {
+  // Form fields
+  name: "",
+  sex: "",
+  age: "" as string | number,
+  ethnicity: "",
+  eye_color: "",
+  based_on: true,
+  bald: "",
+  consent: false,
+
+  // File handling
+  files: [] as File[],
+  zip: null as File | null,
+  fileDragging: null as number | null,
+  fileDropping: null as number | null,
+  previewUrls: [] as string[],
+
+  isSubmitting: false,
+
+  // Reset form
+  reset(this: CreateModelFormStore): void {
+    this.name = "";
+    this.sex = "";
+    this.age = "" as string | number;
+    this.ethnicity = "";
+    this.eye_color = "";
+    this.bald = "";
+    this.based_on = true;
+    this.consent = false;
+    this.zip = null;
+    this.isSubmitting = false;
+    this.resetFiles();
+  },
+
+  // Form submission
+  async submit(this: CreateModelFormStore): Promise<void> {
+    if (this.isSubmitting) {
+      return;
+    }
+    if (!this.files.length || this.files.length < 1) {
+      Alpine.store(Stores.Toast).error("No files selected.");
+      return;
+    }
+    if (!this.files.length || this.files.length < 10) {
+      Alpine.store(Stores.Toast).error(
+        `You still need to add ${10 - this.files.length} more image(s)`
+      );
+      return;
+    }
+    if (Number(this.age) < 18 || Number(this.age) > 120) {
+      return;
+    }
+
+    this.isSubmitting = true;
+
+    try {
+      // Create zip
+      this.zip = await createZip(this.files, this.name);
+
+      const modelData = TrainingModelFormClass.create({
+        name: this.name,
+        sex: this.sex,
+        age: this.age ?? 18,
+        based_on: this.based_on,
+        ethnicity: this.ethnicity,
+        eye_color: this.eye_color,
+        bald: ensureBoolean(this.bald),
+        consent: this.consent,
+        file_type: TrainingModelFormClass.file_type,
+      });
+
+      // Create and upload to S3
+      await DAL.Complete.S3UploadTrainingModel.saveToS3(modelData, this.zip);
+      Alpine.store(Stores.Toast).success("New Model Successfully Created");
+
+      // Get training models html
+      await DAL.Complete.Htmx.getTrainingModels();
+
+      this.reset();
+    } catch (error) {
+      Alpine.store(Stores.Toast).error("error");
+      this.isSubmitting = false;
+    }
+  },
+
+  // File handling methods
+  handleFileSelection(this: CreateModelFormStore, event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files?.length) return;
+
+    // Check all files for duplicates
+    const newFiles = Array.from(input.files).filter(
+      (newFile) =>
+        !this.files.some(
+          (existingFile) =>
+            existingFile.name === newFile.name &&
+            existingFile.size === newFile.size &&
+            existingFile.lastModified === newFile.lastModified
+        )
+    );
+
+    if (newFiles.length < input.files.length) {
+      Alpine.store("toast").warn(`Skipped ${input.files.length - newFiles.length} duplicate files`);
+    }
+
+    if (newFiles.length) {
+      this.files = newFiles; // Replace existing files
+    } else if (input.files.length) {
+      Alpine.store("toast").warn("All selected files are duplicates");
+    }
+  },
+
+  addFiles(this: CreateModelFormStore, e: Event): void {
+    const input = e.target as HTMLInputElement;
+    if (!input.files?.length) return;
+
+    // Check all files for duplicates
+    const newFiles = Array.from(input.files).filter(
+      (newFile) =>
+        !this.files.some(
+          (existingFile) =>
+            existingFile.name === newFile.name &&
+            existingFile.size === newFile.size &&
+            existingFile.lastModified === newFile.lastModified
+        )
+    );
+
+    if (newFiles.length < input.files.length) {
+      Alpine.store("toast").error(
+        `Skipped ${input.files.length - newFiles.length} duplicate files`
+      );
+    }
+
+    if (newFiles.length) {
+      this.files = [...this.files, ...newFiles];
+      input.value = "";
+    } else if (input.files.length) {
+      Alpine.store("toast").error("All selected files are duplicates");
+    }
+  },
+
+  humanFileSize(this: CreateModelFormStore, size: number): string {
+    if (size === 0) return "0 B";
+    const units = ["B", "kB", "MB", "GB", "TB"];
+    const i = Math.floor(Math.log(size) / Math.log(1024));
+    const num = size / Math.pow(1024, i);
+    return `${num.toFixed(2)} ${units[i]}`;
+  },
+
+  removeFile(this: CreateModelFormStore, index: number): void {
+    this.files.splice(index, 1);
+  },
+
+  reorderFilesOnDrop(this: CreateModelFormStore, e: DragEvent): void {
+    e.preventDefault();
+    if (this.fileDragging !== null && this.fileDropping !== null) {
+      const removed = this.files.splice(this.fileDragging, 1);
+      this.files.splice(this.fileDropping, 0, ...removed);
+    }
+    this.fileDragging = null;
+    this.fileDropping = null;
+  },
+
+  dragEnterFile(this: CreateModelFormStore, e: DragEvent): void {
+    const target = (e.target as HTMLElement).closest("[draggable]");
+    if (target) {
+      this.fileDropping = Number(target.getAttribute("data-index"));
+    }
+  },
+
+  dragStartFile(this: CreateModelFormStore, e: DragEvent): void {
+    const target = (e.target as HTMLElement).closest("[draggable]");
+    if (target) {
+      this.fileDragging = Number(target.getAttribute("data-index"));
+      e.dataTransfer!.effectAllowed = "move";
+    }
+  },
+  // To avoid memory leaks
+  loadFilePreview(this: CreateModelFormStore, file: File): string | null {
+    if (file.type.startsWith("image/") || file.type.startsWith("video/")) {
+      const url = URL.createObjectURL(file);
+      this.previewUrls.push(url);
+      return url;
+    }
+    return null;
+  },
+  revokePreviewUrls(this: CreateModelFormStore) {
+    this.previewUrls.forEach((url) => URL.revokeObjectURL(url));
+    this.previewUrls = [];
+  },
+  resetFiles(this: CreateModelFormStore): void {
+    this.files = [];
+    this.fileDragging = null;
+    this.fileDropping = null;
+    this.revokePreviewUrls();
+  },
+  handleFileDrop(this: CreateModelFormStore, e: DragEvent): void {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (e.dataTransfer?.files && e.dataTransfer.files.length > 0) {
+      const droppedFiles = Array.from(e.dataTransfer.files);
+
+      // Filter for allowed types
+      const imageFiles = droppedFiles.filter(
+        (file) => file.type === "image/png" || file.type === "image/jpeg"
+      );
+
+      if (imageFiles.length < droppedFiles.length) {
+        Alpine.store(Stores.Toast).error(
+          `Skipped ${droppedFiles.length - imageFiles.length} non-image files.`
+        );
+      }
+
+      // Check for duplicates against existing files
+      const newFiles = imageFiles.filter(
+        (newFile) =>
+          !this.files.some(
+            (existingFile) =>
+              existingFile.name === newFile.name &&
+              existingFile.size === newFile.size &&
+              existingFile.lastModified === newFile.lastModified
+          )
+      );
+
+      if (newFiles.length < imageFiles.length) {
+        Alpine.store(Stores.Toast).warn(
+          `Skipped ${imageFiles.length - newFiles.length} duplicate files`
+        );
+      }
+
+      // Check if there are actually new files to add
+      if (newFiles.length > 0) {
+        const originalLength = this.files.length;
+        this.files = [...this.files, ...newFiles];
+      } else if (imageFiles.length > 0) {
+        Alpine.store(Stores.Toast).warn("All dropped files are duplicates or not images.");
+      }
+    }
+
+    // Reset dragging state
+    this.fileDragging = null;
+    this.fileDropping = null;
+  },
 });
 
 // Define the structure of the store's state and methods
@@ -137,7 +347,6 @@ interface ImageGenFormStore {
   isLoading: boolean;
   selectedModelId: string;
 
-  // Methods
   init(): void;
   reset(): void;
   toggleAdvancedOptions(): void;
@@ -146,7 +355,6 @@ interface ImageGenFormStore {
   handleCreateRequest(event: SubmitEvent): Promise<void>;
 }
 
-// Register the store with Alpine
 Alpine.store(Stores.ImageGenForm, {
   advancedOptionsOpen: false,
   inferenceSteps: 28,
@@ -154,10 +362,7 @@ Alpine.store(Stores.ImageGenForm, {
   isLoading: false,
   selectedModelId: "",
 
-  // --- Methods ---
-  init() {
-    console.log("ImageGenForm store initialized");
-  },
+  init() {},
   reset(this: ImageGenFormStore): void {
     (this.advancedOptionsOpen = false), (this.isLoading = false);
   },

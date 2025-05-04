@@ -1,12 +1,22 @@
+use async_trait::async_trait;
 use derive_more::Constructor;
-use redis::{aio::MultiplexedConnection, AsyncCommands, Client, RedisResult};
+use loco_rs::cache::{drivers::CacheDriver, CacheError, CacheResult};
+use redis::{
+    aio::ConnectionManagerConfig,
+    io::tcp::{socket2::TcpKeepalive, TcpSettings},
+    AsyncCommands, Client, IntoConnectionInfo, RedisResult,
+};
 use serde::Deserialize;
+use std::{sync::Arc, time::Duration};
 use strum::{AsRefStr, EnumString};
 use thiserror::Error;
 
-use crate::views::images::{ImageView, ImageViewList};
+use crate::views::images::ImageView;
 
-pub type Cache = Redis;
+pub type Cache = Arc<loco_rs::cache::Cache>;
+pub type RedisDbResult<T> = std::result::Result<T, RedisDbError>;
+
+use redis::aio::ConnectionManager;
 
 #[derive(Debug, Error)]
 pub enum RedisDbError {
@@ -26,6 +36,8 @@ pub enum RedisDbError {
     AuthenticationFailed,
     #[error("Not found")]
     NotFound,
+    #[error("Cache error: {0}")]
+    CacheError(#[from] CacheError),
 }
 
 #[derive(Debug, Clone, EnumString, AsRefStr)]
@@ -43,66 +55,131 @@ pub struct RedisSettings {
     pub redis_url: String,
 }
 
-#[derive(Debug, Clone)]
-pub struct Redis {
-    client: MultiplexedConnection,
+#[derive(Clone)]
+pub struct RedisCacheDriver {
+    client: ConnectionManager,
+    settings: RedisSettings,
 }
 
-impl Redis {
+impl RedisCacheDriver {
     pub async fn new(config: &RedisSettings) -> RedisResult<Self> {
-        let client_instance = Client::open(config.redis_url.as_str())?;
-        let connection = client_instance
-            .get_multiplexed_tokio_connection() // Use the tokio version
-            .await?;
-        Ok(Redis { client: connection })
+        let manager = Self::connect_with_manager(config).await?;
+        Ok(Self {
+            client: manager,
+            settings: config.clone(),
+        })
     }
-    /// Sets the value of a key.
-    pub async fn set(&self, key: &str, value: &str, seconds: Option<usize>) -> RedisResult<()> {
-        let mut conn = self.client.clone();
-        if let Some(timeout) = seconds {
-            let _: () = conn.set_ex(key, value, timeout as u64).await?;
-        } else {
-            let _: () = conn.set(key, value).await?;
-        }
-        Ok(())
+    async fn connect_with_manager(
+        redis_settings: &RedisSettings,
+    ) -> RedisResult<ConnectionManager> {
+        let keep_alive_settings = TcpKeepalive::new()
+            .with_time(Duration::from_secs(60))
+            .with_interval(Duration::from_secs(15))
+            .with_retries(5);
+        let tcp_settings = TcpSettings::default().set_keepalive(keep_alive_settings);
+        let config = ConnectionManagerConfig::new().set_tcp_settings(tcp_settings);
+        let connection_info = redis_settings.redis_url.as_str().into_connection_info()?;
+        let client = Client::open(connection_info)?;
+        let manager = ConnectionManager::new_with_config(client, config).await?;
+        Ok(manager)
     }
-    /// Gets the value of a key.
-    pub async fn get(&self, key: &str) -> RedisResult<String> {
-        let mut conn = self.client.clone();
-        let value: String = conn.get(key).await?;
-        Ok(value)
+    pub fn redis_settings(&self) -> &RedisSettings {
+        &self.settings
     }
 }
 
-impl Cache {
-    pub async fn set_s3_pre_url(&self, key: &ImageView) -> Result<(), RedisDbError> {
+#[async_trait]
+impl CacheDriver for RedisCacheDriver {
+    async fn contains_key(&self, key: &str) -> CacheResult<bool> {
         let mut conn = self.client.clone();
+        let exists: bool = match conn.exists(key).await {
+            Ok(exists) => exists,
+            Err(_) => false,
+        };
+        Ok(exists)
+    }
+    async fn get(&self, key: &str) -> CacheResult<Option<String>> {
+        let mut conn = self.client.clone();
+        let result: Option<String> = match conn.get(key).await {
+            Ok(result) => result,
+            Err(_) => None,
+        };
+        Ok(result)
+    }
+    async fn insert(&self, key: &str, value: &str) -> CacheResult<()> {
+        let mut conn = self.client.clone();
+        let result: () = match conn.set(key, value).await {
+            Ok(result) => result,
+            Err(_) => (),
+        };
+        Ok(result)
+    }
+    async fn insert_with_expiry(
+        &self,
+        key: &str,
+        value: &str,
+        duration: Duration,
+    ) -> CacheResult<()> {
+        let mut conn = self.client.clone();
+        let ttl_secs = duration.as_secs() as usize;
+        let result: () = match conn.set_ex(key, value, ttl_secs as u64).await {
+            Ok(result) => result,
+            Err(_) => (),
+        };
+        Ok(result)
+    }
+    async fn remove(&self, key: &str) -> CacheResult<()> {
+        let mut conn = self.client.clone();
+        let result: () = match conn.del(key).await {
+            Ok(result) => result,
+            Err(_) => (),
+        };
+        Ok(result)
+    }
+    async fn clear(&self) -> CacheResult<()> {
+        let mut conn = self.client.clone();
+        let result: () = match conn.flushdb().await {
+            Ok(result) => result,
+            Err(_) => (),
+        };
+        Ok(result)
+    }
+}
+
+impl RedisCacheDriver {
+    pub async fn set_s3_pre_url(&self, key: &ImageView) -> RedisDbResult<()> {
+        let mut conn = self.client.clone();
+        let time = 60 * 60 * 23;
         let _: () = conn
-            .set_ex(key.pid.to_string(), key.s3_pre_url.to_owned(), 60 * 60 * 23)
+            .set_ex(key.pid.to_string(), key.s3_pre_url.to_owned(), time)
             .await?;
         Ok(())
     }
-    pub async fn get_s3_pre_url(&self, key: &ImageView) -> Result<String, RedisDbError> {
+    pub async fn get_s3_pre_url(&self, key: &ImageView) -> RedisDbResult<String> {
         let mut conn = self.client.clone();
 
         let value: Option<String> = conn
             .get(key.pid.to_string())
             .await
             .map_err(RedisDbError::from)?;
-
         value.ok_or(RedisDbError::NotFound)
     }
-    // pub async fn populate_s3_pre_urls(
-    //     &self,
-    //     items: &mut ImageViewList,
-    // ) -> Result<(), RedisDbError> {
-    //     let mut conn = self.client.clone();
-
-    //     for item in items.as_mut_vec().iter_mut() {
-    //         let url: String = conn.get(item.pid.to_string()).await?;
-    //         item.s3_pre_url = Some(url);
-    //     }
-
-    //     Ok(())
-    // }
+    pub async fn ping_redis(&self) -> RedisDbResult<()> {
+        let mut conn = self.client.clone();
+        let cmd = redis::cmd("PING");
+        let result: Result<String, _> = cmd.query_async(&mut conn).await;
+        match result {
+            Ok(response) => {
+                if response == "PONG" {
+                    Ok(())
+                } else {
+                    Err(RedisDbError::PingFailed(format!(
+                        "Unexpected PING responseReceived: '{}'. Expected 'PONG'",
+                        response
+                    )))
+                }
+            }
+            Err(e) => Err(RedisDbError::RedisError(e)),
+        }
+    }
 }

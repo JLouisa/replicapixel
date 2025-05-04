@@ -1,0 +1,51 @@
+<nav
+  class="fixed left-0 right-0 z-10 bg-white/2 rounded-full border border-solid border-slate-50/10 backdrop-blur-lg py-4 px-8 flex flex-row items-center justify-between max-w-7xl w-full mx-auto mt-16"
+>
+  <div class="flex flex-row gap-4 items-center justify-center shrink-0 relative">
+    <span>{% include "partials/svg/logo.html" %}</span>
+    <div class="text-w text-center text-4xl leading-none font-semibold relative">
+      <span class="font-bricon"> {{ website.website_basic_info.name }}</span>
+    </div>
+  </div>
+  <div class="flex flex-row gap-12 items-center justify-start">
+    <ul class="flex flex-row gap-8 items-center">
+      <li>
+        <a
+          href="#"
+          class="p-2 text-white text-base hover:text-gray-300 focus:text-gray-300 transition-colors duration-150"
+        >
+          Home
+        </a>
+      </li>
+
+      <li>
+        <a
+          href="#"
+          class="p-2 text-white text-base hover:text-gray-300 focus:text-gray-300 transition-colors duration-150"
+        >
+          Features
+        </a>
+      </li>
+
+      <li>
+        <a
+          href="#"
+          class="p-2 text-white text-base hover:text-gray-300 focus:text-gray-300 transition-colors duration-150"
+          aria-current="page"
+        >
+          Studio
+        </a>
+      </li>
+
+      <li>
+        <a
+          href="#pricing"
+          class="p-2 text-white text-base hover:text-gray-300 focus:text-gray-300 transition-colors duration-150"
+        >
+          Pricing
+        </a>
+      </li>
+    </ul>
+    <div>{% include "partials/parts/cta_btn_home.html" %}</div>
+  </div>
+</nav>

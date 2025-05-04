@@ -1,20 +1,14 @@
 use crate::controllers::dashboard::routes::DashboardRoutes;
-use crate::controllers::images::routes as ImagesRoute;
 use crate::controllers::settings::routes::SettingRoutes;
 use crate::controllers::{
-    auth::routes::AuthRoutes, dashboard::routes::SidebarRoutes, features::routes::FeatureRoutes,
-    home::routes::HomeRoutes, images::routes::ImageRoutes, oauth2::routes::OAuth2Routes,
-    payment::routes::PaymentRoutes, policy::routes::PolicyRoutes,
-    training_models::routes::TrainingModelRoutes,
+    auth::routes::AuthRoutes, features::routes::FeatureRoutes, home::routes::HomeRoutes,
+    images::routes::ImageRoutes, oauth2::routes::OAuth2Routes, payment::routes::PaymentRoutes,
+    policy::routes::PolicyRoutes, training_models::routes::TrainingModelRoutes,
 };
-use crate::domain::dashboard_sidebar::DashboardSidebar;
 use crate::domain::settings::Settings;
 use crate::models::_entities::sea_orm_active_enums::Language;
 use crate::models::_entities::sea_orm_active_enums::{BasedOn, Emotion, Ethnicity, EyeColor, Sex};
-use crate::{
-    controllers::dashboard::routes,
-    models::_entities::sea_orm_active_enums::{ImageSize, PlanNames},
-};
+use crate::models::_entities::sea_orm_active_enums::{ImageSize, PlanNames};
 use derive_more::Constructor;
 use serde::{Deserialize, Serialize};
 use strum::IntoEnumIterator;

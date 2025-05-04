@@ -20,3 +20,9 @@ export function createBatches(gen_img: number, limit_per_request = 4): [number, 
   let single: number = gen_img % limit_per_request;
   return [batch, single];
 }
+
+export function ensureBoolean(value: unknown): boolean {
+  if (typeof value === "boolean") return value;
+  if (typeof value === "string") return value.toLowerCase() === "true";
+  return false;
+}

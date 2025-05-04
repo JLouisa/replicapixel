@@ -55,9 +55,9 @@
         </div>
       </div>
 
-      {% if is_oauth %}
+      {% if is_oauth == false %}
       <!-- Password Section -->
-      {% include "dashboard/content/settings/partials/password_settings.html" %} {% endif %}
+      {% include "dashboard/content/settings/partials/password_settings_partial.html" %} {% endif %}
 
       <!-- Notifications Section -->
       <div class="card bg-base-100 shadow mb-6">
@@ -105,16 +105,121 @@
         </div>
       </div>
 
-      <!-- Delete Account Section -->
+      <!-- Delete Account Section Card -->
       <div class="card bg-base-100 shadow">
         <div class="card-body">
-          <h2 class="text-lg font-medium text-error mb-2">Delete Account</h2>
+          <h2 class="text-lg font-medium text-error mb-2">
+            Delete Account <span class="text-xs text-black">Experimental</span>
+          </h2>
           <p class="text-sm text-base-content/60 mb-4">
-            Once you delete your account, there is no going back. Please be certain.
+            Permanently remove your account and all associated data. This action cannot be undone.
           </p>
-          <button class="btn btn-error btn-outline">Delete your account</button>
+          <!-- Button to open the FIRST modal -->
+          <button class="btn btn-error btn-outline" onclick="delete_account_first.showModal()">
+            Delete your account
+          </button>
         </div>
       </div>
+
+      <!-- === MODALS (Place these outside the card, e.g., at the end of the body or parent container) === -->
+
+      <!-- First Delete Confirmation Modal -->
+      <dialog id="delete_account_first" class="modal modal-bottom sm:modal-middle">
+        <div class="modal-box">
+          <h3 class="text-lg font-bold text-error">Are you sure?</h3>
+          <p class="py-4">This begins the process to permanently deleting your account.</p>
+          <div class="modal-action justify-between">
+            <!-- Form only for the Cancel button -->
+            <form method="dialog">
+              <button class="btn">Cancel</button>
+            </form>
+            <!-- Button to open the SECOND modal -->
+            <form method="dialog">
+              <button class="btn btn-error btn-outline" onclick="delete_account_second.showModal()">
+                Yes, Continue Deletion
+              </button>
+            </form>
+          </div>
+        </div>
+        <!-- Optional: Close on backdrop click -->
+        <form method="dialog" class="modal-backdrop">
+          <button>close</button>
+        </form>
+      </dialog>
+
+      <!-- Second Delete Confirmation Modal -->
+      <dialog id="delete_account_second" class="modal modal-bottom sm:modal-middle">
+        <div class="modal-box">
+          <h3 class="text-lg font-bold text-error">Understand the Consequences</h3>
+          <div class="py-4 space-y-2">
+            <p>Deleting your account is irreversible and will permanently remove:</p>
+            <ul class="list-disc list-inside text-base-content/80 ml-4">
+              <li>Your user profile and login credentials.</li>
+              <li>All uploaded photos, LoRAs, and models.</li>
+              <li>Any collaborator associations you have.</li>
+            </ul>
+            <p>Additionally, you will lose:</p>
+            <ul class="list-disc list-inside text-base-content/80 ml-4">
+              <li>Any remaining account credits.</li>
+              <li>Future access using this account.</li>
+            </ul>
+            <p class="font-semibold mt-2">Please be absolutely sure before proceeding.</p>
+          </div>
+          <div class="modal-action justify-between">
+            <!-- Form only for the Cancel button -->
+            <form method="dialog">
+              <button class="btn">Cancel</button>
+            </form>
+            <!-- Button to open the THIRD modal -->
+            <form method="dialog">
+              <button class="btn btn-error btn-outline" onclick="delete_account_third.showModal()">
+                I Understand, Proceed to Final Step
+              </button>
+            </form>
+          </div>
+        </div>
+        <!-- Optional: Close on backdrop click -->
+        <form method="dialog" class="modal-backdrop">
+          <button>close</button>
+        </form>
+      </dialog>
+
+      <!-- Third Delete Confirmation Modal (Final Step) -->
+      <dialog id="delete_account_third" class="modal modal-bottom sm:modal-middle">
+        <div class="modal-box">
+          <h3 class="text-lg font-bold text-error">Final Confirmation</h3>
+          <p>To confirm, type the following in the box below:</p>
+          <p class="py-2 px-auto text-red-600 font-bold">"{{ user.email }}"</p>
+          <br />
+          <!-- Add an ID to the input for potential JS validation -->
+          <input
+            id="delete_confirmation_input"
+            type="text"
+            placeholder="Type confirmation phrase here"
+            class="input input-bordered w-full mb-4"
+          />
+          <p class="text-sm text-warning mb-4 font-semibold">
+            Warning: This action is final and cannot be undone.
+          </p>
+          <div class="modal-action justify-between">
+            <!-- Form only for the Cancel button -->
+            <form method="dialog">
+              <button class="btn">Cancel</button>
+            </form>
+
+            <!-- This form would ideally POST to your delete endpoint -->
+            <!-- For now, it just closes the modal using method="dialog" -->
+            <form method="dialog">
+              <!-- Or method="POST" action="/your/delete/endpoint" -->
+              <button class="btn btn-error" type="submit">Delete Account Permanently</button>
+            </form>
+          </div>
+        </div>
+        <!-- Optional: Close on backdrop click -->
+        <form method="dialog" class="modal-backdrop">
+          <button>close</button>
+        </form>
+      </dialog>
     </div>
   </div>
 </div>

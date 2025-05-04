@@ -24,3 +24,11 @@ pub fn privacy(v: impl ViewRenderer, website: &Website) -> Result<impl IntoRespo
         data!({ "website": website }),
     )
 }
+
+pub fn model_consent(v: impl ViewRenderer, website: &Website) -> Result<impl IntoResponse> {
+    format::render().view(
+        &v,
+        "policies/model-consent-policy.html",
+        data!({ "website": website }),
+    )
+}

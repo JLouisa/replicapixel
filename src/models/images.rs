@@ -1,10 +1,7 @@
 use crate::controllers::images::ImageLoadingParams;
-use crate::domain::url::Url;
 use crate::service::aws::s3::S3Key;
 use crate::service::fal_ai::fal_client::Lora;
-use crate::views::images::{ImageView, ImageViewList};
 
-use super::users::{User, UserPid};
 pub use super::ImageModel;
 use super::TrainingModelModel;
 
@@ -230,11 +227,7 @@ impl ActiveModel {
 
         Ok(item.into())
     }
-    pub async fn upload_s3_completed(
-        mut self,
-        key: &S3Key,
-        db: &DatabaseConnection,
-    ) -> ModelResult<Model> {
+    pub async fn upload_s3_completed(mut self, db: &DatabaseConnection) -> ModelResult<Model> {
         self.status = ActiveValue::Set(Status::Completed);
         Ok(self.update(db).await?)
     }
@@ -392,7 +385,7 @@ impl Model {
     ) -> ModelResult<Model> {
         let mut new = ActiveModel::from(self);
         new.image_url_fal = ActiveValue::set(url);
-        new.status = ActiveValue::set(Status::Processing);
+        new.status = ActiveValue::set(status);
         let image = new.update(db).await?;
         Ok(image)
     }

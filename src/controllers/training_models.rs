@@ -5,9 +5,7 @@ use crate::domain::response::{handle_general_response, handle_general_response_t
 use crate::domain::website::Website;
 use crate::models::_entities::sea_orm_active_enums::Status;
 use crate::models::_entities::training_models::{ActiveModel, Entity, Model};
-use crate::models::join::user_credits_models::load_user_and_training;
 use crate::models::training_models::{TrainingForm, TrainingModelParams};
-use crate::models::users::UserPid;
 use crate::models::{TrainingModelActiveModel, TrainingModelModel, UserModel};
 use crate::service::aws::s3::{AwsS3, PresignedUrlRequest, PresignedUrlSafe, S3Key};
 use crate::service::fal_ai::fal_client::{FalAiClient, FluxLoraTrainingSchema};
@@ -103,10 +101,14 @@ pub async fn upload_training(
     //2. Create and save Training Model in Database
     let training_params: TrainingModelParams = form.from_form(&user, &s3_key);
     dbg!(&training_params);
-    TrainingModelActiveModel::save(&ctx.db, &training_params).await?;
 
-    //3. Create Pre-Signed URL
+    //3. Save Training Model
+    let training_model = TrainingModelActiveModel::save(&ctx.db, &training_params).await?;
+    dbg!(&training_model);
+
+    //4. Create Pre-Signed URL
     let pre_sign_response = PresignedUrlSafe::from_request(pre_url_request, pre_url);
+
     Ok(handle_general_response(
         StatusCode::OK,
         Some(pre_sign_response),
@@ -117,15 +119,12 @@ pub async fn upload_training(
 
 #[debug_handler]
 pub async fn upload_training_completed(
-    auth: auth::JWT,
+    _auth: auth::JWT,
     Path(training_model_id): Path<Uuid>,
     Extension(s3_client): Extension<AwsS3>,
     Extension(fal_ai_client): Extension<FalAiClient>,
     State(ctx): State<AppContext>,
 ) -> Result<Response> {
-    let user = UserModel::find_by_pid(&ctx.db, &auth.claims.pid)
-        .await
-        .map_err(|e| loco_rs::Error::Message(format!("Error Getting user: {} ", e)))?;
     let train = TrainingModelModel::find_by_pid(&ctx.db, &training_model_id)
         .await
         .map_err(|e| loco_rs::Error::Message(format!("Error Getting Training Model: {} ", e)))?;
@@ -151,7 +150,7 @@ pub async fn upload_training_completed(
         Ok(url) => url,
         Err(e) => return Ok((StatusCode::INTERNAL_SERVER_ERROR, e.to_string()).into_response()),
     };
-    let mut train_schema = FluxLoraTrainingSchema::from_training(train.clone(), pre_url);
+    let train_schema = FluxLoraTrainingSchema::from_training(train.clone(), pre_url);
 
     // Send training model to Fal AI Queue
     let queue = fal_ai_client
@@ -164,17 +163,15 @@ pub async fn upload_training_completed(
         .await?;
 
     // Send response back to user
-    Ok(handle_general_response(
-        StatusCode::OK,
-        Some(queue),
-        Some("Successfully saved".into()),
+    Ok(
+        handle_general_response_text(StatusCode::OK, None, Some("Successfully saved".into()))
+            .into_response(),
     )
-    .into_response())
 
     // // Send response back to user
     // Ok(handle_general_response(
     //     StatusCode::OK,
-    //     Some(train_schema),
+    //     Some(train),
     //     Some("Successfully saved".into()),
     // )
     // .into_response())

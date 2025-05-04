@@ -3,8 +3,9 @@ use super::{
     PlanModel, TransactionActiveModel, UserModel,
     _entities::{sea_orm_active_enums::Status, transactions},
 };
+use derive_more::{AsRef, Constructor};
 use loco_rs::prelude::*;
-use sea_orm::{entity::prelude::*, ActiveValue, Condition};
+use sea_orm::{entity::prelude::*, ActiveValue, Condition, QueryOrder};
 use stripe::Currency;
 pub type Transactions = Entity;
 
@@ -53,6 +54,9 @@ impl TransactionDomain {
         item.status = Set(self.status.clone());
     }
 }
+
+#[derive(Debug, Clone, Constructor, AsRef)]
+pub struct TransactionModelList(Vec<Model>);
 
 #[async_trait::async_trait]
 impl ActiveModelBehavior for ActiveModel {
@@ -145,6 +149,19 @@ impl Model {
             .one(db)
             .await?;
         user.ok_or_else(|| ModelError::EntityNotFound)
+    }
+    pub async fn find_all_user_txn(
+        db: &impl ConnectionTrait,
+        user_id: i32,
+    ) -> ModelResult<TransactionModelList> {
+        let condition = Condition::all().add(transactions::Column::UserId.eq(user_id));
+        let order_column = transactions::Column::CreatedAt;
+        let list = Entity::find()
+            .filter(condition)
+            .order_by_desc(order_column)
+            .all(db)
+            .await?;
+        Ok(TransactionModelList::new(list))
     }
 }
 

@@ -11,12 +11,15 @@ use sea_orm::{entity::prelude::*, Condition, QueryOrder};
 use serde::{Deserialize, Serialize};
 pub type TrainingModels = Entity;
 
+use crate::service::aws::s3::S3Key;
 use crate::service::fal_ai::fal_client::{FluxQueueResponse, QueueResponse};
-use crate::service::{aws::s3::S3Key, fal_ai::fal_client::FluxResponse};
 use loco_rs::prelude::*;
 
 fn default_as_true() -> bool {
     true
+}
+fn default_steps() -> i32 {
+    2000
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -47,7 +50,7 @@ impl From<TrainingModelModel> for TrainingModelClient {
             age: model.age,
             eye_color: model.eye_color,
             bald: model.bald,
-            creative: 28,
+            creative: 2000,
             based_on: model.based_on,
             ethnicity: model.ethnicity,
             training_status: model.training_status,
@@ -65,13 +68,12 @@ pub struct TrainingForm {
     pub age: i16,
     pub eye_color: EyeColor,
     pub bald: bool,
-    pub creative: i32,
     pub ethnicity: Ethnicity,
-    pub based_on: BasedOn,
+    pub based_on: bool,
     pub file_type: ImageFormat,
     #[serde(default = "cuid2::slug", skip_deserializing)]
     pub slug: String,
-    training_images: Option<serde_json::Value>,
+    pub training_images: Option<serde_json::Value>,
     pub consent: bool,
 }
 
@@ -86,11 +88,14 @@ impl TrainingForm {
             age: self.age,
             eye_color: self.eye_color,
             bald: self.bald,
-            steps: self.creative,
             s3_key: s3_key.as_ref().to_owned(),
-            based_on: self.based_on,
+            based_on: match self.based_on {
+                true => BasedOn::RealPerson,
+                false => BasedOn::CreateInfluencerAI,
+            },
             ethnicity: self.ethnicity,
             trigger_word: tw,
+            steps: 2000,
             ..Default::default()
         }
     }
@@ -105,6 +110,7 @@ pub struct TrainingModelParams {
     pub age: i16,
     pub eye_color: EyeColor,
     pub bald: bool,
+    #[serde(default = "default_steps")]
     pub steps: i32,
     #[serde(default = "default_as_true")]
     pub create_mask: bool,
@@ -123,6 +129,7 @@ pub struct TrainingModelParams {
     pub thumbnail: Option<String>,
     pub training_images: Option<serde_json::Value>,
 }
+
 impl TrainingModelParams {
     pub fn update(&self, item: &mut TrainingModelActiveModel) {
         item.pid = Set(self.pid.clone());
@@ -293,7 +300,7 @@ impl ActiveModel {
         Ok(self.update(db).await?)
     }
 
-    pub async fn update_fal_ai_webhook_training(
+    pub async fn update_fal_ai_training_webhook(
         mut self,
         db: &DatabaseConnection,
         tensor_path: Option<String>,
@@ -304,6 +311,5 @@ impl ActiveModel {
         Ok(self.update(db).await?)
     }
 }
-
 // implement your custom finders, selectors oriented logic here
 impl Entity {}

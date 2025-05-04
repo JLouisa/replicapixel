@@ -1,8 +1,6 @@
 use crate::{
     controllers::images::ImageGenRequestParams,
-    models::{
-        images::ImageNewList, users::UserPid, TrainingModelModel, UserCreditModel, UserModel,
-    },
+    models::{images::ImageNewList, TrainingModelModel, UserCreditModel, UserModel},
     service::fal_ai::fal_client::FalAiClient,
 };
 use loco_rs::prelude::*;

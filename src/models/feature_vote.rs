@@ -1,5 +1,5 @@
 use loco_rs::prelude::*;
-use sea_orm::{entity::prelude::*, ActiveValue::NotSet, Condition};
+use sea_orm::{entity::prelude::*, Condition};
 
 pub use super::_entities::feature_vote::{ActiveModel, Entity, Model};
 use derive_more::{AsRef, Constructor};

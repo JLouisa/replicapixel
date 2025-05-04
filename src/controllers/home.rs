@@ -5,7 +5,7 @@ use crate::middleware::cookie::ExtractConsentState;
 use crate::views;
 use crate::{domain::website::Website, middleware::cookie::CookieConsentLayer};
 use axum::{debug_handler, Extension};
-use loco_rs::{db, prelude::*};
+use loco_rs::prelude::*;
 
 pub mod routes {
     use serde::{Deserialize, Serialize};
