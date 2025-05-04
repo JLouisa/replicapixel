@@ -1,5 +1,5 @@
-{% extends "base.html" %} {% block title %}ReplicaPixel | Homepage {% endblock title %} {% block
-navbar %}{% endblock navbar %} {% block home %}
+{% extends "base.html" %} {% block title %}{{ website.website_basic_info.name }}" | Homepage {%
+endblock title %} {% block navbar %}{% endblock navbar %} {% block home %}
 
 <div class="bg-[#191e24] relative overflow-hidden">
   <!-- Header -->
@@ -14,11 +14,11 @@ navbar %}{% endblock navbar %} {% block home %}
   <!-- Pro Head Shot -->
   {% include "home/sections/pro_head_shot.html" %}
 
-  <!-- Instant styles -->
-  {% include "home/sections/instant_styles.html" %}
-
   <!-- Gallery -->
   {% include "home/sections/gallery.html" %}
+
+  <!-- Instant styles -->
+  {% include "home/sections/instant_styles.html" %}
 
   <!-- payment plans -->
   {% include "home/sections/payment_plans.html" %}
