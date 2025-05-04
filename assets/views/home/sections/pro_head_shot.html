@@ -1,44 +1,32 @@
-<div
-  class="flex flex-row gap-12 items-center justify-center h-[372px] relative max-w-6xl mx-auto my-16"
->
-  <div class="flex flex-col gap-3 items-start justify-start flex-1 relative">
+<div class="max-w-6xl mx-auto my-8 md:my-16">
+  <div class="flex flex-col items-center justify-center gap-4 mb-8">
     <div
-      class="rounded-[99px] pt-1 pr-4 pb-1 pl-2.5 flex flex-row gap-2 items-center justify-start shrink-0 relative border border-transparent"
+      class="p-2 flex flex-row items-center justify-center gap-2 shrink-0 border border-transparent"
     >
       {% include "partials/svg/triple_stars.html" %}
-      <div
-        class="text-w text-center font-['Inter-Regular',_sans-serif] text-sm leading-none font-normal relative flex items-center justify-center"
-      >
+      <div class="text-w text-center font-inter text-sm flex items-center justify-center">
         AI-Portraits
       </div>
     </div>
-    <div class="flex flex-col gap-8 items-start justify-start self-stretch shrink-0 relative">
-      <div class="flex flex-col gap-4 items-start justify-start shrink-0 relative">
-        <div
-          class="text-w text-left font-['BricolageGrotesque-Medium',_sans-serif] text-5xl leading-[120%] font-medium relative w-[432px]"
-        >
+    <div class="flex flex-col gap-8 items-center justify-center self-stretch shrink-0">
+      <div class="flex flex-col gap-4 shrink-0">
+        <div class="text-w text-center font-bricon text-5xl font-medium">
           AI-Powered Pro Headshots
         </div>
-        <div
-          class="text-[#f8fdfe] text-left font-['Inter-Regular',_sans-serif] text-lg leading-[160%] font-normal relative w-[568px]"
-        >
-          Upload a selfie. Get 8 studio-quality portraits in 60 seconds.
+        <div class="text-w text-center font-inter text-lg">
+          Upload a selfie.
+          <br class="md:hidden" />
+          Get 8 studio-quality portraits in 60 seconds.
         </div>
       </div>
       <div
-        class="bg-[#605dff] rounded-[50px] pt-4 pr-6 pb-4 pl-8 flex flex-row gap-4 items-center justify-center shrink-0 h-14 relative cursor-pointer"
+        class="bg-grn-from text-white rounded-full p-4 flex flex-row items-center font-semibold justify-center gap-4 shrink-0 cursor-pointer"
       >
-        <div
-          class="text-white text-center font-inter text-base leading-none font-medium relative flex items-center justify-center"
-          style="letter-spacing: -0.01em"
-        >
-          Create My Pro Portrait Now
-        </div>
-        {% include "partials/svg/triple_stars.html" %}
+        Create My Pro Portrait Now {% include "partials/svg/triple_stars.html" %}
       </div>
     </div>
   </div>
-  <figure class="diff aspect-16/9 rounded-md" tabindex="0">
+  <figure class="diff aspect-16/9 rounded-md shrink-0" tabindex="0">
     <div class="diff-item-1" role="img" tabindex="0">
       <img
         alt="daisy"
@@ -53,30 +41,4 @@
     </div>
     <div class="diff-resizer"></div>
   </figure>
-
-  {#
-  <div
-    class="bg-[#f43098] rounded-[99px] pt-2 pr-3 pb-2 pl-3 flex flex-row gap-0 items-center justify-center shrink-0 absolute left-[939px] top-[324px]"
-  >
-    <div
-      class="text-[#edf1fe] text-center font-['Poppins-Regular',_sans-serif] text-base leading-none font-normal relative flex items-center justify-center"
-    >
-      After
-    </div>
-  </div>
-  <div
-    class="bg-[rgba(0,0,0,0.40)] rounded-tl-xl rounded-bl-xl shrink-0 w-72 h-[372px] absolute left-[624px] top-0"
-  ></div>
-  {% include "partials/svg/squiggly_arrow.html" %}
-  <div
-    class="bg-[rgba(255,255,255,0.20)] rounded-[99px] pt-2 pr-3 pb-2 pl-3 flex flex-row gap-0 items-center justify-center shrink-0 absolute left-[809px] top-[323.67px]"
-    style="transform-origin: 0 0; transform: rotate(0deg) scale(1, 1)"
-  >
-    <div
-      class="text-[#edf1fe] text-center font-['Poppins-Regular',_sans-serif] text-base leading-none font-normal relative flex items-center justify-center"
-    >
-      Before
-    </div>
-  </div>
-  #}
 </div>
