@@ -1,3 +1,21 @@
+<!-- prettier-ignore -->
+{% set templates_link = "/not-found" %}
+{% set api_link = "/not-found" %}
+{% set app_link = "/not-found" %}
+{% set documentation_link = "/not-found" %}
+{% set guides_link = "/not-found" %}
+{% set blog_link = "/not-found" %}
+{% set community_link = "/not-found" %}
+{% set support_link = "/not-found" %}
+{% set privacy_link = website.website_routes.policy.privacy %}
+{% set terms_link = website.website_routes.policy.terms %}
+{% set GDPR_link =  "/not-found" %}
+{% set cookie_link = website.website_routes.policy.cookie %}
+{% set licenses_link =  "/not-found" %}
+{% set instagram_link = "/not-found" %}
+{% set twitter_link = "/not-found" %}
+{% set linkedin_link = "/not-found" %}
+
 <div class="flex flex-col gap-4 items-center justify-center">
   <div
     class="bg-[rgba(255,255,255,0.06)] py-16 flex flex-col gap-2.5 items-center justify-center w-full overflow-hidden"
@@ -20,7 +38,7 @@
                     alt="Logo"
                   />
                   <span class="text-w font-bricon text-2xl font-semibold">
-                    {{ website.website_basic_info.name }}
+                    {{ website_name }}
                   </span>
                 </div>
                 <p class="text-gray-black-100 font-inter md:text-start text-base leading-[26px]">
@@ -39,31 +57,61 @@
             <div class="flex flex-1 flex-wrap sm:flex-nowrap justify-between gap-4 md:gap-8">
               <ul class="flex flex-col gap-4">
                 <li class="text-w font-brico text-2xl font-bold">Company</li>
-                <li class="text-gray-black-50 text-base">Features</li>
-                <li class="text-gray-black-50 text-base">Studio</li>
+                <li class="text-gray-black-50 text-base"><a href="#features">Studio</a>Features</li>
+                <li class="text-gray-black-50 text-base">
+                  <a href="/dashboard">Studio</a>
+                </li>
               </ul>
               <ul class="flex flex-col gap-4">
                 <li class="text-w font-brico text-2xl font-bold">Product</li>
-                <li class="text-gray-black-50 text-base">Pricing</li>
-                <li class="text-gray-black-50 text-base">Templates</li>
-                <li class="text-gray-black-50 text-base">API</li>
-                <li class="text-gray-black-50 text-base">Apps</li>
+                <li class="text-gray-black-50 text-base">
+                  <a href="#pricing" target="_blank">Pricing</a>
+                </li>
+                <li class="text-gray-black-50 text-base">
+                  <a href="{{templates_link}}">Templates</a>
+                </li>
+                <li class="text-gray-black-50 text-base">
+                  <a href="{{api_link}}" target="_blank">API</a>
+                </li>
+                <li class="text-gray-black-50 text-base">
+                  <a href="{{app_link}}" target="_blank">Apps</a>
+                </li>
               </ul>
               <ul class="flex flex-col gap-4">
                 <li class="text-w font-brico text-2xl font-bold">Resources</li>
-                <li class="text-gray-black-50 text-base">Documentation</li>
-                <li class="text-gray-black-50 text-base">Guides</li>
-                <li class="text-gray-black-50 text-base">Blog</li>
-                <li class="text-gray-black-50 text-base">Community</li>
-                <li class="text-gray-black-50 text-base">Support</li>
+                <li class="text-gray-black-50 text-base">
+                  <a href="{{guides_link}}">Documentation</a>
+                </li>
+                <li class="text-gray-black-50 text-base">
+                  <a href="{{guides_link}}" target="_blank">Guides</a>
+                </li>
+                <li class="text-gray-black-50 text-base">
+                  <a href="{{blog_link}}" target="_blank">Blog</a>
+                </li>
+                <li class="text-gray-black-50 text-base">
+                  <a href="{{community_link}}">Community</a>
+                </li>
+                <li class="text-gray-black-50 text-base">
+                  <a href="{{support_link}}" target="_blank">Support</a>
+                </li>
               </ul>
               <ul class="flex flex-col gap-4">
                 <li class="text-w font-brico text-2xl font-bold">Legal</li>
-                <li class="text-gray-black-50 text-base">Privacy</li>
-                <li class="text-gray-black-50 text-base">Terms</li>
-                <li class="text-gray-black-50 text-base">GDPR</li>
-                <li class="text-gray-black-50 text-base">Cookie</li>
-                <li class="text-gray-black-50 text-base">Licenses</li>
+                <li class="text-gray-black-50 text-base">
+                  <a href="{{privacy_link}}" target="_blank">Privacy</a>
+                </li>
+                <li class="text-gray-black-50 text-base">
+                  <a href="{{terms_link}}" target="_blank">Terms</a>
+                </li>
+                <li class="text-gray-black-50 text-base">
+                  <a href="{{GDPR_link}}" target="_blank">GDPR</a>
+                </li>
+                <li class="text-gray-black-50 text-base">
+                  <a href="{{cookie_link}}" target="_blank">Cookie</a>
+                </li>
+                <li class="text-gray-black-50 text-base">
+                  <a href="{{licenses_link}}">Licenses</a>
+                </li>
               </ul>
             </div>
           </div>
@@ -75,14 +123,20 @@
       </div>
       <div class="flex flex-col sm:flex-row items-center justify-between self-stretch shrink-0">
         <div class="text-gray-black-50 text-left font-inter text-base leading-5 p-4 sm:p-0">
-          © 2025 {{ website.website_basic_info.name }}.
+          © 2025 {{ website_name}}.
           <br class="sm:hidden" />
           All rights reserved.
         </div>
         <ul class="flex flex-row gap-10 items-center justify-start shrink-0 text-base font-inter">
-          <li class="text-gray-black-50 text-base">Terms</li>
-          <li class="text-gray-black-50 text-base">Privacy</li>
-          <li class="text-gray-black-50 text-base">Cookies</li>
+          <li class="text-gray-black-50 text-base">
+            <a href="{{terms_link}}" target="_blank">Terms</a>
+          </li>
+          <li class="text-gray-black-50 text-base">
+            <a href="{{privacy_link}}" target="_blank">Privacy</a>
+          </li>
+          <li class="text-gray-black-50 text-base">
+            <a href="{{cookie_link}}" target="_blank">Cookie</a>
+          </li>
         </ul>
       </div>
     </div>
