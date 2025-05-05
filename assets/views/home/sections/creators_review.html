@@ -1,43 +1,24 @@
-<div class="flex flex-col items-center gap-12 w-full max-w-[2170px] mx-auto mt-24 mb-16">
-  <div class="flex flex-col items-center gap-3 w-full">
-    <div class="flex items-center gap-2 rounded-full px-4 py-1">
-      {% include "partials/svg/triple_stars.html" %}
-      <div class="text-w text-sm font-normal font-sans text-center">Ai Studio</div>
+<div class="flex flex-col items-center gap-4 max-w-7xl mt-24 mb-16 mx-auto p-2 md:p-0">
+  <div class="text-w flex items-center justify-center gap-4 font-sans">
+    {% include "partials/svg/triple_stars.html" %} Ai Studio
+  </div>
+  <div class="flex flex-col items-center gap-4 w-full">
+    <div class="text-w text-5xl font-medium text-center font-brico w-full">
+      What Creators Are Saying
     </div>
-
-    <div class="flex flex-col items-center gap-4 w-full">
-      <div class="text-w text-5xl font-medium leading-[120%] text-center font-brico w-[1062px]">
-        What Creators Are Saying
-      </div>
-      <div class="text-[#f8fdfe] text-lg font-normal leading-[160%] text-center font-sans">
-        Studio-quality AI photos with perfect likeness every time.
-      </div>
+    <div class="text-w text-lg text-center font-sans">
+      Studio-quality AI photos with perfect likeness every time.
     </div>
   </div>
 
-  <div class="relative w-full h-[564px]">
-    <div class="flex gap-5 items-center mb-[30px] pl-40">
-      {% include "home/sections/creator_reviews.html/review_big.html" %}
-      <!-- review -->
-      {% include "home/sections/creator_reviews.html/review_small.html" %}
-      <!-- review -->
-      {% include "home/sections/creator_reviews.html/review_big.html" %}
-      <!-- review -->
-      {% include "home/sections/creator_reviews.html/review_small.html" %}
-      <!-- review -->
-      {% include "home/sections/creator_reviews.html/review_small.html" %}
-    </div>
-
-    <div class="flex gap-5 items-center">
-      {% include "home/sections/creator_reviews.html/review_big.html" %}
-      <!-- review -->
-      {% include "home/sections/creator_reviews.html/review_small.html" %}
-      <!-- review -->
-      {% include "home/sections/creator_reviews.html/review_big.html" %}
-      <!-- review -->
-      {% include "home/sections/creator_reviews.html/review_big.html" %}
-      <!-- review -->
-      {% include "home/sections/creator_reviews.html/review_small.html" %}
+  <div class="w-full">
+    <div class="flex flex-wrap gap-6 mb-4">
+      <div class="flex-1">{% include "home/sections/creator_reviews.html/review_big.html" %}</div>
+      <div class="flex-1">{% include "home/sections/creator_reviews.html/review_small.html" %}</div>
+      <div class="flex-1">{% include "home/sections/creator_reviews.html/review_big.html" %}</div>
+      <div class="flex-1">{% include "home/sections/creator_reviews.html/review_big.html" %}</div>
+      <div class="flex-1">{% include "home/sections/creator_reviews.html/review_small.html" %}</div>
+      <div class="flex-1">{% include "home/sections/creator_reviews.html/review_big.html" %}</div>
     </div>
   </div>
 </div>
