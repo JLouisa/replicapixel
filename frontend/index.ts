@@ -470,9 +470,9 @@ declare module "alpinejs" {
   }
 }
 
-async function oAuth2(provider: string) {
+async function oAuth2(provider_link: string) {
   try {
-    const response = await fetch(`/api/oauth2/${provider}`);
+    const response = await fetch(`${provider_link}`);
     if (!response.ok) {
       throw new Error("Failed to get OAuth URL");
     }

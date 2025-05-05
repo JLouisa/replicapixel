@@ -1,3 +1,22 @@
+<!-- prettier-ignore -->
+{% set training_model_partial_link = website.website_routes.dashboard_routes.sidebar.training_models_partial  | safe %}
+{% set training_model_link = website.website_routes.dashboard_routes.sidebar.training_models  | safe %}
+{% set packs_partial_link = website.website_routes.dashboard_routes.sidebar.packs_partial  | safe %}
+{% set packs_link = website.website_routes.dashboard_routes.sidebar.packs  | safe %}
+{% set studio_partial_link = website.website_routes.dashboard_routes.sidebar.photo_partial  | safe %}
+{% set studio_link = website.website_routes.dashboard_routes.sidebar.photo  | safe %}
+{% set studio_favorite_partial_link = website.website_routes.dashboard_routes.sidebar.album_favorite_partial  | safe %}
+{% set studio_favorite_link = website.website_routes.dashboard_routes.sidebar.album_favorite  | safe %}
+{% set studio_deleted_partial_link = website.website_routes.dashboard_routes.sidebar.album_deleted_partial  | safe %}
+{% set studio_deleted_link = website.website_routes.dashboard_routes.sidebar.album_deleted  | safe %}
+{% set features_partial_link = website.website_routes.dashboard_routes.sidebar.features_partial  | safe %}
+{% set features_link = website.website_routes.dashboard_routes.sidebar.features  | safe %}
+{% set billing_partial_link = website.website_routes.dashboard_routes.billing_partial  | safe %}
+{% set billing_link = website.website_routes.dashboard_routes.billing  | safe %}
+{% set settings_partial_link = website.website_routes.dashboard_routes.sidebar.settings_partial  | safe %}
+{% set settings_link = website.website_routes.dashboard_routes.sidebar.settings  | safe %}
+{% set logout_api_link = website.website_routes.auth_routes.api_forgot  | safe %}
+
 <aside class="flex flex-col items-center text-gray-700 shadow h-full mt-8">
   <!-- Side Nav Bar-->
   <ul class="flex flex-col">
@@ -6,9 +25,9 @@
     <!-- Model Section -->
     <li class="hover:bg-base-300 tooltip tooltip-right" data-tip="Model">
       <a
-        hx-get="{{ website.website_routes.dashboard_routes.sidebar.training_models_partial | safe }}"
+        hx-get="{{ training_model_partial_link }}"
         hx-target="#dashboard_content"
-        hx-push-url="{{ website.website_routes.dashboard_routes.sidebar.training_models | safe }}"
+        hx-push-url="{{ training_model_link }}"
         hx-swap="innerHTML"
         class="h-16 px-6 flex justify-center items-center w-full cursor-pointer"
       >
@@ -18,9 +37,9 @@
     <!-- Packs Section -->
     <li class="hover:bg-base-300 tooltip tooltip-right" data-tip="Packs">
       <a
-        hx-get="{{ website.website_routes.dashboard_routes.sidebar.packs_partial | safe }}"
+        hx-get="{{ packs_partial_link }}"
         hx-target="#dashboard_content"
-        hx-push-url="{{ website.website_routes.dashboard_routes.sidebar.packs | safe }}"
+        hx-push-url="{{ packs_link }}"
         hx-swap="innerHTML"
         class="h-16 px-6 flex justify-center items-center w-full cursor-pointer"
       >
@@ -30,9 +49,9 @@
     <!-- Album Section -->
     <li class="hover:bg-base-300 tooltip tooltip-right" data-tip="Album">
       <a
-        hx-get="{{ website.website_routes.dashboard_routes.sidebar.photo_partial | safe }}"
+        hx-get="{{ studio_partial_link }}"
         hx-target="#dashboard_content"
-        hx-push-url="{{ website.website_routes.dashboard_routes.sidebar.photo | safe }}"
+        hx-push-url="{{ studio_link }}"
         hx-swap="innerHTML"
         class="h-16 px-6 flex justify-center items-center w-full cursor-pointer"
       >
@@ -42,9 +61,9 @@
     <!-- Favorite Section -->
     <li class="hover:bg-base-300 tooltip tooltip-right cursor-pointer" data-tip="Favorite">
       <a
-        hx-get="{{ website.website_routes.dashboard_routes.sidebar.album_favorite_partial | safe }}"
+        hx-get="{{ studio_favorite_partial_link }}"
         hx-target="#dashboard_content"
-        hx-push-url="{{ website.website_routes.dashboard_routes.sidebar.album_favorite | safe }}"
+        hx-push-url="{{ studio_favorite_link }}"
         hx-swap="innerHTML"
         class="h-16 px-6 flex justify-center items-center w-full text-base-content"
       >
@@ -54,9 +73,9 @@
     <!-- Deleted Section -->
     <li class="hover:bg-base-300 tooltip tooltip-right cursor-pointer" data-tip="Deleted">
       <a
-        hx-get="{{ website.website_routes.dashboard_routes.sidebar.album_deleted_partial | safe }}"
+        hx-get="{{ studio_deleted_partial_link }}"
         hx-target="#dashboard_content"
-        hx-push-url="{{ website.website_routes.dashboard_routes.sidebar.album_deleted | safe }}"
+        hx-push-url="{{ studio_deleted_link }}"
         hx-swap="innerHTML"
         class="h-16 px-6 flex justify-center items-center w-full text-base-content"
       >
@@ -86,9 +105,9 @@
   <div class="mt-auto h-72 flex flex-col items-center w-full">
     <!-- Features Section -->
     <div
-      hx-get="{{ website.website_routes.dashboard_routes.sidebar.features_partial | safe }}"
+      hx-get="{{ features_partial_link }}"
       hx-target="#dashboard_content"
-      hx-push-url="{{ website.website_routes.dashboard_routes.sidebar.features | safe }}"
+      hx-push-url="{{ features_link }}"
       hx-swap="innerHTML"
       class="h-16 w-full mx-auto flex items-center justify-center hover:bg-base-300 focus:outline-none cursor-pointer tooltip tooltip-right text-base-content"
       data-tip="Features"
@@ -97,9 +116,9 @@
     </div>
     <!-- Order History Section -->
     <div
-      hx-get="{{ website.website_routes.dashboard_routes.billing_partial | safe }}"
+      hx-get="{{ billing_partial_link}}"
       hx-target="#dashboard_content"
-      hx-push-url="{{ website.website_routes.dashboard_routes.billing | safe }}"
+      hx-push-url="{{ billing_link }}"
       hx-swap="innerHTML"
       class="h-16 w-full mx-auto flex items-center justify-center hover:bg-base-300 focus:outline-none cursor-pointer tooltip tooltip-right text-base-content"
       data-tip="Order History"
@@ -108,9 +127,9 @@
     </div>
     <!-- Settings Section -->
     <div
-      hx-get="{{ website.website_routes.dashboard_routes.sidebar.settings_partial | safe }}"
+      hx-get="{{ settings_partial_link }}"
       hx-target="#dashboard_content"
-      hx-push-url="{{ website.website_routes.dashboard_routes.sidebar.settings | safe }}"
+      hx-push-url="{{ settings_link }}"
       hx-swap="innerHTML"
       class="h-16 w-full mx-auto flex items-center justify-center hover:bg-base-300 focus:outline-none cursor-pointer tooltip tooltip-right text-base-content"
       data-tip="Settings"
@@ -119,7 +138,7 @@
     </div>
     <!-- Logout Section -->
     <div
-      hx-get="{{ website.website_routes.auth_routes.api_logout | safe }}"
+      hx-get="{{ logout_api_link }}"
       class="h-16 w-full mx-auto flex items-center justify-center hover:bg-red-200 focus:outline-none cursor-pointer tooltip tooltip-right text-base-content"
       data-tip="Logout"
     >

@@ -1,9 +1,18 @@
+<!-- prettier-ignore -->
+{% set register_api_link = website.website_routes.auth_routes.api_register | safe %}
+{% set login_partial_link = website.website_routes.auth_routes.login_partial | safe %}
+{% set login_link = website.website_routes.auth_routes.login | safe %}
+{% set google_link = website.website_routes.oauth2.google | safe %}
+{% set github_link = website.website_routes.oauth2.github | safe %}
+{% set terms_link = website.website_routes.policy.terms | safe %}
+{% set privacy_link = website.website_routes.policy.privacy | safe %}
+
 <div class="bg-gray-100 rounded-t-lg w-full p-8">
   <p class="text-center text-sm">Sign up with</p>
   <div>
     <div class="flex items-center justify-center space-x-4 mt-3">
       <button
-        onclick="oAuth2('google')"
+        onclick="oAuth2('{google_link}')"
         class="flex btn items-center py-2 px-4 text-sm uppercase rounded bg-white hover:bg-gray-100 text-indigo-500 border border-transparent hover:border-transparent hover:text-gray-700 shadow-md hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-3" viewBox="0 0 48 48">
@@ -27,8 +36,9 @@
         Google
       </button>
       <button
-        disabled
+        onclick="oAuth2('{github_link}')"
         class="flex btn items-center py-2 px-4 text-sm uppercase rounded bg-white hover:bg-gray-100 text-indigo-500 border border-transparent hover:border-transparent hover:text-gray-700 shadow-md hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
+        disabled
       >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="w-6 h-6 mr-3">
           <path
@@ -44,7 +54,7 @@
 <div class="rounded-b-lg pt-4 pb-12 px-4 lg:px-12">
   <div class="divider mt-3 text-gray-500">Or sign up with credentials</div>
   <form
-    hx-post="/api/auth/register"
+    hx-post="{{ register_api_link }}"
     hx-ext="form-json"
     hx-disabled-elt="#register-btn"
     hx-target="#auth-form"
@@ -158,19 +168,9 @@
     <div class="mt-4 flex items-center justify-between text-gray-500">
       <p class="mt-4 text-sm text-gray-500">
         By signing up, you agree to our
-        <a
-          href="{{ website.website_routes.policy.terms | safe }}"
-          target="_blank"
-          class="text-primary"
-          >Terms of Service</a
-        >
+        <a href="{{ terms_link }}" target="_blank" class="text-primary">Terms of Service</a>
         and
-        <a
-          href="{{ website.website_routes.policy.privacy | safe }}"
-          target="_blank"
-          class="text-primary"
-          >Privacy Policy</a
-        >.
+        <a href="{{ privacy_link }}" target="_blank" class="text-primary">Privacy Policy</a>.
       </p>
     </div>
     <div class="flex flex-col items-center justify-center mt-8">
@@ -182,10 +182,10 @@
       </button>
 
       <a
-        hx-get="/partial/login"
+        hx-get="{{ login_partial_link }}"
         hx-target="#auth-form"
         hx-swap="innerHTML"
-        hx-push-url="/login"
+        hx-push-url="{{ login_link }}"
         class="text-sm text-primary cursor-pointer mt-4"
         >Already have an account?</a
       >

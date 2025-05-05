@@ -42,6 +42,7 @@ pub mod routes {
         pub payment_plans: String,
         pub payment_plans_partial: String,
         pub payment_stripe_url_from_order: String,
+        pub payment_prepare_route: String,
     }
     impl PaymentRoutes {
         pub fn init() -> Self {
@@ -69,6 +70,7 @@ pub mod routes {
                     Payment::BASE,
                     Payment::STRIPE_RECEIPT_FROM_ORDER
                 ),
+                payment_prepare_route: format!("{}{}", Payment::BASE, Payment::API_STRIPE_PREPARE),
             }
         }
     }

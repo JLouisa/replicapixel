@@ -1,3 +1,8 @@
+<!-- prettier-ignore -->
+{% set logout_api_link = website.website_routes.auth_routes.api_logout | safe %}
+ {% set register_link = website.website_routes.auth_routes.register | safe %}
+ {# studio_link | super #}
+
 <div id="navbar-user">
   <div class="flex items-center space-x-4">
     {#
@@ -40,10 +45,7 @@
         </li>
         #}
         <li>
-          <a
-            hx-get="{{ website.website_routes.auth_routes.api_logout | safe }}"
-            class="flex px-4 py-3 hover:bg-base-300 cursor-pointer"
-          >
+          <a hx-get="{{ logout_api_link }}" class="flex px-4 py-3 hover:bg-base-300 cursor-pointer">
             Logout
           </a>
         </li>
@@ -63,8 +65,6 @@
 
 {% if user.name and is_home %}
 <div id="navbar-middle" class="absolute left-1/2 transform -translate-x-1/2 z-10">
-  <a href="{{ website.website_routes.dashboard_routes.base | safe }}" class="btn btn-neutral"
-    >Dashboard</a
-  >
+  <a href="{{ studio_link }}" class="btn btn-neutral">Dashboard</a>
 </div>
 {% endif %}

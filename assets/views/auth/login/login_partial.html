@@ -1,9 +1,18 @@
+<!-- prettier-ignore -->
+{% set login_api_link = website.website_routes.auth_routes.api_login | safe %}
+{% set forgot_partial_link = website.website_routes.auth_routes.forgot_partial | safe %}
+{% set register_partial_link = website.website_routes.auth_routes.register_partial | safe %}
+{% set google_link = website.website_routes.oauth2.google | safe %}
+{% set github_link = website.website_routes.oauth2.github | safe %}
+
+/api/oauth2/${provider}
+
 <div class="bg-gray-100 rounded-t-lg w-full p-8">
   <p class="text-center text-sm">Sign in with</p>
   <div>
     <div class="flex items-center justify-center space-x-4 mt-3">
       <button
-        onclick="oAuth2('google')"
+        onclick="oAuth2('{{google_link}}')"
         class="flex btn items-center py-2 px-4 text-sm uppercase rounded bg-white hover:bg-gray-100 text-indigo-500 border border-transparent hover:border-transparent hover:text-gray-700 shadow-md hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-3" viewBox="0 0 48 48">
@@ -28,7 +37,7 @@
       </button>
       <button
         disabled
-        onclick="oAuth2('github')"
+        onclick="oAuth2('{{github_link}}')"
         class="flex btn items-center py-2 px-4 text-sm uppercase rounded bg-white hover:bg-gray-100 text-indigo-500 border border-transparent hover:border-transparent hover:text-gray-700 shadow-md hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
       >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="w-6 h-6 mr-3">
@@ -45,7 +54,7 @@
 <div class="rounded-b-lg pt-4 pb-12 px-4 lg:px-12">
   <div class="divider mt-3 text-gray-500">Or sign in with credentials</div>
   <form
-    hx-post="/api/auth/login"
+    hx-post="{{ login_api_link }}"
     hx-ext="form-json"
     hx-disabled-elt="#login-btn"
     hx-target="#auth-form"
@@ -103,7 +112,7 @@
       </label>
 
       <a
-        hx-get="/partial/forgot"
+        hx-get="{{ forgot_partial_link }}"
         hx-push-url="/forgot"
         hx-target="#auth-form"
         hx-swap="innerHTML"
@@ -122,7 +131,7 @@
         Sign in
       </button>
       <a
-        hx-get="/partial/register"
+        hx-get="{{ register_partial_link }}"
         hx-push-url="/register"
         hx-target="#auth-form"
         class="text-sm text-primary cursor-pointer mt-4"

@@ -1,3 +1,7 @@
+<!-- prettier-ignore -->
+{% set studio_partial_link = website.website_routes.dashboard_routes.sidebar.photo_partial | safe %}
+{% set studio_link = website.website_routes.dashboard_routes.sidebar.photo | safe %}
+
 <div
   class="w-fit mx-auto grid grid-cols-1 lg:grid-cols-4 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-5"
 >
@@ -31,9 +35,9 @@
         <form method="dialog">
           <!-- if there is a button in form, it will close the modal -->
           <button
-            hx-get="{{ website.website_routes.dashboard_routes.sidebar.photo_partial | safe }}"
+            hx-get="{{ studio_partial_link }}"
             hx-target="#dashboard_content"
-            hx-push-url="{{ website.website_routes.dashboard_routes.sidebar.photo | safe }}"
+            hx-push-url="{{ studio_link }}"
             hx-swap="innerHTML"
             class="btn"
           >
@@ -46,30 +50,3 @@
   </dialog>
   {% endfor %}
 </div>
-
-{#
-<div class="m-auto max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-  <div class="flex justify-evenly gap-8">
-    {% for pack in packs %}
-    <div
-      class="card bg-base-100 w-[125%] shadow-sm cursor-pointer duration-500 hover:scale-105 hover:shadow-xl"
-    >
-      <figure>
-        <img src="{{pack.img}}" alt="Shoes" />
-      </figure>
-      <div class="card-body">
-        <div class="flex items-center justify-between">
-          <h2 class="card-title">{{pack.title}}</h2>
-          <div class="flex items-center">
-            <span> {% include "partials/svg/credit_svg.html" %} </span>
-            <span class="text-lg font-bold"> {{pack.credits}}</span>
-          </div>
-        </div>
-        <p>{{pack.amount}} Photos</p>
-        <p>{{pack.description}}</p>
-      </div>
-    </div>
-    {% endfor %}
-  </div>
-</div>
-#}

@@ -1,3 +1,8 @@
+<!-- prettier-ignore -->
+{% set forget_api_link = website.website_routes.auth_routes.api_forgot | safe %}
+{% set login_link = website.website_routes.auth_routes.login | safe %}
+{% set login_partial_link = website.website_routes.auth_routes.login_partial | safe %}
+
 <div class="bg-gray-100 rounded-t-lg w-full p-8">
   <h1 class="text-center text-2xl font-bold text-gray-800">Forgot Password</h1>
   <div class="mt-4">
@@ -7,7 +12,7 @@
   </div>
 </div>
 <div class="rounded-b-lg pt-6 pb-12 px-4 lg:px-12">
-  <form hx-post="/api/auth/forgot" hx-ext="submitjson" hx-swap="outerHTML">
+  <form hx-post="{{ forget_api_link }}" hx-ext="submitjson" hx-swap="outerHTML">
     <div class="relative">
       <input
         class="appearance-none border pl-12 border-gray-100 shadow-sm focus:shadow-md focus:placeholder-gray-600 transition rounded-md w-full py-3 text-gray-600 leading-tight focus:outline-none focus:ring-gray-600 focus:shadow-outline"
@@ -35,10 +40,10 @@
         Send Password Reset
       </button>
       <a
-        hx-get="/partial/login"
+        hx-get="{{ login_partial_link }}"
         hx-target="#auth-form"
         hx-swap="innerHTML"
-        hx-push-url="/login"
+        hx-push-url="{{ login_link }}"
         class="text-sm text-primary cursor-pointer mt-4"
         >Already know your password?</a
       >

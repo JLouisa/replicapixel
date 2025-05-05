@@ -583,9 +583,14 @@ pub async fn get_forgot(
 #[debug_handler]
 pub async fn partial_login(
     ViewEngine(v): ViewEngine<TeraView>,
+    Extension(website): Extension<Website>,
     State(_ctx): State<AppContext>,
 ) -> Result<Response> {
-    format::render().view(&v, "auth/login/login_partial.html", data!({}))
+    format::render().view(
+        &v,
+        "auth/login/login_partial.html",
+        data!({"website": website}),
+    )
 }
 
 #[debug_handler]
@@ -604,7 +609,12 @@ pub async fn partial_register(
 #[debug_handler]
 pub async fn partial_forgot(
     ViewEngine(v): ViewEngine<TeraView>,
+    Extension(website): Extension<Website>,
     State(_ctx): State<AppContext>,
 ) -> Result<Response> {
-    format::render().view(&v, "auth/forgot/forgot_partial.html", data!({}))
+    format::render().view(
+        &v,
+        "auth/forgot/forgot_partial.html",
+        data!({"website": website}),
+    )
 }

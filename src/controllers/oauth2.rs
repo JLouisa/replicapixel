@@ -38,8 +38,8 @@ pub mod routes {
         pub fn init() -> Self {
             Self {
                 base: String::from(OAuth2::BASE),
-                google: String::from(OAuth2::GOOGLE),
-                github: String::from(OAuth2::GITHUB),
+                google: format!("{}{}", OAuth2::BASE, OAuth2::GOOGLE),
+                github: format!("{}{}", OAuth2::BASE, OAuth2::GITHUB),
             }
         }
     }

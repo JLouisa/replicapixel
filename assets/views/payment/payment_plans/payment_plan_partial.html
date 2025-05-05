@@ -1,3 +1,8 @@
+ <!-- prettier-ignore -->
+{% set stripe_checkout_link = website.website_routes.payment.stripe_checkout_route | safe %}
+{% set register_link = website.website_routes.auth_routes.register | safe %}
+{% set prepare_link = website.website_routes.payment.payment_prepare_route | safe %}
+ 
  <div class="min-h-screen bg-gradient-to-b from-base-50 to-base-100 py-12 px-4 sm:px-6 lg:px-8">
   <div id="embedded-checkout" class="max-w-7xl mx-auto">
     {# {/* Header */} #}
@@ -43,10 +48,10 @@
           </li>
           {% endfor %}
         </ul>
-        <a href="/payment/prepare/{{ user.pid | default(value="x") }}/{{plan.plan_type}}">
+        <a href="{{prepare_link}}/{{ user.pid | default(value="x") }}/{{plan.plan_type}}">
           <button
-          {# hx-get="/payment/prepare/{{ user.pid | default(value="x") }}/{{plan.plan_type}}"
-          hx-push-url="{{ website.website_routes.payment.stripe_checkout_route | safe }}/{{ user.pid | default(value="x") }}/{{plan.plan_type}}" 
+          {# hx-get="{{prepare_link}}/{{ user.pid | default(value="x") }}/{{plan.plan_type}}"
+          hx-push-url="{{ stripe_checkout_link }}/{{ user.pid | default(value="x") }}/{{plan.plan_type}}" 
           hx-disabled-elt=".checkout-button" #}
           class="checkout-button w-full py-3 px-6 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-medium transition-colors duration-200 cursor-pointer"
           >
