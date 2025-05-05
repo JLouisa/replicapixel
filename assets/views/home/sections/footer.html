@@ -1,198 +1,89 @@
 <div class="flex flex-col gap-4 items-center justify-center">
   <div
-    class="bg-[rgba(255,255,255,0.06)] py-16 flex flex-col gap-2.5 items-center justify-center w-full relative overflow-hidden"
+    class="bg-[rgba(255,255,255,0.06)] py-16 flex flex-col gap-2.5 items-center justify-center w-full overflow-hidden"
   >
-    <div class="flex flex-col gap-[46px] items-center justify-center w-full max-w-7xl mx-auto px-4">
-      <div class="flex flex-col gap-7 items-center justify-center self-stretch shrink-0 relative">
-        <div class="flex flex-row items-center justify-between self-stretch shrink-0 relative">
-          <div class="flex flex-row gap-[100px] items-start justify-start flex-1 relative">
-            <div class="flex flex-col gap-8 items-start justify-start shrink-0 relative">
-              <div class="flex flex-col gap-4 items-start justify-start shrink-0 relative">
-                <div
-                  class="flex flex-row gap-[8.53px] items-center justify-center shrink-0 relative"
-                >
+    <div class="flex flex-col gap-12 items-center justify-center w-full max-w-7xl mx-auto px-4">
+      <div class="flex flex-col gap-7 items-center justify-center self-stretch shrink-0">
+        <div class="flex flex-col md:flex-row items-center justify-between self-stretch shrink-0">
+          <div class="flex flex-col md:flex-row gap-24 items-start justify-start flex-1">
+            <div
+              class="flex flex-col gap-8 items-center justify-center md:items-start md:justify-start w-full"
+            >
+              <div
+                class="flex flex-col gap-4 items-center text-center md:text-left md:items-start w-full max-w-md"
+              >
+                <div class="flex items-center justify-center md:justify-start gap-2 w-full">
                   <img
-                    class="shrink-0 w-8 h-8 relative"
-                    style="object-fit: cover; aspect-ratio: 26.67/32.08"
+                    class="w-8 h-8 object-cover"
+                    style="aspect-ratio: 26.67 / 32.08"
                     src="../../../static/logo.svg"
+                    alt="Logo"
                   />
-                  <div
-                    class="text-w text-center font-['BricolageGrotesque-SemiBold',_sans-serif] text-[21.33333396911621px] leading-none font-semibold relative"
-                  >
-                    ReplicaPixel
-                  </div>
+                  <span class="text-w font-bricon text-2xl font-semibold">
+                    {{ website.website_basic_info.name }}
+                  </span>
                 </div>
-                <div
-                  class="text-gray-black-100 text-left font-['Inter-Regular',_sans-serif] text-base leading-[26px] font-normal relative w-[363px]"
-                >
-                  Transform your images with AI-powered precision. No skills required, just stunning
-                  results.
-                </div>
+                <p class="text-gray-black-100 font-inter md:text-start text-base leading-[26px]">
+                  Transform your images with AI-powered precision.
+                  <br class="md:hidden" />
+                  No skills required, just stunning results.
+                </p>
               </div>
-              <div class="flex flex-row gap-5 items-center justify-start shrink-0 relative">
-                <div
-                  class="rounded-[26px] border-solid border-[transparent] border flex flex-row gap-2.5 items-center justify-start flex-wrap content-center shrink-0 relative"
-                >
-                  <div class="shrink-0 w-[18px] h-[18px] relative overflow-hidden">
-                    {% include "partials/svg/socials/instagram.html" %}
-                  </div>
-                </div>
-                <div
-                  class="rounded-[26px] border-solid border-[transparent] border flex flex-row gap-2.5 items-center justify-start flex-wrap content-center shrink-0 relative"
-                >
-                  <div class="shrink-0 w-[18px] h-[18px] relative overflow-hidden">
-                    {% include "partials/svg/socials/twitter.html" %}
-                  </div>
-                </div>
-                <div
-                  class="rounded-[26px] border-solid border-[transparent] border flex flex-row gap-2.5 items-center justify-start flex-wrap content-center shrink-0 relative"
-                >
-                  <div class="shrink-0 w-[18px] h-[18px] relative overflow-hidden">
-                    {% include "partials/svg/socials/linkedin.html" %}
-                  </div>
-                </div>
+              <div class="flex items-center justify-center md:justify-start gap-8 w-full">
+                {% include "partials/svg/socials/instagram.html" %} {% include
+                "partials/svg/socials/twitter.html" %} {% include
+                "partials/svg/socials/linkedin.html" %}
               </div>
             </div>
-            <div class="flex flex-row items-start justify-between flex-1 relative">
-              <div class="flex flex-col gap-4 items-start justify-start shrink-0 relative">
-                <div
-                  class="text-w text-left font-brico text-[22px] font-bold relative self-stretch text-[brand-bg-dark]"
-                >
-                  Company
-                </div>
-                <div
-                  class="text-gray-black-50 text-left font-inter text-base leading-[120%] font-normal relative self-stretch"
-                >
-                  Features
-                </div>
-                <div
-                  class="text-gray-black-50 text-left font-inter text-base leading-[120%] font-normal relative self-stretch"
-                >
-                  Studio
-                </div>
-              </div>
-              <div class="flex flex-col gap-4 items-start justify-start shrink-0 relative">
-                <div
-                  class="text-w text-left font-brico text-[22px] font-bold relative self-stretch"
-                >
-                  Product
-                </div>
-                <div
-                  class="text-gray-black-50 text-left font-inter text-base leading-[120%] font-normal relative self-stretch"
-                >
-                  Pricing
-                </div>
-                <div
-                  class="text-gray-black-50 text-left font-inter text-base leading-[120%] font-normal relative self-stretch"
-                >
-                  Templates
-                </div>
-                <div
-                  class="text-gray-black-50 text-left font-inter text-base leading-[120%] font-normal relative self-stretch"
-                >
-                  API
-                </div>
-                <div
-                  class="text-gray-black-50 text-left font-inter text-base leading-[120%] font-normal relative self-stretch"
-                >
-                  Apps
-                </div>
-              </div>
-              <div class="flex flex-col gap-4 items-start justify-start shrink-0 relative">
-                <div
-                  class="text-w text-left font-brico text-[22px] font-bold relative self-stretch"
-                >
-                  Resources
-                </div>
-                <div
-                  class="text-gray-black-50 text-left font-inter text-base leading-[120%] font-normal relative self-stretch"
-                >
-                  Documentation
-                </div>
-                <div
-                  class="text-gray-black-50 text-left font-inter text-base leading-[120%] font-normal relative self-stretch"
-                >
-                  Guides
-                </div>
-                <div
-                  class="text-gray-black-50 text-left font-inter text-base leading-[120%] font-normal relative self-stretch"
-                >
-                  Blog
-                </div>
-                <div
-                  class="text-gray-black-50 text-left font-inter text-base leading-[120%] font-normal relative self-stretch"
-                >
-                  Community
-                </div>
-                <div
-                  class="text-gray-black-50 text-left font-inter text-base leading-[120%] font-normal relative self-stretch"
-                >
-                  Support
-                </div>
-              </div>
-              <div class="flex flex-col gap-4 items-start justify-start shrink-0 relative">
-                <div
-                  class="text-w text-left font-brico text-[22px] font-bold relative self-stretch"
-                >
-                  Legal
-                </div>
-                <div
-                  class="text-gray-black-50 text-left font-inter text-base leading-[120%] font-normal relative self-stretch"
-                >
-                  Privacy
-                </div>
-                <div
-                  class="text-gray-black-50 text-left font-inter text-base leading-[120%] font-normal relative self-stretch"
-                >
-                  Terms
-                </div>
-                <div
-                  class="text-gray-black-50 text-left font-inter text-base leading-[120%] font-normal relative self-stretch"
-                >
-                  Cookie Policy
-                </div>
-                <div
-                  class="text-gray-black-50 text-left font-inter text-base leading-[120%] font-normal relative self-stretch"
-                >
-                  GDPR
-                </div>
-                <div
-                  class="text-gray-black-50 text-left font-inter text-base leading-[120%] font-normal relative self-stretch"
-                >
-                  Licenses
-                </div>
-              </div>
+
+            <div class="flex flex-1 flex-wrap sm:flex-nowrap justify-between gap-4 md:gap-8">
+              <ul class="flex flex-col gap-4">
+                <li class="text-w font-brico text-2xl font-bold">Company</li>
+                <li class="text-gray-black-50 text-base">Features</li>
+                <li class="text-gray-black-50 text-base">Studio</li>
+              </ul>
+              <ul class="flex flex-col gap-4">
+                <li class="text-w font-brico text-2xl font-bold">Product</li>
+                <li class="text-gray-black-50 text-base">Pricing</li>
+                <li class="text-gray-black-50 text-base">Templates</li>
+                <li class="text-gray-black-50 text-base">API</li>
+                <li class="text-gray-black-50 text-base">Apps</li>
+              </ul>
+              <ul class="flex flex-col gap-4">
+                <li class="text-w font-brico text-2xl font-bold">Resources</li>
+                <li class="text-gray-black-50 text-base">Documentation</li>
+                <li class="text-gray-black-50 text-base">Guides</li>
+                <li class="text-gray-black-50 text-base">Blog</li>
+                <li class="text-gray-black-50 text-base">Community</li>
+                <li class="text-gray-black-50 text-base">Support</li>
+              </ul>
+              <ul class="flex flex-col gap-4">
+                <li class="text-w font-brico text-2xl font-bold">Legal</li>
+                <li class="text-gray-black-50 text-base">Privacy</li>
+                <li class="text-gray-black-50 text-base">Terms</li>
+                <li class="text-gray-black-50 text-base">GDPR</li>
+                <li class="text-gray-black-50 text-base">Cookie</li>
+                <li class="text-gray-black-50 text-base">Licenses</li>
+              </ul>
             </div>
           </div>
         </div>
         <div
-          class="border-solid border-[rgba(248,250,251,0.20)] border-t border-r-[0] border-b-[0] border-l-[0] self-stretch shrink-0 h-0 relative"
+          class="border-solid border-[rgba(248,250,251,0.20)] border-t border-r-[0] border-b-[0] border-l-[0] self-stretch shrink-0 h-0"
           style="margin-top: -1px; transform-origin: 0 0; transform: rotate(0deg) scale(1, 1)"
         ></div>
       </div>
-      <div class="flex flex-row items-center justify-between self-stretch shrink-0 relative">
-        <div
-          class="text-gray-black-50 text-left font-inter text-base leading-[120%] font-normal relative"
-        >
-          © 2025 {{ website.website_basic_info.name }}. All rights reserved.
+      <div class="flex flex-col sm:flex-row items-center justify-between self-stretch shrink-0">
+        <div class="text-gray-black-50 text-left font-inter text-base leading-5 p-4 sm:p-0">
+          © 2025 {{ website.website_basic_info.name }}.
+          <br class="sm:hidden" />
+          All rights reserved.
         </div>
-        <div class="flex flex-row gap-[38px] items-center justify-start shrink-0 relative">
-          <div
-            class="text-gray-black-50 text-left font-inter text-base leading-[120%] font-normal relative"
-          >
-            Terms
-          </div>
-          <div
-            class="text-gray-black-50 text-left font-inter text-base leading-[120%] font-normal relative"
-          >
-            Privacy
-          </div>
-          <div
-            class="text-gray-black-50 text-left font-inter text-base leading-[120%] font-normal relative"
-          >
-            Cookies
-          </div>
-        </div>
+        <ul class="flex flex-row gap-10 items-center justify-start shrink-0 text-base font-inter">
+          <li class="text-gray-black-50 text-base">Terms</li>
+          <li class="text-gray-black-50 text-base">Privacy</li>
+          <li class="text-gray-black-50 text-base">Cookies</li>
+        </ul>
       </div>
     </div>
   </div>
