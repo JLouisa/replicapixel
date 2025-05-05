@@ -1,52 +1,43 @@
-<div
-  id="pricing"
-  class="pr-[200px] pb-6 pl-[200px] flex flex-col gap-12 items-center justify-center relative"
->
-  <div class="flex flex-col gap-12 items-center justify-center shrink-0 w-[1200px] relative">
-    <div
-      class="flex flex-col gap-3 items-center justify-center self-stretch shrink-0 h-[139px] relative"
-    >
-      <div
-        class="rounded-[99px] pt-1 pr-4 pb-1 pl-2.5 flex flex-row gap-2 items-center justify-start shrink-0 relative"
-      >
+<div class="flex flex-col gap-12 items-center justify-center relative mx-auto max-w-7xl">
+  <div class="flex flex-col gap-12 items-center justify-center shrink-0 w-full relative p-4">
+    <div class="flex flex-col gap-4 items-center justify-center self-stretch">
+      <div class="p-2 flex flex-row gap-2 items-center justify-center">
         {% include "partials/svg/triple_stars.html" %}
         <div
-          class="text-w text-center font-['Inter-Regular',_sans-serif] text-sm leading-none font-normal relative flex items-center justify-center"
+          class="text-w text-center font-inter text-sm leading-none relative flex items-center justify-center"
         >
           Pricing
         </div>
       </div>
-      <div class="flex flex-col gap-4 items-center justify-center self-stretch shrink-0 relative">
-        <div
-          class="text-w text-center font-['BricolageGrotesque-Medium',_sans-serif] text-5xl leading-[110%] font-medium relative w-[1062px]"
-        >
-          Choose Your Plan
-        </div>
-        <div
-          class="text-[#f8fdfe] text-center font-['Inter-Regular',_sans-serif] text-lg leading-[140%] font-normal relative w-[770px]"
-        >
+      <div class="flex flex-col gap-4 items-center justify-center">
+        <div class="text-w text-center font-bricon text-5xl font-medium">Choose Your Plan</div>
+        <div class="text-w text-center font-inter text-lg">
           Select the perfect plan for your needs
         </div>
       </div>
     </div>
-    <div class="flex flex-row gap-6 items-center justify-center self-stretch shrink-0 relative">
+
+    <div
+      class="p-4 lg:p-0 flex flex-col lg:flex-row gap-6 items-center justify-between self-stretch relative"
+    >
+      <!-- Basic Plan -->
       <div
-        class="bg-[rgba(255,255,255,0.03)] rounded-xl border-solid border-[rgba(255,255,255,0.10)] border flex flex-col gap-0 items-center justify-center flex-1 relative overflow-hidden"
+        class="bg-[rgba(255,255,255,0.03)] rounded-xl border-solid border-[rgba(255,255,255,0.10)] border flex flex-col gap-0 items-center justify-center flex-1 relative overflow-hidden max-w-96"
       >
         <div
-          class="pt-8 pr-6 pb-8 pl-6 flex flex-col gap-3 items-center justify-center self-stretch shrink-0 relative"
+          class="p-8 flex flex-col gap-4 items-center justify-center self-stretch shrink-0 relative"
         >
           <div class="flex flex-col gap-6 items-center justify-center shrink-0 w-[314px] relative">
             <div
               class="flex flex-col gap-2 items-start justify-start self-stretch shrink-0 relative"
             >
               <div
-                class="text-w text-center font-['BricolageGrotesque-Medium',_sans-serif] text-[32px] leading-[120%] font-medium relative self-stretch"
+                class="text-w text-center font-bricon text-[32px] leading-[120%] font-medium relative self-stretch"
               >
                 Basic
               </div>
               <div
-                class="text-gray-black-50 text-center font-['Inter-Regular',_sans-serif] text-lg leading-[120%] font-normal relative self-stretch"
+                class="text-gray-black-50 text-center font-inter text-lg leading-[120%] relative self-stretch"
               >
                 For individuals &amp; testing
               </div>
@@ -69,10 +60,10 @@
             <div
               class="flex flex-row gap-2 items-center justify-start self-stretch shrink-0 relative"
             >
-              {% include 'partials/svg/check2.html' %}
+              {% include "partials/svg/check2.html" %}
 
               <div
-                class="text-w text-left font-['Inter-Medium',_sans-serif] text-lg leading-none font-medium relative flex items-center justify-start"
+                class="text-w text-left font-inter text-lg leading-none font-medium relative flex items-center justify-start"
               >
                 50 AI Photo Credits
               </div>
@@ -80,10 +71,10 @@
             <div
               class="flex flex-row gap-2 items-center justify-start self-stretch shrink-0 relative"
             >
-              {% include 'partials/svg/check2.html' %}
+              {% include "partials/svg/check2.html" %}
 
               <div
-                class="text-w text-left font-['Inter-Medium',_sans-serif] text-lg leading-none font-medium relative flex items-center justify-start"
+                class="text-w text-left font-inter text-lg leading-none font-medium relative flex items-center justify-start"
               >
                 1 AI Model
               </div>
@@ -91,10 +82,10 @@
             <div
               class="flex flex-row gap-2 items-center justify-start self-stretch shrink-0 relative"
             >
-              {% include 'partials/svg/check2.html' %}
+              {% include "partials/svg/check2.html" %}
 
               <div
-                class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-lg leading-none font-normal relative flex items-center justify-start"
+                class="text-gray-black-50 text-left font-inter text-lg leading-none relative flex items-center justify-start"
               >
                 No Monthly Subscription
               </div>
@@ -102,10 +93,10 @@
             <div
               class="flex flex-row gap-2 items-center justify-start self-stretch shrink-0 relative"
             >
-              {% include 'partials/svg/check2.html' %}
+              {% include "partials/svg/check2.html" %}
 
               <div
-                class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-lg leading-none font-normal relative flex items-center justify-start"
+                class="text-gray-black-50 text-left font-inter text-lg leading-none relative flex items-center justify-start"
               >
                 Use Any Photo Pack
               </div>
@@ -113,10 +104,10 @@
             <div
               class="flex flex-row gap-2 items-center justify-start self-stretch shrink-0 relative"
             >
-              {% include 'partials/svg/check2.html' %}
+              {% include "partials/svg/check2.html" %}
 
               <div
-                class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-lg leading-none font-normal relative flex items-center justify-start"
+                class="text-gray-black-50 text-left font-inter text-lg leading-none relative flex items-center justify-start"
               >
                 No Watermarks
               </div>
@@ -124,10 +115,10 @@
             <div
               class="flex flex-row gap-2 items-center justify-start self-stretch shrink-0 relative"
             >
-              {% include 'partials/svg/check2.html' %}
+              {% include "partials/svg/check2.html" %}
 
               <div
-                class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-lg leading-none font-normal relative flex items-center justify-start"
+                class="text-gray-black-50 text-left font-inter text-lg leading-none relative flex items-center justify-start"
               >
                 24/7 Support
               </div>
@@ -135,11 +126,11 @@
           </div>
           <div class="flex flex-col gap-4 items-start justify-start self-stretch shrink-0 relative">
             <div
-              class="bg-[#605dff] rounded-xl pt-4 pr-8 pb-4 pl-8 flex flex-row gap-3 items-center justify-center self-stretch shrink-0 relative"
+              class="bg-grn-from rounded-xl pt-4 pr-8 pb-4 pl-8 flex flex-row gap-3 items-center justify-center self-stretch shrink-0 relative"
               style="box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.04)"
             >
               <div
-                class="text-w text-center font-['Inter-Medium',_sans-serif] text-base leading-none font-medium relative flex items-center justify-center"
+                class="text-w text-center font-inter text-base leading-none font-medium relative flex items-center justify-center"
               >
                 Choose Basic
               </div>
@@ -147,8 +138,10 @@
           </div>
         </div>
       </div>
+
+      <!-- Premium Plan -->
       <div
-        class="bg-[rgba(255,255,255,0.08)] border-gradient-to-br from-[#605DFF] to-[#F43098] rounded-xl border-[1.5px] border-solid flex flex-col gap-0 items-center justify-start shrink-0 w-[400px] relative overflow-hidden"
+        class="bg-[rgba(255,255,255,0.08)] rounded-xl border-[1.5px] border-solid flex flex-col items-center flex-1 relative max-w-96 overflow-visible"
         style="
           border-image: linear-gradient(
             113deg,
@@ -159,132 +152,107 @@
         "
       >
         <div
-          class="pt-8 pr-6 pb-8 pl-6 flex flex-col gap-3 items-center justify-center self-stretch shrink-0 relative"
+          class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-full py-1.5 px-4 flex items-center justify-center z-10"
+          style="
+            background: var(
+              --gr1,
+              linear-gradient(90deg, rgba(96, 93, 255, 1) 0%, rgba(244, 48, 152, 1) 100%)
+            );
+          "
         >
-          <div class="flex flex-col gap-6 items-center justify-center shrink-0 w-[314px] relative">
-            <div
-              class="flex flex-col gap-2 items-start justify-start self-stretch shrink-0 relative"
-            >
+          <div class="text-w text-center font-inter text-xs leading-none font-medium">
+            Most Popular
+          </div>
+        </div>
+
+        <div class="py-8 px-6 flex flex-col gap-3 items-center justify-center self-stretch">
+          <div class="flex flex-col gap-6 items-center justify-center w-[314px]">
+            <div class="flex flex-col gap-2 items-start self-stretch">
               <div
-                class="text-w text-center font-['BricolageGrotesque-Medium',_sans-serif] text-[32px] leading-[120%] font-medium relative self-stretch"
+                class="text-w text-center font-bricon text-[32px] leading-[120%] font-medium self-stretch"
               >
                 Premium
               </div>
               <div
-                class="text-gray-black-50 text-center font-['Inter-Regular',_sans-serif] text-lg leading-[120%] font-normal relative self-stretch"
+                class="text-gray-black-50 text-center font-inter text-lg leading-[120%] self-stretch"
               >
-                For creators &amp; small teams
+                For creators & small teams
               </div>
             </div>
             <div
-              class="text-w text-center font-['Inter-SemiBold',_sans-serif] text-5xl leading-[120%] font-semibold relative self-stretch"
+              class="text-w text-center font-['Inter-SemiBold',_sans-serif] text-5xl leading-[120%] font-semibold self-stretch"
             >
               $39.99
             </div>
           </div>
         </div>
+
         <div
-          class="border-solid border-[rgba(255,255,255,0.10)] border-t border-r-[0] border-b-[0] border-l-[0] shrink-0 w-[328px] h-0 relative"
+          class="border-solid border-[rgba(255,255,255,0.10)] border-t w-[328px] h-0"
           style="margin-top: -1px"
         ></div>
-        <div
-          class="pt-8 pr-6 pb-8 pl-6 flex flex-col gap-8 items-center justify-start self-stretch shrink-0 relative"
-        >
-          <div class="flex flex-col gap-4 items-start justify-start self-stretch shrink-0 relative">
-            <div
-              class="flex flex-row gap-2 items-center justify-start self-stretch shrink-0 relative"
-            >
-              {% include 'partials/svg/check2.html' %}
 
-              <div
-                class="text-w text-left font-['Inter-Medium',_sans-serif] text-lg leading-none font-medium relative flex items-center justify-start"
-              >
+        <div class="py-8 px-6 flex flex-col gap-8 items-center self-stretch">
+          <div class="flex flex-col gap-4 items-start self-stretch">
+            <div class="flex flex-row gap-2 items-center self-stretch">
+              {% include "partials/svg/check2.html" %}
+              <div class="text-w text-left font-inter text-lg leading-none font-medium">
                 250 AI Photo Credits
               </div>
             </div>
-            <div
-              class="flex flex-row gap-2 items-center justify-start self-stretch shrink-0 relative"
-            >
-              {% include 'partials/svg/check2.html' %}
-
-              <div
-                class="text-w text-left font-['Inter-Medium',_sans-serif] text-lg leading-none font-medium relative flex items-center justify-start"
-              >
+            <div class="flex flex-row gap-2 items-center self-stretch">
+              {% include "partials/svg/check2.html" %}
+              <div class="text-w text-left font-inter text-lg leading-none font-medium">
                 7 AI Models
               </div>
             </div>
-            <div
-              class="flex flex-row gap-2 items-center justify-start self-stretch shrink-0 relative"
-            >
-              {% include 'partials/svg/check2.html' %}
-
-              <div
-                class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-lg leading-none font-normal relative flex items-center justify-start"
-              >
+            <div class="flex flex-row gap-2 items-center self-stretch">
+              {% include "partials/svg/check2.html" %}
+              <div class="text-gray-black-50 text-left font-inter text-lg leading-none">
                 No Monthly Subscription
               </div>
             </div>
-            <div
-              class="flex flex-row gap-2 items-center justify-start self-stretch shrink-0 relative"
-            >
-              {% include 'partials/svg/check2.html' %}
-
-              <div
-                class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-lg leading-none font-normal relative flex items-center justify-start"
-              >
+            <div class="flex flex-row gap-2 items-center self-stretch">
+              {% include "partials/svg/check2.html" %}
+              <div class="text-gray-black-50 text-left font-inter text-lg leading-none">
                 Use Any Photo Pack
               </div>
             </div>
-            <div
-              class="flex flex-row gap-2 items-center justify-start self-stretch shrink-0 relative"
-            >
-              {% include 'partials/svg/check2.html' %}
-
-              <div
-                class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-lg leading-none font-normal relative flex items-center justify-start"
-              >
+            <div class="flex flex-row gap-2 items-center self-stretch">
+              {% include "partials/svg/check2.html" %}
+              <div class="text-gray-black-50 text-left font-inter text-lg leading-none">
                 No Watermarks
               </div>
             </div>
-            <div
-              class="flex flex-row gap-2 items-center justify-start self-stretch shrink-0 relative"
-            >
-              {% include 'partials/svg/check2.html' %}
-
-              <div
-                class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-lg leading-none font-normal relative flex items-center justify-start"
-              >
+            <div class="flex flex-row gap-2 items-center self-stretch">
+              {% include "partials/svg/check2.html" %}
+              <div class="text-gray-black-50 text-left font-inter text-lg leading-none">
                 Priority processing
               </div>
             </div>
-            <div
-              class="flex flex-row gap-2 items-center justify-start self-stretch shrink-0 relative"
-            >
-              {% include 'partials/svg/check2.html' %}
-
-              <div
-                class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-lg leading-none font-normal relative flex items-center justify-start"
-              >
+            <div class="flex flex-row gap-2 items-center self-stretch">
+              {% include "partials/svg/check2.html" %}
+              <div class="text-gray-black-50 text-left font-inter text-lg leading-none">
                 24/7 Support
               </div>
             </div>
           </div>
-          <div class="flex flex-col gap-4 items-start justify-start self-stretch shrink-0 relative">
+
+          <div class="flex flex-col items-start self-stretch">
             <div
-              class="bg-[#f43098] rounded-xl pt-4 pr-8 pb-4 pl-8 flex flex-row gap-3 items-center justify-center self-stretch shrink-0 relative"
-              style="box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.04)"
+              class="bg-grn-to rounded-xl py-4 px-8 flex flex-row gap-3 items-center justify-center self-stretch shadow-[0px_4px_4px_0px_rgba(0,0,0,0.04)]"
             >
-              <div
-                class="text-[#ffffff] text-center font-['Inter-Medium',_sans-serif] text-base leading-none font-medium relative flex items-center justify-center"
-              >
+              <div class="text-w text-center font-inter text-base leading-none font-medium">
                 Choose Premium
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      <!-- Max Plan -->
       <div
-        class="bg-[rgba(255,255,255,0.02)] rounded-xl border-solid border-[rgba(255,255,255,0.10)] border flex flex-col gap-0 items-center justify-center flex-1 relative overflow-hidden"
+        class="bg-[rgba(255,255,255,0.02)] rounded-xl border-solid border-[rgba(255,255,255,0.10)] border flex flex-col gap-0 items-center justify-center flex-1 relative overflow-hidden max-w-96"
       >
         <div
           class="pt-8 pr-6 pb-8 pl-6 flex flex-col gap-3 items-center justify-center self-stretch shrink-0 relative"
@@ -294,12 +262,12 @@
               class="flex flex-col gap-2 items-start justify-start self-stretch shrink-0 relative"
             >
               <div
-                class="text-w text-center font-['BricolageGrotesque-Medium',_sans-serif] text-[32px] leading-[120%] font-medium relative self-stretch"
+                class="text-w text-center font-bricon text-[32px] leading-[120%] font-medium relative self-stretch"
               >
                 Enterprise
               </div>
               <div
-                class="text-gray-black-50 text-center font-['Inter-Regular',_sans-serif] text-lg leading-[120%] font-normal relative self-stretch"
+                class="text-gray-black-50 text-center font-inter text-lg leading-[120%] relative self-stretch"
               >
                 For agencies &amp; heavy users
               </div>
@@ -311,6 +279,7 @@
             </div>
           </div>
         </div>
+
         <div
           class="border-solid border-[rgba(255,255,255,0.10)] border-t border-r-[0] border-b-[0] border-l-[0] shrink-0 w-[328px] h-0 relative"
           style="margin-top: -1px"
@@ -322,10 +291,10 @@
             <div
               class="flex flex-row gap-2 items-center justify-start self-stretch shrink-0 relative"
             >
-              {% include 'partials/svg/check2.html' %}
+              {% include "partials/svg/check2.html" %}
 
               <div
-                class="text-w text-left font-['Inter-Medium',_sans-serif] text-lg leading-none font-medium relative flex items-center justify-start"
+                class="text-w text-left font-inter text-lg leading-none font-medium relative flex items-center justify-start"
               >
                 1100 AI Photo Credits
               </div>
@@ -333,10 +302,10 @@
             <div
               class="flex flex-row gap-2 items-center justify-start self-stretch shrink-0 relative"
             >
-              {% include 'partials/svg/check2.html' %}
+              {% include "partials/svg/check2.html" %}
 
               <div
-                class="text-w text-left font-['Inter-Medium',_sans-serif] text-lg leading-none font-medium relative flex items-center justify-start"
+                class="text-w text-left font-inter text-lg leading-none font-medium relative flex items-center justify-start"
               >
                 16 AI Models
               </div>
@@ -344,10 +313,10 @@
             <div
               class="flex flex-row gap-2 items-center justify-start self-stretch shrink-0 relative"
             >
-              {% include 'partials/svg/check2.html' %}
+              {% include "partials/svg/check2.html" %}
 
               <div
-                class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-lg leading-none font-normal relative flex items-center justify-start"
+                class="text-gray-black-50 text-left font-inter text-lg leading-none relative flex items-center justify-start"
               >
                 No Monthly Subscription
               </div>
@@ -355,10 +324,10 @@
             <div
               class="flex flex-row gap-2 items-center justify-start self-stretch shrink-0 relative"
             >
-              {% include 'partials/svg/check2.html' %}
+              {% include "partials/svg/check2.html" %}
 
               <div
-                class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-lg leading-none font-normal relative flex items-center justify-start"
+                class="text-gray-black-50 text-left font-inter text-lg leading-none relative flex items-center justify-start"
               >
                 Use Any Photo Pack
               </div>
@@ -366,10 +335,10 @@
             <div
               class="flex flex-row gap-2 items-center justify-start self-stretch shrink-0 relative"
             >
-              {% include 'partials/svg/check2.html' %}
+              {% include "partials/svg/check2.html" %}
 
               <div
-                class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-lg leading-none font-normal relative flex items-center justify-start"
+                class="text-gray-black-50 text-left font-inter text-lg leading-none relative flex items-center justify-start"
               >
                 No Watermarks
               </div>
@@ -377,10 +346,10 @@
             <div
               class="flex flex-row gap-2 items-center justify-start self-stretch shrink-0 relative"
             >
-              {% include 'partials/svg/check2.html' %}
+              {% include "partials/svg/check2.html" %}
 
               <div
-                class="text-gray-black-50 text-left font-['Inter-Regular',_sans-serif] text-lg leading-none font-normal relative flex items-center justify-start"
+                class="text-gray-black-50 text-left font-inter text-lg leading-none relative flex items-center justify-start"
               >
                 24/7 Support
               </div>
@@ -388,32 +357,17 @@
           </div>
           <div class="flex flex-col gap-4 items-start justify-start self-stretch shrink-0 relative">
             <div
-              class="bg-[#605dff] rounded-xl pt-4 pr-8 pb-4 pl-8 flex flex-row gap-3 items-center justify-center self-stretch shrink-0 relative"
+              class="bg-grn-from rounded-xl pt-4 pr-8 pb-4 pl-8 flex flex-row gap-3 items-center justify-center self-stretch shrink-0 relative"
               style="box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.04)"
             >
               <div
-                class="text-[#ffffff] text-center font-['Inter-Medium',_sans-serif] text-base leading-none font-medium relative flex items-center justify-center"
+                class="text-w text-center font-inter text-base leading-none font-medium relative flex items-center justify-center"
               >
                 Choose Max
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-    <div
-      class="rounded-[99px] pt-1.5 pr-4 pb-1.5 pl-4 flex flex-row gap-0 items-center justify-center shrink-0 absolute left-[629px] top-[175.2px]"
-      style="
-        background: var(
-          --gr1,
-          linear-gradient(90deg, rgba(96, 93, 255, 1) 0%, rgba(244, 48, 152, 1) 100%)
-        );
-      "
-    >
-      <div
-        class="text-[#ffffff] text-center font-inter text-xs leading-none font-medium relative flex items-center justify-center"
-      >
-        Most Popular
       </div>
     </div>
   </div>
