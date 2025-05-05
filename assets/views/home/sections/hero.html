@@ -1,46 +1,48 @@
-<div class="flex flex-col gap-3 items-center justify-start relative mb-16">
-  <div class="flex flex-col gap-3 items-center justify-center self-stretch shrink-0 relative">
-    <div class="flex flex-col gap-6 items-center justify-start shrink-0 relative">
-      <div
-        class="text-[#edf1fe] text-center font-['BricolageGrotesque-SemiBold',_sans-serif] text-[74px] leading-[110%] font-semibold relative w-[1128px]"
-      >
+<section class="flex flex-col gap-3 items-center justify-start mb-16 mt-28 lg:mt-48">
+  <div class="flex flex-col gap-3 items-center justify-center self-stretch shrink-0">
+    <div class="flex flex-col gap-6 items-center justify-start shrink-0">
+      <div class="text-w text-center font-bricon text-5xl md:text-7xl font-semibold">
         Ai-Powered Real-Time
         <br />
         Image Generation
       </div>
       <div
-        class="text-[#f8fdfe] text-center font-['Inter-Regular',_sans-serif] text-lg leading-[160%] font-normal relative"
+        class="text-[#f8fdfe] text-center font-['Inter-Regular',_sans-serif] text-lg leading-[160%] font-normal"
       >
         Transform your selfie into endless AI creations. No waiting, no tweaks.
       </div>
     </div>
     <img
-      class="flex flex-row gap-3 items-center justify-center shrink-0 w-[1620px] h-[auto] relative overflow-visible"
+      class="flex flex-row gap-3 items-center justify-center shrink-0 w-[1620px] h-[auto] overflow-visible"
       src="../../../static/images/carousel.png"
     />
-    {% include "home/sections/carousel.html" %}
+    {# {% include "home/sections/carousel.html" %} #}
   </div>
-  <div class="flex flex-row gap-4 items-center justify-start shrink-0 relative">
+  <div class="flex items-center justify-center shrink-0">
+    <div>{% include "partials/parts/cta_btn_home.html" %}</div>
+
+    {#
     <div
-      class="bg-[#605dff] rounded-[50px] pt-[18px] pr-4 pb-[18px] pl-6 flex flex-row gap-4 items-center justify-center shrink-0 h-14 relative"
+      class="bg-[#605dff] rounded-[50px] pt-[18px] pr-4 pb-[18px] pl-6 flex flex-row gap-4 items-center justify-center shrink-0 h-14"
     >
       <div
-        class="text-w text-center font-['Inter-SemiBold',_sans-serif] text-base leading-none font-semibold relative w-[79px] flex items-center justify-center"
+        class="text-w text-center font-['Inter-SemiBold',_sans-serif] text-base leading-none font-semibold w-[79px] flex items-center justify-center"
       >
         Try It Now
       </div>
       {% include "partials/svg/triple_stars.html" %}
     </div>
     <div
-      class="bg-[#ff319e] rounded-[100px] pt-4 pr-6 pb-4 pl-6 flex flex-row gap-2.5 items-center justify-center shrink-0 h-14 relative"
+      class="bg-[#ff319e] rounded-[100px] pt-4 pr-6 pb-4 pl-6 flex flex-row gap-2.5 items-center justify-center shrink-0 h-14"
       style="backdrop-filter: blur(10px)"
     >
       <div
-        class="text-background-disabled-0 text-left font-['Inter-SemiBold',_sans-serif] text-base leading-[160%] font-semibold relative"
+        class="text-background-disabled-0 text-left font-['Inter-SemiBold',_sans-serif] text-base leading-[160%] font-semibold"
         style="letter-spacing: 0.005em"
       >
         See Examples
       </div>
     </div>
+    #}
   </div>
-</div>
+</section>

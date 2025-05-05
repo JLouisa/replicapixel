@@ -1,66 +1,44 @@
-<div
-  class="bg-base/2 rounded-full border-solid border-slate-50/10 border py-4 px-8 flex flex-row items-center justify-between max-w-7xl w-full mx-auto h-20 relative top-10 mb-16"
-  style="backdrop-filter: blur(10px)"
+<nav
+  class="fixed inset-x-0 top-4 lg:top-16 z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between border border-slate-50/10 rounded-full backdrop-blur-lg bg-white/5"
 >
-  <div class="flex flex-row gap-[12.8px] items-center justify-center shrink-0 relative">
-    <span>{% include "partials/svg/logo.html" %}</span>
-    <div
-      class="text-w text-center font-['BricolageGrotesque-SemiBold',_sans-serif] text-[32px] leading-none font-semibold relative"
+  <div class="flex flex-row items-center justify-center shrink-0 relative gap-2 md:gap-3 lg:gap-4">
+    <span class="shrink-0 w-10 h-10 lg:w-12 lg:h-12 relative"
+      >{% include "partials/svg/logo.html" %}</span
     >
-      <span> {{ website.website_basic_info.name }}</span>
-    </div>
+    <span class="hidden sm:block text-w text-center font-bricon font-semibold relative sm:text-4xl">
+      {{ website.website_basic_info.name }}
+    </span>
   </div>
-  <div class="flex flex-row gap-12 items-center justify-start shrink-0 relative">
-    <div class="flex flex-row gap-6 items-center justify-start shrink-0 relative">
-      <div class="p-2.5 flex flex-row gap-2.5 items-center justify-center shrink-0 relative">
-        <div
-          class="text-[#ffffff] text-left font-['Inter-Regular',_sans-serif] text-base leading-[160%] font-normal relative"
-          style="letter-spacing: 0.005em"
-        >
-          Home
-        </div>
-      </div>
-      <div class="p-2.5 flex flex-row gap-2.5 items-center justify-center shrink-0 relative">
-        <div
-          class="text-[#ffffff] text-left font-['Inter-Regular',_sans-serif] text-base leading-[160%] font-normal relative"
-          style="letter-spacing: 0.005em"
-        >
-          Features
-        </div>
-      </div>
-      <div class="p-2.5 flex flex-row gap-2.5 items-center justify-center shrink-0 relative">
-        <div
-          class="text-background-hover-50 text-left font-['Inter-Regular',_sans-serif] text-base leading-[160%] font-normal relative"
-          style="letter-spacing: 0.005em"
-        >
-          Studio
-        </div>
-      </div>
-      <div class="p-2.5 flex flex-row gap-2.5 items-center justify-center shrink-0 relative">
-        <div
-          class="text-background-hover-50 text-left font-['Inter-Regular',_sans-serif] text-base leading-[160%] font-normal relative"
-          style="letter-spacing: 0.005em"
-        >
-          Pricing
-        </div>
-      </div>
-    </div>
-    <div
-      class="rounded-[50px] pt-4 pr-6 pb-4 pl-8 flex flex-row gap-4 items-center justify-center shrink-0 relative"
-      style="
-        background: var(
-          --gr1,
-          linear-gradient(90deg, rgba(96, 93, 255, 1) 0%, rgba(244, 48, 152, 1) 100%)
-        );
-      "
-    >
-      <div
-        class="text-w text-center font-['Inter-SemiBold',_sans-serif] text-base leading-none font-semibold relative flex items-center justify-center"
-        style="letter-spacing: -0.01em"
+
+  <!-- Desktop nav -->
+  <div class="hidden lg:flex items-center gap-12">
+    <ul class="flex flex-row gap-8 items-center font-semibold">
+      <li><a href="#" class="p-2 text-white text-base hover:text-gray-300">Home</a></li>
+      <li><a href="#" class="p-2 text-white text-base hover:text-gray-300">Features</a></li>
+      <li><a href="#" class="p-2 text-white text-base hover:text-gray-300">Studio</a></li>
+      <li><a href="#pricing" class="p-2 text-white text-base hover:text-gray-300">Pricing</a></li>
+    </ul>
+    <div>{% include "partials/parts/cta_btn_home.html" %}</div>
+  </div>
+
+  <!-- ✅ Mobile nav toggle — placed outside the hidden desktop nav -->
+  <div class="lg:hidden flex justify-center items-center">
+    <div>{% include "partials/parts/cta_btn_home.html" %}</div>
+    <label for="my-drawer-3" class="btn btn-square btn-ghost">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="w-24 h-24"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
       >
-        Try Now
-      </div>
-      {% include "partials/svg/triple_stars.html" %}
-    </div>
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4 6h16M4 12h16M4 18h16"
+        />
+      </svg>
+    </label>
   </div>
-</div>
+</nav>

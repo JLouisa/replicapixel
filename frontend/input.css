@@ -1,4 +1,4 @@
-@font-face {
+/* @font-face {
   font-family: "Inter";
   font-style: normal;
   font-weight: 400;
@@ -14,12 +14,21 @@
   src: url("/assets/fonts/Inter-Medium.woff2") format("woff2");
 }
 
-@font-face {
-  font-family: "Bricolage Grotesque";
+ @font-face {
+  font-family: "BricolageGrotesque";
   font-style: normal;
   font-weight: 500;
   font-display: swap;
   src: url("/assets/fonts/BricolageGrotesque-Medium.woff2") format("woff2");
+} 
+
+@font-face {
+  font-family: "BricolageGrotesque";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@500&display=swap")
+    format("woff2");
 }
 
 @font-face {
@@ -27,8 +36,24 @@
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url("/assets/fonts/BricolageGrotesque-Bold.woff2") format("woff2");
-}
+  src: url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@700&display=swap");
+} */
+
+/* @font-face {
+  font-family: "Bricolage Grotesque";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/assets/fonts/BricolageGrotesque-Regular.ttf") format("truetype");
+} */
+
+ @font-face {
+  font-family: "Bricolage Grotesque";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/assets/fonts/BricolageGrotesque-Medium.woff2") format("woff2");
+} 
 
 @font-face {
   font-family: "Gellix";
@@ -43,35 +68,29 @@
 
 /* 3. CONFIGURE THEME */
 @theme {
-  /* Fonts */
-  --font-inter: Inter, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-    "Segoe UI Symbol", "Noto Color Emoji";
-  --font-brico: Bricolage Grotesque, ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-  --font-gellix: Gellix, ui-sans-serif, system-ui, sans-serif;
+  --font-inter: 'Inter, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+  --font-bricon: '"Bricolage Grotesque"',
+  --font-gellix: 'Gellix, ui-sans-serif, system-ui, sans-serif',
 
-  /* Color */
-  --brand-bg-dark: #111827;
-  --brand-bg-light: #1f2937;
-  --badge-bg: rgba(40, 48, 61, 0.8);
-  --badge-border: rgba(107, 114, 128, 0.5);
-  --card-bg: rgba(31, 41, 55, 0.8);
-  --card-border: rgba(55, 65, 81, 0.5);
-  --avatar-ring: #60a5fa;
+  --color-p: #605dff;
+  --color-w: #ffffff;
+  --color-bg-web: #191e24;
+  --color-bg-web2: #191e24;
 
-  --2nd-button: "#f43098";
-  --p: "#605dff";
-  --w: "#ffffff";
+  --color-grn-from: #605DFF;
+  --color-grn-to: #F43098;
 
-  /* Values referencing Tailwind's default theme */
-  --heading-white: theme(colors.white); /* Use theme() for defaults */
-  --body-text: theme(colors.gray.300); /* Use theme() + dot notation */
-  --muted-text: theme(colors.gray.400); /* Use theme() + dot notation */
-  --badge-text: theme(colors.gray.200); /* Use theme() + dot notation */
-  --star-yellow: theme(colors.yellow.400); /* Use theme() + dot notation */
+  --brand-gradient: linear-gradient(90deg, rgba(96, 93, 255, 1) 0%, rgba(244, 48, 152, 1) 100%);
+  }
 
-  /* Customizations */
-  --spacing-128: 32rem;
-}
+  /* Color
+  --heading-white: theme(colors.white);
+  --body-text: theme(colors.gray.300);
+  --muted-text: theme(colors.gray.400);
+  --badge-text: theme(colors.gray.200);
+  --star-yellow: theme(colors.yellow.400);
+  --spacing-128: 32rem; */
+
 
 /* 4. SOURCE (if needed) */
 @source "../assets/views";

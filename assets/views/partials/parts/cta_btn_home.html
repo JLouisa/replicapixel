@@ -1,0 +1,30 @@
+<a href="{{ website.website_routes.payment.payment_plans | safe }}">
+  {% set timestamp = now() | date(format="%s%.f") %}
+  <button
+    id="shiningButton-{{ timestamp }}"
+    class="relative pt-2 pr-3 pb-2 pl-4 px-2 py-2 gap-2 lg:pt-4 lg:pr-6 lg:pb-4 lg:pl-8 lg:px-4 lg:py-2 lg:gap-4 flex flex-row overflow-hidden bg-gradient-to-r from-[var(--color-grn-from)] to-[var(--color-grn-to)] font-semibold text-white rounded-full shadow-md transition-all duration-150 hover:shadow-lg hover:brightness-110 active:scale-95 active:brightness-90 cursor-pointer"
+  >
+    Try Now {% include "partials/svg/triple_stars.html" %}
+  </button>
+  <script>
+    {
+      const button = document.getElementById("shiningButton-{{ timestamp }}");
+      if (button) {
+        const shineAnimationDuration = 1000;
+        const intervalDuration = 8000;
+        function triggerShine() {
+          if (!button.classList.contains("animate-shine-active")) {
+            button.classList.add("animate-shine-active");
+            setTimeout(() => {
+              button.classList.remove("animate-shine-active");
+            }, shineAnimationDuration);
+          }
+        }
+
+        const shineInterval = setInterval(triggerShine, intervalDuration);
+      } else {
+        console.error("Button with id 'shiningButton' not found.");
+      }
+    }
+  </script>
+</a>
