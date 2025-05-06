@@ -2701,6 +2701,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "google-oauth"
+version = "1.11.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "edaf051ebff17f9bf694f71306efadc1b3353f811333eb61d743bec93c68ef30"
+dependencies = [
+ "anyhow",
+ "async-lock",
+ "base64 0.22.1",
+ "getrandom 0.2.15",
+ "hex",
+ "lazy_static",
+ "log",
+ "reqwest 0.12.15",
+ "rsa",
+ "serde",
+ "serde_json",
+ "sha256",
+]
+
+[[package]]
 name = "group"
 version = "0.12.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3661,9 +3681,9 @@ dependencies = [
 
 [[package]]
 name = "loco-oauth2"
-version = "0.4.0"
+version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ce11d9ee38cdee15b1a6dcee8546e2d4dfed1644b409bb9ca4ba2a1bb7c67a07"
+checksum = "cb24f3ec6eec6b6ce3f53a352b3ef9b4283a7b86021ce0d2dbe4fd90502ec014"
 dependencies = [
  "async-std",
  "async-trait",
@@ -4357,6 +4377,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "passwords"
+version = "3.1.16"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "11407193a7c2bd14ec6b0ec3394da6fdcf7a4d5dcbc8c3cc38dfb17802c8d59c"
+dependencies = [
+ "random-pick",
+]
+
+[[package]]
 name = "pem"
 version = "3.0.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4922,6 +4951,37 @@ dependencies = [
 ]
 
 [[package]]
+name = "random-number"
+version = "0.1.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7fc8cdd49be664772ffc3dbfa743bb8c34b78f9cc6a9f50e56ae878546796067"
+dependencies = [
+ "proc-macro-hack",
+ "rand 0.8.5",
+ "random-number-macro-impl",
+]
+
+[[package]]
+name = "random-number-macro-impl"
+version = "0.1.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f5135143cb48d14289139e4615bffec0d59b4cbfd4ea2398a3770bd2abfc4aa2"
+dependencies = [
+ "proc-macro-hack",
+ "quote",
+ "syn 2.0.100",
+]
+
+[[package]]
+name = "random-pick"
+version = "1.2.16"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c179499072da789afe44127d5f4aa6012de2c2f96ef759990196b37387a2a0f8"
+dependencies = [
+ "random-number",
+]
+
+[[package]]
 name = "redis"
 version = "0.22.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5063,6 +5123,7 @@ dependencies = [
  "axum",
  "axum-extra",
  "axum_session",
+ "base64 0.22.1",
  "chrono",
  "cuid2",
  "derive_more 2.0.1",
@@ -5070,14 +5131,17 @@ dependencies = [
  "fluent-templates",
  "futures",
  "futures-util",
+ "google-oauth",
  "hyper 0.14.32",
  "include_dir",
  "insta",
+ "jsonwebtoken",
  "loco-oauth2",
  "loco-rs",
  "migration",
  "oauth2 4.4.2",
  "openssl",
+ "passwords",
  "rand 0.9.0",
  "redis 0.29.5",
  "regex",
@@ -5293,6 +5357,7 @@ dependencies = [
  "pkcs1",
  "pkcs8 0.10.2",
  "rand_core 0.6.4",
+ "sha2",
  "signature 2.2.0",
  "spki 0.7.3",
  "subtle",
@@ -6113,6 +6178,18 @@ dependencies = [
  "cfg-if",
  "cpufeatures",
  "digest",
+]
+
+[[package]]
+name = "sha256"
+version = "1.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f880fc8562bdeb709793f00eb42a2ad0e672c4f883bbe59122b926eca935c8f6"
+dependencies = [
+ "async-trait",
+ "bytes",
+ "hex",
+ "sha2",
 ]
 
 [[package]]

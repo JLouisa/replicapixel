@@ -1,6 +1,10 @@
 <!-- prettier-ignore -->
 {% set website_name = website.website_basic_info.name %} 
 {% set website_site = website.website_basic_info.site | safe %}
+{% set google_ott_link = website.website_routes.oauth2.google_ott | safe %}
+{% set google_analytics_id = website.website_basic_info.google.google_analytics_id | safe %}
+{% set google_client_id = website.website_basic_info.google.google_client_id | safe %}
+{% set meta_pixel_id = website.website_basic_info.meta_pixel.meta_pixel_id | safe %}
 
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
@@ -15,8 +19,9 @@
     <script src="/static/js/index.js" defer></script>
     <script src="/static/js/htmx/htmx.min.js"></script>
     <script src="/static/js/htmx/extensions/htmx-ext-form-json.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 
-    {% block stripe %} {% endblock stripe %}
+    {% block stripe %}{% endblock stripe %}
 
     <!-- Cookie Consent -->
     {% include "partials/cookie/consent.html" %}
@@ -123,6 +128,29 @@
           document.documentElement.setAttribute("data-theme", newTheme);
           localStorage.setItem("theme", newTheme);
         });
+      }
+
+      // Google Identity Services Script
+      window.onload = function () {
+        google.accounts.id.initialize({
+          client_id: "{{google_client_id}}",
+          callback: handleCredentialResponse,
+          auto_select: false,
+        });
+        google.accounts.id.prompt();
+      };
+
+      async function handleCredentialResponse(response) {
+        console.log("Encoded JWT ID token: " + response.credential);
+        const res = await fetch(`${window.__APP_ENV__.apiBaseUrl}{{google_ott_link}}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token: response.credential }),
+          credentials: "include",
+        });
+        console.log(res);
+        // const html = await res.text();
+        // document.querySelector("#your-target").outerHTML = html;
       }
     </script>
   </body>

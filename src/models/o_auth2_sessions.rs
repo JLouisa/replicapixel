@@ -10,7 +10,7 @@ use loco_oauth2::{
     models::oauth2_sessions::OAuth2SessionsTrait,
 };
 
-use chrono::{DateTime, FixedOffset, Utc};
+use chrono::Utc;
 
 #[async_trait]
 impl OAuth2SessionsTrait<users::Model> for Model {
@@ -58,17 +58,17 @@ impl OAuth2SessionsTrait<users::Model> for Model {
                 // Update the session
                 let mut oauth2_session: o_auth2_sessions::ActiveModel = oauth2_session.into();
                 oauth2_session.session_id = ActiveValue::set(oauth2_session_id);
-                oauth2_session.expires_at = ActiveValue::set(
-                    DateTime::<FixedOffset>::from(Utc::now()) + token.expires_in().unwrap(),
-                );
-                oauth2_session.updated_at = ActiveValue::set(Utc::now().naive_utc().into());
+                oauth2_session.expires_at = ActiveValue::set(chrono::Utc::now().into());
+                oauth2_session.updated_at = ActiveValue::set(Utc::now().naive_utc());
                 oauth2_session.update(&txn).await?
             }
             None => {
                 // Create the session
                 o_auth2_sessions::ActiveModel {
                     session_id: ActiveValue::set(oauth2_session_id),
-                    expires_at: ActiveValue::set(DateTime::<FixedOffset>::from(Utc::now())),
+                    expires_at: ActiveValue::set(
+                        (chrono::Utc::now() + token.expires_in().unwrap()).into(),
+                    ),
                     user_id: ActiveValue::set(user.id),
                     ..Default::default()
                 }
@@ -80,6 +80,7 @@ impl OAuth2SessionsTrait<users::Model> for Model {
         Ok(oauth2_session)
     }
 }
+
 #[async_trait::async_trait]
 impl ActiveModelBehavior for ActiveModel {
     async fn before_save<C>(self, _db: &C, insert: bool) -> std::result::Result<Self, DbErr>
