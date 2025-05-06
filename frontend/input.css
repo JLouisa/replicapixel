@@ -55,13 +55,13 @@
   src: url("/assets/fonts/BricolageGrotesque-Medium.woff2") format("woff2");
 } 
 
-@font-face {
+/* @font-face {
   font-family: "Gellix";
   font-style: normal;
   font-weight: 500;
   font-display: swap;
   src: url("/assets/fonts/Gellix-Medium.woff2") format("woff2");
-}
+} */
 
 /* 2. IMPORT TAILWIND AFTER @font-face */
 @import "tailwindcss";
@@ -70,7 +70,7 @@
 @theme {
   --font-inter: 'Inter, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
   --font-bricon: '"Bricolage Grotesque"',
-  --font-gellix: 'Gellix, ui-sans-serif, system-ui, sans-serif',
+  /* --font-gellix: 'Gellix, ui-sans-serif, system-ui, sans-serif', */
 
   --color-p: #605dff;
   --color-w: #ffffff;
