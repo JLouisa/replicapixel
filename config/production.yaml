@@ -178,7 +178,8 @@ settings:
     site: {{ get_env(name="SITE") }}
     site_domain: {{ get_env(name="SITE_DOMAIN") }}
     from_email: {{ get_env(name="FROM_EMAIL") }}
-    google_analytics:
+    google:
+      google_client_id: {{ get_env(name="GOOGLE_OAUTH_CLIENT_ID") }}
       google_analytics_id: {{ get_env(name="GOOGLE_ANALYTICS_ID", default="YOUR_GA_ID_ENV") }}
       google_analytics_secret: {{ get_env(name="GOOGLE_ANALYTICS_CLIENT_SECRET", default="YOUR_GA_SECRET_ENV") }}
     meta_pixel:
