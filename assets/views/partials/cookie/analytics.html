@@ -1,13 +1,10 @@
-<script
-  async
-  src="https://www.googletagmanager.com/gtag/js?id={{ website.website_basic_info.google_analytics.google_analytics_id }}"
-></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id={{ google_analytics_id }}"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag() {
     dataLayer.push(arguments);
   }
   gtag("js", new Date());
-  gtag("config", "{{ website.website_basic_info.google_analytics.google_analytics_id }}");
+  gtag("config", "{{ google_analytics_id }}");
   console.log("Server rendered & initialized GA.");
 </script>

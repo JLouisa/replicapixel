@@ -63,7 +63,6 @@ impl Hooks for App {
             .add_route(controllers::settings::routes())
             .add_route(controllers::features::routes())
             .add_route(controllers::oauth2::routes())
-            .add_route(controllers::auth::routes())
             .add_route(controllers::payment::routes())
             .add_route(controllers::images::routes())
             .add_route(controllers::home::routes())
@@ -71,6 +70,7 @@ impl Hooks for App {
             .add_route(controllers::training_models::routes())
             .add_route(controllers::webhooks::routes())
             .add_route(controllers::policy::routes())
+            .add_route(controllers::auth::routes())
     }
     async fn connect_workers(ctx: &AppContext, queue: &Queue) -> Result<()> {
         queue.register(DownloadWorker::build(ctx)).await?;

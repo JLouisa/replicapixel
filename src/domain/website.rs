@@ -45,6 +45,7 @@ impl WebsiteRoutes {
 
 #[derive(Debug, Clone, Deserialize, Serialize, Default)]
 pub struct GoogleAnalytics {
+    pub google_client_id: String,
     pub google_analytics_id: Option<String>,
     pub google_analytics_secret: Option<String>,
 }
@@ -60,7 +61,7 @@ pub struct WebsiteBasicInfo {
     pub site: String,
     pub site_domain: String,
     pub from_email: String,
-    pub google_analytics: GoogleAnalytics,
+    pub google: GoogleAnalytics,
     pub meta_pixel: MetaPixel,
 }
 impl WebsiteBasicInfo {

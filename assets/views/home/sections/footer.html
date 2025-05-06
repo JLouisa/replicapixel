@@ -1,5 +1,5 @@
 <!-- prettier-ignore -->
-{% set templates_link = "/not-found" %}
+{% set studio_link = website.website_routes.dashboard_routes.base %}
 {% set api_link = "/not-found" %}
 {% set app_link = "/not-found" %}
 {% set documentation_link = "/not-found" %}
@@ -7,14 +7,14 @@
 {% set blog_link = "/not-found" %}
 {% set community_link = "/not-found" %}
 {% set support_link = "/not-found" %}
-{% set privacy_link = website.website_routes.policy.privacy %}
-{% set terms_link = website.website_routes.policy.terms %}
 {% set GDPR_link =  "/not-found" %}
-{% set cookie_link = website.website_routes.policy.cookie %}
 {% set licenses_link =  "/not-found" %}
 {% set instagram_link = "/not-found" %}
 {% set twitter_link = "/not-found" %}
 {% set linkedin_link = "/not-found" %}
+{% set privacy_link = website.website_routes.policy.privacy %}
+{% set terms_link = website.website_routes.policy.terms %}
+{% set cookie_link = website.website_routes.policy.cookie %}
 
 <div class="flex flex-col gap-4 items-center justify-center">
   <div
@@ -59,16 +59,13 @@
                 <li class="text-w font-brico text-2xl font-bold">Company</li>
                 <li class="text-gray-black-50 text-base"><a href="#features">Features</a></li>
                 <li class="text-gray-black-50 text-base">
-                  <a href="/dashboard">Studio</a>
+                  <a href="{{studio_link}}">Studio</a>
                 </li>
               </ul>
               <ul class="flex flex-col gap-4">
                 <li class="text-w font-brico text-2xl font-bold">Product</li>
                 <li class="text-gray-black-50 text-base">
                   <a href="#pricing" target="_blank">Pricing</a>
-                </li>
-                <li class="text-gray-black-50 text-base">
-                  <a href="{{templates_link}}">Templates</a>
                 </li>
                 <li class="text-gray-black-50 text-base">
                   <a href="{{api_link}}" target="_blank">API</a>
@@ -84,9 +81,6 @@
                 </li>
                 <li class="text-gray-black-50 text-base">
                   <a href="{{guides_link}}" target="_blank">Guides</a>
-                </li>
-                <li class="text-gray-black-50 text-base">
-                  <a href="{{blog_link}}" target="_blank">Blog</a>
                 </li>
                 <li class="text-gray-black-50 text-base">
                   <a href="{{community_link}}">Community</a>

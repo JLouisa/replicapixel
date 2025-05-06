@@ -2,6 +2,7 @@ use async_trait::async_trait;
 use chrono::{offset::Local, Duration};
 use derive_more::{AsRef, Constructor, From};
 use loco_rs::{auth::jwt, hash, prelude::*};
+use passwords::PasswordGenerator;
 use serde::{Deserialize, Serialize};
 use serde_json::Map;
 use unicode_segmentation::UnicodeSegmentation;
@@ -316,11 +317,21 @@ impl OAuth2UserTrait<OAuth2UserProfile> for Model {
             .await?
         {
             None => {
+                let pg = PasswordGenerator::new()
+                    .length(8)
+                    .numbers(true)
+                    .lowercase_letters(true)
+                    .uppercase_letters(true)
+                    .symbols(true)
+                    .spaces(true)
+                    .exclude_similar_characters(true)
+                    .strict(true);
+                let password = pg.generate_one().map_err(|e| ModelError::Any(e.into()))?;
                 // We use the sub field as the user fake password since sub is unique
                 let password_hash =
-                    hash::hash_password(&profile.sub).map_err(|e| ModelError::Any(e.into()))?;
+                    hash::hash_password(&password).map_err(|e| ModelError::Any(e.into()))?;
                 // Create the user into the database
-                let user = users::ActiveModel {
+                users::ActiveModel {
                     email: ActiveValue::set(profile.email.to_string()),
                     name: ActiveValue::set(profile.name.to_string()),
                     email_verified_at: ActiveValue::set(Some(Local::now().into())),
@@ -332,26 +343,7 @@ impl OAuth2UserTrait<OAuth2UserProfile> for Model {
                 .map_err(|e| {
                     tracing::error!("Error while trying to create user: {e}");
                     ModelError::Any(e.into())
-                })?;
-                let user_credits_init = UserCreditsInit::default();
-                UserCreditActiveModel {
-                    pid: ActiveValue::set(user_credits_init.pid),
-                    user_id: ActiveValue::set(user.id),
-                    model_amount: ActiveValue::set(user_credits_init.model_amount),
-                    credit_amount: ActiveValue::set(user_credits_init.credit_amount),
-                    ..Default::default()
-                }
-                .insert(&txn)
-                .await?;
-                UserSettingsActiveModel {
-                    user_id: ActiveValue::set(user.id),
-                    enable_notification_email: ActiveValue::set(true),
-                    enable_marketing_email: ActiveValue::set(true),
-                    ..Default::default()
-                }
-                .insert(&txn)
-                .await?;
-                user
+                })?
             }
             // Do nothing if user exists
             Some(user) => user,
