@@ -80,6 +80,7 @@ pub mod routes {
         pub const REGISTER: &'static str = "/register";
         pub const FORGOT: &'static str = "/forgot";
         pub const LOGIN_PARTIAL: &'static str = "/partial/login";
+        pub const LOGIN_HOME_PARTIAL: &'static str = "/partial/home/login";
         pub const REGISTER_PARTIAL: &'static str = "/partial/register";
         pub const FORGOT_PARTIAL: &'static str = "/partial/forgot";
         pub const API_REGISTER: &'static str = "/api/auth/register";
@@ -265,7 +266,7 @@ pub async fn validate_user(
     };
     format::render().view(
         &v,
-        "partials/navbar/navbar_user_partial.html",
+        "partials/parts/home_validated.html",
         data!({"website": website, "user": user, "credits": user_credits, "is_home": true}),
     )
 }
@@ -555,32 +556,6 @@ pub async fn get_login(
 }
 
 #[debug_handler]
-pub async fn get_register(
-    ViewEngine(v): ViewEngine<TeraView>,
-    Extension(website): Extension<Website>,
-    State(_ctx): State<AppContext>,
-) -> Result<Response> {
-    format::render().view(
-        &v,
-        "auth/register/register_form.html",
-        data!({"website": website}),
-    )
-}
-
-#[debug_handler]
-pub async fn get_forgot(
-    ViewEngine(v): ViewEngine<TeraView>,
-    Extension(website): Extension<Website>,
-    State(_ctx): State<AppContext>,
-) -> Result<Response> {
-    format::render().view(
-        &v,
-        "auth/forgot/forgot_form.html",
-        data!({"website": website}),
-    )
-}
-
-#[debug_handler]
 pub async fn partial_login(
     ViewEngine(v): ViewEngine<TeraView>,
     Extension(website): Extension<Website>,
@@ -594,6 +569,19 @@ pub async fn partial_login(
 }
 
 #[debug_handler]
+pub async fn get_register(
+    ViewEngine(v): ViewEngine<TeraView>,
+    Extension(website): Extension<Website>,
+    State(_ctx): State<AppContext>,
+) -> Result<Response> {
+    format::render().view(
+        &v,
+        "auth/register/register_form.html",
+        data!({"website": website}),
+    )
+}
+
+#[debug_handler]
 pub async fn partial_register(
     ViewEngine(v): ViewEngine<TeraView>,
     Extension(website): Extension<Website>,
@@ -602,6 +590,19 @@ pub async fn partial_register(
     format::render().view(
         &v,
         "auth/register/register_partial.html",
+        data!({"website": website}),
+    )
+}
+
+#[debug_handler]
+pub async fn get_forgot(
+    ViewEngine(v): ViewEngine<TeraView>,
+    Extension(website): Extension<Website>,
+    State(_ctx): State<AppContext>,
+) -> Result<Response> {
+    format::render().view(
+        &v,
+        "auth/forgot/forgot_form.html",
         data!({"website": website}),
     )
 }

@@ -5,8 +5,6 @@
 {% set google_link = website.website_routes.oauth2.google | safe %}
 {% set github_link = website.website_routes.oauth2.github | safe %}
 
-/api/oauth2/${provider}
-
 <div class="bg-gray-100 rounded-t-lg w-full p-8">
   <p class="text-center text-sm">Sign in with</p>
   <div>
@@ -137,7 +135,14 @@
         class="text-sm text-primary cursor-pointer mt-4"
         >Don't have an account?</a
       >
-      <a href="/" class="text-sm text-primary cursor-pointer mt-4">Home</a>
+      <a
+        class="text-sm text-primary cursor-pointer mt-4"
+        hx-get="/partial/home"
+        hx-push-url="/"
+        hx-target="#app"
+        hx-swap="innerHTML"
+        >Home
+      </a>
     </div>
   </form>
 </div>

@@ -80,3 +80,42 @@ cargo loco generate controller features --htmx
 cargo loco start --server-and-worker
 cargo loco watch --server-and-worker
 bun run dev
+
+// GooglePayload {
+// aud: "xxxxxx.apps.googleusercontent.com",
+// exp: 1231344342,
+// iat: 1231432344,
+// iss: "https://accounts.google.com",
+// sub: "1253264256242341245445",
+// at_hash: None,
+// azp: Some(
+// "xxxxxx.apps.googleusercontent.com",
+// ),
+// email: Some(
+// "john.doe@gmail.com",
+// ),
+// email_verified: Some(
+// true,
+// ),
+// family_name: Some(
+// "Doe",
+// ),
+// given_name: Some(
+// "John",
+// ),
+// hd: None,
+// locale: None,
+// name: Some(
+// "John Doe",
+// ),
+// nonce: None,
+// picture: Some(
+// "https://lh3.googleusercontent.com/a/ACg8ocJVeIbSPhfNWcHzJkA3G_hTcgIBl3ohc4AuScNAHrmWnea7LQ=s96-c",
+// ),
+// nbf: Some(
+// 12341235345,
+// ),
+// jti: Some(
+// "fasdfasf098790sa7f9asfa09dsf",
+// ),
+// }

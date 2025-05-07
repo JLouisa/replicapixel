@@ -2582,6 +2582,7 @@ export namespace Prisma {
     api_key: string | null
     name: string | null
     stripe_customer_id: string | null
+    picture: string | null
     reset_token: string | null
     reset_sent_at: Date | null
     email_verification_token: string | null
@@ -2599,6 +2600,7 @@ export namespace Prisma {
     api_key: string | null
     name: string | null
     stripe_customer_id: string | null
+    picture: string | null
     reset_token: string | null
     reset_sent_at: Date | null
     email_verification_token: string | null
@@ -2616,6 +2618,7 @@ export namespace Prisma {
     api_key: number
     name: number
     stripe_customer_id: number
+    picture: number
     reset_token: number
     reset_sent_at: number
     email_verification_token: number
@@ -2643,6 +2646,7 @@ export namespace Prisma {
     api_key?: true
     name?: true
     stripe_customer_id?: true
+    picture?: true
     reset_token?: true
     reset_sent_at?: true
     email_verification_token?: true
@@ -2660,6 +2664,7 @@ export namespace Prisma {
     api_key?: true
     name?: true
     stripe_customer_id?: true
+    picture?: true
     reset_token?: true
     reset_sent_at?: true
     email_verification_token?: true
@@ -2677,6 +2682,7 @@ export namespace Prisma {
     api_key?: true
     name?: true
     stripe_customer_id?: true
+    picture?: true
     reset_token?: true
     reset_sent_at?: true
     email_verification_token?: true
@@ -2781,6 +2787,7 @@ export namespace Prisma {
     api_key: string
     name: string
     stripe_customer_id: string | null
+    picture: string | null
     reset_token: string | null
     reset_sent_at: Date | null
     email_verification_token: string | null
@@ -2817,6 +2824,7 @@ export namespace Prisma {
     api_key?: boolean
     name?: boolean
     stripe_customer_id?: boolean
+    picture?: boolean
     reset_token?: boolean
     reset_sent_at?: boolean
     email_verification_token?: boolean
@@ -2844,6 +2852,7 @@ export namespace Prisma {
     api_key?: boolean
     name?: boolean
     stripe_customer_id?: boolean
+    picture?: boolean
     reset_token?: boolean
     reset_sent_at?: boolean
     email_verification_token?: boolean
@@ -2861,6 +2870,7 @@ export namespace Prisma {
     api_key?: boolean
     name?: boolean
     stripe_customer_id?: boolean
+    picture?: boolean
     reset_token?: boolean
     reset_sent_at?: boolean
     email_verification_token?: boolean
@@ -2878,6 +2888,7 @@ export namespace Prisma {
     api_key?: boolean
     name?: boolean
     stripe_customer_id?: boolean
+    picture?: boolean
     reset_token?: boolean
     reset_sent_at?: boolean
     email_verification_token?: boolean
@@ -2887,7 +2898,7 @@ export namespace Prisma {
     magicLink_expiration?: boolean
   }
 
-  export type UsersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pid" | "email" | "password" | "api_key" | "name" | "stripe_customer_id" | "reset_token" | "reset_sent_at" | "email_verification_token" | "email_verification_sent_at" | "email_verified_at" | "magicLink_token" | "magicLink_expiration", ExtArgs["result"]["users"]>
+  export type UsersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pid" | "email" | "password" | "api_key" | "name" | "stripe_customer_id" | "picture" | "reset_token" | "reset_sent_at" | "email_verification_token" | "email_verification_sent_at" | "email_verified_at" | "magicLink_token" | "magicLink_expiration", ExtArgs["result"]["users"]>
   export type UsersInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     TrainingModels?: boolean | Users$TrainingModelsArgs<ExtArgs>
     UserCredits?: boolean | Users$UserCreditsArgs<ExtArgs>
@@ -2924,6 +2935,7 @@ export namespace Prisma {
       api_key: string
       name: string
       stripe_customer_id: string | null
+      picture: string | null
       reset_token: string | null
       reset_sent_at: Date | null
       email_verification_token: string | null
@@ -3370,6 +3382,7 @@ export namespace Prisma {
     readonly api_key: FieldRef<"Users", 'String'>
     readonly name: FieldRef<"Users", 'String'>
     readonly stripe_customer_id: FieldRef<"Users", 'String'>
+    readonly picture: FieldRef<"Users", 'String'>
     readonly reset_token: FieldRef<"Users", 'String'>
     readonly reset_sent_at: FieldRef<"Users", 'DateTime'>
     readonly email_verification_token: FieldRef<"Users", 'String'>
@@ -20079,6 +20092,7 @@ export namespace Prisma {
     api_key: 'api_key',
     name: 'name',
     stripe_customer_id: 'stripe_customer_id',
+    picture: 'picture',
     reset_token: 'reset_token',
     reset_sent_at: 'reset_sent_at',
     email_verification_token: 'email_verification_token',
@@ -20625,6 +20639,7 @@ export namespace Prisma {
     api_key?: StringFilter<"Users"> | string
     name?: StringFilter<"Users"> | string
     stripe_customer_id?: StringNullableFilter<"Users"> | string | null
+    picture?: StringNullableFilter<"Users"> | string | null
     reset_token?: StringNullableFilter<"Users"> | string | null
     reset_sent_at?: DateTimeNullableFilter<"Users"> | Date | string | null
     email_verification_token?: StringNullableFilter<"Users"> | string | null
@@ -20651,6 +20666,7 @@ export namespace Prisma {
     api_key?: SortOrder
     name?: SortOrder
     stripe_customer_id?: SortOrderInput | SortOrder
+    picture?: SortOrderInput | SortOrder
     reset_token?: SortOrderInput | SortOrder
     reset_sent_at?: SortOrderInput | SortOrder
     email_verification_token?: SortOrderInput | SortOrder
@@ -20680,6 +20696,7 @@ export namespace Prisma {
     password?: StringFilter<"Users"> | string
     name?: StringFilter<"Users"> | string
     stripe_customer_id?: StringNullableFilter<"Users"> | string | null
+    picture?: StringNullableFilter<"Users"> | string | null
     reset_token?: StringNullableFilter<"Users"> | string | null
     reset_sent_at?: DateTimeNullableFilter<"Users"> | Date | string | null
     email_verification_token?: StringNullableFilter<"Users"> | string | null
@@ -20706,6 +20723,7 @@ export namespace Prisma {
     api_key?: SortOrder
     name?: SortOrder
     stripe_customer_id?: SortOrderInput | SortOrder
+    picture?: SortOrderInput | SortOrder
     reset_token?: SortOrderInput | SortOrder
     reset_sent_at?: SortOrderInput | SortOrder
     email_verification_token?: SortOrderInput | SortOrder
@@ -20731,6 +20749,7 @@ export namespace Prisma {
     api_key?: StringWithAggregatesFilter<"Users"> | string
     name?: StringWithAggregatesFilter<"Users"> | string
     stripe_customer_id?: StringNullableWithAggregatesFilter<"Users"> | string | null
+    picture?: StringNullableWithAggregatesFilter<"Users"> | string | null
     reset_token?: StringNullableWithAggregatesFilter<"Users"> | string | null
     reset_sent_at?: DateTimeNullableWithAggregatesFilter<"Users"> | Date | string | null
     email_verification_token?: StringNullableWithAggregatesFilter<"Users"> | string | null
@@ -21856,6 +21875,7 @@ export namespace Prisma {
     api_key: string
     name: string
     stripe_customer_id?: string | null
+    picture?: string | null
     reset_token?: string | null
     reset_sent_at?: Date | string | null
     email_verification_token?: string | null
@@ -21882,6 +21902,7 @@ export namespace Prisma {
     api_key: string
     name: string
     stripe_customer_id?: string | null
+    picture?: string | null
     reset_token?: string | null
     reset_sent_at?: Date | string | null
     email_verification_token?: string | null
@@ -21907,6 +21928,7 @@ export namespace Prisma {
     api_key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
     reset_token?: NullableStringFieldUpdateOperationsInput | string | null
     reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null
@@ -21933,6 +21955,7 @@ export namespace Prisma {
     api_key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
     reset_token?: NullableStringFieldUpdateOperationsInput | string | null
     reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null
@@ -21959,6 +21982,7 @@ export namespace Prisma {
     api_key: string
     name: string
     stripe_customer_id?: string | null
+    picture?: string | null
     reset_token?: string | null
     reset_sent_at?: Date | string | null
     email_verification_token?: string | null
@@ -21975,6 +21999,7 @@ export namespace Prisma {
     api_key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
     reset_token?: NullableStringFieldUpdateOperationsInput | string | null
     reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null
@@ -21992,6 +22017,7 @@ export namespace Prisma {
     api_key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
     reset_token?: NullableStringFieldUpdateOperationsInput | string | null
     reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null
@@ -23344,6 +23370,7 @@ export namespace Prisma {
     api_key?: SortOrder
     name?: SortOrder
     stripe_customer_id?: SortOrder
+    picture?: SortOrder
     reset_token?: SortOrder
     reset_sent_at?: SortOrder
     email_verification_token?: SortOrder
@@ -23365,6 +23392,7 @@ export namespace Prisma {
     api_key?: SortOrder
     name?: SortOrder
     stripe_customer_id?: SortOrder
+    picture?: SortOrder
     reset_token?: SortOrder
     reset_sent_at?: SortOrder
     email_verification_token?: SortOrder
@@ -23382,6 +23410,7 @@ export namespace Prisma {
     api_key?: SortOrder
     name?: SortOrder
     stripe_customer_id?: SortOrder
+    picture?: SortOrder
     reset_token?: SortOrder
     reset_sent_at?: SortOrder
     email_verification_token?: SortOrder
@@ -26451,6 +26480,7 @@ export namespace Prisma {
     api_key: string
     name: string
     stripe_customer_id?: string | null
+    picture?: string | null
     reset_token?: string | null
     reset_sent_at?: Date | string | null
     email_verification_token?: string | null
@@ -26476,6 +26506,7 @@ export namespace Prisma {
     api_key: string
     name: string
     stripe_customer_id?: string | null
+    picture?: string | null
     reset_token?: string | null
     reset_sent_at?: Date | string | null
     email_verification_token?: string | null
@@ -26516,6 +26547,7 @@ export namespace Prisma {
     api_key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
     reset_token?: NullableStringFieldUpdateOperationsInput | string | null
     reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null
@@ -26541,6 +26573,7 @@ export namespace Prisma {
     api_key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
     reset_token?: NullableStringFieldUpdateOperationsInput | string | null
     reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null
@@ -26565,6 +26598,7 @@ export namespace Prisma {
     api_key: string
     name: string
     stripe_customer_id?: string | null
+    picture?: string | null
     reset_token?: string | null
     reset_sent_at?: Date | string | null
     email_verification_token?: string | null
@@ -26590,6 +26624,7 @@ export namespace Prisma {
     api_key: string
     name: string
     stripe_customer_id?: string | null
+    picture?: string | null
     reset_token?: string | null
     reset_sent_at?: Date | string | null
     email_verification_token?: string | null
@@ -26685,6 +26720,7 @@ export namespace Prisma {
     api_key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
     reset_token?: NullableStringFieldUpdateOperationsInput | string | null
     reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null
@@ -26710,6 +26746,7 @@ export namespace Prisma {
     api_key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
     reset_token?: NullableStringFieldUpdateOperationsInput | string | null
     reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null
@@ -26750,6 +26787,7 @@ export namespace Prisma {
     api_key: string
     name: string
     stripe_customer_id?: string | null
+    picture?: string | null
     reset_token?: string | null
     reset_sent_at?: Date | string | null
     email_verification_token?: string | null
@@ -26775,6 +26813,7 @@ export namespace Prisma {
     api_key: string
     name: string
     stripe_customer_id?: string | null
+    picture?: string | null
     reset_token?: string | null
     reset_sent_at?: Date | string | null
     email_verification_token?: string | null
@@ -26815,6 +26854,7 @@ export namespace Prisma {
     api_key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
     reset_token?: NullableStringFieldUpdateOperationsInput | string | null
     reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null
@@ -26840,6 +26880,7 @@ export namespace Prisma {
     api_key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
     reset_token?: NullableStringFieldUpdateOperationsInput | string | null
     reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null
@@ -26864,6 +26905,7 @@ export namespace Prisma {
     api_key: string
     name: string
     stripe_customer_id?: string | null
+    picture?: string | null
     reset_token?: string | null
     reset_sent_at?: Date | string | null
     email_verification_token?: string | null
@@ -26889,6 +26931,7 @@ export namespace Prisma {
     api_key: string
     name: string
     stripe_customer_id?: string | null
+    picture?: string | null
     reset_token?: string | null
     reset_sent_at?: Date | string | null
     email_verification_token?: string | null
@@ -27019,6 +27062,7 @@ export namespace Prisma {
     api_key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
     reset_token?: NullableStringFieldUpdateOperationsInput | string | null
     reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null
@@ -27044,6 +27088,7 @@ export namespace Prisma {
     api_key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
     reset_token?: NullableStringFieldUpdateOperationsInput | string | null
     reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null
@@ -27261,6 +27306,7 @@ export namespace Prisma {
     api_key: string
     name: string
     stripe_customer_id?: string | null
+    picture?: string | null
     reset_token?: string | null
     reset_sent_at?: Date | string | null
     email_verification_token?: string | null
@@ -27286,6 +27332,7 @@ export namespace Prisma {
     api_key: string
     name: string
     stripe_customer_id?: string | null
+    picture?: string | null
     reset_token?: string | null
     reset_sent_at?: Date | string | null
     email_verification_token?: string | null
@@ -27370,6 +27417,7 @@ export namespace Prisma {
     api_key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
     reset_token?: NullableStringFieldUpdateOperationsInput | string | null
     reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null
@@ -27395,6 +27443,7 @@ export namespace Prisma {
     api_key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
     reset_token?: NullableStringFieldUpdateOperationsInput | string | null
     reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null
@@ -27490,6 +27539,7 @@ export namespace Prisma {
     api_key: string
     name: string
     stripe_customer_id?: string | null
+    picture?: string | null
     reset_token?: string | null
     reset_sent_at?: Date | string | null
     email_verification_token?: string | null
@@ -27515,6 +27565,7 @@ export namespace Prisma {
     api_key: string
     name: string
     stripe_customer_id?: string | null
+    picture?: string | null
     reset_token?: string | null
     reset_sent_at?: Date | string | null
     email_verification_token?: string | null
@@ -27555,6 +27606,7 @@ export namespace Prisma {
     api_key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
     reset_token?: NullableStringFieldUpdateOperationsInput | string | null
     reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null
@@ -27580,6 +27632,7 @@ export namespace Prisma {
     api_key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
     reset_token?: NullableStringFieldUpdateOperationsInput | string | null
     reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null
@@ -27604,6 +27657,7 @@ export namespace Prisma {
     api_key: string
     name: string
     stripe_customer_id?: string | null
+    picture?: string | null
     reset_token?: string | null
     reset_sent_at?: Date | string | null
     email_verification_token?: string | null
@@ -27629,6 +27683,7 @@ export namespace Prisma {
     api_key: string
     name: string
     stripe_customer_id?: string | null
+    picture?: string | null
     reset_token?: string | null
     reset_sent_at?: Date | string | null
     email_verification_token?: string | null
@@ -27669,6 +27724,7 @@ export namespace Prisma {
     api_key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
     reset_token?: NullableStringFieldUpdateOperationsInput | string | null
     reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null
@@ -27694,6 +27750,7 @@ export namespace Prisma {
     api_key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
     reset_token?: NullableStringFieldUpdateOperationsInput | string | null
     reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null
@@ -27718,6 +27775,7 @@ export namespace Prisma {
     api_key: string
     name: string
     stripe_customer_id?: string | null
+    picture?: string | null
     reset_token?: string | null
     reset_sent_at?: Date | string | null
     email_verification_token?: string | null
@@ -27743,6 +27801,7 @@ export namespace Prisma {
     api_key: string
     name: string
     stripe_customer_id?: string | null
+    picture?: string | null
     reset_token?: string | null
     reset_sent_at?: Date | string | null
     email_verification_token?: string | null
@@ -27806,6 +27865,7 @@ export namespace Prisma {
     api_key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
     reset_token?: NullableStringFieldUpdateOperationsInput | string | null
     reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null
@@ -27831,6 +27891,7 @@ export namespace Prisma {
     api_key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
     reset_token?: NullableStringFieldUpdateOperationsInput | string | null
     reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null
@@ -27871,6 +27932,7 @@ export namespace Prisma {
     api_key: string
     name: string
     stripe_customer_id?: string | null
+    picture?: string | null
     reset_token?: string | null
     reset_sent_at?: Date | string | null
     email_verification_token?: string | null
@@ -27896,6 +27958,7 @@ export namespace Prisma {
     api_key: string
     name: string
     stripe_customer_id?: string | null
+    picture?: string | null
     reset_token?: string | null
     reset_sent_at?: Date | string | null
     email_verification_token?: string | null
@@ -27962,6 +28025,7 @@ export namespace Prisma {
     api_key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
     reset_token?: NullableStringFieldUpdateOperationsInput | string | null
     reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null
@@ -27987,6 +28051,7 @@ export namespace Prisma {
     api_key?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
     reset_token?: NullableStringFieldUpdateOperationsInput | string | null
     reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null

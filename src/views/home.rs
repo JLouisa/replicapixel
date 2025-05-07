@@ -16,6 +16,19 @@ pub fn home(
     )
 }
 
+pub fn home_partial(
+    v: impl ViewRenderer,
+    website: &Website,
+    is_home: bool,
+    cc_cookie: &CookieConsent,
+) -> Result<impl IntoResponse> {
+    format::render().view(
+        &v,
+        "home/home_partial.html",
+        data!({ "website": website, "cc_cookie": cc_cookie, "is_home": is_home }),
+    )
+}
+
 pub fn google_ott(
     v: &impl ViewRenderer,
     website: &Website,

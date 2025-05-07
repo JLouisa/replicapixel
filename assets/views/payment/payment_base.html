@@ -1,8 +1,6 @@
 {% extends "base.html" %} {% block head %} {% endblock head %} {% block title %} Payment {% endblock
 title %} {% block content %}
-<div class="w-screen h-screen flex flex-col overflow-hidden">
-  <!-- Main Payment Wrapper -->
-  <div id="checkout" class="flex-1 bg-base-300">{% block payment %} {% endblock payment %}</div>
+{% block payment %} {% endblock payment %}</div>
 
   {% endblock content %} {% block js %} {% endblock js %}
 </div>

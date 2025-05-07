@@ -1,7 +1,8 @@
 use async_trait::async_trait;
 use chrono::{offset::Local, Duration};
 use derive_more::{AsRef, Constructor, From};
-use loco_rs::{auth::jwt, hash, prelude::*};
+use google_oauth::GooglePayload;
+use loco_rs::{auth::jwt, controller::ErrorDetail, hash, prelude::*};
 use passwords::PasswordGenerator;
 use serde::{Deserialize, Serialize};
 use serde_json::Map;
@@ -19,6 +20,8 @@ use loco_oauth2::models::users::OAuth2UserTrait;
 pub use super::_entities::users::{self, ActiveModel, Entity, Model};
 use super::{user_credits::UserCreditsInit, UserCreditActiveModel, UserModel};
 
+use axum::http::StatusCode;
+
 pub const MAGIC_LINK_LENGTH: i8 = 32;
 pub const MAGIC_LINK_EXPIRATION_MIN: i8 = 5;
 
@@ -29,6 +32,7 @@ pub struct LoginParams {
     pub password: String,
     pub remember: bool,
 }
+
 #[derive(Debug, Serialize, Deserialize, Validate)]
 pub struct RegisterParams {
     #[validate(length(min = 2, message = "Name must be at least 2 characters long."))]
@@ -44,6 +48,8 @@ pub struct RegisterParams {
     pub theme_preference: ThemePreference,
     #[serde(default)]
     pub language: Language,
+    #[serde(skip_deserializing, default)]
+    pub picture: Option<String>,
 }
 impl RegisterParams {
     pub fn validate_email(&self) -> Vec<String> {
@@ -155,6 +161,64 @@ impl RegisterParams {
         }
 
         validate
+    }
+    pub fn create_with_ott(google_user_data: GooglePayload) -> Result<Self, loco_rs::Error> {
+        let pg = PasswordGenerator::new()
+            .length(12)
+            .numbers(true)
+            .lowercase_letters(true)
+            .uppercase_letters(true)
+            .symbols(true)
+            .spaces(true)
+            .exclude_similar_characters(true)
+            .strict(true)
+            .generate_one();
+
+        let pg = match pg {
+            Ok(p) => p,
+            Err(e) => {
+                dbg!(&e);
+                return Err(loco_rs::Error::CustomError(
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    ErrorDetail::new("User Creation Error:", "User Creation Error: 2"),
+                ));
+            }
+        };
+
+        let register = RegisterParams {
+            name: google_user_data
+                .name
+                .or(google_user_data.given_name)
+                .ok_or_else(|| {
+                    tracing::warn!(
+                        "Google token payload missing name for sub: {:?}",
+                        google_user_data.sub
+                    );
+                    loco_rs::Error::CustomError(
+                        StatusCode::BAD_REQUEST,
+                        ErrorDetail::new("MISSING_NAME", "Name not provided by Google."),
+                    )
+                })?,
+            email: google_user_data.email.ok_or_else(|| {
+                tracing::warn!(
+                    "Google token payload missing email for sub: {:?}",
+                    google_user_data.sub
+                );
+                loco_rs::Error::CustomError(
+                    StatusCode::BAD_REQUEST,
+                    ErrorDetail::new("MISSING_EMAIL", "Email not provided by Google."),
+                )
+            })?,
+            password: pg.to_owned(),
+            confirm_password: pg,
+            email_notifications: true,
+            marketing: true,
+            theme_preference: Default::default(),
+            language: Default::default(),
+            picture: google_user_data.picture,
+        };
+
+        Ok(register)
     }
 }
 #[derive(Debug, Serialize, Deserialize, Validate)]
@@ -546,6 +610,76 @@ impl Model {
     /// # Errors
     ///
     /// When could not save the user into the DB
+    pub async fn upsert_with_ott(
+        db: &DatabaseConnection,
+        params: &RegisterParams,
+        stripe_client: &StripeClient,
+    ) -> ModelResult<Self> {
+        let txn = db.begin().await?;
+
+        if users::Entity::find()
+            .filter(
+                model::query::condition()
+                    .eq(users::Column::Email, &params.email)
+                    .build(),
+            )
+            .one(&txn)
+            .await?
+            .is_some()
+        {
+            return Err(ModelError::EntityAlreadyExists {});
+        }
+
+        let password_hash =
+            hash::hash_password(&params.password).map_err(|e| ModelError::Any(e.into()))?;
+        let user_pid = Uuid::new_v4();
+
+        let stripe_customer = match stripe_client
+            .create_customer(&params.name, &params.email, &user_pid)
+            .await
+        {
+            Ok(stripe_customer) => Some(stripe_customer.id.to_string()),
+            Err(_) => None,
+        };
+
+        let user = users::ActiveModel {
+            pid: ActiveValue::set(user_pid),
+            email: ActiveValue::set(params.email.to_string()),
+            password: ActiveValue::set(password_hash),
+            name: ActiveValue::set(params.name.to_string()),
+            stripe_customer_id: ActiveValue::set(stripe_customer),
+            ..Default::default()
+        }
+        .insert(&txn)
+        .await?;
+
+        let user_credits_init = UserCreditsInit::default();
+        UserCreditActiveModel {
+            pid: ActiveValue::set(user_credits_init.pid),
+            user_id: ActiveValue::set(user.id),
+            model_amount: ActiveValue::set(user_credits_init.model_amount),
+            credit_amount: ActiveValue::set(user_credits_init.credit_amount),
+            ..Default::default()
+        }
+        .insert(&txn)
+        .await?;
+
+        UserSettingsActiveModel {
+            user_id: ActiveValue::set(user.id),
+            enable_notification_email: ActiveValue::set(params.email_notifications),
+            enable_marketing_email: ActiveValue::set(params.marketing),
+            theme: ActiveValue::set(params.theme_preference.clone()),
+            language: ActiveValue::set(params.language.clone()),
+            ..Default::default()
+        }
+        .insert(&txn)
+        .await?;
+
+        txn.commit().await?;
+
+        Ok(user)
+    }
+
     pub async fn create_with_password(
         db: &DatabaseConnection,
         params: &RegisterParams,

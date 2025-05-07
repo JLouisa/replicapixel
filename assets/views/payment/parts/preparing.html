@@ -1,0 +1,25 @@
+<div class="flex-1 overflow-hidden">
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://js.stripe.com/v3/"></script>
+  <div
+    id="stripestatus"
+    hx-get="{{ link | lower | safe }}"
+    hx-push-url="{{ link | lower | safe }}"
+    hx-trigger="load"
+    hx-target="#app"
+    hx-swap="outerHTML"
+    class="min-h-screen bg-base-200 flex items-center justify-center p-4"
+  >
+    <div class="card w-full max-w-md bg-base-100 shadow-xl">
+      <div class="card-body items-center text-center">
+        <div class="mb-6" id="iconContainer">{% include "partials/svg/processing.html" %}</div>
+        <h2 class="card-title text-2xl mb-2 justify-center" id="statusText">
+          Preparing Payment...
+        </h2>
+        <p class="text-base-content/80" id="messageText">
+          Please wait while we prepare your payment...
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -26,6 +26,7 @@ pub struct Model {
     pub magic_link_token: Option<String>,
     #[sea_orm(column_name = "magicLink_expiration")]
     pub magic_link_expiration: Option<DateTimeWithTimeZone>,
+    pub picture: Option<String>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

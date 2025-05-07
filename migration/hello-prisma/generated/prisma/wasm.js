@@ -125,6 +125,7 @@ exports.Prisma.UsersScalarFieldEnum = {
   api_key: 'api_key',
   name: 'name',
   stripe_customer_id: 'stripe_customer_id',
+  picture: 'picture',
   reset_token: 'reset_token',
   reset_sent_at: 'reset_sent_at',
   email_verification_token: 'email_verification_token',

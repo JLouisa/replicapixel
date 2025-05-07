@@ -19,6 +19,13 @@
       <span id="user_credits" class="ml-1">{{ credits.credit_amount }}</span>
     </div>
     <div class="relative parent">
+      {% if user.picture %}
+      <div class="avatar">
+        <div class="ring-primary ring-offset-base-100 w-24 rounded-full ring-2 ring-offset-2">
+          <img src="{{user.picture}}" />
+        </div>
+      </div>
+      {% else %}
       <div class="flex items-center hover:bg-base-100 rounded-full p-1 cursor-pointer">
         <div
           class="flex items-center justify-center bg-neutral text-neutral-content w-8 h-8 rounded-full select-none"
@@ -28,6 +35,7 @@
           </span>
         </div>
       </div>
+      {% endif %}
       <ul
         class="child transition duration-300 md:absolute top-full right-0 md:w-48 md:shadow-lg md:rounded-b bg-base-100 z-20"
       >

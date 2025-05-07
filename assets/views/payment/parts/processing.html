@@ -1,0 +1,22 @@
+<div class="w-screen h-screen flex flex-col overflow-hidden">
+  <div
+    id="stripestatus"
+    hx-get="{{ website.website_routes.payment.stripe_payment_status_route | safe }}/{{session_id}}"
+    hx-trigger="every 4s"
+    hx-swap="outerHTML"
+    class="min-h-screen bg-base-200 flex items-center justify-center p-4"
+  >
+    <div class="card w-full max-w-md bg-base-100 shadow-xl">
+      <div class="card-body items-center text-center">
+        <div class="mb-6" id="iconContainer">{% include "partials/svg/processing.html" %}</div>
+        <h2 class="card-title text-2xl mb-2 justify-center" id="statusText">
+          Processing Payment...
+        </h2>
+        <p class="text-base-content/80" id="messageText">
+          Please wait while we process your payment...
+        </p>
+      </div>
+    </div>
+  </div>
+  <div id="checkout" class="flex-1 bg-base-300"></div>
+</div>

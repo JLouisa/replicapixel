@@ -15,17 +15,32 @@
   class="fixed bottom-4 left-1/2 -translate-x-1/2 w-full max-w-[calc(100%-2rem)] sm:w-[32rem] md:w-[40rem] lg:w-[48rem] z-50"
 >
   <div class="rounded-lg border border-base-300 bg-base-100 shadow-lg flex flex-col">
-    <div class="px-4 py-2 rounded-t-lg">
+    <div class="w-full max-w-full px-4 py-2 rounded-t-lg">
       <label for="prompt" class="sr-only">Your Image Description</label>
       <textarea
         id="prompt"
         name="prompt"
-        rows="3"
-        class="w-full resize-none px-0 text-sm bg-transparent border-0 focus:ring-0 focus:outline-none text-base-content placeholder-base-content/60"
+        rows="1"
+        class="block w-full resize-none min-h-[50px] max-h-[200px] px-0 text-sm bg-transparent border-0 focus:ring-0 focus:outline-none text-base-content placeholder-base-content/60 overflow-auto"
         placeholder="Describe the image you want to create..."
         required
         :disabled="$store.imageGenForm.isLoading"
+        oninput="autoResize(this)"
       ></textarea>
+      <script>
+        function autoResize(textarea) {
+          textarea.style.height = "auto";
+          textarea.style.height = Math.min(textarea.scrollHeight, 200) + "px";
+        }
+
+        // Optional: trigger resize on page load if value is prefilled
+        document.addEventListener("DOMContentLoaded", () => {
+          const textarea = document.getElementById("prompt");
+          if (textarea && textarea.value.trim() !== "") {
+            autoResize(textarea);
+          }
+        });
+      </script>
     </div>
 
     <div
@@ -187,7 +202,7 @@
           x-show="$store.imageGenForm.isLoading"
           class="loading loading-spinner loading-xs"
         ></span>
-        <span x-show="!$store.imageGenForm.isLoading">Create</span>
+        <span x-show="!$store.imageGenForm.isLoading">Take Photo</span>
       </button>
     </div>
   </div>

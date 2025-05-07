@@ -1,0 +1,74 @@
+<!-- prettier-ignore -->
+{% set login_link = website.website_routes.auth_routes.login | safe %}
+{% set website_name = website.website_basic_info.name %}
+
+<div class="drawer drawer-end xs:p-2 md:p-0 w-full">
+  <input id="my-drawer-3" type="checkbox" class="drawer-toggle" />
+  <div class="drawer-content flex flex-col w-full">
+    <!-- Navbar -->
+    {% include "home/sections/navbar.html" %}
+
+    <!-- Page content here -->
+    <div class="relative bg-bg-web overflow-hidden">
+      <div class="absolute top-0 right-0 p-4 z-10">
+        <div id="validate-login-btn">
+          <button
+            hx-get="{{ login_link }}"
+            hx-swap="innerHTML"
+            hx-push-url="{{ login_link }}"
+            hx-target="#app"
+            class="btn btn-neutral"
+          >
+            Login
+          </button>
+        </div>
+      </div>
+
+      <!-- Hero -->
+      {% include "home/sections/hero.html" %}
+
+      <!-- Businesses -->
+      {% include "home/sections/businesses.html" %}
+
+      <!-- Gallery -->
+      {% include "home/sections/gallery.html" %}
+
+      <!-- Pro Head Shot -->
+      {% include "home/sections/pro_head_shot.html" %}
+
+      <!-- Instant styles -->
+      {% include "home/sections/instant_styles.html" %}
+
+      <!-- payment plans -->
+      {% include "home/sections/payment_plans.html" %}
+
+      <!-- Creator Reviews -->
+      {% include "home/sections/creators_review.html" %}
+
+      <!-- Call to Action -->
+      {% include "home/sections/cta.html" %}
+
+      <!-- Creators -->
+      {% include "home/sections/creators.html" %}
+
+      <!-- Footer -->
+      {% include "home/sections/footer.html" %}
+    </div>
+  </div>
+  <div class="drawer-side z-20">
+    <label for="my-drawer-3" aria-label="close sidebar" class="drawer-overlay"></label>
+    <ul class="menu bg-base-200 min-h-full w-40 p-4">
+      <!-- Sidebar content here -->
+      <li><a href="#" class="p-2 text-white text-base hover:text-gray-300">Home</a></li>
+      <li><a href="#" class="p-2 text-white text-base hover:text-gray-300">Features</a></li>
+      <li><a href="#" class="p-2 text-white text-base hover:text-gray-300">Studio</a></li>
+      <li><a href="#pricing" class="p-2 text-white text-base hover:text-gray-300">Pricing</a></li>
+      <li>
+        <a href="{{login_link}}" class="p-2 text-white text-base hover:text-gray-300">Login</a>
+      </li>
+    </ul>
+    <label for="my-drawer-3" class="block p-4 text-white hover:text-gray-300">
+      {% include "partials/svg/x.html" %}
+    </label>
+  </div>
+</div>

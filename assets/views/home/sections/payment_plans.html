@@ -1,7 +1,7 @@
 <!-- prettier-ignore -->
 {% set stripe_checkout_link = website.website_routes.payment.stripe_checkout_route | safe %}
 {% set register_link = website.website_routes.auth_routes.register | safe %}
-{% set prepare_link = website.website_routes.payment.payment_prepare_route | safe %}
+{# {% set login_link = website.website_routes.auth_routes.login | safe %} #}
 
 <div class="flex flex-col gap-12 items-center justify-center relative mx-auto max-w-7xl">
   <div class="flex flex-col gap-12 items-center justify-center shrink-0 w-full relative p-4">
@@ -129,17 +129,22 @@
               </div>
             </div>
           </div>
-          <div class="flex flex-col gap-4 items-start justify-start self-stretch shrink-0 relative">
-            <div
-              class="bg-grn-from rounded-xl pt-4 pr-8 pb-4 pl-8 flex flex-row gap-3 items-center justify-center self-stretch shrink-0 relative"
-              style="box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.04)"
+          <div id="pricing-basic-btn" class="w-full flex flex-col items-start">
+            <a
+              hx-get="{{ login_link }}"
+              hx-swap="innerHTML"
+              hx-push-url="{{ login_link }}"
+              hx-target="#app"
+              class="w-full"
             >
               <div
-                class="text-w text-center font-inter text-base leading-none font-medium relative flex items-center justify-center"
+                class="w-full bg-grn-from rounded-xl px-8 py-4 flex items-center justify-center gap-3 shadow-sm hover:shadow-md transition-shadow"
               >
-                Choose Basic
+                <span class="text-white text-center font-inter text-base font-medium leading-none">
+                  Choose Basic
+                </span>
               </div>
-            </div>
+            </a>
           </div>
         </div>
       </div>
@@ -243,14 +248,22 @@
             </div>
           </div>
 
-          <div class="flex flex-col items-start self-stretch">
-            <div
-              class="bg-grn-to rounded-xl py-4 px-8 flex flex-row gap-3 items-center justify-center self-stretch shadow-[0px_4px_4px_0px_rgba(0,0,0,0.04)]"
+          <div id="pricing-premium-btn" class="w-full flex flex-col items-start">
+            <a
+              hx-get="{{ login_link }}"
+              hx-swap="innerHTML"
+              hx-push-url="{{ login_link }}"
+              hx-target="#app"
+              class="w-full"
             >
-              <div class="text-w text-center font-inter text-base leading-none font-medium">
-                Choose Premium
+              <div
+                class="w-full bg-grn-to rounded-xl px-8 py-4 flex items-center justify-center gap-3 shadow-sm hover:shadow-md transition-shadow"
+              >
+                <span class="text-white text-center font-inter text-base font-medium leading-none">
+                  Choose Premium
+                </span>
               </div>
-            </div>
+            </a>
           </div>
         </div>
       </div>
@@ -360,17 +373,22 @@
               </div>
             </div>
           </div>
-          <div class="flex flex-col gap-4 items-start justify-start self-stretch shrink-0 relative">
-            <div
-              class="bg-grn-from rounded-xl pt-4 pr-8 pb-4 pl-8 flex flex-row gap-3 items-center justify-center self-stretch shrink-0 relative"
-              style="box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.04)"
+          <div id="pricing-max-btn" class="w-full flex flex-col items-start">
+            <a
+              hx-get="{{ login_link }}"
+              hx-swap="innerHTML"
+              hx-push-url="{{ login_link }}"
+              hx-target="#app"
+              class="w-full"
             >
               <div
-                class="text-w text-center font-inter text-base leading-none font-medium relative flex items-center justify-center"
+                class="w-full bg-grn-from rounded-xl px-8 py-4 flex items-center justify-center gap-3 shadow-sm hover:shadow-md transition-shadow"
               >
-                Choose Max
+                <span class="text-white text-center font-inter text-base font-medium leading-none">
+                  Choose Max
+                </span>
               </div>
-            </div>
+            </a>
           </div>
         </div>
       </div>

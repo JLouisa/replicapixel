@@ -1,20 +1,13 @@
 use crate::models::join::user_credits_models::load_user_and_credits;
-use crate::models::users::UserPid;
-use crate::models::{OAuth2SessionModel, UserModel};
+use crate::models::users::{RegisterParams, UserPid};
+use crate::models::UserModel;
+use crate::service::stripe::stripe::StripeClient;
 use crate::views;
 use axum::body::Body;
-use loco_oauth2::base_oauth2::basic::BasicTokenResponse;
-use loco_oauth2::base_oauth2::{
-    AccessToken, AuthorizationCode, EmptyExtraTokenFields, ExtraTokenFields, StandardTokenResponse,
-    TokenType,
-};
 use loco_oauth2::controllers::middleware::OAuth2CookieUser;
-use loco_oauth2::error::{OAuth2ClientError, OAuth2ClientResult};
 use loco_rs::controller::ErrorDetail;
 use std::fmt::Debug;
-use tokio::sync::MutexGuard;
 
-use loco_oauth2::grants::authorization_code::GrantTrait;
 use loco_oauth2::models::oauth2_sessions::OAuth2SessionsTrait;
 use loco_oauth2::models::users::OAuth2UserTrait;
 use loco_rs::prelude::*;
@@ -22,31 +15,22 @@ use loco_rs::prelude::*;
 use axum::extract::Query;
 use axum::response::{IntoResponse, Redirect};
 use axum::Extension;
+use axum::{debug_handler, http::StatusCode, Json};
 use axum_extra::extract::cookie::{Cookie as AxumCookie, SameSite};
 use axum_session::{DatabasePool, Session, SessionNullPool};
 
 use serde::de::DeserializeOwned;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 
+use super::dashboard::routes::Dashboard;
 use crate::domain::website::Website;
 use crate::models::{o_auth2_sessions, users, users::OAuth2UserProfile};
+use google_oauth::AsyncClient;
 use loco_oauth2::controllers::oauth2::{
     callback_jwt as callback_jwt_google, get_authorization_url, google_authorization_url,
     AuthParams,
 };
 use loco_oauth2::OAuth2ClientStore;
-
-use super::dashboard::routes::Dashboard;
-
-use axum::{debug_handler, http::StatusCode, Json};
-use base64::engine::general_purpose::URL_SAFE_NO_PAD;
-use base64::Engine as _;
-use base64::Engine;
-use jsonwebtoken::{decode, decode_header, Algorithm, DecodingKey, Validation};
-use reqwest::Client;
-use std::collections::HashSet;
-
-use google_oauth::AsyncClient;
 
 pub mod routes {
     use serde::{Deserialize, Serialize};
@@ -99,7 +83,7 @@ pub fn routes() -> Routes {
                 SessionNullPool,
             >),
         )
-        // .add(routes::OAuth2::GOOGLE_OTT, get(google_ott::<users::Model>))
+        .add(routes::OAuth2::GOOGLE_OTT, post(google_ott))
         .add(
             routes::OAuth2::GITHUB,
             get(github_authorization_url::<SessionNullPool>),
@@ -120,224 +104,82 @@ pub struct GoogleTokenPayload {
     token: String,
 }
 
-// #[derive(Debug, Deserialize)]
-// pub struct GoogleClaims {
-//     pub name: Option<String>,
-//     pub given_name: Option<String>,
-//     pub sub: String,
-//     pub email: String,
-//     pub email_verified: bool,
-//     pub picture: Option<String>,
-//     pub iss: String,
-//     pub aud: String,
-//     pub exp: usize,
-//     // ... add other fields if needed
-// }
-
-// impl From<GoogleClaims> for OAuth2UserProfile {
-//     fn from(claims: GoogleClaims) -> Self {
-//         let name = match claims.name {
-//             Some(name) => name,
-//             None => {
-//                 let name = match claims.given_name {
-//                     Some(name) => name,
-//                     None => "John Doe Google".to_string(),
-//                 };
-//                 name
-//             }
-//         };
-//         Self {
-//             name,
-//             email: claims.email,
-//             sub: claims.sub,
-//             email_verified: claims.email_verified,
-//             given_name: None,
-//             family_name: None,
-//             picture: None,
-//             locale: None,
-//         }
-//     }
-// }
-
-async fn google_ott2(
+#[debug_handler]
+async fn google_ott(
     State(ctx): State<AppContext>,
     Extension(website): Extension<Website>,
-    Json(token): Json<GoogleTokenPayload>,
+    Extension(stripe_client): Extension<StripeClient>,
+    ViewEngine(v): ViewEngine<TeraView>,
+    Json(token_payload_req): Json<GoogleTokenPayload>,
 ) -> Result<Response> {
     let google_client_id = website
         .website_basic_info
         .google
         .google_client_id
         .to_owned();
-
     let client = AsyncClient::new(google_client_id);
-    let payload = client.validate_id_token(token.token).await.unwrap();
-    dbg!(&payload);
-    format::empty()
-}
+    let google_user_data = match client.validate_id_token(token_payload_req.token).await {
+        Ok(payload) => payload,
+        Err(e) => {
+            dbg!(&e);
+            return Err(loco_rs::Error::CustomError(
+                StatusCode::NOT_FOUND,
+                ErrorDetail::new("Token Error", &e.to_string()),
+            ));
+        }
+    };
 
-pub async fn google_ott<
-    V: OAuth2SessionsTrait<U>,
-    U: OAuth2UserTrait<OAuth2UserProfile> + ModelTrait + Send + Sync,
->(
-    State(ctx): State<AppContext>,
-    Extension(website): Extension<Website>,
-    Json(body): Json<GoogleTokenPayload>,
-    Extension(oauth2_store): Extension<OAuth2ClientStore>,
-    ViewEngine(v): ViewEngine<TeraView>,
-) -> Result<Response<Body>, Error> {
-    // Keep explicit Result return
+    // Optional: Check if email is verified by Google
+    if !google_user_data.email_verified.unwrap_or(false) {
+        tracing::warn!("Google email not verified");
+    };
 
-    let token = body.token;
+    let register = RegisterParams::create_with_ott(google_user_data)?;
+    dbg!(&register);
+    // format::empty()
 
-    // let mut client = oauth2_store
-    //     .get_authorization_code_client("google")
-    //     .await
-    //     .map_err(|e| {
-    //         tracing::info!("Error getting google client: {:?}", e);
-    //         Error::Message(e.to_string())
-    //     })?;
+    let user = UserModel::create_with_password(&ctx.db, &register, &stripe_client).await?;
+    let jwt_secret = ctx.config.get_jwt_config()?;
+    let expire = jwt_secret.expiration * 7; // 7 days
+    let token = user
+        .generate_jwt(&jwt_secret.secret, expire)
+        .or_else(|_| unauthorized("unauthorized!"))?;
 
-    // Decode the header to get the key ID
-    let header = decode_header(&token)
-        .map_err(|e| Error::Unauthorized(format!("JWT header decode error: {}", e)))?;
-    let kid = header
-        .kid
-        .ok_or_else(|| Error::Unauthorized("JWT header missing 'kid'".to_string()))?;
+    let cookie = AxumCookie::build(("auth", token.clone()))
+        .path("/")
+        .http_only(true)
+        .secure(!cfg!(debug_assertions)) // set to false in localhost for dev
+        .same_site(SameSite::Strict)
+        .max_age(time::Duration::seconds(expire as i64))
+        .build();
+    let cookie_header_value = cookie.to_string();
 
-    // Fetch Google's public keys
-    let client = reqwest::Client::new();
-    let jwks_response = client
-        .get("https://www.googleapis.com/oauth2/v3/certs")
-        .send()
-        .await
-        .unwrap();
+    let (loaded_user, user_credits) =
+        load_user_and_credits(&ctx.db, &UserPid::new(user.pid)).await?;
 
-    if !jwks_response.status().is_success() {
-        // Adjust error type if InternalServerErrorWithMsg doesn't exist
-        return Err(Error::CustomError(
-            StatusCode::BAD_GATEWAY,
-            ErrorDetail::new("JWKS_REQUEST_FAILED", &jwks_response.status().to_string()),
-        ));
-    }
+    let view_response =
+        views::home::google_ott(&v, &website, &loaded_user.into(), &user_credits.into())?;
 
-    let jwks: serde_json::Value = jwks_response.json().await.map_err(|e| {
-        Error::CustomError(
-            StatusCode::INTERNAL_SERVER_ERROR,
-            ErrorDetail::new("JWKS_PARSE_FAILED", &e.to_string()),
-        )
-    })?;
+    // Build the final response
+    let mut response_builder = Response::builder().status(StatusCode::OK);
+    response_builder = response_builder.header("Set-Cookie", cookie_header_value);
 
-    // Find the key more safely
-    let key_data = jwks
-        .get("keys")
-        .and_then(|keys| keys.as_array())
-        .ok_or_else(|| {
+    // Add the view response body - Using your original error
+    let final_response = response_builder
+        .body(Body::from(view_response.into_response().into_body()))
+        .map_err(|e| {
             Error::CustomError(
                 StatusCode::INTERNAL_SERVER_ERROR,
-                ErrorDetail::new("JWKS_INVALID_FORMAT", "'keys' array not found"),
+                ErrorDetail::new("RESPONSE_BUILD_FAILED", &e.to_string()),
             )
-        })?
-        .iter()
-        .find(|k| k.get("kid").and_then(|v| v.as_str()) == Some(&kid))
-        .ok_or_else(|| Error::Unauthorized(format!("Key '{}' not found in Google JWKS", kid)))?; // Unauthorized seems appropriate here
+        })?;
 
-    let n = key_data.get("n").and_then(|v| v.as_str()).ok_or_else(|| {
-        Error::CustomError(
-            StatusCode::INTERNAL_SERVER_ERROR,
-            ErrorDetail::new("JWK_MISSING_N", "JWK missing 'n' component"),
-        )
-    })?;
-    let e = key_data.get("e").and_then(|v| v.as_str()).ok_or_else(|| {
-        Error::CustomError(
-            StatusCode::INTERNAL_SERVER_ERROR,
-            ErrorDetail::new("JWK_MISSING_E", "JWK missing 'e' component"),
-        )
-    })?;
+    Ok(final_response)
 
-    // Step 3: Create decoding key
-    let decoding_key = DecodingKey::from_rsa_components(n, e).map_err(|e| {
-        Error::CustomError(
-            StatusCode::INTERNAL_SERVER_ERROR,
-            ErrorDetail::new("DECODING_KEY_FAILED", &e.to_string()),
-        )
-    })?;
-
-    let google_client_id = website.website_basic_info.google.google_client_id.clone();
-
-    // Step 4: Setup validation
-    let mut validation = Validation::new(Algorithm::RS256);
-    validation.set_audience(&[&google_client_id]);
-    validation.set_issuer(&["https://accounts.google.com"]);
-
-    // Step 5: Decode & validate claims
-    let token_data = decode::<OAuth2UserProfile>(&token, &decoding_key, &validation)
-        .map_err(|e| Error::Unauthorized(format!("Invalid or expired Google token: {}", e)))?;
-    dbg!(&token_data);
-    let profile = token_data.claims;
-
-    dbg!(&profile);
-
-    // let access_token = token.clone();
-    // let fields = EmptyExtraTokenFields {};
-    // let token_type = TokenType {};
-    // let token_response = StandardTokenResponse::new(access_token, fields, token_type);
-
-    // // Step 6: Find or create the user
-    // let user = UserModel::upsert_with_oauth(&ctx.db, &profile).await?;
-    // let user2 = OAuth2SessionModel::upsert_with_oauth2(&ctx.db, &token_response, &user)
-    //     .await
-    //     .map_err(|_e| {
-    //         tracing::error!("Error creating session");
-    //         Error::InternalServerError
-    //     })?;
-
-    // let jwt_secret = ctx.config.get_jwt_config()?; // Assumes returns Result<_, ConfigError>, handled by '?'
-    // let auth_token = user.generate_jwt(&jwt_secret.secret, jwt_secret.expiration.clone())?; // Assumes returns Result<_, Error>, handled by '?'
-
-    // // Step 7: Set cookie
-    // let cookie = AxumCookie::build(("auth", auth_token))
-    //     .path("/")
-    //     .http_only(true)
-    //     .secure(!cfg!(debug_assertions))
-    //     .same_site(SameSite::Lax)
-    //     .max_age(time::Duration::seconds(jwt_secret.expiration as i64))
-    //     .build();
-
-    // let user_pid = UserPid::new(user.pid);
-    // let (loaded_user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?; // Assumes returns Result<_, Error>
-
-    // let view_response =
-    //     views::home::google_ott(&v, &website, &loaded_user.into(), &user_credits.into())?; // Assumes returns Result<impl IntoResponse, Error>
-
-    // // Build the final response
-    // let mut response_builder = Response::builder().status(StatusCode::OK);
-
-    // // --- Reverted Error Mapping Below ---
-    // // Safely parse the cookie string into a HeaderValue - Using your original error
-    // let cookie_header_value = cookie.to_string();
-
-    // response_builder = response_builder.header("Set-Cookie", cookie_header_value);
-
-    // // Add the view response body - Using your original error
-    // let final_response = response_builder
-    //     .body(Body::from(
-    //         // Ensure Body::from is available/correct
-    //         view_response.into_response().into_body(),
-    //     ))
-    //     .map_err(|e| {
-    //         Error::CustomError(
-    //             // Using your original error type
-    //             StatusCode::INTERNAL_SERVER_ERROR,
-    //             ErrorDetail::new("RESPONSE_BUILD_FAILED", &e.to_string()), // Adjusted code slightly
-    //         )
-    //     })?;
-    // // --- End Reverted Error Mapping ---
-
-    // Ok(final_response) // Return Ok(...) as signature is Result<...>
-    format::empty()
+    // format::json(register)
 }
 
+#[debug_handler]
 async fn protected(
     State(ctx): State<AppContext>,
     user: OAuth2CookieUser<OAuth2UserProfile, users::Model, o_auth2_sessions::Model>,
