@@ -17,9 +17,6 @@
     google.accounts.id.prompt();
   };
 
-  console.log("{{ google_ott_link }}");
-  console.log("{{ google_ott_link | safe }}");
-
   async function handleCredentialResponse(response) {
     const res = await fetch("{{ google_ott_link | safe }}", {
       method: "POST",

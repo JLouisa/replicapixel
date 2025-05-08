@@ -221,6 +221,7 @@ impl RegisterParams {
         Ok(register)
     }
 }
+
 #[derive(Debug, Serialize, Deserialize, Validate)]
 pub struct PasswordChangeParams {
     pub current_password: String,
@@ -617,17 +618,18 @@ impl Model {
     ) -> ModelResult<Self> {
         let txn = db.begin().await?;
 
-        if users::Entity::find()
+        let user_find = users::Entity::find()
             .filter(
                 model::query::condition()
                     .eq(users::Column::Email, &params.email)
                     .build(),
             )
             .one(&txn)
-            .await?
-            .is_some()
-        {
-            return Err(ModelError::EntityAlreadyExists {});
+            .await?;
+
+        if user_find.is_some() {
+            txn.commit().await?;
+            return Ok(user_find.unwrap());
         }
 
         let password_hash =

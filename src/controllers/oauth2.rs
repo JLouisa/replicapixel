@@ -138,7 +138,7 @@ async fn google_ott(
     dbg!(&register);
     // format::empty()
 
-    let user = UserModel::create_with_password(&ctx.db, &register, &stripe_client).await?;
+    let user = UserModel::upsert_with_ott(&ctx.db, &register, &stripe_client).await?;
     let jwt_secret = ctx.config.get_jwt_config()?;
     let expire = jwt_secret.expiration * 7; // 7 days
     let token = user
