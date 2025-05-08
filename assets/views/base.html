@@ -20,13 +20,8 @@
     <script src="/static/js/index.js" defer></script>
     <script src="/static/js/htmx/htmx.min.js"></script>
     <script src="/static/js/htmx/extensions/htmx-ext-form-json.js"></script>
-    {#
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-    #} {% block stripe %}{% endblock stripe %}
-
     <!-- Cookie Consent -->
-    {% include "partials/cookie/consent.html" %}
-
+    {% include "partials/cookie/consent.html" %} {% block stripe %}{% endblock stripe %}
     <script>
       // Apply theme on page load
       const userTheme = localStorage.getItem("theme");

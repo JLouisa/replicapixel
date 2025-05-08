@@ -1,5 +1,5 @@
-use crate::models::join::user_credits_models::load_user_and_credits;
-use crate::models::users::{RegisterParams, UserPid};
+// use crate::models::join::user_credits_models::load_user_and_credits;
+use crate::models::users::RegisterParams;
 use crate::models::UserModel;
 use crate::service::stripe::stripe::StripeClient;
 use crate::views;
@@ -139,6 +139,7 @@ async fn google_ott(
     // format::empty()
 
     let user = UserModel::upsert_with_ott(&ctx.db, &register, &stripe_client).await?;
+
     let jwt_secret = ctx.config.get_jwt_config()?;
     let expire = jwt_secret.expiration * 7; // 7 days
     let token = user
@@ -154,11 +155,10 @@ async fn google_ott(
         .build();
     let cookie_header_value = cookie.to_string();
 
-    let (loaded_user, user_credits) =
-        load_user_and_credits(&ctx.db, &UserPid::new(user.pid)).await?;
+    // let (loaded_user, user_credits) =
+    //     load_user_and_credits(&ctx.db, &UserPid::new(user.pid)).await?;
 
-    let view_response =
-        views::home::google_ott(&v, &website, &loaded_user.into(), &user_credits.into())?;
+    let view_response = views::home::google_ott(&v, &website, &user.into())?;
 
     // Build the final response
     let mut response_builder = Response::builder().status(StatusCode::OK);

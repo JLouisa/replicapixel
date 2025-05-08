@@ -486,5 +486,7 @@ async function oAuth2(provider_link: string) {
 }
 
 (window as any).oAuth2 = oAuth2;
+// ✅ Make Alpine available globally
+(window as any).Alpine = Alpine;
 
 Alpine.start();

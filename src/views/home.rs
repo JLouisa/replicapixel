@@ -1,7 +1,7 @@
 use crate::{domain::website::Website, middleware::cookie::CookieConsent};
 use loco_rs::prelude::*;
 
-use super::auth::{UserCreditsView, UserView};
+use super::auth::UserView;
 
 pub fn home(
     v: impl ViewRenderer,
@@ -33,7 +33,6 @@ pub fn google_ott(
     v: &impl ViewRenderer,
     website: &Website,
     user: &UserView,
-    credits: &UserCreditsView,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         v,
