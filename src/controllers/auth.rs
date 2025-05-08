@@ -32,6 +32,7 @@ use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::sync::OnceLock;
 
+use crate::controllers::dashboard::routes::Dashboard as DashboardRoutes;
 use axum_extra::extract::cookie::{Cookie as AxumCookie, SameSite};
 
 pub static EMAIL_DOMAIN_RE: OnceLock<Regex> = OnceLock::new();
@@ -493,7 +494,7 @@ async fn login(
 
     let mut headers = HeaderMap::new();
     headers.insert("Set-Cookie", cookie_value);
-    headers.insert("HX-Redirect", "/dashboard".parse().unwrap());
+    headers.insert("HX-Redirect", DashboardRoutes::BASE.parse().unwrap());
 
     Ok((StatusCode::OK, headers).into_response())
 }
