@@ -3,10 +3,17 @@ FROM lukemathwalker/cargo-chef:latest-rust-1.83.0@sha256:4d3858029892a324ce19900
 
 WORKDIR /usr/src/
 
-# Install linker, C compiler, and MUSL tools for static linking
+# Install linker, C compiler, MUSL tools, prerequisites for Bun, and Bun itself
 RUN apt-get update && apt-get install -y --no-install-recommends \
     lld clang musl-tools ca-certificates \
+    curl unzip xz-utils \
     && rm -rf /var/lib/apt/lists/*
+
+# Install Bun
+RUN curl -fsSL https://bun.sh/install | bash
+
+# If not, the path might be /home/<user>/.bun/bin
+ENV PATH="/root/.bun/bin:${PATH}"
 
 # Stage 2: Planner - Create dependency recipe
 FROM chef AS planner
@@ -30,6 +37,14 @@ RUN cargo chef cook --release --recipe-path recipe.json
 
 # Copy the full project source AFTER dependencies are built
 COPY . .
+
+WORKDIR /usr/src/frontend
+# RUN bun install --production
+RUN bun install
+# Build assets using the script from package.json
+RUN bun run build
+# Change back to the root WORKDIR for Rust build if necessary
+WORKDIR /usr/src/
 
 # Add the MUSL target and build the application statically
 ENV CARGO_TARGET_X86_64_UNKNOWN_LINUX_MUSL_LINKER=clang

@@ -8,3 +8,16 @@ target/
 tests/
 Dockerfile
 scripts/
+frontend/node_modules/
+frontend/.bun/
+.DS_Store
+.idea/
+.vscode/
+.env
+.env.production
+*.env.local
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*

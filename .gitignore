@@ -23,3 +23,8 @@ target/
 *.sqlite-*
 
 /node_modules
+
+# Frontend Build Artifacts
+assets/static/css/output.css
+assets/static/js/index.js
+assets/static/js/cookie-consent.js
