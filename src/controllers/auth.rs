@@ -27,7 +27,7 @@ use axum::{
     Extension,
 };
 use chrono::{Duration, Utc};
-use loco_rs::prelude::*;
+use loco_rs::{controller::ErrorDetail, prelude::*};
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::sync::OnceLock;
@@ -522,20 +522,31 @@ async fn logout_partial(
     ViewEngine(v): ViewEngine<TeraView>,
     Extension(website): Extension<Website>,
 ) -> Result<Response> {
-    // use axum::body::Body;
-    // use loco_rs::controller::ErrorDetail;
+    let cookie = AxumCookie::build(("auth", ""))
+        .path("/")
+        .http_only(true)
+        .secure(!cfg!(debug_assertions)) // false in dev
+        .same_site(SameSite::Strict)
+        .max_age(time::Duration::seconds(0))
+        .build();
 
-    // Set the expiration date in the past to remove the cookie
-    let expiry = Utc::now() - Duration::days(1);
-    let expired_cookie = format!(
-        "auth=; Path=/; HttpOnly; Secure; SameSite=Strict; Expires={}",
-        expiry.to_rfc2822()
-    );
+    let cookie_header_value = cookie.to_string();
 
-    // Create headers for removing the cookie and redirecting
-    let mut headers = HeaderMap::new();
-    headers.insert("Set-Cookie", expired_cookie.parse().unwrap());
-    // headers.insert("HX-Redirect", "/login".parse().unwrap()); // HTMX redirect
+    let cookie_header = HeaderValue::from_str(&cookie_header_value)
+        .or_else(|_| {
+            let expiry = Utc::now() - Duration::days(1);
+            let fallback = format!(
+                "auth=; Path=/; HttpOnly; Secure; SameSite=Strict; Expires={}",
+                expiry.to_rfc2822()
+            );
+            HeaderValue::from_str(&fallback)
+        })
+        .map_err(|_| {
+            loco_rs::Error::CustomError(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                ErrorDetail::new("CookieFailed", "failed to build cookie header"),
+            )
+        })?;
 
     let mut view_response = format::render().view(
         &v,
@@ -545,21 +556,7 @@ async fn logout_partial(
 
     view_response
         .headers_mut()
-        .insert("Set-Cookie", expired_cookie.parse().unwrap());
-
-    // // Build the final response
-    // let mut response_builder = Response::builder().status(StatusCode::OK);
-    // response_builder = response_builder.header("Set-Cookie", expired_cookie.to_string());
-
-    // // Add the view response body - Using your original error
-    // let final_response = response_builder
-    //     .body(Body::from(view_response.into_body()))
-    //     .map_err(|e| {
-    //         Error::CustomError(
-    //             StatusCode::INTERNAL_SERVER_ERROR,
-    //             ErrorDetail::new("RESPONSE_BUILD_FAILED", &e.to_string()),
-    //         )
-    //     })?;
+        .insert("Set-Cookie", cookie_header);
 
     Ok(view_response)
 }
