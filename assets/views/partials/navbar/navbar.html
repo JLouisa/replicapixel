@@ -1,7 +1,6 @@
 <!-- prettier-ignore -->
 {% set home_link = website.website_routes.home.base | safe %}
 {% set studio_link = website.website_routes.dashboard_routes.base | safe %}
-{% set validate_link = website.website_routes.auth_routes.validate_route | safe %}
 {% set login_link = website.website_routes.auth_routes.login | safe %}
 {% set register_link = website.website_routes.auth_routes.register | safe %}
 
@@ -72,13 +71,7 @@
       {% include "partials/svg/moon.html" %}
     </label>
     {% if user.name %} {% include "partials/navbar/navbar_user_partial.html" %} {% else %}
-    <div
-      hx-get="{{ validate_link }}"
-      hx-trigger="load once"
-      hx-swap="outerHTML"
-      hx-select-oob="#navbar-middle"
-      class="flex items-center space-x-2"
-    >
+    <div class="flex items-center space-x-2">
       <div class="flex items-center space-x-4">
         <a href="{{ login_link }}" class="btn btn-neutral">Login</a>
       </div>

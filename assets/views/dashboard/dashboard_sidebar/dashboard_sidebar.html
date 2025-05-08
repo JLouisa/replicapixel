@@ -15,7 +15,8 @@
 {% set billing_link = website.website_routes.dashboard_routes.billing  | safe %}
 {% set settings_partial_link = website.website_routes.dashboard_routes.sidebar.settings_partial  | safe %}
 {% set settings_link = website.website_routes.dashboard_routes.sidebar.settings  | safe %}
-{% set logout_api_link = website.website_routes.auth_routes.api_forgot  | safe %}
+{% set logout_partial_link = website.website_routes.auth_routes.logout_partial  | safe %}
+{% set login_link = website.website_routes.auth_routes.login | safe %}
 
 <aside class="flex flex-col items-center text-gray-700 shadow h-full mt-8">
   <!-- Side Nav Bar-->
@@ -138,7 +139,10 @@
     </div>
     <!-- Logout Section -->
     <div
-      hx-get="{{ logout_api_link }}"
+      hx-get="{{ logout_partial_link }}"
+      hx-target="#app"
+      hx-push-url="{{ login_link }}"
+      hx-swap="innerHTML"
       class="h-16 w-full mx-auto flex items-center justify-center hover:bg-red-200 focus:outline-none cursor-pointer tooltip tooltip-right text-base-content"
       data-tip="Logout"
     >

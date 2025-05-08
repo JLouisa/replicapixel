@@ -1,7 +1,6 @@
 <!-- prettier-ignore -->
-{% set logout_api_link = website.website_routes.auth_routes.api_logout | safe %}
- {% set register_link = website.website_routes.auth_routes.register | safe %}
- {# studio_link | super #}
+{% set logout_partial_link = website.website_routes.auth_routes.logout_partial  | safe %}
+{% set register_link = website.website_routes.auth_routes.register | safe %}
 
 <div id="navbar-user">
   <div class="flex items-center space-x-4">
@@ -39,21 +38,14 @@
       <ul
         class="child transition duration-300 md:absolute top-full right-0 md:w-48 md:shadow-lg md:rounded-b bg-base-100 z-20"
       >
-        {#
         <li>
           <a
-            hx-get="{{ website.website_routes.dashboard_routes.billing_partial | safe }}"
-            hx-target="#dashboard_content"
-            hx-push-url="{{ website.website_routes.dashboard_routes.billing | safe }}"
+            hx-get="{{ logout_partial_link }}"
+            hx-target="#app"
+            hx-push-url="{{ login_link }}"
             hx-swap="innerHTML"
             class="flex px-4 py-3 hover:bg-base-300 cursor-pointer"
           >
-            Billing & Plans
-          </a>
-        </li>
-        #}
-        <li>
-          <a hx-get="{{ logout_api_link }}" class="flex px-4 py-3 hover:bg-base-300 cursor-pointer">
             Logout
           </a>
         </li>

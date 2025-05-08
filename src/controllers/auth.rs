@@ -51,8 +51,9 @@ pub mod routes {
         pub forgot_partial: String,
         pub api_forgot: String,
         pub api_logout: String,
-        pub validate_route: String,
+        pub logout_partial: String,
         pub change_password: String,
+        pub api_check_user: String,
     }
     impl AuthRoutes {
         pub fn init() -> Self {
@@ -67,8 +68,9 @@ pub mod routes {
                 forgot_partial: String::from(Auth::FORGOT_PARTIAL),
                 api_forgot: String::from(Auth::API_FORGOT),
                 api_logout: String::from(Auth::API_LOGOUT),
-                validate_route: String::from(Auth::API_VALIDATE_USER),
+                logout_partial: String::from(Auth::LOGOUT_PARTIAL),
                 change_password: String::from(Auth::API_PASSWORD_CHANGE),
+                api_check_user: String::from(Auth::API_CHECK_USER),
             }
         }
     }
@@ -83,6 +85,7 @@ pub mod routes {
         pub const LOGIN_HOME_PARTIAL: &'static str = "/partial/home/login";
         pub const REGISTER_PARTIAL: &'static str = "/partial/register";
         pub const FORGOT_PARTIAL: &'static str = "/partial/forgot";
+        pub const LOGOUT_PARTIAL: &'static str = "/partial/logout";
         pub const API_REGISTER: &'static str = "/api/auth/register";
         pub const API_VERIFY_TOKEN: &'static str = "/api/auth/verify/{token}";
         pub const API_VERIFY_W_TOKEN: &'static str = "/api/auth/verify";
@@ -94,9 +97,9 @@ pub mod routes {
         pub const API_MAGIC_LINK: &'static str = "/api/auth/magic-link";
         pub const API_MAGIC_LINK_W_TOKEN: &'static str = "/api/auth/magic";
         pub const API_MAGIC_LINK_TOKEN: &'static str = "/api/auth/magic/{token}";
-        pub const API_VALIDATE_USER: &'static str = "/api/auth/validate-user";
         pub const API_PASSWORD_CHANGE_ID: &'static str = "/api/auth/password-change/{id}";
         pub const API_PASSWORD_CHANGE: &'static str = "/api/auth/password-change";
+        pub const API_CHECK_USER: &'static str = "/api/auth/check-user";
     }
 }
 
@@ -108,6 +111,7 @@ pub fn routes() -> Routes {
         .add(routes::Auth::LOGIN_PARTIAL, get(partial_login))
         .add(routes::Auth::REGISTER_PARTIAL, get(partial_register))
         .add(routes::Auth::FORGOT_PARTIAL, get(partial_forgot))
+        .add(routes::Auth::LOGOUT_PARTIAL, get(logout_partial))
         .add(routes::Auth::API_REGISTER, post(register))
         .add(routes::Auth::API_VERIFY_TOKEN, get(verify))
         .add(routes::Auth::API_LOGIN, post(login))
@@ -117,8 +121,8 @@ pub fn routes() -> Routes {
         .add(routes::Auth::API_CURRENT, get(current))
         .add(routes::Auth::API_MAGIC_LINK, post(magic_link))
         .add(routes::Auth::API_MAGIC_LINK_W_TOKEN, get(magic_link_verify))
-        .add(routes::Auth::API_VALIDATE_USER, get(validate_user))
         .add(routes::Auth::API_PASSWORD_CHANGE_ID, post(change_password))
+        .add(routes::Auth::API_CHECK_USER, get(check_user))
     // .add("/api/auth/test/welcome", get(test_welcome_mail))
     // .add("/api/auth/test/forgot_password", get(test_forgot_password))
     // .add("/api/auth/test/magic_link", get(test_magic_link))
@@ -247,21 +251,28 @@ pub async fn change_password(
 }
 
 #[debug_handler]
-pub async fn validate_user(
-    auth: auth::JWT,
+pub async fn check_user(
+    auth: Result<auth::JWT>,
     State(ctx): State<AppContext>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let user_pid = UserPid::new(&auth.claims.pid);
+    if auth.is_err() {
+        return format::render().view(
+            &v,
+            "partials/parts/google_ott.html",
+            data!({"website": website, "is_home": true}),
+        );
+    }
+    let user_pid = UserPid::new(&auth.unwrap().claims.pid);
     let (user, user_credits) = match load_user_and_credits(&ctx.db, &user_pid).await {
         Ok((user, user_credits)) => (user, user_credits),
         Err(_) => {
-            return Ok((
-                StatusCode::NO_CONTENT,
-                "Redirected session is not yet successful.",
-            )
-                .into_response());
+            return format::render().view(
+                &v,
+                "partials/parts/google_ott.html",
+                data!({"website": website, "is_home": true}),
+            );
         }
     };
     format::render().view(
@@ -270,6 +281,38 @@ pub async fn validate_user(
         data!({"website": website, "user": user, "credits": user_credits, "is_home": true}),
     )
 }
+
+// #[debug_handler]
+// pub async fn validate_user(
+//     auth: Result<auth::JWT>,
+//     State(ctx): State<AppContext>,
+//     Extension(website): Extension<Website>,
+//     ViewEngine(v): ViewEngine<TeraView>,
+// ) -> Result<impl IntoResponse> {
+//     if auth.is_err() {
+//         return format::render().view(
+//             &v,
+//             "partials/parts/google_ott.html",
+//             data!({"website": website, "is_home": true}),
+//         );
+//     }
+//     let user_pid = UserPid::new(&auth.unwrap().claims.pid);
+//     let (user, user_credits) = match load_user_and_credits(&ctx.db, &user_pid).await {
+//         Ok((user, user_credits)) => (user, user_credits),
+//         Err(_) => {
+//             return Ok((
+//                 StatusCode::NO_CONTENT,
+//                 "Redirected session is not yet successful.",
+//             )
+//                 .into_response());
+//         }
+//     };
+//     format::render().view(
+//         &v,
+//         "partials/parts/home_validated.html",
+//         data!({"website": website, "user": user, "credits": user_credits, "is_home": true}),
+//     )
+// }
 
 /// Register function creates a new user with the given parameters and sends a
 /// welcome email to the user
@@ -470,6 +513,54 @@ async fn logout(State(_ctx): State<AppContext>) -> Result<Response> {
     headers.insert("HX-Redirect", "/login".parse().unwrap()); // HTMX redirect
 
     Ok((StatusCode::OK, headers).into_response())
+}
+
+#[debug_handler]
+async fn logout_partial(
+    State(_ctx): State<AppContext>,
+    ViewEngine(v): ViewEngine<TeraView>,
+    Extension(website): Extension<Website>,
+) -> Result<Response> {
+    // use axum::body::Body;
+    // use loco_rs::controller::ErrorDetail;
+
+    // Set the expiration date in the past to remove the cookie
+    let expiry = Utc::now() - Duration::days(1);
+    let expired_cookie = format!(
+        "auth=; Path=/; HttpOnly; Secure; SameSite=Strict; Expires={}",
+        expiry.to_rfc2822()
+    );
+
+    // Create headers for removing the cookie and redirecting
+    let mut headers = HeaderMap::new();
+    headers.insert("Set-Cookie", expired_cookie.parse().unwrap());
+    // headers.insert("HX-Redirect", "/login".parse().unwrap()); // HTMX redirect
+
+    let mut view_response = format::render().view(
+        &v,
+        "auth/login/login_form.html",
+        data!({"website": website}),
+    )?;
+
+    view_response
+        .headers_mut()
+        .insert("Set-Cookie", expired_cookie.parse().unwrap());
+
+    // // Build the final response
+    // let mut response_builder = Response::builder().status(StatusCode::OK);
+    // response_builder = response_builder.header("Set-Cookie", expired_cookie.to_string());
+
+    // // Add the view response body - Using your original error
+    // let final_response = response_builder
+    //     .body(Body::from(view_response.into_body()))
+    //     .map_err(|e| {
+    //         Error::CustomError(
+    //             StatusCode::INTERNAL_SERVER_ERROR,
+    //             ErrorDetail::new("RESPONSE_BUILD_FAILED", &e.to_string()),
+    //         )
+    //     })?;
+
+    Ok(view_response)
 }
 
 #[debug_handler]

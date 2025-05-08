@@ -130,7 +130,7 @@ pub mod routes {
     #[derive(Clone, Debug, Serialize)]
     pub struct Dashboard;
     impl Dashboard {
-        pub const BASE: &'static str = "/dashboard";
+        pub const BASE: &'static str = "/studio";
         pub const DASHBOARD: &'static str = "/";
         pub const PACKS: &'static str = "/packs";
         pub const PACKS_PARTIAL: &'static str = "/partial/packs";

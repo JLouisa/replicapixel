@@ -5,6 +5,7 @@
 {% set google_analytics_id = website.website_basic_info.google.google_analytics_id | safe %}
 {% set google_client_id = website.website_basic_info.google.google_client_id | safe %}
 {% set meta_pixel_id = website.website_basic_info.meta_pixel.meta_pixel_id | safe %}
+{% set api_check_user_link = website.website_routes.auth_routes.api_check_user %}
 
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
@@ -16,7 +17,6 @@
     </title>
     <link rel="icon" href="/static/favicon.ico" type="image/x-icon" />
     <link href="/static/css/output.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="style.css" />
     <script src="/static/js/index.js" defer></script>
     <script src="/static/js/htmx/htmx.min.js"></script>
     <script src="/static/js/htmx/extensions/htmx-ext-form-json.js"></script>
@@ -116,43 +116,55 @@
     <!-- Javascript -->
     {% block js %} {% endblock js %}
     <script>
+      // Theme toggle logic
       const themeToggle = document.querySelector(".theme-controller");
 
       if (themeToggle) {
-        // Set initial checked state based on current theme
-        const currentTheme = document.documentElement.getAttribute("data-theme");
+        const currentTheme =
+          localStorage.getItem("theme") || document.documentElement.getAttribute("data-theme");
         themeToggle.checked = currentTheme === "dark";
+        document.documentElement.setAttribute("data-theme", currentTheme); // Ensure it's applied
 
-        // On toggle, change theme and save to localStorage
         themeToggle.addEventListener("change", function () {
           const newTheme = this.checked ? "dark" : "light";
           document.documentElement.setAttribute("data-theme", newTheme);
           localStorage.setItem("theme", newTheme);
         });
       }
+    </script>
 
-      // Google Identity Services Script
-      //  window.onload = function () {
-      //    google.accounts.id.initialize({
-      //      client_id: "{{google_client_id}}",
-      //      callback: handleCredentialResponse,
-      //      auto_select: false,
-      //    });
-      //    google.accounts.id.prompt();
-      //  };
+    <div
+      id="google-login-init"
+      hx-trigger="load once"
+      hx-get="{{api_check_user_link}}"
+      hx-swap="outerHTML"
+    ></div>
+
+    {# {% if not user %}
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script>
+      // Google login logic
+      window.onload = function () {
+        google.accounts.id.initialize({
+          client_id: "{{google_client_id}}",
+          callback: handleCredentialResponse,
+          auto_select: false,
+        });
+        google.accounts.id.prompt();
+      };
 
       async function handleCredentialResponse(response) {
-        console.log("Encoded JWT ID token: " + response.credential);
-        const res = await fetch(`${window.__APP_ENV__.apiBaseUrl}{{google_ott_link}}`, {
+        const res = await fetch("{{google_ott_link}}", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ token: response.credential }),
           credentials: "include",
         });
-        console.log(res);
-        // const html = await res.text();
-        // document.querySelector("#your-target").outerHTML = html;
+
+        const html = await res.text();
+        window.htmx.swap("#home-cta-btn", html, { swapStyle: "outerHTML" });
       }
     </script>
+    {% endif %} #}
   </body>
 </html>

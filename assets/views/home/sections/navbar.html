@@ -1,16 +1,13 @@
 <!-- prettier-ignore -->
 {% set home_link = "/" %}
 {% set studio_link = website.website_routes.dashboard_routes.base %}
-{% set validate_link = website.website_routes.auth_routes.validate_route %}
 
 <nav
-  class="fixed inset-x-0 top-8 z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between border border-slate-50/10 rounded-full backdrop-blur-lg bg-white/5"
+  class="fixed inset-x-0 top-8 z-10 mx-auto w-full max-w-7xl p-4 sm:px-6 lg:px-8 flex items-center justify-between border border-slate-50/10 rounded-full backdrop-blur-lg bg-white/5"
 >
   <div class="flex flex-row items-center justify-center shrink-0 relative gap-2 md:gap-3 lg:gap-4">
-    <span class="shrink-0 w-10 h-10 lg:w-12 lg:h-12 relative"
-      >{% include "partials/svg/logo.html" %}</span
-    >
-    <span class="hidden sm:block text-w text-center font-bricon font-semibold relative sm:text-4xl">
+    <span class="shrink-0 w-10 h-10 relative">{% include "partials/svg/logo.html" %}</span>
+    <span class="hidden sm:block text-w text-center font-bricon font-semibold relative sm:text-3xl">
       {{ website_name }}
     </span>
   </div>
@@ -27,15 +24,7 @@
       </li>
       <li><a href="#pricing" class="p-2 text-white text-base hover:text-gray-300">Pricing</a></li>
     </ul>
-    <div
-      id="home-cta-btn"
-      hx-get="{{validate_link}}"
-      hx-trigger="load once"
-      hx-swap="outerHTML"
-      hx-target="this"
-    >
-      {% include "partials/parts/cta_btn_home.html" %}
-    </div>
+    <div id="cta-home-navbar-btn">{% include "partials/parts/cta_btn_home.html" %}</div>
   </div>
 
   <!-- ✅ Mobile nav toggle — placed outside the hidden desktop nav -->

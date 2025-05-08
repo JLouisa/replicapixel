@@ -3,38 +3,42 @@
 {% set studio_link = website.website_routes.dashboard_routes.base | safe %}
 {% set checkout_prepare_link = website.website_routes.payment.payment_prepare_route | safe %}
 
-<button
-  hx-get="{{ studio_link }}"
-  hx-target="#app"
-  hx-swap="innerHTML"
-  hx-push-url="/studio"
-  id="shiningButton-{{ timestamp }}"
-  class="relative pt-2 pr-3 pb-2 pl-4 px-2 py-2 gap-2 lg:pt-4 lg:pr-6 lg:pb-4 lg:pl-8 lg:px-4 lg:py-2 lg:gap-4 flex flex-row overflow-hidden bg-gradient-to-r from-[var(--color-grn-from)] to-[var(--color-grn-to)] font-semibold text-white rounded-full shadow-md transition-all duration-150 hover:shadow-lg hover:brightness-110 active:scale-95 active:brightness-90 cursor-pointer"
->
-  Take Photos {% include "partials/svg/triple_stars.html" %}
-  <script>
-    {
-      const button = document.getElementById("shiningButton-{{ timestamp }}");
-      if (button) {
-        const shineAnimationDuration = 1000;
-        const intervalDuration = 8000;
-        function triggerShine() {
-          if (!button.classList.contains("animate-shine-active")) {
-            button.classList.add("animate-shine-active");
-            setTimeout(() => {
-              button.classList.remove("animate-shine-active");
-            }, shineAnimationDuration);
+{# Change cta in nav button #}
+<div id="cta-home-navbar-btn" hx-swap-oob="true">
+  <button
+    id="shiningButton-{{ timestamp }}"
+    hx-get="{{ studio_link }}"
+    hx-target="#app"
+    hx-swap="innerHTML"
+    hx-push-url="/studio"
+    class="relative pt-2 pr-3 pb-2 pl-4 px-2 py-2 gap-2 lg:pt-4 lg:pr-6 lg:pb-4 lg:pl-8 lg:px-4 lg:py-2 lg:gap-4 flex flex-row overflow-hidden bg-gradient-to-r from-[var(--color-grn-from)] to-[var(--color-grn-to)] font-semibold text-white rounded-full shadow-md transition-all duration-150 hover:shadow-lg hover:brightness-110 active:scale-95 active:brightness-90 cursor-pointer"
+  >
+    Take Photos {% include "partials/svg/triple_stars.html" %}
+    <script>
+      {
+        const button = document.getElementById("shiningButton-{{ timestamp }}");
+        if (button) {
+          const shineAnimationDuration = 1000;
+          const intervalDuration = 8000;
+          function triggerShine() {
+            if (!button.classList.contains("animate-shine-active")) {
+              button.classList.add("animate-shine-active");
+              setTimeout(() => {
+                button.classList.remove("animate-shine-active");
+              }, shineAnimationDuration);
+            }
           }
+
+          const shineInterval = setInterval(triggerShine, intervalDuration);
+        } else {
+          console.error("Button with id 'shiningButton' not found.");
         }
-
-        const shineInterval = setInterval(triggerShine, intervalDuration);
-      } else {
-        console.error("Button with id 'shiningButton' not found.");
       }
-    }
-  </script>
-</button>
+    </script>
+  </button>
+</div>
 
+{# login button #}
 <div id="validate-login-btn" hx-swap-oob="true">
   {% if user.picture %}
   <div class="avatar">
@@ -53,6 +57,7 @@
   {% endif %}
 </div>
 
+{# Change pricing plans button #}
 <div
   id="pricing-basic-btn"
   class="w-full flex flex-col gap-4 items-start justify-start relative"
