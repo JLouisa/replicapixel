@@ -4,7 +4,8 @@
 {% set checkout_prepare_link = website.website_routes.payment.payment_prepare_route | safe %}
 
 {# Change cta in nav button #}
-<div id="cta-home-navbar-btn" hx-swap-oob="true">
+<div id="cta-home-navbar-btn" {% if not ott %} hx-swap-oob="true">
+  {% endif %}
   <button
     id="shiningButton-{{ timestamp }}"
     hx-get="{{ studio_link }}"

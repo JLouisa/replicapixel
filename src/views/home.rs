@@ -37,7 +37,7 @@ pub fn google_ott(
 ) -> Result<impl IntoResponse> {
     format::render().view(
         v,
-        "home/home.html",
-        data!({ "website": website, "user": user }),
+        "partials/parts/home_validated.html",
+        data!({"website": website, "user": user, "ott": true}),
     )
 }
