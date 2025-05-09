@@ -4,6 +4,7 @@
     "addedfile",
     "finetune",
     "finetuned",
+    "inpainting",
     "loras",
     "removedfile",
     "rundiffusion",

@@ -8,8 +8,8 @@ use crate::models::feature_request::FeatureRequestModelList;
 use crate::models::feature_vote::FeatureVoteModelList;
 use crate::models::images::ImagesModelList;
 use crate::models::join::user_credits_models::{
-    load_user_and_credits, load_user_and_settings, load_user_credit_training,
-    load_user_credits_settings,
+    load_user_and_credits, load_user_and_settings, load_user_and_training,
+    load_user_credit_training, load_user_credits_settings,
 };
 use crate::models::packs::PackModelList;
 use crate::models::training_models::TrainingModelList;
@@ -575,26 +575,30 @@ pub async fn packs_dashboard(
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
-    let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
+    let (user, user_credits, training_models) =
+        load_user_credit_training(&ctx.db, &user_pid).await?;
     let packs = load_packs(&ctx.db).await?;
     views::dashboard::packs_dashboard(
         v,
         &website,
         &user.into(),
         &user_credits.into(),
+        &training_models.into(),
         packs.into(),
         &cc_cookie,
     )
 }
 #[debug_handler]
 pub async fn packs_partial_dashboard(
-    _auth: auth::JWT,
+    auth: auth::JWT,
     State(ctx): State<AppContext>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let (_, training_models) = load_user_and_training(&ctx.db, &user_pid).await?;
     let packs = load_packs(&ctx.db).await?;
-    views::dashboard::packs_partial_dashboard(v, &website, packs.into())
+    views::dashboard::packs_partial_dashboard(v, &website, &training_models.into(), packs.into())
 }
 
 #[debug_handler]

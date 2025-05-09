@@ -9,3 +9,5 @@ pub mod policy;
 pub mod settings;
 pub mod training_models;
 pub mod webhooks;
+
+pub mod packs;

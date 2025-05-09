@@ -127,6 +127,14 @@ impl From<JoinError> for LocoError {
                 StatusCode::NOT_FOUND,
                 ErrorDetail::new("TrainingNotFound", "Model Not Found"),
             ),
+            JoinError::PackNotFound(_) => LocoError::CustomError(
+                StatusCode::NOT_FOUND,
+                ErrorDetail::new("PackNotFound", "Pack Not Found"),
+            ),
+            JoinError::ModelNotFound(_) => LocoError::CustomError(
+                StatusCode::NOT_FOUND,
+                ErrorDetail::new("ModelNotFound", "TrainingModel Not Found"),
+            ),
         }
     }
 }

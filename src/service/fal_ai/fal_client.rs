@@ -49,6 +49,25 @@ enum WebhookType {
     Image,
 }
 
+#[derive(Debug, Clone, strum::EnumString, strum::Display)]
+pub enum FalAiModel {
+    #[strum(to_string = "fal-ai/flux-lora")]
+    FluxLora,
+    #[strum(to_string = "fal-ai/flux-lora-fast-training")]
+    FluxLoraFastTraining,
+    #[strum(to_string = "rundiffusion-fal/juggernaut-flux-lora")]
+    JuggernautFluxLora,
+    #[strum(to_string = "rundiffusion-fal/rundiffusion-photo-flux")]
+    PhotoFlux,
+    #[strum(to_string = "fal-ai/flux-lora/inpainting")]
+    FluxLoraInPainting,
+}
+impl Default for FalAiModel {
+    fn default() -> Self {
+        Self::JuggernautFluxLora
+    }
+}
+
 #[derive(Debug, Clone)]
 pub struct FalAiClient {
     client: ReqwestClient,
@@ -63,16 +82,10 @@ pub struct FalAiClient {
     pub flux_lora_webhook: String,
     pub juggernaut_flux_lora: String,
     pub juggernaut_flux_lora_webhook: String,
-}
-
-#[derive(Debug, Clone, strum::EnumString, strum::Display)]
-pub enum FalAiModel {
-    #[strum(to_string = "fal-ai/flux-lora")]
-    FluxLora,
-    #[strum(to_string = "fal-ai/flux-lora-fast-training")]
-    FluxLoraFastTraining,
-    #[strum(to_string = "rundiffusion-fal/juggernaut-flux-lora")]
-    JuggernautFluxLora,
+    pub photo_flux: String,
+    pub photo_flux_webhook: String,
+    pub photo_flux_inpainting: String,
+    pub photo_flux_inpainting_webhook: String,
 }
 
 impl FalAiClient {
@@ -128,6 +141,24 @@ impl FalAiClient {
                 "{}/{}{}",
                 &fal_site,
                 FalAiModel::JuggernautFluxLora.to_string(),
+                &webhook_image_webhook
+            ),
+            photo_flux: format!("{}/{}", &fal_site, FalAiModel::PhotoFlux.to_string(),),
+            photo_flux_webhook: format!(
+                "{}/{}{}",
+                &fal_site,
+                FalAiModel::PhotoFlux.to_string(),
+                &webhook_image_webhook
+            ),
+            photo_flux_inpainting: format!(
+                "{}/{}",
+                &fal_site,
+                FalAiModel::FluxLoraInPainting.to_string(),
+            ),
+            photo_flux_inpainting_webhook: format!(
+                "{}/{}{}",
+                &fal_site,
+                FalAiModel::FluxLoraInPainting.to_string(),
                 &webhook_image_webhook
             ),
         }
@@ -221,7 +252,9 @@ impl FalAiClient {
     ) -> Result<ImageNewList, FalAiClientError> {
         for item in &mut list.clone().into_inner() {
             let body = item.clone().into();
-            let response = self.send_image_queue_webhook(&body).await?;
+            let response = self
+                .send_image_queue_webhook_all::<FluxLoraImageGenerate, QueueResponse>(&body)
+                .await?;
             item.fal_ai_request_id = Some(response.request_id);
         }
         Ok(list)
@@ -640,6 +673,7 @@ pub struct FluxLoraImageGenerate {
     pub enable_safety_checker: bool,
     pub output_format: ImageFormat,
     pub loras: Vec<Lora>,
+    pub photo_lora_scale: f32,
 }
 impl From<ImageNew> for FluxLoraImageGenerate {
     fn from(value: ImageNew) -> Self {
@@ -666,6 +700,7 @@ impl Default for FluxLoraImageGenerate {
             num_images: 1,
             enable_safety_checker: false,
             output_format: ImageFormat::Jpeg,
+            photo_lora_scale: 1.0,
             loras: vec![],
         }
     }

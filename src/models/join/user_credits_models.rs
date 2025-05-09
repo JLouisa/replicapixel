@@ -31,10 +31,14 @@ pub enum JoinError {
     ParseIdError(#[from] uuid::Error),
     #[error("User not found for PID: {0}")]
     ImageNotFound(String),
-    #[error("User not found for PID: {0}")]
+    #[error("Training not found for ID: {0}")]
     TrainingModelNotFound(i32),
+    #[error("Training not found for PID: {0}")]
+    ModelNotFound(String),
     #[error("Order not found for PID: {0}")]
     OrderNotFound(String),
+    #[error("Pack not found for PID: {0}")]
+    PackNotFound(String),
 }
 
 // Bugged

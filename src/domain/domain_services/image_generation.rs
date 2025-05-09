@@ -1,6 +1,9 @@
 use crate::{
     controllers::images::ImageGenRequestParams,
-    models::{images::ImageNewList, TrainingModelModel, UserCreditModel, UserModel},
+    models::{
+        images::ImageNewList, PackModel, TrainingModelModel, UserCreditModel, UserModel,
+        _entities::sea_orm_active_enums::ImageSize,
+    },
     service::fal_ai::fal_client::{FalAiClient, FalAiClientError},
 };
 use loco_rs::prelude::*;
@@ -82,6 +85,56 @@ impl ImageGenerationService {
         // // ==================================== Remove ====================================
         // Ok((updated_credits_model, image_list))
         // // ==================================== Remove ====================================
+
+        Ok((updated_credits_model, fal_response))
+    }
+
+    pub async fn generate_with_packs(
+        ctx: &AppContext,
+        fal_ai_client: &FalAiClient,
+        params: PackModel,
+        user: &UserModel,
+        training_model: &TrainingModelModel,
+        image_size: &ImageSize,
+    ) -> Result<(UserCreditModel, ImageNewList), ImageGenerationError> {
+        let txn = ctx.db.begin().await?;
+
+        let mut user_credits = UserCreditModel::find_by_user_id(&txn, user.id).await?;
+
+        if user_credits.credit_amount < params.credits as i32 {
+            txn.rollback().await?;
+            return Err(ImageGenerationError::InsufficientCredits);
+        }
+        let mut credits_to_deduct = params.credits as i32;
+        let image_amount = params.amount as i32;
+
+        let image_list = params.process_packs(&training_model, &user.pid, image_size);
+
+        // External API Interaction
+        let fal_response = fal_ai_client
+            .send_image_queue_many_async(image_list.clone())
+            .await?;
+        let fal_response = fal_ai_client.retry(fal_response, image_list).await?;
+
+        // Persist Results
+        fal_response.save_all(&txn).await?;
+
+        if image_amount != fal_response.as_ref().len() as i32 {
+            credits_to_deduct = fal_response.as_ref().len() as i32;
+            //Todo refactor to compute credits correctly
+        }
+
+        // Business Logic: Update Credits
+        user_credits.credit_amount -= credits_to_deduct;
+
+        // Update credits using an active model
+        let updated_credits_model = user_credits
+            .update_credits_with_image_list(&fal_response, &txn)
+            .await?;
+
+        dbg!(&updated_credits_model);
+
+        txn.commit().await?;
 
         Ok((updated_credits_model, fal_response))
     }

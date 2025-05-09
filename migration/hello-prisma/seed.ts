@@ -308,7 +308,7 @@ async function main() {
       update: {},
       create: {
         pid: uuid,
-        title: "Sexy Halloween AI Photos",
+        title: "Sexy Halloween Photos",
         short_description:
           "Unleash your sultry side this Halloween by becoming the star of your own spellbinding AI photo shoot—no broomstick or booking fee required.",
         full_description:
@@ -328,7 +328,7 @@ async function main() {
       update: {},
       create: {
         pid: uuid,
-        title: "Sexy Easter AI Photos",
+        title: "Sexy Easter Photos",
         short_description:
           "Celebrate Easter with a cheeky twist step into pastel dreamscapes as your AI twin brings bunny-eared charm and springtime seduction to life.",
         full_description:
@@ -348,9 +348,9 @@ async function main() {
       update: {},
       create: {
         pid: uuid,
-        title: "Cyberpunk Boudoir AI Photos",
+        title: "Sexy Cyberpunk Photos",
         short_description:
-          "Step into a neon-lit fantasy where edgy fashion meets sultry elegance—your AI twin rocks cyberpunk couture and bold boudoir looks with effortless allure.",
+          "Step into a neon-lit fantasy where edgy fashion meets sultry elegance as your AI twin rocks cyberpunk couture and bold boudoir looks with effortless allure.",
         full_description:
           "Slip into a seductive digital wardrobe where cyberpunk edge meets vaporwave dreams, no goggles or green screens required. With your personal AI model, you can generate striking, futuristic boudoir photos that blend glowing neon aesthetics with sensual fashion. All from your phone or laptop, no studio, no stylist, just pure pixel-powered confidence.",
         pack_prompts:

@@ -230,6 +230,7 @@ pub fn packs_dashboard(
     website: &Website,
     user: &UserView,
     credits: &UserCreditsView,
+    models: &Vec<TrainingModelView>,
     packs: PackViewList,
     cc_cookie: &CookieConsent,
 ) -> Result<impl IntoResponse> {
@@ -239,7 +240,7 @@ pub fn packs_dashboard(
         data!(
             {
                 "website": website, "credits": credits, "packs": packs,
-                "cc_cookie": cc_cookie, "user": user,
+                "cc_cookie": cc_cookie, "user": user, "models": models,
             }
         ),
     )
@@ -247,6 +248,7 @@ pub fn packs_dashboard(
 pub fn packs_partial_dashboard(
     v: impl ViewRenderer,
     website: &Website,
+    models: &Vec<TrainingModelView>,
     packs: PackViewList,
 ) -> Result<impl IntoResponse> {
     format::render().view(
@@ -254,7 +256,7 @@ pub fn packs_partial_dashboard(
         "dashboard/content/packs/packs_partial.html",
         data!(
             {
-                "website": website, "packs": packs,
+                "website": website, "packs": packs, "models": models,
             }
         ),
     )

@@ -1,4 +1,5 @@
 use crate::controllers::dashboard::routes::DashboardRoutes;
+use crate::controllers::packs::routes::PackRoutes;
 use crate::controllers::settings::routes::SettingRoutes;
 use crate::controllers::{
     auth::routes::AuthRoutes, features::routes::FeatureRoutes, home::routes::HomeRoutes,
@@ -25,6 +26,7 @@ pub struct WebsiteRoutes {
     pub policy: PolicyRoutes,
     pub training_models: TrainingModelRoutes,
     pub settings: SettingRoutes,
+    pub packs_routes: PackRoutes,
 }
 impl WebsiteRoutes {
     pub fn init() -> Self {
@@ -39,6 +41,7 @@ impl WebsiteRoutes {
             policy: PolicyRoutes::init(),
             training_models: TrainingModelRoutes::init(),
             settings: SettingRoutes::init(),
+            packs_routes: PackRoutes::init(),
         }
     }
 }
