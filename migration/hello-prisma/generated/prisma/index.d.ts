@@ -11459,7 +11459,8 @@ export namespace Prisma {
     id: number | null
     pid: string | null
     title: string | null
-    description: string | null
+    short_description: string | null
+    full_description: string | null
     pack_prompts: string | null
     credits: number | null
     amount: number | null
@@ -11472,7 +11473,8 @@ export namespace Prisma {
     id: number | null
     pid: string | null
     title: string | null
-    description: string | null
+    short_description: string | null
+    full_description: string | null
     pack_prompts: string | null
     credits: number | null
     amount: number | null
@@ -11485,7 +11487,8 @@ export namespace Prisma {
     id: number
     pid: number
     title: number
-    description: number
+    short_description: number
+    full_description: number
     pack_prompts: number
     credits: number
     amount: number
@@ -11512,7 +11515,8 @@ export namespace Prisma {
     id?: true
     pid?: true
     title?: true
-    description?: true
+    short_description?: true
+    full_description?: true
     pack_prompts?: true
     credits?: true
     amount?: true
@@ -11525,7 +11529,8 @@ export namespace Prisma {
     id?: true
     pid?: true
     title?: true
-    description?: true
+    short_description?: true
+    full_description?: true
     pack_prompts?: true
     credits?: true
     amount?: true
@@ -11538,7 +11543,8 @@ export namespace Prisma {
     id?: true
     pid?: true
     title?: true
-    description?: true
+    short_description?: true
+    full_description?: true
     pack_prompts?: true
     credits?: true
     amount?: true
@@ -11638,7 +11644,8 @@ export namespace Prisma {
     id: number
     pid: string
     title: string
-    description: string
+    short_description: string
+    full_description: string
     pack_prompts: string
     credits: number
     amount: number
@@ -11670,7 +11677,8 @@ export namespace Prisma {
     id?: boolean
     pid?: boolean
     title?: boolean
-    description?: boolean
+    short_description?: boolean
+    full_description?: boolean
     pack_prompts?: boolean
     credits?: boolean
     amount?: boolean
@@ -11685,7 +11693,8 @@ export namespace Prisma {
     id?: boolean
     pid?: boolean
     title?: boolean
-    description?: boolean
+    short_description?: boolean
+    full_description?: boolean
     pack_prompts?: boolean
     credits?: boolean
     amount?: boolean
@@ -11698,7 +11707,8 @@ export namespace Prisma {
     id?: boolean
     pid?: boolean
     title?: boolean
-    description?: boolean
+    short_description?: boolean
+    full_description?: boolean
     pack_prompts?: boolean
     credits?: boolean
     amount?: boolean
@@ -11711,7 +11721,8 @@ export namespace Prisma {
     id?: boolean
     pid?: boolean
     title?: boolean
-    description?: boolean
+    short_description?: boolean
+    full_description?: boolean
     pack_prompts?: boolean
     credits?: boolean
     amount?: boolean
@@ -11720,7 +11731,7 @@ export namespace Prisma {
     updated_at?: boolean
   }
 
-  export type PacksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pid" | "title" | "description" | "pack_prompts" | "credits" | "amount" | "image_url" | "created_at" | "updated_at", ExtArgs["result"]["packs"]>
+  export type PacksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pid" | "title" | "short_description" | "full_description" | "pack_prompts" | "credits" | "amount" | "image_url" | "created_at" | "updated_at", ExtArgs["result"]["packs"]>
   export type PacksInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     Images?: boolean | Packs$ImagesArgs<ExtArgs>
     _count?: boolean | PacksCountOutputTypeDefaultArgs<ExtArgs>
@@ -11737,7 +11748,8 @@ export namespace Prisma {
       id: number
       pid: string
       title: string
-      description: string
+      short_description: string
+      full_description: string
       pack_prompts: string
       credits: number
       amount: number
@@ -12171,7 +12183,8 @@ export namespace Prisma {
     readonly id: FieldRef<"Packs", 'Int'>
     readonly pid: FieldRef<"Packs", 'String'>
     readonly title: FieldRef<"Packs", 'String'>
-    readonly description: FieldRef<"Packs", 'String'>
+    readonly short_description: FieldRef<"Packs", 'String'>
+    readonly full_description: FieldRef<"Packs", 'String'>
     readonly pack_prompts: FieldRef<"Packs", 'String'>
     readonly credits: FieldRef<"Packs", 'Int'>
     readonly amount: FieldRef<"Packs", 'Int'>
@@ -20230,7 +20243,8 @@ export namespace Prisma {
     id: 'id',
     pid: 'pid',
     title: 'title',
-    description: 'description',
+    short_description: 'short_description',
+    full_description: 'full_description',
     pack_prompts: 'pack_prompts',
     credits: 'credits',
     amount: 'amount',
@@ -21395,7 +21409,8 @@ export namespace Prisma {
     id?: IntFilter<"Packs"> | number
     pid?: UuidFilter<"Packs"> | string
     title?: StringFilter<"Packs"> | string
-    description?: StringFilter<"Packs"> | string
+    short_description?: StringFilter<"Packs"> | string
+    full_description?: StringFilter<"Packs"> | string
     pack_prompts?: StringFilter<"Packs"> | string
     credits?: IntFilter<"Packs"> | number
     amount?: IntFilter<"Packs"> | number
@@ -21409,7 +21424,8 @@ export namespace Prisma {
     id?: SortOrder
     pid?: SortOrder
     title?: SortOrder
-    description?: SortOrder
+    short_description?: SortOrder
+    full_description?: SortOrder
     pack_prompts?: SortOrder
     credits?: SortOrder
     amount?: SortOrder
@@ -21426,7 +21442,8 @@ export namespace Prisma {
     OR?: PacksWhereInput[]
     NOT?: PacksWhereInput | PacksWhereInput[]
     title?: StringFilter<"Packs"> | string
-    description?: StringFilter<"Packs"> | string
+    short_description?: StringFilter<"Packs"> | string
+    full_description?: StringFilter<"Packs"> | string
     pack_prompts?: StringFilter<"Packs"> | string
     credits?: IntFilter<"Packs"> | number
     amount?: IntFilter<"Packs"> | number
@@ -21440,7 +21457,8 @@ export namespace Prisma {
     id?: SortOrder
     pid?: SortOrder
     title?: SortOrder
-    description?: SortOrder
+    short_description?: SortOrder
+    full_description?: SortOrder
     pack_prompts?: SortOrder
     credits?: SortOrder
     amount?: SortOrder
@@ -21461,7 +21479,8 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"Packs"> | number
     pid?: UuidWithAggregatesFilter<"Packs"> | string
     title?: StringWithAggregatesFilter<"Packs"> | string
-    description?: StringWithAggregatesFilter<"Packs"> | string
+    short_description?: StringWithAggregatesFilter<"Packs"> | string
+    full_description?: StringWithAggregatesFilter<"Packs"> | string
     pack_prompts?: StringWithAggregatesFilter<"Packs"> | string
     credits?: IntWithAggregatesFilter<"Packs"> | number
     amount?: IntWithAggregatesFilter<"Packs"> | number
@@ -22733,7 +22752,8 @@ export namespace Prisma {
   export type PacksCreateInput = {
     pid: string
     title: string
-    description: string
+    short_description: string
+    full_description: string
     pack_prompts: string
     credits: number
     amount: number
@@ -22747,7 +22767,8 @@ export namespace Prisma {
     id?: number
     pid: string
     title: string
-    description: string
+    short_description: string
+    full_description: string
     pack_prompts: string
     credits: number
     amount: number
@@ -22760,7 +22781,8 @@ export namespace Prisma {
   export type PacksUpdateInput = {
     pid?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    short_description?: StringFieldUpdateOperationsInput | string
+    full_description?: StringFieldUpdateOperationsInput | string
     pack_prompts?: StringFieldUpdateOperationsInput | string
     credits?: IntFieldUpdateOperationsInput | number
     amount?: IntFieldUpdateOperationsInput | number
@@ -22774,7 +22796,8 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     pid?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    short_description?: StringFieldUpdateOperationsInput | string
+    full_description?: StringFieldUpdateOperationsInput | string
     pack_prompts?: StringFieldUpdateOperationsInput | string
     credits?: IntFieldUpdateOperationsInput | number
     amount?: IntFieldUpdateOperationsInput | number
@@ -22788,7 +22811,8 @@ export namespace Prisma {
     id?: number
     pid: string
     title: string
-    description: string
+    short_description: string
+    full_description: string
     pack_prompts: string
     credits: number
     amount: number
@@ -22800,7 +22824,8 @@ export namespace Prisma {
   export type PacksUpdateManyMutationInput = {
     pid?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    short_description?: StringFieldUpdateOperationsInput | string
+    full_description?: StringFieldUpdateOperationsInput | string
     pack_prompts?: StringFieldUpdateOperationsInput | string
     credits?: IntFieldUpdateOperationsInput | number
     amount?: IntFieldUpdateOperationsInput | number
@@ -22813,7 +22838,8 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     pid?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    short_description?: StringFieldUpdateOperationsInput | string
+    full_description?: StringFieldUpdateOperationsInput | string
     pack_prompts?: StringFieldUpdateOperationsInput | string
     credits?: IntFieldUpdateOperationsInput | number
     amount?: IntFieldUpdateOperationsInput | number
@@ -24207,7 +24233,8 @@ export namespace Prisma {
     id?: SortOrder
     pid?: SortOrder
     title?: SortOrder
-    description?: SortOrder
+    short_description?: SortOrder
+    full_description?: SortOrder
     pack_prompts?: SortOrder
     credits?: SortOrder
     amount?: SortOrder
@@ -24226,7 +24253,8 @@ export namespace Prisma {
     id?: SortOrder
     pid?: SortOrder
     title?: SortOrder
-    description?: SortOrder
+    short_description?: SortOrder
+    full_description?: SortOrder
     pack_prompts?: SortOrder
     credits?: SortOrder
     amount?: SortOrder
@@ -24239,7 +24267,8 @@ export namespace Prisma {
     id?: SortOrder
     pid?: SortOrder
     title?: SortOrder
-    description?: SortOrder
+    short_description?: SortOrder
+    full_description?: SortOrder
     pack_prompts?: SortOrder
     credits?: SortOrder
     amount?: SortOrder
@@ -27017,7 +27046,8 @@ export namespace Prisma {
   export type PacksCreateWithoutImagesInput = {
     pid: string
     title: string
-    description: string
+    short_description: string
+    full_description: string
     pack_prompts: string
     credits: number
     amount: number
@@ -27030,7 +27060,8 @@ export namespace Prisma {
     id?: number
     pid: string
     title: string
-    description: string
+    short_description: string
+    full_description: string
     pack_prompts: string
     credits: number
     amount: number
@@ -27186,7 +27217,8 @@ export namespace Prisma {
   export type PacksUpdateWithoutImagesInput = {
     pid?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    short_description?: StringFieldUpdateOperationsInput | string
+    full_description?: StringFieldUpdateOperationsInput | string
     pack_prompts?: StringFieldUpdateOperationsInput | string
     credits?: IntFieldUpdateOperationsInput | number
     amount?: IntFieldUpdateOperationsInput | number
@@ -27199,7 +27231,8 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     pid?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    short_description?: StringFieldUpdateOperationsInput | string
+    full_description?: StringFieldUpdateOperationsInput | string
     pack_prompts?: StringFieldUpdateOperationsInput | string
     credits?: IntFieldUpdateOperationsInput | number
     amount?: IntFieldUpdateOperationsInput | number

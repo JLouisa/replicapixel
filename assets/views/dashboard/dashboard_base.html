@@ -1,17 +1,5 @@
-{# {% extends "base.html" %} {% block title %}Dashboard{% endblock title %} {% block navbar %}
-<div class="bg-base h-14">{% include "partials/navbar/navbar.html" %}</div>
-{% endblock navbar %} {% block content %}
-<div class="w-full h-full flex overflow-hidden">
-  <!-- Sidebar -->
-  {% include "dashboard/dashboard_sidebar/dashboard_sidebar.html" %}
-
-  <!-- Dashboard Content -->
-  <div id="dashboard_content" class="flex-1 bg-base-300 overflow-y-auto p-4">
-    {% block dashboard_content %} {% endblock dashboard_content %}
-  </div>
-</div>
-{% endblock content %} #} {% extends "base.html" %}
-
+{% extends "base.html" %} {% block title %}Dashboard{% endblock title %} {% block home %} {% include
+"dashboard/dashboard_base_extend.html" %} {% endblock home %} {% block js %} {% endblock js %} {#
 <!-- Html Head -->
 {% block head %} {% endblock head %}
 
@@ -38,4 +26,4 @@
 </div>
 {% endblock content %}
 <!-- Javascript -->
-{% block js %} {% endblock js %}
+{% block js %} {% endblock js %} #}

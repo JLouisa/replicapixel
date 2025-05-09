@@ -1,9 +1,12 @@
 use super::domain_services::image_generation::ImageGenerationError;
 use crate::{
     models::join::user_credits_models::JoinError,
-    service::stripe::{
-        stripe::StripeClientError, stripe_builder::StripeCheckoutBuilderErr,
-        stripe_service::StripeServiceError,
+    service::{
+        fal_ai::fal_client::FalAiClientError,
+        stripe::{
+            stripe::StripeClientError, stripe_builder::StripeCheckoutBuilderErr,
+            stripe_service::StripeServiceError,
+        },
     },
 };
 use axum::http::StatusCode;
@@ -140,7 +143,10 @@ impl From<ImageGenerationError> for loco_rs::Error {
                 loco_rs::Error::NotFound
             }
             ImageGenerationError::UserCreditsNotFound => loco_rs::Error::NotFound,
-            ImageGenerationError::FalAiClientError(e) => e,
+            ImageGenerationError::FalAiClientErr(e) => loco_rs::Error::CustomError(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                ErrorDetail::new("Error", &e.to_string()),
+            ),
             ImageGenerationError::DatabaseError(db_err) => loco_rs::Error::DB(db_err),
             ImageGenerationError::ConfigError(msg) => loco_rs::Error::CustomError(
                 StatusCode::PAYMENT_REQUIRED,
@@ -148,6 +154,38 @@ impl From<ImageGenerationError> for loco_rs::Error {
             ),
             ImageGenerationError::CreditUpdateError(_) => loco_rs::Error::InternalServerError,
             ImageGenerationError::ModelError(model_err) => model_err.into(),
+        }
+    }
+}
+
+// Implement conversion from our Domain Error to Loco's Error
+impl From<FalAiClientError> for loco_rs::Error {
+    fn from(err: FalAiClientError) -> Self {
+        match err {
+            FalAiClientError::JsonParse(err_str) => loco_rs::Error::CustomError(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                ErrorDetail::new("Error", &err_str),
+            ),
+            FalAiClientError::LocoError(err) => loco_rs::Error::CustomError(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                ErrorDetail::new("Error", &err.to_string()),
+            ),
+            FalAiClientError::ReqwestErr(e) => loco_rs::Error::CustomError(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                ErrorDetail::new("Error", &e.to_string()),
+            ),
+            FalAiClientError::RequestFailed(err_str) => loco_rs::Error::CustomError(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                ErrorDetail::new("Request Failed", &err_str),
+            ),
+            FalAiClientError::Other(err_str) => loco_rs::Error::CustomError(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                ErrorDetail::new("Error", &err_str),
+            ),
+            FalAiClientError::SerdeErr(err) => loco_rs::Error::CustomError(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                ErrorDetail::new("Serde Error", &err.to_string()),
+            ),
         }
     }
 }

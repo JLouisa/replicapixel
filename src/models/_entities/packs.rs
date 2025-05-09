@@ -10,7 +10,6 @@ pub struct Model {
     pub id: i32,
     #[sea_orm(unique)]
     pub pid: Uuid,
-    pub description: String,
     #[sea_orm(column_type = "Text")]
     pub pack_prompts: String,
     pub credits: i32,
@@ -20,6 +19,9 @@ pub struct Model {
     pub created_at: DateTimeWithTimeZone,
     pub updated_at: DateTimeWithTimeZone,
     pub title: String,
+    #[sea_orm(column_type = "Text")]
+    pub full_description: String,
+    pub short_description: String,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

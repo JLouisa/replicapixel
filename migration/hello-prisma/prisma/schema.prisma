@@ -14,8 +14,8 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  // url      = env("DATABASE_URL")
-  url      = env("DATABASE_URL_LOCAL")
+  url      = env("DATABASE_URL")
+  // url      = env("DATABASE_URL_LOCAL")
 }
 
 model Users {
@@ -194,7 +194,8 @@ model Packs {
   id                              Int              @id @default(autoincrement())
   pid                             String           @unique @db.Uuid
   title                           String           @db.VarChar(255)
-  description                     String           @db.VarChar(255)
+  short_description               String           @db.VarChar(255)
+  full_description                String           @db.Text
   pack_prompts                    String           
   credits                         Int         
   amount                          Int         

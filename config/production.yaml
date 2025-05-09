@@ -170,6 +170,7 @@ settings:
   #     access_time: {{ get_env(name="CLOUD_S3_ACCESS_TIME") }} 
   fal_ai:
     fal_key: {{ get_env(name="FAL_AI_KEY") }} 
+    fal_queue_url: {{ get_env(name="FAL_QUEUE_URL") }}
     generate_image_url: {{ get_env(name="FAL_GENERATE_IMAGE_URL") }} 
     training_model_url: {{ get_env(name="FAL_TRAINING_MODEL_URL") }} 
     webhook_url: {{ get_env(name="FAL_WEBHOOK_URL") }}

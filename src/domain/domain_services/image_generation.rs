@@ -1,7 +1,7 @@
 use crate::{
     controllers::images::ImageGenRequestParams,
     models::{images::ImageNewList, TrainingModelModel, UserCreditModel, UserModel},
-    service::fal_ai::fal_client::FalAiClient,
+    service::fal_ai::fal_client::{FalAiClient, FalAiClientError},
 };
 use loco_rs::prelude::*;
 use sea_orm::{DbErr, TransactionTrait};
@@ -28,7 +28,7 @@ pub enum ImageGenerationError {
     #[error("Failed to update credits: {0}")]
     CreditUpdateError(String),
     #[error("Fal AI client error: {0}")]
-    FalAiClientError(#[from] loco_rs::Error),
+    FalAiClientErr(#[from] FalAiClientError),
 }
 
 pub struct ImageGenerationService;

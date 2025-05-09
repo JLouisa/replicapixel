@@ -9,7 +9,7 @@ use crate::{
     },
     models::{
         _entities::users,
-        join::user_credits_models::load_user_and_credits,
+        join::user_credits_models::{load_user_and_credits, load_user_credit_training},
         users::{LoginParams, PasswordChangeParams, RegisterError, RegisterParams, UserPid},
         PlanModel, TransactionModel, UserModel,
     },
@@ -32,7 +32,6 @@ use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::sync::OnceLock;
 
-use crate::controllers::dashboard::routes::Dashboard as DashboardRoutes;
 use axum_extra::extract::cookie::{Cookie as AxumCookie, SameSite};
 
 pub static EMAIL_DOMAIN_RE: OnceLock<Regex> = OnceLock::new();
@@ -448,8 +447,9 @@ async fn reset(State(ctx): State<AppContext>, Json(params): Json<ResetParams>) -
 
 #[debug_handler]
 async fn login(
-    ViewEngine(v): ViewEngine<TeraView>,
     State(ctx): State<AppContext>,
+    ViewEngine(v): ViewEngine<TeraView>,
+    Extension(website): Extension<Website>,
     Json(params): Json<LoginParams>,
 ) -> Result<Response> {
     let user = match users::Model::find_by_email(&ctx.db, &params.email).await {
@@ -492,11 +492,21 @@ async fn login(
     let cookie_value = HeaderValue::from_str(&cookie.to_string())
         .map_err(|_| loco_rs::Error::Unauthorized("failed to build cookie header".to_string()))?;
 
-    let mut headers = HeaderMap::new();
-    headers.insert("Set-Cookie", cookie_value);
-    headers.insert("HX-Redirect", DashboardRoutes::BASE.parse().unwrap());
+    let user_pid = UserPid::new(&user.pid.to_string());
+    let (user, user_credits, training_models) =
+        load_user_credit_training(&ctx.db, &user_pid).await?;
 
-    Ok((StatusCode::OK, headers).into_response())
+    let mut view_response = format::render().view(
+        &v,
+        "dashboard/dashboard_base_extend_partial.html",
+        data!({"website": website, "user": user, "credits": user_credits, "models": training_models}),
+    )?;
+
+    view_response
+        .headers_mut()
+        .insert("Set-Cookie", cookie_value);
+
+    Ok(view_response)
 }
 
 #[debug_handler]
@@ -519,8 +529,8 @@ async fn logout(State(_ctx): State<AppContext>) -> Result<Response> {
 #[debug_handler]
 async fn logout_partial(
     State(_ctx): State<AppContext>,
-    ViewEngine(v): ViewEngine<TeraView>,
     Extension(website): Extension<Website>,
+    ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<Response> {
     let cookie = AxumCookie::build(("auth", ""))
         .path("/")

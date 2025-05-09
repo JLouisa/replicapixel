@@ -288,9 +288,13 @@ async function main() {
       create: {
         id: 0,
         pid: uuid,
-        title: "Sexy Valentine's Day",
-        description: "Get your partner a special Valentine's Day with this pack of sexy images.",
-        pack_prompts: "Get your partner a special Valentine's Day with this pack of sexy images.",
+        title: "Sexy Valentine Photos",
+        short_description:
+          "Step into a flirty, love-drenched fantasy this Valentine’s with an AI photo pack that lets you become your most enchanting self—no studio needed.",
+        full_description:
+          "This Valentine’s Day, skip the awkward photo sessions and step into a world of romantic elegance—digitally. Build your AI twin and create captivating, love-themed portraits filled with charm, style, and just the right hint of seduction. All it takes is your phone or laptop to unlock dozens of dreamy photo packs in a range of poses, moods, and settings.",
+        pack_prompts:
+          "Valentine's Day fantasy portrait of a stunning woman in elegant, heart-inspired attire, softly glowing in warm pink and red tones. She poses gracefully with natural limb proportions both arms and legs fully visible and correctly formed—while surrounded by romantic elements like rose petals, silky fabrics, and delicate lighting. The setting is playful yet classy, evoking charm, allure, and a modern fairytale vibe.",
         credits: 100,
         amount: 20,
         image_url: "https://picsum.photos/id/31/400/500",
@@ -304,11 +308,13 @@ async function main() {
       update: {},
       create: {
         pid: uuid,
-        title: "Valentine's Day",
-        description:
-          "Get your partner a special Valentine's Day with this pack of romantic images.",
+        title: "Sexy Halloween AI Photos",
+        short_description:
+          "Unleash your sultry side this Halloween by becoming the star of your own spellbinding AI photo shoot—no broomstick or booking fee required.",
+        full_description:
+          "This Halloween, let your inner enchantress run wild with AI-generated looks that are equal parts spooky and stunning. From flirtatious witches to dark-hearted vamps, conjure endless photo variations that look just like you crafted from your personal AI model. No need for costumes or a costly photographer just your phone, your vibe, and a little digital magic.",
         pack_prompts:
-          "Get your partner a special Valentine's Day with this pack of romantic images.",
+          "A mysterious and seductive Halloween portrait of a confident woman in a stylish, spooky costume such as a modern witch, vampire, or dark fairy with clearly visible and correctly proportioned arms and legs. The scene includes playful, elegant Halloween elements like soft candlelight, lace veils, smoky shadows, or glowing pumpkins, with a polished, cinematic look. She poses gracefully with natural body structure, ensuring hands, feet, and facial features are fully visible and beautifully rendered.",
         credits: 75,
         amount: 20,
         image_url: "https://picsum.photos/id/65/400/500",
@@ -322,46 +328,36 @@ async function main() {
       update: {},
       create: {
         pid: uuid,
-        title: "Tinder",
-        description: "Get your partner a special Valentine's Day with this pack of Tinder images.",
-        pack_prompts: "Get your partner a special Valentine's Day with this pack of Tinder images.",
-        credits: 65,
-        amount: 20,
-        image_url: "https://picsum.photos/id/103/400/500",
-      },
-    });
-  }
-  {
-    const uuid = uuidv4();
-    await prisma.packs.upsert({
-      where: { pid: uuid },
-      update: {},
-      create: {
-        pid: uuid,
-        title: "Tinder",
-        description: "Get your partner a special Valentine's Day with this pack of Tinder images.",
-        pack_prompts: "Get your partner a special Valentine's Day with this pack of Tinder images.",
-        credits: 65,
-        amount: 20,
-        image_url: "https://picsum.photos/id/103/400/500",
-      },
-    });
-  }
-  {
-    const uuid = uuidv4();
-    await prisma.packs.upsert({
-      where: { pid: uuid },
-      update: {},
-      create: {
-        pid: uuid,
-        title: "Professional Head shots",
-        description:
-          "Get your partner a special Valentine's Day with this pack of professional head shots.",
+        title: "Sexy Easter AI Photos",
+        short_description:
+          "Celebrate Easter with a cheeky twist step into pastel dreamscapes as your AI twin brings bunny-eared charm and springtime seduction to life.",
+        full_description:
+          "This Easter, trade candy baskets for curves and charm with an AI photo shoot that blends playful innocence with sultry flair. Create your own digital twin and explore enchanting scenes filled with soft pastels, bunny-inspired accessories, and vibrant spring vibes. No studio, no stress just you, your phone, and dozens of stylish, flirty photo packs at your fingertips.",
         pack_prompts:
-          "Get your partner a special Valentine's Day with this pack of professional head shots.",
-        credits: 100,
+          "A playful and seductive Easter-themed portrait of a confident woman in pastel-colored lingerie or stylish bunny-inspired outfit, complete with fluffy bunny ears and soft accessories. She poses gracefully in a vibrant spring setting with decorated Easter eggs, blooming flowers, and gentle lighting arms, hands, legs, and feet clearly visible and naturally proportioned. The composition is festive and flirty, balancing elegance with cheeky charm, and rendered in a soft, cinematic style.",
+        credits: 65,
         amount: 20,
-        image_url: "https://picsum.photos/id/160/400/500",
+        image_url: "https://picsum.photos/id/103/400/500",
+      },
+    });
+  }
+  {
+    const uuid = uuidv4();
+    await prisma.packs.upsert({
+      where: { pid: uuid },
+      update: {},
+      create: {
+        pid: uuid,
+        title: "Cyberpunk Boudoir AI Photos",
+        short_description:
+          "Step into a neon-lit fantasy where edgy fashion meets sultry elegance—your AI twin rocks cyberpunk couture and bold boudoir looks with effortless allure.",
+        full_description:
+          "Slip into a seductive digital wardrobe where cyberpunk edge meets vaporwave dreams, no goggles or green screens required. With your personal AI model, you can generate striking, futuristic boudoir photos that blend glowing neon aesthetics with sensual fashion. All from your phone or laptop, no studio, no stylist, just pure pixel-powered confidence.",
+        pack_prompts:
+          "A futuristic boudoir portrait of a confident woman in high-tech cyberpunk lingerie or neon-trimmed bodysuits, set against a glowing cityscape or holographic interior. She poses with grace and poise, with all limbs, arms, hands, legs, and feet clearly visible and anatomically correct. The scene features vaporwave elements like grid lines, soft purples and blues, chrome textures, and ambient neon lighting, blending sensuality with sleek, digital sophistication.",
+        credits: 65,
+        amount: 20,
+        image_url: "https://picsum.photos/id/103/400/500",
       },
     });
   }

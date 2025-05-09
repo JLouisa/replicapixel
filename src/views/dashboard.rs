@@ -30,7 +30,7 @@ pub fn billing_dashboard(
             {
                 "website": website, "user": user,
                 "credits": credits, "cc_cookie": cc_cookie,
-                "orders": orders
+                "orders": orders,
             }
         ),
     )
@@ -61,7 +61,7 @@ pub fn notification_dashboard(
         data!(
             {
                 "website": website, "user": user,
-                "credits": credits, "cc_cookie": cc_cookie
+                "credits": credits, "cc_cookie": cc_cookie,
         }),
     )
 }
@@ -91,7 +91,7 @@ pub fn features_dashboard(
         data!(
             {
                 "website": website, "user": user, "credits": credits,
-                "features_view": features_view, "cc_cookie": cc_cookie
+                "features_view": features_view, "cc_cookie": cc_cookie,
             }
         ),
     )
@@ -130,7 +130,7 @@ pub fn settings_dashboard(
             {
                 "website": website, "user": user, "credits": credits,
                 "cc_cookie": cc_cookie, "user_settings": user_settings,
-                "is_oauth": is_oauth
+                "is_oauth": is_oauth,
             }
         ),
     )
@@ -168,7 +168,7 @@ pub fn training_dashboard(
         data!(
             {
                 "website": website, "user": user, "credits": credits,
-                "models": models, "cc_cookie": cc_cookie
+                "models": models, "cc_cookie": cc_cookie,
             }
         ),
     )
@@ -200,7 +200,7 @@ pub fn create_training_dashboard(
         data!(
             {
                 "website": website, "user": user, "credits": credits,
-                "models": models, "cc_cookie": cc_cookie
+                "models": models, "cc_cookie": cc_cookie,
             }
         ),
     )
@@ -252,7 +252,11 @@ pub fn packs_partial_dashboard(
     format::render().view(
         &v,
         "dashboard/content/packs/packs_partial.html",
-        data!({ "website": website, "packs": packs,  "partial": true }),
+        data!(
+            {
+                "website": website, "packs": packs,
+            }
+        ),
     )
 }
 
@@ -275,7 +279,7 @@ pub fn photo_dashboard(
                   "website": website, "user": user, "images": images,
                   "training_models": training_models, "credits": credits,
                   "is_deleted": is_deleted, "is_favorite": is_favorite,
-                  "is_initial_load": true, "cc_cookie": cc_cookie
+                  "is_initial_load": true, "cc_cookie": cc_cookie,
               }
         ),
     )
@@ -319,7 +323,7 @@ impl From<PackModel> for PackView {
             id: p.id,
             pid: p.pid,
             title: p.title,
-            description: p.description,
+            description: p.short_description,
             credits: p.credits,
             amount: p.amount,
             image_url: p.image_url,

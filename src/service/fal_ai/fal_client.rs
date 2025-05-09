@@ -8,15 +8,35 @@ use crate::{
     },
 };
 use futures::future::join_all;
-use loco_rs::Error as FalAiClientError;
 use reqwest::Client as ReqwestClient;
-use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+use serde::{de::DeserializeOwned, Deserialize, Serialize};
+use std::{collections::HashMap, fmt::Debug};
 use strum_macros::Display;
+
+use reqwest::Error as ReqwestError;
+use serde_json::Error as SerdeError;
+use thiserror::Error;
+
+#[derive(Debug, Error)]
+pub enum FalAiClientError {
+    #[error("Request failed: {0}")]
+    RequestFailed(String),
+    #[error("Failed to parse JSON: {0}")]
+    JsonParse(String),
+    #[error("Unexpected error: {0}")]
+    Other(String),
+    #[error("Unexpected error: {0}")]
+    SerdeErr(#[from] SerdeError),
+    #[error("Unexpected error: {0}")]
+    LocoError(#[from] loco_rs::Error),
+    #[error("Unexpected error: {0}")]
+    ReqwestErr(#[from] ReqwestError),
+}
 
 #[derive(Debug, Clone, Deserialize, Serialize, Default)]
 pub struct FalAiSettings {
     fal_key: String,
+    fal_queue_url: String,
     generate_image_url: String,
     training_model_url: String,
     webhook_url: String,
@@ -37,24 +57,209 @@ pub struct FalAiClient {
     pub training_url: String,
     pub webhook_image: String,
     pub webhook_training: String,
+    pub flux_lora_fast_training: String,
+    pub flux_lora_fast_training_webhook: String,
+    pub flux_lora: String,
+    pub flux_lora_webhook: String,
+    pub juggernaut_flux_lora: String,
+    pub juggernaut_flux_lora_webhook: String,
+}
+
+#[derive(Debug, Clone, strum::EnumString, strum::Display)]
+pub enum FalAiModel {
+    #[strum(to_string = "fal-ai/flux-lora")]
+    FluxLora,
+    #[strum(to_string = "fal-ai/flux-lora-fast-training")]
+    FluxLoraFastTraining,
+    #[strum(to_string = "rundiffusion-fal/juggernaut-flux-lora")]
+    JuggernautFluxLora,
 }
 
 impl FalAiClient {
     pub fn new(settings: &FalAiSettings, website: &WebsiteBasicInfo) -> Self {
-        let site = website.site.to_owned();
-        let image_webhook = format!("{}{}", Webhooks::BASE, Webhooks::API_FAL_AI_IMAGE);
-        let training_model_webhook = format!("{}{}", Webhooks::BASE, Webhooks::API_FAL_AI_TRAINING);
+        let _site = website.site.to_owned();
+        let site = String::from("https://replicapixel.com");
+        let fal_site = settings.fal_queue_url.to_owned();
+        let webhook_image_webhook = format!(
+            "{}{}{}{}",
+            &settings.webhook_url,
+            &site,
+            Webhooks::BASE,
+            Webhooks::API_FAL_AI_IMAGE
+        );
+        let webhook_training_webhook = format!(
+            "{}{}{}{}",
+            &settings.webhook_url,
+            &site,
+            Webhooks::BASE,
+            Webhooks::API_FAL_AI_TRAINING
+        );
         Self {
             client: ReqwestClient::new(),
             fal_key: settings.fal_key.to_string(),
             image_url: settings.generate_image_url.to_string(),
             training_url: settings.training_model_url.to_string(),
-            webhook_image: format!("{}{}{}", &settings.webhook_url, &site, image_webhook),
-            webhook_training: format!(
-                "{}{}{}",
-                &settings.webhook_url, site, training_model_webhook
+            webhook_image: webhook_image_webhook.clone(),
+            webhook_training: webhook_training_webhook.clone(),
+            flux_lora_fast_training: format!(
+                "{}/{}",
+                &fal_site,
+                FalAiModel::FluxLoraFastTraining.to_string(),
+            ),
+            flux_lora_fast_training_webhook: format!(
+                "{}/{}{}",
+                &fal_site,
+                FalAiModel::FluxLoraFastTraining.to_string(),
+                &webhook_training_webhook
+            ),
+            flux_lora: format!("{}/{}", &fal_site, FalAiModel::FluxLora.to_string(),),
+            flux_lora_webhook: format!(
+                "{}/{}{}",
+                &fal_site,
+                FalAiModel::FluxLora.to_string(),
+                &webhook_image_webhook
+            ),
+            juggernaut_flux_lora: format!(
+                "{}/{}",
+                &fal_site,
+                FalAiModel::JuggernautFluxLora.to_string(),
+            ),
+            juggernaut_flux_lora_webhook: format!(
+                "{}/{}{}",
+                &fal_site,
+                FalAiModel::JuggernautFluxLora.to_string(),
+                &webhook_image_webhook
             ),
         }
+    }
+
+    pub async fn send_training_queue_webhook(
+        &self,
+        prompt: &FluxLoraTrainingSchema,
+    ) -> Result<QueueResponse, FalAiClientError> {
+        let response = self
+            .client
+            .post(&self.flux_lora_fast_training_webhook)
+            .header("Authorization", format!("Key {}", &self.fal_key))
+            .header("Content-Type", "application/json")
+            .json(&prompt)
+            .send()
+            .await
+            .map_err(|e| {
+                tracing::error!("Failed to process training schema: {:?}", e);
+                loco_rs::Error::Message("Error processing training model schema: 100".to_string())
+            })?
+            .json::<QueueResponse>()
+            .await?;
+
+        Ok(response)
+    }
+
+    /// Sends an image generation request via a webhook to the Flux Lora API.
+    ///
+    /// This function posts a serialized request body (`V`) to the configured Flux Lora webhook
+    /// endpoint and attempts to deserialize the response into type `R`.
+    ///
+    /// # Type Parameters
+    /// - `V`: The request type. Must implement `FluxExt` and be serializable with `serde::Serialize`.
+    /// - `R`: The expected response type. Must implement `serde::de::DeserializeOwned`.
+    ///
+    /// # Arguments
+    /// - `body`: A reference to the request payload.
+    ///
+    /// # Returns
+    /// - `Ok(R)`: If the request succeeds and the response is deserialized.
+    /// - `Err(FalAiClientError)`: If any part of the request or response handling fails.
+    pub async fn send_image_queue_webhook_all<V, R>(&self, body: &V) -> Result<R, FalAiClientError>
+    where
+        V: FluxExt + Serialize + Debug,
+        R: DeserializeOwned,
+    {
+        let response = self
+            .client
+            .post(&self.juggernaut_flux_lora_webhook)
+            .header("Authorization", format!("Key {}", &self.fal_key))
+            .header("Content-Type", "application/json")
+            .json(body)
+            .send()
+            .await
+            .map_err(|e| {
+                tracing::error!("Failed to process image schema: {:?}", e);
+                loco_rs::Error::Message(format!("Error processing image schema: {:?}", e))
+            })?
+            .json::<R>()
+            .await?;
+
+        Ok(response)
+    }
+
+    pub async fn send_image_queue_webhook(
+        &self,
+        body: &FluxLoraImageGenerate,
+    ) -> Result<QueueResponse, FalAiClientError> {
+        let response = self
+            .client
+            .post(&self.flux_lora_webhook)
+            .header("Authorization", format!("Key {}", &self.fal_key))
+            .header("Content-Type", "application/json")
+            .json(&body)
+            .send()
+            .await
+            .map_err(|e| {
+                tracing::error!("Failed to process image schema: {:?}", e);
+                loco_rs::Error::Message(format!("Error processing image schema: {:?}", e))
+            })?
+            .json::<QueueResponse>()
+            .await?;
+
+        Ok(response)
+    }
+
+    pub async fn send_image_queue_many(
+        &self,
+        list: ImageNewList,
+    ) -> Result<ImageNewList, FalAiClientError> {
+        for item in &mut list.clone().into_inner() {
+            let body = item.clone().into();
+            let response = self.send_image_queue_webhook(&body).await?;
+            item.fal_ai_request_id = Some(response.request_id);
+        }
+        Ok(list)
+    }
+
+    pub async fn send_image_queue_many_async(
+        &self,
+        list: ImageNewList,
+    ) -> Result<ImageNewList, FalAiClientError> {
+        let futures = list.into_inner().into_iter().map(|mut item| {
+            let body = item.clone().into();
+            let client = self.clone();
+            async move {
+                match client
+                    .send_image_queue_webhook_all::<FluxLoraImageGenerate, QueueResponse>(&body)
+                    .await
+                {
+                    Ok(response) => {
+                        item.fal_ai_request_id = Some(response.request_id);
+                        Ok(item)
+                    }
+                    Err(e) => Err(e),
+                }
+            }
+        });
+
+        let results: Vec<Result<ImageNew, FalAiClientError>> = join_all(futures).await;
+
+        // Collect only successful results
+        let mut successful: Vec<ImageNew> = Vec::new();
+        for res in results {
+            match res {
+                Ok(item) => successful.push(item),
+                Err(e) => tracing::error!("Failed to send image queue: {:?}", e),
+            }
+        }
+        dbg!(&successful);
+        Ok(ImageNewList::new(successful))
     }
 
     pub async fn send_training_queue_test(
@@ -91,157 +296,41 @@ impl FalAiClient {
         Ok(parsed_response)
     }
 
-    pub async fn send_image_queue_test(
-        &self,
-        prompt: &FluxLoraImageGenerate,
-    ) -> Result<FluxQueueResponse, FalAiClientError> {
-        // dbg!("FluxLoraImageGenerate", &prompt);
-        let response = self
-            .client
-            .post(&self.image_url)
-            .header("Authorization", format!("Key {}", &self.fal_key))
-            .header("Content-Type", "application/json")
-            .json(&prompt)
-            .send()
-            .await
-            .map_err(|e| {
-                tracing::error!("Failed to process training schema: {:?}", e);
-                loco_rs::Error::Message("Error processing training model schema: 100".to_string())
-            })?;
+    // pub async fn send_image_queue_test(
+    //     &self,
+    //     prompt: &FluxLoraImageGenerate,
+    // ) -> Result<FluxQueueResponse, FalAiClientError> {
+    //     // dbg!("FluxLoraImageGenerate", &prompt);
+    //     let response = self
+    //         .client
+    //         .post(&self.image_url)
+    //         .header("Authorization", format!("Key {}", &self.fal_key))
+    //         .header("Content-Type", "application/json")
+    //         .json(&prompt)
+    //         .send()
+    //         .await
+    //         .map_err(|e| {
+    //             tracing::error!("Failed to process training schema: {:?}", e);
+    //             loco_rs::Error::Message("Error processing training model schema: 100".to_string())
+    //         })?;
 
-        dbg!("FluxQueueResponse", &response);
-        let text = response.text().await.map_err(|e| {
-            tracing::error!("Failed to read response body: {:?}", e);
-            loco_rs::Error::Message("Error reading response body".to_string())
-        })?;
+    //     dbg!("FluxQueueResponse", &response);
+    //     let text = response.text().await.map_err(|e| {
+    //         tracing::error!("Failed to read response body: {:?}", e);
+    //         loco_rs::Error::Message("Error reading response body".to_string())
+    //     })?;
 
-        tracing::error!("Raw response from FAL AI API: {}", text); // 🔥 This logs what’s actually returned
+    //     tracing::error!("Raw response from FAL AI API: {}", text); // 🔥 This logs what’s actually returned
 
-        let parsed_response: FluxQueueResponse = serde_json::from_str(&text).map_err(|e| {
-            tracing::error!("Failed to parse response body: {:?}", e);
-            loco_rs::Error::Message("Error decoding response body".to_string())
-        })?;
-        // .json::<FluxQueueResponse>()
-        // .await?;
+    //     let parsed_response: FluxQueueResponse = serde_json::from_str(&text).map_err(|e| {
+    //         tracing::error!("Failed to parse response body: {:?}", e);
+    //         loco_rs::Error::Message("Error decoding response body".to_string())
+    //     })?;
+    //     // .json::<FluxQueueResponse>()
+    //     // .await?;
 
-        Ok(parsed_response)
-    }
-
-    pub async fn send_training_queue_webhook(
-        &self,
-        prompt: &FluxLoraTrainingSchema,
-    ) -> Result<QueueResponse, FalAiClientError> {
-        let response = self
-            .client
-            .post("https://queue.fal.run/fal-ai/flux-lora-fast-training?fal_webhook=https://replicapixel.com/api/webhooks/fal-ai/training")
-            // .post(format!("{}{}", &self.training_url, &self.webhook_training))
-            .header("Authorization", format!("Key {}", &self.fal_key))
-            .header("Content-Type", "application/json")
-            .json(&prompt)
-            .send()
-            .await
-            .map_err(|e| {
-                tracing::error!("Failed to process training schema: {:?}", e);
-                loco_rs::Error::Message("Error processing training model schema: 100".to_string())
-            })?
-            .json::<QueueResponse>()
-            .await?;
-
-        // dbg!("FluxQueueResponse", &response);
-        // let text = response.text().await.map_err(|e| {
-        //     tracing::error!("Failed to read response body: {:?}", e);
-        //     loco_rs::Error::Message("Error reading response body".to_string())
-        // })?;
-
-        // tracing::warn!("Raw response from FAL AI API: {}", text); // 🔥 This logs what’s actually returned
-
-        // let response: QueueResponse = serde_json::from_str(&text).map_err(|e| {
-        //     tracing::error!("Failed to parse response body: {:?}", e);
-        //     loco_rs::Error::Message("Error decoding response body".to_string())
-        // })?;
-
-        Ok(response)
-    }
-
-    pub async fn send_image_queue_webhook(
-        &self,
-        body: &FluxLoraImageGenerate,
-    ) -> Result<QueueResponse, FalAiClientError> {
-        let response = self
-            .client
-            .post("https://queue.fal.run/fal-ai/flux-lora?fal_webhook=https://replicapixel.com/api/webhooks/fal-ai/image")
-            // .post(format!("{}{}", &self.image_url, &self.webhook_image))
-            .header("Authorization", format!("Key {}", &self.fal_key))
-            .header("Content-Type", "application/json")
-            .json(&body)
-            .send()
-            .await
-            .map_err(|e| {
-                tracing::error!("Failed to process image schema: {:?}", e);
-                loco_rs::Error::Message(format!("Error processing image schema: {:?}", e))
-            })?
-            .json::<QueueResponse>()
-            .await?;
-
-        // dbg!("FluxQueueResponse", &response);
-        // let text = response.text().await.map_err(|e| {
-        //     tracing::error!("Failed to read response body: {:?}", e);
-        //     loco_rs::Error::Message("Error reading response body".to_string())
-        // })?;
-
-        // tracing::warn!("Raw response Image from FAL AI API: {}", text); // 🔥 This logs what’s actually returned
-
-        // let response: QueueResponse = serde_json::from_str(&text).map_err(|e| {
-        //     tracing::error!("Failed to parse response body: {:?}", e);
-        //     loco_rs::Error::Message("Error decoding response body".to_string())
-        // })?;
-
-        Ok(response)
-    }
-
-    pub async fn send_image_queue_many(
-        &self,
-        list: ImageNewList,
-    ) -> Result<ImageNewList, FalAiClientError> {
-        for item in &mut list.clone().into_inner() {
-            let body = item.clone().into();
-            let response = self.send_image_queue_webhook(&body).await?;
-            item.fal_ai_request_id = Some(response.request_id);
-        }
-        Ok(list)
-    }
-
-    pub async fn send_image_queue_many_async(
-        &self,
-        list: ImageNewList,
-    ) -> Result<ImageNewList, FalAiClientError> {
-        let futures = list.into_inner().into_iter().map(|mut item| {
-            let body = item.clone().into();
-            let client = self.clone();
-            async move {
-                match client.send_image_queue_webhook(&body).await {
-                    Ok(response) => {
-                        item.fal_ai_request_id = Some(response.request_id);
-                        Ok(item)
-                    }
-                    Err(e) => Err(e),
-                }
-            }
-        });
-
-        let results: Vec<Result<ImageNew, FalAiClientError>> = join_all(futures).await;
-
-        // Collect only successful results
-        let mut successful: Vec<ImageNew> = Vec::new();
-        for res in results {
-            match res {
-                Ok(item) => successful.push(item),
-                Err(e) => tracing::error!("Failed to send image queue: {:?}", e),
-            }
-        }
-        dbg!(&successful);
-        Ok(ImageNewList::new(successful))
-    }
+    //     Ok(parsed_response)
+    // }
 
     pub async fn request_status(
         &self,
@@ -524,6 +613,21 @@ pub struct Lora {
     pub scale: f32,
 }
 
+#[derive(Serialize, Debug)]
+pub struct UltraFineTuned {
+    pub prompt: String,
+    pub num_images: u8,
+    pub image_size: ImageSize,
+    pub steps: u16,
+    pub guidance_scale: f32,
+    pub enable_safety_checker: bool,
+    pub safety_tolerance: i32,
+    pub output_format: ImageFormat,
+    pub aspect_ratio: String,
+    pub finetune_strength: f32,
+    pub finetune_id: Lora,
+}
+
 /// Represents a request to generate images using Flux Lora.
 #[derive(Serialize, Debug)]
 pub struct FluxLoraImageGenerate {
@@ -543,11 +647,26 @@ impl From<ImageNew> for FluxLoraImageGenerate {
             prompt: value.sys_prompt.into_inner(),
             image_size: value.image_size,
             num_inference_steps: value.num_inference_steps as u16,
-            guidance_scale: 1.0,
-            num_images: 1,
-            enable_safety_checker: true,
-            output_format: ImageFormat::Jpeg,
             loras: value.loras,
+            ..Default::default() // guidance_scale: 1.0,
+                                 // num_images: 1,
+                                 // output_format: ImageFormat::Jpeg,
+                                 // enable_safety_checker: false,
+        }
+    }
+}
+
+impl Default for FluxLoraImageGenerate {
+    fn default() -> Self {
+        Self {
+            prompt: "".to_string(),
+            image_size: ImageSize::Square,
+            num_inference_steps: 28,
+            guidance_scale: 3.5,
+            num_images: 1,
+            enable_safety_checker: false,
+            output_format: ImageFormat::Jpeg,
+            loras: vec![],
         }
     }
 }
@@ -580,3 +699,7 @@ pub struct FluxQueueResponse {
     pub status_url: String,
     pub cancel_url: String,
 }
+
+pub trait FluxExt {}
+impl FluxExt for FluxLoraImageGenerate {}
+impl FluxExt for FluxLoraTrainingSchema {}

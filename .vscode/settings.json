@@ -1,5 +1,14 @@
 {
-  "cSpell.ignoreWords": ["Validatable", "addedfile", "removedfile", "submitjson"],
+  "cSpell.ignoreWords": [
+    "Validatable",
+    "addedfile",
+    "finetune",
+    "finetuned",
+    "loras",
+    "removedfile",
+    "rundiffusion",
+    "submitjson"
+  ],
   "cSpell.words": [
     "brico",
     "daisyui",

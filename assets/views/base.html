@@ -20,6 +20,7 @@
     <script src="/static/js/index.js" defer></script>
     <script src="/static/js/htmx/htmx.min.js"></script>
     <script src="/static/js/htmx/extensions/htmx-ext-form-json.js"></script>
+    {% block head %}{% endblock head %}
     <!-- Cookie Consent -->
     {% include "partials/cookie/consent.html" %} {% block stripe %}{% endblock stripe %}
     <script>
@@ -73,12 +74,12 @@
         pointer-events: none;
       }
     </style>
-    {% block head %}{% endblock head %}
   </head>
   <body>
     <!-- Main Layout Container -->
     <div id="app">
-      {% block home %}
+      {% block home %} {% block navbar %} {% endblock navbar %} {% block content %}{% endblock
+      content %} {#
       <div class="flex flex-col h-screen overflow-hidden">
         <!-- Navbar Block -->
         {% block navbar %} {% include "partials/navbar/navbar.html" %} {% endblock navbar %}
@@ -88,7 +89,7 @@
           {% block content %}{% endblock content %}
         </div>
       </div>
-      {% endblock home %}
+      #} {% endblock home %}
     </div>
 
     <!-- Toast Notifications -->

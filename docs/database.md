@@ -119,3 +119,17 @@ bun run dev
 // "fasdfasf098790sa7f9asfa09dsf",
 // ),
 // }
+
+Generics and Traits:
+| Name | Meaning / Convention |
+| ------------- | --------------------------------------------------------------------------- |
+| `T` | **Type** — most common generic placeholder |
+| `U`, `V`, `W` | Additional generic types (e.g. for functions with more than one type) |
+| `E` | **Error** — often used for error types |
+| `R` | **Return** type or **Result** |
+| `K`, `V` | **Key**, **Value** — used in key-value contexts (e.g., in maps) |
+| `S` | **Source**, **String**, or **Self-like** types |
+| `D` | **Deserializer** or **Data** |
+| `F` | **Function** — usually a closure or function pointer |
+| `I` | **Iterator** or **Input** |
+| `B` | Often used for **buffer** or **body** (like in your case — valid and clear) |
