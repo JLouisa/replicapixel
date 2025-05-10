@@ -164,28 +164,6 @@ impl FalAiClient {
         }
     }
 
-    pub async fn send_training_queue_webhook(
-        &self,
-        prompt: &FluxLoraTrainingSchema,
-    ) -> Result<QueueResponse, FalAiClientError> {
-        let response = self
-            .client
-            .post(&self.flux_lora_fast_training_webhook)
-            .header("Authorization", format!("Key {}", &self.fal_key))
-            .header("Content-Type", "application/json")
-            .json(&prompt)
-            .send()
-            .await
-            .map_err(|e| {
-                tracing::error!("Failed to process training schema: {:?}", e);
-                loco_rs::Error::Message("Error processing training model schema: 100".to_string())
-            })?
-            .json::<QueueResponse>()
-            .await?;
-
-        Ok(response)
-    }
-
     /// Sends an image generation request via a webhook to the Flux Lora API.
     ///
     /// This function posts a serialized request body (`V`) to the configured Flux Lora webhook
@@ -219,6 +197,28 @@ impl FalAiClient {
                 loco_rs::Error::Message(format!("Error processing image schema: {:?}", e))
             })?
             .json::<R>()
+            .await?;
+
+        Ok(response)
+    }
+
+    pub async fn send_training_queue_webhook(
+        &self,
+        prompt: &FluxLoraTrainingSchema,
+    ) -> Result<QueueResponse, FalAiClientError> {
+        let response = self
+            .client
+            .post(&self.flux_lora_fast_training_webhook)
+            .header("Authorization", format!("Key {}", &self.fal_key))
+            .header("Content-Type", "application/json")
+            .json(&prompt)
+            .send()
+            .await
+            .map_err(|e| {
+                tracing::error!("Failed to process training schema: {:?}", e);
+                loco_rs::Error::Message("Error processing training model schema: 100".to_string())
+            })?
+            .json::<QueueResponse>()
             .await?;
 
         Ok(response)

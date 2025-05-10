@@ -296,7 +296,8 @@ async function main() {
         pack_prompts:
           "Valentine's Day fantasy portrait of a stunning woman in elegant, heart-inspired attire, softly glowing in warm pink and red tones. She poses gracefully with natural limb proportions both arms and legs fully visible and correctly formed—while surrounded by romantic elements like rose petals, silky fabrics, and delicate lighting. The setting is playful yet classy, evoking charm, allure, and a modern fairytale vibe.",
         credits: 100,
-        amount: 20,
+        num_images: 20,
+        num_inference_steps: 50,
         image_url: "https://picsum.photos/id/31/400/500",
       },
     });
@@ -316,7 +317,8 @@ async function main() {
         pack_prompts:
           "A mysterious and seductive Halloween portrait of a confident woman in a stylish, spooky costume such as a modern witch, vampire, or dark fairy with clearly visible and correctly proportioned arms and legs. The scene includes playful, elegant Halloween elements like soft candlelight, lace veils, smoky shadows, or glowing pumpkins, with a polished, cinematic look. She poses gracefully with natural body structure, ensuring hands, feet, and facial features are fully visible and beautifully rendered.",
         credits: 75,
-        amount: 20,
+        num_images: 20,
+        num_inference_steps: 50,
         image_url: "https://picsum.photos/id/65/400/500",
       },
     });
@@ -336,7 +338,8 @@ async function main() {
         pack_prompts:
           "A playful and seductive Easter-themed portrait of a confident woman in pastel-colored lingerie or stylish bunny-inspired outfit, complete with fluffy bunny ears and soft accessories. She poses gracefully in a vibrant spring setting with decorated Easter eggs, blooming flowers, and gentle lighting arms, hands, legs, and feet clearly visible and naturally proportioned. The composition is festive and flirty, balancing elegance with cheeky charm, and rendered in a soft, cinematic style.",
         credits: 65,
-        amount: 20,
+        num_images: 20,
+        num_inference_steps: 50,
         image_url: "https://picsum.photos/id/103/400/500",
       },
     });
@@ -356,7 +359,8 @@ async function main() {
         pack_prompts:
           "A futuristic boudoir portrait of a confident woman in high-tech cyberpunk lingerie or neon-trimmed bodysuits, set against a glowing cityscape or holographic interior. She poses with grace and poise, with all limbs, arms, hands, legs, and feet clearly visible and anatomically correct. The scene features vaporwave elements like grid lines, soft purples and blues, chrome textures, and ambient neon lighting, blending sensuality with sleek, digital sophistication.",
         credits: 65,
-        amount: 20,
+        num_images: 20,
+        num_inference_steps: 50,
         image_url: "https://picsum.photos/id/103/400/500",
       },
     });

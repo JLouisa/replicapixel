@@ -96,6 +96,11 @@ impl AsRef<str> for S3Key {
         &self.0
     }
 }
+impl Default for S3Key {
+    fn default() -> Self {
+        Self(String::new())
+    }
+}
 
 impl From<PresignedUrlRequestForm> for PresignedUrlRequest {
     fn from(value: PresignedUrlRequestForm) -> Self {

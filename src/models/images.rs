@@ -18,12 +18,11 @@ use serde::{Deserialize, Serialize};
 pub type Images = Entity;
 use loco_rs::prelude::*;
 
-#[derive(Clone, Debug, Serialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, PartialEq, Default)]
 pub struct ImageNew {
     pub pid: Uuid,
     pub user_id: i32,
     pub training_model_id: i32,
-    pub pack_id: Option<i32>,
     pub user_prompt: UserPrompt,
     pub sys_prompt: SysPrompt,
     pub alt: AltText,
@@ -31,14 +30,15 @@ pub struct ImageNew {
     pub content_type: ImageFormat,
     pub status: Status,
     pub image_size: ImageSize,
+    pub is_favorite: bool,
+    pub loras: Vec<Lora>,
     pub fal_ai_request_id: Option<String>,
     pub width: Option<i32>,
     pub height: Option<i32>,
     pub image_s3_key: S3Key,
     pub image_url_fal: Option<String>,
-    pub is_favorite: bool,
+    pub pack_id: Option<i32>,
     pub deleted_at: Option<DateTimeWithTimeZone>,
-    pub loras: Vec<Lora>,
 }
 impl ImageNew {
     pub fn update(&self, item: &mut ActiveModel) {
@@ -102,6 +102,11 @@ impl UserPrompt {
         self.0
     }
 }
+impl Default for UserPrompt {
+    fn default() -> Self {
+        Self("Enter your prompt here...".to_string()) // More user-friendly than empty
+    }
+}
 impl UserPrompt {
     pub fn formatted_prompt(&self, training_model: &TrainingModelModel) -> SysPrompt {
         let sys_prompt = format!(
@@ -138,6 +143,11 @@ impl SysPrompt {
         self.0
     }
 }
+impl Default for SysPrompt {
+    fn default() -> Self {
+        Self("Enter the system prompt here...".to_string()) // More user-friendly than empty
+    }
+}
 
 #[derive(Clone, Debug, Serialize, Deserialize, AsRef, PartialEq)]
 pub struct AltText(String);
@@ -159,6 +169,11 @@ impl AltText {
             text.to_string()
         };
         Self::new(text)
+    }
+}
+impl Default for AltText {
+    fn default() -> Self {
+        Self("Enter the alt text here...".to_string()) // More user-friendly than empty
     }
 }
 impl From<UserPrompt> for AltText {

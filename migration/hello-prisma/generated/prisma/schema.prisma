@@ -187,17 +187,18 @@ model Transactions {
 }
 
 model Packs {
-  id                Int      @id @default(autoincrement())
-  pid               String   @unique @db.Uuid
-  title             String   @db.VarChar(255)
-  short_description String   @db.VarChar(255)
-  full_description  String   @db.Text
-  pack_prompts      String
-  credits           Int
-  amount            Int
-  image_url         String
-  created_at        DateTime @default(now()) @db.Timestamptz
-  updated_at        DateTime @default(now()) @db.Timestamptz
+  id                  Int      @id @default(autoincrement())
+  pid                 String   @unique @db.Uuid
+  title               String   @db.VarChar(255)
+  short_description   String   @db.VarChar(255)
+  full_description    String   @db.Text
+  pack_prompts        String
+  credits             Int
+  num_images          Int
+  num_inference_steps Int
+  image_url           String
+  created_at          DateTime @default(now()) @db.Timestamptz
+  updated_at          DateTime @default(now()) @db.Timestamptz
 
   Images Images[]
 

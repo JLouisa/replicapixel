@@ -2,6 +2,7 @@ use crate::domain::website::Website;
 use crate::models::_entities::sea_orm_active_enums::Status;
 use crate::models::_entities::training_models::Model as TrainingModel;
 use crate::models::training_models::TrainingModelList;
+use derive_more::{AsRef, Constructor};
 use loco_rs::prelude::*;
 use serde::Serialize;
 
@@ -26,7 +27,7 @@ pub fn training_models(v: impl ViewRenderer, website: &Website) -> Result<impl I
 }
 
 // ============== View Models for the View Templates ==============
-#[derive(Serialize)]
+#[derive(Serialize, Clone, Debug)]
 pub struct TrainingModelView {
     pub id: i32,
     pub pid: Uuid,
@@ -59,20 +60,41 @@ impl From<TrainingModel> for TrainingModelView {
         }
     }
 }
-impl From<TrainingModelList> for Vec<TrainingModelView> {
-    fn from(list: TrainingModelList) -> Vec<TrainingModelView> {
-        list.into_inner()
-            .iter()
-            .map(TrainingModelView::from)
-            .collect()
+#[derive(Clone, Serialize, Debug, Constructor, AsRef)]
+pub struct TrainingModelViewList(Vec<TrainingModelView>);
+impl TrainingModelViewList {
+    pub fn into_inner(self) -> Vec<TrainingModelView> {
+        self.0
+    }
+    pub fn empty() -> Self {
+        Self(Vec::new())
     }
 }
-impl From<&TrainingModelList> for Vec<TrainingModelView> {
-    fn from(list: &TrainingModelList) -> Vec<TrainingModelView> {
-        list.clone()
-            .into_inner()
-            .iter()
-            .map(TrainingModelView::from)
-            .collect()
+impl From<TrainingModelList> for TrainingModelViewList {
+    fn from(list: TrainingModelList) -> Self {
+        Self(
+            list.into_inner()
+                .iter()
+                .map(TrainingModelView::from)
+                .collect(),
+        )
     }
 }
+
+// impl From<TrainingModelList> for Vec<TrainingModelView> {
+//     fn from(list: TrainingModelList) -> Vec<TrainingModelView> {
+//         list.into_inner()
+//             .iter()
+//             .map(TrainingModelView::from)
+//             .collect()
+//     }
+// }
+// impl From<&TrainingModelList> for Vec<TrainingModelView> {
+//     fn from(list: &TrainingModelList) -> Vec<TrainingModelView> {
+//         list.clone()
+//             .into_inner()
+//             .iter()
+//             .map(TrainingModelView::from)
+//             .collect()
+//     }
+// }

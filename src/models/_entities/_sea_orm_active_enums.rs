@@ -105,6 +105,11 @@ pub enum ImageFormat {
     #[strum(to_string = "zip")]
     Zip,
 }
+impl Default for ImageFormat {
+    fn default() -> Self {
+        ImageFormat::Jpeg
+    }
+}
 
 #[derive(
     Debug, Clone, PartialEq, Eq, EnumIter, DeriveActiveEnum, Serialize, Deserialize, PartialOrd, Ord,

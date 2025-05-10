@@ -10,9 +10,12 @@ use uuid::Uuid;
 use crate::domain::domain_services::image_generation::ImageGenerationService;
 use crate::domain::website::Website;
 use crate::models::_entities::sea_orm_active_enums::{ImageFormat, ImageSize, Status};
-use crate::models::images::{AltText, ImageNew, ImageNewList, ImagesModelList, UserPrompt};
+use crate::models::images::{
+    AltText, ImageNew, ImageNewList, ImagesModelList, SysPrompt, UserPrompt,
+};
 use crate::models::join::user_credits_models::load_user_and_one_training_model;
 use crate::models::join::user_image::load_user_and_image;
+use crate::models::packs::PacksDomain;
 use crate::models::users::UserPid;
 use crate::models::{ImageActiveModel, ImageModel, TrainingModelModel, UserCreditModel, UserModel};
 use crate::service::aws::s3::{AwsS3, S3Folders};
@@ -89,10 +92,7 @@ pub fn routes() -> Routes {
     Routes::new()
         .prefix(routes::Images::BASE)
         .add(routes::Images::IMAGE, get(list))
-        // .add(routes::Images::IMAGE, post(add))
         .add(routes::Images::IMAGE_GENERATE_TEST, post(generate))
-        // .add(routes::Images::IMAGE_GENERATE, post(generate_img))
-        // .add(routes::Images::IMAGE_CHECK_TEST, get(check_test))
         .add(routes::Images::IMAGE_CHECK_ID, get(check_img))
         .add(routes::Images::IMAGE_ID, get(get_one))
         .add(routes::Images::IMAGE_ID, delete(remove))
@@ -106,8 +106,6 @@ pub fn routes() -> Routes {
             routes::Images::IMAGE_S3_UPLOAD_COMPLETE_ID,
             patch(img_s3_upload_completed),
         )
-    // .add(routes::Images::IMAGE_ID, put(update))
-    // .add(routes::Images::IMAGE_ID, patch(update))
 }
 
 #[derive(Clone, Validate, Debug, Deserialize)]
@@ -124,11 +122,85 @@ pub struct ImageGenRequestParams {
     ))]
     pub num_images: u8,
 }
-impl ImageGenRequestParams {
-    pub fn process(self, model: &TrainingModelModel, user_pid: &Uuid) -> ImageNewList {
+
+pub trait ImageGenerationTrait {
+    fn process(self, model: &TrainingModelModel, user_pid: &Uuid) -> ImageNewList;
+    fn formatted_prompt(&self, model: &TrainingModelModel) -> UserPrompt;
+    fn steps(&self) -> i32;
+    fn num_images(&self) -> i32;
+    fn image_size(&self) -> ImageSize;
+    fn cost(&self) -> i32;
+}
+impl ImageGenerationTrait for PacksDomain {
+    fn formatted_prompt(&self, _model: &TrainingModelModel) -> UserPrompt {
+        let prompt = self.pack_prompts.clone();
+        UserPrompt::new(prompt)
+    }
+    fn steps(&self) -> i32 {
+        self.num_inference_steps as i32
+    }
+    fn num_images(&self) -> i32 {
+        self.num_images as i32
+    }
+    fn image_size(&self) -> ImageSize {
+        self.image_size
+    }
+    fn cost(&self) -> i32 {
+        self.credits as i32
+    }
+    fn process(self, model: &TrainingModelModel, user_pid: &Uuid) -> ImageNewList {
+        let sys_prompt = self.formatted_prompt(&model);
+        let alt = AltText::new(sys_prompt.as_ref());
+        let loras = match model.tensor_path.clone() {
+            Some(p) => vec![Lora {
+                path: p,
+                scale: 1.0,
+            }],
+            None => vec![],
+        };
+        (0..self.num_images())
+            .map(|_| {
+                let uuid = Uuid::new_v4();
+                let s3_key = AwsS3::init_img_s3_key(&user_pid, &uuid);
+                ImageNew {
+                    pid: uuid,
+                    image_s3_key: s3_key,
+                    user_id: model.user_id,
+                    training_model_id: model.id,
+                    pack_id: Some(self.id),
+                    sys_prompt: SysPrompt::new(sys_prompt.as_ref()),
+                    user_prompt: sys_prompt.to_owned(),
+                    alt: alt.to_owned(),
+                    loras: loras.clone(),
+                    image_size: self.image_size,
+                    num_inference_steps: self.num_images() as i32,
+                    ..Default::default()
+                }
+            })
+            .collect::<Vec<ImageNew>>()
+            .into()
+    }
+}
+impl ImageGenerationTrait for ImageGenRequestParams {
+    fn formatted_prompt(&self, _model: &TrainingModelModel) -> UserPrompt {
+        self.prompt.clone()
+    }
+    fn steps(&self) -> i32 {
+        self.num_inference_steps as i32
+    }
+    fn num_images(&self) -> i32 {
+        self.num_images as i32
+    }
+    fn image_size(&self) -> ImageSize {
+        self.image_size
+    }
+    fn cost(&self) -> i32 {
+        self.num_images as i32
+    }
+    fn process(self, model: &TrainingModelModel, user_pid: &Uuid) -> ImageNewList {
         let sys_prompt = self.prompt.formatted_prompt(model);
         let alt = AltText::from(&self.prompt);
-        let lora = match model.tensor_path.clone() {
+        let loras = match model.tensor_path.clone() {
             Some(p) => vec![Lora {
                 path: p,
                 scale: 1.0,
@@ -142,23 +214,15 @@ impl ImageGenRequestParams {
                 ImageNew {
                     pid: uuid,
                     user_id: model.user_id,
-                    training_model_id: self.training_model_id,
-                    pack_id: None,
+                    training_model_id: model.id,
                     sys_prompt: sys_prompt.to_owned(),
                     user_prompt: self.prompt.to_owned(),
                     alt: alt.to_owned(),
                     num_inference_steps: self.num_inference_steps as i32,
-                    content_type: ImageFormat::Jpeg,
-                    status: Status::Pending,
-                    image_size: self.image_size,
-                    fal_ai_request_id: None,
-                    width: None,
-                    height: None,
-                    image_url_fal: None,
                     image_s3_key: s3_key,
-                    is_favorite: false,
-                    deleted_at: None,
-                    loras: lora.clone(),
+                    image_size: self.image_size,
+                    loras: loras.clone(),
+                    ..Default::default()
                 }
             })
             .collect::<Vec<ImageNew>>()

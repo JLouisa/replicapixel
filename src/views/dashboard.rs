@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use super::auth::{UserCreditsView, UserView};
 use super::images::ImageViewList;
 use super::settings::UserSettingsView;
-use super::training_models::TrainingModelView;
+use super::training_models::TrainingModelViewList;
 use crate::domain::features::FeatureViewList;
 use crate::domain::website::Website;
 use crate::middleware::cookie::CookieConsent;
@@ -159,7 +159,7 @@ pub fn training_dashboard(
     website: &Website,
     user: &UserView,
     credits: &UserCreditsView,
-    models: &Vec<TrainingModelView>,
+    models: &TrainingModelViewList,
     cc_cookie: &CookieConsent,
 ) -> Result<impl IntoResponse> {
     format::render().view(
@@ -178,7 +178,7 @@ pub fn training_partial_dashboard(
     website: &Website,
     user: &UserView,
     credits: &UserCreditsView,
-    models: &Vec<TrainingModelView>,
+    models: &TrainingModelViewList,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
@@ -191,7 +191,7 @@ pub fn create_training_dashboard(
     website: &Website,
     user: &UserView,
     credits: &UserCreditsView,
-    models: &Vec<TrainingModelView>,
+    models: &TrainingModelViewList,
     cc_cookie: &CookieConsent,
 ) -> Result<impl IntoResponse> {
     format::render().view(
@@ -210,7 +210,7 @@ pub fn create_training_dashboard_partial(
     website: &Website,
     user: &UserView,
     credits: &UserCreditsView,
-    models: &Vec<TrainingModelView>,
+    models: &TrainingModelViewList,
     cc_cookie: &CookieConsent,
 ) -> Result<impl IntoResponse> {
     format::render().view(
@@ -230,7 +230,7 @@ pub fn packs_dashboard(
     website: &Website,
     user: &UserView,
     credits: &UserCreditsView,
-    models: &Vec<TrainingModelView>,
+    models_list: &TrainingModelViewList,
     packs: PackViewList,
     cc_cookie: &CookieConsent,
 ) -> Result<impl IntoResponse> {
@@ -240,7 +240,7 @@ pub fn packs_dashboard(
         data!(
             {
                 "website": website, "credits": credits, "packs": packs,
-                "cc_cookie": cc_cookie, "user": user, "models": models,
+                "cc_cookie": cc_cookie, "user": user, "models": models_list,
             }
         ),
     )
@@ -248,7 +248,7 @@ pub fn packs_dashboard(
 pub fn packs_partial_dashboard(
     v: impl ViewRenderer,
     website: &Website,
-    models: &Vec<TrainingModelView>,
+    models: &TrainingModelViewList,
     packs: PackViewList,
 ) -> Result<impl IntoResponse> {
     format::render().view(
@@ -268,7 +268,7 @@ pub fn photo_dashboard(
     user: &UserView,
     credits: &UserCreditsView,
     images: &ImageViewList,
-    training_models: Vec<TrainingModelView>,
+    training_models: &TrainingModelViewList,
     is_deleted: bool,
     is_favorite: bool,
     cc_cookie: &CookieConsent,
@@ -290,7 +290,7 @@ pub fn photo_partial_dashboard(
     v: impl ViewRenderer,
     website: &Website,
     images: &ImageViewList,
-    training_models: Vec<TrainingModelView>,
+    training_models: &TrainingModelViewList,
     credits: &UserCreditsView,
     is_deleted: bool,
     is_favorite: bool,
@@ -314,9 +314,10 @@ pub struct PackView {
     pub id: i32,
     pub pid: Uuid,
     pub title: String,
-    pub description: String,
+    pub short_description: String,
+    pub full_description: String,
     pub credits: i32,
-    pub amount: i32,
+    pub num_images: i32,
     pub image_url: String,
 }
 impl From<PackModel> for PackView {
@@ -325,9 +326,10 @@ impl From<PackModel> for PackView {
             id: p.id,
             pid: p.pid,
             title: p.title,
-            description: p.short_description,
+            short_description: p.short_description,
+            full_description: p.full_description,
             credits: p.credits,
-            amount: p.amount,
+            num_images: p.num_images,
             image_url: p.image_url,
         }
     }

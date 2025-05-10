@@ -198,8 +198,13 @@ model Packs {
   full_description                String           @db.Text
   pack_prompts                    String           
   credits                         Int         
-  amount                          Int         
-  image_url                       String           
+  num_images                      Int              
+  num_inference_steps             Int              
+  starts                          Int              @default(5)
+  used                            Int              @default(0)
+  main_image                      String           
+  images                          String[]         @db.Text @default([])  
+  features                        String[]         @db.Text @default([])
   created_at                      DateTime         @default(now()) @db.Timestamptz
   updated_at                      DateTime         @default(now()) @db.Timestamptz
 

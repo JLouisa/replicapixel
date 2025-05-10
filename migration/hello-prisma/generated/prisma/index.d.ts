@@ -11446,13 +11446,15 @@ export namespace Prisma {
   export type PacksAvgAggregateOutputType = {
     id: number | null
     credits: number | null
-    amount: number | null
+    num_images: number | null
+    num_inference_steps: number | null
   }
 
   export type PacksSumAggregateOutputType = {
     id: number | null
     credits: number | null
-    amount: number | null
+    num_images: number | null
+    num_inference_steps: number | null
   }
 
   export type PacksMinAggregateOutputType = {
@@ -11463,7 +11465,8 @@ export namespace Prisma {
     full_description: string | null
     pack_prompts: string | null
     credits: number | null
-    amount: number | null
+    num_images: number | null
+    num_inference_steps: number | null
     image_url: string | null
     created_at: Date | null
     updated_at: Date | null
@@ -11477,7 +11480,8 @@ export namespace Prisma {
     full_description: string | null
     pack_prompts: string | null
     credits: number | null
-    amount: number | null
+    num_images: number | null
+    num_inference_steps: number | null
     image_url: string | null
     created_at: Date | null
     updated_at: Date | null
@@ -11491,7 +11495,8 @@ export namespace Prisma {
     full_description: number
     pack_prompts: number
     credits: number
-    amount: number
+    num_images: number
+    num_inference_steps: number
     image_url: number
     created_at: number
     updated_at: number
@@ -11502,13 +11507,15 @@ export namespace Prisma {
   export type PacksAvgAggregateInputType = {
     id?: true
     credits?: true
-    amount?: true
+    num_images?: true
+    num_inference_steps?: true
   }
 
   export type PacksSumAggregateInputType = {
     id?: true
     credits?: true
-    amount?: true
+    num_images?: true
+    num_inference_steps?: true
   }
 
   export type PacksMinAggregateInputType = {
@@ -11519,7 +11526,8 @@ export namespace Prisma {
     full_description?: true
     pack_prompts?: true
     credits?: true
-    amount?: true
+    num_images?: true
+    num_inference_steps?: true
     image_url?: true
     created_at?: true
     updated_at?: true
@@ -11533,7 +11541,8 @@ export namespace Prisma {
     full_description?: true
     pack_prompts?: true
     credits?: true
-    amount?: true
+    num_images?: true
+    num_inference_steps?: true
     image_url?: true
     created_at?: true
     updated_at?: true
@@ -11547,7 +11556,8 @@ export namespace Prisma {
     full_description?: true
     pack_prompts?: true
     credits?: true
-    amount?: true
+    num_images?: true
+    num_inference_steps?: true
     image_url?: true
     created_at?: true
     updated_at?: true
@@ -11648,7 +11658,8 @@ export namespace Prisma {
     full_description: string
     pack_prompts: string
     credits: number
-    amount: number
+    num_images: number
+    num_inference_steps: number
     image_url: string
     created_at: Date
     updated_at: Date
@@ -11681,7 +11692,8 @@ export namespace Prisma {
     full_description?: boolean
     pack_prompts?: boolean
     credits?: boolean
-    amount?: boolean
+    num_images?: boolean
+    num_inference_steps?: boolean
     image_url?: boolean
     created_at?: boolean
     updated_at?: boolean
@@ -11697,7 +11709,8 @@ export namespace Prisma {
     full_description?: boolean
     pack_prompts?: boolean
     credits?: boolean
-    amount?: boolean
+    num_images?: boolean
+    num_inference_steps?: boolean
     image_url?: boolean
     created_at?: boolean
     updated_at?: boolean
@@ -11711,7 +11724,8 @@ export namespace Prisma {
     full_description?: boolean
     pack_prompts?: boolean
     credits?: boolean
-    amount?: boolean
+    num_images?: boolean
+    num_inference_steps?: boolean
     image_url?: boolean
     created_at?: boolean
     updated_at?: boolean
@@ -11725,13 +11739,14 @@ export namespace Prisma {
     full_description?: boolean
     pack_prompts?: boolean
     credits?: boolean
-    amount?: boolean
+    num_images?: boolean
+    num_inference_steps?: boolean
     image_url?: boolean
     created_at?: boolean
     updated_at?: boolean
   }
 
-  export type PacksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pid" | "title" | "short_description" | "full_description" | "pack_prompts" | "credits" | "amount" | "image_url" | "created_at" | "updated_at", ExtArgs["result"]["packs"]>
+  export type PacksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pid" | "title" | "short_description" | "full_description" | "pack_prompts" | "credits" | "num_images" | "num_inference_steps" | "image_url" | "created_at" | "updated_at", ExtArgs["result"]["packs"]>
   export type PacksInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     Images?: boolean | Packs$ImagesArgs<ExtArgs>
     _count?: boolean | PacksCountOutputTypeDefaultArgs<ExtArgs>
@@ -11752,7 +11767,8 @@ export namespace Prisma {
       full_description: string
       pack_prompts: string
       credits: number
-      amount: number
+      num_images: number
+      num_inference_steps: number
       image_url: string
       created_at: Date
       updated_at: Date
@@ -12187,7 +12203,8 @@ export namespace Prisma {
     readonly full_description: FieldRef<"Packs", 'String'>
     readonly pack_prompts: FieldRef<"Packs", 'String'>
     readonly credits: FieldRef<"Packs", 'Int'>
-    readonly amount: FieldRef<"Packs", 'Int'>
+    readonly num_images: FieldRef<"Packs", 'Int'>
+    readonly num_inference_steps: FieldRef<"Packs", 'Int'>
     readonly image_url: FieldRef<"Packs", 'String'>
     readonly created_at: FieldRef<"Packs", 'DateTime'>
     readonly updated_at: FieldRef<"Packs", 'DateTime'>
@@ -20247,7 +20264,8 @@ export namespace Prisma {
     full_description: 'full_description',
     pack_prompts: 'pack_prompts',
     credits: 'credits',
-    amount: 'amount',
+    num_images: 'num_images',
+    num_inference_steps: 'num_inference_steps',
     image_url: 'image_url',
     created_at: 'created_at',
     updated_at: 'updated_at'
@@ -21413,7 +21431,8 @@ export namespace Prisma {
     full_description?: StringFilter<"Packs"> | string
     pack_prompts?: StringFilter<"Packs"> | string
     credits?: IntFilter<"Packs"> | number
-    amount?: IntFilter<"Packs"> | number
+    num_images?: IntFilter<"Packs"> | number
+    num_inference_steps?: IntFilter<"Packs"> | number
     image_url?: StringFilter<"Packs"> | string
     created_at?: DateTimeFilter<"Packs"> | Date | string
     updated_at?: DateTimeFilter<"Packs"> | Date | string
@@ -21428,7 +21447,8 @@ export namespace Prisma {
     full_description?: SortOrder
     pack_prompts?: SortOrder
     credits?: SortOrder
-    amount?: SortOrder
+    num_images?: SortOrder
+    num_inference_steps?: SortOrder
     image_url?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -21446,7 +21466,8 @@ export namespace Prisma {
     full_description?: StringFilter<"Packs"> | string
     pack_prompts?: StringFilter<"Packs"> | string
     credits?: IntFilter<"Packs"> | number
-    amount?: IntFilter<"Packs"> | number
+    num_images?: IntFilter<"Packs"> | number
+    num_inference_steps?: IntFilter<"Packs"> | number
     image_url?: StringFilter<"Packs"> | string
     created_at?: DateTimeFilter<"Packs"> | Date | string
     updated_at?: DateTimeFilter<"Packs"> | Date | string
@@ -21461,7 +21482,8 @@ export namespace Prisma {
     full_description?: SortOrder
     pack_prompts?: SortOrder
     credits?: SortOrder
-    amount?: SortOrder
+    num_images?: SortOrder
+    num_inference_steps?: SortOrder
     image_url?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -21483,7 +21505,8 @@ export namespace Prisma {
     full_description?: StringWithAggregatesFilter<"Packs"> | string
     pack_prompts?: StringWithAggregatesFilter<"Packs"> | string
     credits?: IntWithAggregatesFilter<"Packs"> | number
-    amount?: IntWithAggregatesFilter<"Packs"> | number
+    num_images?: IntWithAggregatesFilter<"Packs"> | number
+    num_inference_steps?: IntWithAggregatesFilter<"Packs"> | number
     image_url?: StringWithAggregatesFilter<"Packs"> | string
     created_at?: DateTimeWithAggregatesFilter<"Packs"> | Date | string
     updated_at?: DateTimeWithAggregatesFilter<"Packs"> | Date | string
@@ -22756,7 +22779,8 @@ export namespace Prisma {
     full_description: string
     pack_prompts: string
     credits: number
-    amount: number
+    num_images: number
+    num_inference_steps: number
     image_url: string
     created_at?: Date | string
     updated_at?: Date | string
@@ -22771,7 +22795,8 @@ export namespace Prisma {
     full_description: string
     pack_prompts: string
     credits: number
-    amount: number
+    num_images: number
+    num_inference_steps: number
     image_url: string
     created_at?: Date | string
     updated_at?: Date | string
@@ -22785,7 +22810,8 @@ export namespace Prisma {
     full_description?: StringFieldUpdateOperationsInput | string
     pack_prompts?: StringFieldUpdateOperationsInput | string
     credits?: IntFieldUpdateOperationsInput | number
-    amount?: IntFieldUpdateOperationsInput | number
+    num_images?: IntFieldUpdateOperationsInput | number
+    num_inference_steps?: IntFieldUpdateOperationsInput | number
     image_url?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22800,7 +22826,8 @@ export namespace Prisma {
     full_description?: StringFieldUpdateOperationsInput | string
     pack_prompts?: StringFieldUpdateOperationsInput | string
     credits?: IntFieldUpdateOperationsInput | number
-    amount?: IntFieldUpdateOperationsInput | number
+    num_images?: IntFieldUpdateOperationsInput | number
+    num_inference_steps?: IntFieldUpdateOperationsInput | number
     image_url?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22815,7 +22842,8 @@ export namespace Prisma {
     full_description: string
     pack_prompts: string
     credits: number
-    amount: number
+    num_images: number
+    num_inference_steps: number
     image_url: string
     created_at?: Date | string
     updated_at?: Date | string
@@ -22828,7 +22856,8 @@ export namespace Prisma {
     full_description?: StringFieldUpdateOperationsInput | string
     pack_prompts?: StringFieldUpdateOperationsInput | string
     credits?: IntFieldUpdateOperationsInput | number
-    amount?: IntFieldUpdateOperationsInput | number
+    num_images?: IntFieldUpdateOperationsInput | number
+    num_inference_steps?: IntFieldUpdateOperationsInput | number
     image_url?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22842,7 +22871,8 @@ export namespace Prisma {
     full_description?: StringFieldUpdateOperationsInput | string
     pack_prompts?: StringFieldUpdateOperationsInput | string
     credits?: IntFieldUpdateOperationsInput | number
-    amount?: IntFieldUpdateOperationsInput | number
+    num_images?: IntFieldUpdateOperationsInput | number
+    num_inference_steps?: IntFieldUpdateOperationsInput | number
     image_url?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -24237,7 +24267,8 @@ export namespace Prisma {
     full_description?: SortOrder
     pack_prompts?: SortOrder
     credits?: SortOrder
-    amount?: SortOrder
+    num_images?: SortOrder
+    num_inference_steps?: SortOrder
     image_url?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -24246,7 +24277,8 @@ export namespace Prisma {
   export type PacksAvgOrderByAggregateInput = {
     id?: SortOrder
     credits?: SortOrder
-    amount?: SortOrder
+    num_images?: SortOrder
+    num_inference_steps?: SortOrder
   }
 
   export type PacksMaxOrderByAggregateInput = {
@@ -24257,7 +24289,8 @@ export namespace Prisma {
     full_description?: SortOrder
     pack_prompts?: SortOrder
     credits?: SortOrder
-    amount?: SortOrder
+    num_images?: SortOrder
+    num_inference_steps?: SortOrder
     image_url?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -24271,7 +24304,8 @@ export namespace Prisma {
     full_description?: SortOrder
     pack_prompts?: SortOrder
     credits?: SortOrder
-    amount?: SortOrder
+    num_images?: SortOrder
+    num_inference_steps?: SortOrder
     image_url?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -24280,7 +24314,8 @@ export namespace Prisma {
   export type PacksSumOrderByAggregateInput = {
     id?: SortOrder
     credits?: SortOrder
-    amount?: SortOrder
+    num_images?: SortOrder
+    num_inference_steps?: SortOrder
   }
 
   export type HandledStripeEventCountOrderByAggregateInput = {
@@ -27050,7 +27085,8 @@ export namespace Prisma {
     full_description: string
     pack_prompts: string
     credits: number
-    amount: number
+    num_images: number
+    num_inference_steps: number
     image_url: string
     created_at?: Date | string
     updated_at?: Date | string
@@ -27064,7 +27100,8 @@ export namespace Prisma {
     full_description: string
     pack_prompts: string
     credits: number
-    amount: number
+    num_images: number
+    num_inference_steps: number
     image_url: string
     created_at?: Date | string
     updated_at?: Date | string
@@ -27221,7 +27258,8 @@ export namespace Prisma {
     full_description?: StringFieldUpdateOperationsInput | string
     pack_prompts?: StringFieldUpdateOperationsInput | string
     credits?: IntFieldUpdateOperationsInput | number
-    amount?: IntFieldUpdateOperationsInput | number
+    num_images?: IntFieldUpdateOperationsInput | number
+    num_inference_steps?: IntFieldUpdateOperationsInput | number
     image_url?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27235,7 +27273,8 @@ export namespace Prisma {
     full_description?: StringFieldUpdateOperationsInput | string
     pack_prompts?: StringFieldUpdateOperationsInput | string
     credits?: IntFieldUpdateOperationsInput | number
-    amount?: IntFieldUpdateOperationsInput | number
+    num_images?: IntFieldUpdateOperationsInput | number
+    num_inference_steps?: IntFieldUpdateOperationsInput | number
     image_url?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string

@@ -8,14 +8,9 @@ use serde::Deserialize;
 use crate::{
     domain::{domain_services::image_generation::ImageGenerationService, website::Website},
     models::{
-        images::ImagesModelList,
-        join::{
-            user_credits_models::load_user_credit_training,
-            user_pack::load_user_one_training_model_one_pack,
-        },
-        users::UserPid,
-        ImageModel,
-        _entities::sea_orm_active_enums::ImageSize,
+        images::ImagesModelList, join::user_pack::load_user_one_training_model_one_pack,
+        users::UserPid, ImageModel, _entities::sea_orm_active_enums::ImageSize, packs::PacksDomain,
+        training_models::TrainingModelList, TrainingModelModel,
     },
     service::{aws::s3::AwsS3, fal_ai::fal_client::FalAiClient, redis::redis::RedisCacheDriver},
     views::{self, images::ImageViewList},
@@ -63,9 +58,13 @@ async fn load_first_images(
     Ok(ImagesModelList::new(list))
 }
 
+async fn load_models_all(db: &DatabaseConnection, id: i32) -> Result<TrainingModelList> {
+    let list = TrainingModelModel::find_all_completed_by_user_id(db, id).await?;
+    Ok(TrainingModelList::new(list))
+}
+
 #[derive(Debug, Deserialize, Clone)]
 pub struct PackParams {
-    // pack_pid: Uuid,
     model_pid: Uuid,
     image_size: ImageSize,
 }
@@ -88,20 +87,11 @@ pub async fn generate_packs_images(
         load_user_one_training_model_one_pack(&ctx.db, &user_pid, &form.model_pid, &pack_pid)
             .await?;
 
-    dbg!(&user);
-    dbg!(&training_model);
-    dbg!(&pack);
-
     // 2. Call the Domain Service to perform the core logic
-    let (_, _) = ImageGenerationService::generate_with_packs(
-        &ctx,
-        &fal_ai_client,
-        pack,
-        &user,
-        &training_model,
-        &form.image_size,
-    )
-    .await?;
+    let pack_domain = PacksDomain::from_model(pack, form.image_size);
+    let (updated_credits_model, _) =
+        ImageGenerationService::generate(&ctx, &fal_ai_client, pack_domain, &user, &training_model)
+            .await?;
 
     // 3. Render the view using the View Models
     let is_deleted = false;
@@ -110,14 +100,14 @@ pub async fn generate_packs_images(
         .await?
         .into();
     let images = images.populate_s3_pre_urls(&s3_client, &cache).await;
-    let (_, user_credits, training_models) = load_user_credit_training(&ctx.db, &user_pid).await?;
+    let training_models = load_models_all(&ctx.db, user.id).await?;
 
     views::dashboard::photo_partial_dashboard(
         v,
         &website,
         &images,
-        training_models.into(),
-        &user_credits.into(),
+        &training_models.into(),
+        &updated_credits_model.into(),
         is_deleted,
         is_favorite,
     )

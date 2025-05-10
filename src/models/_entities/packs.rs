@@ -13,7 +13,6 @@ pub struct Model {
     #[sea_orm(column_type = "Text")]
     pub pack_prompts: String,
     pub credits: i32,
-    pub amount: i32,
     #[sea_orm(column_type = "Text")]
     pub image_url: String,
     pub created_at: DateTimeWithTimeZone,
@@ -22,6 +21,8 @@ pub struct Model {
     #[sea_orm(column_type = "Text")]
     pub full_description: String,
     pub short_description: String,
+    pub num_images: i32,
+    pub num_inference_steps: i32,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
