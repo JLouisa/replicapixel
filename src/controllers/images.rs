@@ -153,7 +153,7 @@ impl ImageGenerationTrait for PacksDomain {
             Some(m) => Some(m.id),
             None => None,
         };
-        let sys_prompt = match model {
+        let user_prompt = match model {
             Some(m) => self.formatted_prompt(&m),
             None => UserPrompt::new(self.pack_prompts.clone()),
         };
@@ -168,7 +168,7 @@ impl ImageGenerationTrait for PacksDomain {
             None => vec![],
         };
 
-        let alt = AltText::new(sys_prompt.as_ref());
+        let alt: AltText = user_prompt.clone().into();
         (0..self.num_images())
             .map(|_| {
                 let uuid = Uuid::new_v4();
@@ -179,8 +179,8 @@ impl ImageGenerationTrait for PacksDomain {
                     user_id: user.id,
                     training_model_id: model_id,
                     pack_id: Some(self.id),
-                    sys_prompt: SysPrompt::new(sys_prompt.as_ref()),
-                    user_prompt: sys_prompt.to_owned(),
+                    sys_prompt: SysPrompt::new(user_prompt.as_ref()),
+                    user_prompt: user_prompt.to_owned(),
                     alt: alt.to_owned(),
                     loras: loras.clone(),
                     image_size: self.image_size,
@@ -227,7 +227,7 @@ impl ImageGenerationTrait for ImageGenRequestParams {
             },
             None => vec![],
         };
-        let alt = AltText::new(sys_prompt.as_ref());
+        let alt = AltText::truncate_with_ellipsis(sys_prompt.as_ref());
         (0..self.num_images)
             .map(|_| {
                 let uuid = Uuid::new_v4();
@@ -297,6 +297,7 @@ pub async fn generate(
     ViewEngine(v): ViewEngine<TeraView>,
     Json(request): Json<ImageGenRequestParams>,
 ) -> Result<Response> {
+    dbg!(&request);
     // 0. Validate request payload format
     request.validate()?;
 
@@ -314,6 +315,9 @@ pub async fn generate(
         }
     };
 
+    dbg!(&user);
+    dbg!(&training_model);
+
     // 2. Call the Domain Service to perform the core logic
     let (updated_credits, saved_images) =
         ImageGenerationService::generate(&ctx, &fal_ai_client, request, &user, &training_model)
@@ -327,6 +331,8 @@ pub async fn generate(
         &updated_credits.into(),
         is_image_gen,
     )
+
+    // format::empty()
 }
 
 #[debug_handler]

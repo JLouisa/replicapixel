@@ -18,7 +18,7 @@
 {% set logout_partial_link = website.website_routes.auth_routes.logout_partial  | safe %}
 {% set login_link = website.website_routes.auth_routes.login | safe %}
 
-<aside class="flex flex-col items-center text-gray-700 shadow h-full mt-8">
+<aside class="flex flex-col items-center text-gray-700 shadow h-full mt-8" hx-ext="preload">
   <!-- Side Nav Bar-->
   <ul class="flex flex-col">
     <!-- Top Items Section -->
@@ -30,7 +30,9 @@
         hx-target="#dashboard_content"
         hx-push-url="{{ training_model_link }}"
         hx-swap="innerHTML"
+        preload="mouseover"
         class="h-16 px-6 flex justify-center items-center w-full cursor-pointer"
+        data-tip="Models"
       >
         {% include "partials/svg/faces.html" %}
       </a>
@@ -42,7 +44,9 @@
         hx-target="#dashboard_content"
         hx-push-url="{{ packs_link }}"
         hx-swap="innerHTML"
+        preload="mouseover"
         class="h-16 px-6 flex justify-center items-center w-full cursor-pointer"
+        data-tip="Packs"
       >
         {% include "partials/svg/pack.html" %}
       </a>
@@ -54,7 +58,9 @@
         hx-target="#dashboard_content"
         hx-push-url="{{ studio_link }}"
         hx-swap="innerHTML"
+        preload="mouseover"
         class="h-16 px-6 flex justify-center items-center w-full cursor-pointer"
+        data-tip="Album"
       >
         {% include "partials/svg/album.html" %}
       </a>
@@ -66,7 +72,9 @@
         hx-target="#dashboard_content"
         hx-push-url="{{ studio_favorite_link }}"
         hx-swap="innerHTML"
+        preload="mouseover"
         class="h-16 px-6 flex justify-center items-center w-full text-base-content"
+        data-tip="Favorites"
       >
         {% include "partials/svg/bookmark.html" %}
       </a>
@@ -78,7 +86,9 @@
         hx-target="#dashboard_content"
         hx-push-url="{{ studio_deleted_link }}"
         hx-swap="innerHTML"
+        preload="mouseover"
         class="h-16 px-6 flex justify-center items-center w-full text-base-content"
+        data-tip="Deleted"
       >
         {% include "partials/svg/trash.html" %}
       </a>
@@ -110,6 +120,7 @@
       hx-target="#dashboard_content"
       hx-push-url="{{ features_link }}"
       hx-swap="innerHTML"
+      preload="mouseover"
       class="h-16 w-full mx-auto flex items-center justify-center hover:bg-base-300 focus:outline-none cursor-pointer tooltip tooltip-right text-base-content"
       data-tip="Features"
     >
@@ -121,6 +132,7 @@
       hx-target="#dashboard_content"
       hx-push-url="{{ billing_link }}"
       hx-swap="innerHTML"
+      preload="mouseover"
       class="h-16 w-full mx-auto flex items-center justify-center hover:bg-base-300 focus:outline-none cursor-pointer tooltip tooltip-right text-base-content"
       data-tip="Order History"
     >
@@ -132,6 +144,7 @@
       hx-target="#dashboard_content"
       hx-push-url="{{ settings_link }}"
       hx-swap="innerHTML"
+      preload="mouseover"
       class="h-16 w-full mx-auto flex items-center justify-center hover:bg-base-300 focus:outline-none cursor-pointer tooltip tooltip-right text-base-content"
       data-tip="Settings"
     >
@@ -143,6 +156,7 @@
       hx-target="#app"
       hx-push-url="{{ login_link }}"
       hx-swap="innerHTML"
+      preload="mouseover"
       class="h-16 w-full mx-auto flex items-center justify-center hover:bg-red-200 focus:outline-none cursor-pointer tooltip tooltip-right text-base-content"
       data-tip="Logout"
     >

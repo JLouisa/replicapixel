@@ -319,6 +319,7 @@ pub struct PackView {
     pub credits: i32,
     pub num_images: i32,
     pub main_image: String,
+    pub images: Option<Vec<String>>,
 }
 impl From<PackModel> for PackView {
     fn from(p: PackModel) -> Self {
@@ -331,6 +332,7 @@ impl From<PackModel> for PackView {
             credits: p.credits,
             num_images: p.num_images,
             main_image: p.main_image,
+            images: p.images,
         }
     }
 }

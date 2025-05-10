@@ -54,10 +54,12 @@
       </h3>
 
       <div>
-        <label for="training_model_id" class="block text-xs mb-1 text-base-content/70">Model</label>
+        <label for="training_model_pid" class="block text-xs mb-1 text-base-content/70"
+          >Model</label
+        >
         <select
-          id="training_model_id"
-          name="training_model_id"
+          id="training_model_pid"
+          name="training_model_pid"
           class="select select-bordered select-sm w-full bg-base-100"
           :disabled="$store.imageGenForm.isLoading"
           x-ref="modelSelect"

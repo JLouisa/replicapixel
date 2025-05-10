@@ -43,46 +43,24 @@
             <div class="w-full md:w-1/2 px-4 mb-8">
               <!-- Main Image -->
               <img
-                src="https://replicapixel-dev.s3.eu-central-1.amazonaws.com/ab5e796c-a2cd-458e-ad6b-c3a898f44bd1/images/319ceeb2-d1d1-4cc2-870c-60bcf7a28efc.jpg?x-id=GetObject&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA6GBMCYSZW4R7LHR4%2F20250509%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-Date=20250509T183913Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&X-Amz-Signature=f26f9d2f808452d549595b7f2ab3809330ed198a42f229c913f6aa0324c40226"
+                src="{{ pack.main_image }}"
                 alt="Product"
                 class="w-full h-auto object-cover rounded-lg shadow-lg mb-4"
                 id="mainImage-{{ pack.pid }}"
               />
               <!-- Thumbnails -->
               <div class="flex gap-4 py-4 justify-center overflow-x-auto">
+                {% for image_url in pack.images %}
                 <img
-                  src="https://replicapixel-dev.s3.eu-central-1.amazonaws.com/ab5e796c-a2cd-458e-ad6b-c3a898f44bd1/images/09ebf02b-67f9-452e-a682-e6ec80668bc9.jpg?x-id=GetObject&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA6GBMCYSZW4R7LHR4%2F20250509%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-Date=20250509T183913Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&X-Amz-Signature=dadc989275cd16daba2e2995b1e392cc29e187c67f306c41c6a0286835b3f625"
+                  src="{{ image_url }}"
+                  loading="lazy"
                   alt="Thumbnail 1"
                   class="w-24 h-24 object-cover rounded-md cursor-pointer duration-300 ease-in-out hover:scale-105 flex-shrink-0"
                   onclick="changeImage('mainImage-{{ pack.pid }}',this.src)"
                 />
-                <img
-                  src="https://replicapixel-dev.s3.eu-central-1.amazonaws.com/ab5e796c-a2cd-458e-ad6b-c3a898f44bd1/images/a47fd1cb-2a41-4175-bff4-1a7291bd4a29.jpg?x-id=GetObject&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA6GBMCYSZW4R7LHR4%2F20250509%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-Date=20250509T105446Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&X-Amz-Signature=eef7ca52acb937c09921458f77df73ec23324e5cd9cbb2e2dbfcffed4c17b60a"
-                  alt="Thumbnail 2"
-                  class="w-24 h-24 object-cover rounded-md cursor-pointer duration-300 ease-in-out hover:scale-105 flex-shrink-0"
-                  onclick="changeImage('mainImage-{{ pack.pid }}',this.src)"
-                />
-                <img
-                  src="https://replicapixel-dev.s3.eu-central-1.amazonaws.com/ab5e796c-a2cd-458e-ad6b-c3a898f44bd1/images/73aaf140-bc84-40d2-b41f-be4a718cfa3c.jpg?x-id=GetObject&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA6GBMCYSZW4R7LHR4%2F20250509%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-Date=20250509T105446Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&X-Amz-Signature=f4d1c6a2bebd27067156f90e0b1b8bdb438b6549d9fe4be5c49933424d2db1dd"
-                  alt="Thumbnail 1"
-                  class="w-24 h-24 object-cover rounded-md cursor-pointer duration-300 ease-in-out hover:scale-105 flex-shrink-0"
-                  onclick="changeImage('mainImage-{{ pack.pid }}',this.src)"
-                />
-                <img
-                  src="https://replicapixel-dev.s3.eu-central-1.amazonaws.com/ab5e796c-a2cd-458e-ad6b-c3a898f44bd1/images/73aaf140-bc84-40d2-b41f-be4a718cfa3c.jpg?x-id=GetObject&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA6GBMCYSZW4R7LHR4%2F20250509%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-Date=20250509T105446Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&X-Amz-Signature=f4d1c6a2bebd27067156f90e0b1b8bdb438b6549d9fe4be5c49933424d2db1dd"
-                  alt="Thumbnail 2"
-                  class="w-24 h-24 object-cover rounded-md cursor-pointer duration-300 ease-in-out hover:scale-105 flex-shrink-0"
-                  onclick="changeImage('mainImage-{{ pack.pid }}',this.src)"
-                />
-                <img
-                  src="https://replicapixel-dev.s3.eu-central-1.amazonaws.com/ab5e796c-a2cd-458e-ad6b-c3a898f44bd1/images/a136bc8b-d512-4b6e-b0d1-afc1be9ebdd6.jpg?x-id=GetObject&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA6GBMCYSZW4R7LHR4%2F20250509%2Feu-central-1%2Fs3%2Faws4_request&X-Amz-Date=20250509T074151Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&X-Amz-Signature=0636804745df577e0db33f99562fc1341c7d4f38fb3368748d8e31b2907b8269"
-                  alt="Thumbnail 1"
-                  class="w-24 h-24 object-cover rounded-md cursor-pointer duration-300 ease-in-out hover:scale-105 flex-shrink-0"
-                  onclick="changeImage('mainImage-{{ pack.pid }}',this.src)"
-                />
+                {% endfor %}
               </div>
             </div>
-
             <!-- Product Details -->
             <div class="w-full md:w-1/2 px-4">
               <h2 class="text-5xl font-bold mb-2">{{ pack.title }}</h2>

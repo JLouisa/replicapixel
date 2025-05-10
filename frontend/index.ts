@@ -395,12 +395,14 @@ Alpine.store(Stores.ImageGenForm, {
     // Construct payload with controlled inputs
     const payload = {
       prompt: (formData.get("prompt") as string)?.trim() || "",
-      training_model_id:
-        formData.get("training_model_id") === "" ? null : formData.get("training_model_id"),
+      training_model_pid:
+        formData.get("training_model_pid") === "" ? null : formData.get("training_model_pid"),
       num_inference_steps: this.inferenceSteps,
       num_images: this.numImages,
       image_size: (formData.get("image_size") as string) || "1024x1024",
     };
+
+    // console.log("Payload:", payload);
 
     // Validation
     if (!payload.prompt) {
@@ -409,7 +411,7 @@ Alpine.store(Stores.ImageGenForm, {
     }
 
     const modelData = ImageGenFormClass.create(payload);
-    console.log("Submitting payload:", modelData);
+    // console.log("Submitting payload:", modelData);
 
     this.isLoading = true;
     Alpine.store(Stores.Toast).success("Image generation started!");
@@ -423,7 +425,7 @@ Alpine.store(Stores.ImageGenForm, {
 
       modelData.num_images = 4;
       for (let i = 0; i < batches; i++) {
-        console.log(`Batches ${i + 1} of ${batches} send`);
+        // console.log(`Batches ${i + 1} of ${batches} send`);
         // await sendRequest(url, modelData);
         await DAL.Complete.Htmx.imageGenerationHtmx(modelData, "drive-gallery", "afterbegin");
 
@@ -433,7 +435,7 @@ Alpine.store(Stores.ImageGenForm, {
 
       modelData.num_images = 1;
       for (let i = 0; i < singles; i++) {
-        console.log(`Singles ${i + 1} of ${singles} send`);
+        // console.log(`Singles ${i + 1} of ${singles} send`);
         // await sendRequest(url, modelData);
         await DAL.Complete.Htmx.imageGenerationHtmx(modelData, "drive-gallery", "afterbegin");
 
@@ -442,7 +444,7 @@ Alpine.store(Stores.ImageGenForm, {
       }
 
       // await new Promise((resolve) => setTimeout(resolve, 3000));
-      console.log("Processing completed.");
+      // console.log("Processing completed.");
       this.reset();
     } catch (error) {
       console.error(error);

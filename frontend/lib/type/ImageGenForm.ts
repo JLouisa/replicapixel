@@ -4,7 +4,7 @@ import { safeParse, union, pipe, uuid, null as null_ } from "valibot";
 // 1. Schema Definition
 export const ImageGenFormSchema = object({
   prompt: string(),
-  training_model_id: union([pipe(string(), uuid()), null_()]),
+  training_model_pid: union([pipe(string(), uuid()), null_()]),
   num_inference_steps: number(),
   num_images: number(),
   image_size: string(),
@@ -21,7 +21,7 @@ export class ImageGenFormClass implements ImageGenForm {
 
   constructor(
     public prompt: string,
-    public training_model_id: string | null,
+    public training_model_pid: string | null,
     public num_inference_steps: number = this.num_inference_steps,
     public num_images: number = this.num_images,
     public image_size: string
@@ -35,7 +35,7 @@ export class ImageGenFormClass implements ImageGenForm {
     }
     return new ImageGenFormClass(
       result.output.prompt,
-      result.output.training_model_id,
+      result.output.training_model_pid,
       result.output.num_inference_steps,
       result.output.num_images,
       result.output.image_size

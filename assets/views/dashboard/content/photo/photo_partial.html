@@ -13,7 +13,7 @@
   </div>
   {% endif %}
   <div class="relative">
-    {% if credits.credit_amount > 0 %} {% include
+    {% if not is_favorite and not is_deleted and credits.credit_amount > 0 %} {% include
     "dashboard/content/photo/create_image_partial.html" %}
   </div>
 </div>

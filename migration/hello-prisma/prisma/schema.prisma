@@ -199,7 +199,7 @@ model Packs {
   pack_prompts                    String           
   credits                         Int         
   num_images                      Int              
-  num_inference_steps             Int              
+  num_inference_steps             Int              @default(50)
   stars                           Int              @default(5)
   used                            Int              @default(0)
   main_image                      String           @default("url")

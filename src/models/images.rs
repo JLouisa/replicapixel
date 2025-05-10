@@ -158,14 +158,12 @@ impl AltText {
     pub fn into_inner(self) -> String {
         self.0
     }
-    fn truncate_with_ellipsis(text: &str) -> Self {
+    pub fn truncate_with_ellipsis(text: &str) -> Self {
         let max_len: usize = 15;
         let text = if text.chars().count() > max_len {
-            // String is longer than max_len: take first max_len chars and add "..."
             let truncated: String = text.chars().take(max_len).collect();
             format!("{}...", truncated)
         } else {
-            // String is max_len or shorter: return the whole string
             text.to_string()
         };
         Self::new(text)
