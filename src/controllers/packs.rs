@@ -89,26 +89,27 @@ pub async fn generate_packs_images(
 
     // 2. Call the Domain Service to perform the core logic
     let pack_domain = PacksDomain::from_model(pack, form.image_size);
-    let (updated_credits_model, _) =
-        ImageGenerationService::generate(&ctx, &fal_ai_client, pack_domain, &user, &training_model)
-            .await?;
+    // let (updated_credits_model, _) =
+    //     ImageGenerationService::generate(&ctx, &fal_ai_client, pack_domain, &user, &training_model)
+    //         .await?;
 
-    // 3. Render the view using the View Models
-    let is_deleted = false;
-    let is_favorite = false;
-    let images: ImageViewList = load_first_images(&ctx.db, user.id, is_favorite, is_deleted)
-        .await?
-        .into();
-    let images = images.populate_s3_pre_urls(&s3_client, &cache).await;
-    let training_models = load_models_all(&ctx.db, user.id).await?;
+    // // 3. Render the view using the View Models
+    // let is_deleted = false;
+    // let is_favorite = false;
+    // let images: ImageViewList = load_first_images(&ctx.db, user.id, is_favorite, is_deleted)
+    //     .await?
+    //     .into();
+    // let images = images.populate_s3_pre_urls(&s3_client, &cache).await;
+    // let training_models = load_models_all(&ctx.db, user.id).await?;
 
-    views::dashboard::photo_partial_dashboard(
-        v,
-        &website,
-        &images,
-        &training_models.into(),
-        &updated_credits_model.into(),
-        is_deleted,
-        is_favorite,
-    )
+    // views::dashboard::photo_partial_dashboard(
+    //     v,
+    //     &website,
+    //     &images,
+    //     &training_models.into(),
+    //     &updated_credits_model.into(),
+    //     is_deleted,
+    //     is_favorite,
+    // )
+    format::empty()
 }
