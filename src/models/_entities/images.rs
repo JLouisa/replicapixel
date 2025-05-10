@@ -14,7 +14,7 @@ pub struct Model {
     #[sea_orm(unique)]
     pub pid: Uuid,
     pub user_id: i32,
-    pub training_model_id: i32,
+    pub training_model_id: Option<i32>,
     pub pack_id: Option<i32>,
     #[sea_orm(column_type = "Text")]
     pub user_prompt: String,

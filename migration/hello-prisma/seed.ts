@@ -298,7 +298,7 @@ async function main() {
         credits: 100,
         num_images: 20,
         num_inference_steps: 50,
-        image_url: "https://picsum.photos/id/31/400/500",
+        main_image: "https://picsum.photos/id/31/400/500",
       },
     });
   }
@@ -319,7 +319,7 @@ async function main() {
         credits: 75,
         num_images: 20,
         num_inference_steps: 50,
-        image_url: "https://picsum.photos/id/65/400/500",
+        main_image: "https://picsum.photos/id/65/400/500",
       },
     });
   }
@@ -340,7 +340,7 @@ async function main() {
         credits: 65,
         num_images: 20,
         num_inference_steps: 50,
-        image_url: "https://picsum.photos/id/103/400/500",
+        main_image: "https://picsum.photos/id/103/400/500",
       },
     });
   }
@@ -361,7 +361,7 @@ async function main() {
         credits: 65,
         num_images: 20,
         num_inference_steps: 50,
-        image_url: "https://picsum.photos/id/103/400/500",
+        main_image: "https://picsum.photos/id/103/400/500",
       },
     });
   }

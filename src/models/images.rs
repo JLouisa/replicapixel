@@ -22,7 +22,7 @@ use loco_rs::prelude::*;
 pub struct ImageNew {
     pub pid: Uuid,
     pub user_id: i32,
-    pub training_model_id: i32,
+    pub training_model_id: Option<i32>,
     pub user_prompt: UserPrompt,
     pub sys_prompt: SysPrompt,
     pub alt: AltText,

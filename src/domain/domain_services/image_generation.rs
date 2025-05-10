@@ -39,7 +39,7 @@ impl ImageGenerationService {
         fal_ai_client: &FalAiClient,
         params: impl ImageGenerationTrait,
         user: &UserModel,
-        training_model: &TrainingModelModel,
+        training_model: &Option<TrainingModelModel>,
     ) -> Result<(UserCreditModel, ImageNewList), ImageGenerationError> {
         let txn = ctx.db.begin().await?;
 
@@ -53,7 +53,7 @@ impl ImageGenerationService {
             return Err(ImageGenerationError::InsufficientCredits);
         }
 
-        let image_list = params.process(&training_model, &user.pid);
+        let image_list = params.process(&training_model, &user);
 
         // External API Interaction
         let fal_response = fal_ai_client

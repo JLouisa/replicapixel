@@ -1,10 +1,7 @@
-use crate::service::{aws::s3::AwsS3, fal_ai::fal_client::Lora};
-
 pub use super::_entities::packs::{ActiveModel, Entity, Model};
 use super::{
-    PackModel, TrainingModelModel,
+    PackModel,
     _entities::{plans, sea_orm_active_enums::ImageSize},
-    images::{AltText, ImageNew, ImageNewList, SysPrompt, UserPrompt},
 };
 use derive_more::{AsRef, Constructor};
 use sea_orm::entity::prelude::*;
@@ -41,7 +38,7 @@ pub struct PacksDomain {
     pub credits: i32,
     pub num_images: i32,
     pub num_inference_steps: i32,
-    pub image_url: String,
+    pub main_image: String,
     pub image_size: ImageSize,
 }
 impl PacksDomain {
@@ -56,7 +53,7 @@ impl PacksDomain {
             credits: packs.credits,
             num_images: packs.num_images,
             num_inference_steps: packs.num_inference_steps,
-            image_url: packs.image_url,
+            main_image: packs.main_image,
             image_size,
         }
     }
@@ -64,46 +61,6 @@ impl PacksDomain {
 
 // implement your read-oriented logic here
 impl Model {
-    pub fn process_packs(
-        self,
-        model: &TrainingModelModel,
-        user_pid: &Uuid,
-        image_size: &ImageSize,
-    ) -> ImageNewList {
-        let sys_prompt = SysPrompt::new(&self.pack_prompts);
-        let user_prompt = UserPrompt::new(self.pack_prompts);
-
-        let alt = AltText::from(&user_prompt);
-        let lora = match model.tensor_path.clone() {
-            Some(p) => vec![Lora {
-                path: p,
-                scale: 1.0,
-            }],
-            None => vec![],
-        };
-        (0..self.num_images)
-            .map(|_| {
-                let uuid = Uuid::new_v4();
-                let s3_key = AwsS3::init_img_s3_key(&user_pid, &uuid);
-                ImageNew {
-                    pid: uuid,
-                    image_s3_key: s3_key,
-                    user_id: model.user_id,
-                    training_model_id: model.id,
-                    pack_id: Some(self.id),
-                    sys_prompt: sys_prompt.to_owned(),
-                    user_prompt: user_prompt.to_owned(),
-                    alt: alt.to_owned(),
-                    num_inference_steps: 50,
-                    loras: lora.clone(),
-                    image_size: image_size.clone(),
-                    ..Default::default()
-                }
-            })
-            .collect::<Vec<ImageNew>>()
-            .into()
-    }
-
     pub async fn find_by_pid(db: &DatabaseConnection, pid: &Uuid) -> ModelResult<Self> {
         let user = Entity::find()
             .filter(

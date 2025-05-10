@@ -318,7 +318,7 @@ pub struct PackView {
     pub full_description: String,
     pub credits: i32,
     pub num_images: i32,
-    pub image_url: String,
+    pub main_image: String,
 }
 impl From<PackModel> for PackView {
     fn from(p: PackModel) -> Self {
@@ -330,7 +330,7 @@ impl From<PackModel> for PackView {
             full_description: p.full_description,
             credits: p.credits,
             num_images: p.num_images,
-            image_url: p.image_url,
+            main_image: p.main_image,
         }
     }
 }

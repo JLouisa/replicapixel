@@ -110,7 +110,7 @@ pub fn routes() -> Routes {
 
 #[derive(Clone, Validate, Debug, Deserialize)]
 pub struct ImageGenRequestParams {
-    pub training_model_id: i32,
+    pub training_model_pid: Option<Uuid>,
     pub prompt: UserPrompt,
     pub image_size: ImageSize,
     #[validate(range(min = 1, max = 50, message = "Creative must be between 1 and 50"))]
@@ -124,7 +124,7 @@ pub struct ImageGenRequestParams {
 }
 
 pub trait ImageGenerationTrait {
-    fn process(self, model: &TrainingModelModel, user_pid: &Uuid) -> ImageNewList;
+    fn process(self, model: &Option<TrainingModelModel>, user_pid: &UserModel) -> ImageNewList;
     fn formatted_prompt(&self, model: &TrainingModelModel) -> UserPrompt;
     fn steps(&self) -> i32;
     fn num_images(&self) -> i32;
@@ -148,25 +148,36 @@ impl ImageGenerationTrait for PacksDomain {
     fn cost(&self) -> i32 {
         self.credits as i32
     }
-    fn process(self, model: &TrainingModelModel, user_pid: &Uuid) -> ImageNewList {
-        let sys_prompt = self.formatted_prompt(&model);
-        let alt = AltText::new(sys_prompt.as_ref());
-        let loras = match model.tensor_path.clone() {
-            Some(p) => vec![Lora {
-                path: p,
-                scale: 1.0,
-            }],
+    fn process(self, model: &Option<TrainingModelModel>, user: &UserModel) -> ImageNewList {
+        let model_id = match model {
+            Some(m) => Some(m.id),
+            None => None,
+        };
+        let sys_prompt = match model {
+            Some(m) => self.formatted_prompt(&m),
+            None => UserPrompt::new(self.pack_prompts.clone()),
+        };
+        let loras = match model {
+            Some(m) => match m.tensor_path.clone() {
+                Some(p) => vec![Lora {
+                    path: p,
+                    scale: 1.0,
+                }],
+                None => vec![],
+            },
             None => vec![],
         };
+
+        let alt = AltText::new(sys_prompt.as_ref());
         (0..self.num_images())
             .map(|_| {
                 let uuid = Uuid::new_v4();
-                let s3_key = AwsS3::init_img_s3_key(&user_pid, &uuid);
+                let s3_key = AwsS3::init_img_s3_key(&user.pid, &uuid);
                 ImageNew {
                     pid: uuid,
                     image_s3_key: s3_key,
-                    user_id: model.user_id,
-                    training_model_id: model.id,
+                    user_id: user.id,
+                    training_model_id: model_id,
                     pack_id: Some(self.id),
                     sys_prompt: SysPrompt::new(sys_prompt.as_ref()),
                     user_prompt: sys_prompt.to_owned(),
@@ -197,24 +208,34 @@ impl ImageGenerationTrait for ImageGenRequestParams {
     fn cost(&self) -> i32 {
         self.num_images as i32
     }
-    fn process(self, model: &TrainingModelModel, user_pid: &Uuid) -> ImageNewList {
-        let sys_prompt = self.prompt.formatted_prompt(model);
-        let alt = AltText::from(&self.prompt);
-        let loras = match model.tensor_path.clone() {
-            Some(p) => vec![Lora {
-                path: p,
-                scale: 1.0,
-            }],
+    fn process(self, model: &Option<TrainingModelModel>, user: &UserModel) -> ImageNewList {
+        let model_id = match model {
+            Some(m) => Some(m.id),
+            None => None,
+        };
+        let sys_prompt = match model {
+            Some(m) => self.prompt.formatted_prompt(m),
+            None => SysPrompt::new(self.prompt.as_ref()),
+        };
+        let loras = match model {
+            Some(m) => match m.tensor_path.clone() {
+                Some(p) => vec![Lora {
+                    path: p,
+                    scale: 1.0,
+                }],
+                None => vec![],
+            },
             None => vec![],
         };
+        let alt = AltText::new(sys_prompt.as_ref());
         (0..self.num_images)
             .map(|_| {
                 let uuid = Uuid::new_v4();
-                let s3_key = AwsS3::init_img_s3_key(&user_pid, &uuid);
+                let s3_key = AwsS3::init_img_s3_key(&user.pid, &uuid);
                 ImageNew {
                     pid: uuid,
-                    user_id: model.user_id,
-                    training_model_id: model.id,
+                    user_id: user.id,
+                    training_model_id: model_id,
                     sys_prompt: sys_prompt.to_owned(),
                     user_prompt: self.prompt.to_owned(),
                     alt: alt.to_owned(),
@@ -267,24 +288,45 @@ async fn load_images_inf(
     Ok(ImagesModelList::new(list))
 }
 
-async fn image_infinite_handler(
+#[debug_handler]
+pub async fn generate(
     auth: auth::JWT,
-    Path(anchor_image_pid): Path<Uuid>,
-    Query(params): Query<ImageLoadingParams>,
-    Extension(cache): Extension<RedisCacheDriver>,
-    Extension(website): Extension<Website>,
-    Extension(s3_client): Extension<AwsS3>,
     State(ctx): State<AppContext>,
+    Extension(website): Extension<Website>,
+    Extension(fal_ai_client): Extension<FalAiClient>,
     ViewEngine(v): ViewEngine<TeraView>,
-) -> Result<impl IntoResponse> {
-    let user_pid = UserPid::new(&auth.claims.pid);
-    let user = load_user(&ctx.db, &user_pid).await?;
-    let images: ImageViewList = load_images_inf(&ctx.db, &user, &anchor_image_pid, params)
-        .await?
-        .into();
-    let images = images.populate_s3_pre_urls(&s3_client, &cache).await;
+    Json(request): Json<ImageGenRequestParams>,
+) -> Result<Response> {
+    // 0. Validate request payload format
+    request.validate()?;
 
-    views::images::img_infinite_loading(&v, &website, &images.into())
+    // 1. Load User and Training Model
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let (user, training_model) = match request.training_model_pid {
+        Some(pid) => {
+            let (user, training_model) =
+                load_user_and_one_training_model(&ctx.db, &user_pid, pid).await?;
+            (user, Some(training_model))
+        }
+        None => {
+            let user = load_user(&ctx.db, &user_pid).await?;
+            (user, None)
+        }
+    };
+
+    // 2. Call the Domain Service to perform the core logic
+    let (updated_credits, saved_images) =
+        ImageGenerationService::generate(&ctx, &fal_ai_client, request, &user, &training_model)
+            .await?;
+    let is_image_gen = Some(true);
+    // 3. Render the view using the View Models
+    views::images::img_completed(
+        &v,
+        &website,
+        &saved_images.into(),
+        &updated_credits.into(),
+        is_image_gen,
+    )
 }
 
 #[debug_handler]
@@ -318,52 +360,6 @@ pub async fn img_s3_upload_completed(
 
     Ok((StatusCode::OK).into_response())
 }
-
-// #[debug_handler]
-// pub async fn check_test(
-//     auth: auth::JWT,
-//     Path(pid): Path<Uuid>,
-//     State(ctx): State<AppContext>,
-//     Extension(website): Extension<Website>,
-//     Extension(s3_client): Extension<AwsS3>,
-//     ViewEngine(v): ViewEngine<TeraView>,
-// ) -> Result<Response> {
-//     use rand::Rng;
-//     let (user, mut image) = load_user_and_image(&ctx.db, &auth.claims.pid, &pid).await?;
-
-//     if image.user_id != user.id {
-//         return Err(Error::Unauthorized("Unauthorized".to_string()));
-//     }
-//     let change = rand::rng().random_range(0..=3);
-//     if change == 0 {
-//         let image_url_fal = Url::new("https://v3.fal.media/files/panda/ycu2NDkTawQBdmgZDAF3g_ffb513c9074146009320fa60e64beaab.jpg".to_string());
-//         image.image_url_fal = Some(image_url_fal.as_ref().to_owned());
-//         image.status = Status::Processing;
-//         image
-//             .clone()
-//             .update_fal_image_url(&image_url_fal, &ctx.db)
-//             .await?;
-//     }
-//     if image.status == Status::Processing {
-//         let user_credits = load_credits(&ctx.db, user.id).await?;
-//         let user_credits_view: CreditsViewModel = user_credits.into();
-//         let image: ImageView = image.into();
-//         let image: ImageView = image
-//             .clone()
-//             .set_pre_url(&user.pid, &s3_client)
-//             .await
-//             .unwrap_or_else(|_| image);
-
-//         return views::images::img_completed(
-//             &v,
-//             &website,
-//             &ImageViewList::new(vec![image]),
-//             &user_credits_view,
-//         );
-//     }
-
-//     Ok((StatusCode::NO_CONTENT).into_response())
-// }
 
 #[debug_handler]
 pub async fn check_img(
@@ -403,36 +399,24 @@ pub async fn check_img(
     Ok((StatusCode::NO_CONTENT).into_response())
 }
 
-#[debug_handler]
-pub async fn generate(
+async fn image_infinite_handler(
     auth: auth::JWT,
-    State(ctx): State<AppContext>,
+    Path(anchor_image_pid): Path<Uuid>,
+    Query(params): Query<ImageLoadingParams>,
+    Extension(cache): Extension<RedisCacheDriver>,
     Extension(website): Extension<Website>,
-    Extension(fal_ai_client): Extension<FalAiClient>,
+    Extension(s3_client): Extension<AwsS3>,
+    State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
-    Json(request): Json<ImageGenRequestParams>,
-) -> Result<Response> {
-    // 0. Validate request payload format
-    request.validate()?;
-
-    // 1. Load User and Training Model
+) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
-    let (user, training_model) =
-        load_user_and_one_training_model(&ctx.db, &user_pid, request.training_model_id).await?;
+    let user = load_user(&ctx.db, &user_pid).await?;
+    let images: ImageViewList = load_images_inf(&ctx.db, &user, &anchor_image_pid, params)
+        .await?
+        .into();
+    let images = images.populate_s3_pre_urls(&s3_client, &cache).await;
 
-    // 2. Call the Domain Service to perform the core logic
-    let (updated_credits, saved_images) =
-        ImageGenerationService::generate(&ctx, &fal_ai_client, request, &user, &training_model)
-            .await?;
-    let is_image_gen = Some(true);
-    // 3. Render the view using the View Models
-    views::images::img_completed(
-        &v,
-        &website,
-        &saved_images.into(),
-        &updated_credits.into(),
-        is_image_gen,
-    )
+    views::images::img_infinite_loading(&v, &website, &images.into())
 }
 
 #[debug_handler]

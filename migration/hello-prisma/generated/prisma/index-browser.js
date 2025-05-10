@@ -248,7 +248,11 @@ exports.Prisma.PacksScalarFieldEnum = {
   credits: 'credits',
   num_images: 'num_images',
   num_inference_steps: 'num_inference_steps',
-  image_url: 'image_url',
+  stars: 'stars',
+  used: 'used',
+  main_image: 'main_image',
+  images: 'images',
+  features: 'features',
   created_at: 'created_at',
   updated_at: 'updated_at'
 };

@@ -7921,7 +7921,7 @@ export namespace Prisma {
     id: number
     pid: string
     user_id: number
-    training_model_id: number
+    training_model_id: number | null
     pack_id: number | null
     user_prompt: string
     sys_prompt: string
@@ -7983,7 +7983,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     user?: boolean | UsersDefaultArgs<ExtArgs>
-    training_model?: boolean | TrainingModelsDefaultArgs<ExtArgs>
+    training_model?: boolean | Images$training_modelArgs<ExtArgs>
     pack?: boolean | Images$packArgs<ExtArgs>
   }, ExtArgs["result"]["images"]>
 
@@ -8010,7 +8010,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     user?: boolean | UsersDefaultArgs<ExtArgs>
-    training_model?: boolean | TrainingModelsDefaultArgs<ExtArgs>
+    training_model?: boolean | Images$training_modelArgs<ExtArgs>
     pack?: boolean | Images$packArgs<ExtArgs>
   }, ExtArgs["result"]["images"]>
 
@@ -8037,7 +8037,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     user?: boolean | UsersDefaultArgs<ExtArgs>
-    training_model?: boolean | TrainingModelsDefaultArgs<ExtArgs>
+    training_model?: boolean | Images$training_modelArgs<ExtArgs>
     pack?: boolean | Images$packArgs<ExtArgs>
   }, ExtArgs["result"]["images"]>
 
@@ -8068,17 +8068,17 @@ export namespace Prisma {
   export type ImagesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pid" | "user_id" | "training_model_id" | "pack_id" | "user_prompt" | "sys_prompt" | "alt" | "num_inference_steps" | "content_type" | "status" | "image_size" | "fal_ai_request_id" | "width" | "height" | "image_s3_key" | "image_url_fal" | "is_favorite" | "deleted_at" | "created_at" | "updated_at", ExtArgs["result"]["images"]>
   export type ImagesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UsersDefaultArgs<ExtArgs>
-    training_model?: boolean | TrainingModelsDefaultArgs<ExtArgs>
+    training_model?: boolean | Images$training_modelArgs<ExtArgs>
     pack?: boolean | Images$packArgs<ExtArgs>
   }
   export type ImagesIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UsersDefaultArgs<ExtArgs>
-    training_model?: boolean | TrainingModelsDefaultArgs<ExtArgs>
+    training_model?: boolean | Images$training_modelArgs<ExtArgs>
     pack?: boolean | Images$packArgs<ExtArgs>
   }
   export type ImagesIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UsersDefaultArgs<ExtArgs>
-    training_model?: boolean | TrainingModelsDefaultArgs<ExtArgs>
+    training_model?: boolean | Images$training_modelArgs<ExtArgs>
     pack?: boolean | Images$packArgs<ExtArgs>
   }
 
@@ -8086,14 +8086,14 @@ export namespace Prisma {
     name: "Images"
     objects: {
       user: Prisma.$UsersPayload<ExtArgs>
-      training_model: Prisma.$TrainingModelsPayload<ExtArgs>
+      training_model: Prisma.$TrainingModelsPayload<ExtArgs> | null
       pack: Prisma.$PacksPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
       pid: string
       user_id: number
-      training_model_id: number
+      training_model_id: number | null
       pack_id: number | null
       user_prompt: string
       sys_prompt: string
@@ -8506,7 +8506,7 @@ export namespace Prisma {
   export interface Prisma__ImagesClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     user<T extends UsersDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UsersDefaultArgs<ExtArgs>>): Prisma__UsersClient<$Result.GetResult<Prisma.$UsersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    training_model<T extends TrainingModelsDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TrainingModelsDefaultArgs<ExtArgs>>): Prisma__TrainingModelsClient<$Result.GetResult<Prisma.$TrainingModelsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    training_model<T extends Images$training_modelArgs<ExtArgs> = {}>(args?: Subset<T, Images$training_modelArgs<ExtArgs>>): Prisma__TrainingModelsClient<$Result.GetResult<Prisma.$TrainingModelsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     pack<T extends Images$packArgs<ExtArgs> = {}>(args?: Subset<T, Images$packArgs<ExtArgs>>): Prisma__PacksClient<$Result.GetResult<Prisma.$PacksPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -8951,6 +8951,25 @@ export namespace Prisma {
      * Limit how many Images to delete.
      */
     limit?: number
+  }
+
+  /**
+   * Images.training_model
+   */
+  export type Images$training_modelArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TrainingModels
+     */
+    select?: TrainingModelsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TrainingModels
+     */
+    omit?: TrainingModelsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TrainingModelsInclude<ExtArgs> | null
+    where?: TrainingModelsWhereInput
   }
 
   /**
@@ -11448,6 +11467,8 @@ export namespace Prisma {
     credits: number | null
     num_images: number | null
     num_inference_steps: number | null
+    stars: number | null
+    used: number | null
   }
 
   export type PacksSumAggregateOutputType = {
@@ -11455,6 +11476,8 @@ export namespace Prisma {
     credits: number | null
     num_images: number | null
     num_inference_steps: number | null
+    stars: number | null
+    used: number | null
   }
 
   export type PacksMinAggregateOutputType = {
@@ -11467,7 +11490,9 @@ export namespace Prisma {
     credits: number | null
     num_images: number | null
     num_inference_steps: number | null
-    image_url: string | null
+    stars: number | null
+    used: number | null
+    main_image: string | null
     created_at: Date | null
     updated_at: Date | null
   }
@@ -11482,7 +11507,9 @@ export namespace Prisma {
     credits: number | null
     num_images: number | null
     num_inference_steps: number | null
-    image_url: string | null
+    stars: number | null
+    used: number | null
+    main_image: string | null
     created_at: Date | null
     updated_at: Date | null
   }
@@ -11497,7 +11524,11 @@ export namespace Prisma {
     credits: number
     num_images: number
     num_inference_steps: number
-    image_url: number
+    stars: number
+    used: number
+    main_image: number
+    images: number
+    features: number
     created_at: number
     updated_at: number
     _all: number
@@ -11509,6 +11540,8 @@ export namespace Prisma {
     credits?: true
     num_images?: true
     num_inference_steps?: true
+    stars?: true
+    used?: true
   }
 
   export type PacksSumAggregateInputType = {
@@ -11516,6 +11549,8 @@ export namespace Prisma {
     credits?: true
     num_images?: true
     num_inference_steps?: true
+    stars?: true
+    used?: true
   }
 
   export type PacksMinAggregateInputType = {
@@ -11528,7 +11563,9 @@ export namespace Prisma {
     credits?: true
     num_images?: true
     num_inference_steps?: true
-    image_url?: true
+    stars?: true
+    used?: true
+    main_image?: true
     created_at?: true
     updated_at?: true
   }
@@ -11543,7 +11580,9 @@ export namespace Prisma {
     credits?: true
     num_images?: true
     num_inference_steps?: true
-    image_url?: true
+    stars?: true
+    used?: true
+    main_image?: true
     created_at?: true
     updated_at?: true
   }
@@ -11558,7 +11597,11 @@ export namespace Prisma {
     credits?: true
     num_images?: true
     num_inference_steps?: true
-    image_url?: true
+    stars?: true
+    used?: true
+    main_image?: true
+    images?: true
+    features?: true
     created_at?: true
     updated_at?: true
     _all?: true
@@ -11660,7 +11703,11 @@ export namespace Prisma {
     credits: number
     num_images: number
     num_inference_steps: number
-    image_url: string
+    stars: number
+    used: number
+    main_image: string
+    images: string[]
+    features: string[]
     created_at: Date
     updated_at: Date
     _count: PacksCountAggregateOutputType | null
@@ -11694,7 +11741,11 @@ export namespace Prisma {
     credits?: boolean
     num_images?: boolean
     num_inference_steps?: boolean
-    image_url?: boolean
+    stars?: boolean
+    used?: boolean
+    main_image?: boolean
+    images?: boolean
+    features?: boolean
     created_at?: boolean
     updated_at?: boolean
     Images?: boolean | Packs$ImagesArgs<ExtArgs>
@@ -11711,7 +11762,11 @@ export namespace Prisma {
     credits?: boolean
     num_images?: boolean
     num_inference_steps?: boolean
-    image_url?: boolean
+    stars?: boolean
+    used?: boolean
+    main_image?: boolean
+    images?: boolean
+    features?: boolean
     created_at?: boolean
     updated_at?: boolean
   }, ExtArgs["result"]["packs"]>
@@ -11726,7 +11781,11 @@ export namespace Prisma {
     credits?: boolean
     num_images?: boolean
     num_inference_steps?: boolean
-    image_url?: boolean
+    stars?: boolean
+    used?: boolean
+    main_image?: boolean
+    images?: boolean
+    features?: boolean
     created_at?: boolean
     updated_at?: boolean
   }, ExtArgs["result"]["packs"]>
@@ -11741,12 +11800,16 @@ export namespace Prisma {
     credits?: boolean
     num_images?: boolean
     num_inference_steps?: boolean
-    image_url?: boolean
+    stars?: boolean
+    used?: boolean
+    main_image?: boolean
+    images?: boolean
+    features?: boolean
     created_at?: boolean
     updated_at?: boolean
   }
 
-  export type PacksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pid" | "title" | "short_description" | "full_description" | "pack_prompts" | "credits" | "num_images" | "num_inference_steps" | "image_url" | "created_at" | "updated_at", ExtArgs["result"]["packs"]>
+  export type PacksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pid" | "title" | "short_description" | "full_description" | "pack_prompts" | "credits" | "num_images" | "num_inference_steps" | "stars" | "used" | "main_image" | "images" | "features" | "created_at" | "updated_at", ExtArgs["result"]["packs"]>
   export type PacksInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     Images?: boolean | Packs$ImagesArgs<ExtArgs>
     _count?: boolean | PacksCountOutputTypeDefaultArgs<ExtArgs>
@@ -11769,7 +11832,11 @@ export namespace Prisma {
       credits: number
       num_images: number
       num_inference_steps: number
-      image_url: string
+      stars: number
+      used: number
+      main_image: string
+      images: string[]
+      features: string[]
       created_at: Date
       updated_at: Date
     }, ExtArgs["result"]["packs"]>
@@ -12205,7 +12272,11 @@ export namespace Prisma {
     readonly credits: FieldRef<"Packs", 'Int'>
     readonly num_images: FieldRef<"Packs", 'Int'>
     readonly num_inference_steps: FieldRef<"Packs", 'Int'>
-    readonly image_url: FieldRef<"Packs", 'String'>
+    readonly stars: FieldRef<"Packs", 'Int'>
+    readonly used: FieldRef<"Packs", 'Int'>
+    readonly main_image: FieldRef<"Packs", 'String'>
+    readonly images: FieldRef<"Packs", 'String[]'>
+    readonly features: FieldRef<"Packs", 'String[]'>
     readonly created_at: FieldRef<"Packs", 'DateTime'>
     readonly updated_at: FieldRef<"Packs", 'DateTime'>
   }
@@ -20266,7 +20337,11 @@ export namespace Prisma {
     credits: 'credits',
     num_images: 'num_images',
     num_inference_steps: 'num_inference_steps',
-    image_url: 'image_url',
+    stars: 'stars',
+    used: 'used',
+    main_image: 'main_image',
+    images: 'images',
+    features: 'features',
     created_at: 'created_at',
     updated_at: 'updated_at'
   };
@@ -21087,7 +21162,7 @@ export namespace Prisma {
     id?: IntFilter<"Images"> | number
     pid?: UuidFilter<"Images"> | string
     user_id?: IntFilter<"Images"> | number
-    training_model_id?: IntFilter<"Images"> | number
+    training_model_id?: IntNullableFilter<"Images"> | number | null
     pack_id?: IntNullableFilter<"Images"> | number | null
     user_prompt?: StringFilter<"Images"> | string
     sys_prompt?: StringFilter<"Images"> | string
@@ -21106,7 +21181,7 @@ export namespace Prisma {
     created_at?: DateTimeFilter<"Images"> | Date | string
     updated_at?: DateTimeFilter<"Images"> | Date | string
     user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
-    training_model?: XOR<TrainingModelsScalarRelationFilter, TrainingModelsWhereInput>
+    training_model?: XOR<TrainingModelsNullableScalarRelationFilter, TrainingModelsWhereInput> | null
     pack?: XOR<PacksNullableScalarRelationFilter, PacksWhereInput> | null
   }
 
@@ -21114,7 +21189,7 @@ export namespace Prisma {
     id?: SortOrder
     pid?: SortOrder
     user_id?: SortOrder
-    training_model_id?: SortOrder
+    training_model_id?: SortOrderInput | SortOrder
     pack_id?: SortOrderInput | SortOrder
     user_prompt?: SortOrder
     sys_prompt?: SortOrder
@@ -21144,7 +21219,7 @@ export namespace Prisma {
     OR?: ImagesWhereInput[]
     NOT?: ImagesWhereInput | ImagesWhereInput[]
     user_id?: IntFilter<"Images"> | number
-    training_model_id?: IntFilter<"Images"> | number
+    training_model_id?: IntNullableFilter<"Images"> | number | null
     pack_id?: IntNullableFilter<"Images"> | number | null
     user_prompt?: StringFilter<"Images"> | string
     sys_prompt?: StringFilter<"Images"> | string
@@ -21163,7 +21238,7 @@ export namespace Prisma {
     created_at?: DateTimeFilter<"Images"> | Date | string
     updated_at?: DateTimeFilter<"Images"> | Date | string
     user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
-    training_model?: XOR<TrainingModelsScalarRelationFilter, TrainingModelsWhereInput>
+    training_model?: XOR<TrainingModelsNullableScalarRelationFilter, TrainingModelsWhereInput> | null
     pack?: XOR<PacksNullableScalarRelationFilter, PacksWhereInput> | null
   }, "id" | "pid">
 
@@ -21171,7 +21246,7 @@ export namespace Prisma {
     id?: SortOrder
     pid?: SortOrder
     user_id?: SortOrder
-    training_model_id?: SortOrder
+    training_model_id?: SortOrderInput | SortOrder
     pack_id?: SortOrderInput | SortOrder
     user_prompt?: SortOrder
     sys_prompt?: SortOrder
@@ -21203,7 +21278,7 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"Images"> | number
     pid?: UuidWithAggregatesFilter<"Images"> | string
     user_id?: IntWithAggregatesFilter<"Images"> | number
-    training_model_id?: IntWithAggregatesFilter<"Images"> | number
+    training_model_id?: IntNullableWithAggregatesFilter<"Images"> | number | null
     pack_id?: IntNullableWithAggregatesFilter<"Images"> | number | null
     user_prompt?: StringWithAggregatesFilter<"Images"> | string
     sys_prompt?: StringWithAggregatesFilter<"Images"> | string
@@ -21433,7 +21508,11 @@ export namespace Prisma {
     credits?: IntFilter<"Packs"> | number
     num_images?: IntFilter<"Packs"> | number
     num_inference_steps?: IntFilter<"Packs"> | number
-    image_url?: StringFilter<"Packs"> | string
+    stars?: IntFilter<"Packs"> | number
+    used?: IntFilter<"Packs"> | number
+    main_image?: StringFilter<"Packs"> | string
+    images?: StringNullableListFilter<"Packs">
+    features?: StringNullableListFilter<"Packs">
     created_at?: DateTimeFilter<"Packs"> | Date | string
     updated_at?: DateTimeFilter<"Packs"> | Date | string
     Images?: ImagesListRelationFilter
@@ -21449,7 +21528,11 @@ export namespace Prisma {
     credits?: SortOrder
     num_images?: SortOrder
     num_inference_steps?: SortOrder
-    image_url?: SortOrder
+    stars?: SortOrder
+    used?: SortOrder
+    main_image?: SortOrder
+    images?: SortOrder
+    features?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     Images?: ImagesOrderByRelationAggregateInput
@@ -21468,7 +21551,11 @@ export namespace Prisma {
     credits?: IntFilter<"Packs"> | number
     num_images?: IntFilter<"Packs"> | number
     num_inference_steps?: IntFilter<"Packs"> | number
-    image_url?: StringFilter<"Packs"> | string
+    stars?: IntFilter<"Packs"> | number
+    used?: IntFilter<"Packs"> | number
+    main_image?: StringFilter<"Packs"> | string
+    images?: StringNullableListFilter<"Packs">
+    features?: StringNullableListFilter<"Packs">
     created_at?: DateTimeFilter<"Packs"> | Date | string
     updated_at?: DateTimeFilter<"Packs"> | Date | string
     Images?: ImagesListRelationFilter
@@ -21484,7 +21571,11 @@ export namespace Prisma {
     credits?: SortOrder
     num_images?: SortOrder
     num_inference_steps?: SortOrder
-    image_url?: SortOrder
+    stars?: SortOrder
+    used?: SortOrder
+    main_image?: SortOrder
+    images?: SortOrder
+    features?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     _count?: PacksCountOrderByAggregateInput
@@ -21507,7 +21598,11 @@ export namespace Prisma {
     credits?: IntWithAggregatesFilter<"Packs"> | number
     num_images?: IntWithAggregatesFilter<"Packs"> | number
     num_inference_steps?: IntWithAggregatesFilter<"Packs"> | number
-    image_url?: StringWithAggregatesFilter<"Packs"> | string
+    stars?: IntWithAggregatesFilter<"Packs"> | number
+    used?: IntWithAggregatesFilter<"Packs"> | number
+    main_image?: StringWithAggregatesFilter<"Packs"> | string
+    images?: StringNullableListFilter<"Packs">
+    features?: StringNullableListFilter<"Packs">
     created_at?: DateTimeWithAggregatesFilter<"Packs"> | Date | string
     updated_at?: DateTimeWithAggregatesFilter<"Packs"> | Date | string
   }
@@ -22409,7 +22504,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     user: UsersCreateNestedOneWithoutImagesInput
-    training_model: TrainingModelsCreateNestedOneWithoutImagesInput
+    training_model?: TrainingModelsCreateNestedOneWithoutImagesInput
     pack?: PacksCreateNestedOneWithoutImagesInput
   }
 
@@ -22417,7 +22512,7 @@ export namespace Prisma {
     id?: number
     pid: string
     user_id: number
-    training_model_id: number
+    training_model_id?: number | null
     pack_id?: number | null
     user_prompt: string
     sys_prompt: string
@@ -22456,7 +22551,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UsersUpdateOneRequiredWithoutImagesNestedInput
-    training_model?: TrainingModelsUpdateOneRequiredWithoutImagesNestedInput
+    training_model?: TrainingModelsUpdateOneWithoutImagesNestedInput
     pack?: PacksUpdateOneWithoutImagesNestedInput
   }
 
@@ -22464,7 +22559,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     pid?: StringFieldUpdateOperationsInput | string
     user_id?: IntFieldUpdateOperationsInput | number
-    training_model_id?: IntFieldUpdateOperationsInput | number
+    training_model_id?: NullableIntFieldUpdateOperationsInput | number | null
     pack_id?: NullableIntFieldUpdateOperationsInput | number | null
     user_prompt?: StringFieldUpdateOperationsInput | string
     sys_prompt?: StringFieldUpdateOperationsInput | string
@@ -22488,7 +22583,7 @@ export namespace Prisma {
     id?: number
     pid: string
     user_id: number
-    training_model_id: number
+    training_model_id?: number | null
     pack_id?: number | null
     user_prompt: string
     sys_prompt: string
@@ -22532,7 +22627,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     pid?: StringFieldUpdateOperationsInput | string
     user_id?: IntFieldUpdateOperationsInput | number
-    training_model_id?: IntFieldUpdateOperationsInput | number
+    training_model_id?: NullableIntFieldUpdateOperationsInput | number | null
     pack_id?: NullableIntFieldUpdateOperationsInput | number | null
     user_prompt?: StringFieldUpdateOperationsInput | string
     sys_prompt?: StringFieldUpdateOperationsInput | string
@@ -22781,7 +22876,11 @@ export namespace Prisma {
     credits: number
     num_images: number
     num_inference_steps: number
-    image_url: string
+    stars?: number
+    used?: number
+    main_image?: string
+    images?: PacksCreateimagesInput | string[]
+    features?: PacksCreatefeaturesInput | string[]
     created_at?: Date | string
     updated_at?: Date | string
     Images?: ImagesCreateNestedManyWithoutPackInput
@@ -22797,7 +22896,11 @@ export namespace Prisma {
     credits: number
     num_images: number
     num_inference_steps: number
-    image_url: string
+    stars?: number
+    used?: number
+    main_image?: string
+    images?: PacksCreateimagesInput | string[]
+    features?: PacksCreatefeaturesInput | string[]
     created_at?: Date | string
     updated_at?: Date | string
     Images?: ImagesUncheckedCreateNestedManyWithoutPackInput
@@ -22812,7 +22915,11 @@ export namespace Prisma {
     credits?: IntFieldUpdateOperationsInput | number
     num_images?: IntFieldUpdateOperationsInput | number
     num_inference_steps?: IntFieldUpdateOperationsInput | number
-    image_url?: StringFieldUpdateOperationsInput | string
+    stars?: IntFieldUpdateOperationsInput | number
+    used?: IntFieldUpdateOperationsInput | number
+    main_image?: StringFieldUpdateOperationsInput | string
+    images?: PacksUpdateimagesInput | string[]
+    features?: PacksUpdatefeaturesInput | string[]
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     Images?: ImagesUpdateManyWithoutPackNestedInput
@@ -22828,7 +22935,11 @@ export namespace Prisma {
     credits?: IntFieldUpdateOperationsInput | number
     num_images?: IntFieldUpdateOperationsInput | number
     num_inference_steps?: IntFieldUpdateOperationsInput | number
-    image_url?: StringFieldUpdateOperationsInput | string
+    stars?: IntFieldUpdateOperationsInput | number
+    used?: IntFieldUpdateOperationsInput | number
+    main_image?: StringFieldUpdateOperationsInput | string
+    images?: PacksUpdateimagesInput | string[]
+    features?: PacksUpdatefeaturesInput | string[]
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     Images?: ImagesUncheckedUpdateManyWithoutPackNestedInput
@@ -22844,7 +22955,11 @@ export namespace Prisma {
     credits: number
     num_images: number
     num_inference_steps: number
-    image_url: string
+    stars?: number
+    used?: number
+    main_image?: string
+    images?: PacksCreateimagesInput | string[]
+    features?: PacksCreatefeaturesInput | string[]
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -22858,7 +22973,11 @@ export namespace Prisma {
     credits?: IntFieldUpdateOperationsInput | number
     num_images?: IntFieldUpdateOperationsInput | number
     num_inference_steps?: IntFieldUpdateOperationsInput | number
-    image_url?: StringFieldUpdateOperationsInput | string
+    stars?: IntFieldUpdateOperationsInput | number
+    used?: IntFieldUpdateOperationsInput | number
+    main_image?: StringFieldUpdateOperationsInput | string
+    images?: PacksUpdateimagesInput | string[]
+    features?: PacksUpdatefeaturesInput | string[]
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -22873,7 +22992,11 @@ export namespace Prisma {
     credits?: IntFieldUpdateOperationsInput | number
     num_images?: IntFieldUpdateOperationsInput | number
     num_inference_steps?: IntFieldUpdateOperationsInput | number
-    image_url?: StringFieldUpdateOperationsInput | string
+    stars?: IntFieldUpdateOperationsInput | number
+    used?: IntFieldUpdateOperationsInput | number
+    main_image?: StringFieldUpdateOperationsInput | string
+    images?: PacksUpdateimagesInput | string[]
+    features?: PacksUpdatefeaturesInput | string[]
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -23938,9 +24061,9 @@ export namespace Prisma {
     not?: NestedEnumImageSizeFilter<$PrismaModel> | $Enums.ImageSize
   }
 
-  export type TrainingModelsScalarRelationFilter = {
-    is?: TrainingModelsWhereInput
-    isNot?: TrainingModelsWhereInput
+  export type TrainingModelsNullableScalarRelationFilter = {
+    is?: TrainingModelsWhereInput | null
+    isNot?: TrainingModelsWhereInput | null
   }
 
   export type PacksNullableScalarRelationFilter = {
@@ -24269,7 +24392,11 @@ export namespace Prisma {
     credits?: SortOrder
     num_images?: SortOrder
     num_inference_steps?: SortOrder
-    image_url?: SortOrder
+    stars?: SortOrder
+    used?: SortOrder
+    main_image?: SortOrder
+    images?: SortOrder
+    features?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
@@ -24279,6 +24406,8 @@ export namespace Prisma {
     credits?: SortOrder
     num_images?: SortOrder
     num_inference_steps?: SortOrder
+    stars?: SortOrder
+    used?: SortOrder
   }
 
   export type PacksMaxOrderByAggregateInput = {
@@ -24291,7 +24420,9 @@ export namespace Prisma {
     credits?: SortOrder
     num_images?: SortOrder
     num_inference_steps?: SortOrder
-    image_url?: SortOrder
+    stars?: SortOrder
+    used?: SortOrder
+    main_image?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
@@ -24306,7 +24437,9 @@ export namespace Prisma {
     credits?: SortOrder
     num_images?: SortOrder
     num_inference_steps?: SortOrder
-    image_url?: SortOrder
+    stars?: SortOrder
+    used?: SortOrder
+    main_image?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
@@ -24316,6 +24449,8 @@ export namespace Prisma {
     credits?: SortOrder
     num_images?: SortOrder
     num_inference_steps?: SortOrder
+    stars?: SortOrder
+    used?: SortOrder
   }
 
   export type HandledStripeEventCountOrderByAggregateInput = {
@@ -25161,10 +25296,12 @@ export namespace Prisma {
     update?: XOR<XOR<UsersUpdateToOneWithWhereWithoutImagesInput, UsersUpdateWithoutImagesInput>, UsersUncheckedUpdateWithoutImagesInput>
   }
 
-  export type TrainingModelsUpdateOneRequiredWithoutImagesNestedInput = {
+  export type TrainingModelsUpdateOneWithoutImagesNestedInput = {
     create?: XOR<TrainingModelsCreateWithoutImagesInput, TrainingModelsUncheckedCreateWithoutImagesInput>
     connectOrCreate?: TrainingModelsCreateOrConnectWithoutImagesInput
     upsert?: TrainingModelsUpsertWithoutImagesInput
+    disconnect?: TrainingModelsWhereInput | boolean
+    delete?: TrainingModelsWhereInput | boolean
     connect?: TrainingModelsWhereUniqueInput
     update?: XOR<XOR<TrainingModelsUpdateToOneWithWhereWithoutImagesInput, TrainingModelsUpdateWithoutImagesInput>, TrainingModelsUncheckedUpdateWithoutImagesInput>
   }
@@ -25270,6 +25407,14 @@ export namespace Prisma {
     update?: XOR<XOR<UsersUpdateToOneWithWhereWithoutTransactionsInput, UsersUpdateWithoutTransactionsInput>, UsersUncheckedUpdateWithoutTransactionsInput>
   }
 
+  export type PacksCreateimagesInput = {
+    set: string[]
+  }
+
+  export type PacksCreatefeaturesInput = {
+    set: string[]
+  }
+
   export type ImagesCreateNestedManyWithoutPackInput = {
     create?: XOR<ImagesCreateWithoutPackInput, ImagesUncheckedCreateWithoutPackInput> | ImagesCreateWithoutPackInput[] | ImagesUncheckedCreateWithoutPackInput[]
     connectOrCreate?: ImagesCreateOrConnectWithoutPackInput | ImagesCreateOrConnectWithoutPackInput[]
@@ -25282,6 +25427,16 @@ export namespace Prisma {
     connectOrCreate?: ImagesCreateOrConnectWithoutPackInput | ImagesCreateOrConnectWithoutPackInput[]
     createMany?: ImagesCreateManyPackInputEnvelope
     connect?: ImagesWhereUniqueInput | ImagesWhereUniqueInput[]
+  }
+
+  export type PacksUpdateimagesInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type PacksUpdatefeaturesInput = {
+    set?: string[]
+    push?: string | string[]
   }
 
   export type ImagesUpdateManyWithoutPackNestedInput = {
@@ -26030,14 +26185,14 @@ export namespace Prisma {
     deleted_at?: Date | string | null
     created_at?: Date | string
     updated_at?: Date | string
-    training_model: TrainingModelsCreateNestedOneWithoutImagesInput
+    training_model?: TrainingModelsCreateNestedOneWithoutImagesInput
     pack?: PacksCreateNestedOneWithoutImagesInput
   }
 
   export type ImagesUncheckedCreateWithoutUserInput = {
     id?: number
     pid: string
-    training_model_id: number
+    training_model_id?: number | null
     pack_id?: number | null
     user_prompt: string
     sys_prompt: string
@@ -26337,7 +26492,7 @@ export namespace Prisma {
     id?: IntFilter<"Images"> | number
     pid?: UuidFilter<"Images"> | string
     user_id?: IntFilter<"Images"> | number
-    training_model_id?: IntFilter<"Images"> | number
+    training_model_id?: IntNullableFilter<"Images"> | number | null
     pack_id?: IntNullableFilter<"Images"> | number | null
     user_prompt?: StringFilter<"Images"> | string
     sys_prompt?: StringFilter<"Images"> | string
@@ -27087,7 +27242,11 @@ export namespace Prisma {
     credits: number
     num_images: number
     num_inference_steps: number
-    image_url: string
+    stars?: number
+    used?: number
+    main_image?: string
+    images?: PacksCreateimagesInput | string[]
+    features?: PacksCreatefeaturesInput | string[]
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -27102,7 +27261,11 @@ export namespace Prisma {
     credits: number
     num_images: number
     num_inference_steps: number
-    image_url: string
+    stars?: number
+    used?: number
+    main_image?: string
+    images?: PacksCreateimagesInput | string[]
+    features?: PacksCreatefeaturesInput | string[]
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -27260,7 +27423,11 @@ export namespace Prisma {
     credits?: IntFieldUpdateOperationsInput | number
     num_images?: IntFieldUpdateOperationsInput | number
     num_inference_steps?: IntFieldUpdateOperationsInput | number
-    image_url?: StringFieldUpdateOperationsInput | string
+    stars?: IntFieldUpdateOperationsInput | number
+    used?: IntFieldUpdateOperationsInput | number
+    main_image?: StringFieldUpdateOperationsInput | string
+    images?: PacksUpdateimagesInput | string[]
+    features?: PacksUpdatefeaturesInput | string[]
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -27275,7 +27442,11 @@ export namespace Prisma {
     credits?: IntFieldUpdateOperationsInput | number
     num_images?: IntFieldUpdateOperationsInput | number
     num_inference_steps?: IntFieldUpdateOperationsInput | number
-    image_url?: StringFieldUpdateOperationsInput | string
+    stars?: IntFieldUpdateOperationsInput | number
+    used?: IntFieldUpdateOperationsInput | number
+    main_image?: StringFieldUpdateOperationsInput | string
+    images?: PacksUpdateimagesInput | string[]
+    features?: PacksUpdatefeaturesInput | string[]
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -27552,14 +27723,14 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     user: UsersCreateNestedOneWithoutImagesInput
-    training_model: TrainingModelsCreateNestedOneWithoutImagesInput
+    training_model?: TrainingModelsCreateNestedOneWithoutImagesInput
   }
 
   export type ImagesUncheckedCreateWithoutPackInput = {
     id?: number
     pid: string
     user_id: number
-    training_model_id: number
+    training_model_id?: number | null
     user_prompt: string
     sys_prompt: string
     alt: string
@@ -28212,7 +28383,7 @@ export namespace Prisma {
   export type ImagesCreateManyUserInput = {
     id?: number
     pid: string
-    training_model_id: number
+    training_model_id?: number | null
     pack_id?: number | null
     user_prompt: string
     sys_prompt: string
@@ -28408,14 +28579,14 @@ export namespace Prisma {
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    training_model?: TrainingModelsUpdateOneRequiredWithoutImagesNestedInput
+    training_model?: TrainingModelsUpdateOneWithoutImagesNestedInput
     pack?: PacksUpdateOneWithoutImagesNestedInput
   }
 
   export type ImagesUncheckedUpdateWithoutUserInput = {
     id?: IntFieldUpdateOperationsInput | number
     pid?: StringFieldUpdateOperationsInput | string
-    training_model_id?: IntFieldUpdateOperationsInput | number
+    training_model_id?: NullableIntFieldUpdateOperationsInput | number | null
     pack_id?: NullableIntFieldUpdateOperationsInput | number | null
     user_prompt?: StringFieldUpdateOperationsInput | string
     sys_prompt?: StringFieldUpdateOperationsInput | string
@@ -28438,7 +28609,7 @@ export namespace Prisma {
   export type ImagesUncheckedUpdateManyWithoutUserInput = {
     id?: IntFieldUpdateOperationsInput | number
     pid?: StringFieldUpdateOperationsInput | string
-    training_model_id?: IntFieldUpdateOperationsInput | number
+    training_model_id?: NullableIntFieldUpdateOperationsInput | number | null
     pack_id?: NullableIntFieldUpdateOperationsInput | number | null
     user_prompt?: StringFieldUpdateOperationsInput | string
     sys_prompt?: StringFieldUpdateOperationsInput | string
@@ -28755,7 +28926,7 @@ export namespace Prisma {
     id?: number
     pid: string
     user_id: number
-    training_model_id: number
+    training_model_id?: number | null
     user_prompt: string
     sys_prompt: string
     alt: string
@@ -28793,14 +28964,14 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UsersUpdateOneRequiredWithoutImagesNestedInput
-    training_model?: TrainingModelsUpdateOneRequiredWithoutImagesNestedInput
+    training_model?: TrainingModelsUpdateOneWithoutImagesNestedInput
   }
 
   export type ImagesUncheckedUpdateWithoutPackInput = {
     id?: IntFieldUpdateOperationsInput | number
     pid?: StringFieldUpdateOperationsInput | string
     user_id?: IntFieldUpdateOperationsInput | number
-    training_model_id?: IntFieldUpdateOperationsInput | number
+    training_model_id?: NullableIntFieldUpdateOperationsInput | number | null
     user_prompt?: StringFieldUpdateOperationsInput | string
     sys_prompt?: StringFieldUpdateOperationsInput | string
     alt?: StringFieldUpdateOperationsInput | string
@@ -28823,7 +28994,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     pid?: StringFieldUpdateOperationsInput | string
     user_id?: IntFieldUpdateOperationsInput | number
-    training_model_id?: IntFieldUpdateOperationsInput | number
+    training_model_id?: NullableIntFieldUpdateOperationsInput | number | null
     user_prompt?: StringFieldUpdateOperationsInput | string
     sys_prompt?: StringFieldUpdateOperationsInput | string
     alt?: StringFieldUpdateOperationsInput | string

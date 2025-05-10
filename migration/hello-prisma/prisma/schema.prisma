@@ -112,31 +112,31 @@ model UserCredits {
 }
 
 model Images {
-  id                             Int            @id @default(autoincrement())
-  pid                            String         @unique @db.Uuid
-  user_id                        Int   
-  training_model_id              Int   
-  pack_id                        Int?    
-  user_prompt                    String        
-  sys_prompt                     String        
-  alt                            String        
-  num_inference_steps            Int   
-  content_type                   ImageFormat   
-  status                         Status    
-  image_size                     ImageSize     
-  fal_ai_request_id              String?        @db.VarChar(255)
-  width                          Int?    
-  height                         Int?    
-  image_s3_key                   String         @db.VarChar(255) 
-  image_url_fal                  String?       
-  is_favorite                    Boolean        @default(true)
-  deleted_at                     DateTime?      @db.Timestamptz
-  created_at                     DateTime       @default(now()) @db.Timestamptz
-  updated_at                     DateTime       @default(now()) @db.Timestamptz
-    
-  user                           Users          @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  training_model                 TrainingModels @relation(fields: [training_model_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  pack                           Packs?         @relation(fields: [pack_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  id                             Int              @id @default(autoincrement())
+  pid                            String           @unique @db.Uuid
+  user_id                        Int    
+  training_model_id              Int?     
+  pack_id                        Int?     
+  user_prompt                    String         
+  sys_prompt                     String         
+  alt                            String         
+  num_inference_steps            Int    
+  content_type                   ImageFormat    
+  status                         Status     
+  image_size                     ImageSize      
+  fal_ai_request_id              String?          @db.VarChar(255)
+  width                          Int?     
+  height                         Int?     
+  image_s3_key                   String           @db.VarChar(255) 
+  image_url_fal                  String?        
+  is_favorite                    Boolean          @default(true)
+  deleted_at                     DateTime?        @db.Timestamptz
+  created_at                     DateTime         @default(now()) @db.Timestamptz
+  updated_at                     DateTime         @default(now()) @db.Timestamptz
+
+  user                           Users            @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  training_model                 TrainingModels?  @relation(fields: [training_model_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  pack                           Packs?           @relation(fields: [pack_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@index([pid], name: "idx-images-pid")
   @@index([user_id], name: "idx-images-user_id")
@@ -200,9 +200,9 @@ model Packs {
   credits                         Int         
   num_images                      Int              
   num_inference_steps             Int              
-  starts                          Int              @default(5)
+  stars                           Int              @default(5)
   used                            Int              @default(0)
-  main_image                      String           
+  main_image                      String           @default("url")
   images                          String[]         @db.Text @default([])  
   features                        String[]         @db.Text @default([])
   created_at                      DateTime         @default(now()) @db.Timestamptz

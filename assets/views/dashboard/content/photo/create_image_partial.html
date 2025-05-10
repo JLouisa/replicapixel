@@ -5,9 +5,9 @@
     $nextTick(() => {
         if ($refs.modelSelect) {
             $store.imageGenForm.selectedModelId = $refs.modelSelect.value || '';
-            selectedModelName = $refs.modelSelect.options[$refs.modelSelect.selectedIndex]?.text || 'N/A';
+            selectedModelName = $refs.modelSelect.options[$refs.modelSelect.selectedIndex]?.text;
         } else {
-            selectedModelName = 'N/A'; // Fallback if ref not found initially
+            selectedModelName = '';
         }
     });
   "
@@ -62,14 +62,14 @@
           :disabled="$store.imageGenForm.isLoading"
           x-ref="modelSelect"
           x-model="$store.imageGenForm.selectedModelId"
-          @change="selectedModelName = $event.target.options[$event.target.selectedIndex]?.text || 'N/A'"
+          @change="selectedModelName = $event.target.options[$event.target.selectedIndex]?.text"
         >
           {% if training_models %} {% for training_model in training_models %}
-          <option value="{{ training_model.id }}" {% if loop.first %}selected{% endif %}>
+          <option value="{{ training_model.pid }}" {% if loop.first %}selected{% endif %}>
             {{ training_model.name }}
           </option>
           {% endfor %} {% else %}
-          <option value="" disabled>No models available</option>
+          <option value="">No models selected</option>
           {% endif %}
         </select>
       </div>

@@ -13,8 +13,6 @@ pub struct Model {
     #[sea_orm(column_type = "Text")]
     pub pack_prompts: String,
     pub credits: i32,
-    #[sea_orm(column_type = "Text")]
-    pub image_url: String,
     pub created_at: DateTimeWithTimeZone,
     pub updated_at: DateTimeWithTimeZone,
     pub title: String,
@@ -23,6 +21,12 @@ pub struct Model {
     pub short_description: String,
     pub num_images: i32,
     pub num_inference_steps: i32,
+    pub features: Option<Vec<String>>,
+    pub images: Option<Vec<String>>,
+    #[sea_orm(column_type = "Text")]
+    pub main_image: String,
+    pub used: i32,
+    pub stars: i32,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

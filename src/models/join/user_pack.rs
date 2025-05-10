@@ -18,7 +18,7 @@ use uuid::Uuid;
 pub async fn load_user_and_one_pack(
     db: &DatabaseConnection,
     pid_uuid: &UserPid,
-    pid_uuid_pack: &Uuid,
+    pack_pid_uuid: &Uuid,
 ) -> Result<(UserModel, PackModel), JoinError> {
     let pid = Uuid::parse_str(pid_uuid.as_ref())?;
 
@@ -33,11 +33,11 @@ pub async fn load_user_and_one_pack(
         },
         async {
             PackEntity::find()
-                .filter(pack_entity::Column::Pid.eq(*pid_uuid_pack))
+                .filter(pack_entity::Column::Pid.eq(*pack_pid_uuid))
                 .one(db)
                 .await
                 .map_err(JoinError::Database)?
-                .ok_or_else(|| JoinError::PackNotFound(pid_uuid_pack.to_string()))
+                .ok_or_else(|| JoinError::PackNotFound(pack_pid_uuid.to_string()))
         }
     )?;
 

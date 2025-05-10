@@ -32,7 +32,7 @@ pub enum JoinError {
     #[error("User not found for PID: {0}")]
     ImageNotFound(String),
     #[error("Training not found for ID: {0}")]
-    TrainingModelNotFound(i32),
+    TrainingModelNotFound(Uuid),
     #[error("Training not found for PID: {0}")]
     ModelNotFound(String),
     #[error("Order not found for PID: {0}")]
@@ -320,13 +320,13 @@ pub async fn load_user_and_credits(
 pub async fn load_user_and_one_training_model(
     db: &DatabaseConnection,
     pid_uuid: &UserPid,
-    id: i32,
+    model_pid_uuid: Uuid,
 ) -> Result<(UserModel, TrainingModelModel), JoinError> {
     let pid_uuid = Uuid::parse_str(&pid_uuid.as_ref())?;
     if let Some((user, training_model)) = UserEntity::find()
         .filter(users::Column::Pid.eq(pid_uuid.to_owned()))
         .join(JoinType::InnerJoin, users::Relation::TrainingModels.def())
-        .filter(training_models_entity::Column::Id.eq(id))
+        .filter(training_models_entity::Column::Pid.eq(model_pid_uuid))
         .select_also(training_models_model::Entity)
         .one(db)
         .await?
@@ -336,7 +336,7 @@ pub async fn load_user_and_one_training_model(
                 return Ok((user, training_model));
             }
             None => {
-                return Err(JoinError::TrainingModelNotFound(id));
+                return Err(JoinError::TrainingModelNotFound(model_pid_uuid));
             }
         }
     };
@@ -352,5 +352,5 @@ pub async fn load_user_and_one_training_model(
         return Err(JoinError::UserNotFound(pid_uuid.to_string()));
     }
 
-    Err(JoinError::TrainingModelNotFound(id))
+    Err(JoinError::TrainingModelNotFound(model_pid_uuid))
 }

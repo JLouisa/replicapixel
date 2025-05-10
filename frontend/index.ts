@@ -345,7 +345,7 @@ interface ImageGenFormStore {
   inferenceSteps: number;
   numImages: number;
   isLoading: boolean;
-  selectedModelId: string;
+  selectedModelId: string | null;
 
   init(): void;
   reset(): void;
@@ -360,7 +360,7 @@ Alpine.store(Stores.ImageGenForm, {
   inferenceSteps: 28,
   numImages: 8,
   isLoading: false,
-  selectedModelId: "",
+  selectedModelId: null,
 
   init() {},
   reset(this: ImageGenFormStore): void {
@@ -395,9 +395,8 @@ Alpine.store(Stores.ImageGenForm, {
     // Construct payload with controlled inputs
     const payload = {
       prompt: (formData.get("prompt") as string)?.trim() || "",
-      training_model_id: isNaN(Number(formData.get("training_model_id")))
-        ? formData.get("training_model_id")
-        : Number(formData.get("training_model_id")),
+      training_model_id:
+        formData.get("training_model_id") === "" ? null : formData.get("training_model_id"),
       num_inference_steps: this.inferenceSteps,
       num_images: this.numImages,
       image_size: (formData.get("image_size") as string) || "1024x1024",
