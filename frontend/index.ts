@@ -1,7 +1,7 @@
 import Alpine from "alpinejs";
 import { TrainingModelFormClass } from "./lib/type/trainingModelForm";
 import { DAL } from "./lib/api";
-import { createBatches, createZip, ensureBoolean } from "./lib/utils";
+import { createBatches, createZip, ensureBoolean, replaceDivIfFound } from "./lib/utils";
 import { ImageGenFormClass } from "./lib/type/ImageGenForm";
 
 declare global {
@@ -413,6 +413,9 @@ Alpine.store(Stores.ImageGenForm, {
 
     this.isLoading = true;
     Alpine.store(Stores.Toast).success("Image generation started!");
+
+    // Replace empty div needed
+    replaceDivIfFound();
 
     try {
       const [batches, singles] = createBatches(modelData.num_images);

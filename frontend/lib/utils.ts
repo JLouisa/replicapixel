@@ -26,3 +26,17 @@ export function ensureBoolean(value: unknown): boolean {
   if (typeof value === "string") return value.toLowerCase() === "true";
   return false;
 }
+
+export function replaceDivIfFound() {
+  const targetDiv = document.getElementById("no-images") as HTMLDivElement | null;
+
+  if (!targetDiv) {
+    return;
+  }
+
+  const newDiv = document.createElement("div");
+  newDiv.id = "drive-gallery";
+  newDiv.className = "grid grid-cols-2 md:grid-cols-6 gap-4 w-full self-start";
+
+  targetDiv.replaceWith(newDiv);
+}
