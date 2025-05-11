@@ -1,8 +1,8 @@
-<a href="{{ website.website_routes.payment.payment_plans | safe }}">
+<a href="#pricing">
   {% set timestamp = now() | date(format="%s%.f") %}
   <button
     id="shiningButton-{{ timestamp }}"
-    class="relative flex flex-row items-center gap-2 lg:gap-4 px-4 py-2 lg:pt-4 lg:pr-6 lg:pb-4 lg:pl-8 overflow-hidden rounded-full font-semibold text-white shadow-md transition-all duration-150 bg-gradient-to-r from-[var(--color-grn-from)] to-[var(--color-grn-to)] hover:shadow-lg hover:brightness-110 active:scale-95 active:brightness-90 cursor-pointer"
+    class="relative flex flex-row items-center lg:gap-4 p-2 lg:p-3 lg:px-6 my-[-0.5rem] lg:my-[-1rem] overflow-hidden rounded-full font-semibold text-white shadow-md transition-all duration-150 bg-gradient-to-r from-[var(--color-grn-from)] to-[var(--color-grn-to)] hover:shadow-lg hover:brightness-110 active:scale-95 active:brightness-90 cursor-pointer"
   >
     Try Now {% include "partials/svg/triple_stars.html" %}
   </button>

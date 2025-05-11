@@ -1,0 +1,109 @@
+<!-- prettier-ignore -->
+{% set right_edge_link = "../../../static/images/hero/halloween-hero.jpg" %}
+{% set right_outer_link = "../../../static/images/hero/nature-hero.jpg" %}
+{% set right_link = "../../../static/images/hero/quin-hero.jpg" %}
+{% set center_link = "../../../static/images/hero/lara-hero.jpg" %}
+{% set left_link = "../../../static/images/hero/terminator-hero.jpg" %}
+{% set left_outer_link = "../../../static/images/hero/valentine-hero.jpg" %}
+{% set left_edge_link = "../../../static/images/hero/spiritual-hero.jpg" %}
+
+{# Each panel width: w-64 (256px) Angle: 30deg cos(30deg) approx 0.866 Apparent width of tilted
+panel: 256px * 0.866 = 221.7px Space "lost" on each side panel due to tilt: 256px * (1 - 0.866)
+= 34.3px The side panels will effectively "shrink" horizontally. We need the center panel to be
+positioned to meet these shrunken inner edges. #}
+
+<div class="flex flex-col items-center justify-center p-4">
+  <div class="flex justify-center items-center">
+    <!-- Edge Left Panel -->
+    <div
+      class="hidden lg:block group w-[20rem] h-[30.625rem] rounded-lg overflow-hidden [perspective:75rem] [transform-style:preserve-3d] mr-[-1.25rem] z-8 transition-all duration-500 ease-out"
+    >
+      <img
+        src="{{right_edge_link | safe}}"
+        alt="Tilted Image Left"
+        class="w-full h-full rounded-lg object-cover transform origin-left rotate-y-[25deg] group-hover:rotate-y-0 transition-transform duration-500 ease-out"
+      />
+    </div>
+
+    <!-- Outer Left Panel -->
+    <div
+      class="hidden sm:block w-40 h-[16.25rem] group md:w-[18.75rem] md:h-[27rem] rounded-lg overflow-hidden [perspective:75rem] [transform-style:preserve-3d] mr-[-0.9375rem] z-6 transition-all duration-500 ease-out"
+    >
+      <img
+        src="{{right_outer_link | safe}}"
+        alt="Tilted Image Left"
+        class="w-full h-full rounded-lg object-cover transform origin-left rotate-y-[25deg] group-hover:rotate-y-0 transition-transform duration-500 ease-out"
+      />
+    </div>
+
+    <div class="flex flex-grow items-center justify-center relative">
+      <!-- Glow Background Effect -->
+      <div
+        class="absolute z-0 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full w-[1000px] h-[1000px] pointer-events-none"
+        style="
+          background: radial-gradient(
+            circle,
+            rgba(244, 48, 152, 0.25) 0%,
+            rgba(96, 93, 255, 0.2) 100%
+          );
+          filter: blur(300px);
+        "
+      ></div>
+
+      <!-- Left Panel -->
+      <div
+        class="group w-40 h-60 md:w-64 md:h-96 rounded-lg overflow-hidden [perspective:75rem] [transform-style:preserve-3d] z-4 transition-all duration-500 ease-out"
+      >
+        <img
+          src="{{right_link | safe}}"
+          alt="Tilted Image Left"
+          class="w-full h-full rounded-lg object-cover transform origin-left rotate-y-[15deg] group-hover:rotate-y-0 transition-transform duration-500 ease-out"
+        />
+      </div>
+
+      <!-- Center Panel -->
+      <div
+        class="group w-40 h-[14.375rem] md:w-64 md:h-[22.5rem] rounded-lg overflow-hidden shadow-2xl [perspective:75rem] [transform-style:preserve-3d] z-2 mx-2 hover:scale-105 transition-all duration-500 ease-out relative"
+      >
+        <img
+          src="{{center_link | safe}}"
+          alt="Center Image"
+          class="w-full h-full object-cover transform group-hover:[transform:translateZ(0px)_scale(1.05)] transition-transform duration-500 ease-out"
+        />
+      </div>
+
+      <!-- Right Panel -->
+      <div
+        class="group w-40 h-60 md:w-64 md:h-96 rounded-lg overflow-hidden [perspective:75rem] [transform-style:preserve-3d] z-4 transition-all duration-500 ease-out"
+      >
+        <img
+          src="{{left_link | safe}}"
+          alt="Tilted Image Right"
+          class="w-full h-full rounded-lg object-cover transform origin-right rotate-y-[-15deg] group-hover:rotate-y-0 transition-transform duration-500 ease-out"
+        />
+      </div>
+    </div>
+
+    <!-- Outer Right Panel -->
+    <div
+      class="hidden sm:block group w-40 h-[16.25rem] md:w-[18.75rem] md:h-[27rem] rounded-lg overflow-hidden [perspective:75rem] [transform-style:preserve-3d] ml-[-0.9375rem] z-6 transition-all duration-500 ease-out"
+    >
+      <img
+        src="{{left_outer_link | safe}}"
+        alt="Tilted Image Right"
+        class="w-full h-full rounded-lg object-cover transform origin-right rotate-y-[-25deg] group-hover:rotate-y-0 transition-transform duration-500 ease-out"
+      />
+    </div>
+
+    <!-- Edge Right Panel -->
+    <div
+      class="hidden lg:block group w-[20rem] h-[30.625rem] rounded-lg overflow-hidden [perspective:75rem] [transform-style:preserve-3d] ml-[-1.25rem] z-8 transition-all duration-500 ease-out"
+    >
+      <img
+        src="{{left_edge_link | safe}}"
+        alt="Tilted Image Right"
+        class="w-full h-full rounded-lg object-cover transform origin-right rotate-y-[-25deg] group-hover:rotate-y-0 transition-transform duration-500 ease-out"
+      />
+    </div>
+  </div>
+</div>

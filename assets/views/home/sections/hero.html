@@ -1,4 +1,4 @@
-<section class="flex flex-col gap-3 items-center justify-start mb-16 mt-28 lg:mt-48">
+<section class="flex flex-col gap-3 items-center justify-start mb-16 mt-28 lg:mt-48 relative">
   <div class="flex flex-col gap-3 items-center justify-center self-stretch shrink-0">
     <div class="flex flex-col gap-6 items-center justify-start shrink-0">
       <div class="text-w text-center font-bricon text-5xl md:text-7xl font-semibold">
@@ -12,37 +12,59 @@
         Transform your selfie into endless AI creations. No waiting, no tweaks.
       </div>
     </div>
-    <img
-      class="flex flex-row gap-3 items-center justify-center shrink-0 w-[1620px] h-[auto] overflow-visible"
-      src="../../../static/images/carousel.png"
-    />
-    {# {% include "home/sections/carousel.html" %} #}
   </div>
+  {% include "home/sections/partials/hero_panels.html" %} {#
+  <div
+    class="rounded-[50%] w-[407.01px] h-[407.01px] absolute left-[1087.59px] top-[6772.53px]"
+    style="
+      background: linear-gradient(180deg, rgba(255, 123, 202, 1) 0%, rgba(96, 93, 255, 1) 100%);
+      transform-origin: 0 0;
+      transform: rotate(136.069deg) scale(1, 1);
+      filter: blur(127.58px);
+    "
+  ></div>
+  #} {#
+  <div
+    class="rounded-[50%] w-[297.81px] h-[297.81px] absolute left-[1077.85px] top-[7043.51px]"
+    style="
+      background: linear-gradient(
+        180deg,
+        rgba(242, 47, 176, 1) 0%,
+        rgba(96, 93, 255, 1) 100%,
+        rgba(112, 97, 163, 1) 100%
+      );
+      transform-origin: 0 0;
+      transform: rotate(113.869deg) scale(1, 1);
+      filter: blur(63.79px);
+    "
+  ></div>
+  #} {#
+  <div
+    class="rounded-[50%] w-[407.01px] h-[407.01px] absolute left-[1087.2px] top-[583.11px]"
+    style="
+      background: linear-gradient(180deg, rgba(244, 48, 152, 1) 0%, rgba(96, 93, 255, 1) 100%);
+      transform-origin: 0 0;
+      transform: rotate(138.178deg) scale(1, 1);
+      filter: blur(127.58px);
+    "
+  ></div>
+  #} {#
+  <div
+    class="rounded-[50%] w-[297.81px] h-[297.81px] absolute left-[1040.12px] top-[584.03px]"
+    style="
+      background: linear-gradient(
+        180deg,
+        rgba(242, 47, 176, 1) 0%,
+        rgba(96, 93, 255, 1) 100%,
+        rgba(112, 97, 163, 1) 100%
+      );
+      transform-origin: 0 0;
+      transform: rotate(113.869deg) scale(1, 1);
+      filter: blur(63.79px);
+    "
+  ></div>
+  #}
   <div class="flex items-center justify-center shrink-0">
     <div>{% include "partials/parts/cta_btn_home.html" %}</div>
-
-    {#
-    <div
-      class="bg-[#605dff] rounded-[50px] pt-[18px] pr-4 pb-[18px] pl-6 flex flex-row gap-4 items-center justify-center shrink-0 h-14"
-    >
-      <div
-        class="text-w text-center font-['Inter-SemiBold',_sans-serif] text-base leading-none font-semibold w-[79px] flex items-center justify-center"
-      >
-        Try It Now
-      </div>
-      {% include "partials/svg/triple_stars.html" %}
-    </div>
-    <div
-      class="bg-[#ff319e] rounded-[100px] pt-4 pr-6 pb-4 pl-6 flex flex-row gap-2.5 items-center justify-center shrink-0 h-14"
-      style="backdrop-filter: blur(10px)"
-    >
-      <div
-        class="text-background-disabled-0 text-left font-['Inter-SemiBold',_sans-serif] text-base leading-[160%] font-semibold"
-        style="letter-spacing: 0.005em"
-      >
-        See Examples
-      </div>
-    </div>
-    #}
   </div>
 </section>

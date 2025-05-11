@@ -1,5 +1,5 @@
 <div class="flex flex-col gap-12 items-center max-w-7xl mx-auto my-8">
-  <div class="flex flex-col items-center">
+  <div class="flex flex-col items-center z-2">
     <div class="text-center font-bricon text-2xl lg:text-5xl font-semibold">
       <span class="replica-pixel-creators-span">#</span>
       <span class="replica-pixel-creators-span2"> ReplicaPixelCreators </span>
@@ -9,7 +9,19 @@
   <div
     class="flex flex-row gap-2 md:gap-4 items-center justify-center md:justify-evenly self-stretch h-96 relative"
   >
-    <div class="rounded-lg flex flex-col self-stretch flex-1 overflow-hidden max-w-80">
+    <!-- Glow Background Effect -->
+    <div
+      class="absolute z-1 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full w-[1000px] h-[1000px] pointer-events-none"
+      style="
+        background: radial-gradient(
+          circle,
+          rgba(244, 48, 152, 0.25) 0%,
+          rgba(96, 93, 255, 0.2) 100%
+        );
+        filter: blur(300px);
+      "
+    ></div>
+    <div class="rounded-lg flex flex-col self-stretch flex-1 overflow-hidden max-w-80 z-2">
       <img
         class="self-stretch flex-1 object-cover"
         src="../../../static/images/creator1.png"
@@ -17,7 +29,7 @@
       />
     </div>
 
-    <div class="rounded-lg flex flex-col self-stretch flex-1 overflow-hidden max-w-80">
+    <div class="rounded-lg flex flex-col self-stretch flex-1 overflow-hidden max-w-80 z-2">
       <img
         class="self-stretch flex-1 object-cover"
         src="../../../static/images/creator2.png"
@@ -25,7 +37,7 @@
       />
     </div>
 
-    <div class="rounded-lg flex flex-col self-stretch flex-1 overflow-hidden max-w-80">
+    <div class="rounded-lg flex flex-col self-stretch flex-1 overflow-hidden max-w-80 z-2">
       <img
         class="self-stretch flex-1 object-cover"
         src="../../../static/images/creator1.png"
@@ -33,7 +45,7 @@
       />
     </div>
 
-    <div class="rounded-lg flex flex-col self-stretch flex-1 overflow-hidden max-w-80">
+    <div class="rounded-lg flex flex-col self-stretch flex-1 overflow-hidden max-w-80 z-2">
       <img
         class="self-stretch flex-1 object-cover"
         src="../../../static/images/creator1.png"
@@ -41,7 +53,7 @@
       />
     </div>
 
-    <div class="rounded-lg flex flex-col self-stretch flex-1 overflow-hidden max-w-80">
+    <div class="rounded-lg flex flex-col self-stretch flex-1 overflow-hidden max-w-80 z-2">
       <img
         class="self-stretch flex-1 object-cover"
         src="../../../static/images/creator1.png"
@@ -49,7 +61,7 @@
       />
     </div>
 
-    <div class="rounded-lg flex flex-col self-stretch flex-1 overflow-hidden max-w-80">
+    <div class="rounded-lg flex flex-col self-stretch flex-1 overflow-hidden max-w-80 z-2">
       <img
         class="self-stretch flex-1 object-cover"
         src="../../../static/images/creator3.png"
@@ -58,7 +70,7 @@
     </div>
 
     <div
-      class="bg-white rounded-full p-4 flex items-center justify-center gap-4 h-14 absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"
+      class="bg-white rounded-full p-4 flex items-center justify-center gap-4 h-14 absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-4"
     >
       <div
         class="font-sans text-base leading-none font-normal"
