@@ -23,7 +23,7 @@ use axum::{
     debug_handler,
     extract::{Json, State},
     http::{HeaderMap, HeaderValue, StatusCode},
-    response::{IntoResponse, Response},
+    response::{IntoResponse, Redirect, Response},
     Extension,
 };
 use chrono::{Duration, Utc};
@@ -114,7 +114,7 @@ pub fn routes() -> Routes {
         .add(routes::Auth::LOGOUT_PARTIAL, get(logout_partial))
         .add(routes::Auth::API_REGISTER, post(register))
         .add(routes::Auth::API_VERIFY_TOKEN, get(verify))
-        .add(routes::Auth::API_LOGIN, post(login))
+        .add(routes::Auth::API_LOGIN, post(api_login))
         .add(routes::Auth::API_LOGOUT, get(logout))
         .add(routes::Auth::API_FORGOT, post(forgot))
         .add(routes::Auth::API_RESET, post(reset))
@@ -127,6 +127,16 @@ pub fn routes() -> Routes {
     // .add("/api/auth/test/forgot_password", get(test_forgot_password))
     // .add("/api/auth/test/magic_link", get(test_magic_link))
     // .add("/api/auth/test/transaction", get(test_transaction))
+}
+
+pub struct HxRedirect(String);
+
+impl IntoResponse for HxRedirect {
+    fn into_response(self) -> Response {
+        let mut headers = HeaderMap::new();
+        headers.insert("HX-Redirect", self.0.parse().unwrap());
+        (headers, StatusCode::OK).into_response()
+    }
 }
 
 fn get_allow_email_domain_re() -> &'static Regex {
@@ -446,7 +456,7 @@ async fn reset(State(ctx): State<AppContext>, Json(params): Json<ResetParams>) -
 }
 
 #[debug_handler]
-async fn login(
+async fn api_login(
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
     Extension(website): Extension<Website>,
@@ -643,28 +653,38 @@ async fn magic_link_verify(
 
 #[debug_handler]
 pub async fn get_login(
+    auth: Result<auth::JWT>,
     ViewEngine(v): ViewEngine<TeraView>,
     Extension(website): Extension<Website>,
     State(_ctx): State<AppContext>,
-) -> Result<Response> {
-    format::render().view(
-        &v,
-        "auth/login/login_form.html",
-        data!({"website": website}),
-    )
+) -> Result<impl IntoResponse> {
+    if auth.is_ok() {
+        Ok(Redirect::to("/studio").into_response())
+    } else {
+        format::render().view(
+            &v,
+            "auth/login/login_form.html",
+            data!({"website": website}),
+        )
+    }
 }
 
 #[debug_handler]
 pub async fn partial_login(
+    auth: Result<auth::JWT>,
     ViewEngine(v): ViewEngine<TeraView>,
     Extension(website): Extension<Website>,
     State(_ctx): State<AppContext>,
-) -> Result<Response> {
-    format::render().view(
-        &v,
-        "auth/login/login_partial.html",
-        data!({"website": website}),
-    )
+) -> Result<impl IntoResponse> {
+    if auth.is_ok() {
+        Ok(HxRedirect("/partial/studio".to_string()).into_response())
+    } else {
+        format::render().view(
+            &v,
+            "auth/login/login_partial.html",
+            data!({"website": website}),
+        )
+    }
 }
 
 #[debug_handler]

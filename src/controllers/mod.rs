@@ -4,10 +4,10 @@ pub mod features;
 pub mod home;
 pub mod images;
 pub mod oauth2;
+pub mod packs;
 pub mod payment;
 pub mod policy;
 pub mod settings;
+pub mod starter;
 pub mod training_models;
 pub mod webhooks;
-
-pub mod packs;

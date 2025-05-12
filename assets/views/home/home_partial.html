@@ -10,7 +10,8 @@
 
     <!-- Page content here -->
     <div class="relative bg-bg-web overflow-hidden">
-      <div class="absolute top-0 right-0 p-4 z-10">
+      <div class="absolute top-0 right-0 p-4 z-10 flex items-center justify-center gap-2">
+        <div>{% include "partials/parts/dark_mode_toggle.html" %}</div>
         <div id="validate-login-btn">
           <button
             hx-get="{{ login_link }}"

@@ -1,0 +1,20 @@
+<!-- prettier-ignore -->
+{% set login_api_link = website.website_routes.auth_routes.api_login | safe %}
+{% set forgot_partial_link = website.website_routes.auth_routes.forgot_partial | safe %}
+{% set register_partial_link = website.website_routes.auth_routes.register_partial | safe %}
+{% set google_link = website.website_routes.oauth2.google | safe %}
+{% set github_link = website.website_routes.oauth2.github | safe %}
+{% set studio_link = website.website_routes.dashboard_routes.base | safe %}
+{% set is_starter = true %}
+
+<div class="h-full flex flex-col items-center justify-center">
+  <div class="w-full bg-gray-600 flex items-center justify-center">
+    <ul class="steps p-4">
+      <li class="step step-primary text-white">Register</li>
+      <li class="step text-white">Email Verification</li>
+      <li class="step text-white">Choose plan</li>
+      <li class="step step-success text-white" data-content="★">Create Model</li>
+    </ul>
+  </div>
+  <div class="mt-8 shadow-lg bg-base-600">{% include "auth/register/register_partial.html" %}</div>
+</div>

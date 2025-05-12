@@ -63,14 +63,8 @@
 
   <!-- End section (User controls) -->
   <div class="flex items-center space-x-4">
-    <label class="swap swap-rotate">
-      <input type="checkbox" class="theme-controller" value="dark" />
-      <!-- sun icon -->
-      {% include "partials/svg/sun.html" %}
-      <!-- moon icon -->
-      {% include "partials/svg/moon.html" %}
-    </label>
-    {% if user.name %} {% include "partials/navbar/navbar_user_partial.html" %} {% else %}
+    {% include "partials/parts/dark_mode_toggle.html" %} {% if user.name %} {% include
+    "partials/navbar/navbar_user_partial.html" %} {% else %}
     <div class="flex items-center space-x-2">
       <div class="flex items-center space-x-4">
         <a href="{{ login_link }}" class="btn btn-neutral">Login</a>
