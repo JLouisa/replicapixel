@@ -25,7 +25,7 @@
           <img
             class="rounded-md lg:rounded-lg {{ aspect_class }} self-stretch {% if not loop.last %}flex-1{% endif %}"
             style="object-fit: cover"
-            src="{{ image_url.path | default(value=image_url) }}"
+            src="{{ image_url | safe }}"
             alt="Gallery image {{ loop.index }}"
           />
         </div>
@@ -45,7 +45,7 @@
           <img
             class="rounded-md lg:rounded-lg {{ aspect_class }} self-stretch {% if not loop.last %}flex-1{% endif %}"
             style="object-fit: cover"
-            src="{{ image_url.path | default(value=image_url) }}"
+            src="{{ image_url | safe }}"
             alt="Gallery image {{ loop.index }}"
           />
         </div>
@@ -76,7 +76,7 @@
           <img
             class="rounded-md lg:rounded-lg {{ aspect_class }} self-stretch {% if not loop.last %}flex-1{% endif %}"
             style="object-fit: cover"
-            src="{{ image_url.path | default(value=image_url) }}"
+            src="{{ image_url | safe }}"
             alt="Gallery image {{ loop.index }}"
           />
         </div>
@@ -96,7 +96,7 @@
           <img
             class="rounded-md lg:rounded-lg {{ aspect_class }} self-stretch {% if not loop.last %}flex-1{% endif %}"
             style="object-fit: cover"
-            src="{{ image_url.path | default(value=image_url) }}"
+            src="{{ image_url | safe }}"
             alt="Gallery image {{ loop.index }}"
           />
         </div>
@@ -116,7 +116,7 @@
           <img
             class="rounded-md lg:rounded-lg {{ aspect_class }} self-stretch {% if not loop.last %}flex-1{% endif %}"
             style="object-fit: cover"
-            src="{{ image_url.path | default(value=image_url) }}"
+            src="{{ image_url | safe }}"
             alt="Gallery image {{ loop.index }}"
           />
         </div>
