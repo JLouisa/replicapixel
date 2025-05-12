@@ -201,7 +201,14 @@
       >
 
       {% endif %}
-      <a href="/" class="text-sm text-primary cursor-pointer mt-4 text-center">Home</a>
+      <a
+        class="text-sm text-primary cursor-pointer mt-4"
+        hx-get="/partial/home"
+        hx-push-url="/"
+        hx-target="#app"
+        hx-swap="innerHTML"
+        >Home
+      </a>
     </div>
     <script>
       // Set theme on load

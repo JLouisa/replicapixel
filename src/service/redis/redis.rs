@@ -11,12 +11,15 @@ use std::{sync::Arc, time::Duration};
 use strum::{AsRefStr, EnumString};
 use thiserror::Error;
 
-use crate::views::images::ImageView;
+use crate::{controllers::home::WebImages, views::images::ImageView};
 
 pub type Cache = Arc<loco_rs::cache::Cache>;
 pub type RedisDbResult<T> = std::result::Result<T, RedisDbError>;
 
 use redis::aio::ConnectionManager;
+
+const WEB_IMAGES_CACHE_KEY: &str = "web";
+const WEB_IMAGES_TTL_SECONDS: u64 = 60;
 
 #[derive(Debug, Error)]
 pub enum RedisDbError {
@@ -38,6 +41,8 @@ pub enum RedisDbError {
     NotFound,
     #[error("Cache error: {0}")]
     CacheError(#[from] CacheError),
+    #[error("Conversion Error: {0}")]
+    ConversionError(#[from] serde_json::Error),
 }
 
 #[derive(Debug, Clone, EnumString, AsRefStr)]
@@ -147,23 +152,6 @@ impl CacheDriver for RedisCacheDriver {
 }
 
 impl RedisCacheDriver {
-    pub async fn set_s3_pre_url(&self, key: &ImageView) -> RedisDbResult<()> {
-        let mut conn = self.client.clone();
-        let time = 60 * 60 * 23;
-        let _: () = conn
-            .set_ex(key.pid.to_string(), key.s3_pre_url.to_owned(), time)
-            .await?;
-        Ok(())
-    }
-    pub async fn get_s3_pre_url(&self, key: &ImageView) -> RedisDbResult<String> {
-        let mut conn = self.client.clone();
-
-        let value: Option<String> = conn
-            .get(key.pid.to_string())
-            .await
-            .map_err(RedisDbError::from)?;
-        value.ok_or(RedisDbError::NotFound)
-    }
     pub async fn ping_redis(&self) -> RedisDbResult<()> {
         let mut conn = self.client.clone();
         let cmd = redis::cmd("PING");
@@ -181,5 +169,49 @@ impl RedisCacheDriver {
             }
             Err(e) => Err(RedisDbError::RedisError(e)),
         }
+    }
+    pub async fn set_s3_pre_url(&self, key: &ImageView) -> RedisDbResult<()> {
+        let mut conn = self.client.clone();
+        let time = 60 * 60 * 23;
+        let _: () = conn
+            .set_ex(key.pid.to_string(), key.s3_pre_url.to_owned(), time)
+            .await?;
+        Ok(())
+    }
+    pub async fn get_s3_pre_url(&self, key: &ImageView) -> RedisDbResult<String> {
+        let mut conn = self.client.clone();
+
+        let value: Option<String> = conn
+            .get(key.pid.to_string())
+            .await
+            .map_err(RedisDbError::from)?;
+        value.ok_or(RedisDbError::NotFound)
+    }
+    pub async fn get_web_images(&self) -> RedisDbResult<WebImages> {
+        let mut conn = self.client.clone();
+
+        let value: Option<String> = conn
+            .get(WEB_IMAGES_CACHE_KEY.to_owned())
+            .await
+            .map_err(RedisDbError::from)?;
+        let value = match value {
+            Some(web) => web,
+            None => return Err(RedisDbError::NotFound),
+        };
+        let web = serde_json::from_str(&value)?;
+        Ok(web)
+    }
+    pub async fn set_web_images(&self, web: &WebImages) -> RedisDbResult<()> {
+        let mut conn = self.client.clone();
+
+        let value = serde_json::to_string(web)?;
+        let _: () = conn
+            .set_ex(
+                WEB_IMAGES_CACHE_KEY.to_owned(),
+                value,
+                WEB_IMAGES_TTL_SECONDS,
+            )
+            .await?;
+        Ok(())
     }
 }

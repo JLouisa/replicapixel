@@ -14,185 +14,48 @@
   </div>
   <div class="flex flex-col items-center justify-center self-stretch relative w-full">
     <div class="flex flex-row gap-2 lg:gap-4 items-center justify-center relative w-full">
-      {#
       <!-- Gallery Row 1 -->
-      <div class="hidden lg:flex flex-col gap-y-2 lg:gap-y-4 items-center justify-center w-full">
+      <div class="hidden md:flex flex-col gap-y-2 lg:gap-y-4 items-center justify-center w-full">
+        {% for image_url in web_images.gallery.images_r0 %} {% set aspect_class = "aspect-square" %}
+        {% if loop.index0 % 2 == 1 %} {% set aspect_class = "aspect-[2/3]" %} {% endif %}
+
         <div
           class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
         >
           <img
-            class="rounded-md lg:rounded-lg self-stretch flex-1"
+            class="rounded-md lg:rounded-lg {{ aspect_class }} self-stretch {% if not loop.last %}flex-1{% endif %}"
             style="object-fit: cover"
-            src="../../static/images/gallery_big.png"
+            src="{{ image_url.path | default(value=image_url) }}"
+            alt="Gallery image {{ loop.index }}"
           />
         </div>
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg self-stretch flex-1"
-            style="object-fit: cover"
-            src="../../static/images/gallery_small.png"
-          />
-        </div>
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg self-stretch"
-            style="object-fit: cover"
-            src="../../static/images/gallery_big.png"
-          />
-        </div>
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg self-stretch flex-1"
-            style="object-fit: cover"
-            src="../../static/images/gallery_small.png"
-          />
-        </div>
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg self-stretch"
-            style="object-fit: cover"
-            src="../../static/images/gallery_big.png"
-          />
-        </div>
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg self-stretch flex-1"
-            style="object-fit: cover"
-            src="../../static/images/gallery_small.png"
-          />
-        </div>
+        {% else %}
+        <p>No images to display in this column.</p>
+        {% endfor %}
       </div>
-      #}
 
       <!-- Gallery Row 2 -->
-      <div class="hidden md:flex flex-col gap-y-2 lg:gap-y-4 items-center justify-center w-full">
+      <div class="flex flex-col gap-y-2 lg:gap-y-4 items-center justify-center w-full">
+        {% for image_url in web_images.gallery.images_r1 %} {% set aspect_class = "aspect-square" %}
+        {% if loop.index0 % 2 == 0 %} {% set aspect_class = "aspect-[2/3]" %} {% endif %}
+
         <div
           class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
         >
           <img
-            class="rounded-md lg:rounded-lg self-stretch flex-1"
+            class="rounded-md lg:rounded-lg {{ aspect_class }} self-stretch {% if not loop.last %}flex-1{% endif %}"
             style="object-fit: cover"
-            src="../../static/images/gallery_small.png"
+            src="{{ image_url.path | default(value=image_url) }}"
+            alt="Gallery image {{ loop.index }}"
           />
         </div>
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg self-stretch flex-1"
-            style="object-fit: cover"
-            src="../../static/images/gallery_big.png"
-          />
-        </div>
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg self-stretch flex-1"
-            style="object-fit: cover"
-            src="../../static/images/gallery_small.png"
-          />
-        </div>
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg self-stretch flex-1"
-            style="object-fit: cover"
-            src="../../static/images/gallery_big.png"
-          />
-        </div>
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg self-stretch flex-1"
-            style="object-fit: cover"
-            src="../../static/images/gallery_small.png"
-          />
-        </div>
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg self-stretch"
-            style="object-fit: cover"
-            src="../../static/images/gallery_big.png"
-          />
-        </div>
+        {% else %}
+        <p>No images to display in this column.</p>
+        {% endfor %}
       </div>
 
       <!-- Gallery Row 3 -->
-      <div class="flex flex-col gap-y-2 lg:gap-y-4 items-center justify-center w-full">
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg self-stretch flex-1"
-            style="object-fit: cover"
-            src="../../static/images/gallery_big.png"
-          />
-        </div>
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg self-stretch flex-1"
-            style="object-fit: cover"
-            src="../../static/images/gallery_small.png"
-          />
-        </div>
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg self-stretch"
-            style="object-fit: cover"
-            src="../../static/images/gallery_big.png"
-          />
-        </div>
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg self-stretch flex-1"
-            style="object-fit: cover"
-            src="../../static/images/gallery_small.png"
-          />
-        </div>
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg self-stretch"
-            style="object-fit: cover"
-            src="../../static/images/gallery_big.png"
-          />
-        </div>
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg self-stretch flex-1"
-            style="object-fit: cover"
-            src="../../static/images/gallery_small.png"
-          />
-        </div>
-      </div>
-
-      <!-- Gallery Row 4 -->
       <div class="flex flex-col gap-y-2 lg:gap-y-4 items-center justify-center w-full relative">
-        <!-- Glow Background Effect -->
         <div
           class="absolute z-1 left-1/2 top-1/2 translate-x-2/3 -translate-y-1/4 rounded-full w-[1000px] h-[1000px] pointer-events-none"
           style="
@@ -204,237 +67,63 @@
             filter: blur(300px);
           "
         ></div>
+        {% for image_url in web_images.gallery.images_r2 %} {% set aspect_class = "aspect-square" %}
+        {% if loop.index0 % 2 == 1 %} {% set aspect_class = "aspect-[2/3]" %} {% endif %}
+
         <div
           class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
         >
           <img
-            class="rounded-md lg:rounded-lg self-stretch flex-1"
+            class="rounded-md lg:rounded-lg {{ aspect_class }} self-stretch {% if not loop.last %}flex-1{% endif %}"
             style="object-fit: cover"
-            src="../../static/images/gallery_small.png"
+            src="{{ image_url.path | default(value=image_url) }}"
+            alt="Gallery image {{ loop.index }}"
           />
         </div>
+        {% else %}
+        <p>No images to display in this column.</p>
+        {% endfor %}
+      </div>
+
+      <!-- Gallery Row 4 -->
+      <div class="flex flex-col gap-y-2 lg:gap-y-4 items-center justify-center w-full">
+        {% for image_url in web_images.gallery.images_r3 %} {% set aspect_class = "aspect-square" %}
+        {% if loop.index0 % 2 == 0 %} {% set aspect_class = "aspect-[2/3]" %} {% endif %}
+
         <div
           class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
         >
           <img
-            class="rounded-md lg:rounded-lg self-stretch flex-1"
+            class="rounded-md lg:rounded-lg {{ aspect_class }} self-stretch {% if not loop.last %}flex-1{% endif %}"
             style="object-fit: cover"
-            src="../../static/images/gallery_big.png"
+            src="{{ image_url.path | default(value=image_url) }}"
+            alt="Gallery image {{ loop.index }}"
           />
         </div>
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg self-stretch flex-1"
-            style="object-fit: cover"
-            src="../../static/images/gallery_small.png"
-          />
-        </div>
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg self-stretch flex-1"
-            style="object-fit: cover"
-            src="../../static/images/gallery_big.png"
-          />
-        </div>
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg self-stretch flex-1"
-            style="object-fit: cover"
-            src="../../static/images/gallery_small.png"
-          />
-        </div>
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg self-stretch"
-            style="object-fit: cover"
-            src="../../static/images/gallery_big.png"
-          />
-        </div>
+        {% else %}
+        <p>No images to display in this column.</p>
+        {% endfor %}
       </div>
 
       <!-- Gallery Row 5 -->
-      <div class="flex flex-col gap-y-2 lg:gap-y-4 items-center justify-center w-full">
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg self-stretch flex-1"
-            style="object-fit: cover"
-            src="../../static/images/gallery_big.png"
-          />
-        </div>
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg self-stretch flex-1"
-            style="object-fit: cover"
-            src="../../static/images/gallery_small.png"
-          />
-        </div>
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg self-stretch"
-            style="object-fit: cover"
-            src="../../static/images/gallery_big.png"
-          />
-        </div>
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg self-stretch flex-1"
-            style="object-fit: cover"
-            src="../../static/images/gallery_small.png"
-          />
-        </div>
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg self-stretch"
-            style="object-fit: cover"
-            src="../../static/images/gallery_big.png"
-          />
-        </div>
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg self-stretch flex-1"
-            style="object-fit: cover"
-            src="../../static/images/gallery_small.png"
-          />
-        </div>
-      </div>
-
-      <!-- Gallery Row 6 -->
       <div class="hidden md:flex flex-col gap-y-2 lg:gap-y-4 items-center justify-center w-full">
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg self-stretch flex-1"
-            style="object-fit: cover"
-            src="../../static/images/gallery_small.png"
-          />
-        </div>
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg self-stretch"
-            style="object-fit: cover"
-            src="../../static/images/gallery_big.png"
-          />
-        </div>
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg self-stretch flex-1"
-            style="object-fit: cover"
-            src="../../static/images/gallery_small.png"
-          />
-        </div>
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg self-stretch"
-            style="object-fit: cover"
-            src="../../static/images/gallery_big.png"
-          />
-        </div>
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg self-stretch flex-1"
-            style="object-fit: cover"
-            src="../../static/images/gallery_small.png"
-          />
-        </div>
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg self-stretch"
-            style="object-fit: cover"
-            src="../../static/images/gallery_big.png"
-          />
-        </div>
-      </div>
+        {% for image_url in web_images.gallery.images_r4 %} {% set aspect_class = "aspect-square" %}
+        {% if loop.index0 % 2 == 1 %} {% set aspect_class = "aspect-[2/3]" %} {% endif %}
 
-      {#
-      <!-- Gallery Row 7 -->
-      <div class="hidden 2xl:flex flex-col gap-y-2 lg:gap-y-4 items-center justify-center w-full">
         <div
           class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
         >
           <img
-            class="rounded-md lg:rounded-lg self-stretch flex-1"
+            class="rounded-md lg:rounded-lg {{ aspect_class }} self-stretch {% if not loop.last %}flex-1{% endif %}"
             style="object-fit: cover"
-            src="../../static/images/gallery_big.png"
+            src="{{ image_url.path | default(value=image_url) }}"
+            alt="Gallery image {{ loop.index }}"
           />
         </div>
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg self-stretch flex-1"
-            style="object-fit: cover"
-            src="../../static/images/gallery_small.png"
-          />
-        </div>
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg self-stretch"
-            style="object-fit: cover"
-            src="../../static/images/gallery_big.png"
-          />
-        </div>
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg self-stretch flex-1"
-            style="object-fit: cover"
-            src="../../static/images/gallery_small.png"
-          />
-        </div>
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg self-stretch"
-            style="object-fit: cover"
-            src="../../static/images/gallery_big.png"
-          />
-        </div>
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg self-stretch flex-1"
-            style="object-fit: cover"
-            src="../../static/images/gallery_small.png"
-          />
-        </div>
+        {% else %}
+        <p>No images to display in this column.</p>
+        {% endfor %}
       </div>
-      #}
     </div>
     <div
       class="w-full h-[49.3125rem] z-4 absolute left-[50%] bottom-[-56.1775rem] -translate-x-1/2 origin-top-left rotate-0 scale-y-[-1]"

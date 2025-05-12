@@ -277,9 +277,12 @@ impl AwsS3 {
             Some(t) => t,
             None => self.settings.s3.access_time * 24, // 1 hour * 24 | 1 day
         };
+        let suggested_filename = "image.jpg"; // key.as_ref().split('/').last().unwrap_or("image.jpg");
+        let content_disposition = format!("attachment; filename=\"{}\"", suggested_filename);
         let presigned_request = self
             .client
             .get_object()
+            .response_content_disposition(content_disposition)
             .bucket(&self.settings.s3.bucket_name)
             .key(key.as_ref())
             .presigned(PresigningConfig::expires_in(Duration::from_secs(
