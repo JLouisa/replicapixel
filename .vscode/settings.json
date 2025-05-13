@@ -8,6 +8,7 @@
     "finetune",
     "finetuned",
     "headshot",
+    "inmem",
     "inpainting",
     "loras",
     "removedfile",

@@ -20,7 +20,7 @@ use crate::models::{
     TrainingModelModel, TransactionModel, UserModel,
 };
 use crate::service::aws::s3::AwsS3;
-use crate::service::redis::redis::RedisCacheDriver;
+use crate::service::redis::redis::{load_cached_web, RedisCacheDriver};
 use crate::views;
 use crate::views::dashboard::TransactionViewList;
 use crate::views::images::ImageViewList;
@@ -577,14 +577,18 @@ pub async fn packs_dashboard(
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, user_credits, training_models) =
         load_user_credit_training(&ctx.db, &user_pid).await?;
-    let packs = load_packs(&ctx.db).await?;
+    let packs = match load_cached_web(&ctx).await {
+        Ok(images) => images.packs,
+        Err(_) => load_packs(&ctx.db).await?.into(),
+    };
+
     views::dashboard::packs_dashboard(
         v,
         &website,
         &user.into(),
         &user_credits.into(),
         &training_models.into(),
-        packs.into(),
+        &packs,
         &cc_cookie,
     )
 }
@@ -597,8 +601,11 @@ pub async fn packs_partial_dashboard(
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
     let (_, training_models) = load_user_and_training(&ctx.db, &user_pid).await?;
-    let packs = load_packs(&ctx.db).await?;
-    views::dashboard::packs_partial_dashboard(v, &website, &training_models.into(), packs.into())
+    let packs = match load_cached_web(&ctx).await {
+        Ok(images) => images.packs,
+        Err(_) => load_packs(&ctx.db).await?.into(),
+    };
+    views::dashboard::packs_partial_dashboard(v, &website, &training_models.into(), &packs)
 }
 
 #[debug_handler]

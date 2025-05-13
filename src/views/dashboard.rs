@@ -13,7 +13,7 @@ use crate::models::transactions::TransactionModelList;
 use crate::models::{PackModel, PlanModel, TransactionModel};
 use derive_more::{AsRef, Constructor};
 use loco_rs::prelude::*;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 pub fn billing_dashboard(
     v: impl ViewRenderer,
@@ -231,7 +231,7 @@ pub fn packs_dashboard(
     user: &UserView,
     credits: &UserCreditsView,
     models_list: &TrainingModelViewList,
-    packs: PackViewList,
+    packs: &PackViewList,
     cc_cookie: &CookieConsent,
 ) -> Result<impl IntoResponse> {
     format::render().view(
@@ -249,7 +249,7 @@ pub fn packs_partial_dashboard(
     v: impl ViewRenderer,
     website: &Website,
     models: &TrainingModelViewList,
-    packs: PackViewList,
+    packs: &PackViewList,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
@@ -309,7 +309,7 @@ pub fn photo_partial_dashboard(
     )
 }
 
-#[derive(Debug, Serialize, Clone, Constructor)]
+#[derive(Debug, Serialize, Deserialize, Clone, Constructor)]
 pub struct PackView {
     pub id: i32,
     pub pid: Uuid,
@@ -337,7 +337,7 @@ impl From<PackModel> for PackView {
     }
 }
 
-#[derive(Debug, Serialize, Clone, AsRef, Constructor)]
+#[derive(Debug, Serialize, Deserialize, Clone, AsRef, Constructor)]
 pub struct PackViewList(pub Vec<PackView>);
 
 impl From<PackModelList> for PackViewList {

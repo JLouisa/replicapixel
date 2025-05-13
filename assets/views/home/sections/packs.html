@@ -17,9 +17,9 @@
   </div>
 
   <div class="flex flex-row flex-wrap justify-center items-stretch gap-6 w-full">
-    {% for pack in packs %}
+    {% for pack in web_images.packs %}
     <div
-      class="w-72 h-[500px] bg-base-100 shadow-md rounded-xl overflow-hidden flex flex-col duration-500 hover:scale-105 hover:shadow-xl cursor-pointer"
+      class="w-72 max-h-[500px] bg-base-100 shadow-md rounded-xl overflow-hidden flex flex-col duration-500 hover:scale-105 hover:shadow-xl cursor-pointer"
       onclick="document.getElementById('modal-{{ pack.pid }}').showModal()"
     >
       <img src="{{ pack.main_image }}" alt="pack" class="h-80 w-72 object-cover rounded-t-xl" />

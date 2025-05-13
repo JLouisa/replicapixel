@@ -1,3 +1,5 @@
+{% set web_studio_link = web_images.studio | safe %}
+
 <section class="flex flex-col gap-8 my-28 max-w-7xl mx-auto z-8">
   <div class="flex flex-col gap-4 items-center justify-center">
     <div class="p-2 flex flex-row gap-2 items-center justify-center">
@@ -32,9 +34,9 @@
         class="relative rounded-b-2xl z-12 bg-base-300 border-solid border-white/13 border flex flex-col items-start justify-center flex-1 w-full"
       >
         <img
-          src="../../../static/images/studio/studio2.png"
+          src="{{web_studio_link | safe}}"
           alt="studio"
-          class="w-full h-full object-cover rounded-md z-12"
+          class="w-full h-full object-cover rounded-b-2xl z-12"
         />
       </div>
     </div>

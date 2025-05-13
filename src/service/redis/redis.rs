@@ -1,6 +1,9 @@
 use async_trait::async_trait;
 use derive_more::Constructor;
-use loco_rs::cache::{drivers::CacheDriver, CacheError, CacheResult};
+use loco_rs::{
+    app::AppContext,
+    cache::{drivers::CacheDriver, CacheError, CacheResult},
+};
 use redis::{
     aio::ConnectionManagerConfig,
     io::tcp::{socket2::TcpKeepalive, TcpSettings},
@@ -19,7 +22,10 @@ pub type RedisDbResult<T> = std::result::Result<T, RedisDbError>;
 use redis::aio::ConnectionManager;
 
 const WEB_IMAGES_CACHE_KEY: &str = "web";
-const WEB_IMAGES_TTL_SECONDS: u64 = 60;
+const WEB_IMAGES_TTL_SECONDS: u64 = match !cfg!(debug_assertions) {
+    true => 3600,
+    false => 60,
+};
 
 #[derive(Debug, Error)]
 pub enum RedisDbError {
@@ -213,5 +219,47 @@ impl RedisCacheDriver {
             )
             .await?;
         Ok(())
+    }
+}
+
+async fn fetch_and_cache_web_images(ctx: &AppContext) -> CacheResult<WebImages> {
+    let images = WebImages::web_images(&ctx.db).await;
+    match serde_json::to_string(&images) {
+        Ok(serialized) => {
+            if let Err(e) = ctx
+                .cache
+                .insert_with_expiry(
+                    "web",
+                    &serialized,
+                    Duration::from_secs(WEB_IMAGES_TTL_SECONDS),
+                )
+                .await
+            {
+                tracing::error!("Failed to write web images to cache: {}", e);
+            }
+        }
+        Err(e) => {
+            tracing::error!("Failed to serialize web images: {}", e);
+        }
+    }
+    Ok(images)
+}
+pub async fn load_cached_web(ctx: &AppContext) -> CacheResult<WebImages> {
+    match ctx.cache.get("web").await {
+        Ok(Some(cached)) => match serde_json::from_str::<WebImages>(&cached) {
+            Ok(data) => Ok(data),
+            Err(err) => {
+                tracing::error!("Failed to deserialize cached web images: {}", err);
+                fetch_and_cache_web_images(ctx).await
+            }
+        },
+        Ok(None) => {
+            tracing::info!("Web images not found in cache, loading from DB.");
+            fetch_and_cache_web_images(ctx).await
+        }
+        Err(err) => {
+            tracing::error!("Failed to read from cache: {}", err);
+            fetch_and_cache_web_images(ctx).await
+        }
     }
 }

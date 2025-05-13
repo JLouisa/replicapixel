@@ -1,6 +1,6 @@
 use loco_rs::prelude::*;
 
-use super::{auth::UserView, dashboard::PackViewList};
+use super::auth::UserView;
 use crate::{
     controllers::home::WebImages, domain::website::Website, middleware::cookie::CookieConsent,
 };
@@ -11,7 +11,6 @@ pub fn home(
     is_home: bool,
     cc_cookie: &CookieConsent,
     images: &WebImages,
-    packs: &PackViewList,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
@@ -20,7 +19,6 @@ pub fn home(
             {
                 "website": website, "cc_cookie": cc_cookie,
                 "is_home": is_home, "web_images": images,
-                "packs": packs
             }
         ),
     )
@@ -32,7 +30,6 @@ pub fn home_partial(
     is_home: bool,
     cc_cookie: &CookieConsent,
     images: &WebImages,
-    packs: &PackViewList,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
@@ -41,7 +38,6 @@ pub fn home_partial(
             {
                 "website": website, "cc_cookie": cc_cookie,
                 "is_home": is_home, "web_images": images,
-                "packs": packs
             }
         ),
     )

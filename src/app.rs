@@ -1,9 +1,13 @@
+#[allow(unused_imports)]
+use crate::{
+    controllers, initializers, models::_entities::users, tasks, workers::downloader::DownloadWorker,
+};
 use async_trait::async_trait;
+use loco_rs::cache;
 use loco_rs::{
     app::{AppContext, Hooks, Initializer},
     bgworker::{BackgroundWorker, Queue},
     boot::{create_app, BootResult, StartMode},
-    cache,
     config::Config,
     controller::AppRoutes,
     db::{self, truncate_table},
@@ -13,12 +17,6 @@ use loco_rs::{
 };
 use migration::Migrator;
 use std::path::Path;
-
-use crate::domain::settings::Settings;
-#[allow(unused_imports)]
-use crate::{
-    controllers, initializers, models::_entities::users, tasks, workers::downloader::DownloadWorker,
-};
 
 pub struct App;
 #[async_trait]
@@ -92,9 +90,16 @@ impl Hooks for App {
             .await?;
         Ok(())
     }
+    // async fn after_context(ctx: AppContext) -> Result<AppContext> {
+    //     Ok(AppContext {
+    //         cache: cache::Cache::new(Box::new(Settings::init(&ctx).redis().await)).into(),
+    //         ..ctx
+    //     })
+    // }
+
     async fn after_context(ctx: AppContext) -> Result<AppContext> {
         Ok(AppContext {
-            cache: cache::Cache::new(Box::new(Settings::init(&ctx).redis().await)).into(),
+            cache: cache::Cache::new(cache::drivers::inmem::new()).into(),
             ..ctx
         })
     }
