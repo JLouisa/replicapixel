@@ -3,7 +3,8 @@
 {% set website_name = website.website_basic_info.name %}
 
 <div class="drawer drawer-end xs:p-2 md:p-0 w-full">
-  <input id="my-drawer-3" type="checkbox" class="drawer-toggle" />
+  <label for="app-drawer"></label>
+  <input id="app-drawer" type="checkbox" class="drawer-toggle" />
   <div class="drawer-content flex flex-col w-full">
     <!-- Navbar -->
     {% include "home/sections/navbar.html" %}
@@ -11,9 +12,9 @@
     <!-- Page content here -->
     <div class="relative bg-bg-web overflow-hidden">
       <div class="fixed top-0 right-0 p-4 z-10 hidden md:flex items-center justify-center gap-2">
-        <div class="rounded-full bg-base-200 p-2">
+        <form class="rounded-full bg-base-200 p-2">
           {% include "partials/parts/dark_mode_toggle.html" %}
-        </div>
+        </form>
         <div id="validate-login-btn">
           <button
             hx-get="{{ login_link }}"
@@ -52,9 +53,7 @@
       {% include "home/sections/payment_plans.html" %}
 
       <!-- Creator Reviews -->
-      {% include "home/sections/creators_review.html" %} {#
-      <!-- Call to Action -->
-      {% include "home/sections/cta.html" %} #}
+      {% include "home/sections/creators_review.html" %}
 
       <!-- Creators -->
       {% include "home/sections/creators.html" %}
@@ -64,7 +63,7 @@
     </div>
   </div>
   <div class="drawer-side z-20">
-    <label for="my-drawer-3" aria-label="close sidebar" class="drawer-overlay"></label>
+    <label for="app-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
     <ul class="menu bg-base-200 min-h-full w-40 p-4">
       <!-- Sidebar content here -->
       <li><a href="#" class="p-2 text-base hover:text-gray-300">Home</a></li>
@@ -75,7 +74,7 @@
         <a href="{{login_link}}" class="p-2 text-base hover:text-gray-300">Login</a>
       </li>
     </ul>
-    <label for="my-drawer-3" class="block p-4 hover:text-gray-300">
+    <label for="app-drawer" class="block p-4 hover:text-gray-300">
       {% include "partials/svg/x.html" %}
     </label>
   </div>

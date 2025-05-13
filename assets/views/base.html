@@ -12,18 +12,24 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>
-      {% block title %}{{ website_name | default(value= "ReplicaPixel App") }}{% endblock title %}
+      {% block title %}{{ website_name | default(value= "ReplicaPixel") }}{% endblock title %}
     </title>
+
     <link rel="icon" href="/static/favicon.ico" type="image/x-icon" />
     <link href="/static/css/output.css" rel="stylesheet" type="text/css" />
+
+    <script src="/static/js/htmx/htmx.min.js" defer></script>
+    <script src="/static/js/htmx/extensions/htmx-ext-form-json.js" defer></script>
+    <script src="/static/js/htmx/extensions/htmx-ext-preload.js" defer></script>
     <script src="/static/js/index.js" defer></script>
-    <script src="/static/js/htmx/htmx.min.js"></script>
-    <script src="/static/js/htmx/extensions/htmx-ext-form-json.js"></script>
-    <script src="/static/js/htmx/extensions/htmx-ext-preload.js"></script>
+
     {% block head %}{% endblock head %}
+
     <!-- Cookie Consent -->
-    {% include "partials/cookie/consent.html" %} {% block stripe %}{% endblock stripe %}
+    {% include "partials/cookie/consent.html" %}
+
     <script>
       // Apply theme on page load
       const userTheme = localStorage.getItem("theme");
