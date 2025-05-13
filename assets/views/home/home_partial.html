@@ -10,7 +10,7 @@
 
     <!-- Page content here -->
     <div class="relative bg-bg-web overflow-hidden">
-      <div class="fixed top-0 right-0 p-4 z-10 flex items-center justify-center gap-2">
+      <div class="fixed top-0 right-0 p-4 z-10 hidden md:flex items-center justify-center gap-2">
         <div class="rounded-full bg-base-200 p-2">
           {% include "partials/parts/dark_mode_toggle.html" %}
         </div>
@@ -39,8 +39,11 @@
       <!-- Pro Head Shot -->
       {% include "home/sections/pro_head_shot.html" %}
 
-      <!-- Instant styles -->
-      {# {% include "home/sections/instant_styles.html" %} #}
+      <!-- Photo Studio -->
+      {% include "home/sections/photo_studio.html" %}
+
+      <!-- Packs -->
+      {% include "home/sections/packs.html" %}
 
       <!-- Comparison -->
       {% include "home/sections/comparison.html" %}
@@ -65,15 +68,15 @@
     <label for="my-drawer-3" aria-label="close sidebar" class="drawer-overlay"></label>
     <ul class="menu bg-base-200 min-h-full w-40 p-4">
       <!-- Sidebar content here -->
-      <li><a href="#" class="p-2 text-white text-base hover:text-gray-300">Home</a></li>
-      <li><a href="#" class="p-2 text-white text-base hover:text-gray-300">Features</a></li>
-      <li><a href="#" class="p-2 text-white text-base hover:text-gray-300">Studio</a></li>
-      <li><a href="#pricing" class="p-2 text-white text-base hover:text-gray-300">Pricing</a></li>
+      <li><a href="#" class="p-2 text-base hover:text-gray-300">Home</a></li>
+      <li><a href="#" class="p-2 text-base hover:text-gray-300">Features</a></li>
+      <li><a href="#" class="p-2 text-base hover:text-gray-300">Studio</a></li>
+      <li><a href="#pricing" class="p-2 text-base hover:text-gray-300">Pricing</a></li>
       <li>
-        <a href="{{login_link}}" class="p-2 text-white text-base hover:text-gray-300">Login</a>
+        <a href="{{login_link}}" class="p-2 text-base hover:text-gray-300">Login</a>
       </li>
     </ul>
-    <label for="my-drawer-3" class="block p-4 text-white hover:text-gray-300">
+    <label for="my-drawer-3" class="block p-4 hover:text-gray-300">
       {% include "partials/svg/x.html" %}
     </label>
   </div>

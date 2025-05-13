@@ -1,0 +1,35 @@
+<section class="flex flex-col gap-8 my-28 max-w-7xl mx-auto z-8">
+  <div class="flex flex-col gap-4 items-center justify-center">
+    <div class="p-2 flex flex-row gap-2 items-center justify-center">
+      {% include "partials/svg/triple_stars.html" %}
+      <div class="text-w text-center text-sm flex items-center justify-center">Ai Packs</div>
+    </div>
+    <div class="flex flex-col gap-4 items-center justify-center">
+      <div class="text-w text-center font-bricon text-5xl font-medium">
+        Tons of AI Packs to choose from
+      </div>
+      <div class="text-w text-center text-lg">
+        With just one click,
+        <br class="sm:hidden" />
+        {{website_name}} will takes care of the rest
+      </div>
+    </div>
+  </div>
+
+  <div class="flex flex-row flex-wrap justify-center items-stretch gap-6 w-full">
+    {% for pack in packs %}
+    <div
+      class="w-72 h-[500px] bg-base-100 shadow-md rounded-xl overflow-hidden flex flex-col duration-500 hover:scale-105 hover:shadow-xl cursor-pointer"
+      onclick="document.getElementById('modal-{{ pack.pid }}').showModal()"
+    >
+      <img src="{{ pack.main_image }}" alt="pack" class="h-80 w-72 object-cover rounded-t-xl" />
+      <div class="flex flex-col justify-between flex-grow px-4 py-3">
+        <p class="text-lg text-center font-bold truncate capitalize">{{ pack.title }}</p>
+        <p class="text-center text-sm mt-2 flex-grow overflow-hidden">
+          {{ pack.short_description }}
+        </p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>

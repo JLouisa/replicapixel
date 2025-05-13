@@ -87,11 +87,47 @@
         hx-push-url="{{ studio_deleted_link }}"
         hx-swap="innerHTML"
         preload="mouseover"
-        class="h-16 px-6 flex justify-center items-center w-full text-base-content"
+        class="h-16 w-full mx-auto flex items-center justify-center hover:bg-base-300 focus:outline-none cursor-pointer tooltip tooltip-right text-base-content"
         data-tip="Deleted"
       >
         {% include "partials/svg/trash.html" %}
       </a>
+    </li>
+    <!-- Features Section -->
+    <li
+      hx-get="{{ features_partial_link }}"
+      hx-target="#dashboard_content"
+      hx-push-url="{{ features_link }}"
+      hx-swap="innerHTML"
+      preload="mouseover"
+      class="h-16 w-full mx-auto flex items-center justify-center hover:bg-base-300 focus:outline-none cursor-pointer tooltip tooltip-right text-base-content"
+      data-tip="Features"
+    >
+      {% include "partials/svg/feedback.html" %}
+    </li>
+    <!-- Order History Section -->
+    <li
+      hx-get="{{ billing_partial_link}}"
+      hx-target="#dashboard_content"
+      hx-push-url="{{ billing_link }}"
+      hx-swap="innerHTML"
+      preload="mouseover"
+      class="h-16 w-full mx-auto flex items-center justify-center hover:bg-base-300 focus:outline-none cursor-pointer tooltip tooltip-right text-base-content"
+      data-tip="Order History"
+    >
+      {% include "partials/svg/order_history.html" %}
+    </li>
+    <!-- Settings Section -->
+    <li
+      hx-get="{{ settings_partial_link }}"
+      hx-target="#dashboard_content"
+      hx-push-url="{{ settings_link }}"
+      hx-swap="innerHTML"
+      preload="mouseover"
+      class="h-16 w-full mx-auto flex items-center justify-center hover:bg-base-300 focus:outline-none cursor-pointer tooltip tooltip-right text-base-content"
+      data-tip="Settings"
+    >
+      {% include "partials/svg/settings.html" %}
     </li>
     {#
     <!-- Notification Section -->
@@ -113,43 +149,7 @@
   </ul>
 
   <!-- Bottom Items Section -->
-  <div class="mt-auto h-72 flex flex-col items-center w-full">
-    <!-- Features Section -->
-    <div
-      hx-get="{{ features_partial_link }}"
-      hx-target="#dashboard_content"
-      hx-push-url="{{ features_link }}"
-      hx-swap="innerHTML"
-      preload="mouseover"
-      class="h-16 w-full mx-auto flex items-center justify-center hover:bg-base-300 focus:outline-none cursor-pointer tooltip tooltip-right text-base-content"
-      data-tip="Features"
-    >
-      {% include "partials/svg/feedback.html" %}
-    </div>
-    <!-- Order History Section -->
-    <div
-      hx-get="{{ billing_partial_link}}"
-      hx-target="#dashboard_content"
-      hx-push-url="{{ billing_link }}"
-      hx-swap="innerHTML"
-      preload="mouseover"
-      class="h-16 w-full mx-auto flex items-center justify-center hover:bg-base-300 focus:outline-none cursor-pointer tooltip tooltip-right text-base-content"
-      data-tip="Order History"
-    >
-      {% include "partials/svg/order_history.html" %}
-    </div>
-    <!-- Settings Section -->
-    <div
-      hx-get="{{ settings_partial_link }}"
-      hx-target="#dashboard_content"
-      hx-push-url="{{ settings_link }}"
-      hx-swap="innerHTML"
-      preload="mouseover"
-      class="h-16 w-full mx-auto flex items-center justify-center hover:bg-base-300 focus:outline-none cursor-pointer tooltip tooltip-right text-base-content"
-      data-tip="Settings"
-    >
-      {% include "partials/svg/settings.html" %}
-    </div>
+  <div class="mt-auto h-24 flex flex-col items-center w-full">
     <!-- Logout Section -->
     <div
       hx-get="{{ logout_partial_link }}"

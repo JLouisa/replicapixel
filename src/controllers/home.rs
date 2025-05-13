@@ -2,6 +2,8 @@
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
 use crate::middleware::cookie::ExtractConsentState;
+use crate::models::packs::PackModelList;
+use crate::models::PackModel;
 use crate::service::redis::redis::{RedisCacheDriver, RedisDbError};
 use crate::views;
 use crate::{domain::website::Website, middleware::cookie::CookieConsentLayer};
@@ -42,11 +44,17 @@ pub fn routes() -> Routes {
         .layer(CookieConsentLayer::new())
 }
 
+async fn load_packs(db: &DatabaseConnection) -> Result<PackModelList> {
+    let list = PackModel::find_all_packs(db).await?;
+    Ok(PackModelList::new(list))
+}
+
 #[debug_handler]
 pub async fn render_home(
     ExtractConsentState(cc_cookie): ExtractConsentState,
     Extension(website): Extension<Website>,
     Extension(cache): Extension<RedisCacheDriver>,
+    State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
     let is_home = true;
@@ -83,7 +91,8 @@ pub async fn render_home(
             web_images()
         }
     };
-    views::home::home(v, &website, is_home, &cc_cookie, &images)
+    let packs = load_packs(&ctx.db).await?;
+    views::home::home(v, &website, is_home, &cc_cookie, &images, &packs.into())
 }
 
 #[debug_handler]
@@ -91,6 +100,7 @@ pub async fn render_home_partial(
     ExtractConsentState(cc_cookie): ExtractConsentState,
     Extension(website): Extension<Website>,
     Extension(cache): Extension<RedisCacheDriver>,
+    State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
     let is_home = true;
@@ -127,7 +137,8 @@ pub async fn render_home_partial(
             web_images()
         }
     };
-    views::home::home_partial(v, &website, is_home, &cc_cookie, &images)
+    let packs = load_packs(&ctx.db).await?;
+    views::home::home_partial(v, &website, is_home, &cc_cookie, &images, &packs.into())
 }
 
 #[derive(Debug, Serialize, Deserialize, Constructor, Clone)]
@@ -140,7 +151,7 @@ struct WebGallery {
 }
 
 #[derive(Debug, Serialize, Deserialize, Constructor, Clone)]
-struct BeforeAfter {
+struct WebBeforeAfter {
     before: String,
     after: String,
 }
@@ -149,7 +160,7 @@ struct BeforeAfter {
 pub struct WebImages {
     hero_panel: Vec<String>,
     gallery: WebGallery,
-    before_after: BeforeAfter,
+    before_after: WebBeforeAfter,
 }
 
 fn web_images() -> WebImages {
@@ -164,7 +175,7 @@ fn web_images() -> WebImages {
     ];
     let web_images0 = vec![
         String::from("../../../static/images/hero/nature-hero.webp"),
-        String::from("../../static/images/gallery_big.png"),
+        String::from("../../../static/images/gallery/corporate-headshot.jpg"),
         String::from("../../../static/images/hero/nature-hero.webp"),
         String::from("../../../static/images/gallery/wife1.jpg"),
         String::from("../../../static/images/hero/nature-hero.webp"),
@@ -209,7 +220,7 @@ fn web_images() -> WebImages {
         web_images3,
         web_images4,
     );
-    let before_after = BeforeAfter::new(
+    let before_after = WebBeforeAfter::new(
         String::from(
             "../../../static/images/head-shot/WhatsApp Image 2025-04-27 at 22.23.32_6190d2f4.jpg",
         ),

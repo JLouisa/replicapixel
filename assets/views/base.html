@@ -80,17 +80,7 @@
     <!-- Main Layout Container -->
     <div id="app">
       {% block home %} {% block navbar %} {% endblock navbar %} {% block content %}{% endblock
-      content %} {#
-      <div class="flex flex-col h-screen overflow-hidden">
-        <!-- Navbar Block -->
-        {% block navbar %} {% include "partials/navbar/navbar.html" %} {% endblock navbar %}
-
-        <!-- Page Content Block -->
-        <div id="page-content" class="flex-1 overflow-hidden">
-          {% block content %}{% endblock content %}
-        </div>
-      </div>
-      #} {% endblock home %}
+      content %} {% endblock home %}
     </div>
 
     <!-- Toast Notifications -->
@@ -109,6 +99,13 @@
     >
       <span x-text="$store.toast.message"></span>
     </div>
+
+    <div
+      id="google-login-init"
+      hx-trigger="load once"
+      hx-get="{{api_check_user_link}}"
+      hx-swap="outerHTML"
+    ></div>
 
     <!-- Javascript -->
     {% block js %} {% endblock js %}
@@ -129,14 +126,6 @@
         });
       }
     </script>
-
-    <div
-      id="google-login-init"
-      hx-trigger="load once"
-      hx-get="{{api_check_user_link}}"
-      hx-swap="outerHTML"
-    ></div>
-
     {% if not user %}
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script>
