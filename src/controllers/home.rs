@@ -37,6 +37,8 @@ pub mod routes {
     impl Home {
         pub const BASE: &'static str = "/";
         pub const HOME_PARTIAL: &'static str = "/partial/home";
+        pub const ROBOT_TXT: &'static str = "/robots.txt";
+        pub const SITEMAP: &'static str = "/sitemap.xml";
     }
 }
 
@@ -44,6 +46,8 @@ pub fn routes() -> Routes {
     Routes::new()
         .add(routes::Home::BASE, get(render_home))
         .add(routes::Home::HOME_PARTIAL, get(render_home_partial))
+        .add(routes::Home::ROBOT_TXT, get(robots_txt))
+        .add(routes::Home::SITEMAP, get(sitemap_xml))
         .layer(CookieConsentLayer::new())
 }
 
@@ -52,43 +56,89 @@ async fn load_packs(db: &DatabaseConnection) -> Result<PackModelList> {
     Ok(PackModelList::new(list))
 }
 
-// async fn fetch_and_cache_web_images(ctx: &AppContext) -> CacheResult<WebImages> {
-//     let images = web_images(&ctx.db).await;
-//     match serde_json::to_string(&images) {
-//         Ok(serialized) => {
-//             if let Err(e) = ctx
-//                 .cache
-//                 .insert_with_expiry("web", &serialized, Duration::from_secs(60))
-//                 .await
-//             {
-//                 tracing::error!("Failed to write web images to cache: {}", e);
-//             }
-//         }
-//         Err(e) => {
-//             tracing::error!("Failed to serialize web images: {}", e);
-//         }
-//     }
-//     Ok(images)
-// }
-// async fn load_cached_web(ctx: &AppContext) -> CacheResult<WebImages> {
-//     match ctx.cache.get("web").await {
-//         Ok(Some(cached)) => match serde_json::from_str::<WebImages>(&cached) {
-//             Ok(data) => Ok(data),
-//             Err(err) => {
-//                 tracing::error!("Failed to deserialize cached web images: {}", err);
-//                 fetch_and_cache_web_images(ctx).await
-//             }
-//         },
-//         Ok(None) => {
-//             tracing::info!("Web images not found in cache, loading from DB.");
-//             fetch_and_cache_web_images(ctx).await
-//         }
-//         Err(err) => {
-//             tracing::error!("Failed to read from cache: {}", err);
-//             fetch_and_cache_web_images(ctx).await
-//         }
-//     }
-// }
+pub async fn robots_txt() -> impl IntoResponse {
+    let content = r#"User-agent: *
+User-agent: *
+Disallow: /api/
+Disallow: /partial/
+Disallow: /studio/partial/
+Disallow: /settings/
+Disallow: /_health
+Disallow: /_ping
+
+# Allow public-facing pages
+Allow: /
+
+# Example for disallowing specific file types if needed (less common for "simple")
+# Disallow: /*.pdf$
+# Disallow: /*.doc$
+
+# Example for disallowing search result pages (if they don't add SEO value)
+# Disallow: /search
+# Disallow: /*?s=
+# Disallow: /*&query=
+
+# Allow everything else (this is implicit if no other Disallow matches,
+# but an empty Disallow: line makes it explicit for this block)
+# Disallow:
+
+# Sitemap location
+Sitemap: https://www.replicapixel.com/sitemap.xml
+"#
+    .to_string();
+
+    Response::builder()
+        .header("Content-Type", "text/plain")
+        .body(content)
+        .unwrap()
+        .into_response()
+}
+
+pub async fn sitemap_xml() -> impl IntoResponse {
+    let sitemap = r#"<?xml version="1.0" encoding="UTF-8"?>
+<urlset 
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+>
+  <url><loc>https://replicapixel.com/</loc></url>
+  <url><loc>https://replicapixel.com/login</loc></url>
+  <url><loc>https://replicapixel.com/register</loc></url>
+  <url><loc>https://replicapixel.com/forgot</loc></url>
+
+  <!-- Policy pages -->
+  <url><loc>https://replicapixel.com/policy/privacy</loc></url>
+  <url><loc>https://replicapixel.com/policy/terms-and-conditions</loc></url>
+  <url><loc>https://replicapixel.com/policy/model-consent</loc></url>
+  <url><loc>https://replicapixel.com/policy/cookie</loc></url>
+
+  <!-- Studio area -->
+  <url><loc>https://replicapixel.com/studio</loc></url>
+  <url><loc>https://replicapixel.com/studio/models</loc></url>
+  <url><loc>https://replicapixel.com/studio/album/deleted</loc></url>
+  <url><loc>https://replicapixel.com/studio/album/favorite</loc></url>
+  <url><loc>https://replicapixel.com/studio/features</loc></url>
+  <url><loc>https://replicapixel.com/studio/notifications</loc></url>
+  <url><loc>https://replicapixel.com/studio/packs</loc></url>
+  <url><loc>https://replicapixel.com/studio/photo</loc></url>
+  <url><loc>https://replicapixel.com/studio/settings</loc></url>
+  <url><loc>https://replicapixel.com/studio/models/create</loc></url>
+  <url><loc>https://replicapixel.com/studio/billing</loc></url>
+
+  <!-- Starter page -->
+  <url><loc>https://replicapixel.com/starter</loc></url>
+
+  <!-- Payment pages -->
+  <url><loc>https://replicapixel.com/payment/plan</loc></url>
+  <url><loc>https://replicapixel.com/payment/success</loc></url>
+  <url><loc>https://replicapixel.com/payment/cancel</loc></url>
+</urlset>"#
+        .to_string();
+
+    Response::builder()
+        .header("Content-Type", "application/xml")
+        .body(sitemap)
+        .unwrap()
+        .into_response()
+}
 
 #[debug_handler]
 pub async fn render_home(

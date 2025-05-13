@@ -1,16 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset
-      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
+<urlset 
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+>
+  <url><loc>https://replicapixel.com/</loc></url>
+  <url><loc>https://replicapixel.com/login</loc></url>
+  <url><loc>https://replicapixel.com/register</loc></url>
+  <url><loc>https://replicapixel.com/forgot</loc></url>
 
+  <!-- Policy pages -->
+  <url><loc>https://replicapixel.com/policy/privacy</loc></url>
+  <url><loc>https://replicapixel.com/policy/terms-and-conditions</loc></url>
+  <url><loc>https://replicapixel.com/policy/model-consent</loc></url>
+  <url><loc>https://replicapixel.com/policy/cookie</loc></url>
 
-<url>
-  <loc>https://replicapixel.com/</loc>
-  <lastmod>2025-05-13T12:18:19+00:00</lastmod>
-</url>
+  <!-- Studio area -->
+  <url><loc>https://replicapixel.com/studio</loc></url>
+  <url><loc>https://replicapixel.com/studio/models</loc></url>
+  <url><loc>https://replicapixel.com/studio/album/deleted</loc></url>
+  <url><loc>https://replicapixel.com/studio/album/favorite</loc></url>
+  <url><loc>https://replicapixel.com/studio/features</loc></url>
+  <url><loc>https://replicapixel.com/studio/notifications</loc></url>
+  <url><loc>https://replicapixel.com/studio/packs</loc></url>
+  <url><loc>https://replicapixel.com/studio/photo</loc></url>
+  <url><loc>https://replicapixel.com/studio/settings</loc></url>
+  <url><loc>https://replicapixel.com/studio/models/create</loc></url>
+  <url><loc>https://replicapixel.com/studio/billing</loc></url>
 
+  <!-- Starter page -->
+  <url><loc>https://replicapixel.com/starter</loc></url>
 
+  <!-- Payment pages -->
+  <url><loc>https://replicapixel.com/payment/plan</loc></url>
+  <url><loc>https://replicapixel.com/payment/success</loc></url>
+  <url><loc>https://replicapixel.com/payment/cancel</loc></url>
 </urlset>

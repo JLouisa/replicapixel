@@ -1,12 +1,13 @@
 User-agent: *
+Disallow: /api/
+Disallow: /partial/
+Disallow: /studio/partial/
+Disallow: /settings/
+Disallow: /_health
+Disallow: /_ping
 
-# Disallow common private or utility paths
-Disallow: /admin/
-Disallow: /account/
-Disallow: /profile/
-Disallow: /cart/
-Disallow: /checkout/
-Disallow: /cgi-bin/ # Common server script directory
+# Allow public-facing pages
+Allow: /
 
 # Example for disallowing specific file types if needed (less common for "simple")
 # Disallow: /*.pdf$
@@ -21,4 +22,5 @@ Disallow: /cgi-bin/ # Common server script directory
 # but an empty Disallow: line makes it explicit for this block)
 # Disallow:
 
+# Sitemap location
 Sitemap: https://www.replicapixel.com/sitemap.xml
