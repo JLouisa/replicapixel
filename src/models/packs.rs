@@ -1,10 +1,10 @@
 pub use super::_entities::packs::{ActiveModel, Entity, Model};
 use super::{
     PackModel,
-    _entities::{plans, sea_orm_active_enums::ImageSize},
+    _entities::{packs, sea_orm_active_enums::ImageSize},
 };
 use derive_more::{AsRef, Constructor};
-use sea_orm::entity::prelude::*;
+use sea_orm::{entity::prelude::*, Condition};
 pub type Packs = Entity;
 use loco_rs::prelude::*;
 
@@ -62,26 +62,14 @@ impl PacksDomain {
 // implement your read-oriented logic here
 impl Model {
     pub async fn find_by_pid(db: &DatabaseConnection, pid: &Uuid) -> ModelResult<Self> {
-        let user = Entity::find()
-            .filter(
-                model::query::condition()
-                    .eq(plans::Column::Pid, pid.clone())
-                    .build(),
-            )
-            .one(db)
-            .await?;
-        user.ok_or_else(|| ModelError::EntityNotFound)
+        let condition = Condition::all().add(packs::Column::Pid.eq(pid.clone()));
+        let pack = Entity::find().filter(condition).one(db).await?;
+        pack.ok_or_else(|| ModelError::EntityNotFound)
     }
     pub async fn find_by_id(db: &DatabaseConnection, id: &i32) -> ModelResult<Self> {
-        let user = Entity::find()
-            .filter(
-                model::query::condition()
-                    .eq(plans::Column::Id, id.clone())
-                    .build(),
-            )
-            .one(db)
-            .await?;
-        user.ok_or_else(|| ModelError::EntityNotFound)
+        let condition = Condition::all().add(packs::Column::Id.eq(id.to_owned()));
+        let pack = Entity::find().filter(condition).one(db).await?;
+        pack.ok_or_else(|| ModelError::EntityNotFound)
     }
     pub async fn find_all_packs(db: &DatabaseConnection) -> ModelResult<Vec<Self>> {
         let packs = Entity::find().all(db).await?;

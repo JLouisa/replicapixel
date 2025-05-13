@@ -8,7 +8,7 @@ use crate::models::packs::PackModelList;
 use crate::models::PackModel;
 use crate::service::redis::redis::load_cached_web;
 use crate::views;
-use crate::views::dashboard::PackViewList;
+use crate::views::packs::PackViewList;
 use crate::{domain::website::Website, middleware::cookie::CookieConsentLayer};
 use axum::{debug_handler, Extension};
 use derive_more::Constructor;
@@ -165,7 +165,7 @@ pub async fn render_home_partial(
 }
 
 #[derive(Debug, Serialize, Deserialize, Constructor, Clone)]
-struct WebGallery {
+pub struct WebGallery {
     images_r0: Vec<String>,
     images_r1: Vec<String>,
     images_r2: Vec<String>,

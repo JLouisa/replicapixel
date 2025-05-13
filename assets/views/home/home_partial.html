@@ -1,6 +1,7 @@
 <!-- prettier-ignore -->
 {% set login_link = website.website_routes.auth_routes.login | safe %}
 {% set website_name = website.website_basic_info.name %}
+{% set gallery = web_images.gallery %}
 
 <div class="drawer drawer-end xs:p-2 md:p-0 w-full">
   <label for="app-drawer"></label>
@@ -78,4 +79,21 @@
       {% include "partials/svg/x.html" %}
     </label>
   </div>
+  <script>
+    document.body.addEventListener("htmx:afterSwap", function (evt) {
+      if (evt.detail.target.id === "app") {
+        const target = sessionStorage.getItem("scrollTo");
+        if (target) {
+          // Give the DOM a tick to render
+          requestAnimationFrame(() => {
+            const el = document.querySelector(target);
+            if (el) {
+              el.scrollIntoView({ block: "start" });
+            }
+            sessionStorage.removeItem("scrollTo");
+          });
+        }
+      }
+    });
+  </script>
 </div>

@@ -1,139 +1,31 @@
+<!-- prettier-ignore -->
+
 <section
   class="flex flex-col gap-12 items-center justify-center w-full relative my-16 px-2 mx-auto"
 >
-  <div class="flex flex-col gap-4 items-center justify-center self-stretch">
-    <div class="text-w text-center font-inter text-sm flex items-center justify-center gap-2">
-      {% include "partials/svg/triple_stars.html" %} Ai Studio
-    </div>
-    <div class="text-w text-center font-bricon text-5xl font-medium">
-      The Ultimate AI Photo Studio
-    </div>
-    <div class="text-w text-center font-inter text-lg">
-      Flawless, studio-quality AI photos every time.
-    </div>
-  </div>
   <div class="flex flex-col items-center justify-center self-stretch relative w-full">
     <div class="flex flex-row gap-2 lg:gap-4 items-center justify-center relative w-full">
-      <!-- Gallery Row 1 -->
+      {% for _, image_list in gallery %} {% set current_column_index = loop.index0 %}
       <div class="hidden md:flex flex-col gap-y-2 lg:gap-y-4 items-center justify-center w-full">
-        {% for image_url in web_images.gallery.images_r0 %} {% set aspect_class = "aspect-square" %}
-        {% if loop.index0 % 2 == 1 %} {% set aspect_class = "aspect-[2/3]" %} {% endif %}
-
+        {% for image_url in image_list %} {% if current_column_index % 2 == loop.index0 % 2 %} {%
+        set is_aspect = true %} {% else %} {% set is_aspect = false %} {% endif %}
         <div
           class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
         >
           <img
-            class="rounded-md lg:rounded-lg {{ aspect_class }} self-stretch {% if not loop.last %}flex-1{% endif %}"
+            class="rounded-md lg:rounded-lg self-stretch {% if is_aspect %}aspect-square{% else %}aspect-[2/3]{% endif %} {% if not loop.last %}flex-1{% endif %}"
             style="object-fit: cover"
             src="{{ image_url | safe }}"
             alt="Gallery image {{ loop.index }}"
           />
         </div>
-        {% else %}
-        <p>No images to display in this column.</p>
         {% endfor %}
       </div>
-
-      <!-- Gallery Row 2 -->
-      <div class="flex flex-col gap-y-2 lg:gap-y-4 items-center justify-center w-full">
-        {% for image_url in web_images.gallery.images_r1 %} {% set aspect_class = "aspect-square" %}
-        {% if loop.index0 % 2 == 0 %} {% set aspect_class = "aspect-[2/3]" %} {% endif %}
-
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg {{ aspect_class }} self-stretch {% if not loop.last %}flex-1{% endif %}"
-            style="object-fit: cover"
-            src="{{ image_url | safe }}"
-            alt="Gallery image {{ loop.index }}"
-          />
-        </div>
-        {% else %}
-        <p>No images to display in this column.</p>
-        {% endfor %}
-      </div>
-
-      <!-- Gallery Row 3 -->
-      <div class="flex flex-col gap-y-2 lg:gap-y-4 items-center justify-center w-full relative">
-        <div
-          class="absolute z-1 left-1/2 top-1/2 translate-x-2/3 -translate-y-1/4 rounded-full w-[1000px] h-[1000px] pointer-events-none"
-          style="
-            background: radial-gradient(
-              circle,
-              rgba(244, 48, 152, 0.25) 0%,
-              rgba(96, 93, 255, 0.2) 100%
-            );
-            filter: blur(300px);
-          "
-        ></div>
-        {% for image_url in web_images.gallery.images_r2 %} {% set aspect_class = "aspect-square" %}
-        {% if loop.index0 % 2 == 1 %} {% set aspect_class = "aspect-[2/3]" %} {% endif %}
-
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg {{ aspect_class }} self-stretch {% if not loop.last %}flex-1{% endif %}"
-            style="object-fit: cover"
-            src="{{ image_url | safe }}"
-            alt="Gallery image {{ loop.index }}"
-          />
-        </div>
-        {% else %}
-        <p>No images to display in this column.</p>
-        {% endfor %}
-      </div>
-
-      <!-- Gallery Row 4 -->
-      <div class="flex flex-col gap-y-2 lg:gap-y-4 items-center justify-center w-full">
-        {% for image_url in web_images.gallery.images_r3 %} {% set aspect_class = "aspect-square" %}
-        {% if loop.index0 % 2 == 0 %} {% set aspect_class = "aspect-[2/3]" %} {% endif %}
-
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg {{ aspect_class }} self-stretch {% if not loop.last %}flex-1{% endif %}"
-            style="object-fit: cover"
-            src="{{ image_url | safe }}"
-            alt="Gallery image {{ loop.index }}"
-          />
-        </div>
-        {% else %}
-        <p>No images to display in this column.</p>
-        {% endfor %}
-      </div>
-
-      <!-- Gallery Row 5 -->
-      <div class="hidden md:flex flex-col gap-y-2 lg:gap-y-4 items-center justify-center w-full">
-        {% for image_url in web_images.gallery.images_r4 %} {% set aspect_class = "aspect-square" %}
-        {% if loop.index0 % 2 == 1 %} {% set aspect_class = "aspect-[2/3]" %} {% endif %}
-
-        <div
-          class="rounded-2xl z-2 duration-500 hover:scale-105 hover:shadow-xl flex flex-col items-center justify-center overflow-hidden"
-        >
-          <img
-            class="rounded-md lg:rounded-lg {{ aspect_class }} self-stretch {% if not loop.last %}flex-1{% endif %}"
-            style="object-fit: cover"
-            src="{{ image_url | safe }}"
-            alt="Gallery image {{ loop.index }}"
-          />
-        </div>
-        {% else %}
-        <p>No images to display in this column.</p>
-        {% endfor %}
-      </div>
+      {% endfor %}
     </div>
     <div
       class="w-full h-[49.3125rem] z-4 absolute left-[50%] bottom-[-56.1775rem] -translate-x-1/2 origin-top-left rotate-0 scale-y-[-1]"
-      style="
-        background: linear-gradient(
-          179.62deg,
-          rgba(25, 30, 36, 1) 15.26377648115158%,
-          rgba(9, 9, 11, 0) 51.08548402786255%
-        );
-      "
+      style="background: linear-gradient(179.62deg, rgba(25, 30, 36, 1) 15%, rgba(9, 9, 11, 0) 51%)"
     ></div>
   </div>
 </section>

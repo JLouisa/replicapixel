@@ -7,6 +7,7 @@ use serde::Deserialize;
 
 use crate::{
     domain::{domain_services::image_generation::ImageGenerationService, website::Website},
+    middleware::cookie::ExtractConsentState,
     models::{
         images::ImagesModelList,
         join::user_pack::{load_user_and_one_pack, load_user_one_training_model_one_pack},
@@ -17,7 +18,11 @@ use crate::{
         training_models::TrainingModelList,
         PackModel, TrainingModelModel, UserModel,
     },
-    service::{aws::s3::AwsS3, fal_ai::fal_client::FalAiClient, redis::redis::RedisCacheDriver},
+    service::{
+        aws::s3::AwsS3,
+        fal_ai::fal_client::FalAiClient,
+        redis::redis::{load_cached_web, RedisCacheDriver},
+    },
     views::{self, images::ImageViewList},
 };
 
@@ -28,12 +33,16 @@ pub mod routes {
     pub struct PackRoutes {
         pub base: String,
         pub gen_pack: String,
+        pub show_pack: String,
+        pub show_pack_partial: String,
     }
     impl PackRoutes {
         pub fn init() -> Self {
             Self {
-                base: String::from(Pack::BASE),
-                gen_pack: format!("{}{}", Pack::BASE, Pack::GEN_PACK),
+                base: String::from(Pack::API_BASE),
+                gen_pack: String::from(Pack::API_GEN_PACK),
+                show_pack: String::from(Pack::SHOW_PACK),
+                show_pack_partial: String::from(Pack::SHOW_PACK_PARTIAL),
             }
         }
     }
@@ -41,16 +50,27 @@ pub mod routes {
     #[derive(Clone, Debug, Serialize)]
     pub struct Pack;
     impl Pack {
-        pub const BASE: &'static str = "/api/pack";
-        pub const GEN_PACK_PID: &'static str = "/gen/{pid}";
-        pub const GEN_PACK: &'static str = "/gen";
+        pub const SHOW_PACK_PID: &'static str = "/packs/{pid}";
+        pub const SHOW_PACK: &'static str = "/packs";
+        pub const SHOW_PACK_PARTIAL_PID: &'static str = "/partial/packs/{pid}";
+        pub const SHOW_PACK_PARTIAL: &'static str = "/partial/packs";
+        pub const API_BASE: &'static str = "/api/pack";
+        pub const API_GEN_PACK_PID: &'static str = "/api/pack/gen/{pid}";
+        pub const API_GEN_PACK: &'static str = "/api/pack/gen";
     }
 }
 
 pub fn routes() -> Routes {
     Routes::new()
-        .prefix(routes::Pack::BASE)
-        .add(routes::Pack::GEN_PACK_PID, post(generate_packs_images))
+        .add(routes::Pack::SHOW_PACK_PID, get(show_pack))
+        .add(routes::Pack::SHOW_PACK_PARTIAL_PID, get(show_pack_partial))
+        .add(routes::Pack::API_GEN_PACK_PID, post(generate_packs_images))
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct PackParams {
+    model_pid: Option<Uuid>,
+    image_size: ImageSize,
 }
 
 async fn load_first_images(
@@ -65,6 +85,10 @@ async fn load_first_images(
 async fn load_models_all(db: &DatabaseConnection, id: i32) -> Result<TrainingModelList> {
     let list = TrainingModelModel::find_all_completed_by_user_id(db, id).await?;
     Ok(TrainingModelList::new(list))
+}
+async fn load_pack_by_pid(db: &DatabaseConnection, pid: &Uuid) -> Result<PackModel> {
+    let pack = PackModel::find_by_pid(db, pid).await?;
+    Ok(pack)
 }
 async fn load_everything(
     db: &DatabaseConnection,
@@ -81,10 +105,30 @@ async fn load_everything(
     Ok((user, Some(model), pack))
 }
 
-#[derive(Debug, Deserialize, Clone)]
-pub struct PackParams {
-    model_pid: Option<Uuid>,
-    image_size: ImageSize,
+#[debug_handler]
+pub async fn show_pack(
+    Path(pack_pid): Path<Uuid>,
+    ExtractConsentState(cc_cookie): ExtractConsentState,
+    Extension(website): Extension<Website>,
+    State(ctx): State<AppContext>,
+    ViewEngine(v): ViewEngine<TeraView>,
+) -> Result<impl IntoResponse> {
+    let images = load_cached_web(&ctx).await?;
+    let pack = load_pack_by_pid(&ctx.db, &pack_pid).await?;
+    views::packs::packs(v, &website, &cc_cookie, &images, &pack.into())
+}
+
+#[debug_handler]
+pub async fn show_pack_partial(
+    Path(pack_pid): Path<Uuid>,
+    ExtractConsentState(cc_cookie): ExtractConsentState,
+    Extension(website): Extension<Website>,
+    State(ctx): State<AppContext>,
+    ViewEngine(v): ViewEngine<TeraView>,
+) -> Result<impl IntoResponse> {
+    let images = load_cached_web(&ctx).await?;
+    let pack = load_pack_by_pid(&ctx.db, &pack_pid).await?;
+    views::packs::packs(v, &website, &cc_cookie, &images, &pack.into())
 }
 
 #[debug_handler]

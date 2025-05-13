@@ -2,18 +2,18 @@ use std::collections::HashMap;
 
 use super::auth::{UserCreditsView, UserView};
 use super::images::ImageViewList;
+use super::packs::PackViewList;
 use super::settings::UserSettingsView;
 use super::training_models::TrainingModelViewList;
 use crate::domain::features::FeatureViewList;
 use crate::domain::website::Website;
 use crate::middleware::cookie::CookieConsent;
 use crate::models::_entities::sea_orm_active_enums::{PlanNames, Status};
-use crate::models::packs::PackModelList;
 use crate::models::transactions::TransactionModelList;
-use crate::models::{PackModel, PlanModel, TransactionModel};
+use crate::models::{PlanModel, TransactionModel};
 use derive_more::{AsRef, Constructor};
 use loco_rs::prelude::*;
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 
 pub fn billing_dashboard(
     v: impl ViewRenderer,
@@ -307,43 +307,6 @@ pub fn photo_partial_dashboard(
             }
         ),
     )
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone, Constructor)]
-pub struct PackView {
-    pub id: i32,
-    pub pid: Uuid,
-    pub title: String,
-    pub short_description: String,
-    pub full_description: String,
-    pub credits: i32,
-    pub num_images: i32,
-    pub main_image: String,
-    pub images: Option<Vec<String>>,
-}
-impl From<PackModel> for PackView {
-    fn from(p: PackModel) -> Self {
-        Self {
-            id: p.id,
-            pid: p.pid,
-            title: p.title,
-            short_description: p.short_description,
-            full_description: p.full_description,
-            credits: p.credits,
-            num_images: p.num_images,
-            main_image: p.main_image,
-            images: p.images,
-        }
-    }
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone, AsRef, Constructor)]
-pub struct PackViewList(pub Vec<PackView>);
-
-impl From<PackModelList> for PackViewList {
-    fn from(p: PackModelList) -> Self {
-        Self(p.0.into_iter().map(|x| x.into()).collect())
-    }
 }
 
 #[derive(Clone, Debug, Serialize, Constructor)]

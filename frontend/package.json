@@ -30,6 +30,7 @@
   },
   "devDependencies": {
     "@tailwindcss/cli": "^4.0.17",
+    "@tailwindcss/line-clamp": "^0.4.4",
     "@types/bun": "^1.2.10",
     "concurrently": "^9.1.2"
   }

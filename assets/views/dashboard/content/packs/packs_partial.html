@@ -1,7 +1,7 @@
 <!-- prettier-ignore -->
 {% set studio_partial_link = website.website_routes.dashboard_routes.sidebar.photo_partial | safe %}
 {% set studio_link = website.website_routes.dashboard_routes.sidebar.photo | safe %}
-{% set pack_link = website.website_routes.packs_routes.gen_pack | safe %}
+{% set pack_link = website.website_routes.packs_routes.gen_pack  %}
 
 <div
   class="w-fit mx-auto grid grid-cols-1 lg:grid-cols-4 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-5"
@@ -12,7 +12,11 @@
     class="w-72 bg-base-100 shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl cursor-pointer"
     onclick="document.getElementById('modal-{{ pack.pid }}').showModal()"
   >
-    <img src="{{ pack.main_image }}" alt="pack" class="h-80 w-72 object-cover rounded-t-xl" />
+    <img
+      src="{{ pack.main_image | safe }}"
+      alt="pack"
+      class="h-80 w-72 object-cover rounded-t-xl"
+    />
     <div class="px-4 py-3 w-72">
       <p class="text-lg text-center font-bold truncate block capitalize">{{ pack.title }}</p>
       <p>{{ pack.short_description }}</p>
@@ -43,7 +47,7 @@
             <div class="w-full md:w-1/2 px-4 mb-8">
               <!-- Main Image -->
               <img
-                src="{{ pack.main_image }}"
+                src="{{ pack.main_image | safe }}"
                 alt="Product"
                 class="w-full h-auto object-cover rounded-lg shadow-lg mb-4"
                 id="mainImage-{{ pack.pid }}"
@@ -52,7 +56,7 @@
               <div class="flex gap-4 py-4 justify-center overflow-x-auto">
                 {% for image_url in pack.images %}
                 <img
-                  src="{{ image_url }}"
+                  src="{{ image_url | safe }}"
                   loading="lazy"
                   alt="Thumbnail 1"
                   class="w-24 h-24 object-cover rounded-md cursor-pointer duration-300 ease-in-out hover:scale-105 flex-shrink-0"
@@ -95,9 +99,9 @@
               </div>
               <form
                 id="form-{{ pack.pid }}"
-                hx-post="{{ pack_link }}/{{ pack.pid }}"
+                hx-post="{{ pack_link | safe }}/{{ pack.pid }}"
                 hx-target="#dashboard_content"
-                hx-push-url="{{ studio_link }}"
+                hx-push-url="{{ studio_link | safe }}"
                 hx-swap="innerHTML"
                 hx-ext="form-json"
                 hx-disabled-elt="#submit-btn-{{ pack.pid }}, #cancel-btn-{{ pack.pid }}"
@@ -111,7 +115,9 @@
                       id="model_pid-{{ pack.pid }}"
                       name="model_pid"
                       class="placeholder-black appearance-none cursor-pointer border pl-12 border-gray-100 shadow-sm focus:shadow-md focus:placeholder-gray-600 transition rounded-md w-full py-3 text-gray-600 leading-tight focus:outline-none focus:ring-gray-600 focus:shadow-outline"
+                      {#
                       required
+                      #}
                       x-model="modelSelected"
                     >
                       <option value="" disabled selected>Select Model</option>
@@ -128,7 +134,9 @@
                       id="image_size-{{ pack.pid }}"
                       name="image_size"
                       class="appearance-none cursor-pointer border pl-12 border-gray-100 shadow-sm focus:shadow-md focus:placeholder-gray-600 transition rounded-md w-full py-3 text-gray-600 leading-tight focus:outline-none focus:ring-gray-600 focus:shadow-outline"
+                      {#
                       required
+                      #}
                       x-model="sizeSelected"
                     >
                       <option value="" disabled selected>Select Image Size</option>
@@ -146,7 +154,9 @@
                     class="btn btn-primary"
                     type="submit"
                     form="form-{{ pack.pid }}"
+                    {#
                     :disabled="!modelSelected || !sizeSelected"
+                    #}
                   >
                     Generate
                   </button>

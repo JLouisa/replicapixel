@@ -47,6 +47,22 @@
         apiBaseUrl: "{{ website_site }}",
         isLocal: location.hostname === "localhost" || location.hostname === "127.0.0.1",
       };
+
+      // Theme toggle logic
+      const themeToggle = document.querySelector(".theme-controller");
+
+      if (themeToggle) {
+        const currentTheme =
+          localStorage.getItem("theme") || document.documentElement.getAttribute("data-theme");
+        themeToggle.checked = currentTheme === "dark";
+        document.documentElement.setAttribute("data-theme", currentTheme); // Ensure it's applied
+
+        themeToggle.addEventListener("change", function () {
+          const newTheme = this.checked ? "dark" : "light";
+          document.documentElement.setAttribute("data-theme", newTheme);
+          localStorage.setItem("theme", newTheme);
+        });
+      }
     </script>
     <style>
       body {
@@ -119,25 +135,7 @@
     ></div>
 
     <!-- Javascript -->
-    {% block js %} {% endblock js %}
-    <script>
-      // Theme toggle logic
-      const themeToggle = document.querySelector(".theme-controller");
-
-      if (themeToggle) {
-        const currentTheme =
-          localStorage.getItem("theme") || document.documentElement.getAttribute("data-theme");
-        themeToggle.checked = currentTheme === "dark";
-        document.documentElement.setAttribute("data-theme", currentTheme); // Ensure it's applied
-
-        themeToggle.addEventListener("change", function () {
-          const newTheme = this.checked ? "dark" : "light";
-          document.documentElement.setAttribute("data-theme", newTheme);
-          localStorage.setItem("theme", newTheme);
-        });
-      }
-    </script>
-    {% if not user %}
+    {% block js %} {% endblock js %} {% if not user %}
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script>
       // Google login logic

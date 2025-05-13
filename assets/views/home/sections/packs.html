@@ -1,4 +1,8 @@
-<section class="flex flex-col gap-8 my-28 max-w-7xl mx-auto z-8">
+<!-- prettier-ignore -->
+{% set pack_link = website.website_routes.packs_routes.show_pack %} 
+{% set pack_partial_link = website.website_routes.packs_routes.show_pack_partial %}
+
+<section id="home-packs" class="flex flex-col gap-8 my-28 max-w-7xl mx-auto z-8">
   <div class="flex flex-col gap-4 items-center justify-center">
     <div class="p-2 flex flex-row gap-2 items-center justify-center">
       {% include "partials/svg/triple_stars.html" %}
@@ -18,23 +22,32 @@
 
   <div class="flex flex-row flex-wrap justify-center items-stretch gap-6 w-full">
     {% for pack in web_images.packs %}
-    <div
-      class="w-72 max-h-[500px] bg-base-100 shadow-md rounded-xl overflow-hidden flex flex-col duration-500 hover:scale-105 hover:shadow-xl cursor-pointer"
-      onclick="document.getElementById('modal-{{ pack.pid }}').showModal()"
+    <a
+      id="pack-{{pack.pid}}"
+      href="{{pack_link | safe}}/{{pack.pid}}"
+      hx-get="{{pack_partial_link | safe}}/{{pack.pid}}"
+      hx-target="#app"
+      hx-swap="innerHTML"
+      hx-push-url="{{pack_link | safe}}/{{pack.pid}}"
+      class="h-full"
     >
-      <img
-        src="{{ pack.main_image }}"
-        alt="pack"
-        class="h-80 w-72 object-cover rounded-t-xl"
-        loading="lazy"
-      />
-      <div class="flex flex-col justify-between flex-grow px-4 py-3">
-        <p class="text-lg text-center font-bold truncate capitalize">{{ pack.title }}</p>
-        <p class="text-center text-sm mt-2 flex-grow overflow-hidden">
-          {{ pack.short_description }}
-        </p>
+      <div
+        class="w-72 h-full bg-base-100 shadow-md rounded-xl overflow-hidden flex flex-col duration-500 hover:scale-105 hover:shadow-xl cursor-pointer"
+      >
+        <img
+          src="{{ pack.main_image }}"
+          alt="pack"
+          class="h-80 w-72 object-cover rounded-t-xl"
+          loading="lazy"
+        />
+        <div class="flex flex-col flex-grow px-4 py-3 justify-between">
+          <p class="text-lg text-center font-bold truncate capitalize">{{ pack.title }}</p>
+          <p class="text-center text-sm mt-2 flex-grow overflow-hidden line-clamp-3">
+            {{ pack.short_description | truncate(length=150, end="...") }}
+          </p>
+        </div>
       </div>
-    </div>
+    </a>
     {% endfor %}
   </div>
 </section>
