@@ -1,0 +1,24 @@
+User-agent: *
+
+# Disallow common private or utility paths
+Disallow: /admin/
+Disallow: /account/
+Disallow: /profile/
+Disallow: /cart/
+Disallow: /checkout/
+Disallow: /cgi-bin/ # Common server script directory
+
+# Example for disallowing specific file types if needed (less common for "simple")
+# Disallow: /*.pdf$
+# Disallow: /*.doc$
+
+# Example for disallowing search result pages (if they don't add SEO value)
+# Disallow: /search
+# Disallow: /*?s=
+# Disallow: /*&query=
+
+# Allow everything else (this is implicit if no other Disallow matches,
+# but an empty Disallow: line makes it explicit for this block)
+# Disallow:
+
+Sitemap: https://www.replicapixel.com/sitemap.xml

@@ -22,7 +22,12 @@
       class="w-72 max-h-[500px] bg-base-100 shadow-md rounded-xl overflow-hidden flex flex-col duration-500 hover:scale-105 hover:shadow-xl cursor-pointer"
       onclick="document.getElementById('modal-{{ pack.pid }}').showModal()"
     >
-      <img src="{{ pack.main_image }}" alt="pack" class="h-80 w-72 object-cover rounded-t-xl" />
+      <img
+        src="{{ pack.main_image }}"
+        alt="pack"
+        class="h-80 w-72 object-cover rounded-t-xl"
+        loading="lazy"
+      />
       <div class="flex flex-col justify-between flex-grow px-4 py-3">
         <p class="text-lg text-center font-bold truncate capitalize">{{ pack.title }}</p>
         <p class="text-center text-sm mt-2 flex-grow overflow-hidden">

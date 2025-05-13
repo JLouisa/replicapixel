@@ -151,39 +151,39 @@ impl WebImages {
         ];
         let web_images0 = vec![
             String::from("../../../static/images/hero/nature-hero.webp"),
-            String::from("../../../static/images/gallery/corporate-headshot.jpg"),
+            String::from("../../../static/images/gallery/corporate-headshot.webp"),
             String::from("../../../static/images/hero/nature-hero.webp"),
-            String::from("../../../static/images/gallery/wife1.jpg"),
+            String::from("../../../static/images/gallery/wife1.webp"),
             String::from("../../../static/images/hero/nature-hero.webp"),
-            String::from("../../../static/images/gallery/nature3.jpg"),
+            String::from("../../../static/images/gallery/nature3.webp"),
         ];
         let web_images1 = vec![
-            String::from("../../../static/images/gallery/nature2.jpg"),
+            String::from("../../../static/images/gallery/nature2.webp"),
             String::from("../../../static/images/hero/quin-hero.webp"),
             String::from("../../../static/images/hero/halloween-hero.webp"),
-            String::from("../../../static/images/gallery/cosplay1-small.jpg"),
-            String::from("../../../static/images/gallery/machina2.jpg"),
-            String::from("../../../static/images/gallery/cosplay2-small.jpg"),
+            String::from("../../../static/images/gallery/cosplay1-small.webp"),
+            String::from("../../../static/images/gallery/machina2.webp"),
+            String::from("../../../static/images/gallery/cosplay2-small.webp"),
         ];
         let web_images2 = vec![
             String::from("../../../static/images/hero/lara-hero.webp"),
-            String::from("../../../static/images/gallery/machina1.jpg"),
+            String::from("../../../static/images/gallery/machina1.webp"),
             String::from("../../../static/images/hero/lara-hero.webp"),
             String::from("../../../static/images/hero/quin-hero.webp"),
             String::from("../../../static/images/hero/lara-hero.webp"),
-            String::from("../../../static/images/gallery/blackwidow.jpg"),
+            String::from("../../../static/images/gallery/blackwidow.webp"),
         ];
         let web_images3 = vec![
             String::from("../../../static/images/hero/halloween-hero.webp"),
             String::from("../../../static/images/hero/terminator-hero.webp"),
-            String::from("../../../static/images/gallery/nature1.jpg"),
+            String::from("../../../static/images/gallery/nature1.webp"),
             String::from("../../../static/images/hero/terminator-hero.webp"),
-            String::from("../../../static/images/gallery/cosplay3.jpg"),
+            String::from("../../../static/images/gallery/cosplay3.webp"),
             String::from("../../../static/images/hero/terminator-hero.webp"),
         ];
         let web_images4 = vec![
             String::from("../../../static/images/hero/spiritual-hero.webp"),
-            String::from("../../../static/images/gallery/easter1.jpg"),
+            String::from("../../../static/images/gallery/easter1.webp"),
             String::from("../../../static/images/hero/spiritual-hero.webp"),
             String::from("../../../static/images/creator1.png"),
             String::from("../../../static/images/hero/spiritual-hero.webp"),
@@ -198,12 +198,12 @@ impl WebImages {
         );
         let before_after = WebBeforeAfter::new(
         String::from(
-            "../../../static/images/head-shot/WhatsApp Image 2025-04-27 at 22.23.32_6190d2f4.jpg",
+            "../../../static/images/head-shot/WhatsApp Image 2025-04-27 at 22.23.32_6190d2f4.webp",
         ),
-        String::from("../../../static/images/head-shot/a5197708-06f9-4ecc-b29d-e25879d73d9b.jpg"),
+        String::from("../../../static/images/head-shot/a5197708-06f9-4ecc-b29d-e25879d73d9b.webp"),
     );
 
-        let studio = String::from("../../../static/images/studio/studio2.png");
+        let studio = String::from("../../../static/images/studio/studio2.webp");
 
         let packs = match load_packs(db).await {
             Ok(packs) => packs,
@@ -215,12 +215,12 @@ impl WebImages {
         .into();
 
         let creators = vec![
-            String::from("../../../static/images/creator1.png"),
-            String::from("../../../static/images/creator2.png"),
-            String::from("../../../static/images/creator3.png"),
-            String::from("../../../static/images/creator3.png"),
-            String::from("../../../static/images/creator2.png"),
-            String::from("../../../static/images/creator1.png"),
+            String::from("../../../static/images/creator1.webp"),
+            String::from("../../../static/images/creator2.webp"),
+            String::from("../../../static/images/creator3.webp"),
+            String::from("../../../static/images/creator3.webp"),
+            String::from("../../../static/images/creator2.webp"),
+            String::from("../../../static/images/creator1.webp"),
         ];
         let web_images = WebImages::new(hero_panel, gallery, before_after, studio, packs, creators);
         web_images

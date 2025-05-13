@@ -1,7 +1,9 @@
 <!-- prettier-ignore -->
 {% set login_api_link = website.website_routes.auth_routes.api_login | safe %}
 {% set forgot_partial_link = website.website_routes.auth_routes.forgot_partial | safe %}
+{% set forgot_link = website.website_routes.auth_routes.forgot | safe %}
 {% set register_partial_link = website.website_routes.auth_routes.register_partial | safe %}
+{% set register_link = website.website_routes.auth_routes.register | safe %}
 {% set google_link = website.website_routes.oauth2.google | safe %}
 {% set github_link = website.website_routes.oauth2.github | safe %}
 {% set studio_link = website.website_routes.dashboard_routes.base | safe %}
@@ -111,8 +113,9 @@
       </label>
 
       <a
-        hx-get="{{ forgot_partial_link }}"
-        hx-push-url="/forgot"
+        href="{{forgot_link | safe}}"
+        hx-get="{{ forgot_partial_link | safe }}"
+        hx-push-url="{{forgot_link | safe}}"
         hx-target="#auth-form"
         hx-swap="innerHTML"
         class="text-sm text-primary cursor-pointer"
@@ -130,14 +133,16 @@
         Sign in
       </button>
       <a
-        hx-get="{{ register_partial_link }}"
-        hx-push-url="/register"
+        href="{{ register_link | safe }}"
+        hx-get="{{ register_partial_link | safe }}"
+        hx-push-url="{{ register_link | safe }}"
         hx-target="#auth-form"
         class="text-sm text-primary cursor-pointer mt-4"
         >Don't have an account?</a
       >
       <a
         class="text-sm text-primary cursor-pointer mt-4"
+        href="/"
         hx-get="/partial/home"
         hx-push-url="/"
         hx-target="#app"

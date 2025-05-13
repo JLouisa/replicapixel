@@ -183,6 +183,7 @@
 
       {% if is_starter %}
       <a
+        href="{{ login_link }}"
         hx-get="{{ login_link }}"
         hx-swap="innerHTML"
         hx-target="#app"
@@ -192,6 +193,7 @@
       >
       {% else %}
       <a
+        href="{{ login_link }}"
         hx-get="{{ login_partial_link }}"
         hx-target="#auth-form"
         hx-swap="innerHTML"
@@ -202,11 +204,12 @@
 
       {% endif %}
       <a
-        class="text-sm text-primary cursor-pointer mt-4"
+        href="/"
         hx-get="/partial/home"
         hx-push-url="/"
         hx-target="#app"
         hx-swap="innerHTML"
+        class="text-sm text-primary cursor-pointer mt-4"
         >Home
       </a>
     </div>
