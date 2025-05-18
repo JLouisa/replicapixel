@@ -21,6 +21,9 @@ impl ActiveModelBehavior for ActiveModel {
     }
 }
 
+#[derive(Debug)]
+pub struct PlanModelList(pub Vec<Model>);
+
 // implement your read-oriented logic here
 impl Model {
     pub async fn find_by_pid(db: &DatabaseConnection, pid: &Uuid) -> ModelResult<Self> {
@@ -66,8 +69,9 @@ impl Model {
             .await?;
         user.ok_or_else(|| ModelError::EntityNotFound)
     }
-    pub async fn find_all(db: &impl ConnectionTrait) -> ModelResult<Vec<Self>> {
+    pub async fn find_all(db: &impl ConnectionTrait) -> ModelResult<PlanModelList> {
         let plans = Entity::find().all(db).await?;
+        let plans = PlanModelList(plans);
         Ok(plans)
     }
 }

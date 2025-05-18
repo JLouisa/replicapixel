@@ -17,7 +17,7 @@ impl Initializer for Website {
     }
 
     async fn after_routes(&self, router: AxumRouter, ctx: &AppContext) -> Result<AxumRouter> {
-        let website = Settings::init(&ctx).website();
+        let website = Settings::init(&ctx).website(&ctx).await;
         let router = router.layer(Extension(website));
         Ok(router)
     }

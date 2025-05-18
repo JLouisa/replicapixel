@@ -1,5 +1,70 @@
 <!-- Dashboard Content Section -->
 <div class="flex flex-1 overflow-y-auto px-4">
+  {# {% block js %} #}
+  <script>
+    async function uploadImageFromUrlToS3(imageUrl, presignedUrl, notifyBackendUrl) {
+      try {
+        const imageResponse = await fetch(imageUrl);
+        if (!imageResponse.ok) throw new Error("Failed to fetch image from source");
+        const blob = await imageResponse.blob();
+        const s3Upload = await fetch(presignedUrl, {
+          method: "PUT",
+          body: blob,
+          headers: {
+            "Content-Type": blob.type,
+          },
+        });
+        if (!s3Upload.ok) throw new Error("Failed to upload to S3");
+        const backendNotify = await fetch(notifyBackendUrl, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ uploaded: true, source: imageUrl }),
+        });
+        if (!backendNotify.ok) throw new Error("Failed to notify backend");
+        console.log("✅ Upload and notification successful");
+      } catch (err) {
+        console.error("❌ Upload failed", err);
+      }
+    }
+
+    function downloadImageWithLink(url, filename) {
+      try {
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = filename || "download";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } catch (error) {
+        console.error("Error during download attempt:", error);
+        alert("Sorry, the download could not be started.");
+      }
+    }
+
+    async function downloadImage(url, filename) {
+      try {
+        const response = await fetch(url, { mode: "cors" }); // Requires CORS headers on S3
+        if (!response.ok) throw new Error("Network response was not ok");
+
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        URL.revokeObjectURL(blobUrl); // Clean up
+      } catch (error) {
+        console.error("Image download failed:", error);
+      }
+    }
+  </script>
+  {# {% endblock js %} #}
   <!-- Gallery Content -->
   {% if images|length > 0 %}
   <div id="drive-gallery" class="grid grid-cols-2 md:grid-cols-6 gap-4 w-full self-start">
@@ -17,69 +82,4 @@
     "dashboard/content/photo/create_image_partial.html" %}
   </div>
 </div>
-{% endif %} {% block js %}
-<script>
-  async function uploadImageFromUrlToS3(imageUrl, presignedUrl, notifyBackendUrl) {
-    try {
-      const imageResponse = await fetch(imageUrl);
-      if (!imageResponse.ok) throw new Error("Failed to fetch image from source");
-      const blob = await imageResponse.blob();
-      const s3Upload = await fetch(presignedUrl, {
-        method: "PUT",
-        body: blob,
-        headers: {
-          "Content-Type": blob.type,
-        },
-      });
-      if (!s3Upload.ok) throw new Error("Failed to upload to S3");
-      const backendNotify = await fetch(notifyBackendUrl, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ uploaded: true, source: imageUrl }),
-      });
-      if (!backendNotify.ok) throw new Error("Failed to notify backend");
-      console.log("✅ Upload and notification successful");
-    } catch (err) {
-      console.error("❌ Upload failed", err);
-    }
-  }
-
-  function downloadImageWithLink(url, filename) {
-    try {
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = filename || "download";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } catch (error) {
-      console.error("Error during download attempt:", error);
-      alert("Sorry, the download could not be started.");
-    }
-  }
-
-  async function downloadImage(url, filename) {
-    try {
-      const response = await fetch(url, { mode: "cors" }); // Requires CORS headers on S3
-      if (!response.ok) throw new Error("Network response was not ok");
-
-      const blob = await response.blob();
-      const blobUrl = URL.createObjectURL(blob);
-
-      const link = document.createElement("a");
-      link.href = blobUrl;
-      link.download = filename;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-
-      URL.revokeObjectURL(blobUrl); // Clean up
-    } catch (error) {
-      console.error("Image download failed:", error);
-    }
-  }
-</script>
-
-{% endblock js %}
+{% endif %}

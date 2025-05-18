@@ -364,3 +364,18 @@ pub enum CheckOutStatus {
     Cancelled,
     Processing,
 }
+
+#[derive(Debug, Clone, PartialEq, Eq, Display, Serialize, Deserialize, PartialOrd, Ord)]
+pub enum Currency {
+    #[strum(to_string = "$")]
+    USA,
+    #[strum(to_string = "€")]
+    EUR,
+    #[strum(to_string = "£")]
+    GBP,
+}
+impl Default for Currency {
+    fn default() -> Self {
+        Currency::USA
+    }
+}

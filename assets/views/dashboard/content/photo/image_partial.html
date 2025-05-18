@@ -45,16 +45,16 @@
       <form method="dialog" class="modal-backdrop">
         <button>close</button>
       </form>
-      {% if image.image_status == "Processing" and not image.image_url_s3 and image.pre_url %}
-      <script>
-        uploadImageFromUrlToS3(
-          "{{ image.image_url_fal | safe }}",
-          "{{ image.pre_url | safe }}",
-          "{{ website.website_routes.image.api_image_s3_complete_upload | safe }}/{{ image.pid }}"
-        );
-      </script>
-      {% endif %}
     </dialog>
+    {% if image.image_status == "Processing" and image.pre_url %}
+    <script>
+      uploadImageFromUrlToS3(
+        "{{ image.image_url_fal | safe }}",
+        "{{ image.pre_url | safe }}",
+        "{{ website.website_routes.image.api_image_s3_complete_upload | safe }}/{{ image.pid }}"
+      );
+    </script>
+    {% endif %}
   </div>
   {# End image-container for completed image #} {% else %} {# LOADING PLACEHOLDER CELL #}
   <div

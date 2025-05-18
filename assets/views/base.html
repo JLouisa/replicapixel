@@ -21,7 +21,7 @@
       {% block title %}{{ website_name | default(value= "ReplicaPixel") }}{% endblock title %}
     </title>
 
-    <link rel="icon" href="/static/favicon.ico" type="image/x-icon" />
+    <link rel="icon" href="/static/favicon.png" type="image/png" />
     <link href="/static/css/output.css" rel="stylesheet" type="text/css" />
     <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
 
@@ -29,12 +29,15 @@
     <script src="/static/js/htmx/extensions/htmx-ext-form-json.js" defer></script>
     <script src="/static/js/htmx/extensions/htmx-ext-preload.js" defer></script>
     <script src="/static/js/index.js" defer></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 
     {% block head %}{% endblock head %}
 
     <!-- Cookie Consent -->
     {% include "partials/cookie/consent.html" %}
 
+    <!-- Javascript -->
+    {% block js %} {% endblock js %}
     <script>
       // Apply theme on page load
       const userTheme = localStorage.getItem("theme");
@@ -127,15 +130,17 @@
       <span x-text="$store.toast.message"></span>
     </div>
 
+    {% if is_home %}
     <div
       id="google-login-init"
       hx-trigger="load once"
       hx-get="{{api_check_user_link}}"
       hx-swap="outerHTML"
     ></div>
+    {% endif %}
 
     <!-- Javascript -->
-    {% block js %} {% endblock js %} {% if not user %}
+    {% if not user %}
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script>
       // Google login logic

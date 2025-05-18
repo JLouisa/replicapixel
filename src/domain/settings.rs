@@ -49,7 +49,7 @@ impl Settings {
     pub fn fal_ai(&self) -> FalAiClient {
         FalAiClient::new(&self.fal_ai, &self.website)
     }
-    pub fn website(&self) -> Website {
-        Website::init(&self)
+    pub async fn website(&self, ctx: &AppContext) -> Website {
+        Website::init(&self, &ctx).await
     }
 }

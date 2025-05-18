@@ -1,3 +1,5 @@
+{% set home_reviews = website.website_home.reviews %}
+
 <div class="flex flex-col items-center gap-4 max-w-7xl mt-24 mb-16 mx-auto p-2 md:p-0">
   <div class="text-w flex items-center justify-center gap-4 font-sans">
     {% include "partials/svg/triple_stars.html" %} Ai Studio
@@ -25,12 +27,87 @@
 
   <div class="w-full">
     <div class="flex flex-wrap gap-6 mb-4">
-      <div class="flex-1">{% include "home/sections/creator_reviews.html/review_big.html" %}</div>
-      <div class="flex-1">{% include "home/sections/creator_reviews.html/review_small.html" %}</div>
-      <div class="flex-1">{% include "home/sections/creator_reviews.html/review_big.html" %}</div>
-      <div class="flex-1">{% include "home/sections/creator_reviews.html/review_big.html" %}</div>
-      <div class="flex-1">{% include "home/sections/creator_reviews.html/review_small.html" %}</div>
-      <div class="flex-1">{% include "home/sections/creator_reviews.html/review_big.html" %}</div>
+      {% for review in home_reviews %} {% if review.is_big %}
+      <div class="flex-1">
+        <div
+          class="relative w-full max-w-96 md:min-w-96 bg-white/5 border border-white/15 rounded-2xl p-6 flex flex-col gap-6 items-start justify-center min-w-64"
+        >
+          <div class="flex flex-col gap-4 items-start w-full">
+            <div class="flex gap-2">
+              {% for _ in review.rating %} {% include "partials/svg/start_one_fill.html" %} {%
+              endfor %}
+            </div>
+
+            <div class="flex flex-col gap-8 items-start w-full">
+              <p class="text-background-disabled-0 text-left font-medium text-base leading-relaxed">
+                {{review.text}}
+              </p>
+
+              <div class="w-full flex flex-row items-center gap-4 justify-start">
+                <div class="avatar">
+                  <div
+                    class="w-16 rounded-full ring-2 ring-primary ring-offset-2 ring-offset-base-100"
+                  >
+                    <img src="{{review.image_url}}" alt="Creator Avatar" loading="lazy" />
+                  </div>
+                </div>
+                <div class="flex flex-col gap-1">
+                  <div class="text-w font-medium text-xl text-left">{{review.name}}</div>
+                  <div class="text-gray-black-50 text-left text-lg font-medium">
+                    {{review.job_title}}
+                  </div>
+                </div>
+              </div>
+
+              <div class="absolute right-6 bottom-6 w-6 h-6">
+                {% include "partials/svg/quote.html" %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% else %}
+      <div class="flex-1">
+        <div
+          class="relative w-full max-w-96 md:min-w-96 bg-white/5 border border-white/15 rounded-2xl p-6 flex flex-col gap-6 items-start justify-center h-auto lg:h-[300px]"
+        >
+          <div class="flex flex-col gap-4 items-start w-full">
+            <div class="flex gap-2">
+              {% for _ in review.rating %} {% include "partials/svg/start_one_fill.html" %} {%
+              endfor %}
+            </div>
+
+            <div class="flex flex-col gap-8 items-start w-full">
+              <p class="text-background-disabled-0 text-left font-medium text-base leading-relaxed">
+                {{review.text}}
+              </p>
+
+              <div class="w-full flex flex-row items-center gap-3">
+                <div class="avatar">
+                  <div
+                    class="w-16 rounded-full ring-2 ring-primary ring-offset-2 ring-offset-base-100"
+                  >
+                    <img
+                      src="https://img.daisyui.com/images/profile/demo/spiderperson@192.webp"
+                      alt="Creator Avatar"
+                      loading="lazy"
+                    />
+                  </div>
+                </div>
+                <div class="flex flex-col gap-1">
+                  <div class="text-w font-medium text-xl">{{review.name}}</div>
+                  <div class="text-gray-black-50 text-base font-normal">{{review.job_title}}</div>
+                </div>
+              </div>
+
+              <div class="absolute right-6 bottom-6 w-6 h-6">
+                {% include "partials/svg/quote.html" %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %} {% endfor %}
     </div>
   </div>
 </div>

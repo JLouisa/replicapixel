@@ -46,7 +46,7 @@ pub mod routes {
     impl DashboardRoutes {
         pub fn init() -> Self {
             Self {
-                base: format!("{}", Dashboard::BASE),
+                base: String::from(Dashboard::BASE),
                 billing: format!("{}{}", Dashboard::BASE, Dashboard::BILLING),
                 billing_partial: format!("{}{}", Dashboard::BASE, Dashboard::BILLING_PARTIAL),
 
@@ -303,7 +303,7 @@ async fn load_plans(db: &DatabaseConnection) -> Result<HashMap<i32, PlanModel>> 
     let list = PlanModel::find_all(db).await?;
     let mut map: HashMap<i32, PlanModel> = HashMap::new();
 
-    for item in list {
+    for item in list.0 {
         map.insert(item.id, item);
     }
 

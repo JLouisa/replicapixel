@@ -123,6 +123,12 @@ impl ImageView {
         new_self.pre_url = Some(pre_url.into_inner());
         Ok(new_self)
     }
+    pub async fn set_pre_url_mut(&mut self, s3_client: &AwsS3) -> Result<(), AwsError> {
+        let pre_url = s3_client.auto_upload_img_presigned_url(self).await?;
+        self.pre_url = Some(pre_url.into_inner());
+        Ok(())
+    }
+
     pub async fn set_pre_url_many(
         list: Vec<Self>,
         s3_client: &AwsS3,
@@ -364,6 +370,11 @@ impl ImageViewList {
             {
                 let updated_image = image.get_pre_url_mut(s3_client, cache).await;
                 return updated_image;
+            }
+            if image.image_url_fal.is_some() && image.image_status == Status::Processing.to_string()
+            {
+                let _ = image.set_pre_url_mut(s3_client).await;
+                dbg!(&image);
             }
             image
         });

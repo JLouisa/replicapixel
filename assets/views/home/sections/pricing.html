@@ -1,0 +1,108 @@
+{% set pricing_list = website.website_home.pricing %}
+
+<div
+  id="pricing"
+  class="flex flex-col gap-12 items-center justify-center relative mx-auto max-w-7xl"
+>
+  <div class="flex flex-col gap-12 items-center justify-center shrink-0 w-full relative">
+    <div class="flex flex-col gap-4 items-center justify-center self-stretch">
+      <div class="p-2 flex flex-row gap-2 items-center justify-center">
+        {% include "partials/svg/triple_stars.html" %}
+        <div class="text-center font-inter text-sm relative flex items-center justify-center">
+          Pricing
+        </div>
+      </div>
+      <div class="flex flex-col gap-4 items-center justify-center">
+        <div class="text-center font-bricon text-5xl font-medium">Choose Your Plan</div>
+        <div class="text-center font-inter text-lg">Select the perfect plan for your needs</div>
+      </div>
+    </div>
+
+    <div
+      class="p-4 lg:p-0 flex flex-col lg:flex-row gap-6 items-center justify-between self-stretch relative"
+    >
+      {% for pricing in pricing_list %}
+      <div
+        class="bg-white/8 rounded-xl border-solid border-white/10 border flex flex-col items-center flex-1 relative max-w-96 overflow-visible"
+        {%
+        if
+        pricing.is_popular
+        %}
+        style="
+          border-image: linear-gradient(
+            113deg,
+            rgba(96, 93, 255, 1) 0%,
+            rgba(244, 48, 152, 1) 100%
+          );
+          border-image-slice: 1;
+        "
+        {%
+        endif
+        %}
+      >
+        {% if pricing.is_popular %}
+        <div
+          class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-full py-1.5 px-4 flex items-center justify-center z-10"
+          style="
+            background: var(
+              --gr1,
+              linear-gradient(90deg, rgba(96, 93, 255, 1) 0%, rgba(244, 48, 152, 1) 100%)
+            );
+          "
+        >
+          <div class="text-center font-inter text-xs font-medium">Most Popular</div>
+        </div>
+        {% endif %}
+        <div class="py-8 px-6 flex flex-col gap-3 items-center justify-center self-stretch">
+          <div class="flex flex-col gap-6 items-center justify-center w-[19.625rem]">
+            <div class="flex flex-col gap-2 items-start self-stretch">
+              <div
+                class="text-center font-bricon text-[2rem] leading-[1.2] font-medium self-stretch"
+              >
+                {{ pricing.plan_type | capitalize }}
+              </div>
+              <div
+                class="text-gray-black-50 text-center font-inter text-lg leading-[1.2] self-stretch"
+              >
+                {{ pricing.subtitle }}
+              </div>
+            </div>
+            <div class="text-center text-5xl leading-[1.2] font-semibold self-stretch">
+              {{ pricing.currency }}{{ pricing.price }}
+            </div>
+          </div>
+        </div>
+        <div class="border-solid border-white/10 border-t w-[20.5rem] h-0 mt-[-0.0625rem]"></div>
+        <div class="py-8 px-6 flex flex-col gap-8 items-center self-stretch">
+          <div class="flex flex-col gap-4 items-start self-stretch">
+            {% for feature in pricing.features %}
+            <div class="flex flex-row gap-2 items-center self-stretch">
+              {% include "partials/svg/check2.html" %}
+              <div class="text-left font-inter text-lg font-medium">{{ feature }}</div>
+            </div>
+            {% endfor %}
+          </div>
+          <div id="pricing-{{pricing.plan_type}}-btn" class="w-full flex flex-col items-start">
+            <a
+              href="{{ login_link }}"
+              hx-get="{{ login_link }}"
+              hx-swap="innerHTML"
+              hx-push-url="{{ login_link }}"
+              hx-target="#app"
+              class="w-full"
+            >
+              <div
+                class="w-full {% if pricing.is_popular %}bg-grn-to{% else %}bg-grn-from{% endif %} rounded-xl px-8 py-4 flex items-center justify-center gap-3 shadow-sm hover:shadow-md transition-shadow"
+              >
+                <span class="hite text-center font-inter text-base font-medium">
+                  {{pricing.cta}}
+                </span>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>

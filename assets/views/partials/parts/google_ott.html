@@ -5,7 +5,6 @@
 {% set google_ott_link = website.website_routes.oauth2.google_ott | safe %}
 {% set google_client_id = website.website_basic_info.google.google_client_id | safe %}
 
-<script src="https://accounts.google.com/gsi/client" async defer></script>
 <script>
   // Google login logic
   window.onload = function () {

@@ -46,13 +46,20 @@
 </div>
 
 {% elif checkout_status == "Cancelled" %}
-<div class="min-h-screen bg-base-200 flex items-center justify-center p-4">
+<div
+  hx-get="/partial/home"
+  hx-trigger="load delay:2s"
+  hx-target="#app"
+  hx-swap="innerHTML"
+  hx-push-url="/"
+  class="min-h-screen bg-base-200 flex items-center justify-center p-4"
+>
   <div class="card w-full max-w-md bg-base-100 shadow-xl">
     <div class="card-body items-center text-center">
       <div class="mb-6 text-warning" id="iconContainer">
         {% include "partials/svg/checkout_cancelled.html" %}
       </div>
-      <h2 class="card-title text-2xl mb-2 justify-center" id="statusText">Payment Cancelled!</h2>
+      <h2 class="card-title text-2xl mb-2 justify-center" id="statusText">Payment Cancelled</h2>
       <p class="text-base-content/80" id="messageText">
         Not the one you wanted? Let's try a different one
       </p>
@@ -67,9 +74,7 @@
   </div>
 
   <script>
-    setTimeout(() => {
-      window.location.href = "{{ website.website_routes.payment.payment_plans | safe }}";
-    }, 2000);
+    sessionStorage.setItem("scrollTo", "#pricing");
   </script>
 </div>
 {% endif %}

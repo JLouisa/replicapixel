@@ -12,12 +12,13 @@ use stripe::{
 };
 pub struct PaymentController;
 use crate::{
-    domain::website::Website,
+    domain::website::{Feature, Website},
     models::{
         users::UserPid,
         PlanModel,
-        _entities::sea_orm_active_enums::{CheckOutStatus, PlanNames},
+        _entities::sea_orm_active_enums::{CheckOutStatus, Currency, PlanNames},
         join::{user_credits_models::load_user_and_credits, user_order::load_user_and_order},
+        plans::PlanModelList,
         UserModel,
     },
     service::stripe::{
@@ -348,6 +349,140 @@ pub async fn payment_home_partial(
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     views::payment::payment_home_partial(v, &website, &user.into(), &user_credits.into())
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct PricingView {
+    pub id: i32,
+    pub plan_type: PlanNames,
+    pub title: String,
+    pub subtitle: String,
+    pub currency: String,
+    pub price: f64,
+    pub features: Option<Vec<Feature>>,
+    pub cta: String,
+    pub is_popular: bool,
+}
+impl From<PlanModel> for PricingView {
+    fn from(plan: PlanModel) -> Self {
+        let feature = match plan.features {
+            Some(f) => {
+                let features: Vec<Feature> = f.iter().map(|f| Feature::new(f.to_owned())).collect();
+                Some(features)
+            }
+            None => None,
+        };
+        let currency = Currency::default().to_string();
+        Self {
+            id: plan.id,
+            plan_type: plan.plan_name,
+            title: plan.name,
+            subtitle: plan.subtitle,
+            currency,
+            price: plan.price_cents as f64 / 100.0,
+            features: feature,
+            cta: plan.cta,
+            is_popular: plan.is_popular,
+        }
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct PricingViewList(Vec<PricingView>);
+impl From<PlanModelList> for PricingViewList {
+    fn from(plans: PlanModelList) -> Self {
+        let mut list: Vec<PricingView> = plans.0.iter().map(|p| p.clone().into()).collect();
+        list.sort_by_key(|p| p.id);
+        Self(list)
+    }
+}
+impl PricingViewList {
+    pub fn mock_plans() -> Self {
+        let list = vec![
+            PricingView::basic(),
+            PricingView::premium(),
+            PricingView::max(),
+        ];
+
+        Self(list)
+    }
+}
+impl Default for PricingViewList {
+    fn default() -> Self {
+        Self(vec![])
+    }
+}
+impl PricingView {
+    pub fn mock_plans() -> PricingViewList {
+        let list = vec![
+            PricingView::basic(),
+            PricingView::premium(),
+            PricingView::max(),
+        ];
+
+        PricingViewList(list)
+    }
+    fn basic() -> Self {
+        Self {
+            id: 1,
+            plan_type: PlanNames::Basic,
+            title: "Basic".to_owned(),
+            subtitle: "For individuals & testing".to_owned(),
+            currency: Currency::default().to_string(),
+            price: 999 as f64 / 100.0,
+            features: Some(vec![
+                Feature::new("50 AI Photo Credits".to_owned()),
+                Feature::new("1 AI Model".to_owned()),
+                Feature::new("No Monthly Subscription".to_owned()),
+                Feature::new("Use Any Photo Pack".to_owned()),
+                Feature::new("No Watermarks".to_owned()),
+                Feature::new("24/7 Support".to_owned()),
+            ]),
+            cta: "Choose Basic".to_owned(),
+            is_popular: false,
+        }
+    }
+    fn premium() -> Self {
+        Self {
+            id: 2,
+            plan_type: PlanNames::Premium,
+            title: "Premium".to_owned(),
+            subtitle: "For creators & small teams".to_owned(),
+            currency: Currency::default().to_string(),
+            price: 3999 as f64 / 100.0,
+            features: Some(vec![
+                Feature::new("250 AI Photo Credits".to_owned()),
+                Feature::new("7 AI Models".to_owned()),
+                Feature::new("No Monthly Subscription".to_owned()),
+                Feature::new("Use Any Photo Pack".to_owned()),
+                Feature::new("Priority Processing".to_owned()),
+                Feature::new("No Watermarks".to_owned()),
+                Feature::new("24/7 Support".to_owned()),
+            ]),
+            cta: "Choose Premium".to_owned(),
+            is_popular: true,
+        }
+    }
+    fn max() -> Self {
+        Self {
+            id: 3,
+            plan_type: PlanNames::Max,
+            title: "Business".to_owned(),
+            subtitle: "For agencies & heavy users".to_owned(),
+            currency: Currency::default().to_string(),
+            price: 9999 as f64 / 100.0,
+            features: Some(vec![
+                Feature::new("1100 AI Photo Credits".to_owned()),
+                Feature::new("16 AI Models".to_owned()),
+                Feature::new("No Monthly Subscription".to_owned()),
+                Feature::new("Use Any Photo Pack".to_owned()),
+                Feature::new("No Watermarks".to_owned()),
+                Feature::new("24/7 Support".to_owned()),
+            ]),
+            cta: "Choose Max".to_owned(),
+            is_popular: false,
+        }
+    }
 }
 
 // ===================== Embedded Code ======================

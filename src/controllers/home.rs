@@ -1,8 +1,7 @@
 #![allow(clippy::missing_errors_doc)]
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
-// use std::time::Duration;
-
+use crate::domain::sitemap::get_sitemap;
 use crate::middleware::cookie::ExtractConsentState;
 use crate::models::packs::PackModelList;
 use crate::models::PackModel;
@@ -95,6 +94,7 @@ Sitemap: https://www.replicapixel.com/sitemap.xml
 }
 
 pub async fn sitemap_xml() -> impl IntoResponse {
+    get_sitemap();
     let sitemap = r#"<?xml version="1.0" encoding="UTF-8"?>
 <urlset 
   xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"

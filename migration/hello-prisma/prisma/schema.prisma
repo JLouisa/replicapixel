@@ -194,6 +194,7 @@ model Packs {
   id                              Int              @id @default(autoincrement())
   pid                             String           @unique @db.Uuid
   title                           String           @db.VarChar(255)
+  title_url                       String           @default("title-url") @db.VarChar(255)
   short_description               String           @db.VarChar(255)
   full_description                String           @db.Text
   pack_prompts                    String           
@@ -202,6 +203,7 @@ model Packs {
   num_inference_steps             Int              @default(50)
   stars                           Int              @default(5)
   used                            Int              @default(0)
+  popular                         Boolean          @default(false)
   main_image                      String           @default("url")
   images                          String[]         @db.Text @default([])  
   features                        String[]         @db.Text @default([])
@@ -211,6 +213,7 @@ model Packs {
   Images                          Images[]
 
   @@index([pid], name: "idx-packs-pid")
+  @@index([title_url], name: "idx-title-pid")
 }
 
 model HandledStripeEvent {
