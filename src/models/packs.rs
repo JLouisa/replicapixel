@@ -72,7 +72,10 @@ impl Model {
         pack.ok_or_else(|| ModelError::EntityNotFound)
     }
     pub async fn find_all_packs(db: &DatabaseConnection) -> ModelResult<Vec<Self>> {
-        let packs = Entity::find().all(db).await?;
+        let packs = Entity::find()
+            .order_by_asc(packs::Column::Id)
+            .all(db)
+            .await?;
         Ok(packs)
     }
     pub async fn find_first_12_packs(db: &DatabaseConnection) -> ModelResult<Vec<Self>> {

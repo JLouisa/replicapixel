@@ -14,7 +14,6 @@ pub fn get_all_packs(
     website: &Website,
     packs: &PackViewList,
 ) -> Result<impl IntoResponse> {
-    dbg!(packs);
     format::render().view(
         &v,
         "home/sections/partials/pack_inner_partial.html",
