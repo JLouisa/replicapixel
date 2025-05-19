@@ -1,8 +1,14 @@
 <!-- prettier-ignore -->
-{% set pack_link = website.website_routes.packs_routes.show_pack %} 
-{% set pack_partial_link = website.website_routes.packs_routes.show_pack_partial %}
+{% set packs_all_link = website.website_routes.packs_routes.api_packs_all %}
+{% set pack_list = web_images.packs %}
 
 <section id="home-packs" class="flex flex-col gap-8 my-28 max-w-7xl mx-auto z-8">
+  <style>
+    :target {
+      scroll-margin-top: 50vh;
+      padding-top: 20px;
+    }
+  </style>
   <div class="flex flex-col gap-4 items-center justify-center">
     <div class="p-2 flex flex-row gap-2 items-center justify-center">
       {% include "partials/svg/triple_stars.html" %}
@@ -20,37 +26,22 @@
     </div>
   </div>
 
-  <div class="flex flex-row flex-wrap justify-center items-stretch gap-6 w-full">
-    {% for pack in web_images.packs %}
-    <a
-      id="pack-{{pack.pid}}"
-      href="{{pack_link | safe}}/{{pack.pid}}"
-      hx-get="{{pack_partial_link | safe}}/{{pack.pid}}"
-      hx-target="#app"
-      hx-swap="innerHTML"
-      hx-push-url="{{pack_link | safe}}/{{pack.pid}}"
-      class="h-full"
-    >
-      <div
-        class="w-72 h-full bg-base-100 shadow-md rounded-xl overflow-hidden flex flex-col duration-500 hover:scale-105 hover:shadow-xl cursor-pointer"
-      >
-        <img
-          src="{{ pack.main_image }}"
-          alt="pack"
-          class="h-80 w-72 object-cover rounded-t-xl"
-          loading="lazy"
-        />
-        <div class="flex flex-col flex-grow px-4 py-3 justify-between">
-          <p class="text-lg text-center font-bold truncate capitalize">{{ pack.title }}</p>
-          <p class="text-center text-sm mt-2 flex-grow overflow-hidden line-clamp-3">
-            {{ pack.short_description | truncate(length=150, end="...") }}
-          </p>
-        </div>
+  <div id="home-inner-packs" class="w-full flex flex-col gap-8">
+    {% include "home/sections/partials/pack_inner_partial.html" %}
+    <div class="flex items-center justify-center w-full">
+      <div class="relative inline-flex group">
+        <span
+          hx-get="{{packs_all_link | safe}}"
+          hx-target="#home-inner-packs"
+          hx-swap="innerHTML"
+          class="text-2xl transition-all duration-300 cursor-pointer hover:text-grn-to"
+        >
+          See more
+        </span>
+        <span
+          class="absolute bottom-0 left-0 w-0 h-0.5 bg-grn-to transition-all duration-300 group-hover:w-full"
+        ></span>
       </div>
-    </a>
-    {% endfor %}
-  </div>
-  <div class="flex items-center justify-center">
-    <span>See more</span>
+    </div>
   </div>
 </section>

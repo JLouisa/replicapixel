@@ -14,7 +14,7 @@ use crate::{
         users::UserPid,
         ImageModel,
         _entities::sea_orm_active_enums::ImageSize,
-        packs::PacksDomain,
+        packs::{PackModelList, PacksDomain},
         training_models::TrainingModelList,
         PackModel, TrainingModelModel, UserModel,
     },
@@ -35,6 +35,7 @@ pub mod routes {
         pub gen_pack: String,
         pub show_pack: String,
         pub show_pack_partial: String,
+        pub api_packs_all: String,
     }
     impl PackRoutes {
         pub fn init() -> Self {
@@ -43,6 +44,7 @@ pub mod routes {
                 gen_pack: String::from(Pack::API_GEN_PACK),
                 show_pack: String::from(Pack::SHOW_PACK),
                 show_pack_partial: String::from(Pack::SHOW_PACK_PARTIAL),
+                api_packs_all: String::from(Pack::API_PACKS_ALL),
             }
         }
     }
@@ -57,12 +59,14 @@ pub mod routes {
         pub const API_BASE: &'static str = "/api/pack";
         pub const API_GEN_PACK_PID: &'static str = "/api/pack/gen/{pid}";
         pub const API_GEN_PACK: &'static str = "/api/pack/gen";
+        pub const API_PACKS_ALL: &'static str = "/api/packs/all";
     }
 }
 
 pub fn routes() -> Routes {
     Routes::new()
         .add(routes::Pack::SHOW_PACK_PID, get(show_pack))
+        .add(routes::Pack::API_PACKS_ALL, get(get_all_packs))
         .add(routes::Pack::SHOW_PACK_PARTIAL_PID, get(show_pack_partial))
         .add(routes::Pack::API_GEN_PACK_PID, post(generate_packs_images))
 }
@@ -90,6 +94,10 @@ async fn load_pack_by_pid(db: &DatabaseConnection, pid: &Uuid) -> Result<PackMod
     let pack = PackModel::find_by_pid(db, pid).await?;
     Ok(pack)
 }
+async fn load_packs_all(db: &DatabaseConnection) -> Result<PackModelList> {
+    let pack = PackModel::find_all_packs(db).await?;
+    Ok(PackModelList::new(pack))
+}
 async fn load_everything(
     db: &DatabaseConnection,
     user_pid: &UserPid,
@@ -103,6 +111,16 @@ async fn load_everything(
     let (user, model, pack) =
         load_user_one_training_model_one_pack(db, user_pid, &model_pid, pack_pid).await?;
     Ok((user, Some(model), pack))
+}
+
+#[debug_handler]
+pub async fn get_all_packs(
+    Extension(website): Extension<Website>,
+    State(ctx): State<AppContext>,
+    ViewEngine(v): ViewEngine<TeraView>,
+) -> Result<impl IntoResponse> {
+    let pack = load_packs_all(&ctx.db).await?;
+    views::packs::get_all_packs(v, &website, &pack.into())
 }
 
 #[debug_handler]

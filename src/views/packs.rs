@@ -9,6 +9,24 @@ use crate::{
     models::{packs::PackModelList, PackModel},
 };
 
+pub fn get_all_packs(
+    v: impl ViewRenderer,
+    website: &Website,
+    packs: &PackViewList,
+) -> Result<impl IntoResponse> {
+    dbg!(packs);
+    format::render().view(
+        &v,
+        "home/sections/partials/pack_inner_partial.html",
+        data!(
+            {
+                "website": website, "packs": packs,
+                "is_pack_partial": true
+            }
+        ),
+    )
+}
+
 pub fn packs(
     v: impl ViewRenderer,
     website: &Website,

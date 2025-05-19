@@ -38,6 +38,9 @@
       <!-- Gallery -->
       {% include "home/sections/gallery.html" %}
 
+      <!-- Creator Reviews -->
+      {% include "home/sections/creators_review.html" %}
+
       <!-- Pro Head Shot -->
       {% include "home/sections/pro_head_shot.html" %}
 
@@ -52,9 +55,6 @@
 
       <!-- payment plans -->
       {% include "home/sections/pricing.html" %}
-
-      <!-- Creator Reviews -->
-      {% include "home/sections/creators_review.html" %}
 
       <!-- Creators -->
       {% include "home/sections/creators.html" %}
@@ -79,6 +79,7 @@
       {% include "partials/svg/x.html" %}
     </label>
   </div>
+  {#
   <script>
     document.body.addEventListener("htmx:afterSwap", function (evt) {
       if (evt.detail.target.id === "app") {
@@ -89,6 +90,35 @@
             const el = document.querySelector(target);
             if (el) {
               el.scrollIntoView({ block: "start" });
+            }
+            sessionStorage.removeItem("scrollTo");
+          });
+        }
+      }
+    });
+  </script>
+  #}
+  <script>
+    document.body.addEventListener("htmx:afterSwap", function (evt) {
+      if (evt.detail.target.id === "app") {
+        const target = sessionStorage.getItem("scrollTo");
+        if (target) {
+          requestAnimationFrame(() => {
+            const el = document.querySelector(target);
+            if (el) {
+              // Calculate centered scroll position
+              const elementRect = el.getBoundingClientRect();
+              const offsetPosition =
+                elementRect.top +
+                window.pageYOffset -
+                window.innerHeight / 2 +
+                elementRect.height / 2;
+
+              // Smooth scroll to center
+              window.scrollTo({
+                top: offsetPosition,
+                behavior: "smooth",
+              });
             }
             sessionStorage.removeItem("scrollTo");
           });

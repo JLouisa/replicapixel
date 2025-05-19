@@ -1,10 +1,11 @@
 {% set home_reviews = website.website_home.reviews %}
 
-<div class="flex flex-col items-center gap-4 max-w-7xl mt-24 mb-16 mx-auto p-2 md:p-0">
+<div class="flex flex-col items-center gap-4 max-w-7xl my-28 mb-16 mx-auto p-2 md:p-0">
   <div class="text-w flex items-center justify-center gap-4 font-sans">
     {% include "partials/svg/triple_stars.html" %} Ai Studio
   </div>
   <div class="flex flex-col items-center gap-4 w-full relative">
+    {#
     <!-- Glow Background Effect -->
     <div
       class="absolute z-0 left-1/2 top-1/2 -translate-x-2/3 -translate-y-1/2 rounded-full w-[1000px] h-[1000px] pointer-events-none"
@@ -17,8 +18,9 @@
         filter: blur(300px);
       "
     ></div>
+    #}
     <div class="text-w text-5xl font-medium text-center font-brico w-full">
-      What Creators Are Saying
+      What Our Customers Are Saying
     </div>
     <div class="text-w text-lg text-center font-sans">
       Studio-quality AI photos with perfect likeness every time.

@@ -186,33 +186,33 @@ impl HomeReview {
         image_url: "https://img.daisyui.com/images/profile/demo/spiderperson@192.webp".to_owned(),
         is_big: false,
     },
-    HomeReview {
-        id: 4,
-        text: "Our startup needed professional-looking ad creatives and website banners on a tight budget. This AI tool is a game-changer, allowing us to produce high-quality assets without hiring an expensive agency.".to_owned(),
-        name: "Marcus Reid".to_owned(),
-        job_title: "Founder, EcoBloom Solutions".to_owned(),
-        rating: vec![1; 5], // 5 stars
-        image_url: "https://img.daisyui.com/images/profile/demo/spiderperson@192.webp".to_owned(),
-        is_big: false,
-    },
-    HomeReview {
-        id: 5,
-        text: "Incredibly intuitive! I'm not a designer, but I can create stunning images for presentations, social posts, and even personal art projects. The range of styles and prompt flexibility is amazing.".to_owned(),
-        name: "Olivia Chen".to_owned(),
-        job_title: "Educator & Hobbyist Artist".to_owned(),
-        rating: vec![1; 4], // 4 stars
-        image_url: "https://img.daisyui.com/images/profile/demo/spiderperson@192.webp".to_owned(),
-        is_big: false,
-    },
-    HomeReview {
-        id: 6,
-        text: "The image generation is top-notch. The content suggestions for captions and short descriptions are a good starting point, helping me get past writer's block quickly for my e-commerce product listings.".to_owned(),
-        name: "Samuel Green".to_owned(),
-        job_title: "E-commerce Manager".to_owned(),
-        rating: vec![1; 5], // 5 stars
-        image_url: "https://img.daisyui.com/images/profile/demo/spiderperson@192.webp".to_owned(),
-        is_big: false,
-    },
+    // HomeReview {
+    //     id: 4,
+    //     text: "Our startup needed professional-looking ad creatives and website banners on a tight budget. This AI tool is a game-changer, allowing us to produce high-quality assets without hiring an expensive agency.".to_owned(),
+    //     name: "Marcus Reid".to_owned(),
+    //     job_title: "Founder, EcoBloom Solutions".to_owned(),
+    //     rating: vec![1; 5], // 5 stars
+    //     image_url: "https://img.daisyui.com/images/profile/demo/spiderperson@192.webp".to_owned(),
+    //     is_big: false,
+    // },
+    // HomeReview {
+    //     id: 5,
+    //     text: "Incredibly intuitive! I'm not a designer, but I can create stunning images for presentations, social posts, and even personal art projects. The range of styles and prompt flexibility is amazing.".to_owned(),
+    //     name: "Olivia Chen".to_owned(),
+    //     job_title: "Educator & Hobbyist Artist".to_owned(),
+    //     rating: vec![1; 4], // 4 stars
+    //     image_url: "https://img.daisyui.com/images/profile/demo/spiderperson@192.webp".to_owned(),
+    //     is_big: false,
+    // },
+    // HomeReview {
+    //     id: 6,
+    //     text: "The image generation is top-notch. The content suggestions for captions and short descriptions are a good starting point, helping me get past writer's block quickly for my e-commerce product listings.".to_owned(),
+    //     name: "Samuel Green".to_owned(),
+    //     job_title: "E-commerce Manager".to_owned(),
+    //     rating: vec![1; 5], // 5 stars
+    //     image_url: "https://img.daisyui.com/images/profile/demo/spiderperson@192.webp".to_owned(),
+    //     is_big: false,
+    // },
     // // Adding a couple more for variety
     // HomeReview {
     //     id: 7,

@@ -51,7 +51,7 @@ pub fn routes() -> Routes {
 }
 
 async fn load_packs(db: &DatabaseConnection) -> Result<PackModelList> {
-    let list = PackModel::find_all_packs(db).await?;
+    let list = PackModel::find_first_12_packs(db).await?;
     Ok(PackModelList::new(list))
 }
 
@@ -265,12 +265,12 @@ impl WebImages {
         .into();
 
         let creators = vec![
-            String::from("../../../static/images/creator1.webp"),
-            String::from("../../../static/images/creator2.webp"),
-            String::from("../../../static/images/creator3.webp"),
-            String::from("../../../static/images/creator3.webp"),
-            String::from("../../../static/images/creator2.webp"),
-            String::from("../../../static/images/creator1.webp"),
+            String::from("../../../static/images/creators/image(5).webp"),
+            String::from("../../../static/images/creators/image(1).webp"),
+            String::from("../../../static/images/creators/image(3).webp"),
+            String::from("../../../static/images/creators/image.webp"),
+            String::from("../../../static/images/creators/image(4).webp"),
+            String::from("../../../static/images/creators/image(2).webp"),
         ];
         let web_images = WebImages::new(hero_panel, gallery, before_after, studio, packs, creators);
         web_images

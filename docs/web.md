@@ -1,3 +1,45 @@
+Villain Vibes Photos
+Elf Queen / Fantasy Warrior Photos
+Mermaid Photos
+Luxury Travel Photos
+Anime-Inspired Photos
+Gamer Girl Photos
+Fitness Model Photos
+Sexy Summer Beach Photos
+Cottagecore Photos
+
+---
+
+**title:**
+Elf Queen Fantasy Warrior Photo Pack
+
+**Prompt:**
+A majestic female elf queen or warrior standing with elegance and strength. She has pointed ears, glowing eyes or ethereal markings, and long flowing hair. Her outfit includes regal robes, enchanted armor, or nature-infused gear in shades of silver, emerald, gold, or deep blue. She may hold a glowing staff, bow, or sword. The background could be a magical forest, ancient temple, elven throne room, or mountain overlook. Lighting is soft yet dramatic with mystical ambiance, mist, and natural light rays. High-fantasy photo style with cinematic detail
+
+**short:**
+Graceful, powerful, and timeless, this photo pack captures the elegance and might of an elven queen or battle-forged warrior
+
+**full:**
+The Elf Queen Fantasy Warrior Photo Pack offers a collection of stunning portraits that celebrate the beauty, wisdom, and strength of elven royalty and warriors. Whether portrayed as a serene monarch, battle-hardened protector, or mystical seer, each image reflects a world of fantasy and magic. Perfect for fantasy lovers, game-inspired visuals, character art, and storytelling content, this pack brings ethereal power to life through captivating detail and atmospheric settings
+
+---
+
+---
+
+**title:**
+Villain Vibes Photo Pack
+
+**Prompt:**
+A powerful female villain radiating confidence and menace. She may wear dark, sleek, or extravagant attire such as leather, metal, high fashion, or futuristic armor in shades like black, crimson, or deep green. Her expression is confident, cunning, or cold. The setting could be a dramatic throne room, futuristic lair, city skyline, or smoky battlefield. Lighting is cinematic with sharp shadows, glowing highlights, and bold contrast. Include hints of power like glowing eyes, fire, energy effects, or a weapon. Dark fantasy or sci-fi photo style
+
+**short:**
+Stylish, fierce, and unapologetically powerful, this photo pack embodies the essence of a villain you love to fear
+
+**full:**
+The Villain Vibes Photo Pack delivers a gallery of commanding female characters who own their dark side. Whether a ruthless empress, tech-powered rebel, or gothic enchantress, each image captures the fierce aura of a true antagonist. Perfect for branding with attitude, character art, fantasy storytelling, or edgy visuals, this pack is all about confidence, drama, and undeniable presence. These aren’t background villains, they’re the main event
+
+---
+
 title:
 Prompt:
 short:

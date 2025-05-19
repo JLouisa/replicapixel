@@ -4,12 +4,9 @@ use super::{
     _entities::{packs, sea_orm_active_enums::ImageSize},
 };
 use derive_more::{AsRef, Constructor};
-use sea_orm::{entity::prelude::*, Condition};
+use sea_orm::{entity::prelude::*, Condition, QueryOrder, QuerySelect};
 pub type Packs = Entity;
 use loco_rs::prelude::*;
-
-#[derive(Debug, Clone, AsRef, Constructor)]
-pub struct PackModelList(pub Vec<PackModel>);
 
 #[async_trait::async_trait]
 impl ActiveModelBehavior for ActiveModel {
@@ -26,6 +23,9 @@ impl ActiveModelBehavior for ActiveModel {
         }
     }
 }
+
+#[derive(Debug, Clone, AsRef, Constructor)]
+pub struct PackModelList(pub Vec<PackModel>);
 
 #[derive(Debug, Clone)]
 pub struct PacksDomain {
@@ -73,6 +73,14 @@ impl Model {
     }
     pub async fn find_all_packs(db: &DatabaseConnection) -> ModelResult<Vec<Self>> {
         let packs = Entity::find().all(db).await?;
+        Ok(packs)
+    }
+    pub async fn find_first_12_packs(db: &DatabaseConnection) -> ModelResult<Vec<Self>> {
+        let packs = Entity::find()
+            .order_by_asc(packs::Column::Id)
+            .limit(12)
+            .all(db)
+            .await?;
         Ok(packs)
     }
 }
