@@ -10,7 +10,7 @@ use crate::{
     models::{
         _entities::users,
         join::user_credits_models::{load_user_and_credits, load_user_credit_training},
-        users::{LoginParams, PasswordChangeParams, RegisterError, RegisterParams, UserPid},
+        users::{LoginParams, PasswordChangeParams, RegisterParams, UserPid},
         PlanModel, TransactionModel, UserModel,
     },
     service::stripe::stripe::StripeClient,
@@ -27,10 +27,12 @@ use axum::{
     Extension,
 };
 use chrono::{Duration, Utc};
+use derive_more::Constructor;
 use loco_rs::{controller::ErrorDetail, prelude::*};
 use regex::Regex;
 use serde::{Deserialize, Serialize};
-use std::sync::OnceLock;
+use std::{borrow::Cow, collections::HashMap, sync::OnceLock};
+use validator::ValidationErrorsKind;
 
 use axum_extra::extract::cookie::{Cookie as AxumCookie, SameSite};
 
@@ -130,12 +132,78 @@ pub fn routes() -> Routes {
 }
 
 pub struct HxRedirect(String);
-
 impl IntoResponse for HxRedirect {
     fn into_response(self) -> Response {
         let mut headers = HeaderMap::new();
         headers.insert("HX-Redirect", self.0.parse().unwrap());
         (headers, StatusCode::OK).into_response()
+    }
+    // Ok(HxRedirect(routes::Auth::LOGIN_PARTIAL.to_string()).into_response())
+}
+
+#[derive(Debug, Deserialize, Constructor, Serialize, Default)]
+struct AuthError {
+    general: Option<String>,
+    login: Option<String>,
+    register: Option<String>,
+    register_name: Option<String>,
+    register_email: Option<String>,
+    register_password: Option<String>,
+    verify: Option<String>,
+    forgot: Option<String>,
+    logout: Option<String>,
+}
+impl AuthError {
+    pub fn login_error(&self) -> Self {
+        Self {
+            login: Some(String::from("Email or password is incorrect")),
+            ..Default::default()
+        }
+    }
+    pub fn register_msg(&self, err: &str) -> Self {
+        Self {
+            general: Some(String::from(err)),
+            ..Default::default()
+        }
+    }
+    pub fn register_email(&self, err: &str) -> Self {
+        Self {
+            register_email: Some(String::from(err)),
+            ..Default::default()
+        }
+    }
+    pub fn register_error(&self, error: &HashMap<Cow<'static, str>, ValidationErrorsKind>) -> Self {
+        Self {
+            register_name: error.get("name").and_then(|kind| match kind {
+                ValidationErrorsKind::Field(vec) => vec
+                    .get(0)
+                    .and_then(|f| f.message.as_ref())
+                    .map(|m| m.to_string()),
+                _ => None,
+            }),
+            register_email: error.get("email").and_then(|kind| match kind {
+                ValidationErrorsKind::Field(vec) => vec
+                    .get(0)
+                    .and_then(|f| f.message.as_ref())
+                    .map(|m| m.to_string()),
+                _ => None,
+            }),
+            register_password: error.get("password").and_then(|kind| match kind {
+                ValidationErrorsKind::Field(vec) => vec
+                    .get(0)
+                    .and_then(|f| f.message.as_ref())
+                    .map(|m| m.to_string()),
+                _ => None,
+            }),
+
+            ..Default::default()
+        }
+    }
+    pub fn verify_error(&self) -> Self {
+        Self {
+            general: Some(String::from("Email is not verified")),
+            ..Default::default()
+        }
     }
 }
 
@@ -292,38 +360,6 @@ pub async fn check_user(
     )
 }
 
-// #[debug_handler]
-// pub async fn validate_user(
-//     auth: Result<auth::JWT>,
-//     State(ctx): State<AppContext>,
-//     Extension(website): Extension<Website>,
-//     ViewEngine(v): ViewEngine<TeraView>,
-// ) -> Result<impl IntoResponse> {
-//     if auth.is_err() {
-//         return format::render().view(
-//             &v,
-//             "partials/parts/google_ott.html",
-//             data!({"website": website, "is_home": true}),
-//         );
-//     }
-//     let user_pid = UserPid::new(&auth.unwrap().claims.pid);
-//     let (user, user_credits) = match load_user_and_credits(&ctx.db, &user_pid).await {
-//         Ok((user, user_credits)) => (user, user_credits),
-//         Err(_) => {
-//             return Ok((
-//                 StatusCode::NO_CONTENT,
-//                 "Redirected session is not yet successful.",
-//             )
-//                 .into_response());
-//         }
-//     };
-//     format::render().view(
-//         &v,
-//         "partials/parts/home_validated.html",
-//         data!({"website": website, "user": user, "credits": user_credits, "is_home": true}),
-//     )
-// }
-
 /// Register function creates a new user with the given parameters and sends a
 /// welcome email to the user
 #[debug_handler]
@@ -334,7 +370,19 @@ async fn register(
     State(ctx): State<AppContext>,
     Json(params): Json<RegisterParams>,
 ) -> Result<Response> {
-    let mut validate = RegisterError::validate(&params);
+    if let Err(err) = params.validate() {
+        let error_msg = AuthError::default().register_error(err.errors());
+        return format::render().view(
+            &v,
+            "auth/register/register_partial.html",
+            data!({
+                "user_email": params.email,
+                "user_name": params.name,
+                "website": website,
+                "error_msg": error_msg
+            }),
+        );
+    }
 
     let user = match users::Model::create_with_password(&ctx.db, &params, &stripe_client).await {
         Ok(user) => user,
@@ -344,34 +392,41 @@ async fn register(
                 user_email = &params.email,
                 "could not register user",
             );
+            let error_msg = AuthError::default();
+
             match err {
                 ModelError::EntityAlreadyExists { .. } => {
-                    validate.email.push(
-                        String::from("This email address is already associated with an account. Please use a different email or log in to your existing account.")
+                    let error_msg=  error_msg.register_email(
+                        "This email address is already associated with an account. Please use a different email or log in to your existing account.")
+                    ;
+                    return format::render().view(
+                        &v,
+                        "auth/register/register_partial.html",
+                        data!(
+                            {
+                                "user_email": params.email, "user_name": params.name,
+                                "website": website, "error_msg": error_msg
+                            }
+                        ),
                     );
                 }
                 _ => {
-                    validate
-                        .global
-                        .push(String::from("Something went wrong. Please try again."));
+                    let error_msg =
+                        error_msg.register_msg("Something went wrong. Please try again.");
+                    return format::render().view(
+                        &v,
+                        "auth/register/register_partial.html",
+                        data!(
+                            {
+                                "user_email": params.email, "user_name": params.name,
+                                "website": website, "error_msg": error_msg
+                            }
+                        ),
+                    );
                 }
             }
-            validate.passed = false;
-            return format::render().view(
-                &v,
-                "auth/register/register_partial.html",
-                data!({"errors": validate, "user": params}),
-            );
         }
     };
-
-    if !validate.passed {
-        return format::render().view(
-            &v,
-            "auth/register/register_partial.html",
-            data!({"errors": validate, "user": params}),
-        );
-    }
 
     let user = user
         .into_active_model()
@@ -380,16 +435,24 @@ async fn register(
 
     AuthMailer::send_welcome(&ctx, &user, &website.website_basic_info).await?;
 
-    let mut headers = HeaderMap::new();
-    headers.insert("HX-Redirect", "/login".parse().unwrap()); // HTMX Redirect
+    // Ok(HxRedirect(routes::Auth::LOGIN_PARTIAL.to_string()).into_response())
 
-    Ok((StatusCode::OK, headers).into_response())
+    format::render().view(
+        &v,
+        "auth/login/login_partial.html",
+        data!({"website": website}),
+    )
 }
 
 /// Verify register user. if the user not verified his email, he can't login to
 /// the system.
 #[debug_handler]
-async fn verify(State(ctx): State<AppContext>, Path(token): Path<String>) -> Result<Response> {
+async fn verify(
+    ViewEngine(v): ViewEngine<TeraView>,
+    Extension(website): Extension<Website>,
+    State(ctx): State<AppContext>,
+    Path(token): Path<String>,
+) -> Result<Response> {
     let user = users::Model::find_by_verification_token(&ctx.db, &token).await?;
 
     if user.email_verified_at.is_some() {
@@ -400,7 +463,11 @@ async fn verify(State(ctx): State<AppContext>, Path(token): Path<String>) -> Res
         tracing::info!(pid = user.pid.to_string(), "user verified");
     }
 
-    format::json(())
+    format::render().view(
+        &v,
+        "auth/verify/email_verified.html",
+        data!({"website": website}),
+    )
 }
 
 /// In case the user forgot his password  this endpoints generate a forgot token
@@ -465,21 +532,50 @@ async fn api_login(
     let user = match users::Model::find_by_email(&ctx.db, &params.email).await {
         Ok(user) => user,
         Err(err) => {
-            tracing::info!(
-                message = err.to_string(),
-                user_email = &params.email,
-                "could not find user",
+            let user_email = &params.email;
+            tracing::info!(message = err.to_string(), user_email, "could not find user",);
+            let error_msg = AuthError::default().login_error();
+            return format::render().view(
+                &v,
+                "auth/login/login_partial.html",
+                data!(
+                    {
+                        "user_email": user_email, "website": website,
+                        "error_msg": error_msg
+                    }
+                ),
             );
-            let msg = String::from("Email or password is incorrect");
-            return format::render().view(&v, "auth/login/login_error.html", data!({"error": msg}));
         }
     };
+
+    if user.email_verified_at.is_none() {
+        return format::render().view(
+            &v,
+            "auth/login/login_partial.html",
+            data!(
+                {
+                    "user_email": user.email, "website": website,
+                    "error_msg": AuthError::default().verify_error()
+                }
+            ),
+        );
+    }
 
     let valid = user.verify_password(&params.password);
 
     if !valid {
-        let msg = String::from("Email or password is incorrect");
-        return format::render().view(&v, "auth/login/login_error.html", data!({"error": msg}));
+        let error_msg = AuthError::default().login_error();
+        return format::render().view(
+            &v,
+            "auth/login/login_partial.html",
+            data!(
+                {
+                    "user_email": user.email, "website": website,
+                    "error_msg": error_msg
+
+                }
+            ),
+        );
     }
 
     let jwt_secret = ctx.config.get_jwt_config()?;

@@ -18,10 +18,10 @@
   {% else %}
   <div>
     <a
-      href="/"
+      href="{{home_link | safe}}"
       hx-get="/partial/home"
       hx-swap="innerHTML"
-      hx-push-url="/"
+      hx-push-url="{{home_link | safe}}"
       hx-target="#app"
       class="flex flex-row items-center justify-center shrink-0 relative gap-2 md:gap-3 lg:gap-4"
     >

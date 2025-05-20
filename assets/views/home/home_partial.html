@@ -1,5 +1,6 @@
 <!-- prettier-ignore -->
 {% set login_link = website.website_routes.auth_routes.login | safe %}
+{% set login_partial_link = website.website_routes.auth_routes.login_partial | safe %}
 {% set website_name = website.website_basic_info.name %}
 {% set gallery = web_images.gallery %}
 
@@ -18,9 +19,9 @@
         </form>
         <div id="validate-login-btn">
           <button
-            hx-get="{{ login_link }}"
+            hx-get="{{ login_partial_link | safe }}"
             hx-swap="innerHTML"
-            hx-push-url="{{ login_link }}"
+            hx-push-url="{{ login_link | safe }}"
             hx-target="#app"
             class="btn btn-neutral"
           >
@@ -29,75 +30,35 @@
         </div>
       </div>
 
-      <!-- Hero -->
+      <!-- prettier-ignore -->
       {% include "home/sections/hero.html" %}
-
-      <!-- Businesses -->
       {% include "home/sections/businesses.html" %}
-
-      <!-- Gallery -->
       {% include "home/sections/gallery.html" %}
-
-      <!-- Creator Reviews -->
-      {% include "home/sections/creators_review.html" %}
-
-      <!-- Pro Head Shot -->
       {% include "home/sections/pro_head_shot.html" %}
-
-      <!-- Photo Studio -->
       {% include "home/sections/photo_studio.html" %}
-
-      <!-- Packs -->
+      {% include "home/sections/creators_review.html" %}
       {% include "home/sections/packs.html" %}
-
-      <!-- Comparison -->
       {% include "home/sections/comparison.html" %}
-
-      <!-- payment plans -->
       {% include "home/sections/pricing.html" %}
-
-      <!-- Creators -->
       {% include "home/sections/creators.html" %}
-
-      <!-- Footer -->
       {% include "home/sections/footer.html" %}
     </div>
   </div>
   <div class="drawer-side z-20">
     <label for="app-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
     <ul class="menu bg-base-200 min-h-full w-40 p-4">
-      <!-- Sidebar content here -->
       <li><a href="#" class="p-2 text-base hover:text-gray-300">Home</a></li>
       <li><a href="#" class="p-2 text-base hover:text-gray-300">Features</a></li>
       <li><a href="#" class="p-2 text-base hover:text-gray-300">Studio</a></li>
       <li><a href="#pricing" class="p-2 text-base hover:text-gray-300">Pricing</a></li>
       <li>
-        <a href="{{login_link}}" class="p-2 text-base hover:text-gray-300">Login</a>
+        <a href="{{login_link | safe}}" class="p-2 text-base hover:text-gray-300">Login</a>
       </li>
     </ul>
     <label for="app-drawer" class="block p-4 hover:text-gray-300">
       {% include "partials/svg/x.html" %}
     </label>
   </div>
-  {#
-  <script>
-    document.body.addEventListener("htmx:afterSwap", function (evt) {
-      if (evt.detail.target.id === "app") {
-        const target = sessionStorage.getItem("scrollTo");
-        if (target) {
-          // Give the DOM a tick to render
-          requestAnimationFrame(() => {
-            const el = document.querySelector(target);
-            if (el) {
-              el.scrollIntoView({ block: "start" });
-            }
-            sessionStorage.removeItem("scrollTo");
-          });
-        }
-      }
-    });
-  </script>
-  #}
   <script>
     document.body.addEventListener("htmx:afterSwap", function (evt) {
       if (evt.detail.target.id === "app") {
@@ -106,15 +67,12 @@
           requestAnimationFrame(() => {
             const el = document.querySelector(target);
             if (el) {
-              // Calculate centered scroll position
               const elementRect = el.getBoundingClientRect();
               const offsetPosition =
                 elementRect.top +
                 window.pageYOffset -
                 window.innerHeight / 2 +
                 elementRect.height / 2;
-
-              // Smooth scroll to center
               window.scrollTo({
                 top: offsetPosition,
                 behavior: "smooth",

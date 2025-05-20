@@ -37,16 +37,18 @@ pub struct LoginParams {
 pub struct RegisterParams {
     #[validate(length(min = 2, message = "Name must be at least 2 characters long."))]
     pub name: String,
-    #[validate(email)]
+    #[validate(email(message = "Email is invalid"))]
     pub email: String,
     #[validate(must_match(other = "confirm_password", message = "Passwords do not match"))]
     pub password: String,
     pub confirm_password: String,
+    #[serde(default)]
     pub email_notifications: bool,
+    #[serde(default)]
     pub marketing: bool,
-    #[serde(default)]
+    #[serde(skip_deserializing, default)]
     pub theme_preference: ThemePreference,
-    #[serde(default)]
+    #[serde(skip_deserializing, default)]
     pub language: Language,
     #[serde(skip_deserializing, default)]
     pub picture: Option<String>,

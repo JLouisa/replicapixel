@@ -3,82 +3,92 @@
 {% set login_link = website.website_routes.auth_routes.login | safe %}
 {% set login_partial_link = website.website_routes.auth_routes.login_partial | safe %}
 
-<div class="bg-gray-100 rounded-t-lg w-full p-8">
-  <h1 class="text-center text-2xl font-bold text-gray-800">Forgot Password</h1>
-  <div class="mt-4">
-    <p class="text-center text-sm text-gray-800">
-      Enter your email address to reset your password.
-    </p>
-  </div>
-</div>
-<div class="rounded-b-lg pt-6 pb-12 px-4 lg:px-12">
-  <form hx-post="{{ forget_api_link }}" hx-ext="submitjson" hx-swap="outerHTML">
-    <div class="relative">
-      <input
-        class="appearance-none border pl-12 border-gray-100 shadow-sm focus:shadow-md focus:placeholder-gray-600 transition rounded-md w-full py-3 text-gray-600 leading-tight focus:outline-none focus:ring-gray-600 focus:shadow-outline"
-        id="email"
-        name="email"
-        type="email"
-        placeholder="Email"
-      />
-      <div class="absolute left-0 inset-y-0 flex items-center">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-7 w-7 ml-3 text-gray-400 p-1"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-          <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-        </svg>
+<div id="auth-form" class="min-h-screen flex items-center justify-center bg-gray-600">
+  <div class="w-full max-w-md bg-white shadow-lg rounded-lg">
+    <div class="bg-gray-100 rounded-t-lg w-full p-8">
+      <h1 class="text-center text-2xl font-bold text-gray-800">Forgot Password</h1>
+      <div class="mt-4">
+        <p class="text-center text-sm text-gray-800">
+          Enter your email address to reset your password.
+        </p>
       </div>
     </div>
-    <div class="flex flex-col items-center justify-center mt-8">
-      <button
-        class="w-full text-white py-2 px-4 uppercase rounded bg-indigo-500 hover:bg-indigo-600 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5 cursor-pointer"
-      >
-        Send Password Reset
-      </button>
-      <a
-        href="{{ login_partial_link }}"
-        hx-get="{{ login_partial_link }}"
-        hx-target="#auth-form"
-        hx-swap="innerHTML"
-        hx-push-url="{{ login_link }}"
-        class="text-sm text-primary cursor-pointer mt-4"
-        >Already know your password?</a
-      >
-      <a href="/" class="text-sm text-primary cursor-pointer mt-4 text-center">Home</a>
-    </div>
-  </form>
+    <div class="rounded-b-lg pt-6 pb-12 px-4 lg:px-12">
+      <form hx-post="{{ forget_api_link }}" hx-ext="submitjson" hx-swap="outerHTML">
+        <div class="relative">
+          <input
+            class="appearance-none border pl-12 border-gray-100 shadow-sm focus:shadow-md focus:placeholder-gray-600 transition rounded-md w-full py-3 text-gray-600 leading-tight focus:outline-none focus:ring-gray-600 focus:shadow-outline"
+            id="email"
+            name="email"
+            type="email"
+            placeholder="Email"
+          />
+          <div class="absolute left-0 inset-y-0 flex items-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-7 w-7 ml-3 text-gray-400 p-1"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+              <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+            </svg>
+          </div>
+        </div>
+        <div class="flex flex-col items-center justify-center mt-8">
+          <button
+            class="w-full text-white py-2 px-4 uppercase rounded bg-indigo-500 hover:bg-indigo-600 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5 cursor-pointer"
+          >
+            Send Password Reset
+          </button>
+          <a
+            href="{{ login_partial_link }}"
+            hx-get="{{ login_partial_link }}"
+            hx-target="#auth-form"
+            hx-swap="outerHTML"
+            hx-push-url="{{ login_link }}"
+            class="text-sm text-primary cursor-pointer mt-4"
+            >Already know your password?</a
+          >
+          <a
+            href="/"
+            hx-get="/partial/home"
+            hx-push-url="/"
+            hx-target="#app"
+            hx-swap="innerHTML"
+            class="text-sm text-primary cursor-pointer mt-4 text-center"
+            >Home
+          </a>
+        </div>
+      </form>
 
-  <script>
-    htmx.defineExtension("submitjson", {
-      onEvent: function (name, evt) {
-        if (name === "htmx:configRequest") {
-          evt.detail.headers["Content-Type"] = "application/json";
-        }
-      },
-      encodeParameters: function (xhr, parameters) {
-        let json = {};
-        for (const key in parameters) {
-          const input = document.querySelector(`[name="${key}"]`);
-          if (input) {
-            if (input.type === "number") {
-              json[key] = parseFloat(parameters[key]);
-            } else if (input.type === "checkbox") {
-              json[key] = input.checked;
-            } else {
-              json[key] = parameters[key];
+      <script>
+        htmx.defineExtension("submitjson", {
+          onEvent: function (name, evt) {
+            if (name === "htmx:configRequest") {
+              evt.detail.headers["Content-Type"] = "application/json";
             }
-          }
-        }
-        const login = JSON.stringify(json);
-        console.log(login);
-        return login;
-      },
-    });
-  </script>
+          },
+          encodeParameters: function (xhr, parameters) {
+            let json = {};
+            for (const key in parameters) {
+              const input = document.querySelector(`[name="${key}"]`);
+              if (input) {
+                if (input.type === "number") {
+                  json[key] = parseFloat(parameters[key]);
+                } else if (input.type === "checkbox") {
+                  json[key] = input.checked;
+                } else {
+                  json[key] = parameters[key];
+                }
+              }
+            }
+            const login = JSON.stringify(json);
+            console.log(login);
+            return login;
+          },
+        });
+      </script>
+    </div>
+  </div>
 </div>
-
-{% block js %} {% endblock js %}

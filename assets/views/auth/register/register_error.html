@@ -1,3 +1,1 @@
-<p id="register-error" class="text-red-600 mt-2 text-center" hx-swap-oob="true">
-  {% if error %} {{ error }} {% endif %}
-</p>
+<p id="register-error" class="text-red-600 mt-2 text-center">{{ error_msg | default (value="")}}</p>

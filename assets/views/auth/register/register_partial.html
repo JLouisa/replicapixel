@@ -7,222 +7,215 @@
 {% set terms_link = website.website_routes.policy.terms | safe %}
 {% set privacy_link = website.website_routes.policy.privacy | safe %}
 
-<div class="bg-base-300 rounded-t-lg w-full p-8">
-  <p class="text-center text-sm">Sign up with</p>
-  <div>
-    <div class="flex items-center justify-center space-x-4 mt-3">
-      <button
-        onclick="oAuth2('{google_link}')"
-        class="flex btn items-center py-2 px-4 text-sm uppercase rounded bg-white hover:bg-gray-100 text-indigo-500 border border-transparent hover:border-transparent hover:text-gray-700 shadow-md hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
+<div id="auth-form" class="min-h-screen flex items-center justify-center bg-gray-600">
+  <div class="w-full max-w-md bg-white shadow-lg rounded-lg">
+    <div class="bg-gray-100 rounded-t-lg w-full p-8">
+      <p class="text-center text-sm">Sign in with</p>
+      <div>
+        <div class="flex items-center justify-center space-x-4 mt-3">
+          <button
+            onclick="oAuth2('{{google_link  | safe}}')"
+            class="flex btn items-center py-2 px-4 text-sm uppercase rounded bg-white hover:bg-gray-100 text-indigo-500 border border-transparent hover:border-transparent hover:text-gray-700 shadow-md hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-3" viewBox="0 0 48 48">
+              <path
+                fill="#fbc02d"
+                d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"
+              />
+              <path
+                fill="#e53935"
+                d="m6.306 14.691 6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"
+              />
+              <path
+                fill="#4caf50"
+                d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"
+              />
+              <path
+                fill="#1565c0"
+                d="M43.611 20.083 43.595 20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"
+              />
+            </svg>
+            Google
+          </button>
+          <button
+            disabled
+            onclick="oAuth2('{{github_link | safe}}')"
+            class="flex btn items-center py-2 px-4 text-sm uppercase rounded bg-white hover:bg-gray-100 text-indigo-500 border border-transparent hover:border-transparent hover:text-gray-700 shadow-md hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="w-6 h-6 mr-3">
+              <path
+                fill-rule="evenodd"
+                d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"
+              ></path>
+            </svg>
+            Github
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="rounded-b-lg pt-4 pb-12 px-4 lg:px-12">
+      <div class="divider mt-3 text-gray-500">Or sign in with credentials</div>
+      <form
+        hx-post="{{ register_api_link }}"
+        hx-ext="form-json"
+        hx-target="#auth-form"
+        hx-swap="outerHTML"
+        hx-disabled-elt="#register-btn"
+        class="mt-6"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-3" viewBox="0 0 48 48">
-          <path
-            fill="#fbc02d"
-            d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"
+        <div class="relative">
+          <input class="appearance-none border pl-12 border-gray-100 shadow-sm focus:shadow-md
+          focus:placeholder-gray-600 transition rounded-md w-full py-3 text-gray-600 leading-tight
+          focus:outline-none focus:ring-gray-600 focus:shadow-outline" id="name" name="name"
+          type="text" placeholder="Name" value="{{ user_name | default (value="")}}" required />
+          <div class="absolute left-0 inset-y-0 flex items-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-7 w-7 ml-3 text-gray-400 p-1"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </div>
+        </div>
+        <p class="text-red-600 mt-2">{{ error_msg.register_name | default (value="")}}</p>
+        <div class="relative mt-3">
+          <input class="appearance-none border pl-12 border-gray-100 shadow-sm focus:shadow-md
+          focus:placeholder-gray-600 transition rounded-md w-full py-3 text-gray-600 leading-tight
+          focus:outline-none focus:ring-gray-600 focus:shadow-outline" id="email" name="email"
+          type="email" placeholder="Email" value="{{ user_email | default (value="")}}" required />
+          <div class="absolute left-0 inset-y-0 flex items-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-7 w-7 ml-3 text-gray-400 p-1"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+              <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+            </svg>
+          </div>
+        </div>
+        <p class="text-red-600 mt-2">{{ error_msg.register_email | default (value="")}}</p>
+        <div class="relative mt-3">
+          <input
+            class="appearance-none border pl-12 border-gray-100 shadow-sm focus:shadow-md focus:placeholder-gray-600 transition rounded-md w-full py-3 text-gray-600 leading-tight focus:outline-none focus:ring-gray-600 focus:shadow-outline"
+            id="password"
+            name="password"
+            type="password"
+            placeholder="Password"
+            required
           />
-          <path
-            fill="#e53935"
-            d="m6.306 14.691 6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"
+          <div class="absolute left-0 inset-y-0 flex items-center">
+            {% include "partials/svg/lock.html" %}
+          </div>
+        </div>
+        <div class="relative mt-3">
+          <input
+            class="appearance-none border pl-12 border-gray-100 shadow-sm focus:shadow-md focus:placeholder-gray-600 transition rounded-md w-full py-3 text-gray-600 leading-tight focus:outline-none focus:ring-gray-600 focus:shadow-outline"
+            id="confirm_password"
+            name="confirm_password"
+            type="password"
+            placeholder="Confirm Password"
+            required
           />
-          <path
-            fill="#4caf50"
-            d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"
+          <div class="absolute left-0 inset-y-0 flex items-center">
+            {% include "partials/svg/lock.html" %}
+          </div>
+        </div>
+        <p class="text-red-600 mt-2">{{ error_msg.register_password | default (value="")}}</p>
+        <label class="cursor-pointer flex items-center gap-2 mt-3" for="email_notifications">
+          <input
+            type="checkbox"
+            class="checkbox checkbox-primary"
+            id="email_notifications"
+            name="email_notifications"
           />
-          <path
-            fill="#1565c0"
-            d="M43.611 20.083 43.595 20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"
+          <span class="text-sm text-black"> Get account updates by email </span>
+        </label>
+
+        <label class="cursor-pointer flex items-center gap-2 mt-3" for="marketing">
+          <input
+            type="checkbox"
+            class="checkbox checkbox-primary"
+            id="marketing"
+            name="marketing"
           />
-        </svg>
-        Google
-      </button>
-      <button
-        onclick="oAuth2('{github_link}')"
-        class="flex btn items-center py-2 px-4 text-sm uppercase rounded bg-white hover:bg-gray-100 text-indigo-500 border border-transparent hover:border-transparent hover:text-gray-700 shadow-md hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
-        disabled
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="w-6 h-6 mr-3">
-          <path
-            fill-rule="evenodd"
-            d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"
-          ></path>
-        </svg>
-        Github
-      </button>
+          <span class="text-sm text-black"> Send me news and offers </span>
+        </label>
+        <input type="hidden" name="theme_preference" id="theme_preference" />
+        <input type="hidden" value="en-US" name="language" id="language" />
+        <!-- Todo: Make dynamic -->
+
+        <!-- Terms -->
+        <div class="mt-4 flex items-center justify-between text-black">
+          <p class="mt-4 text-sm text-black">
+            By signing up, you agree to our
+            <a href="{{ terms_link }}" target="_blank" class="text-primary">Terms of Service</a>
+            and
+            <a href="{{ privacy_link }}" target="_blank" class="text-primary">Privacy Policy</a>.
+          </p>
+        </div>
+        <p class="text-red-600 mt-2 text-center">{{ error_msg.general | default (value="")}}</p>
+        <div class="flex flex-col items-center justify-center mt-8">
+          <button
+            id="register-btn"
+            class="w-full text-white py-2 px-4 uppercase rounded bg-indigo-500 hover:bg-indigo-600 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:hover:bg-gray-400 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5 disabled:hover:translate-y-0"
+          >
+            Sign Up
+          </button>
+
+          {% if is_starter %}
+          <a
+            href="{{ login_link }}"
+            hx-get="{{ login_link }}"
+            hx-target="#app"
+            hx-swap="innerHTML"
+            hx-push-url="{{ login_link }}"
+            class="text-sm text-primary cursor-pointer mt-4"
+            >Already have an account?</a
+          >
+          {% else %}
+          <a
+            href="{{ login_link }}"
+            hx-get="{{ login_partial_link }}"
+            hx-target="#auth-form"
+            hx-swap="outerHTML"
+            hx-push-url="{{ login_link }}"
+            class="text-sm text-primary cursor-pointer mt-4"
+            >Already have an account?</a
+          >
+
+          {% endif %}
+          <a
+            href="/"
+            hx-get="/partial/home"
+            hx-push-url="/"
+            hx-target="#app"
+            hx-swap="innerHTML"
+            class="text-sm text-primary cursor-pointer mt-4"
+            >Home
+          </a>
+        </div>
+        {#
+        <script>
+          // Set theme on load
+          const userThemeRegister = localStorage.getItem("theme");
+          if (userThemeRegister) {
+            document.documentElement.setAttribute("data-theme", userThemeRegister);
+            const themeInput = document.getElementById("theme_preference");
+            if (themeInput) {
+              themeInput.value = userThemeRegister;
+            }
+          }
+        </script>
+        #}
+      </form>
     </div>
   </div>
-</div>
-<div class="rounded-b-lg bg-base-900 pt-4 pb-12 px-4 lg:px-12 shadow-lg">
-  <div class="divider mt-3 text-base-500">Or sign up with credentials</div>
-  <form
-    hx-post="{{ register_api_link }}"
-    hx-ext="form-json"
-    hx-disabled-elt="#register-btn"
-    hx-target="#auth-form"
-    hx-swap="innerHTML"
-    class="mt-6"
-  >
-    <p class="text-red-600 mt-2">
-      {% if errors %} {% for global in errors.global %} - {{global}} {% endfor %} {% endif %}
-    </p>
-    <div class="relative">
-      <input
-        class="appearance-none border pl-12 border-gray-100 shadow-sm focus:shadow-md focus:placeholder-base-600 transition rounded-md w-full py-3 text-base-600 leading-tight focus:outline-none focus:ring-base-600 focus:shadow-outline"
-        id="name"
-        name="name"
-        type="text"
-        placeholder="Name"
-        value="{% if user %}{{ user.name }}{% endif %}"
-      />
-      <div class="absolute left-0 inset-y-0 flex items-center">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-7 w-7 ml-3 text-gray-400 p-1"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-            clip-rule="evenodd"
-          />
-        </svg>
-      </div>
-    </div>
-    <p class="text-red-600 mt-2">
-      {% if errors %} {% for name in errors.name %} - {{name}} {% endfor %} {% endif %}
-    </p>
-    <div class="relative mt-3">
-      <input
-        class="appearance-none border pl-12 border-gray-100 shadow-sm focus:shadow-md focus:placeholder-base-600 transition rounded-md w-full py-3 text-base-600 leading-tight focus:outline-none focus:ring-base-600 focus:shadow-outline"
-        id="email"
-        name="email"
-        type="email"
-        placeholder="Email"
-        value="{% if user %}{{ user.email }}{% endif %}"
-      />
-      <div class="absolute left-0 inset-y-0 flex items-center">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-7 w-7 ml-3 text-base-400 p-1"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-          <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-        </svg>
-      </div>
-    </div>
-    <p class="text-red-600 mt-2">
-      {% if errors %} {% for email in errors.email %} - {{email}} {% endfor %} {% endif %}
-    </p>
-    <div class="relative mt-3">
-      <input
-        class="appearance-none border pl-12 border-gray-100 shadow-sm focus:shadow-md focus:placeholder-base-600 transition rounded-md w-full py-3 text-base-600 leading-tight focus:outline-none focus:ring-base-600 focus:shadow-outline"
-        id="password"
-        name="password"
-        type="password"
-        placeholder="Password"
-      />
-      <div class="absolute left-0 inset-y-0 flex items-center">
-        {% include "partials/svg/lock.html" %}
-      </div>
-    </div>
-    <p class="text-red-600 mt-2">
-      {% if errors %} {% for password in errors.password %} - {{password}} {% endfor %} {% endif %}
-    </p>
-    <div class="relative mt-3">
-      <input
-        class="appearance-none border pl-12 border-gray-100 shadow-sm focus:shadow-md focus:placeholder-base-600 transition rounded-md w-full py-3 text-base-600 leading-tight focus:outline-none focus:ring-base-600 focus:shadow-outline"
-        id="confirm_password"
-        name="confirm_password"
-        type="password"
-        placeholder="Confirm Password"
-      />
-      <div class="absolute left-0 inset-y-0 flex items-center">
-        {% include "partials/svg/lock.html" %}
-      </div>
-    </div>
-    <p class="text-red-600 mt-2">
-      {% if errors %} {% for password in errors.password_confirm %} - {{password}} {% endfor %} {%
-      endif %}
-    </p>
-    <label class="cursor-pointer flex items-center gap-2 mt-3" for="email_notifications">
-      <input
-        type="checkbox"
-        class="checkbox checkbox-primary"
-        id="email_notifications"
-        name="email_notifications"
-      />
-      <span class="text-sm text-base-800"> Get account updates by email </span>
-    </label>
-
-    <label class="cursor-pointer flex items-center gap-2 mt-3" for="marketing">
-      <input type="checkbox" class="checkbox checkbox-primary" id="marketing" name="marketing" />
-      <span class="text-sm text-base-800"> Send me news and offers </span>
-    </label>
-    <input type="hidden" name="theme_preference" id="theme_preference" />
-    <input type="hidden" value="en-US" name="language" id="language" />
-    <!-- Todo: Make dynamic -->
-
-    <!-- Terms -->
-    <div class="mt-4 flex items-center justify-between text-base-500">
-      <p class="mt-4 text-sm text-base-500">
-        By signing up, you agree to our
-        <a href="{{ terms_link }}" target="_blank" class="text-primary">Terms of Service</a>
-        and
-        <a href="{{ privacy_link }}" target="_blank" class="text-primary">Privacy Policy</a>.
-      </p>
-    </div>
-    <div class="flex flex-col items-center justify-center mt-8">
-      <button
-        id="register-btn"
-        class="w-full text-white py-2 px-4 uppercase rounded bg-indigo-500 hover:bg-indigo-600 disabled:bg-base-400 disabled:cursor-not-allowed disabled:hover:bg-base-400 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5 disabled:hover:translate-y-0"
-      >
-        Sign Up
-      </button>
-
-      {% if is_starter %}
-      <a
-        href="{{ login_link }}"
-        hx-get="{{ login_link }}"
-        hx-swap="innerHTML"
-        hx-target="#app"
-        hx-push-url="{{ login_link }}"
-        class="text-sm text-primary cursor-pointer mt-4"
-        >Already have an account?</a
-      >
-      {% else %}
-      <a
-        href="{{ login_link }}"
-        hx-get="{{ login_partial_link }}"
-        hx-target="#auth-form"
-        hx-swap="innerHTML"
-        hx-push-url="{{ login_link }}"
-        class="text-sm text-primary cursor-pointer mt-4"
-        >Already have an account?</a
-      >
-
-      {% endif %}
-      <a
-        href="/"
-        hx-get="/partial/home"
-        hx-push-url="/"
-        hx-target="#app"
-        hx-swap="innerHTML"
-        class="text-sm text-primary cursor-pointer mt-4"
-        >Home
-      </a>
-    </div>
-    <script>
-      // Set theme on load
-      const userThemeRegister = localStorage.getItem("theme");
-      if (userThemeRegister) {
-        document.documentElement.setAttribute("data-theme", userThemeRegister);
-        const themeInput = document.getElementById("theme_preference");
-        if (themeInput) {
-          themeInput.value = userThemeRegister;
-        }
-      }
-    </script>
-  </form>
 </div>
