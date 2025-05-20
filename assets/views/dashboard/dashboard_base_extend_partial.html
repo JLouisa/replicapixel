@@ -26,5 +26,10 @@
     </div>
     {% endblock content %}
   </div>
+  {% if is_logged_in %}
+  <script>
+    history.pushState(null, "", "/studio");
+  </script>
+  {% endif %}
 </div>
 {% endblock home %}

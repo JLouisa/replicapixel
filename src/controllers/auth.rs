@@ -7,6 +7,7 @@ use crate::{
         auth::AuthMailer,
         transaction::{CheckoutCompletedEmailData, CheckoutMailer},
     },
+    middleware::cookie::ExtractConsentState,
     models::{
         _entities::users,
         join::user_credits_models::{load_user_and_credits, load_user_credit_training},
@@ -20,10 +21,11 @@ use crate::{
     },
 };
 use axum::{
+    body::Body,
     debug_handler,
     extract::{Json, State},
     http::{HeaderMap, HeaderValue, StatusCode},
-    response::{IntoResponse, Redirect, Response},
+    response::{IntoResponse, Response},
     Extension,
 };
 use chrono::{Duration, Utc};
@@ -561,17 +563,14 @@ async fn api_login(
         );
     }
 
-    let valid = user.verify_password(&params.password);
-
-    if !valid {
-        let error_msg = AuthError::default().login_error();
+    if !user.verify_password(&params.password) {
         return format::render().view(
             &v,
             "auth/login/login_partial.html",
             data!(
                 {
                     "user_email": user.email, "website": website,
-                    "error_msg": error_msg
+                    "error_msg": AuthError::default().login_error()
 
                 }
             ),
@@ -750,19 +749,46 @@ async fn magic_link_verify(
 #[debug_handler]
 pub async fn get_login(
     auth: Result<auth::JWT>,
+    ExtractConsentState(cc_cookie): ExtractConsentState,
     ViewEngine(v): ViewEngine<TeraView>,
     Extension(website): Extension<Website>,
-    State(_ctx): State<AppContext>,
+    State(ctx): State<AppContext>,
 ) -> Result<impl IntoResponse> {
-    if auth.is_ok() {
-        Ok(Redirect::to("/studio").into_response())
+    let view_response = if auth.is_ok() {
+        let user_pid = UserPid::new(&auth.unwrap().claims.pid);
+        let (user, user_credits, training_models) =
+            load_user_credit_training(&ctx.db, &user_pid).await?;
+        format::render().view(
+            &v,
+            "dashboard/dashboard_base_extend.html",
+            data!(
+                  {
+                      "website": website, "user": user,
+                      "models": training_models, "credits": user_credits,
+                      "is_initial_load": true, "cc_cookie": cc_cookie,
+                      "is_logged_in": true
+                  }
+            ),
+        )?
     } else {
         format::render().view(
             &v,
             "auth/login/login_form.html",
             data!({"website": website}),
-        )
-    }
+        )?
+    };
+
+    let final_response = Response::builder()
+        .status(StatusCode::OK)
+        .body(Body::from(view_response.into_response().into_body()))
+        .map_err(|e| {
+            Error::CustomError(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                ErrorDetail::new("RESPONSE_BUILD_FAILED", &e.to_string()),
+            )
+        })?;
+
+    Ok(final_response)
 }
 
 #[debug_handler]
@@ -770,17 +796,31 @@ pub async fn partial_login(
     auth: Result<auth::JWT>,
     ViewEngine(v): ViewEngine<TeraView>,
     Extension(website): Extension<Website>,
-    State(_ctx): State<AppContext>,
-) -> Result<impl IntoResponse> {
-    if auth.is_ok() {
-        Ok(HxRedirect("/partial/studio".to_string()).into_response())
+    State(ctx): State<AppContext>,
+) -> Result<Response> {
+    let view_response = if auth.is_ok() {
+        let user_pid = UserPid::new(&auth.unwrap().claims.pid);
+        let (user, user_credits, training_models) =
+            load_user_credit_training(&ctx.db, &user_pid).await?;
+        format::render().view(
+            &v,
+            "dashboard/dashboard_base_extend_partial.html",
+            data!(
+                {
+                    "website": website, "user": user, "credits": user_credits,
+                    "models": training_models, "is_logged_in": true
+                }
+            ),
+        )?
     } else {
         format::render().view(
             &v,
             "auth/login/login_partial.html",
             data!({"website": website}),
-        )
-    }
+        )?
+    };
+
+    Ok(view_response)
 }
 
 #[debug_handler]

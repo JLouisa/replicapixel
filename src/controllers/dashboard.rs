@@ -248,7 +248,7 @@ async fn load_user(db: &DatabaseConnection, pid: &UserPid) -> Result<UserModel> 
 //     let list = TrainingModelModel::find_all_by_user_id(db, id).await?;
 //     Ok(TrainingModelList::new(list))
 // }
-async fn load_item_all_completed(ctx: &AppContext, id: i32) -> Result<TrainingModelList> {
+pub async fn load_item_all_completed(ctx: &AppContext, id: i32) -> Result<TrainingModelList> {
     let list = TrainingModelModel::find_all_completed_by_user_id(&ctx.db, id).await?;
     Ok(TrainingModelList::new(list))
 }
@@ -256,7 +256,7 @@ async fn load_item_all_completed(ctx: &AppContext, id: i32) -> Result<TrainingMo
 //     let list = ImageModel::find_all_by_user_id(db, id, fav).await?;
 //     Ok(ImagesModelList::new(list))
 // }
-async fn load_first_images(
+pub async fn load_first_images(
     db: &DatabaseConnection,
     id: i32,
     fav: bool,
