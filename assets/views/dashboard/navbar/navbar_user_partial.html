@@ -1,0 +1,97 @@
+<!-- prettier-ignore -->
+{% set logout_partial_link = website.website_routes.auth_routes.logout_partial  | safe %}
+{% set register_link = website.website_routes.auth_routes.register | safe %}
+
+<div id="navbar-user">
+  <div class="flex items-center space-x-4">
+    <a
+      href="/"
+      hx-get="/partial/home"
+      hx-swap="innerHTML"
+      hx-push-url="/"
+      hx-target="#app"
+      onclick="sessionStorage.setItem('scrollTo', '#pricing')"
+    >
+      {% set timestamp = now() | date(format="%s%.f") %}
+      <button
+        id="shiningButton-{{ timestamp }}"
+        class="relative flex flex-row gap-1 overflow-hidden px-2 sm:px-4 py-1 sm:py-2 font-semibold text-white bg-gradient-to-r from-violet-500 to-pink-500 rounded-lg shadow-md transition-all duration-150 hover:shadow-lg hover:brightness-110 active:scale-95 active:brightness-90 cursor-pointer"
+      >
+        <span class="hidden sm:flex">Buy</span>
+        Credits
+        <script>
+          {
+            const button = document.getElementById("shiningButton-{{ timestamp }}");
+            if (button) {
+              const shineAnimationDuration = 1000;
+              const intervalDuration = 8000;
+              function triggerShine() {
+                if (!button.classList.contains("animate-shine-active")) {
+                  button.classList.add("animate-shine-active");
+                  setTimeout(() => {
+                    button.classList.remove("animate-shine-active");
+                  }, shineAnimationDuration);
+                }
+              }
+
+              const shineInterval = setInterval(triggerShine, intervalDuration);
+            } else {
+              console.error("Button with id 'shiningButton' not found.");
+            }
+          }
+        </script>
+      </button>
+    </a>
+    <div class="inline-flex items-center hover:text-base-600 select-none">
+      {% include "partials/svg/model_svg.html" %}
+      <span id="user_model_credits" class="ml-1">{{ credits.model_amount }}</span>
+    </div>
+    <div class="inline-flex items-center hover:text-base-600 select-none">
+      {% include "partials/svg/credit_svg.html" %}
+      <span id="user_credits" class="ml-1">{{ credits.credit_amount }}</span>
+    </div>
+    <div class="hidden sm:block relative parent">
+      {% if user.picture %}
+      <div class="avatar">
+        <div class="ring-primary ring-offset-base-100 w-24 rounded-full ring-2 ring-offset-2">
+          <img src="{{user.picture}}" />
+        </div>
+      </div>
+      {% else %}
+      <div class="flex items-center hover:bg-base-100 rounded-full p-1 cursor-pointer">
+        <div
+          class="flex items-center justify-center bg-neutral text-neutral-content w-8 h-8 rounded-full select-none"
+        >
+          <span class="text-sm font-medium"
+            >{{ user.name | truncate(length=1, end="") | upper }}
+          </span>
+        </div>
+      </div>
+      {% endif %}
+      <ul
+        class="hidden sm:block child transition duration-300 md:absolute top-full right-0 md:w-48 md:shadow-lg md:rounded-b bg-base-100 z-20"
+      >
+        <li>
+          <a
+            hx-get="{{ logout_partial_link }}"
+            hx-target="#app"
+            hx-push-url="{{ login_link }}"
+            hx-swap="innerHTML"
+            class="flex px-4 py-3 hover:bg-base-300 cursor-pointer"
+          >
+            Logout
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Mobile menu button -->
+  <button class="hidden text-gray-500 focus:outline-none">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+      <path
+        d="M24 20.188l-8.315-8.209 8.2-8.282-3.697-3.697-8.212 8.318-8.31-8.203-3.666 3.666 8.321 8.24-8.206 8.313 3.666 3.666 8.237-8.318 8.285 8.203z"
+      />
+    </svg>
+  </button>
+</div>

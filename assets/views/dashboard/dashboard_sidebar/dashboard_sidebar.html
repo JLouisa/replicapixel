@@ -18,7 +18,10 @@
 {% set logout_partial_link = website.website_routes.auth_routes.logout_partial  | safe %}
 {% set login_link = website.website_routes.auth_routes.login | safe %}
 
-<aside class="flex flex-col items-center text-gray-700 shadow h-full mt-8" hx-ext="preload">
+<aside
+  class="hidden sm:flex flex-col items-center text-gray-700 shadow h-full mt-8"
+  hx-ext="preload"
+>
   <!-- Side Nav Bar-->
   <ul class="flex flex-col">
     <!-- Top Items Section -->
