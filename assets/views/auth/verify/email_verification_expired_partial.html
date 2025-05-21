@@ -1,0 +1,30 @@
+<div class="min-h-screen bg-base-200 flex items-center justify-center p-4">
+  <div class="card w-full max-w-md bg-base-100 shadow-xl">
+    <div class="max-w-md mx-auto mt-6 p-6 bg-base-100 rounded-xl shadow-lg text-center">
+      <div id="email-verification-expired">
+        <h1 class="text-2xl font-bold text-error mb-4">Verification Link Expired</h1>
+        <p class="mb-6">
+          The verification link has expired. For security reasons, verification links are only valid
+          for <span class="font-semibold underline text-error">1 hour.</span>
+        </p>
+
+        <form
+          hx-post="/auth/resend-verification"
+          hx-ext="form-json"
+          hx-target="#email-verification-expired"
+          hx-swap="innerHTML"
+          hx-disabled-elt="#resend-btn"
+        >
+          <input type="hidden" name="email" value="{{ email }}" required />
+          <button id="resend-btn" type="submit" class="btn btn-primary w-full">
+            Resend Verification Email
+          </button>
+        </form>
+      </div>
+      <p class="text-xs text-gray-400 mt-4">
+        Didn't get the email? Check your spam folder or
+        <a href="/contact" class="text-info">contact support</a>.
+      </p>
+    </div>
+  </div>
+</div>

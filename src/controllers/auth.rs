@@ -93,6 +93,7 @@ pub mod routes {
         pub const API_REGISTER: &'static str = "/api/auth/register";
         pub const API_VERIFY_TOKEN: &'static str = "/api/auth/verify/{token}";
         pub const API_VERIFY_W_TOKEN: &'static str = "/api/auth/verify";
+        pub const API_VERIFY_RESEND: &'static str = "/auth/resend-verification";
         pub const API_LOGIN: &'static str = "/api/auth/login";
         pub const API_LOGOUT: &'static str = "/api/auth/logout";
         pub const API_FORGOT: &'static str = "/api/auth/forgot";
@@ -118,6 +119,10 @@ pub fn routes() -> Routes {
         .add(routes::Auth::LOGOUT_PARTIAL, get(logout_partial))
         .add(routes::Auth::API_REGISTER, post(register))
         .add(routes::Auth::API_VERIFY_TOKEN, get(verify))
+        .add(
+            routes::Auth::API_VERIFY_RESEND,
+            post(resent_verification_token),
+        )
         .add(routes::Auth::API_LOGIN, post(api_login))
         .add(routes::Auth::API_LOGOUT, get(logout))
         .add(routes::Auth::API_FORGOT, post(forgot))
@@ -448,6 +453,8 @@ async fn register(
 
 /// Verify register user. if the user not verified his email, he can't login to
 /// the system.
+/// use chrono::{Duration, Local};
+
 #[debug_handler]
 async fn verify(
     ViewEngine(v): ViewEngine<TeraView>,
@@ -455,20 +462,61 @@ async fn verify(
     State(ctx): State<AppContext>,
     Path(token): Path<String>,
 ) -> Result<Response> {
+    use chrono::Duration;
+
     let user = users::Model::find_by_verification_token(&ctx.db, &token).await?;
 
     if user.email_verified_at.is_some() {
-        tracing::info!(pid = user.pid.to_string(), "user already verified");
-    } else {
-        let active_model = user.into_active_model();
-        let user = active_model.verified(&ctx.db).await?;
-        tracing::info!(pid = user.pid.to_string(), "user verified");
+        return format::render().view(
+            &v,
+            "auth/verify/email_verified.html",
+            data!({"website": website, "msg": "Email already verified"}),
+        );
+    };
+
+    if let Some(sent_at) = user.email_verification_sent_at {
+        if Utc::now().naive_utc() > sent_at.naive_utc() + Duration::hours(1) {
+            return format::render().view(
+                &v,
+                "auth/verify/email_verification_expired.html",
+                data!({
+                    "website": website,
+                    "email": user.email,
+                }),
+            );
+        }
     }
+
+    let active_model = user.into_active_model();
+    let _user = active_model.verified(&ctx.db).await?;
 
     format::render().view(
         &v,
         "auth/verify/email_verified.html",
         data!({"website": website}),
+    )
+}
+
+#[debug_handler]
+async fn resent_verification_token(
+    ViewEngine(v): ViewEngine<TeraView>,
+    Extension(website): Extension<Website>,
+    State(ctx): State<AppContext>,
+    Json(email_params): Json<MagicLinkParams>,
+) -> Result<Response> {
+    let user = UserModel::find_by_email(&ctx.db, &email_params.email).await?;
+
+    let user = user
+        .into_active_model()
+        .set_email_verification_sent(&ctx.db)
+        .await?;
+
+    AuthMailer::send_verification_link(&ctx, &user, &website.website_basic_info).await?;
+
+    format::render().view(
+        &v,
+        "auth/verify/email_verification_send.html",
+        data!({"website": website, "email": user.email}),
     )
 }
 
@@ -665,7 +713,7 @@ async fn logout_partial(
 
     let mut view_response = format::render().view(
         &v,
-        "auth/login/login_form.html",
+        "auth/login/login_partial.html",
         data!({"website": website}),
     )?;
 

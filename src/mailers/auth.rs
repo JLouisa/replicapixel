@@ -12,6 +12,7 @@ use crate::models::users;
 static welcome: Dir<'_> = include_dir!("src/mailers/auth/welcome");
 static forgot: Dir<'_> = include_dir!("src/mailers/auth/forgot");
 static magic_link: Dir<'_> = include_dir!("src/mailers/auth/magic_link");
+static verification_link: Dir<'_> = include_dir!("src/mailers/auth/verification_link");
 // #[derive(Mailer)] // -- disabled for faster build speed. it works. but lets
 // move on for now.
 
@@ -112,6 +113,36 @@ impl AuthMailer {
                             "the user model not contains magic link token",
                     ))?,
                   "host": ctx.config.server.full_url()
+                }),
+                ..Default::default()
+            },
+        )
+        .await?;
+
+        Ok(())
+    }
+
+    /// Sends a magic link authentication email to the user.
+    ///
+    /// # Errors
+    ///
+    /// When email sending is failed
+    pub async fn send_verification_link(
+        ctx: &AppContext,
+        user: &users::Model,
+        website: &WebsiteBasicInfo,
+    ) -> Result<()> {
+        Self::mail_template(
+            ctx,
+            &verification_link,
+            mailer::Args {
+                from: Some(website.from_mail()),
+                to: user.email.to_string(),
+                locals: json!({
+                "name": user.name,
+                "verify_token": user.email_verification_token,
+                "company": website.name.to_string(),
+                "host": ctx.config.server.full_url()
                 }),
                 ..Default::default()
             },

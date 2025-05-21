@@ -63,6 +63,10 @@
         console.error("Image download failed:", error);
       }
     }
+
+    updatePageTitle(
+      "{% block title %}{{ website.website_basic_info.name }} | Studio{% endblock title %}"
+    );
   </script>
   {# {% endblock js %} #}
   <!-- Gallery Content -->

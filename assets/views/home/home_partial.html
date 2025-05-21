@@ -60,6 +60,9 @@
     </label>
   </div>
   <script>
+    updatePageTitle(
+      "{% block title %}{{ website.website_basic_info.name }} | Home{% endblock title %}"
+    );
     document.body.addEventListener("htmx:afterSwap", function (evt) {
       if (evt.detail.target.id === "app") {
         const target = sessionStorage.getItem("scrollTo");
