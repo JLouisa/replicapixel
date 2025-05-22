@@ -1,4 +1,5 @@
-{% set pricing_list = website.website_home.pricing %}
+{% set pricing_list = website.website_home.pricing %} {% set checkout_prepare_link =
+website.website_routes.payment.payment_prepare_route %}
 
 <div
   id="pricing"
@@ -82,12 +83,17 @@
             </div>
             {% endfor %}
           </div>
+          {% if user %} {% if pricing.plan_type == "basic" %} {% include
+          "partials/parts/validated/pricing_basic_btn.html" %} {% elif pricing.plan_type ==
+          "premium" %} {% include "partials/parts/validated/pricing_premium_btn.html" %} {% elif
+          pricing.plan_type == "max" %} {% include "partials/parts/validated/pricing_max_btn.html"
+          %} {% endif %} {% else %}
           <div id="pricing-{{pricing.plan_type}}-btn" class="w-full flex flex-col items-start">
             <a
-              href="{{ login_link }}"
-              hx-get="{{ login_link }}"
+              href="{{ login_link | safe }}"
+              hx-get="{{ login_link | safe }}"
               hx-swap="innerHTML"
-              hx-push-url="{{ login_link }}"
+              hx-push-url="{{ login_link | safe }}"
               hx-target="#app"
               class="w-full"
             >
@@ -100,6 +106,7 @@
               </div>
             </a>
           </div>
+          {% endif %}
         </div>
       </div>
       {% endfor %}

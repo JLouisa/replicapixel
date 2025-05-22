@@ -1,0 +1,22 @@
+<div
+  id="pricing-max-btn"
+  class="w-full flex flex-col items-start"
+  {%
+  if
+  is_ott
+  %}
+  hx-swap-oob="true"
+  {%
+  endif
+  %}
+>
+  <a href="{{checkout_prepare_link | safe}}/{{ user.pid }}/max" class="w-full">
+    <div
+      class="w-full bg-grn-from rounded-xl px-8 py-4 flex items-center justify-center gap-3 shadow-sm hover:shadow-md transition-shadow"
+    >
+      <span class="text-white text-center font-inter text-base font-medium leading-none">
+        Choose Max
+      </span>
+    </div>
+  </a>
+</div>

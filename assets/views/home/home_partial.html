@@ -17,6 +17,7 @@
         <form class="rounded-full bg-base-200 p-2">
           {% include "partials/parts/dark_mode_toggle.html" %}
         </form>
+        {% if user %} {% include "partials/parts/validated/validate_login_btn.html" %} {% else %}
         <div id="validate-login-btn">
           <button
             hx-get="{{ login_partial_link | safe }}"
@@ -28,6 +29,7 @@
             Login
           </button>
         </div>
+        {% endif %}
       </div>
 
       <!-- prettier-ignore -->

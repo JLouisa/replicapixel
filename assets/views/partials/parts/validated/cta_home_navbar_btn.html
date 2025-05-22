@@ -1,0 +1,33 @@
+{% set timestamp = now() | date(format="%s%.f") %}
+<div id="cta-home-navbar-btn" {% if is_ott %} hx-swap-oob="true" {% endif %}>
+  <button
+    id="shiningButton-{{ timestamp }}"
+    hx-get="{{ studio_link }}"
+    hx-target="#app"
+    hx-swap="innerHTML"
+    hx-push-url="{{ studio_link }}"
+    class="relative flex flex-row items-center lg:gap-4 p-2 lg:p-3 lg:px-6 my-[-0.5rem] lg:my-[-1rem] overflow-hidden rounded-full font-semibold text-white shadow-md transition-all duration-150 bg-gradient-to-r from-[var(--color-grn-from)] to-[var(--color-grn-to)] hover:shadow-lg hover:brightness-110 active:scale-95 active:brightness-90 cursor-pointer"
+  >
+    Take Photos{% include "partials/svg/triple_stars.html" %}
+    <script>
+      {
+        const button = document.getElementById("shiningButton-{{ timestamp }}");
+        if (button) {
+          const shineAnimationDuration = 1000;
+          const intervalDuration = 8000;
+          function triggerShine() {
+            if (!button.classList.contains("animate-shine-active")) {
+              button.classList.add("animate-shine-active");
+              setTimeout(() => {
+                button.classList.remove("animate-shine-active");
+              }, shineAnimationDuration);
+            }
+          }
+          const shineInterval = setInterval(triggerShine, intervalDuration);
+        } else {
+          console.error("Button with id 'shiningButton' not found.");
+        }
+      }
+    </script>
+  </button>
+</div>

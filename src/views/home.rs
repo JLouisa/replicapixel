@@ -11,6 +11,7 @@ pub fn home(
     is_home: bool,
     cc_cookie: &CookieConsent,
     images: &WebImages,
+    user: &Option<UserView>,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
@@ -19,6 +20,7 @@ pub fn home(
             {
                 "website": website, "cc_cookie": cc_cookie,
                 "is_home": is_home, "web_images": images,
+                "user": user
             }
         ),
     )
@@ -30,6 +32,7 @@ pub fn home_partial(
     is_home: bool,
     cc_cookie: &CookieConsent,
     images: &WebImages,
+    user: &Option<UserView>,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
@@ -38,6 +41,7 @@ pub fn home_partial(
             {
                 "website": website, "cc_cookie": cc_cookie,
                 "is_home": is_home, "web_images": images,
+                "user": user
             }
         ),
     )

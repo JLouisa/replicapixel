@@ -9,6 +9,8 @@ use crate::{
     models::{packs::PackModelList, PackModel},
 };
 
+use super::auth::UserView;
+
 pub fn get_all_packs(
     v: impl ViewRenderer,
     website: &Website,
@@ -32,6 +34,7 @@ pub fn packs(
     cc_cookie: &CookieConsent,
     web_images: &WebImages,
     pack: &PackView,
+    user: &Option<UserView>,
 ) -> Result<impl IntoResponse> {
     let foo_mock_pack_images = pack.create_item_groups();
     format::render().view(
@@ -41,7 +44,8 @@ pub fn packs(
             {
                 "website": website, "cc_cookie": cc_cookie,
                 "web_images": web_images, "pack": pack,
-                "pack_images": foo_mock_pack_images
+                "pack_images": foo_mock_pack_images,
+                "user": user
             }
         ),
     )
@@ -53,6 +57,7 @@ pub fn packs_partial(
     cc_cookie: &CookieConsent,
     web_images: &WebImages,
     pack: &PackView,
+    user: &Option<UserView>,
 ) -> Result<impl IntoResponse> {
     let foo_mock_pack_images = pack.create_item_groups();
     format::render().view(
@@ -62,7 +67,8 @@ pub fn packs_partial(
             {
                 "website": website, "cc_cookie": cc_cookie,
                 "web_images": web_images, "pack": pack,
-                "pack_images": foo_mock_pack_images
+                "pack_images": foo_mock_pack_images,
+                "user": user
             }
         ),
     )

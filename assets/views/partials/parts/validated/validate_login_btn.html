@@ -1,0 +1,17 @@
+<div id="validate-login-btn" {% if is_ott %} hx-swap-oob="true" {% endif %}>
+  {% if user.picture %}
+  <div class="avatar">
+    <div class="ring-primary ring-offset-base-100 w-24 rounded-full ring-2 ring-offset-2">
+      <img src="{{user.picture | safe}}" />
+    </div>
+  </div>
+  {% else %}
+  <div class="flex items-center hover:bg-base-100 rounded-full p-1 cursor-pointer">
+    <div
+      class="flex items-center justify-center bg-neutral text-neutral-content w-12 h-12 rounded-full select-none"
+    >
+      <span class="text-sm font-medium">{{ user.name | truncate(length=1, end="") | upper }} </span>
+    </div>
+  </div>
+  {% endif %}
+</div>

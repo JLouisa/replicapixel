@@ -134,7 +134,7 @@
       <span x-text="$store.toast.message"></span>
     </div>
 
-    {% if is_home %}
+    {% if is_home and not user %}
     <div
       id="google-login-init"
       hx-trigger="load once"

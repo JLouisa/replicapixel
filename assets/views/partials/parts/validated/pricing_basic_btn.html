@@ -1,0 +1,26 @@
+<div
+  id="pricing-basic-btn"
+  class="w-full flex flex-col gap-4 items-start justify-start relative"
+  {%
+  if
+  is_ott
+  %}
+  hx-swap-oob="true"
+  {%
+  endif
+  %}
+>
+  <a
+    id="pricing-basic-btn"
+    href="{{checkout_prepare_link | safe}}/{{ user.pid }}/basic"
+    class="w-full"
+  >
+    <div
+      class="w-full bg-grn-from rounded-xl px-8 py-4 flex items-center justify-center gap-3 shadow-sm hover:shadow-md transition-shadow"
+    >
+      <span class="text-white text-center font-inter text-base font-medium leading-none">
+        Choose Basic
+      </span>
+    </div>
+  </a>
+</div>

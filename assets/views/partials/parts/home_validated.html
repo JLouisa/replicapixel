@@ -1,100 +1,16 @@
 <!-- prettier-ignore -->
-{% set timestamp = now() | date(format="%s%.f") %} 
 {% set studio_link = website.website_routes.dashboard_routes.base | safe %}
 {% set checkout_prepare_link = website.website_routes.payment.payment_prepare_route | safe %}
 
 {# Change cta in nav button #}
-<div id="cta-home-navbar-btn" {% if not ott %} hx-swap-oob="true">
-  {% endif %}
-  <button
-    id="shiningButton-{{ timestamp }}"
-    hx-get="{{ studio_link }}"
-    hx-target="#app"
-    hx-swap="innerHTML"
-    hx-push-url="{{ studio_link }}"
-    class="relative flex flex-row items-center lg:gap-4 p-2 lg:p-3 lg:px-6 my-[-0.5rem] lg:my-[-1rem] overflow-hidden rounded-full font-semibold text-white shadow-md transition-all duration-150 bg-gradient-to-r from-[var(--color-grn-from)] to-[var(--color-grn-to)] hover:shadow-lg hover:brightness-110 active:scale-95 active:brightness-90 cursor-pointer"
-  >
-    Take Photos{% include "partials/svg/triple_stars.html" %}
-    <script>
-      {
-        const button = document.getElementById("shiningButton-{{ timestamp }}");
-        if (button) {
-          const shineAnimationDuration = 1000;
-          const intervalDuration = 8000;
-          function triggerShine() {
-            if (!button.classList.contains("animate-shine-active")) {
-              button.classList.add("animate-shine-active");
-              setTimeout(() => {
-                button.classList.remove("animate-shine-active");
-              }, shineAnimationDuration);
-            }
-          }
-
-          const shineInterval = setInterval(triggerShine, intervalDuration);
-        } else {
-          console.error("Button with id 'shiningButton' not found.");
-        }
-      }
-    </script>
-  </button>
-</div>
+{% include "partials/parts/validated/cta_home_navbar_btn.html" %}
 
 {# login button #}
-<div id="validate-login-btn" hx-swap-oob="true">
-  {% if user.picture %}
-  <div class="avatar">
-    <div class="ring-primary ring-offset-base-100 w-24 rounded-full ring-2 ring-offset-2">
-      <img src="{{user.picture}}" />
-    </div>
-  </div>
-  {% else %}
-  <div class="flex items-center hover:bg-base-100 rounded-full p-1 cursor-pointer">
-    <div
-      class="flex items-center justify-center bg-neutral text-neutral-content w-12 h-12 rounded-full select-none"
-    >
-      <span class="text-sm font-medium">{{ user.name | truncate(length=1, end="") | upper }} </span>
-    </div>
-  </div>
-  {% endif %}
-</div>
+{% include "partials/parts/validated/validate_login_btn.html" %}
 
-{# Change pricing plans button #}
-<div
-  id="pricing-basic-btn"
-  class="w-full flex flex-col gap-4 items-start justify-start relative"
-  hx-swap-oob="true"
->
-  <a id="pricing-basic-btn" href="{{checkout_prepare_link}}/{{ user.pid }}/basic" class="w-full">
-    <div
-      class="w-full bg-grn-from rounded-xl px-8 py-4 flex items-center justify-center gap-3 shadow-sm hover:shadow-md transition-shadow"
-    >
-      <span class="text-white text-center font-inter text-base font-medium leading-none">
-        Choose Basic
-      </span>
-    </div>
-  </a>
-</div>
+{# Change pricing plans button #} 
+{% include "partials/parts/validated/pricing_basic_btn.html" %}
 
-<div id="pricing-premium-btn" class="w-full flex flex-col items-start" hx-swap-oob="true">
-  <a href="{{checkout_prepare_link}}/{{ user.pid }}/premium" class="w-full">
-    <div
-      class="w-full bg-grn-to rounded-xl px-8 py-4 flex items-center justify-center gap-3 shadow-sm hover:shadow-md transition-shadow"
-    >
-      <span class="text-white text-center font-inter text-base font-medium leading-none">
-        Choose Premium
-      </span>
-    </div>
-  </a>
-</div>
+{% include "partials/parts/validated/pricing_premium_btn.html" %}
 
-<div id="pricing-max-btn" class="w-full flex flex-col items-start" hx-swap-oob="true">
-  <a href="{{checkout_prepare_link}}/{{ user.pid }}/max" class="w-full">
-    <div
-      class="w-full bg-grn-from rounded-xl px-8 py-4 flex items-center justify-center gap-3 shadow-sm hover:shadow-md transition-shadow"
-    >
-      <span class="text-white text-center font-inter text-base font-medium leading-none">
-        Choose Max
-      </span>
-    </div>
-  </a>
-</div>
+{% include "partials/parts/validated/pricing_max_btn.html" %}

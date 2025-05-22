@@ -68,6 +68,6 @@
     <span class="sr-only">Loading...</span>
   </div>
   {% endif %} {% endfor %} {# Credits OOB Swap #} {% if not is_initial_load and credits %}
-  <span hx-swap-oob="true" id="user_credits">{{ credits.credit_amount }}</span>
+  <span hx-swap-oob="true" id="user_credits" class="ml-1">{{ credits.credit_amount }}</span>
   {% endif %}
 </div>

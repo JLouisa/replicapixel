@@ -4,9 +4,11 @@
 use crate::domain::sitemap::get_sitemap;
 use crate::middleware::cookie::ExtractConsentState;
 use crate::models::packs::PackModelList;
-use crate::models::PackModel;
+use crate::models::users::UserPid;
+use crate::models::{PackModel, UserModel};
 use crate::service::redis::redis::load_cached_web;
 use crate::views;
+use crate::views::auth::UserView;
 use crate::views::packs::PackViewList;
 use crate::{domain::website::Website, middleware::cookie::CookieConsentLayer};
 use axum::{debug_handler, Extension};
@@ -50,6 +52,10 @@ pub fn routes() -> Routes {
         .layer(CookieConsentLayer::new())
 }
 
+pub async fn load_user(db: &DatabaseConnection, user_pid: &UserPid) -> Result<UserModel> {
+    let item = UserModel::find_by_pid(db, user_pid.as_ref()).await?;
+    Ok(item)
+}
 async fn load_packs(db: &DatabaseConnection) -> Result<PackModelList> {
     let list = PackModel::find_first_12_packs(db).await?;
     Ok(PackModelList::new(list))
@@ -142,26 +148,50 @@ pub async fn sitemap_xml() -> impl IntoResponse {
 
 #[debug_handler]
 pub async fn render_home(
+    auth: Result<auth::JWT>,
     ExtractConsentState(cc_cookie): ExtractConsentState,
     Extension(website): Extension<Website>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
+    let user: Option<UserView> = match auth {
+        Ok(auth) => {
+            let user_pid = UserPid::new(&auth.claims.pid);
+            let user = match load_user(&ctx.db, &user_pid).await {
+                Ok(user) => Some(user.into()),
+                Err(_) => None,
+            };
+            user
+        }
+        Err(_) => None,
+    };
     let is_home = true;
     let images = load_cached_web(&ctx).await?;
-    views::home::home(v, &website, is_home, &cc_cookie, &images)
+    views::home::home(v, &website, is_home, &cc_cookie, &images, &user)
 }
 
 #[debug_handler]
 pub async fn render_home_partial(
+    auth: Result<auth::JWT>,
     ExtractConsentState(cc_cookie): ExtractConsentState,
     Extension(website): Extension<Website>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
+    let user: Option<UserView> = match auth {
+        Ok(auth) => {
+            let user_pid = UserPid::new(&auth.claims.pid);
+            let user = match load_user(&ctx.db, &user_pid).await {
+                Ok(user) => Some(user.into()),
+                Err(_) => None,
+            };
+            user
+        }
+        Err(_) => None,
+    };
     let is_home = true;
     let images = load_cached_web(&ctx).await?;
-    views::home::home_partial(v, &website, is_home, &cc_cookie, &images)
+    views::home::home_partial(v, &website, is_home, &cc_cookie, &images, &user)
 }
 
 #[derive(Debug, Serialize, Deserialize, Constructor, Clone)]
@@ -202,9 +232,9 @@ impl WebImages {
         let web_images0 = vec![
             String::from("../../../static/images/hero/nature-hero.webp"),
             String::from("../../../static/images/gallery/corporate-headshot.webp"),
-            String::from("../../../static/images/hero/nature-hero.webp"),
+            String::from("../../../static/images/gallery/mma-fe.webp"),
             String::from("../../../static/images/gallery/wife1.webp"),
-            String::from("../../../static/images/hero/nature-hero.webp"),
+            String::from("../../../static/images/gallery/street-fighter.webp"),
             String::from("../../../static/images/gallery/nature3.webp"),
         ];
         let web_images1 = vec![
@@ -218,25 +248,25 @@ impl WebImages {
         let web_images2 = vec![
             String::from("../../../static/images/hero/lara-hero.webp"),
             String::from("../../../static/images/gallery/machina1.webp"),
-            String::from("../../../static/images/hero/lara-hero.webp"),
+            String::from("../../../static/images/gallery/angel.webp"),
             String::from("../../../static/images/hero/quin-hero.webp"),
-            String::from("../../../static/images/hero/lara-hero.webp"),
+            String::from("../../../static/images/gallery/emo-girl.webp"),
             String::from("../../../static/images/gallery/blackwidow.webp"),
         ];
         let web_images3 = vec![
             String::from("../../../static/images/hero/halloween-hero.webp"),
             String::from("../../../static/images/hero/terminator-hero.webp"),
             String::from("../../../static/images/gallery/nature1.webp"),
-            String::from("../../../static/images/hero/terminator-hero.webp"),
+            String::from("../../../static/images/gallery/dracula-wife.webp"),
             String::from("../../../static/images/gallery/cosplay3.webp"),
-            String::from("../../../static/images/hero/terminator-hero.webp"),
+            String::from("../../../static/images/gallery/model-show.webp"),
         ];
         let web_images4 = vec![
             String::from("../../../static/images/hero/spiritual-hero.webp"),
             String::from("../../../static/images/gallery/easter1.webp"),
-            String::from("../../../static/images/hero/spiritual-hero.webp"),
-            String::from("../../../static/images/creator1.png"),
-            String::from("../../../static/images/hero/spiritual-hero.webp"),
+            String::from("../../../static/images/gallery/model-makeup.webp"),
+            String::from("../../../static/images/gallery/white-dress.webp"),
+            String::from("../../../static/images/gallery/model-closeup.webp"),
             String::from("../../../static/images/hero/halloween-hero.webp"),
         ];
         let gallery = WebGallery::new(

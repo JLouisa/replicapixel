@@ -23,8 +23,10 @@ use crate::{
         fal_ai::fal_client::FalAiClient,
         redis::redis::{load_cached_web, RedisCacheDriver},
     },
-    views::{self, images::ImageViewList},
+    views::{self, auth::UserView, images::ImageViewList},
 };
+
+use super::home::load_user;
 
 pub mod routes {
     use serde::{Deserialize, Serialize};
@@ -125,28 +127,52 @@ pub async fn get_all_packs(
 
 #[debug_handler]
 pub async fn show_pack(
+    auth: Result<auth::JWT>,
     Path(pack_pid): Path<Uuid>,
     ExtractConsentState(cc_cookie): ExtractConsentState,
     Extension(website): Extension<Website>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
+    let user: Option<UserView> = match auth {
+        Ok(auth) => {
+            let user_pid = UserPid::new(&auth.claims.pid);
+            let user = match load_user(&ctx.db, &user_pid).await {
+                Ok(user) => Some(user.into()),
+                Err(_) => None,
+            };
+            user
+        }
+        Err(_) => None,
+    };
     let images = load_cached_web(&ctx).await?;
     let pack = load_pack_by_pid(&ctx.db, &pack_pid).await?;
-    views::packs::packs(v, &website, &cc_cookie, &images, &pack.into())
+    views::packs::packs(v, &website, &cc_cookie, &images, &pack.into(), &user)
 }
 
 #[debug_handler]
 pub async fn show_pack_partial(
+    auth: Result<auth::JWT>,
     Path(pack_pid): Path<Uuid>,
     ExtractConsentState(cc_cookie): ExtractConsentState,
     Extension(website): Extension<Website>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
+    let user: Option<UserView> = match auth {
+        Ok(auth) => {
+            let user_pid = UserPid::new(&auth.claims.pid);
+            let user = match load_user(&ctx.db, &user_pid).await {
+                Ok(user) => Some(user.into()),
+                Err(_) => None,
+            };
+            user
+        }
+        Err(_) => None,
+    };
     let images = load_cached_web(&ctx).await?;
     let pack = load_pack_by_pid(&ctx.db, &pack_pid).await?;
-    views::packs::packs(v, &website, &cc_cookie, &images, &pack.into())
+    views::packs::packs(v, &website, &cc_cookie, &images, &pack.into(), &user)
 }
 
 #[debug_handler]
