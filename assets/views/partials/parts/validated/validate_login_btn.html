@@ -6,9 +6,9 @@
     </div>
   </div>
   {% else %}
-  <div class="flex items-center hover:bg-base-100 rounded-full p-1 cursor-pointer">
+  <div class="flex items-center hover:bg-base-100 rounded-full cursor-pointer">
     <div
-      class="flex items-center justify-center bg-neutral text-neutral-content w-12 h-12 rounded-full select-none"
+      class="flex items-center justify-center bg-neutral text-neutral-content w-10 h-10 rounded-full select-none"
     >
       <span class="text-sm font-medium">{{ user.name | truncate(length=1, end="") | upper }} </span>
     </div>

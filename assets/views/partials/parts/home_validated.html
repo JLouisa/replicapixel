@@ -14,3 +14,15 @@
 {% include "partials/parts/validated/pricing_premium_btn.html" %}
 
 {% include "partials/parts/validated/pricing_max_btn.html" %}
+
+<!-- prettier-ignore -->
+<div
+  id="hero-cta"
+  class="flex items-center justify-center shrink-0 gap-2"
+  {% if is_ott %} hx-swap-oob="true" {% endif %}
+>
+  {% set timestamp = now() | date(format="%s%.f") %}
+  <div id="cta-home-navbar-btn" {% if is_ott %} hx-swap-oob="true" {% endif %}>
+  {% include "partials/parts/validated/cta_home_navbar_btn.html" %}
+  </div>
+</div>

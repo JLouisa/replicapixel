@@ -4,35 +4,13 @@
 {% set website_name = website.website_basic_info.name %}
 {% set gallery = web_images.gallery %}
 
-<div class="drawer drawer-end xs:p-2 md:p-0 w-full">
-  <label for="app-drawer"></label>
-  <input id="app-drawer" type="checkbox" class="drawer-toggle" />
-  <div class="drawer-content flex flex-col w-full">
+<div class="relative xs:p-2 md:p-0 w-full">
+  <div class="flex flex-col w-full">
     <!-- Navbar -->
     {% include "home/sections/navbar.html" %}
-
     <!-- Page content here -->
+    <!-- prettier-ignore -->
     <div class="relative bg-bg-web overflow-hidden">
-      <div class="fixed top-0 right-0 p-4 z-10 hidden md:flex items-center justify-center gap-2">
-        <form class="rounded-full bg-base-200 p-2">
-          {% include "partials/parts/dark_mode_toggle.html" %}
-        </form>
-        {% if user %} {% include "partials/parts/validated/validate_login_btn.html" %} {% else %}
-        <div id="validate-login-btn">
-          <button
-            hx-get="{{ login_partial_link | safe }}"
-            hx-swap="innerHTML"
-            hx-push-url="{{ login_link | safe }}"
-            hx-target="#app"
-            class="btn btn-neutral"
-          >
-            Login
-          </button>
-        </div>
-        {% endif %}
-      </div>
-
-      <!-- prettier-ignore -->
       {% include "home/sections/hero.html" %}
       {% include "home/sections/businesses.html" %}
       {% include "home/sections/gallery.html" %}
@@ -45,21 +23,6 @@
       {% include "home/sections/creators.html" %}
       {% include "home/sections/footer.html" %}
     </div>
-  </div>
-  <div class="drawer-side z-20">
-    <label for="app-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
-    <ul class="menu bg-base-200 min-h-full w-40 p-4">
-      <li><a href="#" class="p-2 text-base hover:text-gray-300">Home</a></li>
-      <li><a href="#" class="p-2 text-base hover:text-gray-300">Features</a></li>
-      <li><a href="#" class="p-2 text-base hover:text-gray-300">Studio</a></li>
-      <li><a href="#pricing" class="p-2 text-base hover:text-gray-300">Pricing</a></li>
-      <li>
-        <a href="{{login_link | safe}}" class="p-2 text-base hover:text-gray-300">Login</a>
-      </li>
-    </ul>
-    <label for="app-drawer" class="block p-4 hover:text-gray-300">
-      {% include "partials/svg/x.html" %}
-    </label>
   </div>
   <script>
     updatePageTitle(

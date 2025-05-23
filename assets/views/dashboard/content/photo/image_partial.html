@@ -34,7 +34,7 @@
         <div class="flex items-center justify-center sm:justify-end gap-3 mt-4">
           <button
             onclick="downloadImageWithLink('{{  image.s3_pre_url | default(value= image.image_url_fal) | safe }}', '{{ image.pid }}.{{ image.content_type }}')"
-            class="btn btn-primary"
+            class="btn btn-primary btn-xs md:btn-md"
           >
             Download {% include "partials/svg/download.html" %}
           </button>

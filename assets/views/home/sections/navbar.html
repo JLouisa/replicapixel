@@ -2,7 +2,9 @@
 {% set home_link = "/" %}
 {% set studio_link = website.website_routes.dashboard_routes.base %}
 {% set studio_partial_link = website.website_routes.dashboard_routes.sidebar.photo_partial %}
-
+{% set logout_link = website.website_routes.auth_routes.api_logout %}
+{% set logout_partial_link = website.website_routes.auth_routes.logout_partial  | safe %}
+{% set login_link = website.website_routes.auth_routes.login | safe %}
 <nav
   class="fixed inset-x-0 top-2 md:top-4 z-20 mx-auto w-full max-w-7xl p-4 sm:px-6 lg:px-8 flex items-center justify-between border border-slate-50/10 rounded-full backdrop-blur-lg bg-white/5"
 >
@@ -10,8 +12,10 @@
   <div
     class="flex flex-row items-center justify-center shrink-0 relative gap-2 md:gap-3 lg:gap-4 cursor-pointer"
   >
-    <span class="shrink-0 w-10 h-10 relative">{% include "partials/svg/logo.html" %}</span>
-    <span class="hidden sm:block text-w text-center font-bricon font-semibold relative sm:text-3xl">
+    <span class="shrink-0 w-6 h-6 sm:w-10 sm:h-10 relative"
+      >{% include "partials/svg/logo.html" %}</span
+    >
+    <span class="text-w text-center font-bricon font-semibold relative sm:text-3xl">
       {{ website_name }}
     </span>
   </div>
@@ -36,8 +40,8 @@
   {% endif %}
 
   <!-- Desktop nav -->
-  <div class="hidden lg:flex items-center gap-12">
-    <ul class="flex flex-row gap-8 items-center font-semibold">
+  <div class="hidden md:flex items-center gap-2 lg:gap-12">
+    <ul class="flex flex-row gap-2 lg:gap-8 items-center font-semibold">
       <li>
         <a
           href="{{studio_link}}"
@@ -55,32 +59,149 @@
       </li>
       <li><a href="#pricing" class="p-2 text-white text-base hover:text-gray-300">Pricing</a></li>
     </ul>
-    {% if user %} {% include "partials/parts/validated/cta_home_navbar_btn.html" %} {% else %}
-    <div id="cta-home-navbar-btn">{% include "partials/parts/cta_btn_home.html" %}</div>
-    {% endif %}
-  </div>
+    <div class="flex flex-row items-center gap-2">
+      {% if user %} {% include "partials/parts/validated/validate_login_btn.html" %} {% else %}
+      <div id="validate-login-btn">
+        <a
+          hx-get="{{ login_partial_link | safe }}"
+          hx-swap="innerHTML"
+          hx-push-url="{{ login_link | safe }}"
+          hx-target="#app"
+          class="relative flex flex-row items-center lg:gap-4 p-2 lg:p-3 lg:px-6 my-[-0.5rem] lg:my-[-1rem] overflow-hidden rounded-l-full font-semibold text-white shadow-md transition-all duration-150 bg-grn-from hover:shadow-lg hover:brightness-110 active:scale-95 active:brightness-90 cursor-pointer"
+        >
+          Login
+        </a>
+      </div>
+      {% endif %} {% if user %} {% include "partials/parts/validated/cta_home_navbar_btn.html" %} {%
+      else %}
+      <div id="cta-home-navbar-btn">
+        <a href="#pricing">
+          {% set timestamp = now() | date(format="%s%.f") %}
+          <button
+            id="shiningButton-{{ timestamp }}"
+            class="relative flex flex-row items-center lg:gap-4 p-2 lg:p-3 lg:px-6 my-[-0.5rem] lg:my-[-1rem] overflow-hidden rounded-r-full font-semibold text-white shadow-md transition-all duration-150 bg-gradient-to-r from-[var(--color-grn-from)] to-[var(--color-grn-to)] hover:shadow-lg hover:brightness-110 active:scale-95 active:brightness-90 cursor-pointer"
+          >
+            Try Now {% include "partials/svg/triple_stars.html" %}
+          </button>
 
-  <!-- ✅ Mobile nav toggle — placed outside the hidden desktop nav -->
-  <div class="lg:hidden flex justify-center items-center gap-2">
-    <div class="md:hidden rounded-full bg-base-200 p-2">
-      {% include "partials/parts/dark_mode_toggle.html" %}
+          <script>
+            {
+              const button = document.getElementById("shiningButton-{{ timestamp }}");
+              if (button) {
+                const shineAnimationDuration = 1000;
+                const intervalDuration = 8000;
+                function triggerShine() {
+                  if (!button.classList.contains("animate-shine-active")) {
+                    button.classList.add("animate-shine-active");
+                    setTimeout(() => {
+                      button.classList.remove("animate-shine-active");
+                    }, shineAnimationDuration);
+                  }
+                }
+
+                const shineInterval = setInterval(triggerShine, intervalDuration);
+              } else {
+                console.error("Button with id 'shiningButton' not found.");
+              }
+            }
+          </script>
+        </a>
+      </div>
+      {% endif %}
     </div>
-    <div>{% include "partials/parts/cta_btn_home.html" %}</div>
-    <label for="my-drawer-3" class="btn btn-square btn-ghost">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="w-24 h-24"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M4 6h16M4 12h16M4 18h16"
-        />
-      </svg>
-    </label>
+  </div>
+  <div class="md:hidden flex items-center gap-2">
+    <div id="home-burger-menu-trigger" aria-label="Open menu" class="cursor-pointer">
+      {% include "partials/svg/mobile_menu.html" %}
+    </div>
   </div>
 </nav>
+
+<!-- ✅ Mobile nav toggle — placed outside the hidden desktop nav -->
+<div class="md:hidden flex justify-center items-center gap-2">
+  <div
+    id="menu-overlay"
+    class="p-5 z-18 bg-base fixed inset-0"
+    style="
+      background-color: rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease-in-out;
+    "
+  ></div>
+  <div
+    id="side-menu"
+    class="px-5 z-22 bg-base-300 w-36 h-full border border-solid border-base-300 overflow-hidden fixed top-0 right-0"
+    style="transform: translateX(100%); transition: transform 0.3s ease-in-out"
+  >
+    <div
+      id="close-menu-button"
+      class="h-16 w-full mx-auto flex items-center justify-center hover:bg-base-300 focus:outline-none cursor-pointer tooltip tooltip-left z-22 text-base-content"
+      style="float: right"
+    >
+      {% include "partials/svg/x.html" %}
+    </div>
+    <br />
+    <ul class="flex flex-col gap-4 p-4">
+      <li><a href="{{studio_link}}">Studio</a></li>
+      <li><a href="#home-packs">Packs</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li>
+        <a
+          href="{{logout_link}}"
+          hx-get="{{ logout_partial_link }}"
+          hx-target="#app"
+          hx-push-url="{{ login_link }}"
+          hx-swap="innerHTML"
+          preload="mouseover"
+          data-tip="Logout"
+          >Logout</a
+        >
+      </li>
+    </ul>
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const triggerButton = document.getElementById("home-burger-menu-trigger");
+      const sideMenu = document.getElementById("side-menu");
+      const menuOverlay = document.getElementById("menu-overlay");
+      const closeButton = document.getElementById("close-menu-button");
+
+      let isMenuOpen = false;
+
+      function toggleMenu() {
+        isMenuOpen = !isMenuOpen;
+        if (isMenuOpen) {
+          sideMenu.style.transform = "translateX(0)";
+          if (menuOverlay) {
+            menuOverlay.style.opacity = "1";
+            menuOverlay.style.pointerEvents = "auto";
+          }
+          document.body.style.overflow = "hidden";
+        } else {
+          sideMenu.style.transform = "translateX(100%)";
+          if (menuOverlay) {
+            menuOverlay.style.opacity = "0";
+            menuOverlay.style.pointerEvents = "none";
+          }
+          document.body.style.overflow = "";
+        }
+      }
+
+      if (triggerButton) {
+        triggerButton.addEventListener("click", toggleMenu);
+      }
+      if (closeButton) {
+        closeButton.addEventListener("click", toggleMenu);
+      }
+      if (menuOverlay) {
+        menuOverlay.addEventListener("click", toggleMenu);
+      }
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && isMenuOpen) {
+          toggleMenu();
+        }
+      });
+    });
+  </script>
+</div>

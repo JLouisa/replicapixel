@@ -1,5 +1,9 @@
-{% set starter_partial_link = website.website_routes.starter_routes.starter_partial | safe %} {% set
-starter_link = website.website_routes.starter_routes.starter | safe %}
+<!-- prettier-ignore -->
+{% set home_link = "/" %}
+{% set starter_partial_link = website.website_routes.starter_routes.starter_partial | safe %} 
+{% set starter_link = website.website_routes.starter_routes.starter | safe %}
+{% set studio_link = website.website_routes.dashboard_routes.base %}
+{% set studio_partial_link = website.website_routes.dashboard_routes.sidebar.photo_partial %}
 
 <section class="flex flex-col gap-3 items-center justify-start mb-16 mt-28 lg:mt-48 relative">
   <div class="flex flex-col gap-3 items-center justify-center self-stretch shrink-0">
@@ -16,9 +20,12 @@ starter_link = website.website_routes.starter_routes.starter | safe %}
       </div>
     </div>
   </div>
-  {% include "home/sections/partials/hero_panels.html" %}
-
-  <div class="flex items-center justify-center shrink-0 gap-2">
+  {% include "home/sections/partials/hero_panels.html" %} {% if user %}
+  <div id="hero-cta" class="flex items-center justify-center shrink-0 gap-2">
+    {% include "partials/parts/validated/cta_home_navbar_btn.html" %}
+  </div>
+  {% else %}
+  <div id="hero-cta" class="flex items-center justify-center shrink-0 gap-2">
     <div>{% include "partials/parts/cta_btn_home.html" %}</div>
     <div
       hx-get="{{ starter_partial_link }}"
@@ -30,4 +37,5 @@ starter_link = website.website_routes.starter_routes.starter | safe %}
       Getting started
     </div>
   </div>
+  {% endif %}
 </section>

@@ -3,17 +3,17 @@
   id="fav-{{ image.pid }}"
   hx-patch="{{ website.website_routes.image.image_favorite | safe }}/{{ image.pid }}"
   hx-swap="outerHTML"
-  class="btn"
+  class="btn btn-xs md:btn-md"
 >
-  Remove Favorite {% include "partials/svg/bookmark.html" %}
+  <span class="hidden sm:inline">Remove Favorite</span> {% include "partials/svg/bookmark.html" %}
 </button>
 {% else %}
 <button
   id="fav-{{ image.pid }}"
   hx-patch="{{ website.website_routes.image.image_favorite | safe }}/{{ image.pid }}"
   hx-swap="outerHTML"
-  class="btn btn-secondary"
+  class="btn btn-secondary btn-xs md:btn-md"
 >
-  Add to Favorites {% include "partials/svg/bookmark.html" %}
+  <span class="hidden sm:inline">Add to Favorites</span>{% include "partials/svg/bookmark.html" %}
 </button>
 {% endif %}

@@ -189,14 +189,24 @@
         </svg>
       </button>
 
-      <div class="flex-1 flex justify-center items-center gap-x-3 mx-2 overflow-hidden">
-        <span class="text-xs text-base-content/70 truncate" title="Number of Images">
-          Photos: <span class="font-medium" x-text="$store.imageGenForm.numImages"></span>
-        </span>
-        <span class="text-xs text-base-content/70 truncate" title="Selected Model">
-          Model:
+      <div
+        class="flex flex-col items-start justify-center gap-4 mx-2 overflow-hidden sm:flex-row sm:items-center"
+      >
+        <div
+          class="text-lg font-semibold text-base-content truncate flex items-center justify-center gap-2"
+          title="Number of Images"
+        >
+          <span class="w-5 h-5">{% include "partials/svg/image.html" %}</span>
+          <span class="font-medium" x-text="$store.imageGenForm.numImages"></span>
+        </div>
+        <div
+          class="text-xs md:text-lg font-semibold text-base-content truncate flex items-center justify-center gap-2"
+          title="Selected Model"
+        >
+          <span class="hidden sm:block">{% include "partials/svg/model_svg.html" %}</span>
+          <span class="sm:hidden text-xs">M:</span>
           <span class="font-medium" x-text="selectedModelName"></span>
-        </span>
+        </div>
       </div>
 
       <button type="submit" class="btn btn-accent btn-sm" :disabled="$store.imageGenForm.isLoading">

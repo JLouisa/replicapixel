@@ -1,12 +1,12 @@
-<!-- prettier-ignore -->
-
 <section
   class="flex flex-col gap-12 items-center justify-center w-full relative my-16 px-2 mx-auto"
 >
   <div class="flex flex-col items-center justify-center self-stretch relative w-full">
     <div class="flex flex-row gap-2 lg:gap-4 items-center justify-center relative w-full">
       {% for _, image_list in gallery %} {% set current_column_index = loop.index0 %}
-      <div class="hidden md:flex flex-col gap-y-2 lg:gap-y-4 items-center justify-center w-full">
+      <div
+        class="{% if loop.first or loop.last %} hidden md:flex {% else %} flex {% endif %} flex-col gap-y-2 lg:gap-y-4 items-center justify-center w-full"
+      >
         {% for image_url in image_list %} {% if current_column_index % 2 == loop.index0 % 2 %} {%
         set is_aspect = true %} {% else %} {% set is_aspect = false %} {% endif %}
         <div
