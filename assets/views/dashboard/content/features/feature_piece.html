@@ -4,7 +4,7 @@
       <div class="flex justify-between items-start gap-4">
         <div class="flex-grow">
           <div class="flex items-center gap-2 mb-2 flex-wrap">
-            <h3 class="font-semibold">{{ feature.title }}</h3>
+            <h3 class="font-semibold hidden sm:inline">{{ feature.title }}</h3>
             {% if feature.status == "Completed" %}
             <span class="badge badge-soft badge-success">{{ feature.status }}</span>
             {% elif feature.status == "InProgress" %}
@@ -16,6 +16,7 @@
             {% elif feature.status == "Rejected" %}
             <span class="badge badge-soft badge-error">{{ feature.status }}</span>
             {% endif %}
+            <h3 class="font-semibold sm:hidden">{{ feature.title }}</h3>
           </div>
           <p class="text-base-content text-opacity-80">{{ feature.description }}</p>
         </div>

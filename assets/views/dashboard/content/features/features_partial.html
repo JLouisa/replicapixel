@@ -1,11 +1,11 @@
 <div>
   <div class="max-w-7xl mx-auto">
-    <div class="flex items-center mb-8">
+    <div class="flex items-center justify-center mb-8">
       <h1 class="text-2xl font-bold md:text-3xl">Features</h1>
     </div>
 
-    <div class="flex flex-cols gap-8">
-      <div class="card bg-base-100 shadow-xl">
+    <div class="flex flex-col md:flex-row gap-8">
+      <div class="card bg-base-100 shadow-xl max-h-96">
         <div class="card-body">
           <h2 class="card-title text-xl font-semibold mb-4">Suggest a Feature</h2>
           {% include "dashboard/content/features/feature_form.html" %}
@@ -25,103 +25,3 @@
     updatePageTitle("ReplicaPixel | Features");
   </script>
 </div>
-
-{#
-<div class="bg-base-200 min-h-screen p-8">
-  <div class="max-w-4xl mx-auto">
-    <!-- Header -->
-    <div class="flex items-center mb-8">
-      <h1 class="text-2xl font-bold">Feedback</h1>
-      <span class="ml-2">↗</span>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-      <!-- Left Column - Suggest Feature Form -->
-      <div class="bg-white rounded-lg p-6 shadow-lg">
-        <h2 class="text-xl font-semibold mb-4">Suggest a feature</h2>
-
-        <div class="form-control w-full">
-          <label class="label">
-            <span class="label-text">Short, descriptive title</span>
-          </label>
-          <input type="text" placeholder="Funnels" class="input input-bordered w-full" />
-        </div>
-
-        <div class="form-control w-full mt-4">
-          <label class="label">
-            <span class="label-text">Description</span>
-          </label>
-          <textarea
-            class="textarea textarea-bordered h-24"
-            placeholder="I want to see a visual funnel to track the number of users who have completed each..."
-          ></textarea>
-        </div>
-
-        <button class="btn btn-primary w-full mt-6">Suggest feature</button>
-      </div>
-
-      <!-- Right Column - Feature List -->
-      <div class="space-y-6">
-        <!-- Feature Item 1 -->
-        <div class="bg-white rounded-lg p-6 shadow-lg relative">
-          <div class="flex justify-between items-start">
-            <div>
-              <div class="flex items-center gap-2 mb-2">
-                <h3 class="font-semibold">Click tracking</h3>
-                <span class="badge badge-primary badge-sm">In progress</span>
-              </div>
-              <p class="text-gray-600">
-                I want to see external clicks: aka, whenever I have a link on my page, I want to see
-                how many people click it - helps with analyzing conversions.
-              </p>
-              <div class="flex items-center gap-2 mt-4">
-                <button class="btn btn-ghost btn-sm">💬 0</button>
-              </div>
-            </div>
-            <div class="badge badge-secondary">12</div>
-          </div>
-        </div>
-
-        <!-- Feature Item 2 -->
-        <div class="bg-white rounded-lg p-6 shadow-lg relative">
-          <div class="flex justify-between items-start">
-            <div>
-              <div class="flex items-center gap-2 mb-2">
-                <h3 class="font-semibold">Track events</h3>
-                <span class="badge badge-primary badge-sm">In progress</span>
-              </div>
-              <p class="text-gray-600">
-                It would be nice to be able to track different events, such as a button click,
-                registration, etc.
-              </p>
-              <div class="flex items-center gap-2 mt-4">
-                <button class="btn btn-ghost btn-sm">💬 0</button>
-              </div>
-            </div>
-            <div class="badge badge-secondary">10</div>
-          </div>
-        </div>
-
-        <!-- Feature Item 3 -->
-        <div class="bg-white rounded-lg p-6 shadow-lg relative">
-          <div class="flex justify-between items-start">
-            <div>
-              <div class="flex items-center gap-2 mb-2">
-                <h3 class="font-semibold">Exclude our own visits</h3>
-              </div>
-              <p class="text-gray-600">
-                Being able to exclude my visits from my site is super important, similar to how
-                Plausible does it: https://plausible.io/docs/excluding-localstorage
-              </p>
-              <div class="flex items-center gap-2 mt-4">
-                <button class="btn btn-ghost btn-sm">💬 0</button>
-              </div>
-            </div>
-            <div class="badge badge-secondary">6</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-#}

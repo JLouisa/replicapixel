@@ -1,4 +1,4 @@
-<div class="py-12 px-4 sm:px-6">
+<div class="py-6 sm:py-12 px-2 sm:px-6">
   <div class="w-full max-w-2xl mx-auto animate-fade-in">
     <form
       id="uploadForm"
@@ -29,11 +29,6 @@
           </svg>
         </div>
         <h1 class="text-3xl font-bold text-base-content">Create Model</h1>
-        {#
-        <p class="text-base-content/70 max-w-md mx-auto">
-          Enter details and upload photos for your model.
-        </p>
-        #}
       </div>
 
       <div class="space-y-1">
@@ -154,49 +149,43 @@
         </div>
       </div>
 
-      <div class="space-y-3 pt-2">
+      <div class="space-y-4 pt-2">
         <div class="form-control">
-          <label class="label cursor-pointer justify-start gap-3">
+          <label class="label cursor-pointer items-start p-0">
             <input
               id="termsAgreed"
-              class="checkbox checkbox-primary"
+              class="checkbox checkbox-primary checkbox-sm sm:checkbox-md mt-1 mr-2 shrink-0"
               type="checkbox"
               required
               x-model="$store.createModelForm.consent"
             />
-            <span class="label-text text-base-content/90">
-              I agree to the
+            <div
+              class="label-text text-xs sm:text-sm text-base-content/90 flex flex-col min-[380px]:flex-row min-[380px]:flex-wrap min-[380px]:items-baseline min-[380px]:gap-x-1"
+            >
+              <span>I agree to the </span>
               <a
                 href="{{ website.website_routes.policy.model_consent | safe }}"
                 target="_blank"
-                class="link link-primary hover:link-hover"
-                >Model Creation Consent Agreement</a
+                class="link link-primary hover:link-hover font-medium"
               >
+                <span class="min-[380px]:hidden">Consent Agreement</span>
+                <!-- Shorter text -->
+                <span class="hidden min-[380px]:inline">Model Creation Consent Agreement</span>
+                <!-- Full text -->
+              </a>
               <span class="text-error ml-1">*</span>
-            </span>
+            </div>
           </label>
         </div>
+
         <button
           type="submit"
           :disabled="$store.createModelForm.isSubmitting"
-          class="btn btn-primary w-full mt-4"
+          class="btn btn-primary w-full mt-4 flex items-center justify-center gap-2"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-            <polyline points="17 8 12 3 7 8" />
-            <line x1="12" y1="3" x2="12" y2="15" />
-          </svg>
-          Create & Upload Model
+          <span class="size-5"> {% include "partials/svg/upload.html" %} </span>
+          <span class="inline min-[400px]:hidden">Create</span>
+          <span class="hidden min-[400px]:inline">Create & Upload Model</span>
         </button>
       </div>
     </form>
