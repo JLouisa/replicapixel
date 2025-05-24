@@ -6,26 +6,7 @@
   >
     Try Now {% include "partials/svg/triple_stars.html" %}
   </button>
-
   <script>
-    {
-      const button = document.getElementById("shiningButton-{{ timestamp }}");
-      if (button) {
-        const shineAnimationDuration = 1000;
-        const intervalDuration = 8000;
-        function triggerShine() {
-          if (!button.classList.contains("animate-shine-active")) {
-            button.classList.add("animate-shine-active");
-            setTimeout(() => {
-              button.classList.remove("animate-shine-active");
-            }, shineAnimationDuration);
-          }
-        }
-
-        const shineInterval = setInterval(triggerShine, intervalDuration);
-      } else {
-        console.error("Button with id 'shiningButton' not found.");
-      }
-    }
+    shiningBtn("shiningButton-{{ timestamp }}");
   </script>
 </a>

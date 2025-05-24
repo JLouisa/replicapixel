@@ -28,28 +28,5 @@
     updatePageTitle(
       "{% block title %}{{ website.website_basic_info.name }} | Home{% endblock title %}"
     );
-    document.body.addEventListener("htmx:afterSwap", function (evt) {
-      if (evt.detail.target.id === "app") {
-        const target = sessionStorage.getItem("scrollTo");
-        if (target) {
-          requestAnimationFrame(() => {
-            const el = document.querySelector(target);
-            if (el) {
-              const elementRect = el.getBoundingClientRect();
-              const offsetPosition =
-                elementRect.top +
-                window.pageYOffset -
-                window.innerHeight / 2 +
-                elementRect.height / 2;
-              window.scrollTo({
-                top: offsetPosition,
-                behavior: "smooth",
-              });
-            }
-            sessionStorage.removeItem("scrollTo");
-          });
-        }
-      }
-    });
   </script>
 </div>

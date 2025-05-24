@@ -5,11 +5,15 @@
 {% set logout_link = website.website_routes.auth_routes.api_logout %}
 {% set logout_partial_link = website.website_routes.auth_routes.logout_partial  | safe %}
 {% set login_link = website.website_routes.auth_routes.login | safe %}
+
 <nav
   class="fixed inset-x-0 top-2 md:top-4 z-20 mx-auto w-full max-w-7xl p-4 sm:px-6 lg:px-8 flex items-center justify-between border border-slate-50/10 rounded-full backdrop-blur-lg bg-white/5"
 >
-  {% if is_home %}
   <div
+    hx-get="/partial/home"
+    hx-swap="innerHTML"
+    hx-push-url="{{home_link | safe}}"
+    hx-target="#app"
     class="flex flex-row items-center justify-center shrink-0 relative gap-2 md:gap-3 lg:gap-4 cursor-pointer"
   >
     <span class="shrink-0 w-6 h-6 sm:w-10 sm:h-10 relative"
@@ -19,25 +23,6 @@
       {{ website_name }}
     </span>
   </div>
-  {% else %}
-  <div>
-    <a
-      href="{{home_link | safe}}"
-      hx-get="/partial/home"
-      hx-swap="innerHTML"
-      hx-push-url="{{home_link | safe}}"
-      hx-target="#app"
-      class="flex flex-row items-center justify-center shrink-0 relative gap-2 md:gap-3 lg:gap-4"
-    >
-      <span class="shrink-0 w-10 h-10 relative">{% include "partials/svg/logo.html" %}</span>
-      <span
-        class="hidden sm:block text-w text-center font-bricon font-semibold relative sm:text-3xl"
-      >
-        {{ website_name }}
-      </span>
-    </a>
-  </div>
-  {% endif %}
 
   <!-- Desktop nav -->
   <div class="hidden md:flex items-center gap-2 lg:gap-12">
@@ -83,27 +68,8 @@
           >
             Try Now {% include "partials/svg/triple_stars.html" %}
           </button>
-
           <script>
-            {
-              const button = document.getElementById("shiningButton-{{ timestamp }}");
-              if (button) {
-                const shineAnimationDuration = 1000;
-                const intervalDuration = 8000;
-                function triggerShine() {
-                  if (!button.classList.contains("animate-shine-active")) {
-                    button.classList.add("animate-shine-active");
-                    setTimeout(() => {
-                      button.classList.remove("animate-shine-active");
-                    }, shineAnimationDuration);
-                  }
-                }
-
-                const shineInterval = setInterval(triggerShine, intervalDuration);
-              } else {
-                console.error("Button with id 'shiningButton' not found.");
-              }
-            }
+            shiningBtn("shiningButton-{{ timestamp }}");
           </script>
         </a>
       </div>
@@ -160,48 +126,4 @@
       </li>
     </ul>
   </div>
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const triggerButton = document.getElementById("home-burger-menu-trigger");
-      const sideMenu = document.getElementById("side-menu");
-      const menuOverlay = document.getElementById("menu-overlay");
-      const closeButton = document.getElementById("close-menu-button");
-
-      let isMenuOpen = false;
-
-      function toggleMenu() {
-        isMenuOpen = !isMenuOpen;
-        if (isMenuOpen) {
-          sideMenu.style.transform = "translateX(0)";
-          if (menuOverlay) {
-            menuOverlay.style.opacity = "1";
-            menuOverlay.style.pointerEvents = "auto";
-          }
-          document.body.style.overflow = "hidden";
-        } else {
-          sideMenu.style.transform = "translateX(100%)";
-          if (menuOverlay) {
-            menuOverlay.style.opacity = "0";
-            menuOverlay.style.pointerEvents = "none";
-          }
-          document.body.style.overflow = "";
-        }
-      }
-
-      if (triggerButton) {
-        triggerButton.addEventListener("click", toggleMenu);
-      }
-      if (closeButton) {
-        closeButton.addEventListener("click", toggleMenu);
-      }
-      if (menuOverlay) {
-        menuOverlay.addEventListener("click", toggleMenu);
-      }
-      document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape" && isMenuOpen) {
-          toggleMenu();
-        }
-      });
-    });
-  </script>
 </div>

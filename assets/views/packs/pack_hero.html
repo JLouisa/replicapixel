@@ -1,4 +1,4 @@
-<div class="fixed top-0 left-0 p-4 z-10 hidden md:flex items-center justify-center gap-2">
+<div class="fixed top-14 sm:top-18 left-0 p-4 z-30 flex items-center justify-center gap-2">
   <div>
     <a
       href="/"
@@ -7,14 +7,14 @@
       hx-push-url="/"
       hx-target="#app"
       onclick="sessionStorage.setItem('scrollTo', '#pack-{{pack.pid}}')"
-      class="inline-flex items-center border px-3 py-1.5 rounded-md hover:bg-grn-to"
+      class="inline-flex items-center border border-grn-to px-3 py-1.5 rounded-md hover:bg-white"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
-        class="h-6 w-6"
+        class="h-6 w-6 text-grn-to"
       >
         <path
           stroke-linecap="round"
@@ -23,28 +23,9 @@
           d="M7 16l-4-4m0 0l4-4m-4 4h18"
         ></path>
       </svg>
-      <span class="ml-1 font-bold text-lg">Back</span>
+      <span class="ml-1 font-bold text-lg text-grn-to">Back</span>
     </a>
   </div>
-</div>
-
-<div class="fixed top-0 right-0 p-4 z-10 hidden md:flex items-center justify-center gap-2">
-  <form class="rounded-full bg-base-200 p-2">
-    {% include "partials/parts/dark_mode_toggle.html" %}
-  </form>
-  {% if user %} {% include "partials/parts/validated/validate_login_btn.html" %} {% else %}
-  <div id="validate-login-btn">
-    <button
-      hx-get="{{ login_partial_link | safe }}"
-      hx-swap="innerHTML"
-      hx-push-url="{{ login_link | safe }}"
-      hx-target="#app"
-      class="btn btn-neutral"
-    >
-      Login
-    </button>
-  </div>
-  {% endif %}
 </div>
 
 <div class="w-full mt-32">
@@ -52,7 +33,7 @@
     <div class="container mx-auto px-4 py-8">
       <div class="flex mx-4">
         <!-- Product Images -->
-        <div class="w-full md:w-1/2 px-4 mb-8">
+        <div class="w-full md:w-1/2 px-4 mb-8 hidden sm:block">
           <!-- Main Image -->
           <img
             src="{{ pack.main_image }}"
@@ -63,7 +44,7 @@
         </div>
         <!-- Product Details -->
         <div class="w-full md:w-1/2 px-4">
-          <h2 class="text-5xl font-bold mb-2">{{ pack.title }} Pack</h2>
+          <h2 class="text-5xl font-bold mb-2 text-center sm:text-start">{{ pack.title }} Pack</h2>
           <div class="flex items-center justify-between">
             {% include "partials/svg/star.html" %} {% include "partials/svg/star.html" %} {% include
             "partials/svg/star.html" %} {% include "partials/svg/star.html" %} {% include
@@ -72,6 +53,15 @@
           <div class="mb-4 flex justify-end items-center gap-2">
             <div class="badge badge-dash badge-secondary">Popular</div>
             <div class="badge badge-dash badge-info">120x Used</div>
+          </div>
+          <div class="w-full md:w-1/2 px-4 mb-8 sm:hidden">
+            <!-- Main Image -->
+            <img
+              src="{{ pack.main_image }}"
+              alt="Product"
+              class="w-full h-auto object-cover rounded-lg shadow-lg mb-4"
+              id="mainImage-{{ pack.pid }}"
+            />
           </div>
           <p class="text-base-700 mb-6 text-start">{{pack.full_description}}</p>
           <div class="w-full flex items-center justify-start gap-7 text-sm mb-6">
@@ -84,17 +74,19 @@
               <span class="font-medium text-lg">{{ pack.num_images }}</span>
             </div>
           </div>
-          <div>
-            <h3 class="text-lg font-semibold mb-2">Key Features:</h3>
-            <ul class="list-disc list-inside">
-              <li>Industry-leading noise cancellation</li>
-              <li>30-hour battery life</li>
-              <li>Touch sensor controls</li>
-              <li>Speak-to-chat technology</li>
-            </ul>
-          </div>
-          <div class="flex items-end justify-center">
-            <button class="btn btn-primary">Let's Get it</button>
+          <div class="flex flex-col sm:flex-row items-center justify-between">
+            <div class="flex-start">
+              <h3 class="text-lg font-semibold mb-2">Key Features:</h3>
+              <ul class="list-disc list-inside">
+                <li>Industry-leading noise cancellation</li>
+                <li>30-hour battery life</li>
+                <li>Touch sensor controls</li>
+                <li>Speak-to-chat technology</li>
+              </ul>
+            </div>
+            <div class="flex items-end justify-center">
+              <button class="btn btn-primary">Let's Get it</button>
+            </div>
           </div>
         </div>
       </div>

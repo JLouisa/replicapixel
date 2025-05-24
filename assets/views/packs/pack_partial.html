@@ -1,17 +1,14 @@
 <!-- prettier-ignore -->
+{% set gallery = pack_images %}
 {% set login_link = website.website_routes.auth_routes.login | safe %}
 {% set login_partial_link = website.website_routes.auth_routes.login_partial | safe %}
 {% set website_name = website.website_basic_info.name %}
-{# {% set gallery = web_images.gallery  %} #}
-{% set gallery = pack_images %}
 {% set studio_partial_link = website.website_routes.dashboard_routes.sidebar.photo_partial | safe %}
 {% set studio_link = website.website_routes.dashboard_routes.sidebar.photo | safe %}
 {% set pack_link = website.website_routes.packs_routes.gen_pack | safe %}
 
 <!-- Page content here -->
 <div class="relative bg-bg-web overflow-hidden">
-  <label for="app-drawer"></label>
-  <input id="app-drawer" type="checkbox" class="drawer-toggle" />
   <div class="drawer-content flex flex-col w-full">
     <!-- Navbar -->
     {% include "home/sections/navbar.html" %}
