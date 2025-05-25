@@ -55,6 +55,6 @@ pub fn google_ott(
     format::render().view(
         v,
         "partials/parts/home_validated.html",
-        data!({"website": website, "user": user, "ott": true}),
+        data!({"website": website, "user": user, "is_ott": true}),
     )
 }

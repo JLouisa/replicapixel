@@ -142,7 +142,7 @@
     {% endif %}
 
     <!-- Javascript -->
-    {% if not user %}
+    {% if not user %} {% if is_home or is_pack %}
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script>
       // Google login logic
@@ -167,6 +167,6 @@
         window.htmx.swap("#home-cta-btn", html, { swapStyle: "outerHTML" });
       }
     </script>
-    {% endif %}
+    {% endif %} {% endif %}
   </body>
 </html>

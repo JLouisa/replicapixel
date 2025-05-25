@@ -45,7 +45,7 @@ pub fn packs(
                 "website": website, "cc_cookie": cc_cookie,
                 "web_images": web_images, "pack": pack,
                 "pack_images": foo_mock_pack_images,
-                "user": user
+                "user": user, "is_pack": true
             }
         ),
     )
@@ -68,7 +68,7 @@ pub fn packs_partial(
                 "website": website, "cc_cookie": cc_cookie,
                 "web_images": web_images, "pack": pack,
                 "pack_images": foo_mock_pack_images,
-                "user": user
+                "user": user, "is_pack": true
             }
         ),
     )
