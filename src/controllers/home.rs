@@ -1,12 +1,11 @@
 #![allow(clippy::missing_errors_doc)]
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
-use crate::domain::sitemap::get_sitemap;
 use crate::middleware::cookie::ExtractConsentState;
 use crate::models::packs::PackModelList;
 use crate::models::users::UserPid;
 use crate::models::{PackModel, UserModel};
-use crate::service::redis::redis::load_cached_web;
+use crate::service::redis::redis::{load_cached_web, load_from_file_and_cache};
 use crate::views;
 use crate::views::auth::UserView;
 use crate::views::packs::PackViewList;
@@ -15,6 +14,9 @@ use axum::{debug_handler, Extension};
 use derive_more::Constructor;
 use loco_rs::prelude::*;
 use serde::{Deserialize, Serialize};
+
+use axum::{http::StatusCode, response::IntoResponse};
+use std::path::Path;
 
 pub mod routes {
     use serde::{Deserialize, Serialize};
@@ -61,36 +63,31 @@ async fn load_packs(db: &DatabaseConnection) -> Result<PackModelList> {
     Ok(PackModelList::new(list))
 }
 
-pub async fn robots_txt() -> impl IntoResponse {
-    let content = r#"User-agent: *
-User-agent: *
-Disallow: /api/
-Disallow: /partial/
-Disallow: /studio/partial/
-Disallow: /settings/
-Disallow: /_health
-Disallow: /_ping
+#[debug_handler]
+pub async fn robots_txt(State(ctx): State<AppContext>) -> impl IntoResponse {
+    let path = Path::new("assets/static/robots.txt");
+    let cache_key = "robot";
 
-# Allow public-facing pages
-Allow: /
-
-# Example for disallowing specific file types if needed (less common for "simple")
-# Disallow: /*.pdf$
-# Disallow: /*.doc$
-
-# Example for disallowing search result pages (if they don't add SEO value)
-# Disallow: /search
-# Disallow: /*?s=
-# Disallow: /*&query=
-
-# Allow everything else (this is implicit if no other Disallow matches,
-# but an empty Disallow: line makes it explicit for this block)
-# Disallow:
-
-# Sitemap location
-Sitemap: https://www.replicapixel.com/sitemap.xml
-"#
-    .to_string();
+    let content: String = match ctx.cache.get(cache_key).await {
+        Ok(Some(cached)) => cached,
+        Ok(None) => match load_from_file_and_cache(&ctx, path, cache_key).await {
+            Ok(content) => content,
+            Err(e) => {
+                tracing::error!("Failed to load robots.txt: {}", e);
+                return (StatusCode::INTERNAL_SERVER_ERROR, "robots.txt not found").into_response();
+            }
+        },
+        Err(e) => {
+            tracing::error!("Failed to read robots.txt from cache: {}", e);
+            match load_from_file_and_cache(&ctx, path, cache_key).await {
+                Ok(content) => content,
+                Err(_) => {
+                    return (StatusCode::INTERNAL_SERVER_ERROR, "robots.txt not found")
+                        .into_response();
+                }
+            }
+        }
+    };
 
     Response::builder()
         .header("Content-Type", "text/plain")
@@ -99,45 +96,32 @@ Sitemap: https://www.replicapixel.com/sitemap.xml
         .into_response()
 }
 
-pub async fn sitemap_xml() -> impl IntoResponse {
-    get_sitemap();
-    let sitemap = r#"<?xml version="1.0" encoding="UTF-8"?>
-<urlset 
-  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
->
-  <url><loc>https://replicapixel.com/</loc></url>
-  <url><loc>https://replicapixel.com/login</loc></url>
-  <url><loc>https://replicapixel.com/register</loc></url>
-  <url><loc>https://replicapixel.com/forgot</loc></url>
+#[debug_handler]
+pub async fn sitemap_xml(State(ctx): State<AppContext>) -> impl IntoResponse {
+    let path = Path::new("assets/static/sitemap.xml");
+    let cache_key = "sitemap";
 
-  <!-- Policy pages -->
-  <url><loc>https://replicapixel.com/policy/privacy</loc></url>
-  <url><loc>https://replicapixel.com/policy/terms-and-conditions</loc></url>
-  <url><loc>https://replicapixel.com/policy/model-consent</loc></url>
-  <url><loc>https://replicapixel.com/policy/cookie</loc></url>
-
-  <!-- Studio area -->
-  <url><loc>https://replicapixel.com/studio</loc></url>
-  <url><loc>https://replicapixel.com/studio/models</loc></url>
-  <url><loc>https://replicapixel.com/studio/album/deleted</loc></url>
-  <url><loc>https://replicapixel.com/studio/album/favorite</loc></url>
-  <url><loc>https://replicapixel.com/studio/features</loc></url>
-  <url><loc>https://replicapixel.com/studio/notifications</loc></url>
-  <url><loc>https://replicapixel.com/studio/packs</loc></url>
-  <url><loc>https://replicapixel.com/studio/photo</loc></url>
-  <url><loc>https://replicapixel.com/studio/settings</loc></url>
-  <url><loc>https://replicapixel.com/studio/models/create</loc></url>
-  <url><loc>https://replicapixel.com/studio/billing</loc></url>
-
-  <!-- Starter page -->
-  <url><loc>https://replicapixel.com/starter</loc></url>
-
-  <!-- Payment pages -->
-  <url><loc>https://replicapixel.com/payment/plan</loc></url>
-  <url><loc>https://replicapixel.com/payment/success</loc></url>
-  <url><loc>https://replicapixel.com/payment/cancel</loc></url>
-</urlset>"#
-        .to_string();
+    let sitemap: String = match ctx.cache.get(cache_key).await {
+        Ok(Some(cached)) => cached,
+        Ok(None) => match load_from_file_and_cache(&ctx, path, cache_key).await {
+            Ok(content) => content,
+            Err(e) => {
+                tracing::error!("Failed to load sitemap.xml: {}", e);
+                return (StatusCode::INTERNAL_SERVER_ERROR, "sitemap.xml not found")
+                    .into_response();
+            }
+        },
+        Err(e) => {
+            tracing::error!("Failed to read sitemap.xml from cache: {}", e);
+            match load_from_file_and_cache(&ctx, path, cache_key).await {
+                Ok(content) => content,
+                Err(_) => {
+                    return (StatusCode::INTERNAL_SERVER_ERROR, "sitemap.xml not found")
+                        .into_response();
+                }
+            }
+        }
+    };
 
     Response::builder()
         .header("Content-Type", "application/xml")

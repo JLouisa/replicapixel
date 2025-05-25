@@ -56,6 +56,8 @@
     </script>
     {% endif %}
   </div>
+  {% elif image.image_status == "Failed" %}
+  <!-- Removed -->
   {# End image-container for completed image #} {% else %} {# LOADING PLACEHOLDER CELL #}
   <div
     id="placeholder-{{ image.pid }}"

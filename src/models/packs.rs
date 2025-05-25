@@ -61,6 +61,11 @@ impl PacksDomain {
 
 // implement your read-oriented logic here
 impl Model {
+    pub async fn find_by_title_url(db: &DatabaseConnection, title_url: &str) -> ModelResult<Self> {
+        let condition = Condition::all().add(packs::Column::TitleUrl.eq(title_url.to_owned()));
+        let pack = Entity::find().filter(condition).one(db).await?;
+        pack.ok_or_else(|| ModelError::EntityNotFound)
+    }
     pub async fn find_by_pid(db: &DatabaseConnection, pid: &Uuid) -> ModelResult<Self> {
         let condition = Condition::all().add(packs::Column::Pid.eq(pid.clone()));
         let pack = Entity::find().filter(condition).one(db).await?;

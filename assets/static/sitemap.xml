@@ -26,8 +26,22 @@
   <url><loc>https://replicapixel.com/studio/models/create</loc></url>
   <url><loc>https://replicapixel.com/studio/billing</loc></url>
 
-  <!-- Starter page -->
-  <url><loc>https://replicapixel.com/starter</loc></url>
+  <!-- Studio area -->
+  <url><loc>https://replicapixel.com/studio/billing</loc></url>
+
+  <!-- packs area -->
+  <url><loc>https://replicapixel.com/packs/sexy-valentine-pack</loc></url>
+  <url><loc>https://replicapixel.com/packs/sexy-halloween-pack</loc></url>
+  <url><loc>https://replicapixel.com/packs/sexy-easter-pack</loc></url>
+  <url><loc>https://replicapixel.com/packs/sexy-cyberpunk-pack</loc></url>
+  <url><loc>https://replicapixel.com/packs/headshots-pack</loc></url>
+  <url><loc>https://replicapixel.com/packs/corporate-headshots-pack</loc></url>
+  <url><loc>https://replicapixel.com/packs/model-headshots-pack</loc></url>
+  <url><loc>https://replicapixel.com/packs/mob-wife-pack</loc></url>
+  <url><loc>https://replicapixel.com/packs/mobster-pack</loc></url>
+  <url><loc>https://replicapixel.com/packs/cosplay-pack</loc></url>
+  <url><loc>https://replicapixel.com/packs/nature-pack</loc></url>
+  <url><loc>https://replicapixel.com/packs/spiritual-pack</loc></url>
 
   <!-- Payment pages -->
   <url><loc>https://replicapixel.com/payment/plan</loc></url>

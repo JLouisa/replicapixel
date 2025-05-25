@@ -26,6 +26,7 @@ pub struct ImageNew {
     pub user_prompt: UserPrompt,
     pub sys_prompt: SysPrompt,
     pub alt: AltText,
+    pub image_cost: i32,
     pub num_inference_steps: i32,
     pub content_type: ImageFormat,
     pub status: Status,
@@ -49,6 +50,7 @@ impl ImageNew {
         item.sys_prompt = Set(self.sys_prompt.as_ref().to_owned());
         item.alt = Set(self.alt.as_ref().to_owned());
         item.pack_id = Set(self.pack_id.clone());
+        item.image_cost = Set(self.image_cost);
         item.num_inference_steps = Set(self.num_inference_steps.clone());
         item.content_type = Set(self.content_type.clone());
         item.status = Set(self.status);
@@ -223,6 +225,7 @@ impl ActiveModel {
             user_prompt: ActiveValue::set(img.user_prompt.clone()),
             sys_prompt: ActiveValue::set(img.sys_prompt.clone()),
             alt: ActiveValue::set(img.alt.clone()),
+            image_cost: ActiveValue::set(img.image_cost.clone()),
             num_inference_steps: ActiveValue::set(img.num_inference_steps.clone()),
             content_type: ActiveValue::set(img.content_type),
             status: ActiveValue::set(img.status),

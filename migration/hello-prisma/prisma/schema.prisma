@@ -120,6 +120,7 @@ model Images {
   user_prompt                    String         
   sys_prompt                     String         
   alt                            String         
+  image_cost                     Int              @default(2)
   num_inference_steps            Int    
   content_type                   ImageFormat    
   status                         Status     
@@ -194,7 +195,7 @@ model Packs {
   id                              Int              @id @default(autoincrement())
   pid                             String           @unique @db.Uuid
   title                           String           @db.VarChar(255)
-  title_url                       String           @default("title-url") @db.VarChar(255)
+  title_url                       String           @unique @db.VarChar(255)
   short_description               String           @db.VarChar(255)
   full_description                String           @db.Text
   pack_prompts                    String           

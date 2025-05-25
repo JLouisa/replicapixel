@@ -135,6 +135,10 @@ impl From<JoinError> for LocoError {
                 StatusCode::NOT_FOUND,
                 ErrorDetail::new("ModelNotFound", "TrainingModel Not Found"),
             ),
+            JoinError::OtherInternal => LocoError::CustomError(
+                StatusCode::NOT_FOUND,
+                ErrorDetail::new("UserNotFound", "User Not Found"),
+            ),
         }
     }
 }

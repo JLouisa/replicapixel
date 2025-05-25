@@ -184,6 +184,7 @@ impl ImageGenerationTrait for PacksDomain {
                     alt: alt.to_owned(),
                     loras: loras.clone(),
                     image_size: self.image_size,
+                    image_cost: 2,
                     num_inference_steps: self.num_images() as i32,
                     ..Default::default()
                 }
@@ -239,6 +240,7 @@ impl ImageGenerationTrait for ImageGenRequestParams {
                     sys_prompt: sys_prompt.to_owned(),
                     user_prompt: self.prompt.to_owned(),
                     alt: alt.to_owned(),
+                    image_cost: 2,
                     num_inference_steps: self.num_inference_steps as i32,
                     image_s3_key: s3_key,
                     image_size: self.image_size,
@@ -315,9 +317,6 @@ pub async fn generate(
         }
     };
 
-    dbg!(&user);
-    dbg!(&training_model);
-
     // 2. Call the Domain Service to perform the core logic
     let (updated_credits, saved_images) =
         ImageGenerationService::generate(&ctx, &fal_ai_client, request, &user, &training_model)
@@ -331,8 +330,6 @@ pub async fn generate(
         &updated_credits.into(),
         is_image_gen,
     )
-
-    // format::empty()
 }
 
 #[debug_handler]
@@ -398,6 +395,19 @@ pub async fn check_img(
             &website,
             &ImageViewList::new(vec![image]),
             &user_credits_view,
+            is_image_gen,
+        );
+    }
+
+    if image.status == Status::Failed {
+        let user_credits = load_credits(&ctx.db, user.id).await?;
+        let is_image_gen = Some(true);
+
+        return views::images::img_completed(
+            &v,
+            &website,
+            &ImageViewList::new(vec![image.into()]),
+            &user_credits.into(),
             is_image_gen,
         );
     }

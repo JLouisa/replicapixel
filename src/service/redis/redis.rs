@@ -14,6 +14,9 @@ use std::{sync::Arc, time::Duration};
 use strum::{AsRefStr, EnumString};
 use thiserror::Error;
 
+use std::path::Path;
+use tokio::fs;
+
 use crate::{controllers::home::WebImages, views::images::ImageView};
 
 pub type Cache = Arc<loco_rs::cache::Cache>;
@@ -262,4 +265,25 @@ pub async fn load_cached_web(ctx: &AppContext) -> CacheResult<WebImages> {
             fetch_and_cache_web_images(ctx).await
         }
     }
+}
+
+pub async fn load_from_file_and_cache(
+    ctx: &AppContext,
+    path: &Path,
+    key: &str,
+) -> Result<String, std::io::Error> {
+    let file = match fs::read_to_string(path).await {
+        Ok(serialized) => {
+            if let Err(e) = ctx
+                .cache
+                .insert_with_expiry(key, &serialized, Duration::from_secs(60))
+                .await
+            {
+                tracing::error!("Failed to write web images to cache: {}", e);
+            }
+            serialized
+        }
+        Err(e) => return Err(e),
+    };
+    Ok(file)
 }

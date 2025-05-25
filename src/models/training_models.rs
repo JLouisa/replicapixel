@@ -310,6 +310,15 @@ impl ActiveModel {
         self.training_status = ActiveValue::Set(status);
         Ok(self.update(db).await?)
     }
+
+    pub async fn update_failed_fal_ai_training_webhook(
+        mut self,
+        db: &impl ConnectionTrait,
+    ) -> ModelResult<Model> {
+        self.tensor_path = ActiveValue::Set(None);
+        self.training_status = ActiveValue::Set(Status::Failed);
+        Ok(self.update(db).await?)
+    }
 }
 // implement your custom finders, selectors oriented logic here
 impl Entity {}

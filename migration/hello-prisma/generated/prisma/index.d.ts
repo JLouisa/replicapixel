@@ -7649,6 +7649,7 @@ export namespace Prisma {
     user_id: number | null
     training_model_id: number | null
     pack_id: number | null
+    image_cost: number | null
     num_inference_steps: number | null
     width: number | null
     height: number | null
@@ -7659,6 +7660,7 @@ export namespace Prisma {
     user_id: number | null
     training_model_id: number | null
     pack_id: number | null
+    image_cost: number | null
     num_inference_steps: number | null
     width: number | null
     height: number | null
@@ -7673,6 +7675,7 @@ export namespace Prisma {
     user_prompt: string | null
     sys_prompt: string | null
     alt: string | null
+    image_cost: number | null
     num_inference_steps: number | null
     content_type: $Enums.ImageFormat | null
     status: $Enums.Status | null
@@ -7697,6 +7700,7 @@ export namespace Prisma {
     user_prompt: string | null
     sys_prompt: string | null
     alt: string | null
+    image_cost: number | null
     num_inference_steps: number | null
     content_type: $Enums.ImageFormat | null
     status: $Enums.Status | null
@@ -7721,6 +7725,7 @@ export namespace Prisma {
     user_prompt: number
     sys_prompt: number
     alt: number
+    image_cost: number
     num_inference_steps: number
     content_type: number
     status: number
@@ -7743,6 +7748,7 @@ export namespace Prisma {
     user_id?: true
     training_model_id?: true
     pack_id?: true
+    image_cost?: true
     num_inference_steps?: true
     width?: true
     height?: true
@@ -7753,6 +7759,7 @@ export namespace Prisma {
     user_id?: true
     training_model_id?: true
     pack_id?: true
+    image_cost?: true
     num_inference_steps?: true
     width?: true
     height?: true
@@ -7767,6 +7774,7 @@ export namespace Prisma {
     user_prompt?: true
     sys_prompt?: true
     alt?: true
+    image_cost?: true
     num_inference_steps?: true
     content_type?: true
     status?: true
@@ -7791,6 +7799,7 @@ export namespace Prisma {
     user_prompt?: true
     sys_prompt?: true
     alt?: true
+    image_cost?: true
     num_inference_steps?: true
     content_type?: true
     status?: true
@@ -7815,6 +7824,7 @@ export namespace Prisma {
     user_prompt?: true
     sys_prompt?: true
     alt?: true
+    image_cost?: true
     num_inference_steps?: true
     content_type?: true
     status?: true
@@ -7926,6 +7936,7 @@ export namespace Prisma {
     user_prompt: string
     sys_prompt: string
     alt: string
+    image_cost: number
     num_inference_steps: number
     content_type: $Enums.ImageFormat
     status: $Enums.Status
@@ -7969,6 +7980,7 @@ export namespace Prisma {
     user_prompt?: boolean
     sys_prompt?: boolean
     alt?: boolean
+    image_cost?: boolean
     num_inference_steps?: boolean
     content_type?: boolean
     status?: boolean
@@ -7996,6 +8008,7 @@ export namespace Prisma {
     user_prompt?: boolean
     sys_prompt?: boolean
     alt?: boolean
+    image_cost?: boolean
     num_inference_steps?: boolean
     content_type?: boolean
     status?: boolean
@@ -8023,6 +8036,7 @@ export namespace Prisma {
     user_prompt?: boolean
     sys_prompt?: boolean
     alt?: boolean
+    image_cost?: boolean
     num_inference_steps?: boolean
     content_type?: boolean
     status?: boolean
@@ -8050,6 +8064,7 @@ export namespace Prisma {
     user_prompt?: boolean
     sys_prompt?: boolean
     alt?: boolean
+    image_cost?: boolean
     num_inference_steps?: boolean
     content_type?: boolean
     status?: boolean
@@ -8065,7 +8080,7 @@ export namespace Prisma {
     updated_at?: boolean
   }
 
-  export type ImagesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pid" | "user_id" | "training_model_id" | "pack_id" | "user_prompt" | "sys_prompt" | "alt" | "num_inference_steps" | "content_type" | "status" | "image_size" | "fal_ai_request_id" | "width" | "height" | "image_s3_key" | "image_url_fal" | "is_favorite" | "deleted_at" | "created_at" | "updated_at", ExtArgs["result"]["images"]>
+  export type ImagesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pid" | "user_id" | "training_model_id" | "pack_id" | "user_prompt" | "sys_prompt" | "alt" | "image_cost" | "num_inference_steps" | "content_type" | "status" | "image_size" | "fal_ai_request_id" | "width" | "height" | "image_s3_key" | "image_url_fal" | "is_favorite" | "deleted_at" | "created_at" | "updated_at", ExtArgs["result"]["images"]>
   export type ImagesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UsersDefaultArgs<ExtArgs>
     training_model?: boolean | Images$training_modelArgs<ExtArgs>
@@ -8098,6 +8113,7 @@ export namespace Prisma {
       user_prompt: string
       sys_prompt: string
       alt: string
+      image_cost: number
       num_inference_steps: number
       content_type: $Enums.ImageFormat
       status: $Enums.Status
@@ -8545,6 +8561,7 @@ export namespace Prisma {
     readonly user_prompt: FieldRef<"Images", 'String'>
     readonly sys_prompt: FieldRef<"Images", 'String'>
     readonly alt: FieldRef<"Images", 'String'>
+    readonly image_cost: FieldRef<"Images", 'Int'>
     readonly num_inference_steps: FieldRef<"Images", 'Int'>
     readonly content_type: FieldRef<"Images", 'ImageFormat'>
     readonly status: FieldRef<"Images", 'Status'>
@@ -11484,6 +11501,7 @@ export namespace Prisma {
     id: number | null
     pid: string | null
     title: string | null
+    title_url: string | null
     short_description: string | null
     full_description: string | null
     pack_prompts: string | null
@@ -11492,6 +11510,7 @@ export namespace Prisma {
     num_inference_steps: number | null
     stars: number | null
     used: number | null
+    popular: boolean | null
     main_image: string | null
     created_at: Date | null
     updated_at: Date | null
@@ -11501,6 +11520,7 @@ export namespace Prisma {
     id: number | null
     pid: string | null
     title: string | null
+    title_url: string | null
     short_description: string | null
     full_description: string | null
     pack_prompts: string | null
@@ -11509,6 +11529,7 @@ export namespace Prisma {
     num_inference_steps: number | null
     stars: number | null
     used: number | null
+    popular: boolean | null
     main_image: string | null
     created_at: Date | null
     updated_at: Date | null
@@ -11518,6 +11539,7 @@ export namespace Prisma {
     id: number
     pid: number
     title: number
+    title_url: number
     short_description: number
     full_description: number
     pack_prompts: number
@@ -11526,6 +11548,7 @@ export namespace Prisma {
     num_inference_steps: number
     stars: number
     used: number
+    popular: number
     main_image: number
     images: number
     features: number
@@ -11557,6 +11580,7 @@ export namespace Prisma {
     id?: true
     pid?: true
     title?: true
+    title_url?: true
     short_description?: true
     full_description?: true
     pack_prompts?: true
@@ -11565,6 +11589,7 @@ export namespace Prisma {
     num_inference_steps?: true
     stars?: true
     used?: true
+    popular?: true
     main_image?: true
     created_at?: true
     updated_at?: true
@@ -11574,6 +11599,7 @@ export namespace Prisma {
     id?: true
     pid?: true
     title?: true
+    title_url?: true
     short_description?: true
     full_description?: true
     pack_prompts?: true
@@ -11582,6 +11608,7 @@ export namespace Prisma {
     num_inference_steps?: true
     stars?: true
     used?: true
+    popular?: true
     main_image?: true
     created_at?: true
     updated_at?: true
@@ -11591,6 +11618,7 @@ export namespace Prisma {
     id?: true
     pid?: true
     title?: true
+    title_url?: true
     short_description?: true
     full_description?: true
     pack_prompts?: true
@@ -11599,6 +11627,7 @@ export namespace Prisma {
     num_inference_steps?: true
     stars?: true
     used?: true
+    popular?: true
     main_image?: true
     images?: true
     features?: true
@@ -11697,6 +11726,7 @@ export namespace Prisma {
     id: number
     pid: string
     title: string
+    title_url: string
     short_description: string
     full_description: string
     pack_prompts: string
@@ -11705,6 +11735,7 @@ export namespace Prisma {
     num_inference_steps: number
     stars: number
     used: number
+    popular: boolean
     main_image: string
     images: string[]
     features: string[]
@@ -11735,6 +11766,7 @@ export namespace Prisma {
     id?: boolean
     pid?: boolean
     title?: boolean
+    title_url?: boolean
     short_description?: boolean
     full_description?: boolean
     pack_prompts?: boolean
@@ -11743,6 +11775,7 @@ export namespace Prisma {
     num_inference_steps?: boolean
     stars?: boolean
     used?: boolean
+    popular?: boolean
     main_image?: boolean
     images?: boolean
     features?: boolean
@@ -11756,6 +11789,7 @@ export namespace Prisma {
     id?: boolean
     pid?: boolean
     title?: boolean
+    title_url?: boolean
     short_description?: boolean
     full_description?: boolean
     pack_prompts?: boolean
@@ -11764,6 +11798,7 @@ export namespace Prisma {
     num_inference_steps?: boolean
     stars?: boolean
     used?: boolean
+    popular?: boolean
     main_image?: boolean
     images?: boolean
     features?: boolean
@@ -11775,6 +11810,7 @@ export namespace Prisma {
     id?: boolean
     pid?: boolean
     title?: boolean
+    title_url?: boolean
     short_description?: boolean
     full_description?: boolean
     pack_prompts?: boolean
@@ -11783,6 +11819,7 @@ export namespace Prisma {
     num_inference_steps?: boolean
     stars?: boolean
     used?: boolean
+    popular?: boolean
     main_image?: boolean
     images?: boolean
     features?: boolean
@@ -11794,6 +11831,7 @@ export namespace Prisma {
     id?: boolean
     pid?: boolean
     title?: boolean
+    title_url?: boolean
     short_description?: boolean
     full_description?: boolean
     pack_prompts?: boolean
@@ -11802,6 +11840,7 @@ export namespace Prisma {
     num_inference_steps?: boolean
     stars?: boolean
     used?: boolean
+    popular?: boolean
     main_image?: boolean
     images?: boolean
     features?: boolean
@@ -11809,7 +11848,7 @@ export namespace Prisma {
     updated_at?: boolean
   }
 
-  export type PacksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pid" | "title" | "short_description" | "full_description" | "pack_prompts" | "credits" | "num_images" | "num_inference_steps" | "stars" | "used" | "main_image" | "images" | "features" | "created_at" | "updated_at", ExtArgs["result"]["packs"]>
+  export type PacksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pid" | "title" | "title_url" | "short_description" | "full_description" | "pack_prompts" | "credits" | "num_images" | "num_inference_steps" | "stars" | "used" | "popular" | "main_image" | "images" | "features" | "created_at" | "updated_at", ExtArgs["result"]["packs"]>
   export type PacksInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     Images?: boolean | Packs$ImagesArgs<ExtArgs>
     _count?: boolean | PacksCountOutputTypeDefaultArgs<ExtArgs>
@@ -11826,6 +11865,7 @@ export namespace Prisma {
       id: number
       pid: string
       title: string
+      title_url: string
       short_description: string
       full_description: string
       pack_prompts: string
@@ -11834,6 +11874,7 @@ export namespace Prisma {
       num_inference_steps: number
       stars: number
       used: number
+      popular: boolean
       main_image: string
       images: string[]
       features: string[]
@@ -12266,6 +12307,7 @@ export namespace Prisma {
     readonly id: FieldRef<"Packs", 'Int'>
     readonly pid: FieldRef<"Packs", 'String'>
     readonly title: FieldRef<"Packs", 'String'>
+    readonly title_url: FieldRef<"Packs", 'String'>
     readonly short_description: FieldRef<"Packs", 'String'>
     readonly full_description: FieldRef<"Packs", 'String'>
     readonly pack_prompts: FieldRef<"Packs", 'String'>
@@ -12274,6 +12316,7 @@ export namespace Prisma {
     readonly num_inference_steps: FieldRef<"Packs", 'Int'>
     readonly stars: FieldRef<"Packs", 'Int'>
     readonly used: FieldRef<"Packs", 'Int'>
+    readonly popular: FieldRef<"Packs", 'Boolean'>
     readonly main_image: FieldRef<"Packs", 'String'>
     readonly images: FieldRef<"Packs", 'String[]'>
     readonly features: FieldRef<"Packs", 'String[]'>
@@ -20271,6 +20314,7 @@ export namespace Prisma {
     user_prompt: 'user_prompt',
     sys_prompt: 'sys_prompt',
     alt: 'alt',
+    image_cost: 'image_cost',
     num_inference_steps: 'num_inference_steps',
     content_type: 'content_type',
     status: 'status',
@@ -20331,6 +20375,7 @@ export namespace Prisma {
     id: 'id',
     pid: 'pid',
     title: 'title',
+    title_url: 'title_url',
     short_description: 'short_description',
     full_description: 'full_description',
     pack_prompts: 'pack_prompts',
@@ -20339,6 +20384,7 @@ export namespace Prisma {
     num_inference_steps: 'num_inference_steps',
     stars: 'stars',
     used: 'used',
+    popular: 'popular',
     main_image: 'main_image',
     images: 'images',
     features: 'features',
@@ -21167,6 +21213,7 @@ export namespace Prisma {
     user_prompt?: StringFilter<"Images"> | string
     sys_prompt?: StringFilter<"Images"> | string
     alt?: StringFilter<"Images"> | string
+    image_cost?: IntFilter<"Images"> | number
     num_inference_steps?: IntFilter<"Images"> | number
     content_type?: EnumImageFormatFilter<"Images"> | $Enums.ImageFormat
     status?: EnumStatusFilter<"Images"> | $Enums.Status
@@ -21194,6 +21241,7 @@ export namespace Prisma {
     user_prompt?: SortOrder
     sys_prompt?: SortOrder
     alt?: SortOrder
+    image_cost?: SortOrder
     num_inference_steps?: SortOrder
     content_type?: SortOrder
     status?: SortOrder
@@ -21224,6 +21272,7 @@ export namespace Prisma {
     user_prompt?: StringFilter<"Images"> | string
     sys_prompt?: StringFilter<"Images"> | string
     alt?: StringFilter<"Images"> | string
+    image_cost?: IntFilter<"Images"> | number
     num_inference_steps?: IntFilter<"Images"> | number
     content_type?: EnumImageFormatFilter<"Images"> | $Enums.ImageFormat
     status?: EnumStatusFilter<"Images"> | $Enums.Status
@@ -21251,6 +21300,7 @@ export namespace Prisma {
     user_prompt?: SortOrder
     sys_prompt?: SortOrder
     alt?: SortOrder
+    image_cost?: SortOrder
     num_inference_steps?: SortOrder
     content_type?: SortOrder
     status?: SortOrder
@@ -21283,6 +21333,7 @@ export namespace Prisma {
     user_prompt?: StringWithAggregatesFilter<"Images"> | string
     sys_prompt?: StringWithAggregatesFilter<"Images"> | string
     alt?: StringWithAggregatesFilter<"Images"> | string
+    image_cost?: IntWithAggregatesFilter<"Images"> | number
     num_inference_steps?: IntWithAggregatesFilter<"Images"> | number
     content_type?: EnumImageFormatWithAggregatesFilter<"Images"> | $Enums.ImageFormat
     status?: EnumStatusWithAggregatesFilter<"Images"> | $Enums.Status
@@ -21502,6 +21553,7 @@ export namespace Prisma {
     id?: IntFilter<"Packs"> | number
     pid?: UuidFilter<"Packs"> | string
     title?: StringFilter<"Packs"> | string
+    title_url?: StringFilter<"Packs"> | string
     short_description?: StringFilter<"Packs"> | string
     full_description?: StringFilter<"Packs"> | string
     pack_prompts?: StringFilter<"Packs"> | string
@@ -21510,6 +21562,7 @@ export namespace Prisma {
     num_inference_steps?: IntFilter<"Packs"> | number
     stars?: IntFilter<"Packs"> | number
     used?: IntFilter<"Packs"> | number
+    popular?: BoolFilter<"Packs"> | boolean
     main_image?: StringFilter<"Packs"> | string
     images?: StringNullableListFilter<"Packs">
     features?: StringNullableListFilter<"Packs">
@@ -21522,6 +21575,7 @@ export namespace Prisma {
     id?: SortOrder
     pid?: SortOrder
     title?: SortOrder
+    title_url?: SortOrder
     short_description?: SortOrder
     full_description?: SortOrder
     pack_prompts?: SortOrder
@@ -21530,6 +21584,7 @@ export namespace Prisma {
     num_inference_steps?: SortOrder
     stars?: SortOrder
     used?: SortOrder
+    popular?: SortOrder
     main_image?: SortOrder
     images?: SortOrder
     features?: SortOrder
@@ -21541,6 +21596,7 @@ export namespace Prisma {
   export type PacksWhereUniqueInput = Prisma.AtLeast<{
     id?: number
     pid?: string
+    title_url?: string
     AND?: PacksWhereInput | PacksWhereInput[]
     OR?: PacksWhereInput[]
     NOT?: PacksWhereInput | PacksWhereInput[]
@@ -21553,18 +21609,20 @@ export namespace Prisma {
     num_inference_steps?: IntFilter<"Packs"> | number
     stars?: IntFilter<"Packs"> | number
     used?: IntFilter<"Packs"> | number
+    popular?: BoolFilter<"Packs"> | boolean
     main_image?: StringFilter<"Packs"> | string
     images?: StringNullableListFilter<"Packs">
     features?: StringNullableListFilter<"Packs">
     created_at?: DateTimeFilter<"Packs"> | Date | string
     updated_at?: DateTimeFilter<"Packs"> | Date | string
     Images?: ImagesListRelationFilter
-  }, "id" | "pid">
+  }, "id" | "pid" | "title_url">
 
   export type PacksOrderByWithAggregationInput = {
     id?: SortOrder
     pid?: SortOrder
     title?: SortOrder
+    title_url?: SortOrder
     short_description?: SortOrder
     full_description?: SortOrder
     pack_prompts?: SortOrder
@@ -21573,6 +21631,7 @@ export namespace Prisma {
     num_inference_steps?: SortOrder
     stars?: SortOrder
     used?: SortOrder
+    popular?: SortOrder
     main_image?: SortOrder
     images?: SortOrder
     features?: SortOrder
@@ -21592,6 +21651,7 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"Packs"> | number
     pid?: UuidWithAggregatesFilter<"Packs"> | string
     title?: StringWithAggregatesFilter<"Packs"> | string
+    title_url?: StringWithAggregatesFilter<"Packs"> | string
     short_description?: StringWithAggregatesFilter<"Packs"> | string
     full_description?: StringWithAggregatesFilter<"Packs"> | string
     pack_prompts?: StringWithAggregatesFilter<"Packs"> | string
@@ -21600,6 +21660,7 @@ export namespace Prisma {
     num_inference_steps?: IntWithAggregatesFilter<"Packs"> | number
     stars?: IntWithAggregatesFilter<"Packs"> | number
     used?: IntWithAggregatesFilter<"Packs"> | number
+    popular?: BoolWithAggregatesFilter<"Packs"> | boolean
     main_image?: StringWithAggregatesFilter<"Packs"> | string
     images?: StringNullableListFilter<"Packs">
     features?: StringNullableListFilter<"Packs">
@@ -22490,6 +22551,7 @@ export namespace Prisma {
     user_prompt: string
     sys_prompt: string
     alt: string
+    image_cost?: number
     num_inference_steps: number
     content_type: $Enums.ImageFormat
     status: $Enums.Status
@@ -22517,6 +22579,7 @@ export namespace Prisma {
     user_prompt: string
     sys_prompt: string
     alt: string
+    image_cost?: number
     num_inference_steps: number
     content_type: $Enums.ImageFormat
     status: $Enums.Status
@@ -22537,6 +22600,7 @@ export namespace Prisma {
     user_prompt?: StringFieldUpdateOperationsInput | string
     sys_prompt?: StringFieldUpdateOperationsInput | string
     alt?: StringFieldUpdateOperationsInput | string
+    image_cost?: IntFieldUpdateOperationsInput | number
     num_inference_steps?: IntFieldUpdateOperationsInput | number
     content_type?: EnumImageFormatFieldUpdateOperationsInput | $Enums.ImageFormat
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -22564,6 +22628,7 @@ export namespace Prisma {
     user_prompt?: StringFieldUpdateOperationsInput | string
     sys_prompt?: StringFieldUpdateOperationsInput | string
     alt?: StringFieldUpdateOperationsInput | string
+    image_cost?: IntFieldUpdateOperationsInput | number
     num_inference_steps?: IntFieldUpdateOperationsInput | number
     content_type?: EnumImageFormatFieldUpdateOperationsInput | $Enums.ImageFormat
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -22588,6 +22653,7 @@ export namespace Prisma {
     user_prompt: string
     sys_prompt: string
     alt: string
+    image_cost?: number
     num_inference_steps: number
     content_type: $Enums.ImageFormat
     status: $Enums.Status
@@ -22608,6 +22674,7 @@ export namespace Prisma {
     user_prompt?: StringFieldUpdateOperationsInput | string
     sys_prompt?: StringFieldUpdateOperationsInput | string
     alt?: StringFieldUpdateOperationsInput | string
+    image_cost?: IntFieldUpdateOperationsInput | number
     num_inference_steps?: IntFieldUpdateOperationsInput | number
     content_type?: EnumImageFormatFieldUpdateOperationsInput | $Enums.ImageFormat
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -22632,6 +22699,7 @@ export namespace Prisma {
     user_prompt?: StringFieldUpdateOperationsInput | string
     sys_prompt?: StringFieldUpdateOperationsInput | string
     alt?: StringFieldUpdateOperationsInput | string
+    image_cost?: IntFieldUpdateOperationsInput | number
     num_inference_steps?: IntFieldUpdateOperationsInput | number
     content_type?: EnumImageFormatFieldUpdateOperationsInput | $Enums.ImageFormat
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -22870,14 +22938,16 @@ export namespace Prisma {
   export type PacksCreateInput = {
     pid: string
     title: string
+    title_url: string
     short_description: string
     full_description: string
     pack_prompts: string
     credits: number
     num_images: number
-    num_inference_steps: number
+    num_inference_steps?: number
     stars?: number
     used?: number
+    popular?: boolean
     main_image?: string
     images?: PacksCreateimagesInput | string[]
     features?: PacksCreatefeaturesInput | string[]
@@ -22890,14 +22960,16 @@ export namespace Prisma {
     id?: number
     pid: string
     title: string
+    title_url: string
     short_description: string
     full_description: string
     pack_prompts: string
     credits: number
     num_images: number
-    num_inference_steps: number
+    num_inference_steps?: number
     stars?: number
     used?: number
+    popular?: boolean
     main_image?: string
     images?: PacksCreateimagesInput | string[]
     features?: PacksCreatefeaturesInput | string[]
@@ -22909,6 +22981,7 @@ export namespace Prisma {
   export type PacksUpdateInput = {
     pid?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    title_url?: StringFieldUpdateOperationsInput | string
     short_description?: StringFieldUpdateOperationsInput | string
     full_description?: StringFieldUpdateOperationsInput | string
     pack_prompts?: StringFieldUpdateOperationsInput | string
@@ -22917,6 +22990,7 @@ export namespace Prisma {
     num_inference_steps?: IntFieldUpdateOperationsInput | number
     stars?: IntFieldUpdateOperationsInput | number
     used?: IntFieldUpdateOperationsInput | number
+    popular?: BoolFieldUpdateOperationsInput | boolean
     main_image?: StringFieldUpdateOperationsInput | string
     images?: PacksUpdateimagesInput | string[]
     features?: PacksUpdatefeaturesInput | string[]
@@ -22929,6 +23003,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     pid?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    title_url?: StringFieldUpdateOperationsInput | string
     short_description?: StringFieldUpdateOperationsInput | string
     full_description?: StringFieldUpdateOperationsInput | string
     pack_prompts?: StringFieldUpdateOperationsInput | string
@@ -22937,6 +23012,7 @@ export namespace Prisma {
     num_inference_steps?: IntFieldUpdateOperationsInput | number
     stars?: IntFieldUpdateOperationsInput | number
     used?: IntFieldUpdateOperationsInput | number
+    popular?: BoolFieldUpdateOperationsInput | boolean
     main_image?: StringFieldUpdateOperationsInput | string
     images?: PacksUpdateimagesInput | string[]
     features?: PacksUpdatefeaturesInput | string[]
@@ -22949,14 +23025,16 @@ export namespace Prisma {
     id?: number
     pid: string
     title: string
+    title_url: string
     short_description: string
     full_description: string
     pack_prompts: string
     credits: number
     num_images: number
-    num_inference_steps: number
+    num_inference_steps?: number
     stars?: number
     used?: number
+    popular?: boolean
     main_image?: string
     images?: PacksCreateimagesInput | string[]
     features?: PacksCreatefeaturesInput | string[]
@@ -22967,6 +23045,7 @@ export namespace Prisma {
   export type PacksUpdateManyMutationInput = {
     pid?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    title_url?: StringFieldUpdateOperationsInput | string
     short_description?: StringFieldUpdateOperationsInput | string
     full_description?: StringFieldUpdateOperationsInput | string
     pack_prompts?: StringFieldUpdateOperationsInput | string
@@ -22975,6 +23054,7 @@ export namespace Prisma {
     num_inference_steps?: IntFieldUpdateOperationsInput | number
     stars?: IntFieldUpdateOperationsInput | number
     used?: IntFieldUpdateOperationsInput | number
+    popular?: BoolFieldUpdateOperationsInput | boolean
     main_image?: StringFieldUpdateOperationsInput | string
     images?: PacksUpdateimagesInput | string[]
     features?: PacksUpdatefeaturesInput | string[]
@@ -22986,6 +23066,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     pid?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    title_url?: StringFieldUpdateOperationsInput | string
     short_description?: StringFieldUpdateOperationsInput | string
     full_description?: StringFieldUpdateOperationsInput | string
     pack_prompts?: StringFieldUpdateOperationsInput | string
@@ -22994,6 +23075,7 @@ export namespace Prisma {
     num_inference_steps?: IntFieldUpdateOperationsInput | number
     stars?: IntFieldUpdateOperationsInput | number
     used?: IntFieldUpdateOperationsInput | number
+    popular?: BoolFieldUpdateOperationsInput | boolean
     main_image?: StringFieldUpdateOperationsInput | string
     images?: PacksUpdateimagesInput | string[]
     features?: PacksUpdatefeaturesInput | string[]
@@ -24080,6 +24162,7 @@ export namespace Prisma {
     user_prompt?: SortOrder
     sys_prompt?: SortOrder
     alt?: SortOrder
+    image_cost?: SortOrder
     num_inference_steps?: SortOrder
     content_type?: SortOrder
     status?: SortOrder
@@ -24100,6 +24183,7 @@ export namespace Prisma {
     user_id?: SortOrder
     training_model_id?: SortOrder
     pack_id?: SortOrder
+    image_cost?: SortOrder
     num_inference_steps?: SortOrder
     width?: SortOrder
     height?: SortOrder
@@ -24114,6 +24198,7 @@ export namespace Prisma {
     user_prompt?: SortOrder
     sys_prompt?: SortOrder
     alt?: SortOrder
+    image_cost?: SortOrder
     num_inference_steps?: SortOrder
     content_type?: SortOrder
     status?: SortOrder
@@ -24138,6 +24223,7 @@ export namespace Prisma {
     user_prompt?: SortOrder
     sys_prompt?: SortOrder
     alt?: SortOrder
+    image_cost?: SortOrder
     num_inference_steps?: SortOrder
     content_type?: SortOrder
     status?: SortOrder
@@ -24158,6 +24244,7 @@ export namespace Prisma {
     user_id?: SortOrder
     training_model_id?: SortOrder
     pack_id?: SortOrder
+    image_cost?: SortOrder
     num_inference_steps?: SortOrder
     width?: SortOrder
     height?: SortOrder
@@ -24386,6 +24473,7 @@ export namespace Prisma {
     id?: SortOrder
     pid?: SortOrder
     title?: SortOrder
+    title_url?: SortOrder
     short_description?: SortOrder
     full_description?: SortOrder
     pack_prompts?: SortOrder
@@ -24394,6 +24482,7 @@ export namespace Prisma {
     num_inference_steps?: SortOrder
     stars?: SortOrder
     used?: SortOrder
+    popular?: SortOrder
     main_image?: SortOrder
     images?: SortOrder
     features?: SortOrder
@@ -24414,6 +24503,7 @@ export namespace Prisma {
     id?: SortOrder
     pid?: SortOrder
     title?: SortOrder
+    title_url?: SortOrder
     short_description?: SortOrder
     full_description?: SortOrder
     pack_prompts?: SortOrder
@@ -24422,6 +24512,7 @@ export namespace Prisma {
     num_inference_steps?: SortOrder
     stars?: SortOrder
     used?: SortOrder
+    popular?: SortOrder
     main_image?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -24431,6 +24522,7 @@ export namespace Prisma {
     id?: SortOrder
     pid?: SortOrder
     title?: SortOrder
+    title_url?: SortOrder
     short_description?: SortOrder
     full_description?: SortOrder
     pack_prompts?: SortOrder
@@ -24439,6 +24531,7 @@ export namespace Prisma {
     num_inference_steps?: SortOrder
     stars?: SortOrder
     used?: SortOrder
+    popular?: SortOrder
     main_image?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -26172,6 +26265,7 @@ export namespace Prisma {
     user_prompt: string
     sys_prompt: string
     alt: string
+    image_cost?: number
     num_inference_steps: number
     content_type: $Enums.ImageFormat
     status: $Enums.Status
@@ -26197,6 +26291,7 @@ export namespace Prisma {
     user_prompt: string
     sys_prompt: string
     alt: string
+    image_cost?: number
     num_inference_steps: number
     content_type: $Enums.ImageFormat
     status: $Enums.Status
@@ -26497,6 +26592,7 @@ export namespace Prisma {
     user_prompt?: StringFilter<"Images"> | string
     sys_prompt?: StringFilter<"Images"> | string
     alt?: StringFilter<"Images"> | string
+    image_cost?: IntFilter<"Images"> | number
     num_inference_steps?: IntFilter<"Images"> | number
     content_type?: EnumImageFormatFilter<"Images"> | $Enums.ImageFormat
     status?: EnumStatusFilter<"Images"> | $Enums.Status
@@ -26871,6 +26967,7 @@ export namespace Prisma {
     user_prompt: string
     sys_prompt: string
     alt: string
+    image_cost?: number
     num_inference_steps: number
     content_type: $Enums.ImageFormat
     status: $Enums.Status
@@ -26896,6 +26993,7 @@ export namespace Prisma {
     user_prompt: string
     sys_prompt: string
     alt: string
+    image_cost?: number
     num_inference_steps: number
     content_type: $Enums.ImageFormat
     status: $Enums.Status
@@ -27236,14 +27334,16 @@ export namespace Prisma {
   export type PacksCreateWithoutImagesInput = {
     pid: string
     title: string
+    title_url: string
     short_description: string
     full_description: string
     pack_prompts: string
     credits: number
     num_images: number
-    num_inference_steps: number
+    num_inference_steps?: number
     stars?: number
     used?: number
+    popular?: boolean
     main_image?: string
     images?: PacksCreateimagesInput | string[]
     features?: PacksCreatefeaturesInput | string[]
@@ -27255,14 +27355,16 @@ export namespace Prisma {
     id?: number
     pid: string
     title: string
+    title_url: string
     short_description: string
     full_description: string
     pack_prompts: string
     credits: number
     num_images: number
-    num_inference_steps: number
+    num_inference_steps?: number
     stars?: number
     used?: number
+    popular?: boolean
     main_image?: string
     images?: PacksCreateimagesInput | string[]
     features?: PacksCreatefeaturesInput | string[]
@@ -27417,6 +27519,7 @@ export namespace Prisma {
   export type PacksUpdateWithoutImagesInput = {
     pid?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    title_url?: StringFieldUpdateOperationsInput | string
     short_description?: StringFieldUpdateOperationsInput | string
     full_description?: StringFieldUpdateOperationsInput | string
     pack_prompts?: StringFieldUpdateOperationsInput | string
@@ -27425,6 +27528,7 @@ export namespace Prisma {
     num_inference_steps?: IntFieldUpdateOperationsInput | number
     stars?: IntFieldUpdateOperationsInput | number
     used?: IntFieldUpdateOperationsInput | number
+    popular?: BoolFieldUpdateOperationsInput | boolean
     main_image?: StringFieldUpdateOperationsInput | string
     images?: PacksUpdateimagesInput | string[]
     features?: PacksUpdatefeaturesInput | string[]
@@ -27436,6 +27540,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     pid?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    title_url?: StringFieldUpdateOperationsInput | string
     short_description?: StringFieldUpdateOperationsInput | string
     full_description?: StringFieldUpdateOperationsInput | string
     pack_prompts?: StringFieldUpdateOperationsInput | string
@@ -27444,6 +27549,7 @@ export namespace Prisma {
     num_inference_steps?: IntFieldUpdateOperationsInput | number
     stars?: IntFieldUpdateOperationsInput | number
     used?: IntFieldUpdateOperationsInput | number
+    popular?: BoolFieldUpdateOperationsInput | boolean
     main_image?: StringFieldUpdateOperationsInput | string
     images?: PacksUpdateimagesInput | string[]
     features?: PacksUpdatefeaturesInput | string[]
@@ -27709,6 +27815,7 @@ export namespace Prisma {
     user_prompt: string
     sys_prompt: string
     alt: string
+    image_cost?: number
     num_inference_steps: number
     content_type: $Enums.ImageFormat
     status: $Enums.Status
@@ -27734,6 +27841,7 @@ export namespace Prisma {
     user_prompt: string
     sys_prompt: string
     alt: string
+    image_cost?: number
     num_inference_steps: number
     content_type: $Enums.ImageFormat
     status: $Enums.Status
@@ -28388,6 +28496,7 @@ export namespace Prisma {
     user_prompt: string
     sys_prompt: string
     alt: string
+    image_cost?: number
     num_inference_steps: number
     content_type: $Enums.ImageFormat
     status: $Enums.Status
@@ -28566,6 +28675,7 @@ export namespace Prisma {
     user_prompt?: StringFieldUpdateOperationsInput | string
     sys_prompt?: StringFieldUpdateOperationsInput | string
     alt?: StringFieldUpdateOperationsInput | string
+    image_cost?: IntFieldUpdateOperationsInput | number
     num_inference_steps?: IntFieldUpdateOperationsInput | number
     content_type?: EnumImageFormatFieldUpdateOperationsInput | $Enums.ImageFormat
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -28591,6 +28701,7 @@ export namespace Prisma {
     user_prompt?: StringFieldUpdateOperationsInput | string
     sys_prompt?: StringFieldUpdateOperationsInput | string
     alt?: StringFieldUpdateOperationsInput | string
+    image_cost?: IntFieldUpdateOperationsInput | number
     num_inference_steps?: IntFieldUpdateOperationsInput | number
     content_type?: EnumImageFormatFieldUpdateOperationsInput | $Enums.ImageFormat
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -28614,6 +28725,7 @@ export namespace Prisma {
     user_prompt?: StringFieldUpdateOperationsInput | string
     sys_prompt?: StringFieldUpdateOperationsInput | string
     alt?: StringFieldUpdateOperationsInput | string
+    image_cost?: IntFieldUpdateOperationsInput | number
     num_inference_steps?: IntFieldUpdateOperationsInput | number
     content_type?: EnumImageFormatFieldUpdateOperationsInput | $Enums.ImageFormat
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -28784,6 +28896,7 @@ export namespace Prisma {
     user_prompt: string
     sys_prompt: string
     alt: string
+    image_cost?: number
     num_inference_steps: number
     content_type: $Enums.ImageFormat
     status: $Enums.Status
@@ -28804,6 +28917,7 @@ export namespace Prisma {
     user_prompt?: StringFieldUpdateOperationsInput | string
     sys_prompt?: StringFieldUpdateOperationsInput | string
     alt?: StringFieldUpdateOperationsInput | string
+    image_cost?: IntFieldUpdateOperationsInput | number
     num_inference_steps?: IntFieldUpdateOperationsInput | number
     content_type?: EnumImageFormatFieldUpdateOperationsInput | $Enums.ImageFormat
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -28829,6 +28943,7 @@ export namespace Prisma {
     user_prompt?: StringFieldUpdateOperationsInput | string
     sys_prompt?: StringFieldUpdateOperationsInput | string
     alt?: StringFieldUpdateOperationsInput | string
+    image_cost?: IntFieldUpdateOperationsInput | number
     num_inference_steps?: IntFieldUpdateOperationsInput | number
     content_type?: EnumImageFormatFieldUpdateOperationsInput | $Enums.ImageFormat
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -28852,6 +28967,7 @@ export namespace Prisma {
     user_prompt?: StringFieldUpdateOperationsInput | string
     sys_prompt?: StringFieldUpdateOperationsInput | string
     alt?: StringFieldUpdateOperationsInput | string
+    image_cost?: IntFieldUpdateOperationsInput | number
     num_inference_steps?: IntFieldUpdateOperationsInput | number
     content_type?: EnumImageFormatFieldUpdateOperationsInput | $Enums.ImageFormat
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -28930,6 +29046,7 @@ export namespace Prisma {
     user_prompt: string
     sys_prompt: string
     alt: string
+    image_cost?: number
     num_inference_steps: number
     content_type: $Enums.ImageFormat
     status: $Enums.Status
@@ -28950,6 +29067,7 @@ export namespace Prisma {
     user_prompt?: StringFieldUpdateOperationsInput | string
     sys_prompt?: StringFieldUpdateOperationsInput | string
     alt?: StringFieldUpdateOperationsInput | string
+    image_cost?: IntFieldUpdateOperationsInput | number
     num_inference_steps?: IntFieldUpdateOperationsInput | number
     content_type?: EnumImageFormatFieldUpdateOperationsInput | $Enums.ImageFormat
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -28975,6 +29093,7 @@ export namespace Prisma {
     user_prompt?: StringFieldUpdateOperationsInput | string
     sys_prompt?: StringFieldUpdateOperationsInput | string
     alt?: StringFieldUpdateOperationsInput | string
+    image_cost?: IntFieldUpdateOperationsInput | number
     num_inference_steps?: IntFieldUpdateOperationsInput | number
     content_type?: EnumImageFormatFieldUpdateOperationsInput | $Enums.ImageFormat
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
@@ -28998,6 +29117,7 @@ export namespace Prisma {
     user_prompt?: StringFieldUpdateOperationsInput | string
     sys_prompt?: StringFieldUpdateOperationsInput | string
     alt?: StringFieldUpdateOperationsInput | string
+    image_cost?: IntFieldUpdateOperationsInput | number
     num_inference_steps?: IntFieldUpdateOperationsInput | number
     content_type?: EnumImageFormatFieldUpdateOperationsInput | $Enums.ImageFormat
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status

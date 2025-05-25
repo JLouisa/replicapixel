@@ -39,6 +39,8 @@ pub enum JoinError {
     OrderNotFound(String),
     #[error("Pack not found for PID: {0}")]
     PackNotFound(String),
+    #[error("No User Found")]
+    OtherInternal,
 }
 
 // Bugged
@@ -314,6 +316,39 @@ pub async fn load_user_and_credits(
         .ok_or_else(|| JoinError::CreditsMissingInvariant(user_model.id))?;
 
     // Return the combined data
+    Ok((user_model, user_credit_model))
+}
+
+pub async fn load_user_and_credits_with_user_id(
+    db: &impl ConnectionTrait,
+    pid: &Option<UserPid>,
+    id: &Option<i32>,
+) -> Result<(UserModel, UserCreditModel), JoinError> {
+    let mut query = UserEntity::find();
+
+    if let Some(pid_val) = pid {
+        let pid_uuid = Uuid::parse_str(pid_val.as_ref())?;
+        query = query.filter(users::Column::Pid.eq(pid_uuid));
+    }
+
+    if let Some(id_val) = id {
+        query = query.filter(users::Column::Id.eq(id_val.clone()));
+    }
+
+    let query_results = query
+        .join(JoinType::InnerJoin, users::Relation::UserCredits.def())
+        .select_also(user_credits_model::Entity)
+        .all(db)
+        .await?;
+
+    let (user_model, maybe_credit_model) = query_results
+        .into_iter()
+        .next()
+        .ok_or_else(|| JoinError::OtherInternal)?;
+
+    let user_credit_model =
+        maybe_credit_model.ok_or_else(|| JoinError::CreditsMissingInvariant(user_model.id))?;
+
     Ok((user_model, user_credit_model))
 }
 

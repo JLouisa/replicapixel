@@ -155,9 +155,7 @@ async fn google_ott(
         .build();
     let cookie_header_value = cookie.to_string();
 
-    // let (loaded_user, user_credits) =
-    //     load_user_and_credits(&ctx.db, &UserPid::new(user.pid)).await?;
-
+    // View
     let view_response = views::home::google_ott(&v, &website, &user.into())?;
 
     // Build the final response
@@ -175,8 +173,6 @@ async fn google_ott(
         })?;
 
     Ok(final_response)
-
-    // format::json(register)
 }
 
 #[debug_handler]
@@ -186,6 +182,7 @@ async fn protected(
 ) -> Result<Response> {
     let user: &users::Model = user.as_ref();
     let jwt_secret = ctx.config.get_jwt_config()?;
+
     // Generate a JWT token
     let token = user
         .generate_jwt(&jwt_secret.secret, jwt_secret.expiration)

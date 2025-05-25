@@ -92,8 +92,12 @@ async fn load_models_all(db: &DatabaseConnection, id: i32) -> Result<TrainingMod
     let list = TrainingModelModel::find_all_completed_by_user_id(db, id).await?;
     Ok(TrainingModelList::new(list))
 }
-async fn load_pack_by_pid(db: &DatabaseConnection, pid: &Uuid) -> Result<PackModel> {
-    let pack = PackModel::find_by_pid(db, pid).await?;
+// async fn load_pack_by_pid(db: &DatabaseConnection, pid: &Uuid) -> Result<PackModel> {
+//     let pack = PackModel::find_by_pid(db, pid).await?;
+//     Ok(pack)
+// }
+async fn load_pack_by_title_url(db: &DatabaseConnection, title_url: &str) -> Result<PackModel> {
+    let pack = PackModel::find_by_title_url(db, title_url).await?;
     Ok(pack)
 }
 async fn load_packs_all(db: &DatabaseConnection) -> Result<PackModelList> {
@@ -128,7 +132,7 @@ pub async fn get_all_packs(
 #[debug_handler]
 pub async fn show_pack(
     auth: Result<auth::JWT>,
-    Path(pack_pid): Path<Uuid>,
+    Path(title_url): Path<String>,
     ExtractConsentState(cc_cookie): ExtractConsentState,
     Extension(website): Extension<Website>,
     State(ctx): State<AppContext>,
@@ -146,14 +150,14 @@ pub async fn show_pack(
         Err(_) => None,
     };
     let images = load_cached_web(&ctx).await?;
-    let pack = load_pack_by_pid(&ctx.db, &pack_pid).await?;
+    let pack = load_pack_by_title_url(&ctx.db, &title_url).await?;
     views::packs::packs(v, &website, &cc_cookie, &images, &pack.into(), &user)
 }
 
 #[debug_handler]
 pub async fn show_pack_partial(
     auth: Result<auth::JWT>,
-    Path(pack_pid): Path<Uuid>,
+    Path(title_url): Path<String>,
     ExtractConsentState(cc_cookie): ExtractConsentState,
     Extension(website): Extension<Website>,
     State(ctx): State<AppContext>,
@@ -171,7 +175,7 @@ pub async fn show_pack_partial(
         Err(_) => None,
     };
     let images = load_cached_web(&ctx).await?;
-    let pack = load_pack_by_pid(&ctx.db, &pack_pid).await?;
+    let pack = load_pack_by_title_url(&ctx.db, &title_url).await?;
     views::packs::packs(v, &website, &cc_cookie, &images, &pack.into(), &user)
 }
 

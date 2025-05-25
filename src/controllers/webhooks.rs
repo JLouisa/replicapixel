@@ -4,6 +4,7 @@
 use crate::domain::website::Website;
 use crate::mailers::transaction::CheckoutMailer;
 use crate::models::_entities::sea_orm_active_enums::Status;
+use crate::models::join::user_credits_models::load_user_and_credits_with_user_id;
 use crate::models::{ImageModel, TrainingModelActiveModel, TrainingModelModel};
 use crate::service::aws::s3::{AwsS3, S3Key};
 use crate::service::fal_ai::fal_client::{FalAiClient, FluxApiWebhookResponse, StatusResponse};
@@ -142,9 +143,24 @@ pub async fn fal_ai_image(
         StatusResponse::Error => {
             // If the status is Error, return the error payload
             // let error_payload = response.error();
-            image
-                .update_fal_image_url(&ctx.db, None, Status::Failed)
+
+            let db_txn = ctx.db.begin().await?;
+
+            // Get User and Image
+            let (_, user_credits) =
+                load_user_and_credits_with_user_id(&db_txn, &None, &Some(image.user_id)).await?;
+
+            // --- Update User Credits/Entitlements ---
+            user_credits
+                .failed_update_credits_image(&db_txn, &image)
                 .await?;
+
+            image
+                .update_fal_image_url(&db_txn, None, Status::Failed)
+                .await?;
+
+            db_txn.commit().await?;
+
             return Ok((StatusCode::OK).into_response());
         }
     };
@@ -189,9 +205,16 @@ pub async fn fal_ai_training(
         StatusResponse::Error => {
             // If the status is Error, return the error payload
             // let error_payload = response.error();
-            let train = train
-                .update_fal_ai_training_webhook(&ctx.db, None, Status::Failed)
+
+            let db_txn = ctx.db.begin().await?;
+            let train = train.update_failed_fal_ai_training_webhook(&db_txn).await?;
+            let (_, user_credits) =
+                load_user_and_credits_with_user_id(&db_txn, &None, &Some(train.user_id)).await?;
+            user_credits
+                .failed_update_credits_training_model(&db_txn)
                 .await?;
+            db_txn.commit().await?;
+
             s3_client
                 .remove_object_s3_key(&S3Key::new(&train.s3_key))
                 .await
