@@ -33,7 +33,7 @@
     <div class="container mx-auto px-4 py-8">
       <div class="flex mx-4">
         <!-- Product Images -->
-        <div class="w-full md:w-1/2 px-4 mb-8 hidden sm:block">
+        <div class="w-full md:w-1/2 px-4 mb-8 hidden md:block">
           <!-- Main Image -->
           <img
             src="{{ pack.main_image }}"
@@ -43,7 +43,7 @@
           />
         </div>
         <!-- Product Details -->
-        <div class="w-full md:w-1/2 px-4">
+        <div class="w-full md:w-1/2 px-4 flex flex-col">
           <h2 class="text-5xl font-bold mb-2 text-center sm:text-start">{{ pack.title }} Pack</h2>
           <div class="flex items-center justify-between">
             {% include "partials/svg/star.html" %} {% include "partials/svg/star.html" %} {% include
@@ -54,7 +54,7 @@
             <div class="badge badge-dash badge-secondary">Popular</div>
             <div class="badge badge-dash badge-info">120x Used</div>
           </div>
-          <div class="w-full md:w-1/2 px-4 mb-8 sm:hidden">
+          <div class="w-full md:w-1/2 px-4 mb-8 md:hidden">
             <!-- Main Image -->
             <img
               src="{{ pack.main_image }}"
@@ -74,19 +74,17 @@
               <span class="font-medium text-lg">{{ pack.num_images }}</span>
             </div>
           </div>
-          <div class="flex flex-col sm:flex-row items-center justify-between">
-            <div class="flex-start">
-              <h3 class="text-lg font-semibold mb-2">Key Features:</h3>
-              <ul class="list-disc list-inside">
-                <li>Industry-leading noise cancellation</li>
-                <li>30-hour battery life</li>
-                <li>Touch sensor controls</li>
-                <li>Speak-to-chat technology</li>
-              </ul>
-            </div>
-            <div class="flex items-end justify-center">
-              <button class="btn btn-primary">Let's Get it</button>
-            </div>
+          <div class="flex-start">
+            <h3 class="text-lg font-semibold mb-2">Key Features:</h3>
+            <ul class="list-disc list-inside">
+              <li>Industry-leading noise cancellation</li>
+              <li>30-hour battery life</li>
+              <li>Touch sensor controls</li>
+              <li>Speak-to-chat technology</li>
+            </ul>
+          </div>
+          <div class="w-full flex flex-1 items-center justify-center">
+            <button class="btn btn-secondary text-black w-full mt-4 sm:mt-2">Use Pack</button>
           </div>
         </div>
       </div>
