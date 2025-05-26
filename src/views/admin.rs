@@ -12,12 +12,14 @@ pub fn packs(
     is_img: bool,
     admin_routes: &AdminRoutes,
 ) -> Result<impl IntoResponse> {
+    let mut list_packs = packs.into_inner();
+    list_packs.reverse();
     format::render().view(
         &v,
         "admin/packs.html",
         data!(
             {
-                "user": user, "packs": packs, "is_img": is_img,
+                "user": user, "packs": list_packs, "is_img": is_img,
                 "admin_routes": admin_routes
             }
         ),

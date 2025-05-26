@@ -36,7 +36,6 @@ pub fn packs(
     pack: &PackView,
     user: &Option<UserView>,
 ) -> Result<impl IntoResponse> {
-    dbg!(&pack);
     let foo_mock_pack_images = pack.create_item_groups();
     format::render().view(
         &v,
@@ -139,6 +138,11 @@ impl PackView {
 
 #[derive(Debug, Serialize, Deserialize, Clone, AsRef, Constructor)]
 pub struct PackViewList(pub Vec<PackView>);
+impl PackViewList {
+    pub fn into_inner(&self) -> Vec<PackView> {
+        self.0.clone()
+    }
+}
 
 impl From<PackModelList> for PackViewList {
     fn from(p: PackModelList) -> Self {
