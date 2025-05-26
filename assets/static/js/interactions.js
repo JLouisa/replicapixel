@@ -44,22 +44,52 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Scroll to anchor
 document.body.addEventListener("htmx:afterSwap", function (evt) {
-  if (evt.detail.target.id === "app") {
-    const target = sessionStorage.getItem("scrollTo");
-    if (target) {
-      requestAnimationFrame(() => {
-        const el = document.querySelector(target);
-        if (el) {
-          const elementRect = el.getBoundingClientRect();
-          const offsetPosition =
-            elementRect.top + window.pageYOffset - window.innerHeight / 2 + elementRect.height / 2;
-          window.scrollTo({
-            top: offsetPosition,
-            behavior: "smooth",
-          });
-        }
-        sessionStorage.removeItem("scrollTo");
-      });
+  try {
+    // Check if event detail and target exist
+    if (evt.detail && evt.detail.target && evt.detail.target.id === "app") {
+      const target = sessionStorage.getItem("scrollTo");
+      if (target) {
+        requestAnimationFrame(() => {
+          const el = document.querySelector(target);
+          if (el) {
+            const elementRect = el.getBoundingClientRect();
+            const offsetPosition =
+              elementRect.top +
+              window.pageYOffset -
+              window.innerHeight / 2 +
+              elementRect.height / 2;
+            window.scrollTo({
+              top: offsetPosition,
+              behavior: "smooth",
+            });
+          }
+          sessionStorage.removeItem("scrollTo");
+        });
+      }
     }
+  } catch (error) {
+    console.error("Error in htmx:afterSwap handler:", error);
   }
 });
+
+// // Scroll to anchor
+// document.body.addEventListener("htmx:afterSwap", function (evt) {
+//   if (evt.detail.target.id === "app") {
+//     const target = sessionStorage.getItem("scrollTo");
+//     if (target) {
+//       requestAnimationFrame(() => {
+//         const el = document.querySelector(target);
+//         if (el) {
+//           const elementRect = el.getBoundingClientRect();
+//           const offsetPosition =
+//             elementRect.top + window.pageYOffset - window.innerHeight / 2 + elementRect.height / 2;
+//           window.scrollTo({
+//             top: offsetPosition,
+//             behavior: "smooth",
+//           });
+//         }
+//         sessionStorage.removeItem("scrollTo");
+//       });
+//     }
+//   }
+// });

@@ -41,7 +41,7 @@ pub mod routes {
         pub const BASE: &'static str = "/";
         pub const HOME_PARTIAL: &'static str = "/partial/home";
         pub const ROBOT_TXT: &'static str = "/robots.txt";
-        pub const SITEMAP: &'static str = "/sitemap.xml";
+        pub const SITEMAP_XML: &'static str = "/sitemap.xml";
     }
 }
 
@@ -50,7 +50,7 @@ pub fn routes() -> Routes {
         .add(routes::Home::BASE, get(render_home))
         .add(routes::Home::HOME_PARTIAL, get(render_home_partial))
         .add(routes::Home::ROBOT_TXT, get(robots_txt))
-        .add(routes::Home::SITEMAP, get(sitemap_xml))
+        .add(routes::Home::SITEMAP_XML, get(sitemap_xml))
         .layer(CookieConsentLayer::new())
 }
 

@@ -107,7 +107,7 @@ impl PackView {
     pub fn create_item_groups(&self) -> WebGallery {
         let list = self.images.clone().unwrap();
         assert!(
-            (2..=6).contains(&list.len()),
+            (2..=30).contains(&list.len()),
             "Original vector must have between 2 and 6 items"
         );
 

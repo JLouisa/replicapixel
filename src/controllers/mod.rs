@@ -11,3 +11,5 @@ pub mod settings;
 pub mod starter;
 pub mod training_models;
 pub mod webhooks;
+
+pub mod admin;

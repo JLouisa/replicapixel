@@ -253,6 +253,29 @@ impl AwsS3 {
         Ok(pre_url)
     }
 
+    pub async fn admin_save_pack_s3(
+        &self,
+        key: &S3Key,
+        time: Option<u64>,
+    ) -> Result<Url, AwsError> {
+        let time = match time {
+            Some(t) => t,
+            None => self.settings.s3.access_time,
+        };
+
+        let presigned_req = self
+            .client
+            .put_object()
+            .bucket("replicapixel-web")
+            .key(key.as_ref())
+            .presigned(PresigningConfig::expires_in(Duration::from_secs(time)).unwrap())
+            .await
+            .expect("Failed to generate presigned URL");
+
+        let pre_url = Url::new(presigned_req.uri().to_string());
+        Ok(pre_url)
+    }
+
     // Check if an object exists in the S3 bucket
     pub async fn check_object_exists(&self, s3_key: &S3Key) -> Result<bool, AwsError> {
         match self

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="cupcake">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple Admin Form For Packs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script></script>
+    <style></style>
+  </head>
+  <body class="min-h-screen bg-base-200 flex items-center justify-center p-4">
+    <div class="card w-full max-w-lg bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title text-2xl mb-6 text-center">Contact Us</h2>
+
+        <form
+          hx-post="{{ login_api_link  | safe }}"
+          hx-ext="form-json"
+          hx-target="#app"
+          hx-swap="innerHTML"
+          hx-disabled-elt="#login-btn"
+          class="space-y-4"
+        >
+          <div class="form-control">
+            <label class="label" for="name">
+              <span class="label-text">Your Name</span>
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              placeholder="e.g., Jane Doe"
+              class="input input-bordered w-full"
+              required
+            />
+          </div>
+
+          <div class="form-control">
+            <label class="label" for="email">
+              <span class="label-text">Your Email</span>
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="e.g., jane@example.com"
+              class="input input-bordered w-full"
+              required
+            />
+          </div>
+
+          <div class="form-control">
+            <label class="label" for="subject">
+              <span class="label-text">Subject</span>
+            </label>
+            <select id="subject" name="subject" class="select select-bordered w-full">
+              <option disabled selected>Pick a subject</option>
+              <option value="inquiry">General Inquiry</option>
+              <option value="support">Support Request</option>
+              <option value="feedback">Feedback</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-control">
+            <label class="label" for="message">
+              <span class="label-text">Your Message</span>
+            </label>
+            <textarea
+              id="message"
+              name="message"
+              rows="4"
+              class="textarea textarea-bordered w-full"
+              placeholder="Write your message here..."
+              required
+            ></textarea>
+          </div>
+
+          <div class="form-control">
+            <label class="label cursor-pointer justify-start gap-3">
+              <input type="checkbox" name="newsletter" class="checkbox checkbox-primary" />
+              <span class="label-text">Subscribe to our newsletter</span>
+            </label>
+          </div>
+
+          <div class="form-control mt-6">
+            <button type="submit" class="btn btn-primary w-full">Send Message</button>
+          </div>
+
+          <p class="text-xs text-center text-base-content/70 mt-4">
+            We'll never share your details. Read our
+            <a href="#" class="link link-hover">Privacy Policy</a>.
+          </p>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

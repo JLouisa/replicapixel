@@ -62,6 +62,7 @@ pub mod routes {
         pub const API_GEN_PACK_PID: &'static str = "/api/pack/gen/{pid}";
         pub const API_GEN_PACK: &'static str = "/api/pack/gen";
         pub const API_PACKS_ALL: &'static str = "/api/packs/all";
+        pub const API_PACK_ADD: &'static str = "/api/pack/add";
     }
 }
 
@@ -71,6 +72,7 @@ pub fn routes() -> Routes {
         .add(routes::Pack::API_PACKS_ALL, get(get_all_packs))
         .add(routes::Pack::SHOW_PACK_PARTIAL_PID, get(show_pack_partial))
         .add(routes::Pack::API_GEN_PACK_PID, post(generate_packs_images))
+        .add(routes::Pack::API_PACK_ADD, post(generate_packs_images))
 }
 
 #[derive(Debug, Deserialize, Clone)]

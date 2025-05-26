@@ -1,3 +1,5 @@
+use crate::controllers::admin::CreatePackPayload;
+
 pub use super::_entities::packs::{ActiveModel, Entity, Model};
 use super::{
     PackModel,
@@ -94,7 +96,31 @@ impl Model {
 }
 
 // implement your write-oriented logic here
-impl ActiveModel {}
+impl ActiveModel {
+    pub async fn save(db: &DatabaseConnection, pack: &CreatePackPayload) -> ModelResult<Model> {
+        let item = ActiveModel {
+            pid: ActiveValue::set(pack.pid.clone()),
+            title: ActiveValue::set(pack.title.clone()),
+            title_url: ActiveValue::set(pack.title_url.clone()),
+            short_description: ActiveValue::set(pack.short_description.clone()),
+            full_description: ActiveValue::set(pack.full_description.clone()),
+            pack_prompts: ActiveValue::set(pack.pack_prompts.clone()),
+            credits: ActiveValue::set(pack.credits.clone()),
+            num_images: ActiveValue::set(pack.num_images),
+            num_inference_steps: ActiveValue::set(pack.num_inference_steps.clone()),
+            stars: ActiveValue::set(pack.stars.clone()),
+            popular: ActiveValue::set(pack.popular.clone()),
+            main_image: ActiveValue::set(pack.main_image.clone()),
+            images: ActiveValue::set(Some(pack.images.clone())),
+            features: ActiveValue::set(Some(pack.features.clone())),
+            ..Default::default()
+        };
+
+        let item = item.insert(db).await?;
+
+        Ok(item)
+    }
+}
 
 // implement your custom finders, selectors oriented logic here
 impl Entity {}

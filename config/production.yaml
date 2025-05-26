@@ -197,3 +197,5 @@ settings:
       max: {{ get_env(name="STRIPE_MAX") }}
   redis:
     redis_url: {{ get_env(name="REDIS_URL") }}
+  other:
+    admin: {{ get_env(name="ADMIN_PID") }}

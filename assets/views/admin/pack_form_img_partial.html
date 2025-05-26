@@ -1,0 +1,216 @@
+<form
+  hx-post="/pack/add/img"
+  hx-ext="form-json"
+  hx-swap="outerHTML"
+  hx-disabled-elt="#add-pack-btn"
+  class="space-y-4"
+>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="form-control">
+      <label class="label" for="title">
+        <span class="label-text">Title</span>
+      </label>
+      <input
+        type="text"
+        id="title"
+        name="title"
+        placeholder="e.g., Awesome AI Pack"
+        class="input input-bordered w-full"
+        required
+      />
+    </div>
+
+    <div class="form-control">
+      <label class="label" for="title_url">
+        <span class="label-text">Title URL (Slug)</span>
+      </label>
+      <input
+        type="text"
+        id="title_url"
+        name="title_url"
+        placeholder="e.g., awesome-ai-pack"
+        class="input input-bordered w-full"
+        required
+      />
+      <label class="label">
+        <span class="label-text-alt">Unique, URL-friendly version of the title.</span>
+      </label>
+    </div>
+  </div>
+
+  <div class="form-control">
+    <label class="label" for="short_description">
+      <span class="label-text">Short Description (max 255 chars)</span>
+    </label>
+    <input
+      type="text"
+      id="short_description"
+      name="short_description"
+      maxlength="255"
+      placeholder="A brief summary of the pack"
+      class="input input-bordered w-full"
+      required
+    />
+  </div>
+
+  <div class="form-control">
+    <label class="label" for="full_description">
+      <span class="label-text">Full Description</span>
+    </label>
+    <textarea
+      id="full_description"
+      name="full_description"
+      rows="5"
+      class="textarea textarea-bordered w-full"
+      placeholder="Detailed information about the pack..."
+      required
+    ></textarea>
+  </div>
+
+  <div class="form-control">
+    <label class="label" for="pack_prompts">
+      <span class="label-text">Pack Prompts</span>
+    </label>
+    <textarea
+      id="pack_prompts"
+      name="pack_prompts"
+      rows="3"
+      class="textarea textarea-bordered w-full"
+      placeholder="Enter prompts, perhaps comma or newline separated if multiple."
+    ></textarea>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+    <div class="form-control">
+      <label class="label" for="credits">
+        <span class="label-text">Credits Cost</span>
+      </label>
+      <input
+        type="number"
+        id="credits"
+        name="credits"
+        min="0"
+        placeholder="e.g., 10"
+        class="input input-bordered w-full"
+        required
+      />
+    </div>
+
+    <div class="form-control">
+      <label class="label" for="num_images">
+        <span class="label-text">Number of Images</span>
+      </label>
+      <input
+        type="number"
+        id="num_images"
+        name="num_images"
+        min="1"
+        placeholder="e.g., 8"
+        class="input input-bordered w-full"
+        required
+      />
+    </div>
+
+    <div class="form-control">
+      <label class="label" for="num_inference_steps">
+        <span class="label-text">Inference Steps</span>
+      </label>
+      <input
+        type="number"
+        id="num_inference_steps"
+        name="num_inference_steps"
+        min="1"
+        value="50"
+        placeholder="e.g., 50"
+        class="input input-bordered w-full"
+      />
+      <label class="label">
+        <span class="label-text-alt">Default: 50</span>
+      </label>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end">
+    <div class="form-control">
+      <label class="label" for="stars">
+        <span class="label-text">Star Rating</span>
+      </label>
+      <input
+        type="number"
+        id="stars"
+        name="stars"
+        min="1"
+        max="5"
+        value="5"
+        placeholder="1-5"
+        class="input input-bordered w-full"
+      />
+      <label class="label">
+        <span class="label-text-alt">Default: 5</span>
+      </label>
+    </div>
+
+    <div class="form-control">
+      <label class="label cursor-pointer justify-start gap-3 py-3">
+        <input type="checkbox" id="popular" name="popular" class="checkbox checkbox-primary" />
+        <span class="label-text">Mark as Popular?</span>
+      </label>
+      <label class="label pt-0">
+        <span class="label-text-alt">Default: false</span>
+      </label>
+    </div>
+  </div>
+
+  <div class="form-control">
+    <label class="label" for="main_image">
+      <span class="label-text">Main Image (Upload)</span>
+    </label>
+    <input
+      type="file"
+      id="main_image"
+      name="main_image"
+      class="file-input file-input-bordered file-input-primary w-full"
+      accept="image/webp"
+    />
+    <label class="label">
+      <span class="label-text-alt">Upload the primary display image for the pack.</span>
+    </label>
+  </div>
+
+  <div class="form-control">
+    <label class="label" for="images">
+      <span class="label-text">Additional Images (Upload Multiple)</span>
+    </label>
+    <input
+      type="file"
+      id="images"
+      name="images"
+      class="file-input file-input-bordered file-input-secondary w-full"
+      accept="image/webp"
+      multiple
+    />
+    <label class="label">
+      <span class="label-text-alt">Select one or more additional images.</span>
+    </label>
+  </div>
+
+  <div class="form-control">
+    <label class="label" for="features">
+      <span class="label-text">Features (comma-separated)</span>
+    </label>
+    <textarea
+      id="features"
+      name="features"
+      rows="3"
+      class="textarea textarea-bordered w-full"
+      placeholder="Feature 1, Another Feature, Cool Trait"
+    ></textarea>
+    <label class="label">
+      <span class="label-text-alt">Enter multiple features separated by a comma.</span>
+    </label>
+  </div>
+
+  <div class="form-control mt-8">
+    <button id="add-pack-btn" type="submit" class="btn btn-primary w-full">Create Pack</button>
+  </div>
+</form>

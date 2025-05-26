@@ -53,11 +53,13 @@ impl Hooks for App {
             Box::new(initializers::redis::RedisClient),
             Box::new(initializers::axum_session::AxumSessionInitializer),
             Box::new(initializers::oauth2::OAuth2StoreInitializer),
+            Box::new(initializers::other::Other),
         ])
     }
 
     fn routes(_ctx: &AppContext) -> AppRoutes {
         AppRoutes::with_default_routes()
+            .add_route(controllers::admin::routes())
             .add_route(controllers::starter::routes())
             .add_route(controllers::packs::routes())
             .add_route(controllers::settings::routes())
