@@ -2,12 +2,12 @@
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
 use crate::{
-    models::PackActiveModel,
+    models::{join::user_pack::load_user_and_one_pack, packs::CreatePackPayload},
     views::{self},
 };
 use axum::{debug_handler, response::Redirect, Extension};
 use loco_rs::prelude::*;
-use serde::Deserialize;
+use routes::AdminRoutes;
 
 use crate::{
     domain::settings::OtherSettings,
@@ -15,7 +15,29 @@ use crate::{
 };
 
 pub mod routes {
-    use serde::Serialize;
+    use serde::{Deserialize, Serialize};
+
+    #[derive(Debug, Serialize, Deserialize, Clone)]
+    pub struct AdminRoutes {
+        pub base: String,
+        pub admin_packs: String,
+        pub admin_packs_img: String,
+        pub admin_packs_add: String,
+        pub admin_packs_edit: String,
+        pub admin_packs_add_img: String,
+    }
+    impl AdminRoutes {
+        pub fn init() -> Self {
+            Self {
+                base: String::from(Admin::BASE),
+                admin_packs: format!("{}{}", Admin::BASE, Admin::ADMIN_PACKS),
+                admin_packs_img: format!("{}{}", Admin::BASE, Admin::ADMIN_PACKS_IMG),
+                admin_packs_add: format!("{}{}", Admin::BASE, Admin::ADMIN_PACK_ADD),
+                admin_packs_edit: format!("{}{}", Admin::BASE, Admin::ADMIN_PACK_EDIT),
+                admin_packs_add_img: format!("{}{}", Admin::BASE, Admin::ADMIN_PACK_ADD_IMG),
+            }
+        }
+    }
 
     #[derive(Clone, Debug, Serialize)]
     pub struct Admin;
@@ -24,6 +46,8 @@ pub mod routes {
         pub const ADMIN_PACKS: &'static str = "/packs";
         pub const ADMIN_PACKS_IMG: &'static str = "/packs/img";
         pub const ADMIN_PACK_ADD: &'static str = "/pack/add";
+        pub const ADMIN_PACK_EDIT_ID: &'static str = "/pack/edit/{pid}";
+        pub const ADMIN_PACK_EDIT: &'static str = "/pack/edit";
         pub const ADMIN_PACK_ADD_IMG: &'static str = "/pack/add/img";
     }
 }
@@ -34,6 +58,8 @@ pub fn routes() -> Routes {
         .add(routes::Admin::ADMIN_PACKS, get(admin_packs))
         .add(routes::Admin::ADMIN_PACKS_IMG, get(admin_packs_img))
         .add(routes::Admin::ADMIN_PACK_ADD, post(add_pack))
+        .add(routes::Admin::ADMIN_PACK_EDIT_ID, get(edit_pack_view))
+        .add(routes::Admin::ADMIN_PACK_EDIT_ID, post(edit_pack))
         .add(routes::Admin::ADMIN_PACK_ADD_IMG, post(admin_packs_img))
 }
 
@@ -42,86 +68,57 @@ pub async fn load_user(db: &DatabaseConnection, user_pid: &UserPid) -> Result<Us
     Ok(item)
 }
 async fn load_packs(db: &DatabaseConnection) -> Result<PackModelList> {
-    let list = PackModel::find_first_12_packs(db).await?;
+    let list = PackModel::find_all_packs(db).await?;
     Ok(PackModelList::new(list))
 }
+async fn load_pack_one(db: &DatabaseConnection, pid: &Uuid) -> Result<PackModel> {
+    let pack: crate::models::packs::Model = PackModel::find_by_pid(db, pid).await?;
+    Ok(pack)
+}
 
-#[derive(Debug, Deserialize)]
-pub struct CreatePackPayload {
-    #[serde(default = "Uuid::new_v4", skip_deserializing)]
-    pub pid: Uuid,
-    pub title: String,
-    pub title_url: String,
-    pub short_description: String,
-    pub full_description: String,
-    pub pack_prompts: String,
-    pub credits: i32,
-    pub num_images: i32,
-    #[serde(default = "default_num_inference_steps")]
-    pub num_inference_steps: i32,
-    #[serde(default = "default_stars")]
-    pub stars: i32,
-    #[serde(default)]
-    pub popular: bool,
-    pub main_image: String,
-    #[serde(default, deserialize_with = "deserialize_comma_separated_string_array")]
-    pub images: Vec<String>,
-    #[serde(default, deserialize_with = "deserialize_comma_separated_string_array")]
-    pub features: Vec<String>,
-}
-impl CreatePackPayload {
-    pub async fn save(&self, db: &DatabaseConnection) -> ModelResult<PackModel> {
-        let pack = PackActiveModel::save(db, self).await?;
-        Ok(pack)
+#[debug_handler]
+pub async fn edit_pack(
+    auth: auth::JWT,
+    Path(pack_pid): Path<Uuid>,
+    Extension(other): Extension<OtherSettings>,
+    State(ctx): State<AppContext>,
+    ViewEngine(v): ViewEngine<TeraView>,
+    Json(mut form): Json<CreatePackPayload>,
+) -> Result<impl IntoResponse> {
+    if auth.claims.pid != other.admin {
+        return Ok(Redirect::to("/login").into_response());
     }
-    /// Sanitizes the `title_url` field in-place.
-    /// If `title_url` is empty or becomes empty after sanitization,
-    /// it attempts to generate it from the `title` field.
-    pub fn sanitize_title_url_in_place(&mut self) {
-        let mut sanitized = self
-            .title_url
-            .trim()
-            .to_lowercase()
-            .replace(' ', "-")
-            .chars()
-            .filter(|c| c.is_alphanumeric() || *c == '-' || *c == '_')
-            .collect::<String>();
+    dbg!(&form);
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let (user, pack) = load_user_and_one_pack(&ctx.db, &user_pid, &pack_pid).await?;
+    form.pid = pack_pid.clone();
+    form.sanitize_title_url_in_place();
+    let _ = pack.update_pack_admin(&form, &ctx.db).await?;
+    let packs = load_packs(&ctx.db).await?;
+    let admin_routes = AdminRoutes::init();
+    let view_output =
+        views::admin::packs_form_partial(v, &packs.into(), &user.into(), false, &admin_routes)?;
+    Ok(view_output.into_response())
+}
 
-        // If title_url was empty or only special chars, try to use title
-        if sanitized.is_empty() && !self.title.is_empty() {
-            sanitized = self
-                .title
-                .trim()
-                .to_lowercase()
-                .replace(' ', "-")
-                .chars()
-                .filter(|c| c.is_alphanumeric() || *c == '-' || *c == '_')
-                .collect::<String>();
-        }
-        self.title_url = sanitized;
+#[debug_handler]
+pub async fn edit_pack_view(
+    auth: auth::JWT,
+    Path(pid): Path<Uuid>,
+    Extension(other): Extension<OtherSettings>,
+    State(ctx): State<AppContext>,
+    ViewEngine(v): ViewEngine<TeraView>,
+) -> Result<impl IntoResponse> {
+    if auth.claims.pid != other.admin {
+        return Ok(Redirect::to("/login").into_response());
     }
-}
-fn default_num_inference_steps() -> i32 {
-    50
-}
-fn default_stars() -> i32 {
-    5
-}
-fn deserialize_comma_separated_string_array<'de, D>(
-    deserializer: D,
-) -> Result<Vec<String>, D::Error>
-where
-    D: serde::Deserializer<'de>,
-{
-    let s: String = Deserialize::deserialize(deserializer)?;
-    if s.is_empty() {
-        Ok(Vec::new())
-    } else {
-        Ok(s.split(',')
-            .map(|item| item.trim().to_string())
-            .filter(|item| !item.is_empty()) // Remove empty strings resulting from trailing commas or multiple commas
-            .collect())
-    }
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let user = load_user(&ctx.db, &user_pid).await?;
+    let pack = load_pack_one(&ctx.db, &pid).await?;
+    let admin_routes = AdminRoutes::init();
+    let view_output =
+        views::admin::packs_form_edit_partial(v, &pack.into(), &user.into(), &admin_routes)?;
+    Ok(view_output.into_response())
 }
 
 #[debug_handler]
@@ -137,7 +134,8 @@ pub async fn admin_packs(
     let user_pid = UserPid::new(&auth.claims.pid);
     let user = load_user(&ctx.db, &user_pid).await?;
     let packs = load_packs(&ctx.db).await?;
-    let view_output = views::admin::packs(v, &packs.into(), &user.into(), false)?;
+    let admin_routes = AdminRoutes::init();
+    let view_output = views::admin::packs(v, &packs.into(), &user.into(), false, &admin_routes)?;
     Ok(view_output.into_response())
 }
 #[debug_handler]
@@ -153,7 +151,8 @@ pub async fn admin_packs_img(
     let user_pid = UserPid::new(&auth.claims.pid);
     let user = load_user(&ctx.db, &user_pid).await?;
     let packs = load_packs(&ctx.db).await?;
-    let view_output = views::admin::packs(v, &packs.into(), &user.into(), true)?;
+    let admin_routes = AdminRoutes::init();
+    let view_output = views::admin::packs(v, &packs.into(), &user.into(), true, &admin_routes)?;
     Ok(view_output.into_response())
 }
 
@@ -174,6 +173,8 @@ pub async fn add_pack(
     let user_pid = UserPid::new(&auth.claims.pid);
     let user = load_user(&ctx.db, &user_pid).await?;
     let packs = load_packs(&ctx.db).await?;
-    let view_output = views::admin::packs_form_partial(v, &packs.into(), &user.into(), false)?;
+    let admin_routes = AdminRoutes::init();
+    let view_output =
+        views::admin::packs_form_partial(v, &packs.into(), &user.into(), false, &admin_routes)?;
     Ok(view_output.into_response())
 }

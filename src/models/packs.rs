@@ -1,14 +1,13 @@
-use crate::controllers::admin::CreatePackPayload;
-
 pub use super::_entities::packs::{ActiveModel, Entity, Model};
 use super::{
     PackModel,
     _entities::{packs, sea_orm_active_enums::ImageSize},
 };
-use derive_more::{AsRef, Constructor};
+use derive_more::{AsRef, Constructor, Debug};
 use sea_orm::{entity::prelude::*, Condition, QueryOrder, QuerySelect};
 pub type Packs = Entity;
 use loco_rs::prelude::*;
+use serde::Deserialize;
 
 #[async_trait::async_trait]
 impl ActiveModelBehavior for ActiveModel {
@@ -61,6 +60,102 @@ impl PacksDomain {
     }
 }
 
+#[derive(Debug, Deserialize)]
+pub struct CreatePackPayload {
+    #[serde(default = "Uuid::new_v4")]
+    pub pid: Uuid,
+    pub title: String,
+    pub title_url: String,
+    pub short_description: String,
+    pub full_description: String,
+    pub pack_prompts: String,
+    pub credits: i32,
+    pub num_images: i32,
+    #[serde(default = "default_num_inference_steps")]
+    pub num_inference_steps: i32,
+    #[serde(default = "default_stars")]
+    pub stars: i32,
+    #[serde(default)]
+    pub popular: bool,
+    pub main_image: String,
+    #[serde(default, deserialize_with = "deserialize_comma_separated_string_array")]
+    pub images: Vec<String>,
+    #[serde(default, deserialize_with = "deserialize_comma_separated_string_array")]
+    pub features: Vec<String>,
+}
+impl CreatePackPayload {
+    pub async fn save(&self, db: &DatabaseConnection) -> ModelResult<PackModel> {
+        let pack = ActiveModel::save(db, self).await?;
+        Ok(pack)
+    }
+    pub fn update(&self, item: &mut ActiveModel) {
+        item.pid = Set(self.pid.clone());
+        item.title = Set(self.title.clone());
+        item.title_url = Set(self.title_url.clone());
+        item.short_description = Set(self.short_description.clone());
+        item.full_description = Set(self.full_description.clone());
+        item.pack_prompts = Set(self.pack_prompts.clone());
+        item.credits = Set(self.credits.clone());
+        item.num_images = Set(self.num_images);
+        item.num_inference_steps = Set(self.num_inference_steps.clone());
+        item.stars = Set(self.stars.clone());
+        item.popular = Set(self.popular.clone());
+        item.main_image = Set(self.main_image.clone());
+        item.images = Set(Some(self.images.clone()));
+        item.features = Set(Some(self.features.clone()));
+    }
+    /// Sanitizes the `title_url` field in-place.
+    /// If `title_url` is empty or becomes empty after sanitization,
+    /// it attempts to generate it from the `title` field.
+    pub fn sanitize_title_url_in_place(&mut self) {
+        let mut sanitized = self
+            .title_url
+            .trim()
+            .to_lowercase()
+            .replace(' ', "-")
+            .chars()
+            .filter(|c| c.is_alphanumeric() || *c == '-' || *c == '_')
+            .collect::<String>();
+
+        // If title_url was empty or only special chars, try to use title
+        if sanitized.is_empty() && !self.title.is_empty() {
+            sanitized = self
+                .title
+                .trim()
+                .to_lowercase()
+                .replace(' ', "-")
+                .chars()
+                .filter(|c| c.is_alphanumeric() || *c == '-' || *c == '_')
+                .collect::<String>();
+        }
+        let new_main_image = self.main_image.trim().to_lowercase();
+        self.title_url = sanitized;
+        self.main_image = new_main_image;
+    }
+}
+fn default_num_inference_steps() -> i32 {
+    50
+}
+fn default_stars() -> i32 {
+    5
+}
+fn deserialize_comma_separated_string_array<'de, D>(
+    deserializer: D,
+) -> Result<Vec<String>, D::Error>
+where
+    D: serde::Deserializer<'de>,
+{
+    let s: String = Deserialize::deserialize(deserializer)?;
+    if s.is_empty() {
+        Ok(Vec::new())
+    } else {
+        Ok(s.split(',')
+            .map(|item| item.trim().to_string())
+            .filter(|item| !item.is_empty()) // Remove empty strings resulting from trailing commas or multiple commas
+            .collect())
+    }
+}
+
 // implement your read-oriented logic here
 impl Model {
     pub async fn find_by_title_url(db: &DatabaseConnection, title_url: &str) -> ModelResult<Self> {
@@ -92,6 +187,16 @@ impl Model {
             .all(db)
             .await?;
         Ok(packs)
+    }
+    pub async fn update_pack_admin(
+        self,
+        pack: &CreatePackPayload,
+        db: &impl ConnectionTrait,
+    ) -> ModelResult<Model> {
+        let mut item = ActiveModel::from(self);
+        pack.update(&mut item);
+        let pack = item.update(db).await?;
+        Ok(pack)
     }
 }
 

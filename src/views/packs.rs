@@ -36,6 +36,7 @@ pub fn packs(
     pack: &PackView,
     user: &Option<UserView>,
 ) -> Result<impl IntoResponse> {
+    dbg!(&pack);
     let foo_mock_pack_images = pack.create_item_groups();
     format::render().view(
         &v,
@@ -86,6 +87,7 @@ pub struct PackView {
     pub num_images: i32,
     pub main_image: String,
     pub images: Option<Vec<String>>,
+    pub features: Option<Vec<String>>,
 }
 impl From<PackModel> for PackView {
     fn from(p: PackModel) -> Self {
@@ -100,6 +102,7 @@ impl From<PackModel> for PackView {
             num_images: p.num_images,
             main_image: p.main_image,
             images: p.images,
+            features: p.features,
         }
     }
 }

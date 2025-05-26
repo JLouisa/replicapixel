@@ -1,5 +1,9 @@
+<!-- prettier-ignore -->
+{% set admin_add_link = admin_routes.admin_packs_add %}
+{% set admin_add_link = admin_routes.admin_packs_add %}
 <form
-  hx-post="/admin/pack/add"
+  id="pack-form"
+  hx-post="{% if edit_link %}{{ edit_link | safe }}/{{pack.pid }}{% else %}{{ admin_add_link | safe }}{% endif %}"
   hx-ext="form-json"
   hx-swap="outerHTML"
   hx-disabled-elt="#add-pack-btn"
@@ -10,49 +14,29 @@
       <label class="label" for="title">
         <span class="label-text">Title</span>
       </label>
-      <input
-        type="text"
-        id="title"
-        name="title"
-        placeholder="e.g., Awesome AI Pack"
-        class="input input-bordered w-full"
-        required
-      />
+      <input type="text" id="title" name="title" placeholder="e.g., Awesome AI Pack" value="{{
+      pack.title | default (value="")}}" class="input input-bordered w-full" required />
     </div>
-
     <div class="form-control">
       <label class="label" for="title_url">
         <span class="label-text">Title URL (Slug)</span>
       </label>
-      <input
-        type="text"
-        id="title_url"
-        name="title_url"
-        placeholder="e.g., awesome-ai-pack"
-        class="input input-bordered w-full"
-        required
+      <input type="text" id="title_url" name="title_url" placeholder="e.g., awesome-ai-pack"
+      value="{{ pack.title_url | default (value="")}}" class="input input-bordered w-full" required
       />
       <label class="label">
         <span class="label-text-alt">Unique, URL-friendly version of the title.</span>
       </label>
     </div>
   </div>
-
   <div class="form-control">
     <label class="label" for="short_description">
       <span class="label-text">Short Description (max 255 chars)</span>
     </label>
-    <input
-      type="text"
-      id="short_description"
-      name="short_description"
-      maxlength="255"
-      placeholder="A brief summary of the pack"
-      class="input input-bordered w-full"
-      required
-    />
+    <input type="text" id="short_description" name="short_description" maxlength="255"
+    placeholder="A brief summary of the pack" value="{{ pack.short_description | default
+    (value="")}}" class="input input-bordered w-full" required />
   </div>
-
   <div class="form-control">
     <label class="label" for="full_description">
       <span class="label-text">Full Description</span>
@@ -64,9 +48,10 @@
       class="textarea textarea-bordered w-full"
       placeholder="Detailed information about the pack..."
       required
-    ></textarea>
+    >
+{{ pack.full_description | default (value="")}}</textarea
+    >
   </div>
-
   <div class="form-control">
     <label class="label" for="pack_prompts">
       <span class="label-text">Pack Prompts</span>
@@ -77,82 +62,59 @@
       rows="3"
       class="textarea textarea-bordered w-full"
       placeholder="Enter prompts, perhaps comma or newline separated if multiple."
-    ></textarea>
+    >
+{{ pack.pack_prompts | default (value="")}}</textarea
+    >
   </div>
-
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
     <div class="form-control">
       <label class="label" for="credits">
         <span class="label-text">Credits Cost</span>
       </label>
-      <input
-        type="number"
-        id="credits"
-        name="credits"
-        min="0"
-        placeholder="e.g., 10"
-        class="input input-bordered w-full"
-        required
-      />
+      <input type="number" id="credits" name="credits" min="0" placeholder="e.g., 10" value="{{
+      pack.credits | default (value="")}}" class="input input-bordered w-full" required />
     </div>
 
     <div class="form-control">
       <label class="label" for="num_images">
         <span class="label-text">Number of Images</span>
       </label>
-      <input
-        type="number"
-        id="num_images"
-        name="num_images"
-        min="1"
-        placeholder="e.g., 8"
-        class="input input-bordered w-full"
-        required
-      />
+      <input type="number" id="num_images" name="num_images" min="1" placeholder="e.g., 8" value="{{
+      pack.num_images | default (value="")}}" class="input input-bordered w-full" required />
     </div>
-
     <div class="form-control">
       <label class="label" for="num_inference_steps">
         <span class="label-text">Inference Steps</span>
       </label>
-      <input
-        type="number"
-        id="num_inference_steps"
-        name="num_inference_steps"
-        min="1"
-        value="50"
-        placeholder="e.g., 50"
-        class="input input-bordered w-full"
-      />
+      <input type="number" id="num_inference_steps" name="num_inference_steps" min="1" max="50"
+      value="50" placeholder="e.g., 50" value="{{ pack.num_inference_steps | default (value="")}}"
+      class="input input-bordered w-full" />
       <label class="label">
         <span class="label-text-alt">Default: 50</span>
       </label>
     </div>
   </div>
-
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end">
     <div class="form-control">
       <label class="label" for="stars">
         <span class="label-text">Star Rating</span>
       </label>
-      <input
-        type="number"
-        id="stars"
-        name="stars"
-        min="1"
-        max="5"
-        value="5"
-        placeholder="1-5"
-        class="input input-bordered w-full"
-      />
+      <input type="number" id="stars" name="stars" min="1" max="5" value="5" placeholder="1-5"
+      value="{{ pack.stars | default (value="")}}" class="input input-bordered w-full" />
       <label class="label">
         <span class="label-text-alt">Default: 5</span>
       </label>
     </div>
-
+    <!-- prettier-ignore -->
     <div class="form-control">
       <label class="label cursor-pointer justify-start gap-3 py-3">
-        <input type="checkbox" id="popular" name="popular" class="checkbox checkbox-primary" />
+        <input
+          type="checkbox"
+          id="popular"
+          name="popular"
+          {% if pack.popular %} checked {% endif %}
+          class="checkbox checkbox-primary"
+        />
         <span class="label-text">Mark as Popular?</span>
       </label>
       <label class="label pt-0">
@@ -161,20 +123,60 @@
     </div>
   </div>
 
+  {#
   <div class="form-control">
     <label class="label" for="main_image">
       <span class="label-text">Main Image URL</span>
     </label>
-    <input
-      type="url"
-      id="main_image"
-      name="main_image"
-      placeholder="https://example.com/path/to/main-image.jpg"
-      class="input input-bordered w-full"
-    />
+    <input type="url" id="main_image" name="main_image"
+    placeholder="https://example.com/path/to/main-image.jpg" value="{{ pack.main_image | default
+    (value="")}}" class="input input-bordered w-full" />
     <label class="label">
       <span class="label-text-alt">Default: "url" (can be overridden)</span>
     </label>
+  </div>
+  #}
+
+  <div class="form-control">
+    <label class="label" for="main_image">
+      <span class="label-text">Main Image URL</span>
+    </label>
+    <div class="w-full">
+      <textarea
+        id="{% if edit_link %}main_image-{{pack.pid}}{% else %}main_image{% endif %}"
+        name="main_image"
+        rows="3"
+        class="textarea textarea-bordered w-full"
+        placeholder="https://example.com/path/to/main-image.jpg"
+      >
+{{ pack.main_image | default(value="") }}</textarea
+      >
+
+      <img id="{% if edit_link %}image_preview-{{pack.pid}}{% else %}image_preview{% endif %}"
+      src="{{ pack.main_image | default(value="") }}" class="w-2/3 rounded-2xl mx-auto" alt="">
+    </div>
+    <label class="label">
+      <span class="label-text-alt">Default: "url" (can be overridden)</span>
+    </label>
+    <script>
+      {
+        const textarea = document.getElementById(
+          "{% if edit_link %}main_image-{{pack.pid}}{% else %}main_image{% endif %}"
+        );
+        const previewImg = document.getElementById(
+          "{% if edit_link %}image_preview-{{pack.pid}}{% else %}image_preview{% endif %}"
+        );
+
+        if (textarea && previewImg) {
+          previewImg.src = textarea.value.trim();
+
+          textarea.addEventListener("input", () => {
+            const newUrl = textarea.value.trim();
+            if (newUrl) previewImg.src = newUrl;
+          });
+        }
+      }
+    </script>
   </div>
 
   <div class="form-control">
@@ -187,7 +189,9 @@
       rows="3"
       class="textarea textarea-bordered w-full"
       placeholder="https://example.com/img1.jpg, https://example.com/img2.png"
-    ></textarea>
+    >
+{{ pack.images | default (value="")}}</textarea
+    >
     <label class="label">
       <span class="label-text-alt">Enter multiple URLs separated by a comma.</span>
     </label>
@@ -203,13 +207,17 @@
       rows="3"
       class="textarea textarea-bordered w-full"
       placeholder="Feature 1, Another Feature, Cool Trait"
-    ></textarea>
+    >
+{{ pack.features | default (value="")}}</textarea
+    >
     <label class="label">
       <span class="label-text-alt">Enter multiple features separated by a comma.</span>
     </label>
   </div>
 
   <div class="form-control mt-8">
-    <button id="add-pack-btn" type="submit" class="btn btn-primary w-full">Create Pack</button>
+    <button id="add-pack-btn" type="submit" class="btn btn-primary w-full">
+      {% if edit_link %} Edit Pack {% else %} Create Pack {% endif %}
+    </button>
   </div>
 </form>

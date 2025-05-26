@@ -77,10 +77,14 @@
           <div class="flex-start">
             <h3 class="text-lg font-semibold mb-2">Key Features:</h3>
             <ul class="list-disc list-inside">
+              {% if pack.features | length > 0 %} {% for feature in pack.features %}
+              <li>{{feature}}</li>
+              {% endfor %} {% else %}
               <li>Industry-leading noise cancellation</li>
               <li>30-hour battery life</li>
               <li>Touch sensor controls</li>
               <li>Speak-to-chat technology</li>
+              {% endif %}
             </ul>
           </div>
           <div class="w-full flex flex-1 items-center justify-center">
