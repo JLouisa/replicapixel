@@ -6,8 +6,12 @@ import { ServerResponseClass, ServerResponseSchema, type ServerResponse } from "
 import type { TrainingModelFormClass } from "./type/trainingModelForm";
 import type { ImageGenForm } from "./type/ImageGenForm";
 import Alpine from "alpinejs";
+import { getBaseUrl } from "./utils";
 
-const DEFAULT_BASE_URL = window.__APP_ENV__.apiBaseUrl;
+// const DEFAULT_BASE_URL =
+//   window.location.hostname === "localhost" ? "http://localhost:5150" : "https://replicapixel.com";
+
+const DEFAULT_BASE_URL = getBaseUrl();
 
 enum Api {
   Upload = "/api/models",
@@ -367,7 +371,7 @@ export const DAL = {
       },
       ImageGeneration: {
         async generateImage(payload: ImageGenForm, target: string, swapStyle: string) {
-          console.log(BackendUrl.Image.GenerateImage);
+          console.log("Full URL:", DEFAULT_BASE_URL + BackendUrl.Image.GenerateImage);
           try {
             return await backendApi.postHTMX(
               BackendUrl.Image.GenerateImage,

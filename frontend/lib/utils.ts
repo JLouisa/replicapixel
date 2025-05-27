@@ -1,5 +1,9 @@
 import { zipSync } from "fflate";
 
+export function getBaseUrl(): string {
+  return `${window.location.protocol}//${window.location.host}`;
+}
+
 export async function createZip(files: File[], zipName: string): Promise<File> {
   const zipData: Record<string, Uint8Array> = {};
 
