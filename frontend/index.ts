@@ -164,6 +164,8 @@ Alpine.store(Stores.CreateModelForm, {
         file_type: TrainingModelFormClass.file_type,
       });
 
+      console.log(modelData);
+
       // Create and upload to S3
       await DAL.Complete.S3UploadTrainingModel.saveToS3(modelData, this.zip);
       Alpine.store(Stores.Toast).success("New Model Successfully Created");

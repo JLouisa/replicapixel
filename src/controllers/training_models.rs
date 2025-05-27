@@ -5,10 +5,12 @@ use crate::domain::response::{handle_general_response, handle_general_response_t
 use crate::domain::website::Website;
 use crate::models::_entities::sea_orm_active_enums::Status;
 use crate::models::_entities::training_models::{ActiveModel, Entity, Model};
+use crate::models::join::user_credits_models::load_user_and_one_training_model;
 use crate::models::training_models::{TrainingForm, TrainingModelParams};
-use crate::models::{TrainingModelActiveModel, TrainingModelModel, UserModel};
+use crate::models::users::UserPid;
+use crate::models::{TrainingModelActiveModel, UserModel};
 use crate::service::aws::s3::{AwsS3, PresignedUrlRequest, PresignedUrlSafe, S3Key};
-use crate::service::fal_ai::fal_client::{FalAiClient, FluxLoraTrainingSchema};
+use crate::service::fal_ai::fal_client::{FalAiClient, FluxLoraTrainingSchema, QueueResponse};
 use crate::views;
 use crate::views::training_models::TrainingModelView;
 use axum::{debug_handler, http::StatusCode, response::IntoResponse, Extension, Json};
@@ -95,8 +97,8 @@ pub async fn upload_training(
     let pre_url_request: PresignedUrlRequest = form.clone().into();
     let (pre_url, s3_key) = s3_client
         .presigned_save_url(&user.pid, &pre_url_request, None)
-        .await
-        .map_err(|_| loco_rs::Error::Message(String::from("Generating Pre-sign URL error: 101")))?;
+        .await?;
+    // .map_err(|_| loco_rs::Error::Message(String::from("Generating Pre-sign URL error: 101")))?;
 
     //2. Create and save Training Model in Database
     let training_params: TrainingModelParams = form.from_form(&user, &s3_key);
@@ -119,63 +121,105 @@ pub async fn upload_training(
 
 #[debug_handler]
 pub async fn upload_training_completed(
-    _auth: auth::JWT,
-    Path(training_model_id): Path<Uuid>,
+    auth: auth::JWT,
+    Path(training_model_pid): Path<Uuid>,
     Extension(s3_client): Extension<AwsS3>,
     Extension(fal_ai_client): Extension<FalAiClient>,
     State(ctx): State<AppContext>,
 ) -> Result<Response> {
-    let train = TrainingModelModel::find_by_pid(&ctx.db, &training_model_id)
-        .await
-        .map_err(|e| loco_rs::Error::Message(format!("Error Getting Training Model: {} ", e)))?;
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let (_user, train) =
+        load_user_and_one_training_model(&ctx.db, &user_pid, training_model_pid).await?;
+
+    //1. Check if file exists
     let s3_key: S3Key = S3Key::new(&train.s3_key);
-
-    let exists = s3_client
-        .check_object_exists(&s3_key)
-        .await
-        .map_err(|_| loco_rs::Error::Message(String::from("Error checking storage: 101")))?;
-
+    let exists = s3_client.check_object_exists(&s3_key).await?;
     if !exists {
-        return Ok(handle_general_response_text(
-            StatusCode::NOT_FOUND,
-            Some(format!("Path: {}", s3_key.as_ref())),
-            Some("File not found".into()),
-        )
-        .into_response());
+        return Ok((StatusCode::NOT_FOUND, "Model not found").into_response());
     }
-    let train = ActiveModel::from(train).upload_completed(&ctx.db).await?;
+    let verified_train = train.upload_completed(&ctx.db).await?;
 
+    //2. Generate Pre-Signed URL
     let exp_time = Some(60 * 60 * 3); // 3 hours
-    let pre_url = match s3_client.get_object_pre(&s3_key, exp_time).await {
-        Ok(url) => url,
-        Err(e) => return Ok((StatusCode::INTERNAL_SERVER_ERROR, e.to_string()).into_response()),
-    };
-    let train_schema = FluxLoraTrainingSchema::from_training(train.clone(), pre_url);
+    let pre_url = s3_client.get_object_pre(&s3_key, exp_time).await?;
+    let train_schema = FluxLoraTrainingSchema::from_training(&verified_train, pre_url);
 
-    // Send training model to Fal AI Queue
+    //3. Send training model to Fal AI Queue
     let queue = fal_ai_client
-        .send_training_queue_webhook(&train_schema)
+        .send_queue_webhook_all::<FluxLoraTrainingSchema, QueueResponse>(&train_schema)
         .await?;
 
-    // Save Fal AI response in Database
-    let _train_model = ActiveModel::from(train)
-        .update_with_fal_ai_webhook_training_response(&ctx.db, &queue)
+    //4. Save Fal AI response in Database
+    verified_train
+        .update_model_to_training(&ctx.db, &queue)
         .await?;
 
-    // Send response back to user
+    //5. Send response back to user
     Ok(
         handle_general_response_text(StatusCode::OK, None, Some("Successfully saved".into()))
             .into_response(),
     )
-
-    // // Send response back to user
-    // Ok(handle_general_response(
-    //     StatusCode::OK,
-    //     Some(train),
-    //     Some("Successfully saved".into()),
-    // )
-    // .into_response())
 }
+
+// #[debug_handler]
+// pub async fn upload_training_completed(
+//     _auth: auth::JWT,
+//     Path(training_model_id): Path<Uuid>,
+//     Extension(s3_client): Extension<AwsS3>,
+//     Extension(fal_ai_client): Extension<FalAiClient>,
+//     State(ctx): State<AppContext>,
+// ) -> Result<Response> {
+//     let train = TrainingModelModel::find_by_pid(&ctx.db, &training_model_id)
+//         .await
+//         .map_err(|e| loco_rs::Error::Message(format!("Error Getting Training Model: {} ", e)))?;
+//     let s3_key: S3Key = S3Key::new(&train.s3_key);
+
+//     let exists = s3_client
+//         .check_object_exists(&s3_key)
+//         .await
+//         .map_err(|_| loco_rs::Error::Message(String::from("Error checking storage: 101")))?;
+
+//     if !exists {
+//         return Ok(handle_general_response_text(
+//             StatusCode::NOT_FOUND,
+//             Some(format!("Path: {}", s3_key.as_ref())),
+//             Some("File not found".into()),
+//         )
+//         .into_response());
+//     }
+//     let train = ActiveModel::from(train).upload_completed(&ctx.db).await?;
+
+//     let exp_time = Some(60 * 60 * 3); // 3 hours
+//     let pre_url = match s3_client.get_object_pre(&s3_key, exp_time).await {
+//         Ok(url) => url,
+//         Err(e) => return Ok((StatusCode::INTERNAL_SERVER_ERROR, e.to_string()).into_response()),
+//     };
+//     let train_schema = FluxLoraTrainingSchema::from_training(&train, pre_url);
+
+//     // Send training model to Fal AI Queue
+//     let queue = fal_ai_client
+//         .send_training_queue_webhook(&train_schema)
+//         .await?;
+
+//     // Save Fal AI response in Database
+//     let _train_model = ActiveModel::from(train)
+//         .update_with_fal_ai_webhook_training_response(&ctx.db, &queue)
+//         .await?;
+
+//     // Send response back to user
+//     Ok(
+//         handle_general_response_text(StatusCode::OK, None, Some("Successfully saved".into()))
+//             .into_response(),
+//     )
+
+//     // // Send response back to user
+//     // Ok(handle_general_response(
+//     //     StatusCode::OK,
+//     //     Some(train),
+//     //     Some("Successfully saved".into()),
+//     // )
+//     // .into_response())
+// }
 
 #[debug_handler]
 pub async fn check_model(

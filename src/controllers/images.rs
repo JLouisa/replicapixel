@@ -3,11 +3,13 @@
 #![allow(clippy::unused_async)]
 use axum::{debug_handler, extract::Query, Extension};
 use axum::{http::StatusCode, response::IntoResponse, Json};
+use derive_more::Constructor;
 use loco_rs::prelude::*;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 use crate::domain::domain_services::image_generation::ImageGenerationService;
+use crate::domain::url::Url;
 use crate::domain::website::Website;
 use crate::models::_entities::sea_orm_active_enums::{ImageFormat, ImageSize, Status};
 use crate::models::images::{
@@ -18,7 +20,7 @@ use crate::models::join::user_image::load_user_and_image;
 use crate::models::packs::PacksDomain;
 use crate::models::users::UserPid;
 use crate::models::{ImageActiveModel, ImageModel, TrainingModelModel, UserCreditModel, UserModel};
-use crate::service::aws::s3::{AwsS3, S3Folders};
+use crate::service::aws::s3::{AwsS3, S3Folders, S3Key};
 use crate::service::fal_ai::fal_client::Lora;
 use crate::service::redis::redis::RedisCacheDriver;
 use crate::views::images::{CreditsViewModel, ImageView, ImageViewList};
@@ -74,6 +76,7 @@ pub mod routes {
         pub const IMAGE_FAVORITE_ID: &'static str = "/favorite/{id}";
         pub const IMAGE_FAVORITE: &'static str = "/favorite";
         pub const IMAGE_BASE: &'static str = "";
+        pub const API_IMAGE_DOWNLOAD_LINK: &'static str = "/download/{img_pid}";
 
         pub fn check_route() -> String {
             use crate::controllers::images;
@@ -105,6 +108,10 @@ pub fn routes() -> Routes {
         .add(
             routes::Images::IMAGE_S3_UPLOAD_COMPLETE_ID,
             patch(img_s3_upload_completed),
+        )
+        .add(
+            routes::Images::API_IMAGE_DOWNLOAD_LINK,
+            get(img_s3_download_link),
         )
 }
 
@@ -259,6 +266,11 @@ pub struct ImageLoadingParams {
     pub favorite: Option<bool>,
 }
 
+#[derive(Serialize, Debug, Constructor, Clone)]
+pub struct ImageDownloadLink {
+    pre_url: Url,
+}
+
 // async fn load_user(db: &DatabaseConnection, pid: &str) -> Result<UserModel> {
 //     let item = UserModel::find_by_pid(db, pid).await?;
 //     Ok(item)
@@ -291,6 +303,49 @@ async fn load_images_inf(
 }
 
 #[debug_handler]
+pub async fn img_s3_download_link(
+    auth: auth::JWT,
+    Path(img_pid): Path<Uuid>,
+    Extension(cache): Extension<RedisCacheDriver>,
+    Extension(s3_client): Extension<AwsS3>,
+    State(ctx): State<AppContext>,
+) -> Result<impl IntoResponse> {
+    let (_user, image) = load_user_and_image(&ctx.db, &auth.claims.pid, &img_pid).await?;
+    let mut image_view: ImageView = (&image).into();
+
+    if image_view.image_url_fal.is_some()
+        && image_view.image_status == Status::Completed.to_string()
+    {
+        let updated = image_view.get_pre_url_mut(&s3_client, &cache).await;
+        image_view = updated.clone();
+    }
+
+    let cached_url = match image_view.s3_pre_url {
+        Some(v) => {
+            tracing::info!("Pre download link url cached found: {}", &image_view.pid);
+            Url::new(v)
+        }
+        None => {
+            tracing::warn!(
+                "Download Link Url cached not found! Creating S3 download URL: {}",
+                &image_view.pid
+            );
+            let s3_key = S3Key::new(image.image_s3_key.clone());
+            let exists = s3_client.check_object_exists(&s3_key).await?;
+            if !exists {
+                return Ok((StatusCode::NO_CONTENT).into_response().into_response());
+            }
+            let pre_url = s3_client.get_object_pre(&s3_key, None).await?;
+            let _ = cache.set_s3_pre_url(&image_view).await;
+            pre_url
+        }
+    };
+    let url = ImageDownloadLink::new(cached_url);
+
+    return Ok((StatusCode::OK, Json(url)).into_response());
+}
+
+#[debug_handler]
 pub async fn generate(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
@@ -299,7 +354,6 @@ pub async fn generate(
     ViewEngine(v): ViewEngine<TeraView>,
     Json(request): Json<ImageGenRequestParams>,
 ) -> Result<Response> {
-    dbg!(&request);
     // 0. Validate request payload format
     request.validate()?;
 

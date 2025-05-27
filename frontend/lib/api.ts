@@ -12,7 +12,7 @@ const DEFAULT_BASE_URL = window.__APP_ENV__.apiBaseUrl;
 enum Api {
   Upload = "/api/models",
   Image = "/api/images",
-  Dashboard = "/dashboard",
+  Dashboard = "/studio",
 }
 
 enum AddOnUrl {
@@ -479,9 +479,11 @@ export const DAL = {
           const presignedResponse = await DAL.Backend.UploadService.getPreSignUrlForUploadTraining(
             modelData
           );
-          // Step 2: Upload the file to S3 using the presigned URL
           console.log("presignedResponse SaveToS3: ", presignedResponse);
+
+          // Step 2: Upload the file to S3 using the presigned URL
           await DAL.Integrations.AwsS3.uploadToS3(presignedResponse, file);
+          console.log("Upload to S3 completed");
 
           // Step 3: Notify the server that the upload was successful
           const item = await DAL.Backend.UploadService.markUploadSuccess(presignedResponse);

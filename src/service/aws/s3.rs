@@ -23,11 +23,11 @@ pub enum AwsError {
     #[error("S3 error: {0}")]
     S3Err(#[from] s3::Error),
     #[error("PresigningConfigError error: {0}")]
-    S3PresigningConfigErr(#[from] PresigningConfigError),
+    LocoError(#[from] PresigningConfigError),
     #[error("PutObjectError error: {0}")]
-    PutObjectErr(#[from] SdkError<PutObjectError>),
+    PutRequest(#[from] SdkError<PutObjectError>),
     #[error("HeadObjectError error: {0}")]
-    HeadObjectErr(#[from] SdkError<HeadObjectError>),
+    RequestFailed(#[from] SdkError<HeadObjectError>),
     #[error("S3 Deletion error: {0}")]
     S3DeletionError(#[from] SdkError<DeleteObjectError>),
     #[error("Other error: {0}")]
@@ -290,7 +290,7 @@ impl AwsS3 {
             Err(SdkError::ServiceError(service_error)) if service_error.err().is_not_found() => {
                 Ok(false)
             } // Object does not exist
-            Err(e) => Err(AwsError::HeadObjectErr(e)), // Wrap the error in Err
+            Err(e) => Err(AwsError::RequestFailed(e)), // Wrap the error in Err
         }
     }
 

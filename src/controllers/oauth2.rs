@@ -99,6 +99,36 @@ pub fn routes() -> Routes {
     // )
 }
 
+pub trait CookieTrait<T>: OAuth2UserTrait<T> + ModelTrait {
+    fn create_cookie(&self, ctx: &AppContext) -> Result<AxumCookie<'static>>;
+}
+
+// Implement the trait for your model
+impl CookieTrait<OAuth2UserProfile> for UserModel {
+    fn create_cookie(&self, ctx: &AppContext) -> Result<AxumCookie<'static>> {
+        let jwt_secret = ctx.config.get_jwt_config()?;
+        let jwt_ttl_secs = jwt_secret.expiration * 7; // 7 days
+
+        let expiration_time =
+            time::OffsetDateTime::now_utc() + time::Duration::seconds(jwt_ttl_secs as i64);
+
+        let token = self
+            .generate_jwt(&jwt_secret.secret, jwt_ttl_secs as u64)
+            .or_else(|_| unauthorized("unauthorized!"))?;
+
+        let cookie = AxumCookie::build(("auth", token))
+            .path("/")
+            .http_only(true)
+            .secure(!cfg!(debug_assertions))
+            .same_site(SameSite::Strict)
+            .expires(expiration_time)
+            .max_age(time::Duration::seconds(jwt_ttl_secs as i64))
+            .build();
+
+        Ok(cookie)
+    }
+}
+
 #[derive(Debug, Deserialize)]
 pub struct GoogleTokenPayload {
     token: String,
@@ -140,19 +170,8 @@ async fn google_ott(
 
     let user = UserModel::upsert_with_ott(&ctx.db, &register, &stripe_client).await?;
 
-    let jwt_secret = ctx.config.get_jwt_config()?;
-    let expire = jwt_secret.expiration * 7; // 7 days
-    let token = user
-        .generate_jwt(&jwt_secret.secret, expire)
-        .or_else(|_| unauthorized("unauthorized!"))?;
-
-    let cookie = AxumCookie::build(("auth", token.clone()))
-        .path("/")
-        .http_only(true)
-        .secure(!cfg!(debug_assertions)) // set to false in localhost for dev
-        .same_site(SameSite::Strict)
-        .max_age(time::Duration::seconds(expire as i64))
-        .build();
+    // Cookie
+    let cookie = user.create_cookie(&ctx)?;
     let cookie_header_value = cookie.to_string();
 
     // View
@@ -206,7 +225,7 @@ async fn protected(
 
 pub async fn google_callback_jwt<
     T: DeserializeOwned + Send,
-    U: OAuth2UserTrait<T> + ModelTrait,
+    U: CookieTrait<T>,
     V: OAuth2SessionsTrait<U>,
     W: DatabasePool + Clone + Debug + Sync + Send + 'static,
 >(
@@ -222,21 +241,10 @@ pub async fn google_callback_jwt<
             tracing::error!("Error getting client: {:?}", e);
             Error::InternalServerError
         })?;
-    let jwt_secret = ctx.config.get_jwt_config()?;
     let user = callback_jwt_google::<T, U, V, W>(&ctx, session, params, &mut client).await?;
     drop(client);
 
-    let token = user
-        .generate_jwt(&jwt_secret.secret, &jwt_secret.expiration)
-        .or_else(|_| unauthorized("unauthorized!"))?;
-
-    let cookie = AxumCookie::build(("auth", token))
-        .path("/")
-        .http_only(true)
-        .secure(!cfg!(debug_assertions)) // set to false in localhost
-        .same_site(SameSite::Lax)
-        .max_age(time::Duration::seconds(jwt_secret.expiration as i64))
-        .build();
+    let cookie = user.create_cookie(&ctx)?;
 
     let mut response = Redirect::to(Dashboard::BASE).into_response();
     response

@@ -1,3 +1,8 @@
+// Returns full host (e.g., "localhost:3000" or "api.example.com")
+const DEFAULT_BASE_URL = window.location.host;
+// // Hostname only (no port): "localhost" or "example.com"
+// const currentDomain = window.location.hostname;
+
 function updatePageTitle(title) {
   document.title = title;
 }
@@ -49,10 +54,25 @@ async function uploadImageFromUrlToS3(imageUrl, presignedUrl, notifyBackendUrl) 
   }
 }
 
-function downloadImageWithLink(url, filename) {
+async function downloadImageWithLink(url, filename, pid) {
+  let download_url;
+  if (url.includes("https://replicapixel-dev.s3.eu-central-1.amazonaws.com")) {
+    download_url = url;
+  } else {
+    try {
+      const res = await fetch(`/api/images/download/${pid}`);
+      if (!res.ok) throw new Error("Failed to fetch download URL");
+      const data = await res.json();
+      download_url = data.pre_url;
+    } catch (err) {
+      console.error("Error fetching download URL:", err);
+      download_url = url;
+      return;
+    }
+  }
   try {
     const link = document.createElement("a");
-    link.href = url;
+    link.href = download_url;
     link.download = filename || "download";
     document.body.appendChild(link);
     link.click();

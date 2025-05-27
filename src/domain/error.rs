@@ -2,6 +2,7 @@ use super::domain_services::image_generation::ImageGenerationError;
 use crate::{
     models::join::user_credits_models::JoinError,
     service::{
+        aws::s3::AwsError,
         fal_ai::fal_client::FalAiClientError,
         stripe::{
             stripe::StripeClientError, stripe_builder::StripeCheckoutBuilderErr,
@@ -195,6 +196,37 @@ impl From<FalAiClientError> for loco_rs::Error {
                 ErrorDetail::new("Error", &err_str),
             ),
             FalAiClientError::SerdeErr(err) => loco_rs::Error::CustomError(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                ErrorDetail::new("Serde Error", &err.to_string()),
+            ),
+        }
+    }
+}
+
+impl From<AwsError> for loco_rs::Error {
+    fn from(err: AwsError) -> Self {
+        match err {
+            AwsError::S3Err(err_str) => loco_rs::Error::CustomError(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                ErrorDetail::new("Error", &err_str.to_string()),
+            ),
+            AwsError::LocoError(err) => loco_rs::Error::CustomError(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                ErrorDetail::new("Error", &err.to_string()),
+            ),
+            AwsError::PutRequest(e) => loco_rs::Error::CustomError(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                ErrorDetail::new("Storage Saved Failed", &e.to_string()),
+            ),
+            AwsError::RequestFailed(err_str) => loco_rs::Error::CustomError(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                ErrorDetail::new("Storage Request Failed", &err_str.to_string()),
+            ),
+            AwsError::Other(err_str) => loco_rs::Error::CustomError(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                ErrorDetail::new("Error", &err_str),
+            ),
+            AwsError::S3DeletionError(err) => loco_rs::Error::CustomError(
                 StatusCode::INTERNAL_SERVER_ERROR,
                 ErrorDetail::new("Serde Error", &err.to_string()),
             ),

@@ -1,3 +1,6 @@
+Sexy Female Teacher
+Hot Male Teacher
+
 Villain Vibes Photos
 Elf Queen / Fantasy Warrior Photos
 Mermaid Photos

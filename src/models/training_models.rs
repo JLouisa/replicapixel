@@ -241,6 +241,24 @@ impl Model {
         let training = Entity::find().filter(condition).one(db).await?;
         training.ok_or_else(|| ModelError::EntityNotFound)
     }
+
+    pub async fn upload_completed(self, db: &DatabaseConnection) -> ModelResult<Model> {
+        let mut new = ActiveModel::from(self);
+        new.updated_at = ActiveValue::Set(chrono::Utc::now().into());
+        new.is_verified = ActiveValue::Set(true);
+        Ok(new.update(db).await?)
+    }
+
+    pub async fn update_model_to_training(
+        self,
+        db: &DatabaseConnection,
+        fal: &QueueResponse,
+    ) -> ModelResult<Model> {
+        let mut new = ActiveModel::from(self);
+        new.fal_ai_request_id = ActiveValue::Set(Some(fal.request_id.clone()));
+        new.training_status = ActiveValue::Set(Status::Training);
+        Ok(new.update(db).await?)
+    }
 }
 
 // implement your write-oriented logic here
@@ -291,6 +309,15 @@ impl ActiveModel {
     }
 
     pub async fn update_with_fal_ai_webhook_training_response(
+        mut self,
+        db: &DatabaseConnection,
+        fal: &QueueResponse,
+    ) -> ModelResult<Model> {
+        self.fal_ai_request_id = ActiveValue::Set(Some(fal.request_id.clone()));
+        self.training_status = ActiveValue::Set(Status::Training);
+        Ok(self.update(db).await?)
+    }
+    pub async fn update_model_to_training(
         mut self,
         db: &DatabaseConnection,
         fal: &QueueResponse,

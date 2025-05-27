@@ -11,6 +11,7 @@
     "inmem",
     "inpainting",
     "loras",
+    "redaxios",
     "removedfile",
     "rundiffusion",
     "submitjson"
