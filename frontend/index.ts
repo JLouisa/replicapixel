@@ -348,12 +348,14 @@ interface ImageGenFormStore {
   numImages: number;
   isLoading: boolean;
   selectedModelId: string | null;
+  selectedQuality: string | null;
 
   init(): void;
   reset(): void;
   toggleAdvancedOptions(): void;
   decrementImages(): void;
   incrementImages(maxImages?: number): void;
+  setImagesNum(maxImages: number): void;
   handleCreateRequest(event: SubmitEvent): Promise<void>;
 }
 
@@ -363,6 +365,7 @@ Alpine.store(Stores.ImageGenForm, {
   numImages: 8,
   isLoading: false,
   selectedModelId: null,
+  selectedQuality: null,
 
   init() {},
   reset(this: ImageGenFormStore): void {
@@ -379,6 +382,10 @@ Alpine.store(Stores.ImageGenForm, {
 
   incrementImages(this: ImageGenFormStore, maxImages: number = 20) {
     this.numImages = Math.min(maxImages, this.numImages + 1);
+  },
+
+  setImagesNum(this: ImageGenFormStore, num: number) {
+    this.numImages = num;
   },
 
   async handleCreateRequest(this: ImageGenFormStore, event: SubmitEvent): Promise<void> {
@@ -402,6 +409,7 @@ Alpine.store(Stores.ImageGenForm, {
       num_inference_steps: this.inferenceSteps,
       num_images: this.numImages,
       image_size: (formData.get("image_size") as string) || "1024x1024",
+      model: (formData.get("model") as string) || "high",
     };
 
     // console.log("Payload:", payload);
@@ -418,7 +426,7 @@ Alpine.store(Stores.ImageGenForm, {
     this.isLoading = true;
     Alpine.store(Stores.Toast).success("Image generation started!");
 
-    // Replace empty div needed
+    // Replace empty div if needed
     replaceDivIfFound();
 
     try {

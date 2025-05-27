@@ -113,52 +113,105 @@
         />
       </div>
 
-      <div>
-        <label class="block text-xs mb-1 text-base-content/70">Number of Images</label>
-        <input type="hidden" name="num_images" x-model="$store.imageGenForm.numImages" />
-        <div class="flex items-center space-x-2">
-          <button
-            type="button"
-            class="btn btn-sm btn-outline join-item"
-            aria-label="Decrease number of images"
-            :disabled="$store.imageGenForm.numImages <= 1 || $store.imageGenForm.isLoading"
-            x-on:click="$store.imageGenForm.decrementImages()"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="w-4 h-4"
+      <div class="flex justify-between items-end gap-6 mx-auto">
+        <!-- Left: Image Counter Controls -->
+        <div class="flex flex-col items-center">
+          <label class="block text-xs mb-1 text-base-content/70 text-center">
+            Number of Images
+          </label>
+          <input type="hidden" name="num_images" x-model="$store.imageGenForm.numImages" />
+          <div class="flex items-center space-x-2">
+            <!-- Decrease Button -->
+            <button
+              type="button"
+              class="btn btn-sm btn-outline join-item"
+              aria-label="Decrease number of images"
+              :disabled="$store.imageGenForm.numImages <= 1 || $store.imageGenForm.isLoading"
+              x-on:click="$store.imageGenForm.decrementImages()"
             >
-              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15" />
-            </svg>
-          </button>
-          <span
-            class="input input-sm input-bordered flex items-center justify-center w-12 text-center tabular-nums bg-base-100 join-item"
-            x-text="$store.imageGenForm.numImages"
-          >
-          </span>
-          <button
-            type="button"
-            class="btn btn-sm btn-outline join-item"
-            aria-label="Increase number of images"
-            :disabled="$store.imageGenForm.numImages >= 20 || $store.imageGenForm.isLoading"
-            x-on:click="$store.imageGenForm.incrementImages()"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="w-4 h-4"
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                viewBox="0 0 24 24"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15" />
+              </svg>
+            </button>
+
+            <!-- Value Display -->
+            <span
+              class="input input-sm input-bordered w-12 text-center tabular-nums bg-base-100 join-item"
+              x-text="$store.imageGenForm.numImages"
+            ></span>
+
+            <!-- Increase Button -->
+            <button
+              type="button"
+              class="btn btn-sm btn-outline join-item"
+              aria-label="Increase number of images"
+              :disabled="$store.imageGenForm.numImages >= 20 || $store.imageGenForm.isLoading"
+              x-on:click="$store.imageGenForm.incrementImages()"
             >
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-            </svg>
-          </button>
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                viewBox="0 0 24 24"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+              </svg>
+            </button>
+          </div>
         </div>
+
+        <!-- Right: Quick Set Buttons -->
+        <div class="flex flex-col items-center">
+          <label class="block text-xs mb-1 text-base-content/70 text-center"> Quick </label>
+          <div class="flex items-center gap-2">
+            <button
+              type="button"
+              class="btn btn-sm btn-outline join-item"
+              x-on:click="$store.imageGenForm.setImagesNum(1)"
+              :disabled="$store.imageGenForm.isLoading"
+            >
+              1
+            </button>
+            <button
+              type="button"
+              class="btn btn-sm btn-outline join-item"
+              x-on:click="$store.imageGenForm.setImagesNum(12)"
+              :disabled="$store.imageGenForm.isLoading"
+            >
+              12
+            </button>
+            <button
+              type="button"
+              class="btn btn-sm btn-outline join-item"
+              x-on:click="$store.imageGenForm.setImagesNum(20)"
+              :disabled="$store.imageGenForm.isLoading"
+            >
+              20
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <label for="model" class="block text-xs mb-1 text-base-content/70"
+          >Image Generation Quality</label
+        >
+        <select
+          id="image-quality"
+          name="model"
+          class="select select-bordered select-sm w-full bg-base-100"
+          :disabled="$store.imageGenForm.isLoading"
+        >
+          <option value="high" selected>High</option>
+          <option value="low">Low</option>
+        </select>
       </div>
     </div>
 

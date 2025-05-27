@@ -1,6 +1,6 @@
 use crate::controllers::images::ImageLoadingParams;
 use crate::service::aws::s3::S3Key;
-use crate::service::fal_ai::fal_client::Lora;
+use crate::service::fal_ai::fal_client::{Lora, WebhookPayload};
 
 pub use super::ImageModel;
 use super::TrainingModelModel;
@@ -40,6 +40,7 @@ pub struct ImageNew {
     pub image_url_fal: Option<String>,
     pub pack_id: Option<i32>,
     pub deleted_at: Option<DateTimeWithTimeZone>,
+    pub model: WebhookPayload,
 }
 impl ImageNew {
     pub fn update(&self, item: &mut ActiveModel) {
@@ -70,6 +71,9 @@ pub struct ImageNewList(Vec<ImageNew>);
 impl ImageNewList {
     pub fn into_inner(self) -> Vec<ImageNew> {
         self.0
+    }
+    pub fn amount(&self) -> i32 {
+        self.0.len() as i32
     }
     pub async fn save_all(&self, txn: &DatabaseTransaction) -> Result<(), DbErr> {
         let models: Vec<ActiveModel> = self
@@ -287,20 +291,7 @@ impl Model {
             }
             let next_images = query.limit(num).all(db).await?;
             Ok(next_images)
-        }
-        //===================================Old Stable Query===========================================
-        // if let Some(anchor) = anchor_image {
-        //     let mut next_images = Entity::find()
-        //         .filter(images::Column::UserId.eq(user_id))
-        //         .filter(images::Column::Id.lt(anchor.id))
-        //         .filter(images::Column::DeletedAt.is_null())
-        //         .limit(num)
-        //         .order_by_desc(images::Column::Id)
-        //         .all(db)
-        //         .await?;
-        //     Ok(next_images)
-        // }
-        else {
+        } else {
             Err(ModelError::EntityNotFound)
         }
     }

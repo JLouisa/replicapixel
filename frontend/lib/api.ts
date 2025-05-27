@@ -8,10 +8,8 @@ import type { ImageGenForm } from "./type/ImageGenForm";
 import Alpine from "alpinejs";
 import { getBaseUrl } from "./utils";
 
-// const DEFAULT_BASE_URL =
-//   window.location.hostname === "localhost" ? "http://localhost:5150" : "https://replicapixel.com";
-
 const DEFAULT_BASE_URL = getBaseUrl();
+console.log("Base Url", DEFAULT_BASE_URL);
 
 enum Api {
   Upload = "/api/models",
@@ -36,7 +34,7 @@ const BackendUrl = {
   },
   Image: {
     Base: Api.Image,
-    GenerateImage: Api.Image + "/generate/test",
+    GenerateImage: Api.Image + "/generate",
   },
   Dashboard: {
     Base: Api.Dashboard,
@@ -47,7 +45,7 @@ const BackendUrl = {
 
 const axiosInstance = axios.create({
   baseURL: DEFAULT_BASE_URL,
-  withCredentials: true, // Include credentials (cookies) in requests
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
@@ -371,7 +369,6 @@ export const DAL = {
       },
       ImageGeneration: {
         async generateImage(payload: ImageGenForm, target: string, swapStyle: string) {
-          console.log("Full URL:", DEFAULT_BASE_URL + BackendUrl.Image.GenerateImage);
           try {
             return await backendApi.postHTMX(
               BackendUrl.Image.GenerateImage,
@@ -433,6 +430,11 @@ export const DAL = {
       async imageGenerationHtmx(payload: ImageGenForm, target: string, swapStyle: string) {
         try {
           return await DAL.Backend.htmx.ImageGeneration.generateImage(payload, target, swapStyle);
+          // return await window.htmx.ajax("POST", BackendUrl.Image.GenerateImage, {
+          //   target: target,
+          //   swap: swapStyle,
+          //   values: payload,
+          // });
         } catch (error) {
           return DAL.handleError("Something went wrong uploading image", error, false);
         }

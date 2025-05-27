@@ -8,6 +8,7 @@ export const ImageGenFormSchema = object({
   num_inference_steps: number(),
   num_images: number(),
   image_size: string(),
+  model: string(),
 });
 
 // 2. Type derived from schema
@@ -24,7 +25,8 @@ export class ImageGenFormClass implements ImageGenForm {
     public training_model_pid: string | null,
     public num_inference_steps: number = this.num_inference_steps,
     public num_images: number = this.num_images,
-    public image_size: string
+    public image_size: string,
+    public model: string
   ) {}
 
   // Static constructor with validation
@@ -38,7 +40,8 @@ export class ImageGenFormClass implements ImageGenForm {
       result.output.training_model_pid,
       result.output.num_inference_steps,
       result.output.num_images,
-      result.output.image_size
+      result.output.image_size,
+      result.output.model
     );
   }
 

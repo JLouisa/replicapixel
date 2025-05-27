@@ -1,7 +1,10 @@
 import { zipSync } from "fflate";
 
 export function getBaseUrl(): string {
-  return `${window.location.protocol}//${window.location.host}`;
+  // const url =
+  //   window.location.hostname === "localhost" ? "http://localhost:5150" : "https://replicapixel.com";
+  const url = `${window.location.protocol}//${window.location.host}`;
+  return url;
 }
 
 export async function createZip(files: File[], zipName: string): Promise<File> {

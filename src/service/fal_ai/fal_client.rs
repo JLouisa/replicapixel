@@ -9,7 +9,7 @@ use crate::{
 };
 use futures::future::join_all;
 use reqwest::Client as ReqwestClient;
-use serde::{de::DeserializeOwned, Deserialize, Serialize};
+use serde::{de::DeserializeOwned, Deserialize, Deserializer, Serialize};
 use std::{collections::HashMap, fmt::Debug};
 use strum_macros::Display;
 
@@ -49,7 +49,7 @@ enum WebhookType {
     Image,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, strum::EnumString, strum::Display)]
+#[derive(Debug, Clone, Serialize, PartialEq, Deserialize, strum::EnumString, strum::Display)]
 pub enum FalAiTrainingModel {
     #[strum(to_string = "fal-ai/flux-lora-fast-training")]
     FluxLoraFastTraining,
@@ -62,7 +62,7 @@ impl Default for FalAiTrainingModel {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, strum::EnumString, strum::Display)]
+#[derive(Debug, Clone, Serialize, PartialEq, Deserialize, strum::EnumString, strum::Display)]
 pub enum FalAiImageModel {
     #[strum(to_string = "fal-ai/flux-lora")]
     FluxLora,
@@ -79,13 +79,37 @@ impl Default for FalAiImageModel {
     }
 }
 
-#[derive(Serialize, Debug, Clone, Deserialize)]
-#[serde(tag = "type")] // optional: helps for serialization
+#[derive(Serialize, Debug, Clone, PartialEq)]
 pub enum WebhookPayload {
     Image(FalAiImageModel),
     Training(FalAiTrainingModel),
 }
+impl Default for WebhookPayload {
+    fn default() -> Self {
+        Self::Image(FalAiImageModel::default())
+    }
+}
+// 👇 Custom Deserialize implementation
+impl<'de> Deserialize<'de> for WebhookPayload {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let s = String::deserialize(deserializer)?;
+        Ok(WebhookPayload::from_str(&s))
+    }
+}
 impl WebhookPayload {
+    pub fn from_str(value: &str) -> Self {
+        match value {
+            "high" => Self::Image(FalAiImageModel::JuggernautFluxLora),
+            "low" => Self::Image(FalAiImageModel::FluxLora),
+            "portrait" => Self::Training(FalAiTrainingModel::FluxLoraPortraitTrainer),
+            "train-fast" => Self::Training(FalAiTrainingModel::FluxLoraFastTraining),
+            _ => Self::default(),
+        }
+    }
+
     pub fn webhook_url<'a>(&self, client: &'a FalAiClient) -> &'a str {
         match self {
             Self::Training(FalAiTrainingModel::FluxLoraFastTraining) => {
@@ -250,9 +274,9 @@ impl FalAiClient {
 
     pub async fn send_image_queue_many_async(
         &self,
-        list: ImageNewList,
+        list: &ImageNewList,
     ) -> Result<ImageNewList, FalAiClientError> {
-        let futures = list.into_inner().into_iter().map(|mut item| {
+        let futures = list.clone().into_inner().into_iter().map(|mut item| {
             let body = item.clone().into();
             let client = self.clone();
             async move {
@@ -279,18 +303,17 @@ impl FalAiClient {
                 Err(e) => tracing::error!("Failed to send image queue: {:?}", e),
             }
         }
-        dbg!(&successful);
         Ok(ImageNewList::new(successful))
     }
 
     pub async fn retry(
         &self,
         mut response: ImageNewList,
-        list_img: ImageNewList,
+        list_img: &ImageNewList,
     ) -> Result<ImageNewList, FalAiClientError> {
         if response.as_ref().len() != list_img.as_ref().len() {
             let missing_images: Vec<ImageNew> = list_img
-                .into_inner()
+                .as_ref()
                 .iter()
                 .filter(|item| !response.as_ref().contains(item))
                 .cloned()
@@ -298,35 +321,13 @@ impl FalAiClient {
             let missing_images = ImageNewList::new(missing_images);
 
             // second request
-            let second_try = self.send_image_queue_many_async(missing_images).await?;
+            let second_try = self.send_image_queue_many_async(&missing_images).await?;
 
             // Extend response manually
             let mut response_inner = response.into_inner();
             response_inner.extend(second_try.into_inner());
             response = ImageNewList::new(response_inner);
         }
-
-        Ok(response)
-    }
-
-    pub async fn request_status(
-        &self,
-        request_id: &str,
-    ) -> Result<FluxStatusResponse, FalAiClientError> {
-        let response = self
-            .client
-            .get(format!(
-                "{}/requests/{}/status",
-                &self.image_url, request_id
-            ))
-            .header("Authorization", format!("Key {}", &self.fal_key))
-            .send()
-            .await
-            .map_err(|_| {
-                loco_rs::Error::Message("Error processing Status Request: 102".to_string())
-            })?
-            .json::<FluxStatusResponse>()
-            .await?;
 
         Ok(response)
     }
@@ -602,6 +603,7 @@ impl From<ImageNew> for FluxLoraImageGenerate {
             image_size: value.image_size,
             num_inference_steps: value.num_inference_steps as u16,
             loras: value.loras,
+            model: value.model,
             ..Default::default()
         }
     }

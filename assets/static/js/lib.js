@@ -1,8 +1,3 @@
-// Returns full host (e.g., "localhost:3000" or "api.example.com")
-const DEFAULT_BASE_URL = window.location.host;
-// // Hostname only (no port): "localhost" or "example.com"
-// const currentDomain = window.location.hostname;
-
 function updatePageTitle(title) {
   document.title = title;
 }
@@ -21,7 +16,7 @@ function shiningBtn(compId) {
       }
     }
 
-    const shineInterval = setInterval(triggerShine, intervalDuration);
+    setInterval(triggerShine, intervalDuration);
   } else {
     console.error("Button with id 'shiningButton' not found.");
   }
@@ -83,26 +78,26 @@ async function downloadImageWithLink(url, filename, pid) {
   }
 }
 
-async function downloadImage(url, filename) {
-  try {
-    const response = await fetch(url, { mode: "cors" }); // Requires CORS headers on S3
-    if (!response.ok) throw new Error("Network response was not ok");
+// async function downloadImage(url, filename) {
+//   try {
+//     const response = await fetch(url, { mode: "cors" }); // Requires CORS headers on S3
+//     if (!response.ok) throw new Error("Network response was not ok");
 
-    const blob = await response.blob();
-    const blobUrl = URL.createObjectURL(blob);
+//     const blob = await response.blob();
+//     const blobUrl = URL.createObjectURL(blob);
 
-    const link = document.createElement("a");
-    link.href = blobUrl;
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
+//     const link = document.createElement("a");
+//     link.href = blobUrl;
+//     link.download = filename;
+//     document.body.appendChild(link);
+//     link.click();
+//     link.remove();
 
-    URL.revokeObjectURL(blobUrl); // Clean up
-  } catch (error) {
-    console.error("Image download failed:", error);
-  }
-}
+//     URL.revokeObjectURL(blobUrl); // Clean up
+//   } catch (error) {
+//     console.error("Image download failed:", error);
+//   }
+// }
 
 //Todo Fix S3 Key to also include webp.
 // async function convertBlobToWebP(blob, quality = 0.8) {

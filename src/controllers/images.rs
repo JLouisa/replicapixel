@@ -21,7 +21,7 @@ use crate::models::packs::PacksDomain;
 use crate::models::users::UserPid;
 use crate::models::{ImageActiveModel, ImageModel, TrainingModelModel, UserCreditModel, UserModel};
 use crate::service::aws::s3::{AwsS3, S3Folders, S3Key};
-use crate::service::fal_ai::fal_client::Lora;
+use crate::service::fal_ai::fal_client::{Lora, WebhookPayload};
 use crate::service::redis::redis::RedisCacheDriver;
 use crate::views::images::{CreditsViewModel, ImageView, ImageViewList};
 use crate::{models::_entities::images::Entity, service::fal_ai::fal_client::FalAiClient, views};
@@ -95,7 +95,7 @@ pub fn routes() -> Routes {
     Routes::new()
         .prefix(routes::Images::BASE)
         .add(routes::Images::IMAGE, get(list))
-        .add(routes::Images::IMAGE_GENERATE_TEST, post(generate))
+        .add(routes::Images::IMAGE_GENERATE, post(generate))
         .add(routes::Images::IMAGE_CHECK_ID, get(check_img))
         .add(routes::Images::IMAGE_ID, get(get_one))
         .add(routes::Images::IMAGE_ID, delete(remove))
@@ -128,15 +128,18 @@ pub struct ImageGenRequestParams {
         message = "Number of images must be between 1 and 20"
     ))]
     pub num_images: u8,
+    #[serde(default)]
+    pub model: WebhookPayload,
 }
 
 pub trait ImageGenerationTrait {
-    fn process(self, model: &Option<TrainingModelModel>, user_pid: &UserModel) -> ImageNewList;
     fn formatted_prompt(&self, model: &TrainingModelModel) -> UserPrompt;
     fn steps(&self) -> i32;
     fn num_images(&self) -> i32;
     fn image_size(&self) -> ImageSize;
     fn cost(&self) -> i32;
+    fn quality_model(&self) -> WebhookPayload;
+    fn process(self, model: &Option<TrainingModelModel>, user_pid: &UserModel) -> ImageNewList;
 }
 impl ImageGenerationTrait for PacksDomain {
     fn formatted_prompt(&self, _model: &TrainingModelModel) -> UserPrompt {
@@ -155,6 +158,10 @@ impl ImageGenerationTrait for PacksDomain {
     fn cost(&self) -> i32 {
         self.credits as i32
     }
+    fn quality_model(&self) -> WebhookPayload {
+        WebhookPayload::default()
+    }
+
     fn process(self, model: &Option<TrainingModelModel>, user: &UserModel) -> ImageNewList {
         let model_id = match model {
             Some(m) => Some(m.id),
@@ -193,6 +200,7 @@ impl ImageGenerationTrait for PacksDomain {
                     image_size: self.image_size,
                     image_cost: 2,
                     num_inference_steps: self.num_images() as i32,
+                    model: self.quality_model(),
                     ..Default::default()
                 }
             })
@@ -215,6 +223,9 @@ impl ImageGenerationTrait for ImageGenRequestParams {
     }
     fn cost(&self) -> i32 {
         self.num_images as i32
+    }
+    fn quality_model(&self) -> WebhookPayload {
+        self.model.clone()
     }
     fn process(self, model: &Option<TrainingModelModel>, user: &UserModel) -> ImageNewList {
         let model_id = match model {
@@ -252,6 +263,7 @@ impl ImageGenerationTrait for ImageGenRequestParams {
                     image_s3_key: s3_key,
                     image_size: self.image_size,
                     loras: loras.clone(),
+                    model: self.quality_model(),
                     ..Default::default()
                 }
             })
@@ -271,14 +283,24 @@ pub struct ImageDownloadLink {
     pre_url: Url,
 }
 
-// async fn load_user(db: &DatabaseConnection, pid: &str) -> Result<UserModel> {
-//     let item = UserModel::find_by_pid(db, pid).await?;
-//     Ok(item)
-// }
-// async fn load_item(ctx: &AppContext, id: i32) -> Result<ImageModel> {
-//     let item = Entity::find_by_id(id).one(&ctx.db).await?;
-//     item.ok_or_else(|| Error::NotFound)
-// }
+async fn load_user_opt_training(
+    ctx: &AppContext,
+    user_pid: &UserPid,
+    params: &ImageGenRequestParams,
+) -> Result<(UserModel, Option<TrainingModelModel>)> {
+    let models = match params.training_model_pid {
+        Some(pid) => {
+            let (user, training_model) =
+                load_user_and_one_training_model(&ctx.db, &user_pid, pid).await?;
+            (user, Some(training_model))
+        }
+        None => {
+            let user = load_user(&ctx.db, &user_pid).await?;
+            (user, None)
+        }
+    };
+    Ok(models)
+}
 async fn load_item_pid(ctx: &AppContext, id: Uuid) -> Result<ImageModel> {
     let item = ImageModel::find_by_pid(&ctx.db, &id).await?;
     Ok(item)
@@ -356,27 +378,19 @@ pub async fn generate(
 ) -> Result<Response> {
     // 0. Validate request payload format
     request.validate()?;
+    dbg!(&request);
 
     // 1. Load User and Training Model
     let user_pid = UserPid::new(&auth.claims.pid);
-    let (user, training_model) = match request.training_model_pid {
-        Some(pid) => {
-            let (user, training_model) =
-                load_user_and_one_training_model(&ctx.db, &user_pid, pid).await?;
-            (user, Some(training_model))
-        }
-        None => {
-            let user = load_user(&ctx.db, &user_pid).await?;
-            (user, None)
-        }
-    };
+    let (user, training_model) = load_user_opt_training(&ctx, &user_pid, &request).await?;
 
     // 2. Call the Domain Service to perform the core logic
     let (updated_credits, saved_images) =
         ImageGenerationService::generate(&ctx, &fal_ai_client, request, &user, &training_model)
             .await?;
-    let is_image_gen = Some(true);
+
     // 3. Render the view using the View Models
+    let is_image_gen = Some(true);
     views::images::img_completed(
         &v,
         &website,
