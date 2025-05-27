@@ -13,6 +13,7 @@ use crate::models::PlanModel;
 use crate::models::_entities::sea_orm_active_enums::Language;
 use crate::models::_entities::sea_orm_active_enums::{BasedOn, Emotion, Ethnicity, EyeColor, Sex};
 use crate::models::_entities::sea_orm_active_enums::{ImageSize, PlanNames};
+use crate::service::fal_ai::fal_client::FalAiImageModel;
 use derive_more::Constructor;
 use loco_rs::app::AppContext;
 use serde::{Deserialize, Serialize};
@@ -84,6 +85,7 @@ pub struct WebsiteFormFields {
     pub image_sizes: Vec<(ImageSize, String)>,
     pub languages: Vec<Language>,
     pub create_model: CreateModel,
+    pub quality_model: Vec<(String, String)>,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize, Constructor, Default)]
@@ -137,6 +139,7 @@ impl Website {
                     .collect::<Vec<_>>(),
                 languages: Language::iter().collect(),
                 create_model: CreateModel::init(),
+                quality_model: FalAiImageModel::to_fields(),
             },
             website_home: WebsiteHome {
                 pricing,

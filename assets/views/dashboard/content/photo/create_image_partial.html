@@ -1,3 +1,6 @@
+{% set image_sizes = website.website_fields.image_sizes %} {% set quality_models =
+website.website_fields.quality_model %}
+
 <form
   x-data="{ selectedModelName: '' }"
   x-init="
@@ -84,7 +87,7 @@
           class="select select-bordered select-sm w-full bg-base-100"
           :disabled="$store.imageGenForm.isLoading"
         >
-          {% for image_size in website.website_fields.image_sizes %} {% if not loop.last %}
+          {% for image_size in image_sizes %} {% if not loop.last %}
           <option value="{{ image_size.0 }}">{{ image_size.1 }}</option>
           {% endif %} {% endfor %}
         </select>
@@ -209,8 +212,9 @@
           class="select select-bordered select-sm w-full bg-base-100"
           :disabled="$store.imageGenForm.isLoading"
         >
-          <option value="high" selected>High</option>
-          <option value="low">Low</option>
+          {% for quality_model in quality_models %}
+          <option value="{{ quality_model.0 }}">{{ quality_model.1 }}</option>
+          {% endfor %}
         </select>
       </div>
     </div>
