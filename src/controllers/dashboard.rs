@@ -286,9 +286,8 @@ async fn load_votes(db: &DatabaseConnection, user_id: i32) -> Result<FeatureVote
     let list = FeatureVoteModel::load_all_votes(&db, user_id).await?;
     Ok(list)
 }
-async fn is_oauth(db: &DatabaseConnection, user_id: i32) -> Result<bool> {
+pub async fn is_oauth(db: &DatabaseConnection, user_id: i32) -> Result<bool> {
     let is_oauth = OAuth2SessionModel::is_find_by_user_id(db, user_id).await?;
-    dbg!(&is_oauth);
     Ok(is_oauth)
 }
 // async fn load_user_settings(db: &DatabaseConnection, user_id: i32) -> Result<UserSettingsModel> {

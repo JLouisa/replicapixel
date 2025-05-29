@@ -73,7 +73,7 @@ impl AuthMailer {
                 to: user.email.to_string(),
                 locals: json!({
                   "name": user.name,
-                  "resetToken": user.reset_token,
+                  "resetToken": user.magic_link_token,
                   "domain": ctx.config.server.full_url(),
                   "company": website.name.to_string(),
                   "current_year": Local::now().year(),

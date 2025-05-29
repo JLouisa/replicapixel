@@ -191,6 +191,7 @@ pub fn training_partial_dashboard(
         data!({ "website": website, "user": user, "credits": credits, "models": models }),
     )
 }
+
 pub fn home_training_partial_dashboard(
     v: impl ViewRenderer,
     website: &Website,
@@ -210,6 +211,7 @@ pub fn home_training_partial_dashboard(
         ),
     )
 }
+
 pub fn create_training_dashboard(
     v: impl ViewRenderer,
     website: &Website,
@@ -283,6 +285,26 @@ pub fn packs_partial_dashboard(
         data!(
             {
                 "website": website, "packs": packs, "models": models,
+            }
+        ),
+    )
+}
+pub fn home_packs_partial_dashboard(
+    v: impl ViewRenderer,
+    website: &Website,
+    user: &UserView,
+    credits: &UserCreditsView,
+    models_list: &TrainingModelViewList,
+    packs: &PackViewList,
+) -> Result<impl IntoResponse> {
+    format::render().view(
+        &v,
+        "dashboard/content/packs/packs_extend.html",
+        data!(
+            {
+                "website": website, "credits": credits, "packs": packs,
+                "user": user, "models": models_list,
+                "current_page": "packs"
             }
         ),
     )

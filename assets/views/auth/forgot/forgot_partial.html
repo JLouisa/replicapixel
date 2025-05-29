@@ -1,7 +1,9 @@
 <!-- prettier-ignore -->
-{% set forget_api_link = website.website_routes.auth_routes.api_forgot | safe %}
-{% set login_link = website.website_routes.auth_routes.login | safe %}
-{% set login_partial_link = website.website_routes.auth_routes.login_partial | safe %}
+{% set forget_api_link = website.website_routes.auth_routes.api_forgot %}
+{% set login_link = website.website_routes.auth_routes.login  %}
+{% set login_partial_link = website.website_routes.auth_routes.login_partial %}
+{% set home_link = website.website_routes.home.base %}
+{% set home_partial_link = website.website_routes.home.home_partial %}
 
 <div id="auth-form" class="min-h-screen flex items-center justify-center bg-gray-600">
   <div class="w-full max-w-md bg-white shadow-lg rounded-lg">
@@ -14,7 +16,12 @@
       </div>
     </div>
     <div class="rounded-b-lg pt-6 pb-12 px-4 lg:px-12">
-      <form hx-post="{{ forget_api_link }}" hx-ext="submitjson" hx-swap="outerHTML">
+      <form
+        hx-post="{{ forget_api_link | safe }}"
+        hx-ext="form-json"
+        hx-swap="outerHTML"
+        hx-disabled-elt="#password-reset-btn"
+      >
         <div class="relative">
           <input
             class="appearance-none border pl-12 border-gray-100 shadow-sm focus:shadow-md focus:placeholder-gray-600 transition rounded-md w-full py-3 text-gray-600 leading-tight focus:outline-none focus:ring-gray-600 focus:shadow-outline"
@@ -37,21 +44,22 @@
         </div>
         <div class="flex flex-col items-center justify-center mt-8">
           <button
+            id="password-reset-btn"
             class="w-full text-white py-2 px-4 uppercase rounded bg-indigo-500 hover:bg-indigo-600 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5 cursor-pointer"
           >
             Send Password Reset
           </button>
           <a
-            href="{{ login_partial_link }}"
+            href="{{ login_partial_link | safe }}"
             hx-get="{{ login_partial_link }}"
             hx-target="#auth-form"
             hx-swap="outerHTML"
-            hx-push-url="{{ login_link }}"
+            hx-push-url="{{ login_link | safe }}"
             class="text-sm text-primary cursor-pointer mt-4"
             >Already know your password?</a
           >
           <a
-            href="/"
+            href="{{ home_link | safe }}"
             hx-get="/partial/home"
             hx-push-url="/"
             hx-target="#app"
@@ -63,32 +71,6 @@
       </form>
 
       <script>
-        htmx.defineExtension("submitjson", {
-          onEvent: function (name, evt) {
-            if (name === "htmx:configRequest") {
-              evt.detail.headers["Content-Type"] = "application/json";
-            }
-          },
-          encodeParameters: function (xhr, parameters) {
-            let json = {};
-            for (const key in parameters) {
-              const input = document.querySelector(`[name="${key}"]`);
-              if (input) {
-                if (input.type === "number") {
-                  json[key] = parseFloat(parameters[key]);
-                } else if (input.type === "checkbox") {
-                  json[key] = input.checked;
-                } else {
-                  json[key] = parameters[key];
-                }
-              }
-            }
-            const login = JSON.stringify(json);
-            console.log(login);
-            return login;
-          },
-        });
-
         updatePageTitle("{% block title %}ReplicaPixel | Forgot{% endblock title %}");
       </script>
     </div>

@@ -1,3 +1,6 @@
+{% set pack_extend_link = website.website_routes.home.dashboard_packs_extend %} {% set pack_link =
+website.website_routes.dashboard_routes.sidebar.packs %}
+
 <div class="fixed top-14 sm:top-18 left-0 p-4 z-30 flex items-center justify-center gap-2">
   <div>
     <a
@@ -88,7 +91,15 @@
             </ul>
           </div>
           <div class="w-full flex flex-1 items-center justify-center">
-            <button class="btn btn-secondary text-black w-full mt-4 sm:mt-2">Use Pack</button>
+            <button
+              hx-get="{{pack_extend_link | safe}}"
+              hx-target="#app"
+              hx-swap="innerHTML"
+              hx-push-url="{{pack_link |safe}}"
+              class="btn btn-secondary text-black w-full mt-4 sm:mt-2"
+            >
+              Use Pack
+            </button>
           </div>
         </div>
       </div>

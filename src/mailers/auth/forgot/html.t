@@ -74,7 +74,7 @@
                 <table border="0" cellpadding="0" cellspacing="0" role="presentation" align="center" style="margin: 0 auto 25px auto;">
                   <tr>
                     <td align="center" bgcolor="#007bff" style="border-radius: 5px;" class="button-link">
-                      <a href="http://{{domain}}/reset#{{resetToken}}" target="_blank" style="font-size: 16px; font-family: Arial, sans-serif; color: #ffffff; text-decoration: none; background-color: #007bff; border: 15px solid #007bff; border-radius: 5px; display: inline-block; font-weight: bold;">
+                      <a href="{{domain}}/api/auth/magic/{{resetToken}}" target="_blank" style="font-size: 16px; font-family: Arial, sans-serif; color: #ffffff; text-decoration: none; background-color: #007bff; border: 15px solid #007bff; border-radius: 5px; display: inline-block; font-weight: bold;">
                         Reset Your Password
                       </a>
                     </td>
@@ -86,8 +86,8 @@
                   If the button above doesn't work, copy and paste the following link into your web browser:
                 </p>
                 <p style="margin: 0 0 25px 0; font-size: 12px; text-align: center; word-break: break-all;">
-                  <a href="http://{{domain}}/reset#{{resetToken}}" target="_blank" style="color: #007bff; text-decoration: underline;">
-                    http://{{domain}}/reset#{{resetToken}}
+                  <a href="{{domain}}/api/auth/magic/{{resetToken}}" target="_blank" style="color: #007bff; text-decoration: underline;">
+                    {{domain}}/api/auth/magic/{{resetToken}}
                   </a>
                 </p>
 

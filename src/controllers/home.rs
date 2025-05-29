@@ -11,6 +11,7 @@ use crate::views;
 use crate::views::auth::UserView;
 use crate::views::packs::PackViewList;
 use crate::{domain::website::Website, middleware::cookie::CookieConsentLayer};
+use axum::response::Redirect;
 use axum::{debug_handler, Extension};
 use derive_more::Constructor;
 use loco_rs::prelude::*;
@@ -27,6 +28,7 @@ pub mod routes {
         pub base: String,
         pub home_partial: String,
         pub dashboard_extend: String,
+        pub dashboard_packs_extend: String,
     }
     impl HomeRoutes {
         pub fn init() -> Self {
@@ -34,6 +36,7 @@ pub mod routes {
                 base: String::from(Home::BASE),
                 home_partial: String::from(Home::HOME_PARTIAL),
                 dashboard_extend: String::from(Home::DASHBOARD_EXTEND),
+                dashboard_packs_extend: String::from(Home::DASHBOARD_PACKS_EXTEND),
             }
         }
     }
@@ -46,6 +49,7 @@ pub mod routes {
         pub const SITEMAP_XML: &'static str = "/sitemap.xml";
         pub const HOME_PARTIAL: &'static str = "/partial/home";
         pub const DASHBOARD_EXTEND: &'static str = "/partial/dashboard";
+        pub const DASHBOARD_PACKS_EXTEND: &'static str = "/partial/dashboard/packs";
     }
 }
 
@@ -57,7 +61,11 @@ pub fn routes() -> Routes {
         .add(routes::Home::HOME_PARTIAL, get(render_home_partial))
         .add(
             routes::Home::DASHBOARD_EXTEND,
-            get(render_dashboard_partial),
+            get(render_dashboard_extend_partial),
+        )
+        .add(
+            routes::Home::DASHBOARD_PACKS_EXTEND,
+            get(render_dashboard_extend_packs_partial),
         )
         .layer(CookieConsentLayer::new())
 }
@@ -188,22 +196,59 @@ pub async fn render_home_partial(
 }
 
 #[debug_handler]
-pub async fn render_dashboard_partial(
-    auth: auth::JWT,
+pub async fn render_dashboard_extend_partial(
+    auth: Result<auth::JWT>,
     State(ctx): State<AppContext>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let user_pid = UserPid::new(&auth.claims.pid);
+    let user_pid = match auth {
+        Ok(auth) => UserPid::new(&auth.claims.pid),
+        Err(_) => {
+            return Ok(Redirect::to("/login").into_response());
+        }
+    };
     let (user, user_credits, training_models) =
         load_user_credit_training(&ctx.db, &user_pid).await?;
-    views::dashboard::home_training_partial_dashboard(
+
+    Ok(views::dashboard::home_training_partial_dashboard(
         v,
         &website,
         &user.into(),
         &user_credits.into(),
         &training_models.into(),
     )
+    .into_response())
+}
+#[debug_handler]
+pub async fn render_dashboard_extend_packs_partial(
+    auth: Result<auth::JWT>,
+    State(ctx): State<AppContext>,
+    Extension(website): Extension<Website>,
+    ViewEngine(v): ViewEngine<TeraView>,
+) -> Result<impl IntoResponse> {
+    let user_pid = match auth {
+        Ok(auth) => UserPid::new(&auth.claims.pid),
+        Err(_) => {
+            return Ok(Redirect::to("/login").into_response());
+        }
+    };
+    let (user, user_credits, training_models) =
+        load_user_credit_training(&ctx.db, &user_pid).await?;
+    let packs = match load_cached_web(&ctx).await {
+        Ok(images) => images.packs,
+        Err(_) => load_packs(&ctx.db).await?.into(),
+    };
+
+    Ok(views::dashboard::home_packs_partial_dashboard(
+        v,
+        &website,
+        &user.into(),
+        &user_credits.into(),
+        &training_models.into(),
+        &packs,
+    )
+    .into_response())
 }
 
 #[derive(Debug, Serialize, Deserialize, Constructor, Clone)]

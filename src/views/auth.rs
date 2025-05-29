@@ -63,6 +63,14 @@ pub fn partial_login(v: impl ViewRenderer, website: &Website) -> Result<impl Int
     )
 }
 
+pub fn forgot(v: &impl ViewRenderer) -> Result<impl IntoResponse> {
+    return format::render().view(
+        v,
+        "auth/forgot/partials/forgot_msg.html",
+        data!({"message": true}),
+    );
+}
+
 // ============== View Models for the View Templates ==============
 #[derive(Serialize)]
 pub struct UserView {

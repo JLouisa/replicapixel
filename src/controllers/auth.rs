@@ -17,7 +17,10 @@ use crate::{
     service::stripe::stripe::StripeClient,
     views::{
         self,
-        auth::{CurrentResponse, LoginResponse},
+        auth::{
+            CurrentResponse,
+            // LoginResponse
+        },
     },
 };
 use axum::{
@@ -25,7 +28,7 @@ use axum::{
     debug_handler,
     extract::{Json, State},
     http::{HeaderMap, HeaderValue, StatusCode},
-    response::{IntoResponse, Response},
+    response::{IntoResponse, Redirect, Response},
     Extension,
 };
 use chrono::{Duration, Utc};
@@ -37,6 +40,8 @@ use std::{borrow::Cow, collections::HashMap, sync::OnceLock};
 use validator::ValidationErrorsKind;
 
 use axum_extra::extract::cookie::{Cookie as AxumCookie, SameSite};
+
+use super::dashboard::is_oauth;
 
 pub static EMAIL_DOMAIN_RE: OnceLock<Regex> = OnceLock::new();
 
@@ -58,6 +63,7 @@ pub mod routes {
         pub logout_partial: String,
         pub change_password: String,
         pub api_check_user: String,
+        pub api_password_reset: String,
     }
     impl AuthRoutes {
         pub fn init() -> Self {
@@ -75,6 +81,7 @@ pub mod routes {
                 logout_partial: String::from(Auth::LOGOUT_PARTIAL),
                 change_password: String::from(Auth::API_PASSWORD_CHANGE),
                 api_check_user: String::from(Auth::API_CHECK_USER),
+                api_password_reset: String::from(Auth::API_MAGIC_LINK),
             }
         }
     }
@@ -99,8 +106,8 @@ pub mod routes {
         pub const API_FORGOT: &'static str = "/api/auth/forgot";
         pub const API_RESET: &'static str = "/api/auth/reset";
         pub const API_CURRENT: &'static str = "/api/auth/current";
-        pub const API_MAGIC_LINK: &'static str = "/api/auth/magic-link";
-        pub const API_MAGIC_LINK_W_TOKEN: &'static str = "/api/auth/magic";
+        pub const MAGIC_LINK: &'static str = "/auth/magic";
+        pub const API_MAGIC_LINK: &'static str = "/api/auth/magic";
         pub const API_MAGIC_LINK_TOKEN: &'static str = "/api/auth/magic/{token}";
         pub const API_PASSWORD_CHANGE_ID: &'static str = "/api/auth/password-change/{id}";
         pub const API_PASSWORD_CHANGE: &'static str = "/api/auth/password-change";
@@ -125,11 +132,11 @@ pub fn routes() -> Routes {
         )
         .add(routes::Auth::API_LOGIN, post(api_login))
         .add(routes::Auth::API_LOGOUT, get(logout))
-        .add(routes::Auth::API_FORGOT, post(forgot))
+        .add(routes::Auth::API_FORGOT, post(api_forgot))
         .add(routes::Auth::API_RESET, post(reset))
         .add(routes::Auth::API_CURRENT, get(current))
-        .add(routes::Auth::API_MAGIC_LINK, post(magic_link))
-        .add(routes::Auth::API_MAGIC_LINK_W_TOKEN, get(magic_link_verify))
+        .add(routes::Auth::API_MAGIC_LINK_TOKEN, get(get_password))
+        .add(routes::Auth::API_MAGIC_LINK_TOKEN, post(set_password))
         .add(routes::Auth::API_PASSWORD_CHANGE_ID, post(change_password))
         .add(routes::Auth::API_CHECK_USER, get(check_user))
     // .add("/api/auth/test/welcome", get(test_welcome_mail))
@@ -159,8 +166,21 @@ struct AuthError {
     verify: Option<String>,
     forgot: Option<String>,
     logout: Option<String>,
+    password_reset: Option<String>,
 }
 impl AuthError {
+    pub fn general_msg(&self, msg: &str) -> Self {
+        Self {
+            general: Some(String::from(msg)),
+            ..Default::default()
+        }
+    }
+    pub fn password_reset_error(&self) -> Self {
+        Self {
+            password_reset: Some(String::from("Password and confirm password do not match")),
+            ..Default::default()
+        }
+    }
     pub fn login_error(&self) -> Self {
         Self {
             login: Some(String::from("Email or password is incorrect")),
@@ -214,11 +234,11 @@ impl AuthError {
     }
 }
 
-fn get_allow_email_domain_re() -> &'static Regex {
-    EMAIL_DOMAIN_RE.get_or_init(|| {
-        Regex::new(r"@example\.com$|@gmail\.com$").expect("Failed to compile regex")
-    })
-}
+// fn get_allow_email_domain_re() -> &'static Regex {
+//     EMAIL_DOMAIN_RE.get_or_init(|| {
+//         Regex::new(r"@example\.com$|@gmail\.com$").expect("Failed to compile regex")
+//     })
+// }
 async fn load_plan(db: &impl ConnectionTrait, name: &String) -> Result<PlanModel> {
     let item = PlanModel::find_by_name_string(db, &name).await?;
     Ok(item)
@@ -231,9 +251,14 @@ async fn load_user(db: &DatabaseConnection, user_pid: &UserPid) -> Result<UserMo
     let item = UserModel::find_by_pid(db, user_pid.as_ref()).await?;
     Ok(item)
 }
+// async fn load_user_by_email(db: &DatabaseConnection, email: &str) -> Result<UserModel> {
+//     let item = UserModel::find_by_email(db, email).await?;
+//     Ok(item)
+// }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Validate)]
 pub struct ForgotParams {
+    #[validate(email(message = "Email is invalid"))]
     pub email: String,
 }
 
@@ -246,6 +271,14 @@ pub struct ResetParams {
 #[derive(Debug, Deserialize, Serialize)]
 pub struct MagicLinkParams {
     pub email: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, Validate)]
+pub struct PasswordMagicParams {
+    pub email: String,
+    #[validate(must_match(other = "confirm_password", message = "Passwords do not match"))]
+    pub password: String,
+    pub confirm_password: String,
 }
 
 #[debug_handler]
@@ -522,41 +555,6 @@ async fn resent_verification_token(
     )
 }
 
-/// In case the user forgot his password  this endpoints generate a forgot token
-/// and send email to the user. In case the email not found in our DB, we are
-/// returning a valid request for for security reasons (not exposing users DB
-/// list).
-#[debug_handler]
-async fn forgot(
-    ViewEngine(v): ViewEngine<TeraView>,
-    State(ctx): State<AppContext>,
-    Extension(website): Extension<Website>,
-    Json(params): Json<ForgotParams>,
-) -> Result<Response> {
-    let Ok(user) = users::Model::find_by_email(&ctx.db, &params.email).await else {
-        // we don't want to expose our users email. if the email is invalid we still
-        // returning success to the caller
-        return format::render().view(
-            &v,
-            "auth/forgot/partials/forgot_msg.html",
-            data!({"message": true}),
-        );
-    };
-
-    let user = user
-        .into_active_model()
-        .set_forgot_password_sent(&ctx.db)
-        .await?;
-
-    AuthMailer::forgot_password(&ctx, &user, &website.website_basic_info).await?;
-
-    format::render().view(
-        &v,
-        "auth/forgot/partials/forgot_msg.html",
-        data!({"message": true}),
-    )
-}
-
 /// reset user password by the given parameters
 #[debug_handler]
 async fn reset(State(ctx): State<AppContext>, Json(params): Json<ResetParams>) -> Result<Response> {
@@ -654,7 +652,13 @@ async fn api_login(
     let mut view_response = format::render().view(
         &v,
         "dashboard/dashboard_base_extend_partial.html",
-        data!({"website": website, "user": user, "credits": user_credits, "models": training_models}),
+        data!(
+            {
+                "website": website, "user": user,
+                "credits": user_credits, "models": training_models,
+                "current_page": "models"
+            }
+        ),
     )?;
 
     view_response
@@ -746,55 +750,55 @@ async fn current(auth: auth::JWT, State(ctx): State<AppContext>) -> Result<Respo
 ///    If invalid or expired, an unauthorized response is returned.
 ///
 /// This flow enhances security by avoiding traditional passwords and providing a seamless login experience.
-async fn magic_link(
-    State(ctx): State<AppContext>,
-    Extension(website): Extension<Website>,
-    Json(params): Json<MagicLinkParams>,
-) -> Result<Response> {
-    let email_regex = get_allow_email_domain_re();
-    if !email_regex.is_match(&params.email) {
-        tracing::debug!(
-            email = params.email,
-            "The provided email is invalid or does not match the allowed domains"
-        );
-        return bad_request("invalid request");
-    }
+// async fn magic_link(
+//     State(ctx): State<AppContext>,
+//     Extension(website): Extension<Website>,
+//     Json(params): Json<MagicLinkParams>,
+// ) -> Result<Response> {
+//     let email_regex = get_allow_email_domain_re();
+//     if !email_regex.is_match(&params.email) {
+//         tracing::debug!(
+//             email = params.email,
+//             "The provided email is invalid or does not match the allowed domains"
+//         );
+//         return bad_request("invalid request");
+//     }
 
-    let Ok(user) = users::Model::find_by_email(&ctx.db, &params.email).await else {
-        // we don't want to expose our users email. if the email is invalid we still
-        // returning success to the caller
-        tracing::debug!(email = params.email, "user not found by email");
-        return format::empty_json();
-    };
+//     let Ok(user) = users::Model::find_by_email(&ctx.db, &params.email).await else {
+//         // we don't want to expose our users email. if the email is invalid we still
+//         // returning success to the caller
+//         tracing::debug!(email = params.email, "user not found by email");
+//         return format::empty_json();
+//     };
 
-    let user = user.into_active_model().create_magic_link(&ctx.db).await?;
+//     let user = user.into_active_model().create_magic_link(&ctx.db).await?;
 
-    AuthMailer::send_magic_link(&ctx, &user, &website.website_basic_info).await?;
+//     AuthMailer::send_magic_link(&ctx, &user, &website.website_basic_info).await?;
 
-    format::empty_json()
-}
+//     format::empty_json()
+// }
 
-/// Verifies a magic link token and authenticates the user.
-async fn magic_link_verify(
-    Path(token): Path<String>,
-    State(ctx): State<AppContext>,
-) -> Result<Response> {
-    let Ok(user) = users::Model::find_by_magic_token(&ctx.db, &token).await else {
-        // we don't want to expose our users email. if the email is invalid we still
-        // returning success to the caller
-        return unauthorized("unauthorized!");
-    };
+// /// Verifies a magic link token and authenticates the user.
+// async fn magic_link_verify(
+//     Path(token): Path<String>,
+//     State(ctx): State<AppContext>,
+// ) -> Result<Response> {
+//     let Ok(user) = users::Model::find_by_magic_token(&ctx.db, &token).await else {
+//         // we don't want to expose our users email. if the email is invalid we still
+//         // returning success to the caller
+//         return unauthorized("unauthorized!");
+//     };
 
-    let user = user.into_active_model().clear_magic_link(&ctx.db).await?;
+//     let user = user.into_active_model().clear_magic_link(&ctx.db).await?;
 
-    let jwt_secret = ctx.config.get_jwt_config()?;
+//     let jwt_secret = ctx.config.get_jwt_config()?;
 
-    let token = user
-        .generate_jwt(&jwt_secret.secret, jwt_secret.expiration)
-        .or_else(|_| unauthorized("unauthorized!"))?;
+//     let token = user
+//         .generate_jwt(&jwt_secret.secret, jwt_secret.expiration)
+//         .or_else(|_| unauthorized("unauthorized!"))?;
 
-    format::json(LoginResponse::new(&user, &token))
-}
+//     format::json(LoginResponse::new(&user, &token))
+// }
 
 #[debug_handler]
 pub async fn get_login(
@@ -921,6 +925,140 @@ pub async fn partial_forgot(
     format::render().view(
         &v,
         "auth/forgot/forgot_partial.html",
+        data!({"website": website}),
+    )
+}
+
+/// In case the user forgot his password  this endpoints generate a forgot token
+/// and send email to the user. In case the email not found in our DB, we are
+/// returning a valid request for for security reasons (not exposing users DB
+/// list).
+#[debug_handler]
+async fn api_forgot(
+    ViewEngine(v): ViewEngine<TeraView>,
+    State(ctx): State<AppContext>,
+    Extension(website): Extension<Website>,
+    Json(params): Json<ForgotParams>,
+) -> Result<impl IntoResponse> {
+    // let email_regex = get_allow_email_domain_re();
+    // if !email_regex.is_match(&params.email) {
+    //     tracing::warn!(
+    //         email = params.email,
+    //         "The provided email is invalid or does not match the allowed domains"
+    //     );
+    //     return views::auth::forgot(&v);
+    // }
+    match params.validate() {
+        Ok(()) => {}
+        Err(_) => {
+            return views::auth::forgot(&v);
+        }
+    };
+
+    let Ok(user) = users::Model::find_by_email(&ctx.db, &params.email).await else {
+        // we don't want to expose our users email. if the email is invalid we still
+        // returning success to the caller
+        return views::auth::forgot(&v);
+    };
+
+    let is_oauth = is_oauth(&ctx.db, user.id).await?;
+    if is_oauth {
+        return views::auth::forgot(&v);
+    }
+
+    let user = user.into_active_model().create_magic_link(&ctx.db).await?;
+
+    AuthMailer::forgot_password(&ctx, &user, &website.website_basic_info).await?;
+
+    views::auth::forgot(&v)
+}
+
+#[debug_handler]
+pub async fn get_password(
+    Path(token): Path<String>,
+    ViewEngine(v): ViewEngine<TeraView>,
+    Extension(website): Extension<Website>,
+    State(ctx): State<AppContext>,
+) -> Result<Response> {
+    let Ok(user) = users::Model::find_by_magic_token(&ctx.db, &token).await else {
+        return Ok(Redirect::to("/login").into_response());
+    };
+
+    if let Some(expired_at) = user.magic_link_expiration {
+        if Utc::now().naive_utc() > expired_at.naive_utc() {
+            user.into_active_model().clear_magic_link(&ctx.db).await?;
+            return format::render().view(
+                &v,
+                "auth/verify/password_reset_failed.html",
+                data!({
+                        "website": website, "error":  AuthError::default().general_msg("Password reset link expired")
+
+                }),
+            );
+        }
+    }
+
+    format::render().view(
+        &v,
+        "auth/verify/password_reset.html",
+        data!({"website": website, "email": user.email, "token": token}),
+    )
+}
+
+#[debug_handler]
+pub async fn set_password(
+    Path(token): Path<String>,
+    ViewEngine(v): ViewEngine<TeraView>,
+    Extension(website): Extension<Website>,
+    State(ctx): State<AppContext>,
+    Json(params): Json<PasswordMagicParams>,
+) -> Result<Response> {
+    let error_msg = match params.validate() {
+        Ok(()) => AuthError::default(),
+        Err(_) => {
+            return format::render().view(
+                &v,
+                "auth/verify/password_reset_partial.html",
+                data!({"website": website, "error": AuthError::default().password_reset_error()}),
+            );
+        }
+    };
+
+    let Ok(user) = users::Model::find_by_magic_token(&ctx.db, &token).await else {
+        // we don't want to expose our users email. if the email is invalid we still
+        // returning success to the caller
+        return unauthorized("unauthorized!");
+    };
+
+    if user.email != params.email {
+        user.into_active_model().clear_magic_link(&ctx.db).await?;
+        return format::render().view(
+            &v,
+            "auth/verify/password_reset_failed.html",
+            data!({"website": website, "error": error_msg.general_msg("Unauthorized. Something went wrong!")}),
+        );
+    }
+
+    let is_oauth = is_oauth(&ctx.db, user.id).await?;
+    if is_oauth {
+        user.into_active_model().clear_magic_link(&ctx.db).await?;
+        return format::render().view(
+            &v,
+            "auth/verify/password_reset_failed.html",
+            data!({ "website": website, "error": error_msg.general_msg("Unauthorized")}),
+        );
+    }
+
+    user.into_active_model()
+        .reset_password(&ctx.db, &params.password)
+        .await?
+        .into_active_model()
+        .clear_magic_link(&ctx.db)
+        .await?;
+
+    format::render().view(
+        &v,
+        "auth/verify/password_reset_success.html",
         data!({"website": website}),
     )
 }
