@@ -1,14 +1,8 @@
+<!-- prettier-ignore -->
 <div
   id="pricing-basic-btn"
   class="w-full flex flex-col gap-4 items-start justify-start relative"
-  {%
-  if
-  is_ott
-  %}
-  hx-swap-oob="true"
-  {%
-  endif
-  %}
+  {% if is_ott %} hx-swap-oob="true" {% endif %}
 >
   <a
     id="pricing-basic-btn"

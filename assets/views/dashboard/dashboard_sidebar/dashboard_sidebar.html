@@ -23,39 +23,56 @@
   hx-ext="preload"
 >
   <!-- Side Nav Bar-->
-  <ul class="flex flex-col">
-    <!-- Top Items Section -->
-
+  <ul x-data="{ active: '{{ current_page }}' }" class="flex flex-col">
     <!-- Model Section -->
-    <li class="hover:bg-base-300 tooltip tooltip-right" data-tip="Model">
+    <li
+      class="text-base-content tooltip tooltip-right"
+      data-tip="Models"
+      :class="active === 'models' ? 'bg-base-300' : 'hover:bg-base-300'"
+    >
       <a
         hx-get="{{ training_model_partial_link }}"
         hx-target="#dashboard_content"
         hx-push-url="{{ training_model_link }}"
         hx-swap="innerHTML"
+        {#
+        hx-indicator="#dashboard-loader-indicator"
+        #}
         preload="mouseover"
         class="h-16 px-6 flex justify-center items-center w-full cursor-pointer"
-        data-tip="Models"
+        @click="active = 'models'"
       >
         {% include "partials/svg/faces.html" %}
       </a>
     </li>
     <!-- Packs Section -->
-    <li class="hover:bg-base-300 tooltip tooltip-right" data-tip="Packs">
+    <li
+      class="text-base-content tooltip tooltip-right"
+      data-tip="Packs"
+      :class="active === 'packs' ? 'bg-base-300' : 'hover:bg-base-300'"
+    >
       <a
         hx-get="{{ packs_partial_link }}"
         hx-target="#dashboard_content"
         hx-push-url="{{ packs_link }}"
         hx-swap="innerHTML"
+        {#
+        hx-indicator="#dashboard-loader-indicator"
+        #}
         preload="mouseover"
         class="h-16 px-6 flex justify-center items-center w-full cursor-pointer"
         data-tip="Packs"
+        @click="active = 'packs'"
       >
         {% include "partials/svg/pack.html" %}
       </a>
     </li>
     <!-- Album Section -->
-    <li class="hover:bg-base-300 tooltip tooltip-right" data-tip="Album">
+    <li
+      class="text-base-content tooltip tooltip-right"
+      data-tip="Album"
+      :class="active === 'album' ? 'bg-base-300' : 'hover:bg-base-300'"
+    >
       <a
         hx-get="{{ studio_partial_link }}"
         hx-target="#dashboard_content"
@@ -63,13 +80,17 @@
         hx-swap="innerHTML"
         preload="mouseover"
         class="h-16 px-6 flex justify-center items-center w-full cursor-pointer"
-        data-tip="Album"
+        @click="active = 'album'"
       >
         {% include "partials/svg/album.html" %}
       </a>
     </li>
     <!-- Favorite Section -->
-    <li class="hover:bg-base-300 tooltip tooltip-right cursor-pointer" data-tip="Favorite">
+    <li
+      class="text-base-content tooltip tooltip-right cursor-pointer"
+      data-tip="Favorite"
+      :class="active === 'favorite' ? 'bg-base-300' : 'hover:bg-base-300'"
+    >
       <a
         hx-get="{{ studio_favorite_partial_link }}"
         hx-target="#dashboard_content"
@@ -77,13 +98,17 @@
         hx-swap="innerHTML"
         preload="mouseover"
         class="h-16 px-6 flex justify-center items-center w-full text-base-content"
-        data-tip="Favorites"
+        @click="active = 'favorite'"
       >
         {% include "partials/svg/bookmark.html" %}
       </a>
     </li>
     <!-- Deleted Section -->
-    <li class="hover:bg-base-300 tooltip tooltip-right cursor-pointer" data-tip="Deleted">
+    <li
+      class="text-base-content tooltip tooltip-right cursor-pointer"
+      data-tip="Deleted"
+      :class="active === 'deleted' ? 'bg-base-300' : 'hover:bg-base-300'"
+    >
       <a
         hx-get="{{ studio_deleted_partial_link }}"
         hx-target="#dashboard_content"
@@ -91,64 +116,66 @@
         hx-swap="innerHTML"
         preload="mouseover"
         class="h-16 w-full mx-auto flex items-center justify-center hover:bg-base-300 focus:outline-none cursor-pointer tooltip tooltip-right text-base-content"
-        data-tip="Deleted"
+        @click="active = 'deleted'"
       >
         {% include "partials/svg/trash.html" %}
       </a>
     </li>
     <!-- Features Section -->
     <li
-      hx-get="{{ features_partial_link }}"
-      hx-target="#dashboard_content"
-      hx-push-url="{{ features_link }}"
-      hx-swap="innerHTML"
-      preload="mouseover"
-      class="h-16 w-full mx-auto flex items-center justify-center hover:bg-base-300 focus:outline-none cursor-pointer tooltip tooltip-right text-base-content"
+      class="text-base-content tooltip tooltip-right"
       data-tip="Features"
+      :class="active === 'features' ? 'bg-base-300' : 'hover:bg-base-300'"
     >
-      {% include "partials/svg/feedback.html" %}
+      <a
+        hx-get="{{ features_partial_link }}"
+        hx-target="#dashboard_content"
+        hx-push-url="{{ features_link }}"
+        hx-swap="innerHTML"
+        preload="mouseover"
+        class="h-16 px-6 flex justify-center items-center w-full cursor-pointer"
+        @click="active = 'features'"
+      >
+        {% include "partials/svg/feedback.html" %}
+      </a>
     </li>
     <!-- Order History Section -->
     <li
-      hx-get="{{ billing_partial_link}}"
-      hx-target="#dashboard_content"
-      hx-push-url="{{ billing_link }}"
-      hx-swap="innerHTML"
-      preload="mouseover"
-      class="h-16 w-full mx-auto flex items-center justify-center hover:bg-base-300 focus:outline-none cursor-pointer tooltip tooltip-right text-base-content"
+      class="text-base-content tooltip tooltip-right"
       data-tip="Order History"
+      :class="active === 'billing' ? 'bg-base-300' : 'hover:bg-base-300'"
     >
-      {% include "partials/svg/order_history.html" %}
+      <a
+        hx-get="{{ billing_partial_link }}"
+        hx-target="#dashboard_content"
+        hx-push-url="{{ billing_link }}"
+        hx-swap="innerHTML"
+        preload="mouseover"
+        class="h-16 px-6 flex justify-center items-center w-full cursor-pointer"
+        @click="active = 'billing'"
+      >
+        {% include "partials/svg/order_history.html" %}
+      </a>
     </li>
     <!-- Settings Section -->
     <li
-      hx-get="{{ settings_partial_link }}"
-      hx-target="#dashboard_content"
-      hx-push-url="{{ settings_link }}"
-      hx-swap="innerHTML"
-      preload="mouseover"
-      class="h-16 w-full mx-auto flex items-center justify-center hover:bg-base-300 focus:outline-none cursor-pointer tooltip tooltip-right text-base-content"
-      data-tip="Settings"
-    >
-      {% include "partials/svg/settings.html" %}
-    </li>
-    {#
-    <!-- Notification Section -->
-    <li
-      class="hover:bg-base-300 relative tooltip tooltip-right cursor-pointer"
-      data-tip="Notifications"
+      class="tooltip tooltip-right text-base-content"
+      data-tip="Packs"
+      :class="active === 'settings' ? 'bg-base-300' : 'hover:bg-base-300'"
     >
       <a
-        hx-get="{{ website.website_routes.dashboard_routes.sidebar.notifications_partial | safe }}"
+        hx-get="{{ settings_partial_link }}"
         hx-target="#dashboard_content"
-        hx-push-url="{{ website.website_routes.dashboard_routes.sidebar.notifications | safe }}"
+        hx-push-url="{{ settings_link }}"
         hx-swap="innerHTML"
-        class="h-16 px-6 flex justify-center items-center w-full relative text-base-content"
+        preload="mouseover"
+        class="h-16 px-6 flex justify-center items-center w-full cursor-pointer"
+        data-tip="settings"
+        @click="active = 'settings'"
       >
-        {% include "partials/svg/bell.html" %}
+        {% include "partials/svg/settings.html" %}
       </a>
     </li>
-    #}
   </ul>
 
   <!-- Bottom Items Section -->

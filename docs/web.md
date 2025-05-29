@@ -1,5 +1,6 @@
-Sexy Female Teacher
-Hot Male Teacher
+Sexy/hot Teacher
+Game of Thrones
+Cyberpunk
 
 Villain Vibes Photos
 Elf Queen / Fantasy Warrior Photos

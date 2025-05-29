@@ -165,7 +165,6 @@ async fn google_ott(
     };
 
     let register = RegisterParams::create_with_ott(google_user_data)?;
-    dbg!(&register);
     // format::empty()
 
     let user = UserModel::upsert_with_ott(&ctx.db, &register, &stripe_client).await?;

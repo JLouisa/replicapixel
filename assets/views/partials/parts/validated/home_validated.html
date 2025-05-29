@@ -1,0 +1,16 @@
+<!-- prettier-ignore -->
+{% set studio_link = website.website_routes.dashboard_routes.base | safe %}
+{% set checkout_prepare_link = website.website_routes.payment.payment_prepare_route | safe %}
+
+{# login button #}
+{% include "partials/parts/validated/partials/validate_login_btn.html" %}
+
+{# Change cta in nav button #}
+{% include "partials/parts/validated/partials/cta_home_navbar_btn.html" %}
+
+{# Change pricing plans button #} 
+{% include "partials/parts/validated/partials/pricing_basic_btn.html" %}
+
+{% include "partials/parts/validated/partials/pricing_premium_btn.html" %}
+
+{% include "partials/parts/validated/partials/pricing_max_btn.html" %}

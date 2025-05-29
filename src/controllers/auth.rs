@@ -342,14 +342,16 @@ pub async fn check_user(
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    if auth.is_err() {
-        return format::render().view(
-            &v,
-            "partials/parts/google_ott.html",
-            data!({"website": website, "is_home": true}),
-        );
-    }
-    let user_pid = UserPid::new(&auth.unwrap().claims.pid);
+    let user_pid = match auth {
+        Ok(auth) => UserPid::new(&auth.claims.pid),
+        Err(_) => {
+            return format::render().view(
+                &v,
+                "partials/parts/google_ott.html",
+                data!({"website": website, "is_home": true}),
+            );
+        }
+    };
     let (user, user_credits) = match load_user_and_credits(&ctx.db, &user_pid).await {
         Ok((user, user_credits)) => (user, user_credits),
         Err(_) => {

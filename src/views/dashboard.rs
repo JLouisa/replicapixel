@@ -30,7 +30,7 @@ pub fn billing_dashboard(
             {
                 "website": website, "user": user,
                 "credits": credits, "cc_cookie": cc_cookie,
-                "orders": orders,
+                "orders": orders, "current_page": "billing"
             }
         ),
     )
@@ -62,6 +62,7 @@ pub fn notification_dashboard(
             {
                 "website": website, "user": user,
                 "credits": credits, "cc_cookie": cc_cookie,
+                "current_page": "notification"
         }),
     )
 }
@@ -92,6 +93,7 @@ pub fn features_dashboard(
             {
                 "website": website, "user": user, "credits": credits,
                 "features_view": features_view, "cc_cookie": cc_cookie,
+                "current_page": "features"
             }
         ),
     )
@@ -109,6 +111,7 @@ pub fn features_partial_dashboard(
             {
                 "website": website, "user": user,
                 "features_view": features_view,
+
             }
         ),
     )
@@ -130,7 +133,8 @@ pub fn settings_dashboard(
             {
                 "website": website, "user": user, "credits": credits,
                 "cc_cookie": cc_cookie, "user_settings": user_settings,
-                "is_oauth": is_oauth,
+                "is_oauth": is_oauth, "current_page": "settings"
+
             }
         ),
     )
@@ -148,7 +152,7 @@ pub fn settings_partial_dashboard(
         data!(
             {
                 "website": website, "user": user, "user_settings": user_settings,
-                "is_oauth": is_oauth
+                "is_oauth": is_oauth,
             }
         ),
     )
@@ -169,6 +173,7 @@ pub fn training_dashboard(
             {
                 "website": website, "user": user, "credits": credits,
                 "models": models, "cc_cookie": cc_cookie,
+                "current_page": "models"
             }
         ),
     )
@@ -186,6 +191,25 @@ pub fn training_partial_dashboard(
         data!({ "website": website, "user": user, "credits": credits, "models": models }),
     )
 }
+pub fn home_training_partial_dashboard(
+    v: impl ViewRenderer,
+    website: &Website,
+    user: &UserView,
+    credits: &UserCreditsView,
+    models: &TrainingModelViewList,
+) -> Result<impl IntoResponse> {
+    format::render().view(
+        &v,
+        "dashboard/dashboard_base_extend_partial.html",
+        data!(
+            {
+                "website": website, "user": user, "credits": credits,
+                "models": models, "is_logged_in": true,
+                "current_page": "models"
+            }
+        ),
+    )
+}
 pub fn create_training_dashboard(
     v: impl ViewRenderer,
     website: &Website,
@@ -201,6 +225,7 @@ pub fn create_training_dashboard(
             {
                 "website": website, "user": user, "credits": credits,
                 "models": models, "cc_cookie": cc_cookie,
+                "current_page": "create_models"
             }
         ),
     )
@@ -241,6 +266,7 @@ pub fn packs_dashboard(
             {
                 "website": website, "credits": credits, "packs": packs,
                 "cc_cookie": cc_cookie, "user": user, "models": models_list,
+                "current_page": "packs"
             }
         ),
     )
@@ -272,6 +298,7 @@ pub fn photo_dashboard(
     is_deleted: bool,
     is_favorite: bool,
     cc_cookie: &CookieConsent,
+    current_page: &str,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
@@ -282,6 +309,7 @@ pub fn photo_dashboard(
                   "training_models": training_models, "credits": credits,
                   "is_deleted": is_deleted, "is_favorite": is_favorite,
                   "is_initial_load": true, "cc_cookie": cc_cookie,
+                  "current_page": current_page
               }
         ),
     )

@@ -1,14 +1,9 @@
+<!-- prettier-ignore -->
 <div
   id="pricing-max-btn"
   class="w-full flex flex-col items-start"
-  {%
-  if
-  is_ott
-  %}
-  hx-swap-oob="true"
-  {%
-  endif
-  %}
+  {% if is_ott %} hx-swap-oob="true" {% endif %}
+
 >
   <a href="{{checkout_prepare_link | safe}}/{{ user.pid }}/max" class="w-full">
     <div

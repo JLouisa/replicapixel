@@ -1,15 +1,12 @@
 <!-- prettier-ignore -->
-{% set timestamp = now() | date(format="%s%.f") %} 
-{% set studio_link = website.website_routes.dashboard_routes.base | safe %}
-{% set checkout_prepare_link = website.website_routes.payment.payment_prepare_route | safe %}
-{% set google_ott_link = website.website_routes.oauth2.google_ott | safe %}
-{% set google_client_id = website.website_basic_info.google.google_client_id | safe %}
+{% set google_ott_link = website.website_routes.oauth2.google_ott %}
+{% set google_client_id = website.website_basic_info.google.google_client_id %}
 
 <script>
   // Google login logic
   window.onload = function () {
     google.accounts.id.initialize({
-      client_id: "{{google_client_id}}",
+      client_id: "{{ google_client_id | safe }}",
       callback: handleCredentialResponse,
       auto_select: false,
     });
