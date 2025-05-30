@@ -1,3 +1,5 @@
+{% set cookie_link = website.website_routes.policy.cookie %}
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -120,9 +122,10 @@
     <div class="uc-privacy-container">
       <h1 class="privacy-title">Privacy Policy</h1>
       <!-- IMPORTANT: Update the effective date when the policy goes live or is updated -->
-      <p class="privacy-text"><strong>Effective Date:</strong> [Insert Date, e.g., 25 May 2024]</p>
-      <p class="privacy-text"><strong>Last Updated:</strong> [Insert Date]</p>
+      <p class="privacy-text"><strong>Effective Date:</strong>29 May 2025</p>
+      <p class="privacy-text"><strong>Last Updated:</strong>29 May 2025</p>
 
+      {#
       <div class="important-note">
         <p class="privacy-text">
           <strong>Please Note:</strong> This Privacy Policy is provided as a template. It is
@@ -132,6 +135,7 @@
           website.website_basic_info.name }} application.
         </p>
       </div>
+      #}
 
       <h2 class="privacy-section-title">1. Introduction & Who We Are</h2>
       <p class="privacy-text">
@@ -615,8 +619,7 @@
       <p class="privacy-text">
         For more detailed information about the specific cookies we use, their purposes, and how to
         manage them, please see our separate
-        <a href="[YOUR_COOKIE_POLICY_URL]" target="_blank" rel="noopener noreferrer"
-          >Cookie Policy</a
+        <a href="{{cookie_link | safe}}" target="_blank" rel="noopener noreferrer">Cookie Policy</a
         >.
       </p>
 
@@ -720,11 +723,9 @@
       </p>
       <p class="privacy-text">
         <strong>Jissicko Software</strong><br />
-        [Your Company Address]<br />
-        [City, Postal Code, Country]<br />
+        Rotterdam, The Netherlands<br />
         <!-- Again, use a professional email if possible -->
-        Email: jonathan.louisa@hotmail.com [or privacy@jissickosoftware.com]<br />
-        Phone: +31 645736311 [Optional]
+        Email: privacy@replicapixel.com<br />
       </p>
     </div>
   </body>

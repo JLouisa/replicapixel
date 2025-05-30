@@ -100,10 +100,16 @@ pub async fn stripe(
     .map_err(|e| StripeServiceError::SignatureVerifyError(e.to_string()))?;
 
     // 3. Handle the webhook event
-    if let Some(email_data) = StripeWebhookService::handle_webhook(event, &ctx).await? {
-        CheckoutMailer::send_checkout_completed(&ctx, &website.website_basic_info, &email_data)
-            .await?;
-    }
+    // if let Some(email_data) = StripeWebhookService::handle_webhook(event, &ctx).await? {
+    //     CheckoutMailer::send_checkout_completed(&ctx, &website.website_basic_info, &email_data)
+    //         .await?;
+    // }
+    let email_data = match StripeWebhookService::handle_webhook(event, &ctx).await? {
+        Some(email_data) => email_data,
+        None => return Ok((StatusCode::OK).into_response()),
+    };
+
+    CheckoutMailer::send_checkout_completed(&ctx, &website.website_basic_info, &email_data).await?;
 
     // 4. Acknowledge receipt to Stripe
     Ok((StatusCode::OK).into_response())

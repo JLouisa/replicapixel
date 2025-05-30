@@ -1,3 +1,8 @@
+<!-- prettier-ignore -->
+{% set privacy_link = website.website_routes.policy.privacy %} 
+{% set terms_link = website.website_routes.policy.terms %} 
+{% set cookie_link = website.website_routes.policy.cookie %}
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -66,15 +71,15 @@
       <h3>1. Introduction</h3>
       <p>
         This Model Creation Consent Agreement ("Agreement") explains how
-        <strong>[Your Website/Platform Name]</strong> ("We", "Us", "Our") will use the photographs
-        and associated information you provide to create a personalized digital training model
-        ("Model") for use within our service ("Service").
+        <strong>ReplicaPixel</strong> ("We", "Us", "Our") will use the photographs and associated
+        information you provide to create a personalized digital training model ("Model") for use
+        within our service ("Service").
       </p>
       <p>
         By checking the box and submitting your photos and information, you ("User", "You", "Your")
         acknowledge that you have read, understood, and agree to the terms outlined in this
         Agreement and our
-        <a href="[Link to Your Privacy Policy]" target="_blank" rel="noopener noreferrer"
+        <a href="{{privacy_link | safe}}" target="_blank" rel="noopener noreferrer"
           >Privacy Policy</a
         >
         ("Privacy Policy").
@@ -151,7 +156,7 @@
         <li>
           Your Photos do not contain illegal, explicit, hateful, or otherwise objectionable content
           as defined in our
-          <a href="[Link to Terms of Service]" target="_blank" rel="noopener noreferrer"
+          <a href="{{terms_link | safe}}" target="_blank" rel="noopener noreferrer"
             >Terms of Service</a
           >.
         </li>
@@ -163,7 +168,7 @@
         organizational security measures to safeguard your Photos, Personal Information, and the
         generated Model against unauthorized access, alteration, disclosure, or destruction. Please
         review our
-        <a href="[Link to Your Privacy Policy]" target="_blank" rel="noopener noreferrer"
+        <a href="{{privacy_link | safe}}" target="_blank" rel="noopener noreferrer"
           >Privacy Policy</a
         >
         for detailed information on our data handling and security practices.
@@ -210,8 +215,7 @@
       <h3>10. Contact Information</h3>
       <p>
         If you have any questions about this Agreement, please contact us at
-        <a href="mailto:[Your Support Email Address]">[Your Support Email Address]</a> or via our
-        <a href="[Link to Contact Form]" target="_blank" rel="noopener noreferrer">Contact Form</a>.
+        <a href="mailto:support@replicapixel.com">[Your Support Email Address]</a> or via our
       </p>
 
       <hr />
