@@ -29,10 +29,16 @@
   <div id="hero-cta" class="flex items-center justify-center shrink-0 gap-2">
     <div>{% include "partials/parts/cta_btn_home.html" %}</div>
     <div
+      {#
       hx-get="{{ starter_partial_link }}"
       hx-target="#app"
       hx-swap="innerHTML"
       hx-push-url="{{ starter_link }}"
+      #}
+      hx-get="{{ login_partial_link | safe }}"
+      hx-swap="innerHTML"
+      hx-push-url="{{ login_link | safe }}"
+      hx-target="#app"
       class="bg-[#ff319e] flex flex-row items-center lg:gap-4 p-2 lg:p-3 lg:px-6 my-[-0.5rem] lg:my-[-1rem] overflow-hidden rounded-full font-semibold text-white shadow-md hover:shadow-lg hover:brightness-110 active:scale-95 active:brightness-90 cursor-pointer"
     >
       Getting started
