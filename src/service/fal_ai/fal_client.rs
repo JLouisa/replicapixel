@@ -83,7 +83,7 @@ impl FalAiImageModel {
         vec![
             (String::from("high"), String::from("High")),
             (String::from("low"), String::from("Low")),
-            (String::from("inpainting"), String::from("Inpainting")),
+            // (String::from("inpainting"), String::from("Inpainting")),
             (String::from("photo"), String::from("Photo Realism")),
         ]
     }
@@ -114,7 +114,7 @@ impl WebhookPayload {
         match value {
             "high" => Self::Image(FalAiImageModel::JuggernautFluxLora),
             "low" => Self::Image(FalAiImageModel::FluxLora),
-            "inpainting" => Self::Image(FalAiImageModel::FluxLoraInPainting),
+            // "inpainting" => Self::Image(FalAiImageModel::FluxLoraInPainting),
             "photo" => Self::Image(FalAiImageModel::PhotoFlux),
             "portrait" => Self::Training(FalAiTrainingModel::FluxLoraPortraitTrainer),
             "train-fast" => Self::Training(FalAiTrainingModel::FluxLoraFastTraining),
