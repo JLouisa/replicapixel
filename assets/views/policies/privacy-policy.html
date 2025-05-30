@@ -1,11 +1,12 @@
-{% set cookie_link = website.website_routes.policy.cookie %}
+{% set cookie_link = website.website_routes.policy.cookie %} {% set website_name =
+website.website_basic_info.name %} {% set website_site_link = website.website_basic_info.site %}
 
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Jissicko Software - {{ website.website_basic_info.name }} Privacy Policy</title>
+    <title>Jissicko Software - {{ website_name }} Privacy Policy</title>
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico" />
     <style>
       /* Headings */
@@ -131,23 +132,22 @@
           <strong>Please Note:</strong> This Privacy Policy is provided as a template. It is
           essential to have it reviewed by a legal professional qualified in data protection law
           (specifically GDPR) to ensure it accurately reflects your data processing activities and
-          complies with all legal requirements for Jissicko Software and the {{
-          website.website_basic_info.name }} application.
+          complies with all legal requirements for Jissicko Software and the {{ website_name }}
+          application.
         </p>
       </div>
       #}
 
       <h2 class="privacy-section-title">1. Introduction & Who We Are</h2>
       <p class="privacy-text">
-        Welcome to {{ website.website_basic_info.name }}! This Privacy Policy explains how
+        Welcome to {{ website_name }}! This Privacy Policy explains how
         <strong>Jissicko Software</strong> ("we", "us", "our") collects, uses, shares, and protects
         your personal information when you use our AI content generation application "{{
-        website.website_basic_info.name }}" (the "Service"), available through our website ([Your
-        Website URL, e.g., {{ website.website_basic_info.site | safe }} ]) and potentially
-        associated applications.
+        website_name }}" (the "Service"), available through our website {{ website_site_link | safe
+        }} and potentially associated applications.
       </p>
       <p class="privacy-text">
-        <strong>Jissicko Software</strong>, located at [Your Company Address, City, Country], is the
+        <strong>Jissicko Software</strong>, located at Rotterdam, The Netherlands, is the
         <strong>Data Controller</strong> responsible for the processing of your personal data under
         the General Data Protection Regulation (GDPR).
       </p>
@@ -158,8 +158,8 @@
       <ul class="privacy-list">
         <li class="privacy-list-item">
           <p class="privacy-text">
-            Providing, operating, and maintaining the {{ website.website_basic_info.name }} Service,
-            including AI content generation based on your inputs.
+            Providing, operating, and maintaining the {{ website_name }} Service, including AI
+            content generation based on your inputs.
           </p>
         </li>
         <li class="privacy-list-item">
@@ -193,15 +193,13 @@
           <p class="privacy-text">
             We do not currently have a designated Data Protection Officer (DPO). For any
             privacy-related questions or requests, please contact us at: <br />Email:
-            jonathan.louisa@hotmail.com [Or preferably: privacy@jissickosoftware.com] <br />Phone:
-            +31 645736311 [Consider if providing a phone number is necessary/preferred for privacy
-            contact]
+            support@replicapixel.com
           </p>
         </li>
       </ul>
       <p class="privacy-text">
         Your privacy is our priority. This commitment extends to our collaboration with third-party
-        services involved in delivering {{ website.website_basic_info.name }}.
+        services involved in delivering {{ website_name }}.
       </p>
 
       <hr />
@@ -209,17 +207,17 @@
       <h2 class="privacy-section-title">2. Scope of this Policy</h2>
       <p class="privacy-text">
         This policy applies to all personal data processed by Jissicko Software in relation to your
-        use of the {{ website.website_basic_info.name }} Service, including data collected via our
-        website, the application itself, and communications with us. It covers website visitors,
-        registered users, subscribers, and anyone interacting with the Service.
+        use of the {{ website_name }} Service, including data collected via our website, the
+        application itself, and communications with us. It covers website visitors, registered
+        users, subscribers, and anyone interacting with the Service.
       </p>
 
       <hr />
 
       <h2 class="privacy-section-title">3. Information We Collect</h2>
       <p class="privacy-text">
-        We collect different types of information depending on how you interact with {{
-        website.website_basic_info.name }}:
+        We collect different types of information depending on how you interact with {{ website_name
+        }}:
       </p>
       <h3 class="privacy-subtitle">3.1. Information You Provide Directly</h3>
       <ul class="privacy-list">
@@ -234,8 +232,8 @@
         </li>
         <li class="privacy-list-item">
           <strong>Input Data:</strong> We collect the prompts, text descriptions, images, or other
-          data you provide as input to generate content using {{ website.website_basic_info.name
-          }}'s AI features (e.g., Lora models).
+          data you provide as input to generate content using {{ website_name }}'s AI features
+          (e.g., Lora models).
         </li>
         <li class="privacy-list-item">
           <strong>Communications:</strong> If you contact us for support or feedback, we collect the
@@ -369,7 +367,7 @@
           <tr>
             <td>Payment Processing</td>
             <td>
-              [e.g., Stripe, Inc.]
+              Stripe, Inc.
               <!-- Insert Your Payment Processor -->
             </td>
             <td>Processing subscription payments, fraud prevention.</td>
@@ -377,25 +375,33 @@
               Name, Email, Billing Address, Payment Method Information (partial, tokenized),
               Purchase History, IP Address.
             </td>
-            <td>[Link to Provider's Privacy Policy]</td>
+            {#
+            <td>https://stripe.com/privacy</td>
+            #}
+            <td><a href="https://stripe.com/privacy" target="_blank">Click here</a></td>
           </tr>
           <tr>
             <td>Cloud Hosting & Infrastructure</td>
             <td>
-              [e.g., AWS EMEA SARL, Google Cloud EMEA Ltd.]
+              Hetzner Online GmbH
               <!-- Insert Your Hosting Provider -->
             </td>
             <td>
-              Hosting the {{ website.website_basic_info.name }} application, storing user data
-              (including inputs/outputs), database management.
+              Hosting the {{ website_name }} application, storing user data (including
+              inputs/outputs), database management.
             </td>
             <td>Account Info, Usage Data, Input Data, Generated Output, IP Addresses (in logs).</td>
-            <td>[Link to Provider's Privacy Policy]</td>
+            <td>
+              <a href="https://www.hetzner.com/legal/privacy-policy" target="_blank">Click here</a>
+            </td>
+            {#
+            <td>https://www.hetzner.com/legal/privacy-policy</td>
+            #}
           </tr>
           <tr>
             <td>AI Model Infrastructure</td>
             <td>
-              [e.g., Specific GPU Cloud Provider, if applicable]
+              fal - Features & Labels Inc
               <!-- If using external infra for AI -->
             </td>
             <td>Running the AI models for content generation.</td>
@@ -403,7 +409,12 @@
               Input Data (prompts), potentially Usage Data (for optimisation). Anonymization applied
               where possible.
             </td>
-            <td>[Link to Provider's Privacy Policy]</td>
+            {#
+            <td>https://fal.ai/privacy</td>
+            #}
+            <td>
+              <a href="https://fal.ai/privacy" target="_blank">Click here</a>
+            </td>
           </tr>
           <tr>
             <td>Analytics</td>
@@ -416,7 +427,12 @@
               IP Address (often anonymized), Device/Browser Information, Interaction Logs (clicks,
               pages visited, time spent), Approximate Location (IP-based), User ID (if implemented).
             </td>
+            {#
             <td>https://policies.google.com/privacy</td>
+            #}
+            <td>
+              <a href="https://policies.google.com/privacy" target="_blank">Click here</a>
+            </td>
           </tr>
           <tr>
             <td>Security / CDN</td>
@@ -424,7 +440,12 @@
             <td>Website security, performance optimization (CDN), bot protection.</td>
             <!-- Revised realistic list for Cloudflare -->
             <td>IP Address, Security Logs, Device/Browser Information (for challenges).</td>
+            {#
             <td>https://www.cloudflare.com/privacypolicy/</td>
+            #}
+            <td>
+              <a href="https://www.cloudflare.com/privacypolicy" target="_blank">Click here</a>
+            </td>
           </tr>
           <tr>
             <td>Advertising / Marketing Pixels (If Used)</td>
@@ -437,17 +458,31 @@
               IP Address, Device/Browser Information, Interaction Logs (pages visited, actions
               taken), Email/User ID (if matched via hashing, with consent).
             </td>
+            {#
             <td>https://www.facebook.com/privacy/explanation</td>
+            #}
+            <td>
+              <a href="https://www.facebook.com/privacy/explanation" target="_blank">Click here</a>
+            </td>
           </tr>
           <tr>
             <td>Customer Support Platform</td>
             <td>
-              [e.g., Zendesk, Intercom]
+              Zendesk
               <!-- Insert Your Support Tool -->
             </td>
             <td>Managing support tickets and communications.</td>
             <td>Name, Email, Communication History, Account Info (as needed for support).</td>
-            <td>[Link to Provider's Privacy Policy]</td>
+            {#
+            <td>https://www.zendesk.com/company/agreements-and-terms/privacy-notice</td>
+            #}
+            <td>
+              <a
+                href="https://www.zendesk.com/company/agreements-and-terms/privacy-notice"
+                target="_blank"
+                >Click here</a
+              >
+            </td>
           </tr>
         </tbody>
       </table>
@@ -493,8 +528,8 @@
       </ul>
       <!-- IMPORTANT: Specify your primary server location -->
       <p class="privacy-text">
-        Our primary servers for the {{ website.website_basic_info.name }} application are located
-        in: [Specify Location(s), e.g., "the European Union", "Frankfurt, Germany"].
+        Our primary servers for the {{ website_name }} application are located in: the European
+        Union, Helsinki, Finland.
       </p>
 
       <hr />
@@ -583,8 +618,7 @@
       <h2 class="privacy-section-title">9. Cookies and Tracking Technologies</h2>
       <p class="privacy-text">
         We use cookies (small text files stored on your device) and similar tracking technologies
-        (like web beacons or pixels) on our website and within the {{
-        website.website_basic_info.name }} application.
+        (like web beacons or pixels) on our website and within the {{ website_name }} application.
       </p>
       <h3 class="privacy-subtitle">Types of Cookies We Use:</h3>
       <ul class="privacy-list">
@@ -615,7 +649,6 @@
         preferences and withdraw consent at any time through our cookie settings tool or your
         browser settings.
       </p>
-      <!-- IMPORTANT: Replace the localhost link with your ACTUAL live Cookie Policy URL -->
       <p class="privacy-text">
         For more detailed information about the specific cookies we use, their purposes, and how to
         manage them, please see our separate
@@ -645,7 +678,7 @@
         </li>
         <li class="privacy-list-item">
           <p class="privacy-text">
-            <strong>Right to Erasure (‘Right to be Forgotten’) (Article 17 GDPR):</strong> To
+            <strong>Right to Erasure ('Right to be Forgotten') (Article 17 GDPR):</strong> To
             request deletion of your personal data under certain conditions.
           </p>
         </li>
@@ -693,11 +726,11 @@
 
       <h2 class="privacy-section-title">11. Children's Privacy</h2>
       <p class="privacy-text">
-        The {{ website.website_basic_info.name }} Service is not intended for or directed at
-        children under the age of 16 (or a higher age if stipulated by local law). We do not
-        knowingly collect personal information from children under 16. If we become aware that we
-        have collected personal data from a child under 16 without verification of parental consent,
-        we will take steps to remove that information from our servers.
+        The {{ website_name }} Service is not intended for or directed at children under the age of
+        16 (or a higher age if stipulated by local law). We do not knowingly collect personal
+        information from children under 16. If we become aware that we have collected personal data
+        from a child under 16 without verification of parental consent, we will take steps to remove
+        that information from our servers.
       </p>
 
       <hr />
@@ -724,8 +757,7 @@
       <p class="privacy-text">
         <strong>Jissicko Software</strong><br />
         Rotterdam, The Netherlands<br />
-        <!-- Again, use a professional email if possible -->
-        Email: privacy@replicapixel.com<br />
+        Email: support@replicapixel.com<br />
       </p>
     </div>
   </body>
