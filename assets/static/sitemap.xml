@@ -2,7 +2,10 @@
 <urlset 
   xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
 >
+  <!-- Home page -->
   <url><loc>https://replicapixel.com/</loc></url>
+
+  <!-- Auth pages -->
   <url><loc>https://replicapixel.com/login</loc></url>
   <url><loc>https://replicapixel.com/register</loc></url>
   <url><loc>https://replicapixel.com/forgot</loc></url>
@@ -12,22 +15,6 @@
   <url><loc>https://replicapixel.com/policy/terms-and-conditions</loc></url>
   <url><loc>https://replicapixel.com/policy/model-consent</loc></url>
   <url><loc>https://replicapixel.com/policy/cookie</loc></url>
-
-  <!-- Studio area -->
-  <url><loc>https://replicapixel.com/studio</loc></url>
-  <url><loc>https://replicapixel.com/studio/models</loc></url>
-  <url><loc>https://replicapixel.com/studio/album/deleted</loc></url>
-  <url><loc>https://replicapixel.com/studio/album/favorite</loc></url>
-  <url><loc>https://replicapixel.com/studio/features</loc></url>
-  <url><loc>https://replicapixel.com/studio/notifications</loc></url>
-  <url><loc>https://replicapixel.com/studio/packs</loc></url>
-  <url><loc>https://replicapixel.com/studio/photo</loc></url>
-  <url><loc>https://replicapixel.com/studio/settings</loc></url>
-  <url><loc>https://replicapixel.com/studio/models/create</loc></url>
-  <url><loc>https://replicapixel.com/studio/billing</loc></url>
-
-  <!-- Studio area -->
-  <url><loc>https://replicapixel.com/studio/billing</loc></url>
 
   <!-- packs area -->
   <url><loc>https://replicapixel.com/packs/sexy-valentine-pack</loc></url>
