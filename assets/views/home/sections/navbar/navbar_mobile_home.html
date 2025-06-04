@@ -1,0 +1,31 @@
+{% set login_link = website.website_routes.auth_routes.login %} {% set login_link_partial =
+website.website_routes.auth_routes.login_partial %}
+
+<ul class="flex flex-col gap-4 p-4">
+  <li><a href="{{ studio_link | safe }}">Studio</a></li>
+  <li><a href="#home-packs">Packs</a></li>
+  <li><a href="#pricing">Pricing</a></li>
+  {% if user %}
+  <li id="nav-auth">
+    <a
+      href="{{ logout_link | safe }}"
+      hx-get="{{ logout_partial_link }}"
+      hx-target="#app"
+      hx-push-url="{{ login_link }}"
+      hx-swap="innerHTML"
+      >Logout</a
+    >
+  </li>
+  {% else %}
+  <li id="nav-auth">
+    <a
+      href="{{login_link | safe}}"
+      hx-get="{{ login_link_partial | safe }}"
+      hx-target="#app"
+      hx-push-url="{{ login_link | safe }}"
+      hx-swap="innerHTML"
+      >Login</a
+    >
+  </li>
+  {% endif %}
+</ul>
