@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const sideMenu = document.getElementById("side-menu");
   const menuOverlay = document.getElementById("menu-overlay");
   const closeButton = document.getElementById("close-menu-button");
+  const closeButtons = document.getElementsByClassName("close-menu-buttons");
 
   let isMenuOpen = false;
 
@@ -31,6 +32,11 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   if (closeButton) {
     closeButton.addEventListener("click", toggleMenu);
+  }
+  if (closeButtons) {
+    for (let i = 0; i < closeButtons.length; i++) {
+      closeButtons[i].addEventListener("click", toggleMenu);
+    }
   }
   if (menuOverlay) {
     menuOverlay.addEventListener("click", toggleMenu);
@@ -71,25 +77,3 @@ document.body.addEventListener("htmx:afterSwap", function (evt) {
     console.error("Error in htmx:afterSwap handler:", error);
   }
 });
-
-// // Scroll to anchor
-// document.body.addEventListener("htmx:afterSwap", function (evt) {
-//   if (evt.detail.target.id === "app") {
-//     const target = sessionStorage.getItem("scrollTo");
-//     if (target) {
-//       requestAnimationFrame(() => {
-//         const el = document.querySelector(target);
-//         if (el) {
-//           const elementRect = el.getBoundingClientRect();
-//           const offsetPosition =
-//             elementRect.top + window.pageYOffset - window.innerHeight / 2 + elementRect.height / 2;
-//           window.scrollTo({
-//             top: offsetPosition,
-//             behavior: "smooth",
-//           });
-//         }
-//         sessionStorage.removeItem("scrollTo");
-//       });
-//     }
-//   }
-// });

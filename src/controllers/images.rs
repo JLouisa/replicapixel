@@ -26,6 +26,8 @@ use crate::service::redis::redis::RedisCacheDriver;
 use crate::views::images::{CreditsViewModel, ImageView, ImageViewList};
 use crate::{models::_entities::images::Entity, service::fal_ai::fal_client::FalAiClient, views};
 
+const IMAGE_COST: i32 = 1;
+
 pub mod routes {
     use serde::{Deserialize, Serialize};
 
@@ -198,7 +200,7 @@ impl ImageGenerationTrait for PacksDomain {
                     alt: alt.to_owned(),
                     loras: loras.clone(),
                     image_size: self.image_size,
-                    image_cost: 2,
+                    image_cost: IMAGE_COST,
                     num_inference_steps: self.num_images() as i32,
                     model: self.quality_model(),
                     ..Default::default()
@@ -258,7 +260,7 @@ impl ImageGenerationTrait for ImageGenRequestParams {
                     sys_prompt: sys_prompt.to_owned(),
                     user_prompt: self.prompt.to_owned(),
                     alt: alt.to_owned(),
-                    image_cost: 2,
+                    image_cost: IMAGE_COST,
                     num_inference_steps: self.num_inference_steps as i32,
                     image_s3_key: s3_key,
                     image_size: self.image_size,

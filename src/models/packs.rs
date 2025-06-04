@@ -180,6 +180,23 @@ impl Model {
             .await?;
         Ok(packs)
     }
+    pub async fn plus_used_one_pack(db: &DatabaseConnection, pid: &Uuid) -> ModelResult<Self> {
+        let condition = Condition::all().add(packs::Column::Pid.eq(pid.clone()));
+        let pack = Entity::find()
+            .filter(condition)
+            .one(db)
+            .await?
+            .ok_or_else(|| ModelError::EntityNotFound)?;
+
+        Entity::update(ActiveModel {
+            id: ActiveValue::Unchanged(pack.id),
+            used: ActiveValue::Set(pack.used + 1),
+            ..pack.into_active_model()
+        })
+        .exec(db)
+        .await
+        .map_err(Into::into)
+    }
     pub async fn find_first_12_packs(db: &DatabaseConnection) -> ModelResult<Vec<Self>> {
         let packs = Entity::find()
             .order_by_asc(packs::Column::Id)

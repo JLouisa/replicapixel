@@ -106,6 +106,10 @@ async fn load_packs_all(db: &DatabaseConnection) -> Result<PackModelList> {
     let pack = PackModel::find_all_packs(db).await?;
     Ok(PackModelList::new(pack))
 }
+async fn plus_one_used_pack(db: &DatabaseConnection, pid: &Uuid) -> Result<()> {
+    let _ = PackModel::plus_used_one_pack(db, pid).await?;
+    Ok(())
+}
 async fn load_everything(
     db: &DatabaseConnection,
     user_pid: &UserPid,
@@ -203,6 +207,7 @@ pub async fn generate_packs_images(
     let (updated_credits_model, _) =
         ImageGenerationService::generate(&ctx, &fal_ai_client, pack_domain, &user, &training_model)
             .await?;
+    plus_one_used_pack(&ctx.db, &pack_pid).await?;
 
     // 2. Render the view using the View Models
     let is_deleted = false;

@@ -141,10 +141,12 @@
           <a
             class="text-sm text-primary cursor-pointer mt-4"
             href="/"
+            {#
             hx-get="/partial/home"
             hx-target="#app"
             hx-swap="innerHTML"
             hx-push-url="/"
+            #}
             >Home
           </a>
         </div>

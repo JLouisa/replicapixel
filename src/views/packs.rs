@@ -85,6 +85,8 @@ pub struct PackView {
     pub credits: i32,
     pub num_images: i32,
     pub main_image: String,
+    pub used: i32,
+    pub is_popular: bool,
     pub images: Option<Vec<String>>,
     pub features: Option<Vec<String>>,
 }
@@ -100,6 +102,8 @@ impl From<PackModel> for PackView {
             credits: p.credits,
             num_images: p.num_images,
             main_image: p.main_image,
+            used: p.used,
+            is_popular: p.popular,
             images: p.images,
             features: p.features,
         }

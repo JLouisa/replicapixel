@@ -2,11 +2,11 @@
 website.website_routes.auth_routes.login_partial %}
 
 <ul class="flex flex-col gap-4 p-4">
-  <li><a href="{{ studio_link | safe }}">Studio</a></li>
-  <li><a href="#home-packs">Packs</a></li>
-  <li><a href="#pricing">Pricing</a></li>
+  <li class="close-menu-buttons"><a href="{{ studio_link | safe }}">Studio</a></li>
+  <li class="close-menu-buttons"><a href="#home-packs">Packs</a></li>
+  <li class="close-menu-buttons"><a href="#pricing">Pricing</a></li>
   {% if user %}
-  <li id="nav-auth">
+  <li id="nav-auth" class="close-menu-buttons">
     <a
       href="{{ logout_link | safe }}"
       hx-get="{{ logout_partial_link }}"
@@ -17,7 +17,7 @@ website.website_routes.auth_routes.login_partial %}
     >
   </li>
   {% else %}
-  <li id="nav-auth">
+  <li id="nav-auth" class="close-menu-buttons">
     <a
       href="{{login_link | safe}}"
       hx-get="{{ login_link_partial | safe }}"

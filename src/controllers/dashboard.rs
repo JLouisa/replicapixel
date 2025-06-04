@@ -24,6 +24,7 @@ use crate::service::redis::redis::{load_cached_web, RedisCacheDriver};
 use crate::views;
 use crate::views::dashboard::TransactionViewList;
 use crate::views::images::ImageViewList;
+use axum::response::Redirect;
 use axum::Extension;
 use axum::{debug_handler, extract::State, response::IntoResponse};
 use loco_rs::prelude::*;
@@ -342,18 +343,23 @@ pub async fn dashboard_test_clear(State(ctx): State<AppContext>) -> Result<impl 
 
 #[debug_handler]
 pub async fn billing_dashboard(
-    auth: auth::JWT,
+    auth: Result<auth::JWT>,
     ExtractConsentState(cc_cookie): ExtractConsentState,
     Extension(website): Extension<Website>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let user_pid = UserPid::new(&auth.claims.pid);
+    let user_pid = match auth {
+        Ok(auth) => UserPid::new(&auth.claims.pid),
+        Err(_) => {
+            return Ok(Redirect::to("/login").into_response());
+        }
+    };
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     let orders = load_transactions(&ctx.db, user.id).await?;
     let plans = load_plans(&ctx.db).await?;
     let orders_view = TransactionViewList::from_model(orders, plans);
-    views::dashboard::billing_dashboard(
+    Ok(views::dashboard::billing_dashboard(
         v,
         &website,
         user.into(),
@@ -361,66 +367,91 @@ pub async fn billing_dashboard(
         &orders_view,
         &cc_cookie,
     )
+    .into_response())
 }
 #[debug_handler]
 pub async fn billing_partial_dashboard(
-    auth: auth::JWT,
+    auth: Result<auth::JWT>,
     State(ctx): State<AppContext>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let user_pid = UserPid::new(&auth.claims.pid);
+    let user_pid = match auth {
+        Ok(auth) => UserPid::new(&auth.claims.pid),
+        Err(_) => {
+            return Ok(Redirect::to("/login").into_response());
+        }
+    };
     let user = load_user(&ctx.db, &user_pid).await?;
     let orders = load_transactions(&ctx.db, user.id).await?;
     let plans = load_plans(&ctx.db).await?;
     let orders_view = TransactionViewList::from_model(orders, plans);
-    views::dashboard::billing_partial_dashboard(v, &website, user.into(), &orders_view)
+    Ok(
+        views::dashboard::billing_partial_dashboard(v, &website, user.into(), &orders_view)
+            .into_response(),
+    )
 }
 
 #[debug_handler]
 pub async fn notification_dashboard(
-    auth: auth::JWT,
+    auth: Result<auth::JWT>,
     ExtractConsentState(cc_cookie): ExtractConsentState,
     Extension(website): Extension<Website>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let user_pid = UserPid::new(&auth.claims.pid);
+    let user_pid = match auth {
+        Ok(auth) => UserPid::new(&auth.claims.pid),
+        Err(_) => {
+            return Ok(Redirect::to("/login").into_response());
+        }
+    };
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
-    views::dashboard::notification_dashboard(
+    Ok(views::dashboard::notification_dashboard(
         v,
         &website,
         user.into(),
         &user_credits.into(),
         &cc_cookie,
     )
+    .into_response())
 }
 #[debug_handler]
 pub async fn notification_partial_dashboard(
-    auth: auth::JWT,
+    auth: Result<auth::JWT>,
     State(ctx): State<AppContext>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let user_pid = UserPid::new(&auth.claims.pid);
+    let user_pid = match auth {
+        Ok(auth) => UserPid::new(&auth.claims.pid),
+        Err(_) => {
+            return Ok(Redirect::to("/login").into_response());
+        }
+    };
     let user = load_user(&ctx.db, &user_pid).await?;
-    views::dashboard::notification_partial_dashboard(v, &website, user.into())
+    Ok(views::dashboard::notification_partial_dashboard(v, &website, user.into()).into_response())
 }
 
 #[debug_handler]
 pub async fn features_dashboard(
-    auth: auth::JWT,
+    auth: Result<auth::JWT>,
     ExtractConsentState(cc_cookie): ExtractConsentState,
     Extension(website): Extension<Website>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let user_pid = UserPid::new(&auth.claims.pid);
+    let user_pid = match auth {
+        Ok(auth) => UserPid::new(&auth.claims.pid),
+        Err(_) => {
+            return Ok(Redirect::to("/login").into_response());
+        }
+    };
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     let features = load_features(&ctx.db).await?;
     let votes = load_votes(&ctx.db, user.id).await?;
     let features_view = FeatureViewList::convert(features, votes);
-    views::dashboard::features_dashboard(
+    Ok(views::dashboard::features_dashboard(
         v,
         &website,
         user.into(),
@@ -428,35 +459,49 @@ pub async fn features_dashboard(
         &features_view,
         &cc_cookie,
     )
+    .into_response())
 }
 #[debug_handler]
 pub async fn features_partial_dashboard(
-    auth: auth::JWT,
+    auth: Result<auth::JWT>,
     State(ctx): State<AppContext>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let user_pid = UserPid::new(&auth.claims.pid);
+    let user_pid = match auth {
+        Ok(auth) => UserPid::new(&auth.claims.pid),
+        Err(_) => {
+            return Ok(Redirect::to("/login").into_response());
+        }
+    };
     let user = load_user(&ctx.db, &user_pid).await?;
     let features = load_features(&ctx.db).await?;
     let votes = load_votes(&ctx.db, user.id).await?;
     let features_view = FeatureViewList::convert(features, votes);
-    views::dashboard::features_partial_dashboard(v, &website, user.into(), &features_view)
+    Ok(
+        views::dashboard::features_partial_dashboard(v, &website, user.into(), &features_view)
+            .into_response(),
+    )
 }
 
 #[debug_handler]
 pub async fn settings_dashboard(
-    auth: auth::JWT,
+    auth: Result<auth::JWT>,
     ExtractConsentState(cc_cookie): ExtractConsentState,
     Extension(website): Extension<Website>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let user_pid = UserPid::new(&auth.claims.pid);
+    let user_pid = match auth {
+        Ok(auth) => UserPid::new(&auth.claims.pid),
+        Err(_) => {
+            return Ok(Redirect::to("/login").into_response());
+        }
+    };
     let (user, user_credits, user_settings) =
         load_user_credits_settings(&ctx.db, &user_pid).await?;
     let is_oauth = is_oauth(&ctx.db, user.id).await?;
-    views::dashboard::settings_dashboard(
+    Ok(views::dashboard::settings_dashboard(
         v,
         &website,
         &user.into(),
@@ -465,38 +510,50 @@ pub async fn settings_dashboard(
         &cc_cookie,
         is_oauth,
     )
+    .into_response())
 }
 #[debug_handler]
 pub async fn settings_partial_dashboard(
-    auth: auth::JWT,
+    auth: Result<auth::JWT>,
     State(ctx): State<AppContext>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let user_pid = UserPid::new(&auth.claims.pid);
+    let user_pid = match auth {
+        Ok(auth) => UserPid::new(&auth.claims.pid),
+        Err(_) => {
+            return Ok(Redirect::to("/login").into_response());
+        }
+    };
     let (user, user_settings) = load_user_and_settings(&ctx.db, &user_pid).await?;
     let is_oauth = is_oauth(&ctx.db, user.id).await?;
-    views::dashboard::settings_partial_dashboard(
+    Ok(views::dashboard::settings_partial_dashboard(
         v,
         &website,
         &user.into(),
         &user_settings.into(),
         is_oauth,
     )
+    .into_response())
 }
 
 #[debug_handler]
 pub async fn training_dashboard(
-    auth: auth::JWT,
+    auth: Result<auth::JWT>,
     ExtractConsentState(cc_cookie): ExtractConsentState,
     Extension(website): Extension<Website>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let user_pid = UserPid::new(&auth.claims.pid);
+    let user_pid = match auth {
+        Ok(auth) => UserPid::new(&auth.claims.pid),
+        Err(_) => {
+            return Ok(Redirect::to("/login").into_response());
+        }
+    };
     let (user, user_credits, training_models) =
         load_user_credit_training(&ctx.db, &user_pid).await?;
-    views::dashboard::training_dashboard(
+    Ok(views::dashboard::training_dashboard(
         v,
         &website,
         &user.into(),
@@ -504,38 +561,50 @@ pub async fn training_dashboard(
         &training_models.into(),
         &cc_cookie,
     )
+    .into_response())
 }
 #[debug_handler]
 pub async fn training_partial_dashboard(
-    auth: auth::JWT,
+    auth: Result<auth::JWT>,
     State(ctx): State<AppContext>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let user_pid = UserPid::new(&auth.claims.pid);
+    let user_pid = match auth {
+        Ok(auth) => UserPid::new(&auth.claims.pid),
+        Err(_) => {
+            return Ok(Redirect::to("/login").into_response());
+        }
+    };
     let (user, user_credits, training_models) =
         load_user_credit_training(&ctx.db, &user_pid).await?;
-    views::dashboard::training_partial_dashboard(
+    Ok(views::dashboard::training_partial_dashboard(
         v,
         &website,
         &user.into(),
         &user_credits.into(),
         &training_models.into(),
     )
+    .into_response())
 }
 
 #[debug_handler]
 pub async fn new_training_dashboard(
-    auth: auth::JWT,
+    auth: Result<auth::JWT>,
     ExtractConsentState(cc_cookie): ExtractConsentState,
     Extension(website): Extension<Website>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let user_pid = UserPid::new(&auth.claims.pid);
+    let user_pid = match auth {
+        Ok(auth) => UserPid::new(&auth.claims.pid),
+        Err(_) => {
+            return Ok(Redirect::to("/login").into_response());
+        }
+    };
     let (user, user_credits, training_models) =
         load_user_credit_training(&ctx.db, &user_pid).await?;
-    views::dashboard::create_training_dashboard(
+    Ok(views::dashboard::create_training_dashboard(
         v,
         &website,
         &user.into(),
@@ -543,19 +612,25 @@ pub async fn new_training_dashboard(
         &training_models.into(),
         &cc_cookie,
     )
+    .into_response())
 }
 #[debug_handler]
 pub async fn new_training_dashboard_partials(
-    auth: auth::JWT,
+    auth: Result<auth::JWT>,
     ExtractConsentState(cc_cookie): ExtractConsentState,
     Extension(website): Extension<Website>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let user_pid = UserPid::new(&auth.claims.pid);
+    let user_pid = match auth {
+        Ok(auth) => UserPid::new(&auth.claims.pid),
+        Err(_) => {
+            return Ok(Redirect::to("/login").into_response());
+        }
+    };
     let (user, user_credits, training_models) =
         load_user_credit_training(&ctx.db, &user_pid).await?;
-    views::dashboard::create_training_dashboard_partial(
+    Ok(views::dashboard::create_training_dashboard_partial(
         v,
         &website,
         &user.into(),
@@ -563,24 +638,30 @@ pub async fn new_training_dashboard_partials(
         &training_models.into(),
         &cc_cookie,
     )
+    .into_response())
 }
 
 #[debug_handler]
 pub async fn packs_dashboard(
-    auth: auth::JWT,
+    auth: Result<auth::JWT>,
     ExtractConsentState(cc_cookie): ExtractConsentState,
     Extension(website): Extension<Website>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let user_pid = UserPid::new(&auth.claims.pid);
+    let user_pid = match auth {
+        Ok(auth) => UserPid::new(&auth.claims.pid),
+        Err(_) => {
+            return Ok(Redirect::to("/login").into_response());
+        }
+    };
     let (user, user_credits, training_models) =
         load_user_credit_training(&ctx.db, &user_pid).await?;
     let packs = match load_cached_web(&ctx).await {
         Ok(images) => images.packs,
         Err(_) => load_packs(&ctx.db).await?.into(),
     };
-    views::dashboard::packs_dashboard(
+    Ok(views::dashboard::packs_dashboard(
         v,
         &website,
         &user.into(),
@@ -589,26 +670,35 @@ pub async fn packs_dashboard(
         &packs,
         &cc_cookie,
     )
+    .into_response())
 }
 #[debug_handler]
 pub async fn packs_partial_dashboard(
-    auth: auth::JWT,
+    auth: Result<auth::JWT>,
     State(ctx): State<AppContext>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let user_pid = UserPid::new(&auth.claims.pid);
+    let user_pid = match auth {
+        Ok(auth) => UserPid::new(&auth.claims.pid),
+        Err(_) => {
+            return Ok(Redirect::to("/login").into_response());
+        }
+    };
     let (_, training_models) = load_user_and_training(&ctx.db, &user_pid).await?;
     let packs = match load_cached_web(&ctx).await {
         Ok(images) => images.packs,
         Err(_) => load_packs(&ctx.db).await?.into(),
     };
-    views::dashboard::packs_partial_dashboard(v, &website, &training_models.into(), &packs)
+    Ok(
+        views::dashboard::packs_partial_dashboard(v, &website, &training_models.into(), &packs)
+            .into_response(),
+    )
 }
 
 #[debug_handler]
 pub async fn album_deleted_dashboard(
-    auth: auth::JWT,
+    auth: Result<auth::JWT>,
     ExtractConsentState(cc_cookie): ExtractConsentState,
     State(ctx): State<AppContext>,
     Extension(s3_client): Extension<AwsS3>,
@@ -616,7 +706,12 @@ pub async fn album_deleted_dashboard(
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let user_pid = UserPid::new(&auth.claims.pid);
+    let user_pid = match auth {
+        Ok(auth) => UserPid::new(&auth.claims.pid),
+        Err(_) => {
+            return Ok(Redirect::to("/login").into_response());
+        }
+    };
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     let training_models: TrainingModelList = TrainingModelList::empty();
     let is_deleted = true;
@@ -626,7 +721,7 @@ pub async fn album_deleted_dashboard(
         .into();
     let images = images.populate_s3_pre_urls(&s3_client, &cache).await;
     let current_page = "deleted";
-    views::dashboard::photo_dashboard(
+    Ok(views::dashboard::photo_dashboard(
         v,
         &website,
         &user.into(),
@@ -638,17 +733,24 @@ pub async fn album_deleted_dashboard(
         &cc_cookie,
         current_page,
     )
+    .into_response())
 }
+
 #[debug_handler]
 pub async fn album_deleted_partial_dashboard(
-    auth: auth::JWT,
+    auth: Result<auth::JWT>,
     State(ctx): State<AppContext>,
     Extension(s3_client): Extension<AwsS3>,
     Extension(cache): Extension<RedisCacheDriver>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let user_pid = UserPid::new(&auth.claims.pid);
+    let user_pid = match auth {
+        Ok(auth) => UserPid::new(&auth.claims.pid),
+        Err(_) => {
+            return Ok(Redirect::to("/login").into_response());
+        }
+    };
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     let training_models: TrainingModelList = TrainingModelList::empty();
     let is_deleted = true;
@@ -657,7 +759,7 @@ pub async fn album_deleted_partial_dashboard(
         .await?
         .into();
     let images = images.populate_s3_pre_urls(&s3_client, &cache).await;
-    views::dashboard::photo_partial_dashboard(
+    Ok(views::dashboard::photo_partial_dashboard(
         v,
         &website,
         &images,
@@ -666,11 +768,12 @@ pub async fn album_deleted_partial_dashboard(
         is_deleted,
         is_favorite,
     )
+    .into_response())
 }
 
 #[debug_handler]
 pub async fn album_favorite_dashboard(
-    auth: auth::JWT,
+    auth: Result<auth::JWT>,
     ExtractConsentState(cc_cookie): ExtractConsentState,
     State(ctx): State<AppContext>,
     Extension(s3_client): Extension<AwsS3>,
@@ -678,7 +781,12 @@ pub async fn album_favorite_dashboard(
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let user_pid = UserPid::new(&auth.claims.pid);
+    let user_pid = match auth {
+        Ok(auth) => UserPid::new(&auth.claims.pid),
+        Err(_) => {
+            return Ok(Redirect::to("/login").into_response());
+        }
+    };
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     let training_models: TrainingModelList = TrainingModelList::empty();
     let is_deleted = false;
@@ -688,7 +796,7 @@ pub async fn album_favorite_dashboard(
         .into();
     let images = images.populate_s3_pre_urls(&s3_client, &cache).await;
     let current_page = "favorite";
-    views::dashboard::photo_dashboard(
+    Ok(views::dashboard::photo_dashboard(
         v,
         &website,
         &user.into(),
@@ -700,17 +808,24 @@ pub async fn album_favorite_dashboard(
         &cc_cookie,
         current_page,
     )
+    .into_response())
 }
+
 #[debug_handler]
 pub async fn album_favorite_partial_dashboard(
-    auth: auth::JWT,
+    auth: Result<auth::JWT>,
     State(ctx): State<AppContext>,
     Extension(s3_client): Extension<AwsS3>,
     Extension(cache): Extension<RedisCacheDriver>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let user_pid = UserPid::new(&auth.claims.pid);
+    let user_pid = match auth {
+        Ok(auth) => UserPid::new(&auth.claims.pid),
+        Err(_) => {
+            return Ok(Redirect::to("/login").into_response());
+        }
+    };
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     let training_models: TrainingModelList = TrainingModelList::empty();
     let is_deleted = false;
@@ -720,7 +835,7 @@ pub async fn album_favorite_partial_dashboard(
         .into();
     let images = images.populate_s3_pre_urls(&s3_client, &cache).await;
 
-    views::dashboard::photo_partial_dashboard(
+    Ok(views::dashboard::photo_partial_dashboard(
         v,
         &website,
         &images,
@@ -729,11 +844,12 @@ pub async fn album_favorite_partial_dashboard(
         is_deleted,
         is_favorite,
     )
+    .into_response())
 }
 
 #[debug_handler]
 pub async fn photo_dashboard(
-    auth: auth::JWT,
+    auth: Result<auth::JWT>,
     ExtractConsentState(cc_cookie): ExtractConsentState,
     State(ctx): State<AppContext>,
     Extension(s3_client): Extension<AwsS3>,
@@ -741,7 +857,12 @@ pub async fn photo_dashboard(
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let user_pid = UserPid::new(&auth.claims.pid);
+    let user_pid = match auth {
+        Ok(auth) => UserPid::new(&auth.claims.pid),
+        Err(_) => {
+            return Ok(Redirect::to("/login").into_response());
+        }
+    };
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     let training_models = load_item_all_completed(&ctx, user.id).await?;
     let is_deleted = false;
@@ -751,7 +872,7 @@ pub async fn photo_dashboard(
         .into();
     let images = images.populate_s3_pre_urls(&s3_client, &cache).await;
     let current_page = "album";
-    views::dashboard::photo_dashboard(
+    Ok(views::dashboard::photo_dashboard(
         v,
         &website,
         &user.into(),
@@ -763,17 +884,24 @@ pub async fn photo_dashboard(
         &cc_cookie,
         current_page,
     )
+    .into_response())
 }
+
 #[debug_handler]
 pub async fn photo_partial_dashboard(
-    auth: auth::JWT,
+    auth: Result<auth::JWT>,
     State(ctx): State<AppContext>,
     Extension(s3_client): Extension<AwsS3>,
     Extension(cache): Extension<RedisCacheDriver>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let user_pid = UserPid::new(&auth.claims.pid);
+    let user_pid = match auth {
+        Ok(auth) => UserPid::new(&auth.claims.pid),
+        Err(_) => {
+            return Ok(Redirect::to("/login").into_response());
+        }
+    };
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     let training_models = load_item_all_completed(&ctx, user.id).await?;
     let is_deleted = false;
@@ -783,7 +911,7 @@ pub async fn photo_partial_dashboard(
         .into();
     let images = images.populate_s3_pre_urls(&s3_client, &cache).await;
 
-    views::dashboard::photo_partial_dashboard(
+    Ok(views::dashboard::photo_partial_dashboard(
         v,
         &website,
         &images,
@@ -792,4 +920,5 @@ pub async fn photo_partial_dashboard(
         is_deleted,
         is_favorite,
     )
+    .into_response())
 }

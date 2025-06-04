@@ -22,7 +22,11 @@
       {% include "partials/svg/x.html" %}
     </div>
     <br />
-    {% if is_home or is_packs %} {% include "home/sections/navbar/navbar_mobile_home.html" %} {%
-    else %} {% include "home/sections/navbar/navbar_mobile_dashboard.html" %} {% endif %}
+    {% if is_home or is_pack or is_pack_partial %} {% include
+    "partials/parts/navbar_mobile/navbar_mobile_home.html" %} {% else %} {% include
+    "partials/parts/navbar_mobile/navbar_mobile_dashboard.html" %} {% endif %}
   </div>
+  <script>
+    setupMobileMenu();
+  </script>
 </div>
