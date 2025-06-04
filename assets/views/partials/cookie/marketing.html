@@ -15,7 +15,7 @@
     s = b.getElementsByTagName(e)[0];
     s.parentNode.insertBefore(t, s);
   })(window, document, "script", "https://connect.facebook.net/en_US/fbevents.js");
-  fbq("init", "651402297866255");
+  fbq("init", "{{meta_pixel_id}}");
   fbq("track", "PageView");
 </script>
 <noscript
@@ -23,17 +23,5 @@
     height="1"
     width="1"
     style="display: none"
-    src="https://www.facebook.com/tr?id=651402297866255&ev=PageView&noscript=1"
+    src="https://www.facebook.com/tr?id={{meta_pixel_id}}&ev=PageView&noscript=1"
 /></noscript>
-
-{#
-<script>
-  !(function (f, b, e, v, n, t, s) {
-    /* Minified Pixel Code */
-  })(window, document, "script", "https://connect.facebook.net/en_US/fbevents.js");
-  fbq("init", "{{ meta_pixel_id }}");
-  fbq("track", "PageView");
-  console.log("Server rendered & initialized Meta Pixel.");
-</script>
-<noscript><img height="1" width="1" style="display: none" src="...noscript_pixel..." /></noscript>
-#}
