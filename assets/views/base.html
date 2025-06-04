@@ -122,7 +122,7 @@
       x-transition:leave-start="translate-y-0"
       x-transition:leave-end="translate-y-full"
       x-cloak
-      class="fixed bottom-5 right-5 px-4 py-2 rounded shadow-lg text-white"
+      class="fixed bottom-5 right-5 px-4 py-2 rounded shadow-lg text-white z-30"
       :class="$store.toast.isError ? 'bg-red-500' : $store.toast.isWarn ? 'bg-orange-500' : 'bg-green-700'"
     >
       <span x-text="$store.toast.message"></span>
