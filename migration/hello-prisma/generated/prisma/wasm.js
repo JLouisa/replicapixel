@@ -132,7 +132,8 @@ exports.Prisma.UsersScalarFieldEnum = {
   email_verification_sent_at: 'email_verification_sent_at',
   email_verified_at: 'email_verified_at',
   magicLink_token: 'magicLink_token',
-  magicLink_expiration: 'magicLink_expiration'
+  magicLink_expiration: 'magicLink_expiration',
+  account: 'account'
 };
 
 exports.Prisma.OAuth2SessionScalarFieldEnum = {
@@ -342,6 +343,12 @@ exports.Prisma.JsonNullValueFilter = {
   JsonNull: Prisma.JsonNull,
   AnyNull: Prisma.AnyNull
 };
+exports.Account = exports.$Enums.Account = {
+  Website: 'Website',
+  Google: 'Google',
+  Github: 'Github'
+};
+
 exports.Sex = exports.$Enums.Sex = {
   Male: 'Male',
   Female: 'Female'

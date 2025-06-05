@@ -379,3 +379,23 @@ impl Default for Currency {
         Currency::USA
     }
 }
+
+#[derive(Debug, Clone, PartialEq, Eq, EnumIter, DeriveActiveEnum, Serialize, Deserialize)]
+#[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "account")]
+#[serde(rename_all = "lowercase")]
+pub enum Account {
+    #[sea_orm(string_value = "Website")]
+    #[strum(to_string = "website")]
+    Website,
+    #[sea_orm(string_value = "Google")]
+    #[strum(to_string = "google")]
+    Google,
+    #[sea_orm(string_value = "Github")]
+    #[strum(to_string = "github")]
+    Github,
+}
+impl Default for Account {
+    fn default() -> Self {
+        Account::Website
+    }
+}

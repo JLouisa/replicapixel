@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     domain::website::Website,
-    models::{UserCreditModel, UserModel},
+    models::{UserCreditModel, UserModel, _entities::sea_orm_active_enums::Account},
 };
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -78,6 +78,7 @@ pub struct UserView {
     pub pid: String,
     pub name: String,
     pub email: String,
+    pub account: Account,
 }
 impl From<&UserModel> for UserView {
     fn from(model: &UserModel) -> Self {
@@ -86,6 +87,7 @@ impl From<&UserModel> for UserView {
             pid: model.pid.to_string(),
             name: model.name.clone(),
             email: model.email.clone(),
+            account: model.account.clone(),
         }
     }
 }
@@ -96,6 +98,7 @@ impl From<UserModel> for UserView {
             pid: model.pid.to_string(),
             name: model.name,
             email: model.email,
+            account: model.account,
         }
     }
 }

@@ -34,6 +34,7 @@ model Users {
   email_verified_at          DateTime? @db.Timestamptz
   magicLink_token            String?   @db.VarChar(255)
   magicLink_expiration       DateTime? @db.Timestamptz
+  account                    Account   @default(Website)
 
   TrainingModels  TrainingModels[]
   UserCredits     UserCredits[]
@@ -298,6 +299,14 @@ model FeatureVote {
 }
 
 // --- Enums ---
+enum Account {
+  Website
+  Google
+  Github
+
+  @@map("account")
+}
+
 enum FeatureStatus {
   Suggested
   Planned

@@ -14,7 +14,9 @@ use super::{
     o_auth2_sessions, UserSettingsActiveModel,
     _entities::sea_orm_active_enums::{Language, ThemePreference},
 };
-use crate::service::stripe::stripe::StripeClient;
+use crate::{
+    models::_entities::sea_orm_active_enums::Account, service::stripe::stripe::StripeClient,
+};
 use loco_oauth2::models::users::OAuth2UserTrait;
 
 pub use super::_entities::users::{self, ActiveModel, Entity, Model};
@@ -403,6 +405,7 @@ impl OAuth2UserTrait<OAuth2UserProfile> for Model {
                     name: ActiveValue::set(profile.name.to_string()),
                     email_verified_at: ActiveValue::set(Some(Local::now().into())),
                     password: ActiveValue::set(password_hash),
+                    account: ActiveValue::set(Account::Google),
                     ..Default::default()
                 }
                 .insert(&txn)
@@ -652,6 +655,7 @@ impl Model {
             password: ActiveValue::set(password_hash),
             name: ActiveValue::set(params.name.to_string()),
             stripe_customer_id: ActiveValue::set(stripe_customer),
+            account: ActiveValue::set(Account::Google),
             ..Default::default()
         }
         .insert(&txn)

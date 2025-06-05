@@ -55,7 +55,7 @@
         </div>
       </div>
 
-      {% if is_oauth == false %}
+      {% if user.account == "website" %}
       <!-- Password Section -->
       {% include "dashboard/content/settings/partials/password_settings_partial.html" %} {% endif %}
 
