@@ -61,7 +61,7 @@ pub struct GoogleAnalytics {
 }
 #[derive(Debug, Clone, Deserialize, Serialize, Default)]
 pub struct MetaPixel {
-    pub meta_pixel_id: Option<String>,
+    pub meta_pixel_id: Option<i64>,
     pub meta_pixel_secret: Option<String>,
 }
 
