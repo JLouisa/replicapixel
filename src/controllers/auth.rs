@@ -26,15 +26,13 @@ use axum::{
     response::{IntoResponse, Redirect, Response},
     Extension,
 };
-use chrono::{Duration, Utc};
+use chrono::Utc;
 use derive_more::Constructor;
 use loco_rs::{controller::ErrorDetail, prelude::*};
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::{borrow::Cow, collections::HashMap, sync::OnceLock};
 use validator::ValidationErrorsKind;
-
-use axum_extra::extract::cookie::{Cookie as AxumCookie, SameSite};
 
 use super::dashboard::is_oauth;
 
@@ -141,13 +139,20 @@ pub fn routes() -> Routes {
 }
 
 pub struct HxRedirect(String);
+impl HxRedirect {
+    pub fn new(url: &str) -> Self {
+        Self(String::from(url))
+    }
+    pub fn login() -> Self {
+        Self(String::from(routes::Auth::LOGIN))
+    }
+}
 impl IntoResponse for HxRedirect {
     fn into_response(self) -> Response {
         let mut headers = HeaderMap::new();
         headers.insert("HX-Redirect", self.0.parse().unwrap());
         (headers, StatusCode::OK).into_response()
     }
-    // Ok(HxRedirect(routes::Auth::LOGIN_PARTIAL.to_string()).into_response())
 }
 
 #[derive(Debug, Deserialize, Constructor, Serialize, Default)]
@@ -667,16 +672,12 @@ async fn api_login(
 
 #[debug_handler]
 async fn logout(State(_ctx): State<AppContext>) -> Result<Response> {
-    // Set the expiration date in the past to remove the cookie
-    let expiry = Utc::now() - Duration::days(1);
-    let expired_cookie = format!(
-        "auth=; Path=/; HttpOnly; Secure; SameSite=Strict; Expires={}",
-        expiry.to_rfc2822()
-    );
+    let cookie = UserModel::logout_cookie();
+    let cookie_str = cookie.to_string();
 
     // Create headers for removing the cookie and redirecting
     let mut headers = HeaderMap::new();
-    headers.insert("Set-Cookie", expired_cookie.parse().unwrap());
+    headers.insert("Set-Cookie", cookie_str.parse().unwrap());
     headers.insert("HX-Redirect", "/login".parse().unwrap()); // HTMX redirect
 
     Ok((StatusCode::OK, headers).into_response())
@@ -688,14 +689,7 @@ async fn logout_partial(
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let cookie = AxumCookie::build(("auth", ""))
-        .path("/")
-        .http_only(true)
-        .secure(!cfg!(debug_assertions))
-        .same_site(SameSite::Lax)
-        .expires(time::OffsetDateTime::now_utc() - time::Duration::days(1))
-        .max_age(time::Duration::seconds(0))
-        .build();
+    let cookie = UserModel::logout_cookie();
 
     let cookie_header_value = cookie.to_string();
     let cookie_header = HeaderValue::from_str(&cookie_header_value).map_err(|_| {

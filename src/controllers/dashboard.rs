@@ -1,6 +1,7 @@
 #![allow(clippy::missing_errors_doc)]
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
+use crate::controllers::auth::HxRedirect;
 use crate::domain::features::FeatureViewList;
 use crate::domain::website::Website;
 use crate::middleware::cookie::{CookieConsentLayer, ExtractConsentState};
@@ -379,7 +380,7 @@ pub async fn billing_partial_dashboard(
     let user_pid = match auth {
         Ok(auth) => UserPid::new(&auth.claims.pid),
         Err(_) => {
-            return Ok(Redirect::to("/login").into_response());
+            return Ok(HxRedirect::login().into_response());
         }
     };
     let user = load_user(&ctx.db, &user_pid).await?;
@@ -426,7 +427,7 @@ pub async fn notification_partial_dashboard(
     let user_pid = match auth {
         Ok(auth) => UserPid::new(&auth.claims.pid),
         Err(_) => {
-            return Ok(Redirect::to("/login").into_response());
+            return Ok(HxRedirect::login().into_response());
         }
     };
     let user = load_user(&ctx.db, &user_pid).await?;
@@ -471,7 +472,7 @@ pub async fn features_partial_dashboard(
     let user_pid = match auth {
         Ok(auth) => UserPid::new(&auth.claims.pid),
         Err(_) => {
-            return Ok(Redirect::to("/login").into_response());
+            return Ok(HxRedirect::login().into_response());
         }
     };
     let user = load_user(&ctx.db, &user_pid).await?;
@@ -522,7 +523,7 @@ pub async fn settings_partial_dashboard(
     let user_pid = match auth {
         Ok(auth) => UserPid::new(&auth.claims.pid),
         Err(_) => {
-            return Ok(Redirect::to("/login").into_response());
+            return Ok(HxRedirect::login().into_response());
         }
     };
     let (user, user_settings) = load_user_and_settings(&ctx.db, &user_pid).await?;
@@ -573,7 +574,7 @@ pub async fn training_partial_dashboard(
     let user_pid = match auth {
         Ok(auth) => UserPid::new(&auth.claims.pid),
         Err(_) => {
-            return Ok(Redirect::to("/login").into_response());
+            return Ok(HxRedirect::login().into_response());
         }
     };
     let (user, user_credits, training_models) =
@@ -625,7 +626,7 @@ pub async fn new_training_dashboard_partials(
     let user_pid = match auth {
         Ok(auth) => UserPid::new(&auth.claims.pid),
         Err(_) => {
-            return Ok(Redirect::to("/login").into_response());
+            return Ok(HxRedirect::login().into_response());
         }
     };
     let (user, user_credits, training_models) =
@@ -682,7 +683,7 @@ pub async fn packs_partial_dashboard(
     let user_pid = match auth {
         Ok(auth) => UserPid::new(&auth.claims.pid),
         Err(_) => {
-            return Ok(Redirect::to("/login").into_response());
+            return Ok(HxRedirect::login().into_response());
         }
     };
     let (_, training_models) = load_user_and_training(&ctx.db, &user_pid).await?;
@@ -748,7 +749,7 @@ pub async fn album_deleted_partial_dashboard(
     let user_pid = match auth {
         Ok(auth) => UserPid::new(&auth.claims.pid),
         Err(_) => {
-            return Ok(Redirect::to("/login").into_response());
+            return Ok(HxRedirect::login().into_response());
         }
     };
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
@@ -823,7 +824,7 @@ pub async fn album_favorite_partial_dashboard(
     let user_pid = match auth {
         Ok(auth) => UserPid::new(&auth.claims.pid),
         Err(_) => {
-            return Ok(Redirect::to("/login").into_response());
+            return Ok(HxRedirect::login().into_response());
         }
     };
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
@@ -899,7 +900,7 @@ pub async fn photo_partial_dashboard(
     let user_pid = match auth {
         Ok(auth) => UserPid::new(&auth.claims.pid),
         Err(_) => {
-            return Ok(Redirect::to("/login").into_response());
+            return Ok(HxRedirect::login().into_response());
         }
     };
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
