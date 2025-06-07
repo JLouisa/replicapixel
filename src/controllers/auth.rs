@@ -2,6 +2,7 @@
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
 use crate::{
+    controllers::oauth2::CookieTrait,
     domain::website::Website,
     mailers::{
         auth::AuthMailer,
@@ -15,19 +16,13 @@ use crate::{
         PlanModel, TransactionModel, UserModel,
     },
     service::stripe::stripe::StripeClient,
-    views::{
-        self,
-        auth::{
-            CurrentResponse,
-            // LoginResponse
-        },
-    },
+    views::{self, auth::CurrentResponse},
 };
 use axum::{
     body::Body,
     debug_handler,
     extract::{Json, State},
-    http::{HeaderMap, HeaderValue, StatusCode},
+    http::{header, HeaderMap, HeaderValue, StatusCode},
     response::{IntoResponse, Redirect, Response},
     Extension,
 };
@@ -625,22 +620,24 @@ async fn api_login(
         );
     }
 
-    let jwt_secret = ctx.config.get_jwt_config()?;
-    let expire = match params.remember {
-        true => 7 * 24 * 60 * 60,
-        false => jwt_secret.expiration,
-    };
-    let token = user
-        .generate_jwt(&jwt_secret.secret, expire)
-        .or_else(|_| unauthorized("unauthorized!"))?;
+    // let jwt_secret = ctx.config.get_jwt_config()?;
+    // let expire = match params.remember {
+    //     true => 7 * 24 * 60 * 60,
+    //     false => jwt_secret.expiration,
+    // };
+    // let token = user
+    //     .generate_jwt(&jwt_secret.secret, expire)
+    //     .or_else(|_| unauthorized("unauthorized!"))?;
 
-    let cookie = AxumCookie::build(("auth", token.clone()))
-        .path("/")
-        .http_only(true)
-        .secure(!cfg!(debug_assertions)) // set to false in localhost for dev
-        .same_site(SameSite::Strict)
-        .max_age(time::Duration::seconds(expire as i64))
-        .build();
+    let cookie = user.create_cookie_strict(&ctx)?;
+
+    // let cookie = AxumCookie::build(("auth", token.clone()))
+    //     .path("/")
+    //     .http_only(true)
+    //     .secure(!cfg!(debug_assertions)) // set to false in localhost for dev
+    //     .same_site(SameSite::Strict)
+    //     .max_age(time::Duration::seconds(expire as i64))
+    //     .build();
 
     let cookie_value = HeaderValue::from_str(&cookie.to_string())
         .map_err(|_| loco_rs::Error::Unauthorized("failed to build cookie header".to_string()))?;
@@ -690,44 +687,34 @@ async fn logout_partial(
     State(_ctx): State<AppContext>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
-) -> Result<Response> {
+) -> Result<impl IntoResponse> {
     let cookie = AxumCookie::build(("auth", ""))
         .path("/")
         .http_only(true)
-        .secure(!cfg!(debug_assertions)) // false in dev
-        .same_site(SameSite::Strict)
+        .secure(!cfg!(debug_assertions))
+        .same_site(SameSite::Lax)
+        .expires(time::OffsetDateTime::now_utc() - time::Duration::days(1))
         .max_age(time::Duration::seconds(0))
         .build();
 
     let cookie_header_value = cookie.to_string();
+    let cookie_header = HeaderValue::from_str(&cookie_header_value).map_err(|_| {
+        loco_rs::Error::CustomError(
+            StatusCode::INTERNAL_SERVER_ERROR,
+            ErrorDetail::new("CookieFailed", "failed to build cookie header"),
+        )
+    })?;
 
-    let cookie_header = HeaderValue::from_str(&cookie_header_value)
-        .or_else(|_| {
-            let expiry = Utc::now() - Duration::days(1);
-            let fallback = format!(
-                "auth=; Path=/; HttpOnly; Secure; SameSite=Strict; Expires={}",
-                expiry.to_rfc2822()
-            );
-            HeaderValue::from_str(&fallback)
-        })
-        .map_err(|_| {
-            loco_rs::Error::CustomError(
-                StatusCode::INTERNAL_SERVER_ERROR,
-                ErrorDetail::new("CookieFailed", "failed to build cookie header"),
-            )
-        })?;
-
-    let mut view_response = format::render().view(
+    let view_response = format::render().view(
         &v,
         "auth/login/login_partial.html",
         data!({"website": website}),
     )?;
 
-    view_response
-        .headers_mut()
-        .insert("Set-Cookie", cookie_header);
+    let mut headers = HeaderMap::new();
+    headers.insert(header::SET_COOKIE, cookie_header);
 
-    Ok(view_response)
+    Ok((headers, view_response))
 }
 
 #[debug_handler]
@@ -812,6 +799,7 @@ pub async fn get_login(
         let user_pid = UserPid::new(&auth.unwrap().claims.pid);
         let (user, user_credits, training_models) =
             load_user_credit_training(&ctx.db, &user_pid).await?;
+        let current_page = "album";
         format::render().view(
             &v,
             "dashboard/dashboard_base_extend.html",
@@ -820,7 +808,7 @@ pub async fn get_login(
                       "website": website, "user": user,
                       "models": training_models, "credits": user_credits,
                       "is_initial_load": true, "cc_cookie": cc_cookie,
-                      "is_logged_in": true
+                      "is_logged_in": true, "current_page": current_page
                   }
             ),
         )?

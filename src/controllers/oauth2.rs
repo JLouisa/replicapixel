@@ -1,22 +1,23 @@
-// use crate::models::join::user_credits_models::load_user_and_credits;
 use crate::models::users::RegisterParams;
 use crate::models::UserModel;
 use crate::service::stripe::stripe::StripeClient;
 use crate::views;
-use axum::body::Body;
-use loco_oauth2::controllers::middleware::OAuth2CookieUser;
 use loco_rs::controller::ErrorDetail;
+use loco_rs::prelude::*;
 use std::fmt::Debug;
 
 use loco_oauth2::models::oauth2_sessions::OAuth2SessionsTrait;
 use loco_oauth2::models::users::OAuth2UserTrait;
-use loco_rs::prelude::*;
 
 use axum::extract::Query;
 use axum::response::{IntoResponse, Redirect};
 use axum::Extension;
-use axum::{debug_handler, http::StatusCode, Json};
-use axum_extra::extract::cookie::{Cookie as AxumCookie, SameSite};
+use axum::{
+    debug_handler,
+    http::{header, HeaderMap, HeaderValue, StatusCode},
+    Json,
+};
+use axum_extra::extract::cookie::{Cookie as AxumCookie, CookieJar, SameSite};
 use axum_session::{DatabasePool, Session, SessionNullPool};
 
 use serde::de::DeserializeOwned;
@@ -57,7 +58,6 @@ pub mod routes {
     pub struct OAuth2;
     impl OAuth2 {
         pub const BASE: &'static str = "/api/oauth2";
-        pub const PROTECTED: &'static str = "/protected";
         pub const GOOGLE: &'static str = "/google";
         pub const GOOGLE_CALLBACK_JWT: &'static str = "/google/callback/jwt";
         pub const GOOGLE_OTT: &'static str = "/google-ott";
@@ -69,7 +69,6 @@ pub mod routes {
 pub fn routes() -> Routes {
     Routes::new()
         .prefix(routes::OAuth2::BASE)
-        .add(routes::OAuth2::PROTECTED, get(protected))
         .add(
             routes::OAuth2::GOOGLE,
             get(google_authorization_url::<SessionNullPool>),
@@ -100,32 +99,67 @@ pub fn routes() -> Routes {
 }
 
 pub trait CookieTrait<T>: OAuth2UserTrait<T> + ModelTrait {
+    fn create_cookie_base(
+        &self,
+        ctx: &AppContext,
+        same_site: SameSite,
+    ) -> Result<AxumCookie<'static>>;
     fn create_cookie(&self, ctx: &AppContext) -> Result<AxumCookie<'static>>;
+    fn create_cookie_strict(&self, ctx: &AppContext) -> Result<AxumCookie<'static>>;
+    fn logout_cookie() -> AxumCookie<'static>;
 }
 
 // Implement the trait for your model
 impl CookieTrait<OAuth2UserProfile> for UserModel {
-    fn create_cookie(&self, ctx: &AppContext) -> Result<AxumCookie<'static>> {
+    fn create_cookie_base(
+        &self,
+        ctx: &AppContext,
+        same_site: SameSite,
+    ) -> Result<AxumCookie<'static>> {
         let jwt_secret = ctx.config.get_jwt_config()?;
-        let jwt_ttl_secs = jwt_secret.expiration * 7; // 7 days
+        let days = 7;
+        let jwt_ttl_secs = jwt_secret.expiration * days;
 
         let expiration_time =
             time::OffsetDateTime::now_utc() + time::Duration::seconds(jwt_ttl_secs as i64);
 
         let token = self
             .generate_jwt(&jwt_secret.secret, jwt_ttl_secs as u64)
-            .or_else(|_| unauthorized("unauthorized!"))?;
+            .or_else(|e| {
+                tracing::error!("Failed to generate JWT: {:?}", e);
+                unauthorized("unauthorized!")
+            })?;
 
         let cookie = AxumCookie::build(("auth", token))
             .path("/")
-            .http_only(true)
+            .http_only(!cfg!(debug_assertions))
             .secure(!cfg!(debug_assertions))
-            .same_site(SameSite::Strict)
+            .same_site(same_site)
             .expires(expiration_time)
             .max_age(time::Duration::seconds(jwt_ttl_secs as i64))
+            // .domain("replicapixel.com")
             .build();
 
         Ok(cookie)
+    }
+    // Public method for Lax cookie (e.g., for OAuth)
+    fn create_cookie(&self, ctx: &AppContext) -> Result<AxumCookie<'static>> {
+        self.create_cookie_base(ctx, SameSite::Lax)
+    }
+    // Public method for Strict cookie (e.g., for standard login)
+    fn create_cookie_strict(&self, ctx: &AppContext) -> Result<AxumCookie<'static>> {
+        self.create_cookie_base(ctx, SameSite::Strict)
+    }
+    // Public method for logging out
+    fn logout_cookie() -> AxumCookie<'static> {
+        AxumCookie::build(("auth", ""))
+            .path("/")
+            .http_only(true)
+            .secure(!cfg!(debug_assertions))
+            .same_site(SameSite::Lax)
+            .expires(time::OffsetDateTime::now_utc() - time::Duration::days(1))
+            .max_age(time::Duration::seconds(0))
+            .build()
     }
 }
 
@@ -141,85 +175,43 @@ async fn google_ott(
     Extension(stripe_client): Extension<StripeClient>,
     ViewEngine(v): ViewEngine<TeraView>,
     Json(token_payload_req): Json<GoogleTokenPayload>,
-) -> Result<Response> {
+) -> Result<impl IntoResponse> {
     let google_client_id = website
         .website_basic_info
         .google
         .google_client_id
         .to_owned();
     let client = AsyncClient::new(google_client_id);
-    let google_user_data = match client.validate_id_token(token_payload_req.token).await {
-        Ok(payload) => payload,
-        Err(e) => {
-            dbg!(&e);
-            return Err(loco_rs::Error::CustomError(
-                StatusCode::NOT_FOUND,
+    let google_user_data = client
+        .validate_id_token(token_payload_req.token)
+        .await
+        .map_err(|e| {
+            loco_rs::Error::CustomError(
+                StatusCode::UNAUTHORIZED,
                 ErrorDetail::new("Token Error", &e.to_string()),
-            ));
-        }
-    };
-
-    // Optional: Check if email is verified by Google
-    if !google_user_data.email_verified.unwrap_or(false) {
-        tracing::warn!("Google email not verified");
-    };
+            )
+        })?;
 
     let register = RegisterParams::create_with_ott(google_user_data)?;
-    // format::empty()
 
     let user = UserModel::upsert_with_ott(&ctx.db, &register, &stripe_client).await?;
 
     // Cookie
     let cookie = user.create_cookie(&ctx)?;
-    let cookie_header_value = cookie.to_string();
+    let cookie_str = cookie.to_string();
 
-    // View
+    // 1. Get the view
     let view_response = views::home::google_ott(&v, &website, &user.into())?;
 
-    // Build the final response
-    let mut response_builder = Response::builder().status(StatusCode::OK);
-    response_builder = response_builder.header("Set-Cookie", cookie_header_value);
+    // 2. Create the cookie header value.
+    let cookie_header_value = HeaderValue::from_str(&cookie_str)?;
 
-    // Add the view response body - Using your original error
-    let final_response = response_builder
-        .body(Body::from(view_response.into_response().into_body()))
-        .map_err(|e| {
-            Error::CustomError(
-                StatusCode::INTERNAL_SERVER_ERROR,
-                ErrorDetail::new("RESPONSE_BUILD_FAILED", &e.to_string()),
-            )
-        })?;
+    // 3. Create a HeaderMap
+    let mut headers = HeaderMap::new();
+    headers.insert(header::SET_COOKIE, cookie_header_value);
 
-    Ok(final_response)
-}
-
-#[debug_handler]
-async fn protected(
-    State(ctx): State<AppContext>,
-    user: OAuth2CookieUser<OAuth2UserProfile, users::Model, o_auth2_sessions::Model>,
-) -> Result<Response> {
-    let user: &users::Model = user.as_ref();
-    let jwt_secret = ctx.config.get_jwt_config()?;
-
-    // Generate a JWT token
-    let token = user
-        .generate_jwt(&jwt_secret.secret, jwt_secret.expiration)
-        .or_else(|_| unauthorized("unauthorized!"))?;
-
-    let cookie = AxumCookie::build(("auth", token))
-        .path("/")
-        .http_only(true)
-        .secure(!cfg!(debug_assertions)) // set to false in localhost
-        .same_site(SameSite::Strict)
-        .max_age(time::Duration::seconds(jwt_secret.expiration as i64))
-        .build();
-
-    let mut response = Redirect::to(Dashboard::BASE).into_response();
-    response
-        .headers_mut()
-        .append("Set-Cookie", cookie.to_string().parse().unwrap());
-
-    Ok(response)
+    // 4. Return a tuple of (headers, body)
+    Ok((headers, view_response))
 }
 
 pub async fn google_callback_jwt<
@@ -232,6 +224,7 @@ pub async fn google_callback_jwt<
     session: Session<W>,
     Query(params): Query<AuthParams>,
     Extension(oauth2_store): Extension<OAuth2ClientStore>,
+    cookie_jar: CookieJar,
 ) -> Result<impl IntoResponse> {
     let mut client = oauth2_store
         .get_authorization_code_client("google")
@@ -245,12 +238,7 @@ pub async fn google_callback_jwt<
 
     let cookie = user.create_cookie(&ctx)?;
 
-    let mut response = Redirect::to(Dashboard::BASE).into_response();
-    response
-        .headers_mut()
-        .append("Set-Cookie", cookie.to_string().parse().unwrap());
-
-    Ok(response)
+    Ok((cookie_jar.add(cookie), Redirect::to(Dashboard::BASE)))
 }
 
 pub async fn github_authorization_url<T: DatabasePool + Clone + Debug + Sync + Send + 'static>(

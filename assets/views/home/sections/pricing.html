@@ -84,10 +84,10 @@ website.website_routes.payment.payment_prepare_route %}
             {% endfor %}
           </div>
           {% if user %} {% if pricing.plan_type == "basic" %} {% include
-          "partials/parts/validated/partials/pricing_basic_btn.html" %} {% elif pricing.plan_type ==
-          "premium" %} {% include "partials/parts/validated/partials/pricing_premium_btn.html" %} {%
-          elif pricing.plan_type == "max" %} {% include
-          "partials/parts/validated/partials/pricing_max_btn.html" %} {% endif %} {% else %}
+          "partials/parts/validated/pricing_basic_btn.html" %} {% elif pricing.plan_type ==
+          "premium" %} {% include "partials/parts/validated/pricing_premium_btn.html" %} {% elif
+          pricing.plan_type == "max" %} {% include "partials/parts/validated/pricing_max_btn.html"
+          %} {% endif %} {% else %}
           <div id="pricing-{{pricing.plan_type}}-btn" class="w-full flex flex-col items-start">
             <a
               href="{{ login_link | safe }}"
@@ -100,7 +100,7 @@ website.website_routes.payment.payment_prepare_route %}
               <div
                 class="w-full {% if pricing.is_popular %}bg-grn-to{% else %}bg-grn-from{% endif %} rounded-xl px-8 py-4 flex items-center justify-center gap-3 shadow-sm hover:shadow-md transition-shadow"
               >
-                <span class="hite text-center font-inter text-base font-medium">
+                <span class="text-white text-center font-inter text-base font-medium leading-none">
                   {{pricing.cta}}
                 </span>
               </div>

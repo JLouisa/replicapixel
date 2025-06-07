@@ -14,17 +14,31 @@
   };
 
   async function handleCredentialResponse(response) {
-    const res = await fetch("{{ google_ott_link | safe }}", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token: response.credential }),
-      credentials: "include",
-    });
-    const html = await res.text();
-    window.htmx.swap("#cta-home-navbar-btn", html, { swapStyle: "outerHTML" });
+    try {
+      const res = await fetch("{{ google_ott_link | safe }}", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: response.credential }),
+        credentials: "include",
+      });
 
-    if (window.Alpine) {
-      Alpine.store("toast").success("You have been logged in!");
+      if (res.ok) {
+        const html = await res.text();
+        window.htmx.swap("#validate-login-btn", html, { swapStyle: "outerHTML" });
+
+        if (window.Alpine) {
+          Alpine.store("toast").success("You have been logged in!");
+        }
+      } else {
+        if (window.Alpine) {
+          Alpine.store("toast").error("Login failed. Please try again.");
+        }
+      }
+    } catch (error) {
+      console.error("Unexpected error during Google login:", error);
+      if (window.Alpine) {
+        Alpine.store("toast").error("Something went wrong. Please refresh and try again.");
+      }
     }
   }
 </script>

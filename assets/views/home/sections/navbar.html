@@ -5,6 +5,7 @@
 {% set logout_link = website.website_routes.auth_routes.api_logout %}
 {% set logout_partial_link = website.website_routes.auth_routes.logout_partial  | safe %}
 {% set login_link = website.website_routes.auth_routes.login | safe %}
+{% set logout_api_link = website.website_routes.auth_routes.api_logout %}
 
 <nav
   class="fixed inset-x-0 top-2 md:top-4 z-20 mx-auto w-full max-w-7xl p-4 sm:px-6 lg:px-8 flex items-center justify-between border border-slate-50/10 rounded-full backdrop-blur-lg bg-white/5"
@@ -44,38 +45,7 @@
       </li>
       <li><a href="#pricing" class="p-2 text-white text-base hover:text-gray-300">Pricing</a></li>
     </ul>
-    <div class="flex flex-row items-center gap-2">
-      {% if user %} {% include "partials/parts/validated/partials/validate_login_btn.html" %} {%
-      else %}
-      <div id="validate-login-btn">
-        <a
-          hx-get="{{ login_partial_link | safe }}"
-          hx-swap="innerHTML"
-          hx-push-url="{{ login_link | safe }}"
-          hx-target="#app"
-          class="relative flex flex-row items-center lg:gap-4 p-2 lg:p-3 lg:px-6 my-[-0.5rem] lg:my-[-1rem] overflow-hidden rounded-l-full font-semibold text-white shadow-md transition-all duration-150 bg-grn-from hover:shadow-lg hover:brightness-110 active:scale-95 active:brightness-90 cursor-pointer"
-        >
-          Login
-        </a>
-      </div>
-      {% endif %} {% if user %} {% include
-      "partials/parts/validated/partials/cta_home_navbar_btn.html" %} {% else %}
-      <div id="cta-home-navbar-btn">
-        <a href="#pricing">
-          {% set timestamp = now() | date(format="%s%.f") %}
-          <button
-            id="shiningButton-{{ timestamp }}"
-            class="relative flex flex-row items-center lg:gap-4 p-2 lg:p-3 lg:px-6 my-[-0.5rem] lg:my-[-1rem] overflow-hidden rounded-r-full font-semibold text-white shadow-md transition-all duration-150 bg-gradient-to-r from-[var(--color-grn-from)] to-[var(--color-grn-to)] hover:shadow-lg hover:brightness-110 active:scale-95 active:brightness-90 cursor-pointer"
-          >
-            Try Now {% include "partials/svg/triple_stars.html" %}
-          </button>
-          <script>
-            shiningBtn("shiningButton-{{ timestamp }}");
-          </script>
-        </a>
-      </div>
-      {% endif %}
-    </div>
+    {% include "partials/parts/validated/validate_navbar.html" %}
   </div>
   <div class="md:hidden flex items-center gap-2">
     <div id="home-burger-menu-trigger" aria-label="Open menu" class="cursor-pointer">

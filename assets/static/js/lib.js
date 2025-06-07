@@ -135,3 +135,20 @@ function setupMobileMenu() {
     }
   });
 }
+
+async function oAuth2(provider_link) {
+  try {
+    const response = await fetch(provider_link);
+    if (!response.ok) {
+      throw new Error("Failed to get OAuth URL");
+    }
+    const oauthLink = await response.text();
+    console.log(oauthLink);
+    window.location.href = oauthLink;
+  } catch (err) {
+    console.error("OAuth2 error:", err);
+    if (window.Alpine) {
+      window.Alpine.store("toast").error("Could not start OAuth2 login. Please try again.");
+    }
+  }
+}

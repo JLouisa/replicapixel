@@ -1,0 +1,52 @@
+{% set timestamp = now() | date(format="%s%.f") %}
+
+<div id="validate-login-btn" class="flex flex-row items-center gap-2">
+  {% if user or is_ott %}
+  <div>
+    <a
+      hx-get="{{ logout_api_link | safe }}"
+      hx-swap="innerHTML"
+      hx-push-url="{{ login_link | safe }}"
+      hx-target="#app"
+      class="relative flex flex-row items-center lg:gap-4 p-2 lg:p-3 lg:px-6 my-[-0.5rem] lg:my-[-1rem] overflow-hidden rounded-l-full font-semibold text-white shadow-md transition-all duration-150 bg-grn-from hover:shadow-lg hover:brightness-110 active:scale-95 active:brightness-90 cursor-pointer"
+    >
+      Logout
+    </a>
+  </div>
+  <div
+    id="shiningButton-{{ timestamp }}"
+    hx-get="{{ studio_link | safe }}"
+    hx-target="#app"
+    hx-swap="innerHTML"
+    hx-push-url="{{ studio_link | safe }}"
+    class="relative flex flex-row items-center lg:gap-4 p-2 lg:p-3 lg:px-4 my-[-0.5rem] lg:my-[-1rem] overflow-hidden rounded-r-full font-semibold text-white shadow-md transition-all duration-150 bg-gradient-to-r from-[var(--color-grn-from)] to-[var(--color-grn-to)] hover:shadow-lg hover:brightness-110 active:scale-95 active:brightness-90 cursor-pointer"
+  >
+    Take Photos{% include "partials/svg/triple_stars.html" %}
+  </div>
+  {% else %}
+  <div>
+    <a
+      hx-get="{{ login_partial_link | safe }}"
+      hx-swap="innerHTML"
+      hx-push-url="{{ login_link | safe }}"
+      hx-target="#app"
+      class="relative flex flex-row items-center lg:gap-4 p-2 lg:p-3 lg:px-6 my-[-0.5rem] lg:my-[-1rem] overflow-hidden rounded-l-full font-semibold text-white shadow-md transition-all duration-150 bg-grn-from hover:shadow-lg hover:brightness-110 active:scale-95 active:brightness-90 cursor-pointer"
+    >
+      Login
+    </a>
+  </div>
+  <div>
+    <a href="#pricing">
+      <div
+        id="shiningButton-{{ timestamp }}"
+        class="relative flex flex-row items-center lg:gap-4 p-2 lg:p-3 lg:px-6 my-[-0.5rem] lg:my-[-1rem] overflow-hidden rounded-r-full font-semibold text-white shadow-md transition-all duration-150 bg-gradient-to-r from-[var(--color-grn-from)] to-[var(--color-grn-to)] hover:shadow-lg hover:brightness-110 active:scale-95 active:brightness-90 cursor-pointer"
+      >
+        Try Now {% include "partials/svg/triple_stars.html" %}
+      </div>
+    </a>
+  </div>
+  {% endif %}
+  <script>
+    shiningBtn("shiningButton-{{ timestamp }}");
+  </script>
+</div>

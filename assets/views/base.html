@@ -105,7 +105,7 @@
     </style>
   </head>
   <body>
-    <!-- Main Layout Container -->
+    <!-- App -->
     <div id="app">
       {% block home %} {% block navbar %} {% endblock navbar %} {% block content %}{% endblock
       content %} {% endblock home %}
@@ -128,17 +128,8 @@
       <span x-text="$store.toast.message"></span>
     </div>
 
-    {% if is_home and not user %}
-    <div
-      id="google-login-init"
-      hx-trigger="load once"
-      hx-get="{{api_check_user_link}}"
-      hx-swap="outerHTML"
-    ></div>
-    {% endif %}
-
+    {% if not user and (is_home or is_pack) %}
     <!-- Javascript -->
-    {% if not user %} {% if is_home or is_pack %} {% include "partials/parts/google_ott.html" %} {%
-    endif %} {% endif %}
+    {% include "partials/parts/google_ott.html" %} {% endif %}
   </body>
 </html>

@@ -465,15 +465,6 @@ Alpine.store(Stores.ImageGenForm, {
   },
 });
 
-// interface UploaderStore {
-//   uploadImageFromUrlToS3(imageUrl: string, presignedUrl: string, notifyBackendUrl: string): void;
-// }
-
-// // Register Alpine store
-// Alpine.store(Stores.Uploader, {
-//   uploadImageFromUrlToS3: DAL.uploadImageFromUrlToS3,
-// });
-
 // You might need to explicitly tell TypeScript about the store on the Alpine object
 // if you haven't extended the Alpine interface globally.
 declare module "alpinejs" {
@@ -484,22 +475,6 @@ declare module "alpinejs" {
   }
 }
 
-async function oAuth2(provider_link: string) {
-  try {
-    const response = await fetch(`${provider_link}`);
-    if (!response.ok) {
-      throw new Error("Failed to get OAuth URL");
-    }
-
-    const oauthLink = await response.text();
-    window.location.href = oauthLink;
-  } catch (err) {
-    console.error("OAuth2 error:", err);
-    alert("Could not start OAuth2 login. Please try again.");
-  }
-}
-
-(window as any).oAuth2 = oAuth2;
 // ✅ Make Alpine available globally
 (window as any).Alpine = Alpine;
 

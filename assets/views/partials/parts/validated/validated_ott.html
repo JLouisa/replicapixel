@@ -1,0 +1,16 @@
+<!-- prettier-ignore -->
+{% set studio_link = website.website_routes.dashboard_routes.base %}
+{% set login_link = website.website_routes.auth_routes.login %}
+{% set logout_partial_link = website.website_routes.auth_routes.logout_partial %}
+{% set logout_api_link = website.website_routes.auth_routes.api_logout %}
+{% set checkout_prepare_link = website.website_routes.payment.payment_prepare_route %}
+
+{% include "partials/parts/validated/validate_navbar.html" %}
+
+{% include "partials/parts/validated/validate_hero_cta.html" %}
+
+{% include "partials/parts/validated/pricing_basic_btn.html" %}
+
+{% include "partials/parts/validated/pricing_premium_btn.html" %}
+
+{% include "partials/parts/validated/pricing_max_btn.html" %}
