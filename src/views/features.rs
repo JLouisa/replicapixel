@@ -1,28 +1,24 @@
-use crate::domain::{features::FeatureView, website::Website};
+use crate::controllers::dashboard::WebsiteOptions;
 use loco_rs::prelude::*;
-
-use super::auth::UserView;
 
 pub fn vote_update(
     v: impl ViewRenderer,
-    website: &Website,
-    feature: &FeatureView,
+    website_options: &WebsiteOptions,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
         "dashboard/content/features/vote_count_partial.html",
-        data!({ "website": website, "feature": feature }),
+        data!({ "options": website_options }),
     )
 }
 
 pub fn form_reset(
     v: impl ViewRenderer,
-    website: &Website,
-    user: &UserView,
+    website_options: &WebsiteOptions,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
         "dashboard/content/features/feature_form.html",
-        data!({ "website": website, "user": user }),
+        data!({ "options": website_options }),
     )
 }

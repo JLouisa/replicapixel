@@ -40,42 +40,10 @@ pub fn routes() -> Routes {
         .add(routes::Webhooks::API_STRIPE, post(stripe))
 }
 
-// async fn load_model_by_request_id(ctx: &AppContext, id: &str) -> Result<TrainingModelModel> {
-//     let item = TrainingModelModel::find_by_request_id(&ctx.db, id).await?;
-//     Ok(item)
-// }
 async fn load_image_by_request_id(ctx: &AppContext, id: &str) -> Result<ImageModel> {
     let item = ImageModel::find_by_request_id(&ctx.db, id).await?;
     Ok(item)
 }
-
-// async fn webhook_training_handler(bytes: Bytes) -> Result<Response> {
-//     let body_string = String::from_utf8_lossy(&bytes);
-
-//     // Debug the raw body
-//     dbg!("Training", &body_string);
-
-//     // Log the raw body
-//     tracing::info!("Received Fal Training Webhook: {}", &body_string);
-//     tracing::warn!("Received Fal Training Webhook: {}", &body_string);
-//     tracing::error!("Received Fal Training Webhook: {}", &body_string);
-
-//     Ok((StatusCode::OK).into_response())
-// }
-
-// async fn webhook_image_handler(bytes: Bytes) -> Result<Response> {
-//     let body_string = String::from_utf8_lossy(&bytes);
-
-//     // Debug the raw body
-//     dbg!("Image", &body_string);
-
-//     // Log the raw body
-//     tracing::info!("Received Fal Image Webhook: {}", &body_string);
-//     tracing::warn!("Received Fal Image Webhook: {}", &body_string);
-//     tracing::error!("Received Fal Image Webhook: {}", &body_string);
-
-//     Ok((StatusCode::OK).into_response())
-// }
 
 #[debug_handler]
 pub async fn stripe(

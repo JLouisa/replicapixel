@@ -152,3 +152,14 @@ async function oAuth2(provider_link) {
     }
   }
 }
+
+async function fetchAndOpenReceipt(link, orderPid) {
+  try {
+    const res = await fetch(`${link}/${orderPid}`);
+    const url = await res.text();
+    window.open(url, "_blank");
+  } catch (err) {
+    console.error("Failed to fetch receipt link:", err);
+    window.Alpine.store("toast").error("Failed to fetch stripe receipt link");
+  }
+}

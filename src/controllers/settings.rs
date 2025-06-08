@@ -2,6 +2,7 @@
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
 use crate::{
+    controllers::dashboard::WebsiteOptions,
     domain::website::Website,
     models::{
         _entities::sea_orm_active_enums::ThemePreference,
@@ -63,19 +64,6 @@ pub fn routes() -> Routes {
         )
 }
 
-// async fn load_user_settings(db: &DatabaseConnection, user_id: i32) -> Result<UserSettingsModel> {
-//     let settings = UserSettingsModel::find_by_user_id(db, user_id).await?;
-//     Ok(settings)
-// }
-// async fn toggle_marketing_settings(
-//     db: &DatabaseConnection,
-//     user_id: i32,
-//     new_bool: bool,
-// ) -> Result<UserSettingsModel> {
-//     let settings = UserSettingsModel::find_by_user_id(db, user_id).await?;
-//     Ok(settings)
-// }
-
 #[debug_handler]
 pub async fn update_email_notifications(
     auth: auth::JWT,
@@ -90,8 +78,12 @@ pub async fn update_email_notifications(
     let user_settings = user_settings
         .toggle_email_settings(&ctx.db, new_bool)
         .await?;
-    views::settings::email_notification(v, &website, &user_settings.into())
+    let website_options = WebsiteOptions::new()
+        .website(&website)
+        .user_settings(user_settings.into());
+    views::settings::email_notification(v, &website_options)
 }
+
 #[debug_handler]
 pub async fn update_marketing_notifications(
     auth: auth::JWT,
@@ -106,8 +98,12 @@ pub async fn update_marketing_notifications(
     let user_settings = user_settings
         .toggle_marketing_settings(&ctx.db, new_bool)
         .await?;
-    views::settings::marketing_notifications(v, &website, &user_settings.into())
+    let website_options = WebsiteOptions::new()
+        .website(&website)
+        .user_settings(user_settings.into());
+    views::settings::marketing_notifications(v, &website_options)
 }
+
 #[debug_handler]
 pub async fn update_dark_mode(
     auth: auth::JWT,
@@ -125,5 +121,8 @@ pub async fn update_dark_mode(
     let user_settings = user_settings
         .toggle_dark_mode_settings(&ctx.db, theme)
         .await?;
-    views::settings::dark_mode(v, &website, &user_settings.into())
+    let website_options = WebsiteOptions::new()
+        .website(&website)
+        .user_settings(user_settings.into());
+    views::settings::dark_mode(v, &website_options)
 }

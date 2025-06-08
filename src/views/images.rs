@@ -6,7 +6,6 @@ use serde::Serialize;
 use uuid::Uuid;
 
 use crate::controllers::dashboard::WebsiteOptions;
-use crate::domain::website::Website;
 use crate::models::_entities::sea_orm_active_enums::Status;
 use crate::models::images::{ImageNew, ImagesModelList};
 use crate::models::{ImageModel, UserCreditModel};
@@ -45,11 +44,11 @@ pub fn img_completed(v: &impl ViewRenderer, website_options: &WebsiteOptions) ->
 }
 
 /// When there is an issue with rendering the view.
-pub fn favorite(v: &impl ViewRenderer, website: &Website, image: &ImageView) -> Result<Response> {
+pub fn favorite(v: &impl ViewRenderer, website_options: &WebsiteOptions) -> Result<Response> {
     format::render().view(
         v,
         "dashboard/content/photo/partials/favorite_button.html",
-        data!({ "website": website, "image": image }),
+        data!({ "options": website_options }),
     )
 }
 
@@ -59,8 +58,8 @@ pub fn list(v: &impl ViewRenderer, items: &Vec<images::Model>) -> Result<Respons
 }
 
 /// When there is an issue with rendering the view.
-pub fn show(v: &impl ViewRenderer, item: &images::Model) -> Result<Response> {
-    format::render().view(v, "images/show.html", data!({"item": item}))
+pub fn show(v: &impl ViewRenderer, website_options: &WebsiteOptions) -> Result<Response> {
+    format::render().view(v, "images/show.html", data!({"options": website_options}))
 }
 
 /// When there is an issue with rendering the view.

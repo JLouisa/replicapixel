@@ -3,7 +3,7 @@ options.training_models %} {% set credits = options.user_credits %}
 
 <div class="w-full flex flex-col">
   <div>
-    {% if credits.model_amount < 1%}
+    {% if credits.model_amount < 1 %}
     <div class="flex flex-col mx-auto items-center justify-center py-4">
       {% include "partials/parts/cta_button.html" %}
     </div>

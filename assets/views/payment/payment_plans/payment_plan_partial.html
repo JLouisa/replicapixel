@@ -1,7 +1,10 @@
  <!-- prettier-ignore -->
-{% set stripe_checkout_link = website.website_routes.payment.stripe_checkout_route | safe %}
-{% set register_link = website.website_routes.auth_routes.register | safe %}
-{% set prepare_link = website.website_routes.payment.payment_prepare_route | safe %}
+{% set stripe_checkout_link = options.website.website_routes.payment.stripe_checkout_route %}
+{% set register_link = options.website.website_routes.auth_routes.register %}
+{% set prepare_link = options.website.website_routes.payment.payment_prepare_route %}
+{% set plans = options.website.website_fields.payment_plans %}
+{% set user = options.user %}
+{% set credits = options.user_credits %}
  
  <div class="min-h-screen bg-gradient-to-b from-base-50 to-base-100 py-12 px-4 sm:px-6 lg:px-8">
   <div id="embedded-checkout" class="max-w-7xl mx-auto">
@@ -15,7 +18,7 @@
 
     {# {/* Pricing Plans */} #}
     <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-      {%for plan in website.website_fields.payment_plans%}
+      {% for plan in plans %}
       <div
         class="bg-base  rounded-2xl shadow-xl p-8 {%if plan.is_popular%} border-2 border-blue-500 transform scale-105 {%else%} border border-gray-100 hover:border-blue-500 transition-all duration-200 {%endif%}"
       >
@@ -48,10 +51,10 @@
           </li>
           {% endfor %}
         </ul>
-        <a href="{{prepare_link}}/{{ user.pid | default(value="x") }}/{{plan.plan_type}}">
+        <a href="{{prepare_link | safe}}/{{ user.pid | default(value="x") }}/{{plan.plan_type}}">
           <button
-          {# hx-get="{{prepare_link}}/{{ user.pid | default(value="x") }}/{{plan.plan_type}}"
-          hx-push-url="{{ stripe_checkout_link }}/{{ user.pid | default(value="x") }}/{{plan.plan_type}}" 
+          {# hx-get="{{prepare_link | safe}}/{{ user.pid | default(value="x") }}/{{plan.plan_type}}"
+          hx-push-url="{{ stripe_checkout_link | safe }}/{{ user.pid | default(value="x") }}/{{plan.plan_type}}" 
           hx-disabled-elt=".checkout-button" #}
           class="checkout-button w-full py-3 px-6 rounded-lg bg-blue-500 hover:bg-blue-600 text-white font-medium transition-colors duration-200 cursor-pointer"
           >

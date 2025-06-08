@@ -1,7 +1,7 @@
 #![allow(clippy::missing_errors_doc)]
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
-use axum::{debug_handler, extract::Query, http::HeaderMap, Extension};
+use axum::{debug_handler, extract::Query, Extension};
 use derive_more::Constructor;
 use loco_rs::{controller::ErrorDetail, prelude::*};
 use serde::{Deserialize, Serialize};
@@ -12,6 +12,7 @@ use stripe::{
 };
 pub struct PaymentController;
 use crate::{
+    controllers::{auth::HxRedirect, dashboard::WebsiteOptions},
     domain::website::{Feature, Website},
     models::{
         users::UserPid,
@@ -28,8 +29,6 @@ use crate::{
     views,
 };
 use axum::{http::StatusCode, response::IntoResponse};
-
-use super::auth::routes::Auth as AuthRoutes;
 
 pub mod routes {
     use serde::{Deserialize, Serialize};
@@ -127,10 +126,6 @@ pub fn routes() -> Routes {
         )
 }
 
-// async fn load_user(db: &DatabaseConnection, pid: &UserPid) -> Result<UserModel> {
-//     let item = UserModel::find_by_pid(db, &pid.as_ref().to_string()).await?;
-//     Ok(item)
-// }
 async fn load_plan(db: &DatabaseConnection, name: &PlanNames) -> Result<PlanModel> {
     let item = PlanModel::find_by_name(db, &name).await?;
     Ok(item)
@@ -138,6 +133,42 @@ async fn load_plan(db: &DatabaseConnection, name: &PlanNames) -> Result<PlanMode
 async fn load_user(db: &DatabaseConnection, user_pid: &UserPid) -> Result<UserModel> {
     let item = UserModel::find_by_pid(db, user_pid.as_ref()).await?;
     Ok(item)
+}
+
+#[derive(Serialize, Debug, Clone, Default)]
+pub struct StripeWebOptions {
+    status: Option<CheckOutStatus>,
+    session_id: Option<String>,
+    client_secret: Option<String>,
+}
+impl StripeWebOptions {
+    pub fn new() -> Self {
+        StripeWebOptions::default()
+    }
+    pub fn status(self, status: CheckOutStatus) -> Self {
+        Self {
+            status: Some(status),
+            ..self
+        }
+    }
+    pub fn session_id<S: Into<String>>(self, key: S) -> Self {
+        Self {
+            session_id: Some(key.into()),
+            ..self
+        }
+    }
+    pub fn set_session_id(self, key: Option<String>) -> Self {
+        Self {
+            session_id: key,
+            ..self
+        }
+    }
+    pub fn client_secret<C: Into<String>>(self, client_secret: C) -> Self {
+        Self {
+            client_secret: Some(client_secret.into()),
+            ..self
+        }
+    }
 }
 
 #[derive(Deserialize, Debug)]
@@ -206,8 +237,6 @@ async fn get_receipt_url_for_order(
             .to_owned(),
     ))?;
 
-    dbg!(&receipt_url);
-
     return Ok((StatusCode::OK, receipt_url).into_response());
 }
 
@@ -226,7 +255,8 @@ pub async fn prepare_handler(
         pid,
         plan
     );
-    views::payment::prepare(v, &website, &link)
+    let website_options = WebsiteOptions::new().website(&website).link(&link);
+    views::payment::prepare(v, &website_options)
 }
 
 #[debug_handler]
@@ -239,10 +269,8 @@ pub async fn create_checkout_session(
     let user_pid = UserPid::new(&auth.claims.pid);
     let user = load_user(&ctx.db, &user_pid).await?;
 
-    let mut headers = HeaderMap::new();
     if user.pid != pid {
-        headers.insert("HX-Redirect", AuthRoutes::LOGIN.parse().unwrap());
-        return Ok((StatusCode::OK, headers).into_response());
+        return Ok(HxRedirect::login().into_response());
     }
 
     // Load plan, but give nicer error if not found
@@ -262,12 +290,7 @@ pub async fn create_checkout_session(
         loco_rs::Error::Message("Stripe Checkout Session created without a URL".to_string())
     })?;
 
-    let session_url = session
-        .parse()
-        .map_err(|_| loco_rs::Error::Message("Failed to parse Stripe session URL".into()))?;
-
-    headers.insert("HX-Redirect", session_url);
-    Ok((StatusCode::OK, headers).into_response())
+    Ok(HxRedirect::new(&session).into_response())
 }
 
 async fn success_handler(
@@ -277,9 +300,17 @@ async fn success_handler(
     ViewEngine(v): ViewEngine<TeraView>,
     // State(_): State<AppContext>,
 ) -> Result<impl IntoResponse> {
-    tracing::info!("User successfully completed payment process.");
-    let status = CheckOutStatus::Processing;
-    views::payment::stripe_status(v, &website, &params.session_id, status)
+    tracing::info!(
+        "User successfully completed payment process. session_id: {:?}",
+        &params.session_id
+    );
+    let stripe_options = StripeWebOptions::new()
+        .set_session_id(params.session_id.clone())
+        .status(CheckOutStatus::Processing);
+    let website_options = WebsiteOptions::new()
+        .website(&website)
+        .stripe_options(&stripe_options);
+    views::payment::stripe_status(v, &website_options)
 }
 
 async fn cancel_handler(
@@ -287,8 +318,11 @@ async fn cancel_handler(
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
     tracing::info!("User cancelled payment process.");
-    let status = CheckOutStatus::Cancelled;
-    views::payment::stripe_status(v, &website, &None, status)
+    let stripe_options = StripeWebOptions::new().status(CheckOutStatus::Cancelled);
+    let website_options = WebsiteOptions::new()
+        .website(&website)
+        .stripe_options(&stripe_options);
+    views::payment::stripe_status(v, &website_options)
 }
 
 async fn status_handler(
@@ -317,8 +351,11 @@ async fn status_handler(
     // 4. Redirect Appropriately
     if is_successful {
         tracing::info!(session_id = %session_id_str, "Checkout session verified successfully via redirect.");
-        let status = CheckOutStatus::Succeeded;
-        views::payment::stripe_status_partials(v, &website, status)
+        let stripe_options = StripeWebOptions::new().status(CheckOutStatus::Succeeded);
+        let website_options = WebsiteOptions::new()
+            .website(&website)
+            .stripe_options(&stripe_options);
+        views::payment::stripe_status_partials(v, &website_options)
     } else {
         tracing::warn!(session_id = %session_id_str, status = ?session.status, payment_status = ?session.payment_status, "Redirected session is not yet successful.");
         Err(loco_rs::Error::CustomError(
@@ -337,7 +374,11 @@ pub async fn payment_home(
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
-    views::payment::payment_home(v, &website, &user.into(), &user_credits.into())
+    let website_options = WebsiteOptions::new()
+        .website(&website)
+        .user(user.into())
+        .user_credits(user_credits.into());
+    views::payment::payment_home(v, &website_options)
 }
 #[debug_handler]
 pub async fn payment_home_partial(
@@ -348,7 +389,11 @@ pub async fn payment_home_partial(
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
-    views::payment::payment_home_partial(v, &website, &user.into(), &user_credits.into())
+    let website_options = WebsiteOptions::new()
+        .website(&website)
+        .user(user.into())
+        .user_credits(user_credits.into());
+    views::payment::payment_home_partial(v, &website_options)
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]

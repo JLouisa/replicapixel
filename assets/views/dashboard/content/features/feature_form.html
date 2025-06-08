@@ -1,6 +1,8 @@
+{% set feature_link = options.website.website_routes.feature_routes.add %} {% set user =
+options.user %}
 <form
   id="feature-form"
-  hx-post="{{ website.website_routes.feature_routes.add | safe }}"
+  hx-post="{{ feature_link | safe }}"
   hx-ext="form-json"
   hx-disabled-elt="#feature-btn"
   hx-swap="outerHTML"

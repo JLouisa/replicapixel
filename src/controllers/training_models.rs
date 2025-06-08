@@ -1,6 +1,7 @@
 #![allow(clippy::missing_errors_doc)]
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
+use crate::controllers::dashboard::WebsiteOptions;
 use crate::domain::response::{handle_general_response, handle_general_response_text};
 use crate::domain::website::Website;
 use crate::models::_entities::sea_orm_active_enums::Status;
@@ -12,7 +13,6 @@ use crate::models::{TrainingModelActiveModel, UserModel};
 use crate::service::aws::s3::{AwsS3, PresignedUrlRequest, PresignedUrlSafe, S3Key};
 use crate::service::fal_ai::fal_client::{FalAiClient, FluxLoraTrainingSchema, QueueResponse};
 use crate::views;
-use crate::views::training_models::TrainingModelView;
 use axum::{debug_handler, http::StatusCode, response::IntoResponse, Extension, Json};
 use loco_rs::prelude::*;
 
@@ -77,12 +77,6 @@ async fn load_item(ctx: &AppContext, id: i32) -> Result<Model> {
     let item = Entity::find_by_id(id).one(&ctx.db).await?;
     item.ok_or_else(|| Error::NotFound)
 }
-
-// async fn load_item_all(ctx: &AppContext, id: i32) -> Result<Model> {
-//     let list = TrainingModelModel::find_all_by_user_id(&ctx.db, id).await?;
-//     let item = Entity::find_by_id(id).one(&ctx.db).await?;
-//     item.ok_or_else(|| Error::NotFound)
-// }
 
 #[debug_handler]
 pub async fn upload_training(
@@ -161,66 +155,6 @@ pub async fn upload_training_completed(
     )
 }
 
-// #[debug_handler]
-// pub async fn upload_training_completed(
-//     _auth: auth::JWT,
-//     Path(training_model_id): Path<Uuid>,
-//     Extension(s3_client): Extension<AwsS3>,
-//     Extension(fal_ai_client): Extension<FalAiClient>,
-//     State(ctx): State<AppContext>,
-// ) -> Result<Response> {
-//     let train = TrainingModelModel::find_by_pid(&ctx.db, &training_model_id)
-//         .await
-//         .map_err(|e| loco_rs::Error::Message(format!("Error Getting Training Model: {} ", e)))?;
-//     let s3_key: S3Key = S3Key::new(&train.s3_key);
-
-//     let exists = s3_client
-//         .check_object_exists(&s3_key)
-//         .await
-//         .map_err(|_| loco_rs::Error::Message(String::from("Error checking storage: 101")))?;
-
-//     if !exists {
-//         return Ok(handle_general_response_text(
-//             StatusCode::NOT_FOUND,
-//             Some(format!("Path: {}", s3_key.as_ref())),
-//             Some("File not found".into()),
-//         )
-//         .into_response());
-//     }
-//     let train = ActiveModel::from(train).upload_completed(&ctx.db).await?;
-
-//     let exp_time = Some(60 * 60 * 3); // 3 hours
-//     let pre_url = match s3_client.get_object_pre(&s3_key, exp_time).await {
-//         Ok(url) => url,
-//         Err(e) => return Ok((StatusCode::INTERNAL_SERVER_ERROR, e.to_string()).into_response()),
-//     };
-//     let train_schema = FluxLoraTrainingSchema::from_training(&train, pre_url);
-
-//     // Send training model to Fal AI Queue
-//     let queue = fal_ai_client
-//         .send_training_queue_webhook(&train_schema)
-//         .await?;
-
-//     // Save Fal AI response in Database
-//     let _train_model = ActiveModel::from(train)
-//         .update_with_fal_ai_webhook_training_response(&ctx.db, &queue)
-//         .await?;
-
-//     // Send response back to user
-//     Ok(
-//         handle_general_response_text(StatusCode::OK, None, Some("Successfully saved".into()))
-//             .into_response(),
-//     )
-
-//     // // Send response back to user
-//     // Ok(handle_general_response(
-//     //     StatusCode::OK,
-//     //     Some(train),
-//     //     Some("Successfully saved".into()),
-//     // )
-//     // .into_response())
-// }
-
 #[debug_handler]
 pub async fn check_model(
     Path((id, status)): Path<(i32, Status)>,
@@ -233,8 +167,10 @@ pub async fn check_model(
     if status == model.training_status {
         return Ok(StatusCode::NO_CONTENT.into_response());
     }
-    let model_view: TrainingModelView = model.into();
-    views::training_models::training_models_update(v, &website, &model_view)
+    let website_options = WebsiteOptions::new()
+        .website(&website)
+        .training_model(model.into());
+    views::training_models::training_models_update(v, &website_options)
 }
 
 //? ====== REST API ======

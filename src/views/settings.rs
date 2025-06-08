@@ -1,6 +1,5 @@
 use crate::{
     controllers::dashboard::WebsiteOptions,
-    domain::website::Website,
     models::{
         UserSettingsModel,
         _entities::sea_orm_active_enums::{Language, ThemePreference},
@@ -12,37 +11,34 @@ use serde::Serialize;
 
 pub fn email_notification(
     v: impl ViewRenderer,
-    website: &Website,
-    user_settings: &UserSettingsView,
+    website_options: &WebsiteOptions,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
         "dashboard/content/settings/partials/email_notification_input.html",
-        data!({ "website": website, "user_settings": user_settings }),
+        data!({ "options": website_options }),
     )
 }
 
 pub fn marketing_notifications(
     v: impl ViewRenderer,
-    website: &Website,
-    user_settings: &UserSettingsView,
+    website_options: &WebsiteOptions,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
         "dashboard/content/settings/partials/marketing_notification_input.html",
-        data!({ "website": website, "user_settings": user_settings  }),
+        data!({ "options": website_options }),
     )
 }
 
 pub fn dark_mode(
     v: impl ViewRenderer,
-    website: &Website,
-    user_settings: &UserSettingsView,
+    website_options: &WebsiteOptions,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
         "dashboard/content/settings/partials/dark_mode_input.html",
-        data!({ "website": website, "user_settings": user_settings }),
+        data!({ "options": website_options }),
     )
 }
 
@@ -53,8 +49,7 @@ pub fn password_change(
     format::render().view(
         &v,
         "dashboard/content/settings/partials/password_settings_partial.html",
-        data!({ "website": website_options.website, "user": website_options.user,
-        "msg": website_options.message }),
+        data!({ "options": website_options }),
     )
 }
 

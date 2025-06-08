@@ -1,5 +1,5 @@
-{% set orders = options.orders %} {% set website = options.website %}
-
+{% set orders = options.orders %} {% set website = options.website %} {% set stripe_receipt_link =
+options.website.website_routes.payment.payment_stripe_url_from_order %}
 <div class="container mx-auto px-4 py-8 max-w-7xl">
   <div class="mb-8 flex flex-col justify-center items-center">
     <h1 class="text-3xl font-bold text-base-content">Order History</h1>
@@ -117,7 +117,7 @@
                     {% if order.status == 'Completed' %}
                     <a
                       href="#"
-                      onclick="fetchAndOpenReceipt(event, '{{ order.pid }}')"
+                      onclick="fetchAndOpenReceipt('{{ stripe_receipt_link | safe }}', '{{ order.pid }}')"
                       class="btn btn-primary btn-sm"
                     >
                       View Receipt
@@ -154,18 +154,5 @@
 
   <script>
     updatePageTitle("{% block title %}ReplicaPixel | Billing{% endblock title %}");
-
-    async function fetchAndOpenReceipt(event, orderPid) {
-      event.preventDefault();
-      try {
-        const res = await fetch(
-          `{{ website.website_routes.payment.payment_stripe_url_from_order | safe }}/${orderPid}`
-        );
-        const url = await res.text();
-        window.open(url, "_blank");
-      } catch (err) {
-        console.error("Failed to fetch receipt link:", err);
-      }
-    }
   </script>
 </div>

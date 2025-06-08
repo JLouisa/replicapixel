@@ -400,7 +400,6 @@ pub async fn generate(
         .is_image_gen();
 
     // 3. Render the view using the View Models
-    // let is_image_gen = Some(true);
     views::images::img_completed(&v, &website_options)
 }
 
@@ -522,7 +521,8 @@ pub async fn favorite_toggle(
         return Ok((StatusCode::UNAUTHORIZED).into_response());
     }
     let image: ImageView = img.favorite_image_toggle(&ctx.db).await?.into();
-    views::images::favorite(&v, &website, &image)
+    let website_options = WebsiteOptions::new().website(&website).image(&image);
+    views::images::favorite(&v, &website_options)
 }
 
 #[debug_handler]
@@ -566,8 +566,11 @@ pub async fn get_one(
     if image.user_id != user.id {
         return Ok((StatusCode::UNAUTHORIZED).into_response());
     }
-    views::images::show(&v, &image)
+    let image_view: ImageView = image.into();
+    let website_options = WebsiteOptions::new().image(&image_view);
+    views::images::show(&v, &website_options)
 }
+
 #[debug_handler]
 pub async fn list(State(ctx): State<AppContext>) -> Result<Response> {
     format::json(Entity::find().all(&ctx.db).await?)

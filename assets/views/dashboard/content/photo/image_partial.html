@@ -1,7 +1,7 @@
 {% set is_favorite = options.is_favorite %} {% set is_deleted = options.is_deleted %} {% set images
 = options.images %} {% set is_initial_load = options.is_initial_load %} {% for image in images %} {%
-if image.image_status == "Completed" or image.image_status == "Processing" %} {# COMPLETED IMAGE
-CELL #} {% if loop.last and not is_image_gen %}
+if image.image_status == "Completed" or image.image_status == "Processing" %} {% set is_image_gen =
+options.is_image_gen %} {# COMPLETED IMAGE CELL #} {% if loop.last and not is_image_gen %}
 <div
   hx-get="{{ options.website.website_routes.image.api_image_infinite | safe }}/{{ image.pid }}{% if is_deleted %}?deleted=true{% endif %}{% if is_favorite %}?favorite=true{% endif %}"
   hx-trigger="intersect once"
@@ -53,7 +53,7 @@ CELL #} {% if loop.last and not is_image_gen %}
       uploadImageFromUrlToS3(
         "{{ image.image_url_fal | safe }}",
         "{{ image.pre_url | safe }}",
-        "{{ website.website_routes.image.api_image_s3_complete_upload | safe }}/{{ image.pid }}"
+        "{{ options.website.website_routes.image.api_image_s3_complete_upload | safe }}/{{ image.pid }}"
       );
     </script>
     {% endif %}
@@ -63,7 +63,7 @@ CELL #} {% if loop.last and not is_image_gen %}
   {# End image-container for completed image #} {% else %} {# LOADING PLACEHOLDER CELL #}
   <div
     id="placeholder-{{ image.pid }}"
-    hx-get="{{ website.website_routes.image.check | safe }}/{{ image.pid }}"
+    hx-get="{{ options.website.website_routes.image.check | safe }}/{{ image.pid }}"
     hx-trigger="load, every 2s"
     hx-swap="outerHTML"
     class="relative select-none flex items-center justify-center aspect-square rounded-lg shadow-md overflow-hidden bg-neutral animate-pulse"

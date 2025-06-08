@@ -15,29 +15,13 @@ pub fn get_all_packs(
         &v,
         "home/sections/partials/pack_inner_partial.html",
         data!({ "options": website_options }),
-        // data!(
-        //     {
-        //         "website": website, "packs": packs,
-        //         "is_pack_partial": true
-        //     }
-        // ),
     )
 }
 
-pub fn packs(
-    v: impl ViewRenderer,
-    website_options: &WebsiteOptions,
-    // website: &Website,
-    // cc_cookie: &CookieConsent,
-    // web_images: &WebImages,
-    // pack: &PackView,
-    // user: &Option<UserView>,
-) -> Result<impl IntoResponse> {
-    // let foo_mock_pack_images = pack.create_item_groups();
+pub fn packs(v: impl ViewRenderer, website_options: &WebsiteOptions) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
         "packs/pack_base.html",
-        // data!({ "options": website_options }),
         data!(
             {
                 "website": website_options.website, "cc_cookie": website_options.cc_cookie,
@@ -54,19 +38,10 @@ pub fn packs_partial(
     v: impl ViewRenderer,
     website_options: &WebsiteOptions,
 ) -> Result<impl IntoResponse> {
-    // let foo_mock_pack_images = pack.create_item_groups();
     format::render().view(
         &v,
         "packs/pack_partial.html",
         data!({ "options": website_options }),
-        // data!(
-        //     {
-        //         "website": website, "cc_cookie": cc_cookie,
-        //         "web_images": web_images, "pack": pack,
-        //         "pack_images": foo_mock_pack_images,
-        //         "user": user, "is_pack": true
-        //     }
-        // ),
     )
 }
 

@@ -3,7 +3,8 @@
 #![allow(clippy::unused_async)]
 use crate::controllers::auth::{AuthError, HxRedirect};
 use crate::controllers::home::{WebGallery, WebImages};
-use crate::domain::features::FeatureViewList;
+use crate::controllers::payment::StripeWebOptions;
+use crate::domain::features::{FeatureView, FeatureViewList};
 use crate::domain::website::Website;
 use crate::middleware::cookie::{CookieConsent, CookieConsentLayer, ExtractConsentState};
 use crate::models::feature_request::FeatureRequestModelList;
@@ -26,10 +27,10 @@ use crate::service::redis::redis::{load_cached_web, RedisCacheDriver};
 use crate::views;
 use crate::views::auth::{UserCreditsView, UserView};
 use crate::views::dashboard::TransactionViewList;
-use crate::views::images::ImageViewList;
+use crate::views::images::{ImageView, ImageViewList};
 use crate::views::packs::{PackView, PackViewList};
 use crate::views::settings::UserSettingsView;
-use crate::views::training_models::TrainingModelViewList;
+use crate::views::training_models::{TrainingModelView, TrainingModelViewList};
 // use axum::extract::Query;
 use axum::response::Redirect;
 use axum::Extension;
@@ -328,19 +329,24 @@ pub struct WebsiteOptions<'a> {
     pub user_credits: Option<UserCreditsView>,
     pub orders: Option<&'a TransactionViewList>,
     pub plans: Option<HashMap<i32, PlanModel>>,
+    pub feature: Option<&'a FeatureView>,
     pub features: Option<&'a FeatureViewList>,
     pub user_settings: Option<UserSettingsView>,
+    pub training_model: Option<TrainingModelView>,
     pub training_models: Option<TrainingModelViewList>,
     pub pack: Option<PackView>,
     pub packs: Option<PackViewList>,
     pub pack_images: Option<WebGallery>,
+    pub image: Option<&'a ImageView>,
     pub images: Option<&'a ImageViewList>,
     pub web_gallery: Option<&'a WebGallery>,
     pub web_images: Option<&'a WebImages>,
+    pub link: Option<&'a str>,
     pub message: Option<&'a str>,
     pub register: Option<&'a RegisterParams>,
     pub login: Option<&'a LoginParams>,
     pub auth_error: Option<&'a AuthError>,
+    pub stripe_options: Option<&'a StripeWebOptions>,
     pub is_logged_in: Option<bool>,
     pub is_ott: Option<bool>,
     pub is_home: Option<bool>,
@@ -406,6 +412,13 @@ impl<'a> WebsiteOptions<'a> {
         }
     }
     // Sets the features.
+    pub fn feature(self, feature: &'a FeatureView) -> Self {
+        Self {
+            feature: Some(feature),
+            ..self
+        }
+    }
+    // Sets the features.
     pub fn features(self, features: &'a FeatureViewList) -> Self {
         Self {
             features: Some(features),
@@ -416,6 +429,13 @@ impl<'a> WebsiteOptions<'a> {
     pub fn user_settings(self, settings: UserSettingsView) -> Self {
         Self {
             user_settings: Some(settings),
+            ..self
+        }
+    }
+    // Sets a training model.
+    pub fn training_model(self, training_model: TrainingModelView) -> Self {
+        Self {
+            training_model: Some(training_model),
             ..self
         }
     }
@@ -448,6 +468,13 @@ impl<'a> WebsiteOptions<'a> {
         }
     }
     // Sets the images.
+    pub fn image(self, image: &'a ImageView) -> Self {
+        Self {
+            image: Some(image),
+            ..self
+        }
+    }
+    // Sets the images.
     pub fn images(self, images: &'a ImageViewList) -> Self {
         Self {
             images: Some(images),
@@ -465,6 +492,13 @@ impl<'a> WebsiteOptions<'a> {
     pub fn web_images(self, web_images: &'a WebImages) -> Self {
         Self {
             web_images: Some(web_images),
+            ..self
+        }
+    }
+    // Sets the link.
+    pub fn link(self, link: &'a str) -> Self {
+        Self {
+            link: Some(link),
             ..self
         }
     }
@@ -493,6 +527,13 @@ impl<'a> WebsiteOptions<'a> {
     pub fn auth_error(self, auth_error: &'a AuthError) -> Self {
         Self {
             auth_error: Some(auth_error),
+            ..self
+        }
+    }
+    // Sets the stripe options.
+    pub fn stripe_options(self, stripe_options: &'a StripeWebOptions) -> Self {
+        Self {
+            stripe_options: Some(stripe_options),
             ..self
         }
     }

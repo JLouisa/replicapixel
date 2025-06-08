@@ -3,12 +3,12 @@
   id="email_notifications_toggle"
   name="notify_enabled"
   class="toggle toggle-primary"
-  hx-patch="{{ website.website_routes.settings.update_notifications | safe }}/{{ user_settings.enable_notification_email }}"
+  hx-patch="{{ options.website.website_routes.settings.update_notifications | safe }}/{{ options.user_settings.enable_notification_email }}"
   hx-trigger="change"
   hx-indicator="#email-notification-spinner"
   {%
   if
-  user_settings.enable_notification_email
+  options.user_settings.enable_notification_email
   %}
   checked
   {%

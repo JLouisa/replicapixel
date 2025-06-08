@@ -1,4 +1,4 @@
-use crate::domain::website::Website;
+use crate::controllers::dashboard::WebsiteOptions;
 use crate::models::_entities::sea_orm_active_enums::Status;
 use crate::models::_entities::training_models::Model as TrainingModel;
 use crate::models::training_models::TrainingModelList;
@@ -8,21 +8,12 @@ use serde::Serialize;
 
 pub fn training_models_update(
     v: impl ViewRenderer,
-    website: &Website,
-    model: &TrainingModelView,
+    website_options: &WebsiteOptions,
 ) -> Result<Response> {
     format::render().view(
         &v,
         "dashboard/content/training_models/training_models_loading_partial.html",
-        data!({ "website": website, "model": model }),
-    )
-}
-
-pub fn training_models(v: impl ViewRenderer, website: &Website) -> Result<impl IntoResponse> {
-    format::render().view(
-        &v,
-        "dashboard/content/training_models/training_models.html",
-        data!({ "website": website }),
+        data!({ "options": website_options }),
     )
 }
 
@@ -80,21 +71,3 @@ impl From<TrainingModelList> for TrainingModelViewList {
         )
     }
 }
-
-// impl From<TrainingModelList> for Vec<TrainingModelView> {
-//     fn from(list: TrainingModelList) -> Vec<TrainingModelView> {
-//         list.into_inner()
-//             .iter()
-//             .map(TrainingModelView::from)
-//             .collect()
-//     }
-// }
-// impl From<&TrainingModelList> for Vec<TrainingModelView> {
-//     fn from(list: &TrainingModelList) -> Vec<TrainingModelView> {
-//         list.clone()
-//             .into_inner()
-//             .iter()
-//             .map(TrainingModelView::from)
-//             .collect()
-//     }
-// }

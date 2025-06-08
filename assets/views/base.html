@@ -129,7 +129,7 @@
       <span x-text="$store.toast.message"></span>
     </div>
 
-    {% if not user and (is_home or is_pack) %}
+    {% if not options.user and (options.is_home or options.is_pack) %}
     <!-- Javascript -->
     {% include "partials/parts/google_ott.html" %} {% endif %}
   </body>
