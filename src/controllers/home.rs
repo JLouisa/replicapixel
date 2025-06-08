@@ -81,6 +81,10 @@ async fn load_packs(db: &DatabaseConnection) -> Result<PackModelList> {
     let list = PackModel::find_all_packs(db).await?;
     Ok(PackModelList::new(list))
 }
+// async fn load_plans(db: &DatabaseConnection) -> Result<PlanModelList> {
+//     let list = PlanModel::find_all(db).await?;
+//     Ok(list)
+// }
 
 #[debug_handler]
 pub async fn robots_txt(State(ctx): State<AppContext>) -> impl IntoResponse {
@@ -290,6 +294,7 @@ pub struct WebImages {
     studio: String,
     pub packs: PackViewList,
     creators: Vec<String>,
+    // plans: PricingViewList,
 }
 impl WebImages {
     pub async fn web_images(db: &DatabaseConnection) -> WebImages {
@@ -389,7 +394,24 @@ impl WebImages {
                 "https://replicapixel-web.s3.eu-central-1.amazonaws.com/others/cosplay-lara.webp",
             ),
         ];
-        let web_images = WebImages::new(hero_panel, gallery, before_after, studio, packs, creators);
+
+        // let plans = match load_plans(db).await {
+        //     Ok(plan) => plan.into(),
+        //     Err(e) => {
+        //         tracing::error!("Failed to load plans: {}", e);
+        //         PlanViewList::mock_plans()
+        //     }
+        // };
+
+        let web_images = WebImages::new(
+            hero_panel,
+            gallery,
+            before_after,
+            studio,
+            packs,
+            creators,
+            // plans,
+        );
         web_images
     }
 }

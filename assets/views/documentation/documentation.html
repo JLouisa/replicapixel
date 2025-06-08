@@ -1,0 +1,348 @@
+{% set website = options.website %}
+
+<!DOCTYPE html>
+<html lang="en" data-theme="light" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ReplicaPixel Documentation</title>
+    <link href="/static/css/output.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs/themes/prism-tomorrow.css" />
+    <script src="https://cdn.jsdelivr.net/npm/prismjs/prism.js" defer></script>
+    <script>
+      function setTheme(theme) {
+        const html = document.documentElement;
+        html.setAttribute("data-theme", theme);
+        const userTheme = localStorage.setItem("theme_docs", theme);
+      }
+      const userTheme = localStorage.getItem("theme_docs");
+      if (userTheme) {
+        setTheme(userTheme);
+      }
+
+      function applyThemeToggleStateFromStorage(id) {
+        const toggle = document.getElementById(id);
+        const theme = localStorage.getItem("theme_docs");
+
+        if (theme === "night") {
+          toggle.checked = true;
+        } else {
+          toggle.checked = false;
+        }
+      }
+    </script>
+    <style>
+      /* Custom selection color for a branded feel */
+      ::selection {
+        background-color: #facc15; /* A bright yellow */
+        color: #1f2937; /* A night gray */
+      }
+    </style>
+  </head>
+  <!-- Using DaisyUI's semantic colors for background and text -->
+  <body class="flex min-h-screen font-sans bg-base-100 text-base-content">
+    <!-- Sidebar - hidden on mobile, visible on medium screens and up -->
+    <aside
+      class="w-64 hidden md:block bg-base-200 border-r border-base-300 sticky top-0 h-screen p-6"
+    >
+      <h2 class="text-xl font-bold mb-6">Documentation</h2>
+      <nav class="space-y-4">
+        <a href="#introduction" class="block hover:text-primary transition-colors">Introduction</a>
+        <a href="#installation" class="block hover:text-primary transition-colors"
+          >Getting Started</a
+        >
+        <a href="#usage" class="block hover:text-primary transition-colors"
+          >How to Use ReplicaPixel</a
+        >
+        <a href="#tips" class="block hover:text-primary transition-colors"
+          >Tips & Troubleshooting</a
+        >
+        <a href="#faq" class="block hover:text-primary transition-colors">FAQ</a>
+      </nav>
+    </aside>
+
+    <!-- Main content with responsive padding -->
+    <main class="flex-1 p-4 sm:p-8 max-w-4xl mx-auto">
+      <!-- Header with responsive font size and theme toggle -->
+      <header class="mb-12 flex justify-between items-center">
+        <div>
+          <h1 class="text-3xl sm:text-4xl font-bold mb-2">ReplicaPixel Documentation</h1>
+          <p class="opacity-80">Your guide to creating stunning AI-powered images of yourself.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="5" />
+            <path
+              d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"
+            />
+          </svg>
+          <input id="theme-toggle" type="checkbox" class="toggle toggle-sm" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <script>
+            applyThemeToggleStateFromStorage("theme-toggle");
+          </script>
+        </div>
+      </header>
+
+      <section id="introduction" class="mb-16">
+        <h2 class="text-2xl font-semibold mb-4">Introduction</h2>
+        <p class="leading-relaxed">
+          Welcome to ReplicaPixel! Our platform allows you to create a personalized AI model—what we
+          call a "Replica"—based on your own photos. Using this Replica, you can generate an endless
+          variety of high-quality images of yourself in different styles, settings, and scenarios.
+          Imagine professional headshots, fantasy art portraits, or stylish social media avatars,
+          all created in minutes.
+        </p>
+        <p class="leading-relaxed mt-4">
+          This documentation will guide you through creating your first Replica, generating images
+          with our Style Packs, and answering common questions to ensure you get the best possible
+          results.
+        </p>
+      </section>
+
+      <section id="installation" class="mb-16">
+        <h2 class="text-2xl font-semibold mb-4">Getting Started: Creating Your Replica</h2>
+        <p class="mb-4">
+          ReplicaPixel is a web application, so there's no software to install. Getting started is
+          as simple as training your first AI model. Here's the step-by-step process:
+        </p>
+        <ol class="list-decimal list-inside space-y-3">
+          <li>
+            <strong>Sign Up:</strong> Create an account on our website to get your own private
+            workspace.
+          </li>
+          <li>
+            <strong>Upload Photos:</strong> Navigate to the 'Create Replica' page. You'll need to
+            upload a minimum of 10 high-quality photos of yourself. For best results, see our photo
+            guidelines in the next section.
+          </li>
+          <li>
+            <strong>Start Training:</strong> Once your photos are uploaded, click the 'Train My
+            Replica' button. Our AI, powered by the Flux service, will begin learning your likeness
+            to create a personalized LoRA model.
+          </li>
+          <li>
+            <strong>Wait for Completion:</strong> The training process is computationally intensive
+            and typically takes around 25-40 minutes. You can close the page; we will notify you via
+            email as soon as your Replica is ready to use!
+          </li>
+        </ol>
+      </section>
+
+      <section id="usage" class="mb-16">
+        <h2 class="text-2xl font-semibold mb-4">How to Use ReplicaPixel</h2>
+        <p class="mb-4">
+          Once your Replica is trained, the fun begins! Here's how to generate your first set of
+          images:
+        </p>
+
+        <h3 class="text-xl font-semibold mb-2 mt-6">1. Choosing a Style Pack</h3>
+        <p>
+          Style Packs are curated collections of prompts, styles, and settings designed to produce
+          amazing results with one click. Browse our library of packs like 'Professional Headshots',
+          'Fantasy Adventurer', 'Cyberpunk Noir', or 'Vintage Film'. Select the one that matches the
+          look you want to create.
+        </p>
+
+        <h3 class="text-xl font-semibold mb-2 mt-6">2. Generating Your Images</h3>
+        <p>
+          After selecting a pack, simply click the 'Generate' button. The cost in credits will be
+          clearly displayed. Our AI will then combine your personal Replica with the prompts from
+          the Style Pack to create a batch of unique images. This process usually takes 1-2 minutes.
+        </p>
+
+        <h3 class="text-xl font-semibold mb-2 mt-6">3. Viewing and Downloading</h3>
+        <p>
+          Your newly created images will appear in your gallery. From there, you can view them in
+          high resolution, select your favorites, and download them to your device to share on
+          social media, use on your LinkedIn profile, or print.
+        </p>
+
+        <!-- Converted to DaisyUI Alert component for better semantics and theming -->
+        <div role="alert" class="alert alert-warning mt-8">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="stroke-current shrink-0 h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+            />
+          </svg>
+          <div>
+            <h4 class="font-bold">Pro Tip: Best Practices for Photo Uploads</h4>
+            <div class="text-xs">
+              The quality of your AI Replica depends entirely on the photos you provide. For optimal
+              results, please follow these guidelines:
+            </div>
+            <ul class="list-disc list-inside space-y-1 mt-2 text-xs sm:text-sm">
+              <li>
+                <strong>Variety is Key:</strong> Include a mix of close-ups, chest-up, and half-body
+                shots.
+              </li>
+              <li>
+                <strong>Different Angles:</strong> Provide photos from the front, profile, and
+                45-degree angles.
+              </li>
+              <li>
+                <strong>Diverse Expressions:</strong> Upload photos with various expressions
+                (smiling, neutral, serious).
+              </li>
+              <li>
+                <strong>Good, Clear Lighting:</strong> Avoid harsh shadows, backlighting, or very
+                night photos.
+              </li>
+              <li>
+                <strong>No Obstructions:</strong> Avoid photos with sunglasses, hats, or hands
+                covering your face.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="tips" class="mb-16">
+        <h2 class="text-2xl font-semibold mb-4">Tips & Troubleshooting</h2>
+        <p class="mb-4">
+          AI image generation is a powerful but sometimes unpredictable process. Here are some tips
+          to get the best results and fix common issues.
+        </p>
+
+        <h3 class="text-xl font-semibold mb-2 mt-6">"The face doesn't look exactly like me."</h3>
+        <p>
+          This can happen! The AI generates unique variations each time. If a result isn't perfect,
+          simply <strong>try generating again</strong>. Each generation will produce a new set of
+          images, and the next batch might capture your likeness perfectly. If the issue persists,
+          your Replica may benefit from being re-trained with a more diverse set of input photos.
+        </p>
+
+        <h3 class="text-xl font-semibold mb-2 mt-6">"My image has weird hands or artifacts."</h3>
+        <p>
+          This is a known challenge in the world of AI image generation. Details like hands and
+          fingers are notoriously difficult for AI to get right. The best solution is often to
+          <strong>generate another set of images</strong>. You can also try choosing Style Packs
+          that don't emphasize hands, such as close-up headshots.
+        </p>
+
+        <h3 class="text-xl font-semibold mb-2 mt-6">
+          "My results are good, but I want more variety."
+        </h3>
+        <p>
+          Don't be afraid to experiment! Try different Style Packs, even ones you wouldn't normally
+          consider. A pack designed for "Sci-Fi" might produce a surprisingly cool headshot. The
+          magic of ReplicaPixel is in the unexpected and creative combinations you can discover.
+        </p>
+      </section>
+
+      <section id="faq" class="mb-16">
+        <h2 class="text-2xl font-semibold mb-4">FAQ</h2>
+        <!-- Converted to DaisyUI Collapse component -->
+        <div class="space-y-4">
+          <div class="collapse collapse-arrow bg-base-200">
+            <input type="radio" name="my-accordion-1" checked="checked" />
+            <div class="collapse-title text-xl font-medium">What is a LoRA / Replica?</div>
+            <div class="collapse-content">
+              <p>
+                Think of a LoRA (which we call a 'Replica') as a small, specialized AI plugin that
+                has learned to recognize a specific concept—in this case, your face and likeness.
+                When you generate images, we load this tiny plugin into a large, general AI model,
+                guiding it to create images that look like you.
+              </p>
+            </div>
+          </div>
+          <div class="collapse collapse-arrow bg-base-200">
+            <input type="radio" name="my-accordion-1" />
+            <div class="collapse-title text-xl font-medium">
+              Are my uploaded photos secure and private?
+            </div>
+            <div class="collapse-content">
+              <p>
+                Absolutely. Your privacy and data security are our top priorities. Your uploaded
+                photos are used only to train your personal AI Replica and are not used for any
+                other purpose or to train general models. They are stored securely and you can
+                delete both your photos and your trained Replica from our servers at any time via
+                your account settings.
+              </p>
+            </div>
+          </div>
+          <div class="collapse collapse-arrow bg-base-200">
+            <input type="radio" name="my-accordion-1" />
+            <div class="collapse-title text-xl font-medium">How long does the training take?</div>
+            <div class="collapse-content">
+              <p>
+                Training your Replica is a resource-intensive task. It typically takes between 25 to
+                40 minutes. We'll send you an email the moment it's ready so you don't have to wait
+                around.
+              </p>
+            </div>
+          </div>
+          <div class="collapse collapse-arrow bg-base-200">
+            <input type="radio" name="my-accordion-1" />
+            <div class="collapse-title text-xl font-medium">
+              Can I get a refund if I don't like the results?
+            </div>
+            <div class="collapse-content">
+              <p>
+                Due to the significant computational cost required to train each Replica and
+                generate images, we are generally unable to offer refunds on used credits. However,
+                if you believe there was a technical error, please contact support. The best way to
+                ensure great results is to follow our photo upload guidelines carefully.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="pt-12 mt-12 border-t border-base-300 text-center text-sm opacity-60">
+        © 2025 ReplicaPixel. All rights reserved.
+      </footer>
+
+      <!-- Script for handling the theme toggle -->
+      <script>
+        const toggleSwitch = document.getElementById("theme-toggle");
+
+        // Handle toggle switch clicks
+        toggleSwitch.addEventListener("change", (e) => {
+          const newTheme = e.target.checked ? "night" : "light";
+          setTheme(newTheme);
+        });
+
+        // Handle keyboard shortcut (Ctrl+D)
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "d" && e.ctrlKey) {
+            e.preventDefault(); // Prevent browser's default bookmark action
+            const currentTheme = html.getAttribute("data-theme");
+            const newTheme = currentTheme === "light" ? "night" : "light";
+            setTheme(newTheme);
+          }
+        });
+      </script>
+    </main>
+  </body>
+</html>

@@ -1,4 +1,5 @@
 use crate::controllers::dashboard::routes::DashboardRoutes;
+use crate::controllers::other::routes::OtherRoutes;
 use crate::controllers::packs::routes::PackRoutes;
 use crate::controllers::payment::PricingViewList;
 use crate::controllers::settings::routes::SettingRoutes;
@@ -10,9 +11,9 @@ use crate::controllers::{
 };
 use crate::domain::settings::Settings;
 use crate::models::PlanModel;
+use crate::models::_entities::sea_orm_active_enums::ImageSize;
 use crate::models::_entities::sea_orm_active_enums::Language;
 use crate::models::_entities::sea_orm_active_enums::{BasedOn, Emotion, Ethnicity, EyeColor, Sex};
-use crate::models::_entities::sea_orm_active_enums::{ImageSize, PlanNames};
 use crate::service::fal_ai::fal_client::FalAiImageModel;
 use derive_more::Constructor;
 use loco_rs::app::AppContext;
@@ -33,6 +34,7 @@ pub struct WebsiteRoutes {
     pub settings: SettingRoutes,
     pub packs_routes: PackRoutes,
     pub starter_routes: StarterRoutes,
+    pub other_routes: OtherRoutes,
 }
 impl WebsiteRoutes {
     pub fn init() -> Self {
@@ -49,6 +51,7 @@ impl WebsiteRoutes {
             settings: SettingRoutes::init(),
             packs_routes: PackRoutes::init(),
             starter_routes: StarterRoutes::init(),
+            other_routes: OtherRoutes::init(),
         }
     }
 }
@@ -240,79 +243,125 @@ impl HomeReview {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, Constructor, Clone)]
-pub struct Feature(String);
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct Plan {
-    pub id: String,
-    pub plan_type: PlanNames,
-    pub title: String,
-    pub subtitle: String,
-    pub price: f64,
-    pub features: Vec<Feature>,
-    pub cta: String,
-    pub is_popular: bool,
-}
-pub fn mock_plans() -> Vec<Plan> {
-    vec![Plan::basic(), Plan::premium(), Plan::max()]
-}
-impl Plan {
-    pub fn basic() -> Self {
-        Self {
-            id: "basic".to_owned(),
-            plan_type: PlanNames::Basic,
-            title: "Basic".to_owned(),
-            subtitle: "For individuals".to_owned(),
-            price: 9.99,
-            features: vec![
-                Feature::new("50 AI Photo Credits".to_owned()),
-                Feature::new("1 AI Model".to_owned()),
-                Feature::new("No monthly subscription!".to_owned()),
-                Feature::new("Use any photo pack".to_owned()),
-                Feature::new("No Watermarked photos".to_owned()),
-                Feature::new("24/7 Support".to_owned()),
-            ],
-            cta: "Choose Basic".to_owned(),
-            is_popular: false,
-        }
-    }
-    pub fn premium() -> Self {
-        Self {
-            id: "premium".to_owned(),
-            plan_type: PlanNames::Premium,
-            title: "For professionals".to_owned(),
-            subtitle: "For large teams".to_owned(),
-            price: 39.99,
-            features: vec![
-                Feature::new("250 AI Photos (credits)".to_owned()),
-                Feature::new("7 AI Model".to_owned()),
-                Feature::new("No monthly subscription!".to_owned()),
-                Feature::new("Use any photo pack".to_owned()),
-                Feature::new("No Watermarked photos".to_owned()),
-                Feature::new("24/7 Support".to_owned()),
-            ],
-            cta: "Choose Premium".to_owned(),
-            is_popular: true,
-        }
-    }
-    pub fn max() -> Self {
-        Self {
-            id: "max".to_owned(),
-            plan_type: PlanNames::Max,
-            title: "Business".to_owned(),
-            subtitle: "For large teams".to_owned(),
-            price: 99.99,
-            features: vec![
-                Feature::new("1100 AI Photos (credits)".to_owned()),
-                Feature::new("16 AI Model".to_owned()),
-                Feature::new("No monthly subscription!".to_owned()),
-                Feature::new("Use any photo pack".to_owned()),
-                Feature::new("No Watermarked photos".to_owned()),
-                Feature::new("24/7 Support".to_owned()),
-            ],
-            cta: "Choose Max".to_owned(),
-            is_popular: false,
-        }
-    }
-}
+// #[derive(Debug, Serialize, Deserialize, Clone)]
+// pub struct PlanView {
+//     pub pid: Uuid,
+//     pub plan_name: PlanNames,
+//     pub credit_amount: i32,
+//     pub model_amount: i32,
+//     pub price: f64,
+//     pub subtitle: String,
+//     pub features: Vec<Feature>,
+//     pub cta: String,
+//     pub is_popular: bool,
+// }
+// impl From<PlanModel> for PlanView {
+//     fn from(plan: PlanModel) -> Self {
+//         let features = match plan.features {
+//             Some(f) => f.iter().map(|f| Feature(f.to_owned())).collect(),
+//             None => vec![],
+//         };
+//         Self {
+//             pid: plan.pid,
+//             plan_name: plan.plan_name,
+//             price: plan.price_cents as f64 / 100.0,
+//             subtitle: plan.subtitle,
+//             credit_amount: plan.credit_amount,
+//             model_amount: plan.model_amount,
+//             features,
+//             cta: plan.cta,
+//             is_popular: plan.is_popular,
+//         }
+//     }
+// }
+// impl From<&PlanModel> for PlanView {
+//     fn from(plan: &PlanModel) -> Self {
+//         let features = match plan.features.clone() {
+//             Some(f) => f.iter().map(|f| Feature(f.to_owned())).collect(),
+//             None => vec![],
+//         };
+//         Self {
+//             pid: plan.pid.clone(),
+//             plan_name: plan.plan_name.clone(),
+//             price: plan.price_cents as f64 / 100.0,
+//             subtitle: plan.subtitle.clone(),
+//             credit_amount: plan.credit_amount.clone(),
+//             model_amount: plan.model_amount.clone(),
+//             features,
+//             cta: plan.cta.clone(),
+//             is_popular: plan.is_popular.clone(),
+//         }
+//     }
+// }
+// #[derive(Debug, Serialize, Deserialize, Clone, Constructor)]
+// pub struct PlanViewList(pub Vec<PlanView>);
+// impl PlanViewList {
+//     pub fn mock_plans() -> PlanViewList {
+//         PlanViewList::new(vec![
+//             PlanView::basic(),
+//             PlanView::premium(),
+//             PlanView::max(),
+//         ])
+//     }
+// }
+// impl From<PlanModelList> for PlanViewList {
+//     fn from(list: PlanModelList) -> PlanViewList {
+//         Self(list.0.iter().map(PlanView::from).collect())
+//     }
+// }
+// impl PlanView {
+//     pub fn basic() -> Self {
+//         Self {
+//             pid: Uuid::parse_str("cd08b105-5880-4fd1-872a-acf711a5b8ef").unwrap(),
+//             plan_name: PlanNames::Basic,
+//             price: 9.99,
+//             credit_amount: 50,
+//             model_amount: 1,
+//             subtitle: "For individuals & testing".to_owned(),
+//             features: vec![
+//                 Feature::new("No monthly subscription!".to_owned()),
+//                 Feature::new("Use any photo pack".to_owned()),
+//                 Feature::new("No Watermarked photos".to_owned()),
+//                 Feature::new("24/7 Support".to_owned()),
+//             ],
+//             cta: "Choose Basic".to_owned(),
+//             is_popular: false,
+//         }
+//     }
+//     pub fn premium() -> Self {
+//         Self {
+//             pid: Uuid::parse_str("af12e69f-f7e6-4628-b2bd-41ca3489d3af").unwrap(),
+//             plan_name: PlanNames::Premium,
+//             price: 39.99,
+//             credit_amount: 250,
+//             model_amount: 7,
+//             subtitle: "For creators & small teams".to_owned(),
+//             features: vec![
+//                 Feature::new("No monthly subscription!".to_owned()),
+//                 Feature::new("Use any photo pack".to_owned()),
+//                 Feature::new("No Watermarked photos".to_owned()),
+//                 Feature::new("24/7 Support".to_owned()),
+//             ],
+//             cta: "Choose Premium".to_owned(),
+//             is_popular: true,
+//         }
+//     }
+//     pub fn max() -> Self {
+//         Self {
+//             pid: Uuid::parse_str("cd1c6ed7-7a24-4b53-840b-23c81bcc0f4c").unwrap(),
+//             plan_name: PlanNames::Max,
+//             price: 99.99,
+//             credit_amount: 1100,
+//             model_amount: 16,
+//             subtitle: "For agencies & heavy users".to_owned(),
+//             features: vec![
+//                 Feature::new("No monthly subscription!".to_owned()),
+//                 Feature::new("Use any photo pack".to_owned()),
+//                 Feature::new("No Watermarked photos".to_owned()),
+//                 Feature::new("24/7 Support".to_owned()),
+//             ],
+//             cta: "Choose Max".to_owned(),
+//             is_popular: false,
+//         }
+//     }
+// }

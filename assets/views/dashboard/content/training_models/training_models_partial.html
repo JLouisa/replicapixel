@@ -16,7 +16,7 @@ options.training_models %} {% set credits = options.user_credits %}
         hx-push-url="{{ website.website_routes.dashboard_routes.create_training_models | safe }}"
         hx-swap="innerHTML"
       >
-        Create Model
+        Create Replica
       </button>
     </div>
     {% endif %}
@@ -32,7 +32,7 @@ options.training_models %} {% set credits = options.user_credits %}
     </div>
     {% else %}
     <div class="h-full flex flex-col w-full mx-auto items-center justify-center text-center">
-      <p class="text-gray-500 text-lg mb-4">No models available. Create some to get started!</p>
+      <p class="text-gray-500 text-lg mb-4">No Replicas available. Create some to get started!</p>
       {% include "partials/svg/ghost.html" %}
     </div>
     {% endif %}
@@ -40,10 +40,10 @@ options.training_models %} {% set credits = options.user_credits %}
 
   <script>
     if (typeof updatePageTitle === "function") {
-      updatePageTitle("ReplicaPixel | Models");
+      updatePageTitle("ReplicaPixel | Replica");
     } else {
       console.warn("updatePageTitle function not found.");
-      document.title = "ReplicaPixel | Models";
+      document.title = "ReplicaPixel | Replica";
     }
   </script>
 </div>

@@ -1,13 +1,13 @@
 <!-- prettier-ignore -->
 {% set studio_link = website.website_routes.dashboard_routes.base %}
 {% set api_link = "/not-found" %}
-{% set app_link = "/not-found" %}
-{% set documentation_link = "/not-found" %}
+{% set app_link = website.website_routes.other_routes.documentation %}
+{% set documentation_link = website.website_routes.other_routes.documentation %}
 {% set guides_link = "/not-found" %}
 {% set blog_link = "/not-found" %}
 {% set community_link = "/not-found" %}
 {% set support_link = "/not-found" %}
-{% set GDPR_link =  "/not-found" %}
+{% set GDPR_link =  "https://gdpr-info.eu" %}
 {% set licenses_link =  "/not-found" %}
 {% set instagram_link = "/not-found" %}
 {% set twitter_link = "/not-found" %}
@@ -36,7 +36,7 @@
                   <img
                     class="w-8 h-8 object-cover"
                     style="aspect-ratio: 26.67 / 32.08"
-                    src="../../../static/logo.svg"
+                    src="/static/logo.svg"
                     alt="Logo"
                   />
                   <span class="text-w font-bricon text-2xl font-semibold">
@@ -63,7 +63,7 @@
                 <li class="text-w font-brico text-2xl font-bold">Company</li>
                 <li class="text-gray-black-50 text-base"><a href="#features">Features</a></li>
                 <li class="text-gray-black-50 text-base">
-                  <a href="{{studio_link}}">Studio</a>
+                  <a href="{{studio_link | safe}}">Studio</a>
                 </li>
               </ul>
               <ul class="flex flex-col gap-4">
@@ -72,43 +72,43 @@
                   <a href="#pricing" target="_blank">Pricing</a>
                 </li>
                 <li class="text-gray-black-50 text-base">
-                  <a href="{{api_link}}" target="_blank">API</a>
+                  <a href="{{api_link | safe}}" target="_blank">API</a>
                 </li>
                 <li class="text-gray-black-50 text-base">
-                  <a href="{{app_link}}" target="_blank">Apps</a>
+                  <a href="{{app_link | safe}}" target="_blank">Apps</a>
                 </li>
               </ul>
               <ul class="flex flex-col gap-4">
                 <li class="text-w font-brico text-2xl font-bold">Resources</li>
                 <li class="text-gray-black-50 text-base">
-                  <a href="{{guides_link}}">Documentation</a>
+                  <a href="{{documentation_link | safe}}" target="_blank">Documentation</a>
                 </li>
                 <li class="text-gray-black-50 text-base">
-                  <a href="{{guides_link}}" target="_blank">Guides</a>
+                  <a href="{{guides_link | safe}}" target="_blank">Guides</a>
                 </li>
                 <li class="text-gray-black-50 text-base">
-                  <a href="{{community_link}}">Community</a>
+                  <a href="{{community_link | safe}}">Community</a>
                 </li>
                 <li class="text-gray-black-50 text-base">
-                  <a href="{{support_link}}" target="_blank">Support</a>
+                  <a href="{{support_link | safe}}" target="_blank">Support</a>
                 </li>
               </ul>
               <ul class="flex flex-col gap-4">
                 <li class="text-w font-brico text-2xl font-bold">Legal</li>
                 <li class="text-gray-black-50 text-base">
-                  <a href="{{terms_link}}" target="_blank">Terms</a>
+                  <a href="{{terms_link | safe}}" target="_blank">Terms</a>
                 </li>
                 <li class="text-gray-black-50 text-base">
-                  <a href="{{privacy_link}}" target="_blank">Privacy</a>
+                  <a href="{{privacy_link | safe}}" target="_blank">Privacy</a>
                 </li>
                 <li class="text-gray-black-50 text-base">
-                  <a href="{{cookie_link}}" target="_blank">Cookie</a>
+                  <a href="{{cookie_link | safe}}" target="_blank">Cookie</a>
                 </li>
                 <li class="text-gray-black-50 text-base">
-                  <a href="{{GDPR_link}}" target="_blank">GDPR</a>
+                  <a href="{{GDPR_link | safe}}" target="_blank">GDPR</a>
                 </li>
                 <li class="text-gray-black-50 text-base">
-                  <a href="{{licenses_link}}">Licenses</a>
+                  <a href="{{licenses_link | safe}}">Licenses</a>
                 </li>
               </ul>
             </div>
@@ -126,13 +126,13 @@
         </div>
         <ul class="flex flex-row gap-10 items-center justify-start shrink-0 text-base font-inter">
           <li class="text-gray-black-50 text-base">
-            <a href="{{cookie_link}}" target="_blank">Cookie</a>
+            <a href="{{cookie_link | safe}}" target="_blank">Cookie</a>
           </li>
           <li class="text-gray-black-50 text-base">
-            <a href="{{terms_link}}" target="_blank">Terms & Conditions</a>
+            <a href="{{terms_link | safe}}" target="_blank">Terms & Conditions</a>
           </li>
           <li class="text-gray-black-50 text-base">
-            <a href="{{privacy_link}}" target="_blank">Privacy Policy</a>
+            <a href="{{privacy_link | safe}}" target="_blank">Privacy Policy</a>
           </li>
         </ul>
       </div>

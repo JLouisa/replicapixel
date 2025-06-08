@@ -13,7 +13,7 @@ use stripe::{
 pub struct PaymentController;
 use crate::{
     controllers::{auth::HxRedirect, dashboard::WebsiteOptions},
-    domain::website::{Feature, Website},
+    domain::website::Website,
     models::{
         users::UserPid,
         PlanModel,
@@ -396,14 +396,18 @@ pub async fn payment_home_partial(
     views::payment::payment_home_partial(v, &website_options)
 }
 
+#[derive(Debug, Serialize, Deserialize, Constructor, Clone)]
+pub struct Feature(String);
+
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct PricingView {
-    pub id: i32,
-    pub plan_type: PlanNames,
-    pub title: String,
+    pub pid: Uuid,
+    pub plan_name: PlanNames,
+    pub credit_amount: i32,
+    pub model_amount: i32,
     pub subtitle: String,
-    pub currency: String,
     pub price: f64,
+    pub currency: Currency,
     pub features: Option<Vec<Feature>>,
     pub cta: String,
     pub is_popular: bool,
@@ -417,12 +421,13 @@ impl From<PlanModel> for PricingView {
             }
             None => None,
         };
-        let currency = Currency::default().to_string();
+        let currency = Currency::default();
         Self {
-            id: plan.id,
-            plan_type: plan.plan_name,
-            title: plan.name,
+            pid: plan.pid,
+            plan_name: plan.plan_name,
             subtitle: plan.subtitle,
+            credit_amount: plan.credit_amount,
+            model_amount: plan.model_amount,
             currency,
             price: plan.price_cents as f64 / 100.0,
             features: feature,
@@ -435,12 +440,12 @@ impl From<PlanModel> for PricingView {
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct PricingViewList(Vec<PricingView>);
 impl From<PlanModelList> for PricingViewList {
-    fn from(plans: PlanModelList) -> Self {
-        let mut list: Vec<PricingView> = plans.0.iter().map(|p| p.clone().into()).collect();
-        list.sort_by_key(|p| p.id);
-        Self(list)
+    fn from(mut list: PlanModelList) -> PricingViewList {
+        list.0.sort_by_key(|p| p.id); // Sort in-place
+        Self(list.0.into_iter().map(PricingView::from).collect())
     }
 }
+
 impl PricingViewList {
     pub fn mock_plans() -> Self {
         let list = vec![
@@ -467,61 +472,57 @@ impl PricingView {
 
         PricingViewList(list)
     }
-    fn basic() -> Self {
+    pub fn basic() -> Self {
         Self {
-            id: 1,
-            plan_type: PlanNames::Basic,
-            title: "Basic".to_owned(),
+            pid: Uuid::parse_str("cd08b105-5880-4fd1-872a-acf711a5b8ef").unwrap(),
+            plan_name: PlanNames::Basic,
+            price: 9.99,
+            credit_amount: 50,
+            model_amount: 1,
+            currency: Currency::default(),
             subtitle: "For individuals & testing".to_owned(),
-            currency: Currency::default().to_string(),
-            price: 999 as f64 / 100.0,
             features: Some(vec![
-                Feature::new("50 AI Photo Credits".to_owned()),
-                Feature::new("1 AI Model".to_owned()),
-                Feature::new("No Monthly Subscription".to_owned()),
-                Feature::new("Use Any Photo Pack".to_owned()),
-                Feature::new("No Watermarks".to_owned()),
+                Feature::new("No monthly subscription!".to_owned()),
+                Feature::new("Use any photo pack".to_owned()),
+                Feature::new("No Watermarked photos".to_owned()),
                 Feature::new("24/7 Support".to_owned()),
             ]),
             cta: "Choose Basic".to_owned(),
             is_popular: false,
         }
     }
-    fn premium() -> Self {
+    pub fn premium() -> Self {
         Self {
-            id: 2,
-            plan_type: PlanNames::Premium,
-            title: "Premium".to_owned(),
+            pid: Uuid::parse_str("af12e69f-f7e6-4628-b2bd-41ca3489d3af").unwrap(),
+            plan_name: PlanNames::Premium,
+            price: 39.99,
+            credit_amount: 250,
+            model_amount: 7,
+            currency: Currency::default(),
             subtitle: "For creators & small teams".to_owned(),
-            currency: Currency::default().to_string(),
-            price: 3999 as f64 / 100.0,
             features: Some(vec![
-                Feature::new("250 AI Photo Credits".to_owned()),
-                Feature::new("7 AI Models".to_owned()),
-                Feature::new("No Monthly Subscription".to_owned()),
-                Feature::new("Use Any Photo Pack".to_owned()),
-                Feature::new("Priority Processing".to_owned()),
-                Feature::new("No Watermarks".to_owned()),
+                Feature::new("No monthly subscription!".to_owned()),
+                Feature::new("Use any photo pack".to_owned()),
+                Feature::new("No Watermarked photos".to_owned()),
                 Feature::new("24/7 Support".to_owned()),
             ]),
             cta: "Choose Premium".to_owned(),
             is_popular: true,
         }
     }
-    fn max() -> Self {
+    pub fn max() -> Self {
         Self {
-            id: 3,
-            plan_type: PlanNames::Max,
-            title: "Business".to_owned(),
+            pid: Uuid::parse_str("cd1c6ed7-7a24-4b53-840b-23c81bcc0f4c").unwrap(),
+            plan_name: PlanNames::Max,
+            price: 99.99,
+            credit_amount: 1100,
+            model_amount: 16,
+            currency: Currency::default(),
             subtitle: "For agencies & heavy users".to_owned(),
-            currency: Currency::default().to_string(),
-            price: 9999 as f64 / 100.0,
             features: Some(vec![
-                Feature::new("1100 AI Photo Credits".to_owned()),
-                Feature::new("16 AI Models".to_owned()),
-                Feature::new("No Monthly Subscription".to_owned()),
-                Feature::new("Use Any Photo Pack".to_owned()),
-                Feature::new("No Watermarks".to_owned()),
+                Feature::new("No monthly subscription!".to_owned()),
+                Feature::new("Use any photo pack".to_owned()),
+                Feature::new("No Watermarked photos".to_owned()),
                 Feature::new("24/7 Support".to_owned()),
             ]),
             cta: "Choose Max".to_owned(),

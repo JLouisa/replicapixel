@@ -368,10 +368,13 @@ pub enum CheckOutStatus {
 #[derive(Debug, Clone, PartialEq, Eq, Display, Serialize, Deserialize, PartialOrd, Ord)]
 pub enum Currency {
     #[strum(to_string = "$")]
+    #[serde(rename = "$")]
     USA,
     #[strum(to_string = "€")]
+    #[serde(rename = "€")]
     EUR,
     #[strum(to_string = "£")]
+    #[serde(rename = "£")]
     GBP,
 }
 impl Default for Currency {
