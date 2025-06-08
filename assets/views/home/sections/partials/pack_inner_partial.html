@@ -1,9 +1,9 @@
 <!-- prettier-ignore -->
-{% set pack_link = website.website_routes.packs_routes.show_pack %} 
-{% set pack_partial_link = website.website_routes.packs_routes.show_pack_partial %}
+{% set pack_link = options.website.website_routes.packs_routes.show_pack %} 
+{% set pack_partial_link = options.website.website_routes.packs_routes.show_pack_partial %}
 
-{% if is_pack_partial %}
-{% set pack_list = packs %}
+{% if options.is_pack_partial %}
+{% set pack_list = options.packs %}
 {% endif %}
 
 <div class="flex flex-row flex-wrap justify-center lg:justify-between items-stretch gap-6 w-full">

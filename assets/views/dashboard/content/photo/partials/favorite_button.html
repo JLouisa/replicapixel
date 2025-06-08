@@ -1,7 +1,8 @@
-{% if image.is_favorite %}
+{% set website_favorite_link = options.website.website_routes.image.image_favorite %} {% if
+image.is_favorite %}
 <button
   id="fav-{{ image.pid }}"
-  hx-patch="{{ website.website_routes.image.image_favorite | safe }}/{{ image.pid }}"
+  hx-patch="{{ website_favorite_link | safe }}/{{ image.pid }}"
   hx-swap="outerHTML"
   class="btn btn-xs md:btn-md"
 >
@@ -10,7 +11,7 @@
 {% else %}
 <button
   id="fav-{{ image.pid }}"
-  hx-patch="{{ website.website_routes.image.image_favorite | safe }}/{{ image.pid }}"
+  hx-patch="{{ website_favorite_link | safe }}/{{ image.pid }}"
   hx-swap="outerHTML"
   class="btn btn-secondary btn-xs md:btn-md"
 >

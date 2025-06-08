@@ -1,4 +1,7 @@
 <!-- prettier-ignore -->
+{% set website = options.website %}
+{% set register = options.register %}
+{% set error_msg = options.auth_error %}
 {% set register_api_link = website.website_routes.auth_routes.api_register | safe %}
 {% set login_partial_link = website.website_routes.auth_routes.login_partial | safe %}
 {% set login_link = website.website_routes.auth_routes.login | safe %}
@@ -67,7 +70,7 @@
           <input class="appearance-none border pl-12 border-gray-100 shadow-sm focus:shadow-md
           focus:placeholder-gray-600 transition rounded-md w-full py-3 text-gray-600 leading-tight
           focus:outline-none focus:ring-gray-600 focus:shadow-outline" id="name" name="name"
-          type="text" placeholder="Name" value="{{ user_name | default (value="")}}" required />
+          type="text" placeholder="Name" value="{{ register.name | default (value="")}}" required />
           <div class="absolute left-0 inset-y-0 flex items-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -88,7 +91,8 @@
           <input class="appearance-none border pl-12 border-gray-100 shadow-sm focus:shadow-md
           focus:placeholder-gray-600 transition rounded-md w-full py-3 text-gray-600 leading-tight
           focus:outline-none focus:ring-gray-600 focus:shadow-outline" id="email" name="email"
-          type="email" placeholder="Email" value="{{ user_email | default (value="")}}" required />
+          type="email" placeholder="Email" value="{{ register.email | default (value="")}}" required
+          />
           <div class="absolute left-0 inset-y-0 flex items-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"

@@ -1,25 +1,27 @@
 <!-- prettier-ignore -->
-{% set home_link = website.website_routes.home.base | safe %}
-{% set login_link = website.website_routes.auth_routes.login | safe %}
-{% set register_link = website.website_routes.auth_routes.register | safe %}
-{% set training_model_partial_link = website.website_routes.dashboard_routes.sidebar.training_models_partial  | safe %}
-{% set training_model_link = website.website_routes.dashboard_routes.sidebar.training_models  | safe %}
-{% set packs_partial_link = website.website_routes.dashboard_routes.sidebar.packs_partial  | safe %}
-{% set packs_link = website.website_routes.dashboard_routes.sidebar.packs  | safe %}
-{% set studio_partial_link = website.website_routes.dashboard_routes.sidebar.photo_partial  | safe %}
-{% set studio_link = website.website_routes.dashboard_routes.sidebar.photo  | safe %}
-{% set studio_favorite_partial_link = website.website_routes.dashboard_routes.sidebar.album_favorite_partial  | safe %}
-{% set studio_favorite_link = website.website_routes.dashboard_routes.sidebar.album_favorite  | safe %}
-{% set studio_deleted_partial_link = website.website_routes.dashboard_routes.sidebar.album_deleted_partial  | safe %}
-{% set studio_deleted_link = website.website_routes.dashboard_routes.sidebar.album_deleted  | safe %}
-{% set features_partial_link = website.website_routes.dashboard_routes.sidebar.features_partial  | safe %}
-{% set features_link = website.website_routes.dashboard_routes.sidebar.features  | safe %}
-{% set billing_partial_link = website.website_routes.dashboard_routes.billing_partial  | safe %}
-{% set billing_link = website.website_routes.dashboard_routes.billing  | safe %}
-{% set settings_partial_link = website.website_routes.dashboard_routes.sidebar.settings_partial  | safe %}
-{% set settings_link = website.website_routes.dashboard_routes.sidebar.settings  | safe %}
-{% set logout_partial_link = website.website_routes.auth_routes.logout_partial  | safe %}
-{% set login_link = website.website_routes.auth_routes.login | safe %}
+{% set credits = options.user_credits %}
+{% set user = options.user %}
+{% set home_link = options.website.website_routes.home.base %}
+{% set login_link = options.website.website_routes.auth_routes.login %}
+{% set register_link = options.website.website_routes.auth_routes.register %}
+{% set training_model_partial_link = options.website.website_routes.dashboard_routes.sidebar.training_models_partial  %}
+{% set training_model_link = options.website.website_routes.dashboard_routes.sidebar.training_models  %}
+{% set packs_partial_link = options.website.website_routes.dashboard_routes.sidebar.packs_partial  %}
+{% set packs_link = options.website.website_routes.dashboard_routes.sidebar.packs  %}
+{% set studio_partial_link = options.website.website_routes.dashboard_routes.sidebar.photo_partial  %}
+{% set studio_link = options.website.website_routes.dashboard_routes.sidebar.photo  %}
+{% set studio_favorite_partial_link = options.website.website_routes.dashboard_routes.sidebar.album_favorite_partial  %}
+{% set studio_favorite_link = options.website.website_routes.dashboard_routes.sidebar.album_favorite  %}
+{% set studio_deleted_partial_link = options.website.website_routes.dashboard_routes.sidebar.album_deleted_partial  %}
+{% set studio_deleted_link = options.website.website_routes.dashboard_routes.sidebar.album_deleted  %}
+{% set features_partial_link = options.website.website_routes.dashboard_routes.sidebar.features_partial  %}
+{% set features_link = options.website.website_routes.dashboard_routes.sidebar.features  %}
+{% set billing_partial_link = options.website.website_routes.dashboard_routes.billing_partial  %}
+{% set billing_link = options.website.website_routes.dashboard_routes.billing  %}
+{% set settings_partial_link = options.website.website_routes.dashboard_routes.sidebar.settings_partial  %}
+{% set settings_link = options.website.website_routes.dashboard_routes.sidebar.settings  %}
+{% set logout_partial_link = options.website.website_routes.auth_routes.logout_partial  %}
+{% set login_link = options.website.website_routes.auth_routes.login %}
 
 <style>
   @media only screen and (min-width: 768px) {
@@ -41,10 +43,10 @@
   <div class="hidden sm:flex w-full items-center justify-between">
     <!-- Start section (Logo/Brand) -->
     <div class="flex items-center flex-shrink-0">
-      <a class="h-6 w-6 mr-2 sm:mr-0 mx-auto" href="{{ home_link }}">
+      <a class="h-6 w-6 mr-2 sm:mr-0 mx-auto" href="{{ home_link | safe }}">
         {% include "partials/svg/logo.html" %}
       </a>
-      <a href="{{ home_link }}">
+      <a href="{{ home_link |safe }}">
         <div class="hidden sm:block text-lg font-bold ml-4 cursor-pointer select-none">
           {{ website_name | default(value= "ReplicaPixel") }}
         </div>
@@ -82,7 +84,7 @@
     </div>
   </div>
   <div class="w-full sm:hidden flex items-center justify-between overflow-hidden">
-    <a class="h-6 w-6" href="{{ home_link }}"> {% include "partials/svg/logo2.html" %} </a>
+    <a class="h-6 w-6" href="{{ home_link | safe }}"> {% include "partials/svg/logo2.html" %} </a>
     <a
       href="/"
       hx-get="/partial/home"

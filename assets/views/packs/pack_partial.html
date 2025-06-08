@@ -1,11 +1,12 @@
 <!-- prettier-ignore -->
-{% set gallery = pack_images %}
-{% set login_link = website.website_routes.auth_routes.login | safe %}
-{% set login_partial_link = website.website_routes.auth_routes.login_partial | safe %}
+{% set website = options.website %}
+{% set gallery = options.pack_images %}
+{% set login_link = website.website_routes.auth_routes.login %}
+{% set login_partial_link = website.website_routes.auth_routes.login_partial %}
 {% set website_name = website.website_basic_info.name %}
-{% set studio_partial_link = website.website_routes.dashboard_routes.sidebar.photo_partial | safe %}
-{% set studio_link = website.website_routes.dashboard_routes.sidebar.photo | safe %}
-{% set pack_link = website.website_routes.packs_routes.gen_pack | safe %}
+{% set studio_partial_link = website.website_routes.dashboard_routes.sidebar.photo_partial %}
+{% set studio_link = website.website_routes.dashboard_routes.sidebar.photo %}
+{% set pack_link = website.website_routes.packs_routes.gen_pack %}
 
 <!-- Page content here -->
 <div class="relative bg-bg-web overflow-hidden">

@@ -8,6 +8,7 @@ use loco_rs::prelude::*;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
+use crate::controllers::dashboard::WebsiteOptions;
 use crate::domain::domain_services::image_generation::ImageGenerationService;
 use crate::domain::url::Url;
 use crate::domain::website::Website;
@@ -23,7 +24,7 @@ use crate::models::{ImageActiveModel, ImageModel, TrainingModelModel, UserCredit
 use crate::service::aws::s3::{AwsS3, S3Folders, S3Key};
 use crate::service::fal_ai::fal_client::{Lora, WebhookPayload};
 use crate::service::redis::redis::RedisCacheDriver;
-use crate::views::images::{CreditsViewModel, ImageView, ImageViewList};
+use crate::views::images::{ImageView, ImageViewList};
 use crate::{models::_entities::images::Entity, service::fal_ai::fal_client::FalAiClient, views};
 
 const IMAGE_COST: i32 = 1;
@@ -390,16 +391,17 @@ pub async fn generate(
     let (updated_credits, saved_images) =
         ImageGenerationService::generate(&ctx, &fal_ai_client, request, &user, &training_model)
             .await?;
+    let saved_images: ImageViewList = saved_images.into();
+
+    let website_options = WebsiteOptions::new()
+        .website(&website)
+        .images(&saved_images)
+        .user_credits(updated_credits.into())
+        .is_image_gen();
 
     // 3. Render the view using the View Models
-    let is_image_gen = Some(true);
-    views::images::img_completed(
-        &v,
-        &website,
-        &saved_images.into(),
-        &updated_credits.into(),
-        is_image_gen,
-    )
+    // let is_image_gen = Some(true);
+    views::images::img_completed(&v, &website_options)
 }
 
 #[debug_handler]
@@ -451,35 +453,35 @@ pub async fn check_img(
 
     if image.status == Status::Processing {
         let user_credits = load_credits(&ctx.db, user.id).await?;
-        let user_credits_view: CreditsViewModel = user_credits.into();
+        // let user_credits_view: CreditsViewModel = user_credits.into();
         let image: ImageView = image.into();
         let image: ImageView = image
             .clone()
             .set_pre_url(&s3_client)
             .await
             .unwrap_or_else(|_| image);
-        let is_image_gen = Some(true);
+        // let is_image_gen = Some(true);
+        let image_list = ImageViewList::new(vec![image]);
 
-        return views::images::img_completed(
-            &v,
-            &website,
-            &ImageViewList::new(vec![image]),
-            &user_credits_view,
-            is_image_gen,
-        );
+        let website_options = WebsiteOptions::new()
+            .website(&website)
+            .images(&image_list)
+            .user_credits(user_credits.into())
+            .is_image_gen();
+
+        return views::images::img_completed(&v, &website_options);
     }
 
     if image.status == Status::Failed {
         let user_credits = load_credits(&ctx.db, user.id).await?;
-        let is_image_gen = Some(true);
+        // let is_image_gen = Some(true);
 
-        return views::images::img_completed(
-            &v,
-            &website,
-            &ImageViewList::new(vec![image.into()]),
-            &user_credits.into(),
-            is_image_gen,
-        );
+        let website_options = WebsiteOptions::new()
+            .website(&website)
+            .user_credits(user_credits.into())
+            .is_image_gen();
+
+        return views::images::img_completed(&v, &website_options);
     }
 
     Ok((StatusCode::NO_CONTENT).into_response())
@@ -502,7 +504,9 @@ async fn image_infinite_handler(
         .into();
     let images = images.populate_s3_pre_urls(&s3_client, &cache).await;
 
-    views::images::img_infinite_loading(&v, &website, &images.into())
+    let website_options = WebsiteOptions::new().website(&website).images(&images);
+
+    views::images::img_infinite_loading(&v, &website_options)
 }
 
 #[debug_handler]

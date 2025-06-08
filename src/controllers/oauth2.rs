@@ -1,3 +1,4 @@
+use crate::controllers::dashboard::WebsiteOptions;
 use crate::models::users::RegisterParams;
 use crate::models::UserModel;
 use crate::service::stripe::stripe::StripeClient;
@@ -201,7 +202,11 @@ async fn google_ott(
     let cookie_str = cookie.to_string();
 
     // 1. Get the view
-    let view_response = views::home::google_ott(&v, &website, &user.into())?;
+    let website_options = WebsiteOptions::new()
+        .website(&website)
+        .user(user.into())
+        .is_ott();
+    let view_response = views::home::google_ott(&v, &website_options)?;
 
     // 2. Create the cookie header value.
     let cookie_header_value = HeaderValue::from_str(&cookie_str)?;

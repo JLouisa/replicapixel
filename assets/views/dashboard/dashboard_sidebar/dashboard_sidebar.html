@@ -1,22 +1,23 @@
 <!-- prettier-ignore -->
-{% set training_model_partial_link = website.website_routes.dashboard_routes.sidebar.training_models_partial  | safe %}
-{% set training_model_link = website.website_routes.dashboard_routes.sidebar.training_models  | safe %}
-{% set packs_partial_link = website.website_routes.dashboard_routes.sidebar.packs_partial  | safe %}
-{% set packs_link = website.website_routes.dashboard_routes.sidebar.packs  | safe %}
-{% set studio_partial_link = website.website_routes.dashboard_routes.sidebar.photo_partial  | safe %}
-{% set studio_link = website.website_routes.dashboard_routes.sidebar.photo  | safe %}
-{% set studio_favorite_partial_link = website.website_routes.dashboard_routes.sidebar.album_favorite_partial  | safe %}
-{% set studio_favorite_link = website.website_routes.dashboard_routes.sidebar.album_favorite  | safe %}
-{% set studio_deleted_partial_link = website.website_routes.dashboard_routes.sidebar.album_deleted_partial  | safe %}
-{% set studio_deleted_link = website.website_routes.dashboard_routes.sidebar.album_deleted  | safe %}
-{% set features_partial_link = website.website_routes.dashboard_routes.sidebar.features_partial  | safe %}
-{% set features_link = website.website_routes.dashboard_routes.sidebar.features  | safe %}
-{% set billing_partial_link = website.website_routes.dashboard_routes.billing_partial  | safe %}
-{% set billing_link = website.website_routes.dashboard_routes.billing  | safe %}
-{% set settings_partial_link = website.website_routes.dashboard_routes.sidebar.settings_partial  | safe %}
-{% set settings_link = website.website_routes.dashboard_routes.sidebar.settings  | safe %}
-{% set logout_partial_link = website.website_routes.auth_routes.logout_partial  | safe %}
-{% set login_link = website.website_routes.auth_routes.login | safe %}
+{% set current_page = options.current_page %}
+{% set training_model_partial_link = options.website.website_routes.dashboard_routes.sidebar.training_models_partial %}
+{% set training_model_link = options.website.website_routes.dashboard_routes.sidebar.training_models %}
+{% set packs_partial_link = options.website.website_routes.dashboard_routes.sidebar.packs_partial %}
+{% set packs_link = options.website.website_routes.dashboard_routes.sidebar.packs %}
+{% set studio_partial_link = options.website.website_routes.dashboard_routes.sidebar.photo_partial %}
+{% set studio_link = options.website.website_routes.dashboard_routes.sidebar.photo %}
+{% set studio_favorite_partial_link = options.website.website_routes.dashboard_routes.sidebar.album_favorite_partial %}
+{% set studio_favorite_link = options.website.website_routes.dashboard_routes.sidebar.album_favorite %}
+{% set studio_deleted_partial_link = options.website.website_routes.dashboard_routes.sidebar.album_deleted_partial %}
+{% set studio_deleted_link = options.website.website_routes.dashboard_routes.sidebar.album_deleted %}
+{% set features_partial_link = options.website.website_routes.dashboard_routes.sidebar.features_partial %}
+{% set features_link = options.website.website_routes.dashboard_routes.sidebar.features %}
+{% set billing_partial_link = options.website.website_routes.dashboard_routes.billing_partial %}
+{% set billing_link = options.website.website_routes.dashboard_routes.billing %}
+{% set settings_partial_link = options.website.website_routes.dashboard_routes.sidebar.settings_partial %}
+{% set settings_link = options.website.website_routes.dashboard_routes.sidebar.settings %}
+{% set logout_partial_link = options.website.website_routes.auth_routes.logout_partial %}
+{% set login_link = options.website.website_routes.auth_routes.login %}
 
 <aside
   class="hidden sm:flex flex-col items-center text-gray-700 shadow h-full mt-8"
@@ -31,9 +32,9 @@
       :class="active === 'models' ? 'bg-base-300' : 'hover:bg-base-300'"
     >
       <a
-        hx-get="{{ training_model_partial_link }}"
+        hx-get="{{ training_model_partial_link | safe }}"
         hx-target="#dashboard_content"
-        hx-push-url="{{ training_model_link }}"
+        hx-push-url="{{ training_model_link | safe }}"
         hx-swap="innerHTML"
         {#
         hx-indicator="#dashboard-loader-indicator"
@@ -52,9 +53,9 @@
       :class="active === 'packs' ? 'bg-base-300' : 'hover:bg-base-300'"
     >
       <a
-        hx-get="{{ packs_partial_link }}"
+        hx-get="{{ packs_partial_link | safe }}"
         hx-target="#dashboard_content"
-        hx-push-url="{{ packs_link }}"
+        hx-push-url="{{ packs_link | safe }}"
         hx-swap="innerHTML"
         {#
         hx-indicator="#dashboard-loader-indicator"
@@ -74,9 +75,9 @@
       :class="active === 'album' ? 'bg-base-300' : 'hover:bg-base-300'"
     >
       <a
-        hx-get="{{ studio_partial_link }}"
+        hx-get="{{ studio_partial_link | safe }}"
         hx-target="#dashboard_content"
-        hx-push-url="{{ studio_link }}"
+        hx-push-url="{{ studio_link | safe }}"
         hx-swap="innerHTML"
         preload="mouseover"
         class="h-16 px-6 flex justify-center items-center w-full cursor-pointer"
@@ -92,9 +93,9 @@
       :class="active === 'favorite' ? 'bg-base-300' : 'hover:bg-base-300'"
     >
       <a
-        hx-get="{{ studio_favorite_partial_link }}"
+        hx-get="{{ studio_favorite_partial_link | safe }}"
         hx-target="#dashboard_content"
-        hx-push-url="{{ studio_favorite_link }}"
+        hx-push-url="{{ studio_favorite_link | safe }}"
         hx-swap="innerHTML"
         preload="mouseover"
         class="h-16 px-6 flex justify-center items-center w-full text-base-content"
@@ -110,9 +111,9 @@
       :class="active === 'deleted' ? 'bg-base-300' : 'hover:bg-base-300'"
     >
       <a
-        hx-get="{{ studio_deleted_partial_link }}"
+        hx-get="{{ studio_deleted_partial_link | safe }}"
         hx-target="#dashboard_content"
-        hx-push-url="{{ studio_deleted_link }}"
+        hx-push-url="{{ studio_deleted_link | safe }}"
         hx-swap="innerHTML"
         preload="mouseover"
         class="h-16 w-full mx-auto flex items-center justify-center hover:bg-base-300 focus:outline-none cursor-pointer tooltip tooltip-right text-base-content"
@@ -128,9 +129,9 @@
       :class="active === 'features' ? 'bg-base-300' : 'hover:bg-base-300'"
     >
       <a
-        hx-get="{{ features_partial_link }}"
+        hx-get="{{ features_partial_link | safe }}"
         hx-target="#dashboard_content"
-        hx-push-url="{{ features_link }}"
+        hx-push-url="{{ features_link | safe }}"
         hx-swap="innerHTML"
         preload="mouseover"
         class="h-16 px-6 flex justify-center items-center w-full cursor-pointer"
@@ -146,9 +147,9 @@
       :class="active === 'billing' ? 'bg-base-300' : 'hover:bg-base-300'"
     >
       <a
-        hx-get="{{ billing_partial_link }}"
+        hx-get="{{ billing_partial_link | safe }}"
         hx-target="#dashboard_content"
-        hx-push-url="{{ billing_link }}"
+        hx-push-url="{{ billing_link | safe }}"
         hx-swap="innerHTML"
         preload="mouseover"
         class="h-16 px-6 flex justify-center items-center w-full cursor-pointer"
@@ -164,9 +165,9 @@
       :class="active === 'settings' ? 'bg-base-300' : 'hover:bg-base-300'"
     >
       <a
-        hx-get="{{ settings_partial_link }}"
+        hx-get="{{ settings_partial_link | safe }}"
         hx-target="#dashboard_content"
-        hx-push-url="{{ settings_link }}"
+        hx-push-url="{{ settings_link | safe }}"
         hx-swap="innerHTML"
         preload="mouseover"
         class="h-16 px-6 flex justify-center items-center w-full cursor-pointer"
@@ -182,9 +183,9 @@
   <div class="mt-auto h-24 flex flex-col items-center w-full">
     <!-- Logout Section -->
     <div
-      hx-get="{{ logout_partial_link }}"
+      hx-get="{{ logout_partial_link | safe }}"
       hx-target="#app"
-      hx-push-url="{{ login_link }}"
+      hx-push-url="{{ login_link | safe }}"
       hx-swap="innerHTML"
       preload="mouseover"
       class="h-16 w-full mx-auto flex items-center justify-center hover:bg-red-200 focus:outline-none cursor-pointer tooltip tooltip-right text-base-content"

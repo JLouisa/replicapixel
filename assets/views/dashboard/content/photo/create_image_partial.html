@@ -1,5 +1,5 @@
-{% set image_sizes = website.website_fields.image_sizes %} {% set quality_models =
-website.website_fields.quality_model %}
+{% set image_sizes = options.website.website_fields.image_sizes %} {% set quality_models =
+options.website.website_fields.quality_model %} {% set training_models = options.training_models %}
 
 <form
   x-data="{ selectedModelName: '' }"

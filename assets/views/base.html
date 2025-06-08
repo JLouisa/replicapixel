@@ -1,4 +1,5 @@
 <!-- prettier-ignore -->
+{% set website = options.website %}
 {% set website_name = website.website_basic_info.name %} 
 {% set website_site = website.website_basic_info.site | safe %}
 {% set google_ott_link = website.website_routes.oauth2.google_ott | safe %}

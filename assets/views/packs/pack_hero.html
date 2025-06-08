@@ -54,8 +54,10 @@ website.website_routes.dashboard_routes.sidebar.packs %}
             "partials/svg/star.html" %}
           </div>
           <div class="mb-4 flex justify-end items-center gap-2">
+            {% if pack.popular %}
             <div class="badge badge-dash badge-secondary">Popular</div>
-            <div class="badge badge-dash badge-info">120x Used</div>
+            {% endif %}
+            <div class="badge badge-dash badge-info">{{ pack.used }}x Used</div>
           </div>
           <div class="w-full md:w-1/2 px-4 mb-8 md:hidden">
             <!-- Main Image -->

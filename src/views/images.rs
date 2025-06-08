@@ -5,6 +5,7 @@ use futures::future::{join_all, try_join_all};
 use serde::Serialize;
 use uuid::Uuid;
 
+use crate::controllers::dashboard::WebsiteOptions;
 use crate::domain::website::Website;
 use crate::models::_entities::sea_orm_active_enums::Status;
 use crate::models::images::{ImageNew, ImagesModelList};
@@ -15,40 +16,31 @@ use crate::service::redis::redis::{RedisCacheDriver, RedisDbError};
 
 pub fn img_infinite_loading(
     v: &impl ViewRenderer,
-    website: &Website,
-    images: &ImageViewList,
+    website_options: &WebsiteOptions,
 ) -> Result<Response> {
     format::render().view(
         v,
         "dashboard/content/photo/image_partial.html",
-        data!({"website": website, "images": images }),
+        data!({ "options": website_options }),
+        // data!({"website": website, "images": images }),
     )
 }
 
-pub fn one(
-    v: &impl ViewRenderer,
-    website: &Website,
-    credits: &CreditsViewModel,
-    image_list: &ImageViewList,
-) -> Result<Response> {
+pub fn one(v: &impl ViewRenderer, website_options: &WebsiteOptions) -> Result<Response> {
     format::render().view(
         v,
         "dashboard/content/photo/image_loading_partial.html",
-        data!({ "website": website, "credits": credits, "images": image_list }),
+        data!({ "options": website_options }),
+        // data!({ "website": website, "credits": credits, "images": image_list }),
     )
 }
 
-pub fn img_completed(
-    v: &impl ViewRenderer,
-    website: &Website,
-    images: &ImageViewList,
-    credits: &CreditsViewModel,
-    is_image_gen: Option<bool>,
-) -> Result<Response> {
+pub fn img_completed(v: &impl ViewRenderer, website_options: &WebsiteOptions) -> Result<Response> {
     format::render().view(
         v,
         "dashboard/content/photo/image_partial.html",
-        data!({ "website": website, "credits": credits, "images": images, "is_image_gen": is_image_gen }),
+        data!({ "options": website_options }),
+        // data!({ "website": website, "credits": credits, "images": images, "is_image_gen": is_image_gen }),
     )
 }
 

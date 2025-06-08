@@ -6,6 +6,7 @@ use loco_rs::prelude::*;
 use serde::Deserialize;
 
 use crate::{
+    controllers::dashboard::WebsiteOptions,
     domain::{domain_services::image_generation::ImageGenerationService, website::Website},
     middleware::cookie::ExtractConsentState,
     models::{
@@ -23,7 +24,7 @@ use crate::{
         fal_ai::fal_client::FalAiClient,
         redis::redis::{load_cached_web, RedisCacheDriver},
     },
-    views::{self, auth::UserView, images::ImageViewList},
+    views::{self, auth::UserView, images::ImageViewList, packs::PackView},
 };
 
 use super::home::load_user;
@@ -132,7 +133,11 @@ pub async fn get_all_packs(
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
     let pack = load_packs_all(&ctx.db).await?;
-    views::packs::get_all_packs(v, &website, &pack.into())
+    let website_options = WebsiteOptions::new()
+        .website(&website)
+        .packs(pack.into())
+        .is_pack_partial();
+    views::packs::get_all_packs(v, &website_options)
 }
 
 #[debug_handler]
@@ -157,7 +162,19 @@ pub async fn show_pack(
     };
     let images = load_cached_web(&ctx).await?;
     let pack = load_pack_by_title_url(&ctx.db, &title_url).await?;
-    views::packs::packs(v, &website, &cc_cookie, &images, &pack.into(), &user)
+    let pack: PackView = pack.into();
+    let pack_images = pack.clone().create_item_groups();
+
+    let website_options = WebsiteOptions::new()
+        .website(&website)
+        .cc_cookie(&cc_cookie)
+        .set_user(user)
+        .pack(pack)
+        .pack_images(pack_images)
+        .web_images(&images)
+        .is_pack();
+
+    views::packs::packs(v, &website_options)
 }
 
 #[debug_handler]
@@ -182,7 +199,19 @@ pub async fn show_pack_partial(
     };
     let images = load_cached_web(&ctx).await?;
     let pack = load_pack_by_title_url(&ctx.db, &title_url).await?;
-    views::packs::packs(v, &website, &cc_cookie, &images, &pack.into(), &user)
+    let pack: PackView = pack.into();
+    let pack_images = pack.clone().create_item_groups();
+
+    let website_options = WebsiteOptions::new()
+        .website(&website)
+        .cc_cookie(&cc_cookie)
+        .set_user(user)
+        .pack(pack)
+        .pack_images(pack_images)
+        .web_images(&images)
+        .is_pack();
+
+    views::packs::packs(v, &website_options)
 }
 
 #[debug_handler]
@@ -210,23 +239,19 @@ pub async fn generate_packs_images(
     plus_one_used_pack(&ctx.db, &pack_pid).await?;
 
     // 2. Render the view using the View Models
-    let is_deleted = false;
-    let is_favorite = false;
-    let images: ImageViewList = load_first_images(&ctx.db, user.id, is_favorite, is_deleted)
+    let images: ImageViewList = load_first_images(&ctx.db, user.id, false, false)
         .await?
         .into();
     let images = images.populate_s3_pre_urls(&s3_client, &cache).await;
     let training_models = load_models_all(&ctx.db, user.id).await?;
 
+    let website_options = WebsiteOptions::new()
+        .website(&website)
+        .user(user.into())
+        .user_credits(updated_credits_model.into())
+        .training_models(training_models.into())
+        .images(&images);
+
     // 3. Render the view
-    views::dashboard::photo_partial_dashboard(
-        v,
-        &website,
-        &images,
-        &training_models.into(),
-        &updated_credits_model.into(),
-        is_deleted,
-        is_favorite,
-    )
-    // format::empty()
+    views::dashboard::photo_partial_dashboard(v, &website_options)
 }

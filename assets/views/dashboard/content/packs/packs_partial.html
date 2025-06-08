@@ -1,7 +1,11 @@
 <!-- prettier-ignore -->
-{% set studio_partial_link = website.website_routes.dashboard_routes.sidebar.photo_partial | safe %}
-{% set studio_link = website.website_routes.dashboard_routes.sidebar.photo | safe %}
-{% set pack_link = website.website_routes.packs_routes.gen_pack  %}
+{% set models = options.training_models%}
+{% set packs = options.packs%}
+
+{% set image_sizes = options.website.website_fields.image_sizes%}
+{% set studio_partial_link = options.website.website_routes.dashboard_routes.sidebar.photo_partial %}
+{% set studio_link = options.website.website_routes.dashboard_routes.sidebar.photo %}
+{% set pack_link = options.website.website_routes.packs_routes.gen_pack  %}
 
 <div
   class="w-fit mx-auto grid grid-cols-1 lg:grid-cols-4 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-5"
@@ -168,8 +172,7 @@
                       x-model="sizeSelected"
                     >
                       <option value="" disabled selected>Select Image Size</option>
-                      {% for image_size in website.website_fields.image_sizes %} {% if not loop.last
-                      %}
+                      {% for image_size in image_sizes %} {% if not loop.last %}
                       <option value="{{ image_size.0 }}">{{ image_size.1 }}</option>
                       {% endif %} {% endfor %}
                     </select>

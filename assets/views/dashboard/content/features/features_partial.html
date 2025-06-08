@@ -1,3 +1,5 @@
+{% set features = options.features %} {% set website = options.website %} {% set user = options.user
+%}
 <div>
   <div class="max-w-7xl mx-auto">
     <div class="flex items-center justify-center mb-8">
@@ -13,9 +15,8 @@
       </div>
 
       <div class="space-y-6">
-        {% for feature in features_view %} {% include
-        "dashboard/content/features/feature_piece.html" %} {% endfor %} {% if features_view | length
-        == 0 %}
+        {% for feature in features %} {% include "dashboard/content/features/feature_piece.html" %}
+        {% endfor %} {% if features | length == 0 %}
         <div class="text-center text-base-content/60 p-10">No features suggested yet.</div>
         {% endif %}
       </div>

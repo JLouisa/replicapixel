@@ -5,6 +5,7 @@ use loco_rs::prelude::ViewRenderer;
 use serde::{Deserialize, Serialize};
 
 use crate::{
+    controllers::dashboard::WebsiteOptions,
     domain::website::Website,
     models::{UserCreditModel, UserModel, _entities::sea_orm_active_enums::Account},
 };
@@ -51,7 +52,7 @@ pub fn login(v: impl ViewRenderer, website: &Website) -> Result<impl IntoRespons
     format::render().view(
         &v,
         "auth/login/login_form.html",
-        data!({"website": website}),
+        data!({"options": WebsiteOptions::new().website(&website)}),
     )
 }
 
@@ -59,16 +60,12 @@ pub fn partial_login(v: impl ViewRenderer, website: &Website) -> Result<impl Int
     format::render().view(
         &v,
         "auth/login/login_partial.html",
-        data!({"website": website}),
+        data!({"options": WebsiteOptions::new().website(&website)}),
     )
 }
 
 pub fn forgot(v: &impl ViewRenderer) -> Result<impl IntoResponse> {
-    return format::render().view(
-        v,
-        "auth/forgot/partials/forgot_msg.html",
-        data!({"message": true}),
-    );
+    return format::render().view(v, "auth/forgot/partials/forgot_msg.html", data!({}));
 }
 
 // ============== View Models for the View Templates ==============

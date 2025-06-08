@@ -1,4 +1,7 @@
 <!-- prettier-ignore -->
+{% set website = options.website %}
+{% set login_params = options.login %}
+{% set auth_error = options.auth_error %}
 {% set login_api_link = website.website_routes.auth_routes.api_login %}
 {% set forgot_partial_link = website.website_routes.auth_routes.forgot_partial %}
 {% set forgot_link = website.website_routes.auth_routes.forgot %}
@@ -69,7 +72,8 @@
           <input class="appearance-none border pl-12 border-gray-100 shadow-sm focus:shadow-md
           focus:placeholder-gray-600 transition rounded-md w-full py-3 text-gray-600 leading-tight
           focus:outline-none focus:ring-gray-600 focus:shadow-outline" id="email" name="email"
-          type="text" placeholder="Email" required value="{{ user_email | default (value="")}}" />
+          type="text" placeholder="Email" required value="{{ login_params.email | default
+          (value="")}}" />
           <div class="absolute left-0 inset-y-0 flex items-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -82,7 +86,7 @@
             </svg>
           </div>
         </div>
-        <p class="text-red-600 mt-2 text-center">{{ error_msg.general | default (value="")}}</p>
+        <p class="text-red-600 mt-2 text-center">{{ auth_error.general | default (value="")}}</p>
         <div class="relative mt-3">
           <input
             class="appearance-none border pl-12 border-gray-100 shadow-sm focus:shadow-md focus:placeholder-gray-600 transition rounded-md w-full py-3 text-gray-600 leading-tight focus:outline-none focus:ring-gray-600 focus:shadow-outline"
@@ -100,13 +104,8 @@
         <!-- Remember Me & Password Forgot -->
         <div class="mt-4 flex items-center justify-between text-gray-500">
           <label class="cursor-pointer flex items-center gap-2" for="remember">
-            <input
-              type="checkbox"
-              class="checkbox checkbox-primary"
-              checked
-              id="remember"
-              name="remember"
-            />
+            <input type="checkbox" class="checkbox checkbox-primary" checked="{{
+            login_params.remember | default (value="true")}}" id="remember" name="remember" />
             <span class="text-sm text-gray-800">Remember me</span>
           </label>
 

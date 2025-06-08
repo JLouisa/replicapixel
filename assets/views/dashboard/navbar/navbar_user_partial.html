@@ -1,6 +1,6 @@
 <!-- prettier-ignore -->
-{% set logout_partial_link = website.website_routes.auth_routes.logout_partial  | safe %}
-{% set register_link = website.website_routes.auth_routes.register | safe %}
+{% set logout_partial_link = options.website.website_routes.auth_routes.logout_partial%}
+{% set register_link = options.website.website_routes.auth_routes.register %}
 
 <div id="navbar-user">
   <div class="flex items-center space-x-4">
@@ -20,25 +20,7 @@
         <span class="hidden sm:flex">Buy</span>
         Credits
         <script>
-          {
-            const button = document.getElementById("shiningButton-{{ timestamp }}");
-            if (button) {
-              const shineAnimationDuration = 1000;
-              const intervalDuration = 8000;
-              function triggerShine() {
-                if (!button.classList.contains("animate-shine-active")) {
-                  button.classList.add("animate-shine-active");
-                  setTimeout(() => {
-                    button.classList.remove("animate-shine-active");
-                  }, shineAnimationDuration);
-                }
-              }
-
-              const shineInterval = setInterval(triggerShine, intervalDuration);
-            } else {
-              console.error("Button with id 'shiningButton' not found.");
-            }
-          }
+          shiningBtn("shiningButton-{{ timestamp }}");
         </script>
       </button>
     </a>
@@ -73,9 +55,9 @@
       >
         <li>
           <a
-            hx-get="{{ logout_partial_link }}"
+            hx-get="{{ logout_partial_link | safe }}"
             hx-target="#app"
-            hx-push-url="{{ login_link }}"
+            hx-push-url="{{ login_link | safe }}"
             hx-swap="innerHTML"
             class="flex px-4 py-3 hover:bg-base-300 cursor-pointer"
           >

@@ -2,7 +2,10 @@
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
 use crate::{
-    controllers::oauth2::CookieTrait,
+    controllers::{
+        dashboard::{CurrentPage, WebsiteOptions},
+        oauth2::CookieTrait,
+    },
     domain::website::Website,
     mailers::{
         auth::AuthMailer,
@@ -10,7 +13,7 @@ use crate::{
     },
     middleware::cookie::ExtractConsentState,
     models::{
-        _entities::users,
+        _entities::{sea_orm_active_enums::Account, users},
         join::user_credits_models::{load_user_and_credits, load_user_credit_training},
         users::{LoginParams, PasswordChangeParams, RegisterParams, UserPid},
         PlanModel, TransactionModel, UserModel,
@@ -35,6 +38,7 @@ use std::{borrow::Cow, collections::HashMap, sync::OnceLock};
 use validator::ValidationErrorsKind;
 
 use super::dashboard::is_oauth;
+use crate::controllers::auth::routes as AuthRoutes;
 
 pub static EMAIL_DOMAIN_RE: OnceLock<Regex> = OnceLock::new();
 
@@ -156,7 +160,7 @@ impl IntoResponse for HxRedirect {
 }
 
 #[derive(Debug, Deserialize, Constructor, Serialize, Default)]
-struct AuthError {
+pub struct AuthError {
     general: Option<String>,
     login: Option<String>,
     register: Option<String>,
@@ -234,11 +238,6 @@ impl AuthError {
     }
 }
 
-// fn get_allow_email_domain_re() -> &'static Regex {
-//     EMAIL_DOMAIN_RE.get_or_init(|| {
-//         Regex::new(r"@example\.com$|@gmail\.com$").expect("Failed to compile regex")
-//     })
-// }
 async fn load_plan(db: &impl ConnectionTrait, name: &String) -> Result<PlanModel> {
     let item = PlanModel::find_by_name_string(db, &name).await?;
     Ok(item)
@@ -251,10 +250,6 @@ async fn load_user(db: &DatabaseConnection, user_pid: &UserPid) -> Result<UserMo
     let item = UserModel::find_by_pid(db, user_pid.as_ref()).await?;
     Ok(item)
 }
-// async fn load_user_by_email(db: &DatabaseConnection, email: &str) -> Result<UserModel> {
-//     let item = UserModel::find_by_email(db, email).await?;
-//     Ok(item)
-// }
 
 #[derive(Debug, Deserialize, Serialize, Validate)]
 pub struct ForgotParams {
@@ -356,8 +351,11 @@ pub async fn change_password(
     let valid = user.verify_password(&params.current_password);
 
     if !valid {
-        let msg = Some(String::from("There was an error with your password"));
-        return views::settings::password_change(v, &website, &user.into(), msg);
+        let website_options = WebsiteOptions::new()
+            .website(&website)
+            .user(user.into())
+            .message("There was an error with your password");
+        return views::settings::password_change(v, &website_options);
     }
 
     let user = user
@@ -365,7 +363,9 @@ pub async fn change_password(
         .reset_password(&ctx.db, &params.password)
         .await?;
 
-    views::settings::password_change(v, &website, &user.into(), None)
+    let website_options = WebsiteOptions::new().website(&website).user(user.into());
+
+    views::settings::password_change(v, &website_options)
 }
 
 #[debug_handler]
@@ -388,17 +388,26 @@ pub async fn check_user(
     let (user, user_credits) = match load_user_and_credits(&ctx.db, &user_pid).await {
         Ok((user, user_credits)) => (user, user_credits),
         Err(_) => {
+            let website_options = WebsiteOptions::new().website(&website).is_home();
             return format::render().view(
                 &v,
                 "partials/parts/google_ott.html",
-                data!({"website": website, "is_home": true}),
+                data!({"website": website_options.website, "is_home": website_options.is_home}),
             );
         }
     };
+
+    let website_options = WebsiteOptions::new()
+        .website(&website)
+        .user(user.into())
+        .user_credits(user_credits.into())
+        .is_home();
+
     format::render().view(
         &v,
         "partials/parts/home_validated.html",
-        data!({"website": website, "user": user, "credits": user_credits, "is_home": true}),
+        data!({"website": website_options.website, "user": website_options.user,
+        "credits": website_options.user_credits, "is_home": website_options.is_home}),
     )
 }
 
@@ -414,15 +423,14 @@ async fn register(
 ) -> Result<Response> {
     if let Err(err) = params.validate() {
         let error_msg = AuthError::default().register_error(err.errors());
+        let website_options = WebsiteOptions::new()
+            .website(&website)
+            .register(&params)
+            .auth_error(&error_msg);
         return format::render().view(
             &v,
             "auth/register/register_partial.html",
-            data!({
-                "user_email": params.email,
-                "user_name": params.name,
-                "website": website,
-                "error_msg": error_msg
-            }),
+            data!({"options": website_options}),
         );
     }
 
@@ -441,29 +449,27 @@ async fn register(
                     let error_msg=  error_msg.register_email(
                         "This email address is already associated with an account. Please use a different email or log in to your existing account.")
                     ;
+                    let website_options = WebsiteOptions::new()
+                        .website(&website)
+                        .register(&params)
+                        .auth_error(&error_msg);
                     return format::render().view(
                         &v,
                         "auth/register/register_partial.html",
-                        data!(
-                            {
-                                "user_email": params.email, "user_name": params.name,
-                                "website": website, "error_msg": error_msg
-                            }
-                        ),
+                        data!({"options": website_options}),
                     );
                 }
                 _ => {
                     let error_msg =
                         error_msg.register_msg("Something went wrong. Please try again.");
+                    let website_options = WebsiteOptions::new()
+                        .website(&website)
+                        .register(&params)
+                        .auth_error(&error_msg);
                     return format::render().view(
                         &v,
                         "auth/register/register_partial.html",
-                        data!(
-                            {
-                                "user_email": params.email, "user_name": params.name,
-                                "website": website, "error_msg": error_msg
-                            }
-                        ),
+                        data!({"options": website_options}),
                     );
                 }
             }
@@ -479,10 +485,11 @@ async fn register(
 
     // Ok(HxRedirect(routes::Auth::LOGIN_PARTIAL.to_string()).into_response())
 
+    let website_options = WebsiteOptions::new().website(&website);
     format::render().view(
         &v,
         "auth/login/login_partial.html",
-        data!({"website": website}),
+        data!({"options": website_options}),
     )
 }
 
@@ -502,20 +509,26 @@ async fn verify(
     let user = users::Model::find_by_verification_token(&ctx.db, &token).await?;
 
     if user.email_verified_at.is_some() {
+        let website_options = WebsiteOptions::new()
+            .website(&website)
+            .message("Email already verified");
         return format::render().view(
             &v,
             "auth/verify/email_verified.html",
-            data!({"website": website, "msg": "Email already verified"}),
+            data!({"options": website_options}),
         );
     };
 
     if let Some(sent_at) = user.email_verification_sent_at {
         if Utc::now().naive_utc() > sent_at.naive_utc() + Duration::hours(1) {
+            let website_options = WebsiteOptions::new()
+                .website(&website)
+                .message("Email already verified");
             return format::render().view(
                 &v,
                 "auth/verify/email_verification_expired.html",
                 data!({
-                    "website": website,
+                    "options": website_options,
                     "email": user.email,
                 }),
             );
@@ -524,11 +537,11 @@ async fn verify(
 
     let active_model = user.into_active_model();
     let _user = active_model.verified(&ctx.db).await?;
-
+    let website_options = WebsiteOptions::new().website(&website);
     format::render().view(
         &v,
         "auth/verify/email_verified.html",
-        data!({"website": website}),
+        data!({"options": website_options}),
     )
 }
 
@@ -548,10 +561,11 @@ async fn resent_verification_token(
 
     AuthMailer::send_verification_link(&ctx, &user, &website.website_basic_info).await?;
 
+    let website_options = WebsiteOptions::new().website(&website);
     format::render().view(
         &v,
         "auth/verify/email_verification_send.html",
-        data!({"website": website, "email": user.email}),
+        data!({"options": website_options}),
     )
 }
 
@@ -585,64 +599,45 @@ async fn api_login(
             let user_email = &params.email;
             tracing::info!(message = err.to_string(), user_email, "could not find user",);
             let error_msg = AuthError::default().login_error();
+            let website_options = WebsiteOptions::new()
+                .website(&website)
+                .auth_error(&error_msg)
+                .login(&params);
             return format::render().view(
                 &v,
                 "auth/login/login_partial.html",
-                data!(
-                    {
-                        "user_email": user_email, "website": website,
-                        "error_msg": error_msg
-                    }
-                ),
+                data!({"options": website_options}),
             );
         }
     };
 
     if user.email_verified_at.is_none() {
+        let error_msg = AuthError::default().verify_error();
+        let website_options = WebsiteOptions::new()
+            .website(&website)
+            .auth_error(&error_msg)
+            .user(user.into());
         return format::render().view(
             &v,
             "auth/login/login_partial.html",
-            data!(
-                {
-                    "user_email": user.email, "website": website,
-                    "error_msg": AuthError::default().verify_error()
-                }
-            ),
+            data!({"options": website_options}),
         );
     }
 
     if !user.verify_password(&params.password) {
+        let error_msg = AuthError::default().verify_error();
+        let website_options = WebsiteOptions::new()
+            .website(&website)
+            .auth_error(&error_msg)
+            .user(user.into());
         return format::render().view(
             &v,
             "auth/login/login_partial.html",
-            data!(
-                {
-                    "user_email": user.email, "website": website,
-                    "error_msg": AuthError::default().login_error()
-
-                }
-            ),
+            data!({"options": website_options}),
         );
     }
 
-    // let jwt_secret = ctx.config.get_jwt_config()?;
-    // let expire = match params.remember {
-    //     true => 7 * 24 * 60 * 60,
-    //     false => jwt_secret.expiration,
-    // };
-    // let token = user
-    //     .generate_jwt(&jwt_secret.secret, expire)
-    //     .or_else(|_| unauthorized("unauthorized!"))?;
-
     let cookie = user.create_cookie_strict(&ctx)?;
-
-    // let cookie = AxumCookie::build(("auth", token.clone()))
-    //     .path("/")
-    //     .http_only(true)
-    //     .secure(!cfg!(debug_assertions)) // set to false in localhost for dev
-    //     .same_site(SameSite::Strict)
-    //     .max_age(time::Duration::seconds(expire as i64))
-    //     .build();
 
     let cookie_value = HeaderValue::from_str(&cookie.to_string())
         .map_err(|_| loco_rs::Error::Unauthorized("failed to build cookie header".to_string()))?;
@@ -651,21 +646,21 @@ async fn api_login(
     let (user, user_credits, training_models) =
         load_user_credit_training(&ctx.db, &user_pid).await?;
 
+    let website_options = WebsiteOptions::new()
+        .website(&website)
+        .user(user.into())
+        .user_credits(user_credits.into())
+        .training_models(training_models.into())
+        .current_page(CurrentPage::Models);
     let mut view_response = format::render().view(
         &v,
         "dashboard/dashboard_base_extend_partial.html",
-        data!(
-            {
-                "website": website, "user": user,
-                "credits": user_credits, "models": training_models,
-                "current_page": "models"
-            }
-        ),
+        data!({"options": website_options}),
     )?;
 
     view_response
         .headers_mut()
-        .insert("Set-Cookie", cookie_value);
+        .insert(header::SET_COOKIE, cookie_value);
 
     Ok(view_response)
 }
@@ -677,8 +672,8 @@ async fn logout(State(_ctx): State<AppContext>) -> Result<Response> {
 
     // Create headers for removing the cookie and redirecting
     let mut headers = HeaderMap::new();
-    headers.insert("Set-Cookie", cookie_str.parse().unwrap());
-    headers.insert("HX-Redirect", "/login".parse().unwrap()); // HTMX redirect
+    headers.insert(header::SET_COOKIE, cookie_str.parse().unwrap());
+    headers.insert("HX-Redirect", AuthRoutes::Auth::LOGIN.parse().unwrap()); // HTMX redirect
 
     Ok((StatusCode::OK, headers).into_response())
 }
@@ -699,10 +694,11 @@ async fn logout_partial(
         )
     })?;
 
+    let website_options = WebsiteOptions::new().website(&website);
     let view_response = format::render().view(
         &v,
         "auth/login/login_partial.html",
-        data!({"website": website}),
+        data!({"options": website_options}),
     )?;
 
     let mut headers = HeaderMap::new();
@@ -793,24 +789,25 @@ pub async fn get_login(
         let user_pid = UserPid::new(&auth.unwrap().claims.pid);
         let (user, user_credits, training_models) =
             load_user_credit_training(&ctx.db, &user_pid).await?;
-        let current_page = "album";
+        let website_options = WebsiteOptions::new()
+            .website(&website)
+            .cc_cookie(&cc_cookie)
+            .user(user.into())
+            .user_credits(user_credits.into())
+            .training_models(training_models.into())
+            .current_page(CurrentPage::Album)
+            .is_logged_in()
+            .is_initial_load();
         format::render().view(
             &v,
             "dashboard/dashboard_base_extend.html",
-            data!(
-                  {
-                      "website": website, "user": user,
-                      "models": training_models, "credits": user_credits,
-                      "is_initial_load": true, "cc_cookie": cc_cookie,
-                      "is_logged_in": true, "current_page": current_page
-                  }
-            ),
+            data!({"options": website_options}),
         )?
     } else {
         format::render().view(
             &v,
             "auth/login/login_form.html",
-            data!({"website": website}),
+            data!({"options": WebsiteOptions::new().website(&website)}),
         )?
     };
 
@@ -838,21 +835,22 @@ pub async fn partial_login(
         let user_pid = UserPid::new(&auth.unwrap().claims.pid);
         let (user, user_credits, training_models) =
             load_user_credit_training(&ctx.db, &user_pid).await?;
+        let website_options = WebsiteOptions::new()
+            .website(&website)
+            .user(user.into())
+            .user_credits(user_credits.into())
+            .training_models(training_models.into())
+            .is_logged_in();
         format::render().view(
             &v,
             "dashboard/dashboard_base_extend_partial.html",
-            data!(
-                {
-                    "website": website, "user": user, "credits": user_credits,
-                    "models": training_models, "is_logged_in": true
-                }
-            ),
+            data!({"options": website_options}),
         )?
     } else {
         format::render().view(
             &v,
             "auth/login/login_partial.html",
-            data!({"website": website}),
+            data!({"options": WebsiteOptions::new().website(&website)}),
         )?
     };
 
@@ -868,7 +866,7 @@ pub async fn get_register(
     format::render().view(
         &v,
         "auth/register/register_form.html",
-        data!({"website": website}),
+        data!({"options": WebsiteOptions::new().website(&website)}),
     )
 }
 
@@ -881,7 +879,7 @@ pub async fn partial_register(
     format::render().view(
         &v,
         "auth/register/register_partial.html",
-        data!({"website": website}),
+        data!({"options": WebsiteOptions::new().website(&website)}),
     )
 }
 
@@ -894,7 +892,7 @@ pub async fn get_forgot(
     format::render().view(
         &v,
         "auth/forgot/forgot_form.html",
-        data!({"website": website}),
+        data!({"options": WebsiteOptions::new().website(&website)}),
     )
 }
 
@@ -907,7 +905,7 @@ pub async fn partial_forgot(
     format::render().view(
         &v,
         "auth/forgot/forgot_partial.html",
-        data!({"website": website}),
+        data!({"options": WebsiteOptions::new().website(&website)}),
     )
 }
 
@@ -963,27 +961,28 @@ pub async fn get_password(
     State(ctx): State<AppContext>,
 ) -> Result<Response> {
     let Ok(user) = users::Model::find_by_magic_token(&ctx.db, &token).await else {
-        return Ok(Redirect::to("/login").into_response());
+        return Ok(Redirect::to(AuthRoutes::Auth::LOGIN).into_response());
     };
 
     if let Some(expired_at) = user.magic_link_expiration {
         if Utc::now().naive_utc() > expired_at.naive_utc() {
             user.into_active_model().clear_magic_link(&ctx.db).await?;
+            let auth_error = AuthError::default().general_msg("Password reset link expired");
+            let website_options = WebsiteOptions::new()
+                .website(&website)
+                .auth_error(&auth_error);
             return format::render().view(
                 &v,
                 "auth/verify/password_reset_failed.html",
-                data!({
-                        "website": website, "error":  AuthError::default().general_msg("Password reset link expired")
-
-                }),
+                data!({"options": website_options}),
             );
         }
     }
-
+    let website_options = WebsiteOptions::new().website(&website).message(&token);
     format::render().view(
         &v,
         "auth/verify/password_reset.html",
-        data!({"website": website, "email": user.email, "token": token}),
+        data!({"options": website_options, "email": user.email}),
     )
 }
 
@@ -998,10 +997,12 @@ pub async fn set_password(
     let error_msg = match params.validate() {
         Ok(()) => AuthError::default(),
         Err(_) => {
+            let error = AuthError::default().password_reset_error();
+            let website_options = WebsiteOptions::new().website(&website).auth_error(&error);
             return format::render().view(
                 &v,
                 "auth/verify/password_reset_partial.html",
-                data!({"website": website, "error": AuthError::default().password_reset_error()}),
+                data!({"options": website_options}),
             );
         }
     };
@@ -1021,13 +1022,14 @@ pub async fn set_password(
         );
     }
 
-    let is_oauth = is_oauth(&ctx.db, user.id).await?;
-    if is_oauth {
+    let website_options = WebsiteOptions::new().website(&website);
+
+    if user.account != Account::Website {
         user.into_active_model().clear_magic_link(&ctx.db).await?;
         return format::render().view(
             &v,
-            "auth/verify/password_reset_failed.html",
-            data!({ "website": website, "error": error_msg.general_msg("Unauthorized")}),
+            "auth/verify/password_reset_success.html",
+            data!({"options": website_options}),
         );
     }
 
@@ -1041,6 +1043,6 @@ pub async fn set_password(
     format::render().view(
         &v,
         "auth/verify/password_reset_success.html",
-        data!({"website": website}),
+        data!({"options": website_options}),
     )
 }

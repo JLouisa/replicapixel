@@ -1,252 +1,162 @@
-use std::collections::HashMap;
-
-use super::auth::{UserCreditsView, UserView};
-use super::images::ImageViewList;
-use super::packs::PackViewList;
-use super::settings::UserSettingsView;
-use super::training_models::TrainingModelViewList;
-use crate::domain::features::FeatureViewList;
-use crate::domain::website::Website;
-use crate::middleware::cookie::CookieConsent;
-use crate::models::_entities::sea_orm_active_enums::{PlanNames, Status};
-use crate::models::transactions::TransactionModelList;
-use crate::models::{PlanModel, TransactionModel};
 use derive_more::{AsRef, Constructor};
 use loco_rs::prelude::*;
 use serde::Serialize;
+use std::collections::HashMap;
 
-pub fn billing_dashboard(
+use crate::controllers::dashboard::WebsiteOptions;
+use crate::models::_entities::sea_orm_active_enums::{PlanNames, Status};
+use crate::models::transactions::TransactionModelList;
+use crate::models::{PlanModel, TransactionModel};
+
+pub fn billing_dashboard_new(
     v: impl ViewRenderer,
-    website: &Website,
-    user: UserView,
-    credits: &UserCreditsView,
-    orders: &TransactionViewList,
-    cc_cookie: &CookieConsent,
+    website_options: &WebsiteOptions,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
         "dashboard/content/billing/billing.html",
         data!(
             {
-                "website": website, "user": user,
-                "credits": credits, "cc_cookie": cc_cookie,
-                "orders": orders, "current_page": "billing"
+                "website": website_options.website, "user": website_options.user,
+                "credits": website_options.user_credits, "cc_cookie": website_options.cc_cookie,
+                "options": website_options, "current_page": website_options.current_page
             }
         ),
     )
 }
-pub fn billing_partial_dashboard(
+pub fn billing_partial_dashboard_new(
     v: impl ViewRenderer,
-    website: &Website,
-    user: UserView,
-    orders: &TransactionViewList,
+    website_options: &WebsiteOptions,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
         "dashboard/content/billing/billing_partial.html",
-        data!({ "website": website, "user": user,  "orders": orders }),
-    )
-}
-
-pub fn notification_dashboard(
-    v: impl ViewRenderer,
-    website: &Website,
-    user: UserView,
-    credits: &UserCreditsView,
-    cc_cookie: &CookieConsent,
-) -> Result<impl IntoResponse> {
-    format::render().view(
-        &v,
-        "dashboard/content/notification/notification.html",
-        data!(
-            {
-                "website": website, "user": user,
-                "credits": credits, "cc_cookie": cc_cookie,
-                "current_page": "notification"
-        }),
-    )
-}
-pub fn notification_partial_dashboard(
-    v: impl ViewRenderer,
-    website: &Website,
-    user: UserView,
-) -> Result<impl IntoResponse> {
-    format::render().view(
-        &v,
-        "dashboard/content/notification/notification_partial.html",
-        data!({ "website": website, "user": user }),
+        data!({ "options": website_options }),
     )
 }
 
 pub fn features_dashboard(
     v: impl ViewRenderer,
-    website: &Website,
-    user: UserView,
-    credits: &UserCreditsView,
-    features_view: &FeatureViewList,
-    cc_cookie: &CookieConsent,
+    website_options: &WebsiteOptions,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
         "dashboard/content/features/features.html",
         data!(
             {
-                "website": website, "user": user, "credits": credits,
-                "features_view": features_view, "cc_cookie": cc_cookie,
-                "current_page": "features"
+                "website": website_options.website, "user": website_options.user, "credits": website_options.user_credits,
+                "features": website_options.features, "cc_cookie": website_options.cc_cookie,
+                "current_page": website_options.current_page, "options": website_options
+
             }
         ),
     )
 }
 pub fn features_partial_dashboard(
     v: impl ViewRenderer,
-    website: &Website,
-    user: UserView,
-    features_view: &FeatureViewList,
+    website_options: &WebsiteOptions,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
         "dashboard/content/features/features_partial.html",
-        data!(
-            {
-                "website": website, "user": user,
-                "features_view": features_view,
-
-            }
-        ),
+        data!({ "options": website_options }),
     )
 }
 
 pub fn settings_dashboard(
     v: impl ViewRenderer,
-    website: &Website,
-    user: &UserView,
-    credits: &UserCreditsView,
-    user_settings: &UserSettingsView,
-    cc_cookie: &CookieConsent,
-    is_oauth: bool,
+    website_options: &WebsiteOptions,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
         "dashboard/content/settings/settings.html",
         data!(
             {
-                "website": website, "user": user, "credits": credits,
-                "cc_cookie": cc_cookie, "user_settings": user_settings,
-                "is_oauth": is_oauth, "current_page": "settings"
-
+                "website": website_options.website, "user": website_options.user, "credits": website_options.user_credits,
+                "cc_cookie": website_options.cc_cookie, "user_settings": website_options.user_settings,
+                "current_page": website_options.current_page, "options": website_options
             }
         ),
     )
 }
 pub fn settings_partial_dashboard(
     v: impl ViewRenderer,
-    website: &Website,
-    user: &UserView,
-    user_settings: &UserSettingsView,
-    is_oauth: bool,
+    website_options: &WebsiteOptions,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
         "dashboard/content/settings/settings_partial.html",
-        data!(
-            {
-                "website": website, "user": user, "user_settings": user_settings,
-                "is_oauth": is_oauth,
-            }
-        ),
+        data!({ "options": website_options }),
     )
 }
 
 pub fn training_dashboard(
     v: impl ViewRenderer,
-    website: &Website,
-    user: &UserView,
-    credits: &UserCreditsView,
-    models: &TrainingModelViewList,
-    cc_cookie: &CookieConsent,
+    website_options: &WebsiteOptions,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
         "dashboard/content/training_models/training_models.html",
         data!(
             {
-                "website": website, "user": user, "credits": credits,
-                "models": models, "cc_cookie": cc_cookie,
-                "current_page": "models"
+                "website": website_options.website, "user": website_options.user, "credits": website_options.user_credits,
+                "models": website_options.training_models, "cc_cookie": website_options.cc_cookie,
+                "current_page": website_options.current_page, "options": website_options
+
             }
         ),
     )
 }
 pub fn training_partial_dashboard(
     v: impl ViewRenderer,
-    website: &Website,
-    user: &UserView,
-    credits: &UserCreditsView,
-    models: &TrainingModelViewList,
+    website_options: &WebsiteOptions,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
         "dashboard/content/training_models/training_models_partial.html",
-        data!({ "website": website, "user": user, "credits": credits, "models": models }),
-    )
-}
-
-pub fn home_training_partial_dashboard(
-    v: impl ViewRenderer,
-    website: &Website,
-    user: &UserView,
-    credits: &UserCreditsView,
-    models: &TrainingModelViewList,
-) -> Result<impl IntoResponse> {
-    format::render().view(
-        &v,
-        "dashboard/dashboard_base_extend_partial.html",
-        data!(
-            {
-                "website": website, "user": user, "credits": credits,
-                "models": models, "is_logged_in": true,
-                "current_page": "models"
-            }
-        ),
+        data!({ "options": website_options }),
     )
 }
 
 pub fn create_training_dashboard(
     v: impl ViewRenderer,
-    website: &Website,
-    user: &UserView,
-    credits: &UserCreditsView,
-    models: &TrainingModelViewList,
-    cc_cookie: &CookieConsent,
+    website_options: &WebsiteOptions,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
         "dashboard/content/training_models/extend_training_model_form.html",
         data!(
             {
-                "website": website, "user": user, "credits": credits,
-                "models": models, "cc_cookie": cc_cookie,
-                "current_page": "create_models"
+                "website": website_options.website, "user": website_options.user, "credits": website_options.user_credits,
+                "models": website_options.training_models, "cc_cookie": website_options.cc_cookie,
+                "current_page": website_options.current_page, "options": website_options
             }
         ),
     )
 }
 pub fn create_training_dashboard_partial(
     v: impl ViewRenderer,
-    website: &Website,
-    user: &UserView,
-    credits: &UserCreditsView,
-    models: &TrainingModelViewList,
-    cc_cookie: &CookieConsent,
+    website_options: &WebsiteOptions,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
         "dashboard/content/training_models/training_model_form.html",
+        data!({ "options": website_options }),
+    )
+}
+
+pub fn home_training_partial_dashboard(
+    v: impl ViewRenderer,
+    website_options: &WebsiteOptions,
+) -> Result<impl IntoResponse> {
+    format::render().view(
+        &v,
+        "dashboard/dashboard_base_extend_partial.html",
         data!(
             {
-                "website": website, "user": user, "credits": credits,
-                "models": models, "cc_cookie": cc_cookie
+                "website": website_options.website, "user": website_options.user, "credits": website_options.user_credits,
+                "models": website_options.training_models, "is_logged_in": website_options.is_logged_in,
+                "current_page": website_options.current_page, "options": website_options
             }
         ),
     )
@@ -254,57 +164,42 @@ pub fn create_training_dashboard_partial(
 
 pub fn packs_dashboard(
     v: impl ViewRenderer,
-    website: &Website,
-    user: &UserView,
-    credits: &UserCreditsView,
-    models_list: &TrainingModelViewList,
-    packs: &PackViewList,
-    cc_cookie: &CookieConsent,
+    website_options: &WebsiteOptions,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
         "dashboard/content/packs/packs.html",
         data!(
             {
-                "website": website, "credits": credits, "packs": packs,
-                "cc_cookie": cc_cookie, "user": user, "models": models_list,
-                "current_page": "packs"
+                "website": website_options.website, "credits": website_options.user_credits, "packs": website_options.packs,
+                "cc_cookie": website_options.cc_cookie, "user": website_options.user, "models": website_options.training_models,
+                "current_page": website_options.current_page, "options": website_options
             }
         ),
     )
 }
 pub fn packs_partial_dashboard(
     v: impl ViewRenderer,
-    website: &Website,
-    models: &TrainingModelViewList,
-    packs: &PackViewList,
+    website_options: &WebsiteOptions,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
         "dashboard/content/packs/packs_partial.html",
-        data!(
-            {
-                "website": website, "packs": packs, "models": models,
-            }
-        ),
+        data!({ "options": website_options }),
     )
 }
 pub fn home_packs_partial_dashboard(
     v: impl ViewRenderer,
-    website: &Website,
-    user: &UserView,
-    credits: &UserCreditsView,
-    models_list: &TrainingModelViewList,
-    packs: &PackViewList,
+    website_options: &WebsiteOptions,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
         "dashboard/content/packs/packs_extend.html",
         data!(
             {
-                "website": website, "credits": credits, "packs": packs,
-                "user": user, "models": models_list,
-                "current_page": "packs"
+                "website": website_options.website, "credits": website_options.user_credits, "packs": website_options.packs,
+                "user": website_options.user, "models": website_options.training_models,
+                "current_page": website_options.current_page, "options": website_options
             }
         ),
     )
@@ -312,50 +207,30 @@ pub fn home_packs_partial_dashboard(
 
 pub fn photo_dashboard(
     v: impl ViewRenderer,
-    website: &Website,
-    user: &UserView,
-    credits: &UserCreditsView,
-    images: &ImageViewList,
-    training_models: &TrainingModelViewList,
-    is_deleted: bool,
-    is_favorite: bool,
-    cc_cookie: &CookieConsent,
-    current_page: &str,
+    website_options: &WebsiteOptions,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
         "dashboard/content/photo/photo.html",
         data!(
               {
-                  "website": website, "user": user, "images": images,
-                  "training_models": training_models, "credits": credits,
-                  "is_deleted": is_deleted, "is_favorite": is_favorite,
-                  "is_initial_load": true, "cc_cookie": cc_cookie,
-                  "current_page": current_page
+                "website": website_options.website, "user": website_options.user, "images": website_options.images,
+                "training_models": website_options.training_models, "credits": website_options.user_credits,
+                "is_deleted": website_options.is_deleted, "is_favorite": website_options.is_favorite,
+                "is_initial_load": website_options.is_initial_load, "cc_cookie": website_options.cc_cookie,
+                "current_page": website_options.current_page, "options": website_options
               }
         ),
     )
 }
 pub fn photo_partial_dashboard(
     v: impl ViewRenderer,
-    website: &Website,
-    images: &ImageViewList,
-    training_models: &TrainingModelViewList,
-    credits: &UserCreditsView,
-    is_deleted: bool,
-    is_favorite: bool,
+    website_options: &WebsiteOptions,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
         "dashboard/content/photo/photo_partial.html",
-        data!(
-              {
-                "website": website, "images": images,
-                "training_models": training_models,
-                "credits": credits, "is_deleted": is_deleted,
-                "is_favorite": is_favorite
-            }
-        ),
+        data!({ "options": website_options }),
     )
 }
 

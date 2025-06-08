@@ -1,6 +1,8 @@
 #![allow(clippy::missing_errors_doc)]
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
+use crate::controllers::auth::HxRedirect;
+use crate::controllers::dashboard::{CurrentPage, WebsiteOptions};
 use crate::middleware::cookie::ExtractConsentState;
 use crate::models::join::user_credits_models::load_user_credit_training;
 use crate::models::packs::PackModelList;
@@ -11,12 +13,12 @@ use crate::views;
 use crate::views::auth::UserView;
 use crate::views::packs::PackViewList;
 use crate::{domain::website::Website, middleware::cookie::CookieConsentLayer};
-use axum::response::Redirect;
 use axum::{debug_handler, Extension};
 use derive_more::Constructor;
 use loco_rs::prelude::*;
 use serde::{Deserialize, Serialize};
 
+// use crate::controllers::auth::routes as AuthRoutes;
 use axum::{http::StatusCode, response::IntoResponse};
 use std::path::Path;
 
@@ -166,9 +168,16 @@ pub async fn render_home(
         }
         Err(_) => None,
     };
-    let is_home = true;
     let images = load_cached_web(&ctx).await?;
-    views::home::home(v, &website, is_home, &cc_cookie, &images, &user)
+
+    let website_options = WebsiteOptions::new()
+        .website(&website)
+        .cc_cookie(&cc_cookie)
+        .set_user(user)
+        .web_images(&images)
+        .is_home();
+
+    views::home::home(v, &website_options)
 }
 
 #[debug_handler]
@@ -190,9 +199,16 @@ pub async fn render_home_partial(
         }
         Err(_) => None,
     };
-    let is_home = true;
     let images = load_cached_web(&ctx).await?;
-    views::home::home_partial(v, &website, is_home, &cc_cookie, &images, &user)
+
+    let website_options = WebsiteOptions::new()
+        .website(&website)
+        .cc_cookie(&cc_cookie)
+        .set_user(user)
+        .web_images(&images)
+        .is_home();
+
+    views::home::home_partial(v, &website_options)
 }
 
 #[debug_handler]
@@ -205,20 +221,20 @@ pub async fn render_dashboard_extend_partial(
     let user_pid = match auth {
         Ok(auth) => UserPid::new(&auth.claims.pid),
         Err(_) => {
-            return Ok(Redirect::to("/login").into_response());
+            return Ok(HxRedirect::login().into_response());
         }
     };
     let (user, user_credits, training_models) =
         load_user_credit_training(&ctx.db, &user_pid).await?;
 
-    Ok(views::dashboard::home_training_partial_dashboard(
-        v,
-        &website,
-        &user.into(),
-        &user_credits.into(),
-        &training_models.into(),
-    )
-    .into_response())
+    let website_options = WebsiteOptions::new()
+        .website(&website)
+        .user(user.into())
+        .user_credits(user_credits.into())
+        .training_models(training_models.into())
+        .current_page(CurrentPage::Models);
+
+    Ok(views::dashboard::home_training_partial_dashboard(v, &website_options).into_response())
 }
 #[debug_handler]
 pub async fn render_dashboard_extend_packs_partial(
@@ -230,7 +246,7 @@ pub async fn render_dashboard_extend_packs_partial(
     let user_pid = match auth {
         Ok(auth) => UserPid::new(&auth.claims.pid),
         Err(_) => {
-            return Ok(Redirect::to("/login").into_response());
+            return Ok(HxRedirect::login().into_response());
         }
     };
     let (user, user_credits, training_models) =
@@ -240,15 +256,15 @@ pub async fn render_dashboard_extend_packs_partial(
         Err(_) => load_packs(&ctx.db).await?.into(),
     };
 
-    Ok(views::dashboard::home_packs_partial_dashboard(
-        v,
-        &website,
-        &user.into(),
-        &user_credits.into(),
-        &training_models.into(),
-        &packs,
-    )
-    .into_response())
+    let website_options: WebsiteOptions = WebsiteOptions::new()
+        .website(&website)
+        .user(user.into())
+        .user_credits(user_credits.into())
+        .training_models(training_models.into())
+        .packs(packs.into())
+        .current_page(CurrentPage::Packs);
+
+    Ok(views::dashboard::home_packs_partial_dashboard(v, &website_options).into_response())
 }
 
 #[derive(Debug, Serialize, Deserialize, Constructor, Clone)]

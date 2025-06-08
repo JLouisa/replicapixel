@@ -1,4 +1,5 @@
 use crate::{
+    controllers::dashboard::WebsiteOptions,
     domain::website::Website,
     models::{
         UserSettingsModel,
@@ -8,8 +9,6 @@ use crate::{
 use derive_more::Constructor;
 use loco_rs::prelude::*;
 use serde::Serialize;
-
-use super::auth::UserView;
 
 pub fn email_notification(
     v: impl ViewRenderer,
@@ -49,14 +48,13 @@ pub fn dark_mode(
 
 pub fn password_change(
     v: impl ViewRenderer,
-    website: &Website,
-    user: &UserView,
-    msg: Option<String>,
+    website_options: &WebsiteOptions,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
         "dashboard/content/settings/partials/password_settings_partial.html",
-        data!({ "website": website, "user": user, "msg": msg }),
+        data!({ "website": website_options.website, "user": website_options.user,
+        "msg": website_options.message }),
     )
 }
 

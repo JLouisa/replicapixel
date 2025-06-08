@@ -1,8 +1,8 @@
 #![allow(clippy::missing_errors_doc)]
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
-use crate::domain::website::Website;
 use crate::views;
+use crate::{controllers::dashboard::WebsiteOptions, domain::website::Website};
 use axum::{debug_handler, Extension};
 use loco_rs::prelude::*;
 
@@ -54,7 +54,8 @@ pub async fn model_consent(
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    views::policy::model_consent(v, &website)
+    let website_options: WebsiteOptions = WebsiteOptions::new().website(&website);
+    views::policy::model_consent(v, &website_options)
 }
 
 #[debug_handler]
@@ -62,7 +63,8 @@ pub async fn cookie(
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    views::policy::cookie(v, &website)
+    let website_options: WebsiteOptions = WebsiteOptions::new().website(&website);
+    views::policy::cookie(v, &website_options)
 }
 
 #[debug_handler]
@@ -70,7 +72,8 @@ pub async fn terms(
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    views::policy::terms(v, &website)
+    let website_options: WebsiteOptions = WebsiteOptions::new().website(&website);
+    views::policy::terms(v, &website_options)
 }
 
 #[debug_handler]
@@ -78,5 +81,6 @@ pub async fn privacy(
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    views::policy::privacy(v, &website)
+    let website_options: WebsiteOptions = WebsiteOptions::new().website(&website);
+    views::policy::privacy(v, &website_options)
 }

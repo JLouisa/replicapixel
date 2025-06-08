@@ -3,49 +3,48 @@ use loco_rs::prelude::*;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    controllers::home::{WebGallery, WebImages},
-    domain::website::Website,
-    middleware::cookie::CookieConsent,
+    controllers::{dashboard::WebsiteOptions, home::WebGallery},
     models::{packs::PackModelList, PackModel},
 };
 
-use super::auth::UserView;
-
 pub fn get_all_packs(
     v: impl ViewRenderer,
-    website: &Website,
-    packs: &PackViewList,
+    website_options: &WebsiteOptions,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
         "home/sections/partials/pack_inner_partial.html",
-        data!(
-            {
-                "website": website, "packs": packs,
-                "is_pack_partial": true
-            }
-        ),
+        data!({ "options": website_options }),
+        // data!(
+        //     {
+        //         "website": website, "packs": packs,
+        //         "is_pack_partial": true
+        //     }
+        // ),
     )
 }
 
 pub fn packs(
     v: impl ViewRenderer,
-    website: &Website,
-    cc_cookie: &CookieConsent,
-    web_images: &WebImages,
-    pack: &PackView,
-    user: &Option<UserView>,
+    website_options: &WebsiteOptions,
+    // website: &Website,
+    // cc_cookie: &CookieConsent,
+    // web_images: &WebImages,
+    // pack: &PackView,
+    // user: &Option<UserView>,
 ) -> Result<impl IntoResponse> {
-    let foo_mock_pack_images = pack.create_item_groups();
+    // let foo_mock_pack_images = pack.create_item_groups();
     format::render().view(
         &v,
         "packs/pack_base.html",
+        // data!({ "options": website_options }),
         data!(
             {
-                "website": website, "cc_cookie": cc_cookie,
-                "web_images": web_images, "pack": pack,
-                "pack_images": foo_mock_pack_images,
-                "user": user, "is_pack": true
+                "website": website_options.website, "cc_cookie": website_options.cc_cookie,
+                "web_images": website_options.web_images, "pack": website_options.pack,
+                "pack_images": website_options.pack_images,
+                "user": website_options.user, "is_pack": website_options.is_pack,
+                "options": website_options
             }
         ),
     )
@@ -53,24 +52,21 @@ pub fn packs(
 
 pub fn packs_partial(
     v: impl ViewRenderer,
-    website: &Website,
-    cc_cookie: &CookieConsent,
-    web_images: &WebImages,
-    pack: &PackView,
-    user: &Option<UserView>,
+    website_options: &WebsiteOptions,
 ) -> Result<impl IntoResponse> {
-    let foo_mock_pack_images = pack.create_item_groups();
+    // let foo_mock_pack_images = pack.create_item_groups();
     format::render().view(
         &v,
         "packs/pack_partial.html",
-        data!(
-            {
-                "website": website, "cc_cookie": cc_cookie,
-                "web_images": web_images, "pack": pack,
-                "pack_images": foo_mock_pack_images,
-                "user": user, "is_pack": true
-            }
-        ),
+        data!({ "options": website_options }),
+        // data!(
+        //     {
+        //         "website": website, "cc_cookie": cc_cookie,
+        //         "web_images": web_images, "pack": pack,
+        //         "pack_images": foo_mock_pack_images,
+        //         "user": user, "is_pack": true
+        //     }
+        // ),
     )
 }
 
