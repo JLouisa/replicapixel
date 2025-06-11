@@ -11,7 +11,9 @@ declare global {
 }
 const cookieName = window.consentCookieName || "cc_cookie";
 
-CookieConsent.run({
+console.log("Current browser language:", navigator.language);
+
+const options: CookieConsent.CookieConsentConfig = {
   revision: 0,
   cookie: {
     name: cookieName,
@@ -126,14 +128,16 @@ CookieConsent.run({
               linkedCategory: "marketing",
             },
             // Section 5: Optional outro/links
-            // {
-            //    title: "More Information",
-            //    description: `Review our <a href="/cookie-policy">Cookie Policy</a> for details.`
-            // }
+            {
+              title: "More Information",
+              description: `Review our <a href="/policy/cookie" target="_blank" rel="noopener noreferrer">Cookie Policy</a> for more details.`,
+            },
           ],
         },
       },
       // Add other language translations if needed
     },
   },
-});
+};
+
+CookieConsent.run(options);

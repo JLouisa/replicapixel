@@ -1,5 +1,4 @@
 <!-- prettier-ignore -->
-
 {% set home_link = "/" %}
 {% set studio_link = website.website_routes.dashboard_routes.base %}
 {% set studio_partial_link = website.website_routes.dashboard_routes.sidebar.photo_partial %}
@@ -50,6 +49,17 @@
     {% include "partials/parts/validated/validate_navbar.html" %}
   </div>
   <div class="md:hidden flex items-center gap-2">
+    <div class="hidden min-[350px]:block">{% include "partials/parts/language_menu.html" %}</div>
+    <div
+      id="shiningButton-mobile-nav"
+      hx-get="{{ studio_link | safe }}"
+      hx-target="#app"
+      hx-swap="innerHTML"
+      hx-push-url="{{ studio_link | safe }}"
+      class="relative flex flex-row items-center lg:gap-4 p-2 lg:p-3 lg:px-4 my-[-0.5rem] lg:my-[-1rem] overflow-hidden rounded-full font-semibold text-white shadow-md transition-all duration-150 bg-gradient-to-r from-[var(--color-grn-from)] to-[var(--color-grn-to)] hover:shadow-lg hover:brightness-110 active:scale-95 active:brightness-90 cursor-pointer"
+    >
+      Studio {% include "partials/svg/triple_stars.html" %}
+    </div>
     <div
       id="home-burger-menu-trigger"
       aria-label="{{ t(key='nav-mobile-aria-open-menu', lang=lang) }}"
@@ -57,6 +67,9 @@
     >
       {% include "partials/svg/mobile_menu.html" %}
     </div>
+    <script>
+      shiningBtn("shiningButton-mobile-nav");
+    </script>
   </div>
 </nav>
 

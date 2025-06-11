@@ -1,3 +1,4 @@
+{% set lang = options.language %}
 <!-- Cookie Consent -->
 {% if cc_cookie.cookie_exists %}
 <!-- Meta Pixel -->
@@ -5,5 +6,5 @@
 <!-- Google Analytics -->
 {% if cc_cookie.analytics %} {% include "partials/cookie/analytics.html" %} {% endif %} {% else %}
 <link href="/static/js/cookie-consent.css" rel="stylesheet" type="text/css" />
-<script src="/static/js/cookie-consent.js" defer></script>
+<script type="module" src="/static/js/cookie-consent.js" defer></script>
 {% endif %}

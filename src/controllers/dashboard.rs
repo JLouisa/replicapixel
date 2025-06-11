@@ -323,7 +323,7 @@ pub enum CurrentPage {
 #[must_use]
 pub struct WebsiteOptions<'a> {
     pub website: Option<&'a Website>,
-    pub language: Option<&'a Language>,
+    pub language: Language,
     pub cc_cookie: Option<&'a CookieConsent>,
     pub current_page: Option<CurrentPage>,
     pub user: Option<UserView>,
@@ -377,7 +377,7 @@ impl<'a> WebsiteOptions<'a> {
     /// Sets the options required for a full-page layout.
     pub fn language(self, language: &'a Language) -> Self {
         Self {
-            language: Some(language),
+            language: language.clone(),
             ..self
         }
     }

@@ -13,11 +13,7 @@ use loco_oauth2::models::oauth2_sessions::OAuth2SessionsTrait;
 use axum::extract::Query;
 use axum::response::{IntoResponse, Redirect};
 use axum::Extension;
-use axum::{
-    debug_handler,
-    http::{header, HeaderMap, HeaderValue, StatusCode},
-    Json,
-};
+use axum::{debug_handler, http::StatusCode, Json};
 use axum_extra::extract::cookie::CookieJar;
 use axum_session::{DatabasePool, Session, SessionNullPool};
 
@@ -129,29 +125,18 @@ async fn google_ott(
         })?;
 
     let register = RegisterParams::create_with_ott(google_user_data)?;
-
     let user = UserModel::upsert_with_ott(&ctx.db, &register, &stripe_client).await?;
 
-    // Cookie
     let cookie = user.create_cookie(&ctx)?;
-    let cookie_str = cookie.to_string();
+    let cookie_jar = CookieJar::new().add(cookie);
 
-    // 1. Get the view
     let website_options = WebsiteOptions::new()
         .website(&website)
         .user(user.into())
         .is_ott();
     let view_response = views::home::google_ott(&v, &website_options)?;
 
-    // 2. Create the cookie header value.
-    let cookie_header_value = HeaderValue::from_str(&cookie_str)?;
-
-    // 3. Create a HeaderMap
-    let mut headers = HeaderMap::new();
-    headers.insert(header::SET_COOKIE, cookie_header_value);
-
-    // 4. Return a tuple of (headers, body)
-    Ok((headers, view_response))
+    Ok((cookie_jar, view_response))
 }
 
 pub async fn google_callback_jwt<
@@ -164,7 +149,6 @@ pub async fn google_callback_jwt<
     session: Session<W>,
     Query(params): Query<AuthParams>,
     Extension(oauth2_store): Extension<OAuth2ClientStore>,
-    cookie_jar: CookieJar,
 ) -> Result<impl IntoResponse> {
     let mut client = oauth2_store
         .get_authorization_code_client("google")
@@ -177,8 +161,9 @@ pub async fn google_callback_jwt<
     drop(client);
 
     let cookie = user.create_cookie(&ctx)?;
+    let cookie_jar = CookieJar::new().add(cookie);
 
-    Ok((cookie_jar.add(cookie), Redirect::to(Dashboard::BASE)))
+    Ok((cookie_jar, Redirect::to(Dashboard::BASE)))
 }
 
 pub async fn github_authorization_url<T: DatabasePool + Clone + Debug + Sync + Send + 'static>(

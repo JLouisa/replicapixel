@@ -3,8 +3,15 @@ website.website_routes.auth_routes.login_partial %}
 
 <ul class="flex flex-col gap-4 p-4">
   <li class="close-menu-buttons"><a href="{{ studio_link | safe }}">Studio</a></li>
-  <li class="close-menu-buttons"><a href="#home-packs">Packs</a></li>
-  <li class="close-menu-buttons"><a href="#pricing">Pricing</a></li>
+  <li class="close-menu-buttons">
+    <a href="#home-packs">{{ t(key="nav-link-packs", lang=lang) }}</a>
+  </li>
+  <li>
+    <a href="#features" class="close-menu-buttons">{{ t(key="nav-link-features", lang=lang) }}</a>
+  </li>
+  <li class="close-menu-buttons">
+    <a href="#pricing">{{ t(key="nav-link-pricing", lang=lang) }}</a>
+  </li>
   {% if user %}
   <li id="nav-auth" class="close-menu-buttons">
     <a
@@ -13,8 +20,9 @@ website.website_routes.auth_routes.login_partial %}
       hx-target="#app"
       hx-push-url="{{ login_link }}"
       hx-swap="innerHTML"
-      >Logout</a
     >
+      {{ t(key="nav-button-logout", lang=lang) }}
+    </a>
   </li>
   {% else %}
   <li id="nav-auth" class="close-menu-buttons">
@@ -24,8 +32,9 @@ website.website_routes.auth_routes.login_partial %}
       hx-target="#app"
       hx-push-url="{{ login_link | safe }}"
       hx-swap="innerHTML"
-      >Login</a
+      >{{ t(key="nav-button-login", lang=lang) }}</a
     >
   </li>
   {% endif %}
+  <li>{% include "partials/parts/language_menu.html" %}</li>
 </ul>

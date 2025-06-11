@@ -1,0 +1,32 @@
+{% if user or is_ott %}
+<li id="nav-auth" class="close-menu-buttons">
+  <a
+    href="{{ logout_link | safe }}"
+    hx-get="{{ logout_partial_link }}"
+    hx-target="#app"
+    hx-push-url="{{ login_link }}"
+    {%
+    if
+    is_ott
+    %}
+    hx-swap-oob="true"
+    {%
+    endif
+    %}
+    hx-swap="innerHTML"
+  >
+    {{ t(key="nav-button-logout", lang=lang) }}
+  </a>
+</li>
+{% else %}
+<li id="nav-auth" class="close-menu-buttons">
+  <a
+    href="{{login_link | safe}}"
+    hx-get="{{ login_link_partial | safe }}"
+    hx-target="#app"
+    hx-push-url="{{ login_link | safe }}"
+    hx-swap="innerHTML"
+    >{{ t(key="nav-button-login", lang=lang) }}</a
+  >
+</li>
+{% endif %}

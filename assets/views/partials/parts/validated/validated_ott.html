@@ -1,4 +1,6 @@
 <!-- prettier-ignore -->
+{% set website = options.website %}
+{% set lang = options.language %}
 {% set studio_link = website.website_routes.dashboard_routes.base %}
 {% set login_link = website.website_routes.auth_routes.login %}
 {% set logout_partial_link = website.website_routes.auth_routes.logout_partial %}
@@ -6,6 +8,8 @@
 {% set checkout_prepare_link = website.website_routes.payment.payment_prepare_route %}
 
 {% include "partials/parts/validated/validate_navbar.html" %}
+
+{% include "partials/parts/validated/validate_navbar_mobile.html" %}
 
 {% include "partials/parts/validated/validate_hero_cta.html" %}
 

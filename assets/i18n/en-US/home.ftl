@@ -6,6 +6,8 @@ nav-link-features = Features
 nav-link-pricing = Pricing
 # Accessibility label for the mobile menu button
 nav-mobile-aria-open-menu = Open menu
+nav-button-logout = Logout
+nav-button-login = Login
 
 ## =================================
 ## Hero Section

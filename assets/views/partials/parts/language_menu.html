@@ -3,14 +3,14 @@
   <button
     @click="open = !open"
     type="button"
-    class="inline-flex items-center px-4 py-2 text-sm font-semibold {% if options.is_other %}border rounded-lg shadow-md border-base-300 bg-base-300 text-base-content hover:bg-base-200 hover:border-base-content{% endif %} transition"
+    class="cursor-pointer inline-flex items-center px-4 py-2 text-sm font-semibold {% if options.is_other %}border rounded-lg shadow-md border-base-300 bg-base-300 text-base-content hover:bg-base-200 hover:border-base-content{% endif %} transition"
     aria-expanded="true"
     aria-haspopup="true"
   >
     {% include "partials/svg/world.html" %} {# 🌐 #}
     <span class="ml-2" x-text="selected"></span>
     <svg
-      class="w-4 h-4 ml-2 -mr-1"
+      class="w-4 h-4 ml-2 -mr-1 hidden sm:inline"
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 20 20"
