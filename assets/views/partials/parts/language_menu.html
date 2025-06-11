@@ -1,3 +1,69 @@
+<div x-data class="relative inline-block text-left cursor-pointer">
+  <button
+    @click="$store.langSelector.toggle()"
+    type="button"
+    class="cursor-pointer inline-flex items-center px-4 py-2 text-sm font-semibold {% if options.is_other %}border rounded-lg shadow-md border-base-300 bg-base-300 text-base-content hover:bg-base-200 hover:border-base-content{% endif %} transition"
+    aria-expanded="true"
+    aria-haspopup="true"
+  >
+    {% include "partials/svg/world.html" %}
+    <span class="ml-2" x-text="$store.langSelector.selected"></span>
+    <svg
+      class="w-4 h-4 ml-2 -mr-1 hidden sm:inline"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 20 20"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M7 7l3-3 3 3m0 6l-3 3-3-3"
+      />
+    </svg>
+  </button>
+
+  <div
+    x-show="$store.langSelector.open"
+    x-cloak
+    @click.away="$store.langSelector.open = false"
+    x-transition
+    class="absolute right-0 z-50 mt-2 w-32 origin-top-right rounded-lg shadow-lg border border-base-300 bg-base-300 text-base-content"
+    role="menu"
+    aria-orientation="vertical"
+  >
+    <div class="py-1">
+      <a
+        @click.prevent="$store.langSelector.setLang('EN', 'en-US')"
+        class="block px-4 py-2 text-sm hover:bg-base-100"
+        >🇺🇸 English</a
+      >
+      <a
+        @click.prevent="$store.langSelector.setLang('ES', 'es-ES')"
+        class="block px-4 py-2 text-sm hover:bg-base-100"
+        >🇪🇸 Español</a
+      >
+      <a
+        @click.prevent="$store.langSelector.setLang('DE', 'de-DE')"
+        class="block px-4 py-2 text-sm hover:bg-base-100"
+        >🇩🇪 Deutsch</a
+      >
+      <a
+        @click.prevent="$store.langSelector.setLang('NL', 'nl-NL')"
+        class="block px-4 py-2 text-sm hover:bg-base-100"
+        >🇳🇱 Dutch</a
+      >
+      <a
+        @click.prevent="$store.langSelector.setLang('IT', 'it-IT')"
+        class="block px-4 py-2 text-sm hover:bg-base-100"
+        >🇮🇹 Italian</a
+      >
+    </div>
+  </div>
+</div>
+
+{#
 <div x-data="langSelector" class="relative inline-block text-left cursor-pointer">
   <!-- Dropdown Button -->
   <button
@@ -7,7 +73,7 @@
     aria-expanded="true"
     aria-haspopup="true"
   >
-    {% include "partials/svg/world.html" %} {# 🌐 #}
+    {% include "partials/svg/world.html" %} {# 🌐
     <span class="ml-2" x-text="selected"></span>
     <svg
       class="w-4 h-4 ml-2 -mr-1 hidden sm:inline"
@@ -101,3 +167,4 @@
     });
   </script>
 </div>
+#}

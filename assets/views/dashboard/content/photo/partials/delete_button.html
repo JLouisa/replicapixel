@@ -1,5 +1,6 @@
 {% set website_restore_link = options.website.website_routes.image.image_restore %} {% set
-website_base_link = options.website.website_routes.image.base %} {% if options.is_deleted %}
+website_base_link = options.website.website_routes.image.base %} {% if options.is_deleted %} {% set
+lang = options.language %}
 <button
   hx-delete="{{ website_restore_link | safe }}/{{ image.pid }}"
   hx-target="#container3-{{ image.pid }}"

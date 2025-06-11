@@ -1,5 +1,5 @@
 {% set website_favorite_link = options.website.website_routes.image.image_favorite %} {% set image =
-options.image %} {% if image.is_favorite %}
+options.image %} {% if image.is_favorite %} {% set lang = options.language %}
 <button
   id="fav-{{ image.pid }}"
   hx-patch="{{ website_favorite_link | safe }}/{{ image.pid }}"

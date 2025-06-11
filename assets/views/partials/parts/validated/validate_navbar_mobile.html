@@ -1,18 +1,10 @@
 {% if user or is_ott %}
-<li id="nav-auth" class="close-menu-buttons">
+<li id="nav-auth" class="close-menu-buttons" {% if is_ott %} hx-swap-oob="true" {% endif %}>
   <a
-    href="{{ logout_link | safe }}"
+    href="{{ logout_api_link | safe }}"
     hx-get="{{ logout_partial_link }}"
     hx-target="#app"
     hx-push-url="{{ login_link }}"
-    {%
-    if
-    is_ott
-    %}
-    hx-swap-oob="true"
-    {%
-    endif
-    %}
     hx-swap="innerHTML"
   >
     {{ t(key="nav-button-logout", lang=lang) }}

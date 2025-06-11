@@ -1,7 +1,8 @@
-{% set is_favorite = options.is_favorite %} {% set is_deleted = options.is_deleted %} {% set images
-= options.images %} {% set is_initial_load = options.is_initial_load %} {% for image in images %} {%
-if image.image_status == "Completed" or image.image_status == "Processing" %} {% set is_image_gen =
-options.is_image_gen %} {# COMPLETED IMAGE CELL #} {% if loop.last and not is_image_gen %}
+{% set lang = options.language %} {% set is_favorite = options.is_favorite %} {% set is_deleted =
+options.is_deleted %} {% set images = options.images %} {% set is_initial_load =
+options.is_initial_load %} {% for image in images %} {% if image.image_status == "Completed" or
+image.image_status == "Processing" %} {% set is_image_gen = options.is_image_gen %} {# COMPLETED
+IMAGE CELL #} {% if loop.last and not is_image_gen %}
 <div
   hx-get="{{ options.website.website_routes.image.api_image_infinite | safe }}/{{ image.pid }}{% if is_deleted %}?deleted=true{% endif %}{% if is_favorite %}?favorite=true{% endif %}"
   hx-trigger="intersect once"

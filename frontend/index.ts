@@ -17,6 +17,7 @@ declare global {
 enum Stores {
   Image = "image",
   Toast = "toast",
+  LangSelector = "langSelector",
   ImageGenForm = "imageGenForm",
   Uploader = "uploader",
   CreateModelForm = "createModelForm",
@@ -59,6 +60,44 @@ Alpine.store(Stores.Toast, {
     return this;
   },
 });
+
+interface LangStore {
+  open: boolean;
+  selected: string;
+  setLang(label: string, value: string): void;
+  toggle(): void;
+}
+
+Alpine.store(Stores.LangSelector, {
+  open: false,
+  selected: (() => {
+    const cookieLang = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("lang="))
+      ?.split("=")[1];
+
+    const codeMap: Record<string, string> = {
+      "en-US": "EN",
+      "es-ES": "ES",
+      "de-DE": "DE",
+      "nl-NL": "NL",
+      "it-IT": "IT",
+    };
+
+    return codeMap[cookieLang ?? "en-US"] ?? "EN";
+  })(),
+
+  toggle() {
+    this.open = !this.open;
+  },
+
+  setLang(label: string, value: string) {
+    this.selected = label;
+    this.open = false;
+    document.cookie = `lang=${value};path=/;max-age=31536000`;
+    window.location.reload(); // or HTMX swap, etc.
+  },
+} satisfies LangStore);
 
 interface CreateModelFormStore extends TrainingModelFormClass {
   name: string;

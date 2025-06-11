@@ -12,6 +12,7 @@ use crate::controllers::dashboard::WebsiteOptions;
 use crate::domain::domain_services::image_generation::ImageGenerationService;
 use crate::domain::url::Url;
 use crate::domain::website::Website;
+use crate::middleware::i18nv2::LangEngine;
 use crate::models::_entities::sea_orm_active_enums::{ImageFormat, ImageSize, Status};
 use crate::models::images::{
     AltText, ImageNew, ImageNewList, ImagesModelList, SysPrompt, UserPrompt,
@@ -377,6 +378,7 @@ pub async fn generate(
     Extension(website): Extension<Website>,
     Extension(fal_ai_client): Extension<FalAiClient>,
     ViewEngine(v): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
     Json(request): Json<ImageGenRequestParams>,
 ) -> Result<Response> {
     // 0. Validate request payload format
@@ -395,6 +397,7 @@ pub async fn generate(
 
     let website_options = WebsiteOptions::new()
         .website(&website)
+        .language(&lang)
         .images(&saved_images)
         .user_credits(updated_credits.into())
         .is_image_gen();
@@ -443,6 +446,7 @@ pub async fn check_img(
     Extension(website): Extension<Website>,
     Extension(s3_client): Extension<AwsS3>,
     ViewEngine(v): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
 ) -> Result<Response> {
     let (user, image) = load_user_and_image(&ctx.db, &auth.claims.pid, &pid).await?;
 
@@ -464,6 +468,7 @@ pub async fn check_img(
 
         let website_options = WebsiteOptions::new()
             .website(&website)
+            .language(&lang)
             .images(&image_list)
             .user_credits(user_credits.into())
             .is_image_gen();
@@ -477,6 +482,7 @@ pub async fn check_img(
 
         let website_options = WebsiteOptions::new()
             .website(&website)
+            .language(&lang)
             .user_credits(user_credits.into())
             .is_image_gen();
 
@@ -495,6 +501,7 @@ async fn image_infinite_handler(
     Extension(s3_client): Extension<AwsS3>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
     let user = load_user(&ctx.db, &user_pid).await?;
@@ -503,7 +510,10 @@ async fn image_infinite_handler(
         .into();
     let images = images.populate_s3_pre_urls(&s3_client, &cache).await;
 
-    let website_options = WebsiteOptions::new().website(&website).images(&images);
+    let website_options = WebsiteOptions::new()
+        .website(&website)
+        .language(&lang)
+        .images(&images);
 
     views::images::img_infinite_loading(&v, &website_options)
 }
@@ -515,13 +525,17 @@ pub async fn favorite_toggle(
     State(ctx): State<AppContext>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
 ) -> Result<Response> {
     let (user, img) = load_user_and_image(&ctx.db, &auth.claims.pid, &img_pid).await?;
     if img.user_id != user.id {
         return Ok((StatusCode::UNAUTHORIZED).into_response());
     }
     let image: ImageView = img.favorite_image_toggle(&ctx.db).await?.into();
-    let website_options = WebsiteOptions::new().website(&website).image(&image);
+    let website_options = WebsiteOptions::new()
+        .website(&website)
+        .language(&lang)
+        .image(&image);
     views::images::favorite(&v, &website_options)
 }
 
@@ -560,6 +574,7 @@ pub async fn get_one(
     Path(id): Path<Uuid>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
 ) -> Result<Response> {
     let user = UserModel::find_by_pid(&ctx.db, &auth.claims.pid).await?;
     let image = load_item_pid(&ctx, id).await?;
@@ -567,7 +582,7 @@ pub async fn get_one(
         return Ok((StatusCode::UNAUTHORIZED).into_response());
     }
     let image_view: ImageView = image.into();
-    let website_options = WebsiteOptions::new().image(&image_view);
+    let website_options = WebsiteOptions::new().image(&image_view).language(&lang);
     views::images::show(&v, &website_options)
 }
 

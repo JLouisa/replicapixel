@@ -1,5 +1,7 @@
 {% set login_link = website.website_routes.auth_routes.login %} {% set login_link_partial =
-website.website_routes.auth_routes.login_partial %}
+website.website_routes.auth_routes.login_partial %} {% set logout_api_link =
+website.website_routes.auth_routes.api_logout %} {% set logout_partial_link =
+website.website_routes.auth_routes.logout_partial | safe %}
 
 <ul class="flex flex-col gap-4 p-4">
   <li class="close-menu-buttons"><a href="{{ studio_link | safe }}">Studio</a></li>
@@ -15,7 +17,7 @@ website.website_routes.auth_routes.login_partial %}
   {% if user %}
   <li id="nav-auth" class="close-menu-buttons">
     <a
-      href="{{ logout_link | safe }}"
+      href="{{ logout_api_link | safe }}"
       hx-get="{{ logout_partial_link }}"
       hx-target="#app"
       hx-push-url="{{ login_link }}"
