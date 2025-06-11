@@ -3,9 +3,11 @@
     <span class="text-primary"> {% include "partials/svg/bell.html" %} </span>
     <div>
       <label for="email_notifications_toggle" class="font-medium cursor-pointer"
-        >Marketing emails</label
+        >{{ t(key="settings-marketing-emails-label", lang=lang) }}</label
       >
-      <p class="text-sm text-base-content/60">Receive emails about new products and features.</p>
+      <p class="text-sm text-base-content/60">
+        {{ t(key="settings-marketing-emails-description", lang=lang) }}
+      </p>
     </div>
   </div>
   <div>

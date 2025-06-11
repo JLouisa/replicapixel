@@ -15,6 +15,8 @@
 {% set privacy_link = website.website_routes.policy.privacy %}
 {% set terms_link = website.website_routes.policy.terms %}
 {% set cookie_link = website.website_routes.policy.cookie %}
+{% set cookie_link = website.website_routes.policy.cookie %}
+{% set cookie_link = website.website_routes.policy.cookie %}
 
 <div
   class="flex flex-col gap-4 items-center justify-center z-2 {% if not is_home %}mt-16{% endif %}"
@@ -46,9 +48,9 @@
                 <p
                   class="text-gray-black-100 font-inter md:text-start text-base leading-[1.625rem]"
                 >
-                  Transform your images with AI-powered precision.
+                  {{ t(key="footer-tagline-1", lang=lang) }}
                   <br class="md:hidden" />
-                  No skills required, just stunning results.
+                  {{ t(key="footer-tagline-2", lang=lang) }}
                 </p>
               </div>
               <div class="flex items-center justify-center md:justify-start gap-8 w-full">
@@ -60,55 +62,89 @@
 
             <div class="flex flex-1 flex-wrap sm:flex-nowrap justify-between gap-4 md:gap-8 z-2">
               <ul class="flex flex-col gap-4">
-                <li class="text-w font-brico text-2xl font-bold">Company</li>
-                <li class="text-gray-black-50 text-base"><a href="#features">Features</a></li>
+                <li class="text-w font-brico text-2xl font-bold">
+                  {{ t(key="footer-col-company", lang=lang) }}
+                </li>
                 <li class="text-gray-black-50 text-base">
-                  <a href="{{studio_link | safe}}">Studio</a>
+                  <a href="#features">{{ t(key="footer-link-features", lang=lang) }}</a>
+                </li>
+                <li class="text-gray-black-50 text-base">
+                  <a href="{{studio_link | safe}}">{{ t(key="footer-link-studio", lang=lang) }}</a>
                 </li>
               </ul>
               <ul class="flex flex-col gap-4">
-                <li class="text-w font-brico text-2xl font-bold">Product</li>
-                <li class="text-gray-black-50 text-base">
-                  <a href="#pricing" target="_blank">Pricing</a>
+                <li class="text-w font-brico text-2xl font-bold">
+                  {{ t(key="footer-col-product", lang=lang) }}
                 </li>
                 <li class="text-gray-black-50 text-base">
-                  <a href="{{api_link | safe}}" target="_blank">API</a>
+                  <a href="#pricing" target="_blank"
+                    >{{ t(key="footer-link-pricing", lang=lang) }}</a
+                  >
                 </li>
                 <li class="text-gray-black-50 text-base">
-                  <a href="{{app_link | safe}}" target="_blank">Apps</a>
-                </li>
-              </ul>
-              <ul class="flex flex-col gap-4">
-                <li class="text-w font-brico text-2xl font-bold">Resources</li>
-                <li class="text-gray-black-50 text-base">
-                  <a href="{{documentation_link | safe}}" target="_blank">Documentation</a>
+                  <a href="{{api_link | safe}}" target="_blank"
+                    >{{ t(key="footer-link-api", lang=lang) }}</a
+                  >
                 </li>
                 <li class="text-gray-black-50 text-base">
-                  <a href="{{guides_link | safe}}" target="_blank">Guides</a>
-                </li>
-                <li class="text-gray-black-50 text-base">
-                  <a href="{{community_link | safe}}">Community</a>
-                </li>
-                <li class="text-gray-black-50 text-base">
-                  <a href="{{support_link | safe}}" target="_blank">Support</a>
+                  <a href="{{app_link | safe}}" target="_blank"
+                    >{{ t(key="footer-link-apps", lang=lang) }}</a
+                  >
                 </li>
               </ul>
               <ul class="flex flex-col gap-4">
-                <li class="text-w font-brico text-2xl font-bold">Legal</li>
-                <li class="text-gray-black-50 text-base">
-                  <a href="{{terms_link | safe}}" target="_blank">Terms</a>
+                <li class="text-w font-brico text-2xl font-bold">
+                  {{ t(key="footer-col-resources", lang=lang) }}
                 </li>
                 <li class="text-gray-black-50 text-base">
-                  <a href="{{privacy_link | safe}}" target="_blank">Privacy</a>
+                  <a href="{{documentation_link | safe}}" target="_blank"
+                    >{{ t(key="footer-link-documentation", lang=lang) }}</a
+                  >
                 </li>
                 <li class="text-gray-black-50 text-base">
-                  <a href="{{cookie_link | safe}}" target="_blank">Cookie</a>
+                  <a href="{{guides_link | safe}}" target="_blank"
+                    >{{ t(key="footer-link-guides", lang=lang) }}</a
+                  >
                 </li>
                 <li class="text-gray-black-50 text-base">
-                  <a href="{{GDPR_link | safe}}" target="_blank">GDPR</a>
+                  <a href="{{community_link | safe}}"
+                    >{{ t(key="footer-link-community", lang=lang) }}</a
+                  >
                 </li>
                 <li class="text-gray-black-50 text-base">
-                  <a href="{{licenses_link | safe}}">Licenses</a>
+                  <a href="{{support_link | safe}}" target="_blank"
+                    >{{ t(key="footer-link-support", lang=lang) }}</a
+                  >
+                </li>
+              </ul>
+              <ul class="flex flex-col gap-4">
+                <li class="text-w font-brico text-2xl font-bold">
+                  {{ t(key="footer-col-legal", lang=lang) }}
+                </li>
+                <li class="text-gray-black-50 text-base">
+                  <a href="{{terms_link | safe}}" target="_blank"
+                    >{{ t(key="footer-link-terms", lang=lang) }}</a
+                  >
+                </li>
+                <li class="text-gray-black-50 text-base">
+                  <a href="{{privacy_link | safe}}" target="_blank"
+                    >{{ t(key="footer-link-privacy", lang=lang) }}</a
+                  >
+                </li>
+                <li class="text-gray-black-50 text-base">
+                  <a href="{{cookie_link | safe}}" target="_blank"
+                    >{{ t(key="footer-link-cookie", lang=lang) }}</a
+                  >
+                </li>
+                <li class="text-gray-black-50 text-base">
+                  <a href="{{GDPR_link | safe}}" target="_blank"
+                    >{{ t(key="footer-link-gdpr", lang=lang) }}</a
+                  >
+                </li>
+                <li class="text-gray-black-50 text-base">
+                  <a href="{{licenses_link | safe}}"
+                    >{{ t(key="footer-link-licenses", lang=lang) }}</a
+                  >
                 </li>
               </ul>
             </div>
@@ -120,19 +156,24 @@
       </div>
       <div class="flex flex-col sm:flex-row items-center justify-between self-stretch shrink-0">
         <div class="text-gray-black-50 text-left font-inter text-base leading-5 p-4 sm:p-0">
-          © 2025 {{ website_name}}.
-          <br class="sm:hidden" />
-          All rights reserved.
+          {{ t(key="footer-copyright-prefix", lang=lang) }} {{ website_name }}{{
+          t(key="footer-copyright-suffix", lang=lang) }}
         </div>
         <ul class="flex flex-row gap-10 items-center justify-start shrink-0 text-base font-inter">
           <li class="text-gray-black-50 text-base">
-            <a href="{{cookie_link | safe}}" target="_blank">Cookie</a>
+            <a href="{{cookie_link | safe}}" target="_blank"
+              >{{ t(key="footer-bottom-link-cookie", lang=lang) }}</a
+            >
           </li>
           <li class="text-gray-black-50 text-base">
-            <a href="{{terms_link | safe}}" target="_blank">Terms & Conditions</a>
+            <a href="{{terms_link | safe}}" target="_blank"
+              >{{ t(key="footer-bottom-link-terms", lang=lang) }}</a
+            >
           </li>
           <li class="text-gray-black-50 text-base">
-            <a href="{{privacy_link | safe}}" target="_blank">Privacy Policy</a>
+            <a href="{{privacy_link | safe}}" target="_blank"
+              >{{ t(key="footer-bottom-link-privacy", lang=lang) }}</a
+            >
           </li>
         </ul>
       </div>

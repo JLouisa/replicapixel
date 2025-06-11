@@ -26,7 +26,9 @@ website.website_routes.dashboard_routes.sidebar.packs %}
           d="M7 16l-4-4m0 0l4-4m-4 4h18"
         ></path>
       </svg>
-      <span class="ml-1 font-bold text-lg text-grn-to">Back</span>
+      <span class="ml-1 font-bold text-lg text-grn-to"
+        >{{ t(key="pack-back-button", lang=lang) }}</span
+      >
     </a>
   </div>
 </div>
@@ -47,7 +49,9 @@ website.website_routes.dashboard_routes.sidebar.packs %}
         </div>
         <!-- Product Details -->
         <div class="w-full md:w-1/2 px-4 flex flex-col">
-          <h2 class="text-5xl font-bold mb-2 text-center sm:text-start">{{ pack.title }} Pack</h2>
+          <h2 class="text-5xl font-bold mb-2 text-center sm:text-start">
+            {{ pack.title }} {{ t(key="pack-title-suffix", lang=lang) }}
+          </h2>
           <div class="flex items-center justify-between">
             {% include "partials/svg/star.html" %} {% include "partials/svg/star.html" %} {% include
             "partials/svg/star.html" %} {% include "partials/svg/star.html" %} {% include
@@ -55,9 +59,13 @@ website.website_routes.dashboard_routes.sidebar.packs %}
           </div>
           <div class="mb-4 flex justify-end items-center gap-2">
             {% if pack.popular %}
-            <div class="badge badge-dash badge-secondary">Popular</div>
+            <div class="badge badge-dash badge-secondary">
+              {{ t(key="pack-badge-popular", lang=lang) }}
+            </div>
             {% endif %}
-            <div class="badge badge-dash badge-info">{{ pack.used }}x Used</div>
+            <div class="badge badge-dash badge-info">
+              {{ pack.used }}{{ t(key="pack-badge-used-suffix", lang=lang) }}
+            </div>
           </div>
           <div class="w-full md:w-1/2 px-4 mb-8 md:hidden">
             <!-- Main Image -->
@@ -80,15 +88,17 @@ website.website_routes.dashboard_routes.sidebar.packs %}
             </div>
           </div>
           <div class="flex-start">
-            <h3 class="text-lg font-semibold mb-2">Key Features:</h3>
+            <h3 class="text-lg font-semibold mb-2">
+              {{ t(key="pack-features-title", lang=lang) }}
+            </h3>
             <ul class="list-disc list-inside">
               {% if pack.features | length > 0 %} {% for feature in pack.features %}
               <li>{{feature}}</li>
               {% endfor %} {% else %}
-              <li>High-quality visuals</li>
-              <li>Creative direction built-in</li>
-              <li>Variety across every shoot</li>
-              <li>Effortless content creation</li>
+              <li>{{ t(key="pack-features-default-1", lang=lang) }}</li>
+              <li>{{ t(key="pack-features-default-2", lang=lang) }}</li>
+              <li>{{ t(key="pack-features-default-3", lang=lang) }}</li>
+              <li>{{ t(key="pack-features-default-4", lang=lang) }}</li>
               {% endif %}
             </ul>
           </div>
@@ -100,7 +110,7 @@ website.website_routes.dashboard_routes.sidebar.packs %}
               hx-push-url="{{pack_link |safe}}"
               class="btn btn-secondary text-black w-full mt-4 sm:mt-2"
             >
-              Use Pack
+              {{ t(key="pack-cta-button", lang=lang) }}
             </button>
           </div>
         </div>

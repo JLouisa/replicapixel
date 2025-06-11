@@ -1,5 +1,6 @@
 use super::domain_services::image_generation::ImageGenerationError;
 use crate::{
+    domain::cookie::CookieError,
     models::join::user_credits_models::JoinError,
     service::{
         aws::s3::AwsError,
@@ -13,6 +14,32 @@ use crate::{
 use axum::http::StatusCode;
 use loco_rs::controller::ErrorDetail;
 use loco_rs::prelude::Error as LocoError;
+
+impl From<CookieError> for LocoError {
+    fn from(err: CookieError) -> Self {
+        tracing::error!(error.cause = ?err, "Stripe client error occurred");
+
+        match err {
+            CookieError::JwtCreationError(e) => LocoError::CustomError(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                ErrorDetail::new("Cookie Creation Error", &e.to_string()),
+            ),
+            CookieError::TokenCreationError(e) => LocoError::CustomError(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                ErrorDetail::new("Cookie Creation Error", &e.to_string()),
+            ),
+            CookieError::MissingConfig => LocoError::InternalServerError,
+            CookieError::InvalidLanguage => LocoError::CustomError(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                ErrorDetail::new("Cookie Lang Creation Error", "Invalid language"),
+            ),
+            CookieError::Unknown => LocoError::CustomError(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                ErrorDetail::new("Unknown cookie error", "Unknown cookie error"),
+            ),
+        }
+    }
+}
 
 impl From<StripeClientError> for LocoError {
     fn from(err: StripeClientError) -> Self {

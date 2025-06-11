@@ -1,6 +1,7 @@
 #![allow(clippy::missing_errors_doc)]
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
+use crate::middleware::i18nv2::LangEngine;
 use crate::views;
 use crate::{controllers::dashboard::WebsiteOptions, domain::website::Website};
 use axum::{debug_handler, Extension};
@@ -53,8 +54,9 @@ pub fn routes() -> Routes {
 pub async fn model_consent(
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
-    let website_options: WebsiteOptions = WebsiteOptions::new().website(&website);
+    let website_options: WebsiteOptions = WebsiteOptions::new().website(&website).language(&lang);
     views::policy::model_consent(v, &website_options)
 }
 
@@ -62,8 +64,9 @@ pub async fn model_consent(
 pub async fn cookie(
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
-    let website_options: WebsiteOptions = WebsiteOptions::new().website(&website);
+    let website_options: WebsiteOptions = WebsiteOptions::new().website(&website).language(&lang);
     views::policy::cookie(v, &website_options)
 }
 
@@ -71,8 +74,9 @@ pub async fn cookie(
 pub async fn terms(
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
-    let website_options: WebsiteOptions = WebsiteOptions::new().website(&website);
+    let website_options: WebsiteOptions = WebsiteOptions::new().website(&website).language(&lang);
     views::policy::terms(v, &website_options)
 }
 
@@ -80,7 +84,8 @@ pub async fn terms(
 pub async fn privacy(
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
-    let website_options: WebsiteOptions = WebsiteOptions::new().website(&website);
+    let website_options: WebsiteOptions = WebsiteOptions::new().website(&website).language(&lang);
     views::policy::privacy(v, &website_options)
 }

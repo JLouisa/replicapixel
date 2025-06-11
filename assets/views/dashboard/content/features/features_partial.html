@@ -1,15 +1,17 @@
 {% set features = options.features %} {% set website = options.website %} {% set user = options.user
-%}
+%} {% set lang = options.language %}
 <div>
   <div class="max-w-7xl mx-auto">
     <div class="flex items-center justify-center mb-8">
-      <h1 class="text-2xl font-bold md:text-3xl">Features</h1>
+      <h1 class="text-2xl font-bold md:text-3xl">{{ t(key="features-page-title", lang=lang) }}</h1>
     </div>
 
     <div class="flex flex-col md:flex-row gap-8">
       <div class="card bg-base-100 shadow-xl max-h-96">
         <div class="card-body">
-          <h2 class="card-title text-xl font-semibold mb-4">Suggest a Feature</h2>
+          <h2 class="card-title text-xl font-semibold mb-4">
+            {{ t(key="features-card-title", lang=lang) }}
+          </h2>
           {% include "dashboard/content/features/feature_form.html" %}
         </div>
       </div>
@@ -17,12 +19,14 @@
       <div class="space-y-6">
         {% for feature in features %} {% include "dashboard/content/features/feature_piece.html" %}
         {% endfor %} {% if features | length == 0 %}
-        <div class="text-center text-base-content/60 p-10">No features suggested yet.</div>
+        <div class="text-center text-base-content/60 p-10">
+          {{ t(key="features-empty-state-message", lang=lang) }}
+        </div>
         {% endif %}
       </div>
     </div>
   </div>
   <script>
-    updatePageTitle("ReplicaPixel | Features");
+    updatePageTitle("{{ t(key='features-script-page-title', lang=lang) }}");
   </script>
 </div>

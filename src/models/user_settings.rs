@@ -1,6 +1,8 @@
 use loco_rs::prelude::*;
 use sea_orm::{entity::prelude::*, Condition};
 
+use crate::models::_entities::sea_orm_active_enums::Language;
+
 pub use super::_entities::user_settings::{ActiveModel, Entity, Model};
 use super::_entities::{sea_orm_active_enums::ThemePreference, user_settings};
 use loco_rs::model::ModelError;
@@ -74,6 +76,15 @@ impl Model {
         new.theme = ActiveValue::set(new_bool);
         let settings = new.update(db).await?;
         Ok(settings)
+    }
+    pub async fn set_language_preference(
+        &self,
+        db: &DatabaseConnection,
+        lang: &Language,
+    ) -> ModelResult<Model> {
+        let mut settings = self.clone().into_active_model();
+        settings.language = ActiveValue::set(lang.clone());
+        Ok(settings.update(db).await?)
     }
 }
 

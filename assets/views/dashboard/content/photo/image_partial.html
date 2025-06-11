@@ -69,7 +69,7 @@ options.is_image_gen %} {# COMPLETED IMAGE CELL #} {% if loop.last and not is_im
     class="relative select-none flex items-center justify-center aspect-square rounded-lg shadow-md overflow-hidden bg-neutral animate-pulse"
   >
     {% include "partials/svg/placeholder_img.html" %}
-    <span class="sr-only">Loading...</span>
+    <span class="sr-only">{{ t(key="sr-loading", lang=lang) }}</span>
   </div>
   {% endif %} {% endfor %} {# Credits OOB Swap #} {% if not is_initial_load and credits %}
   <span hx-swap-oob="true" id="user_credits" class="ml-1">{{ credits.credit_amount }}</span>

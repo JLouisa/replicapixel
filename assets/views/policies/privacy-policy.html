@@ -1,16 +1,19 @@
 {% set website = options.website %} {% set cookie_link = website.website_routes.policy.cookie %} {%
 set website_name = website.website_basic_info.name %} {% set website_site_link =
 website.website_basic_info.site %} {% set website_domain = website.website_basic_info.site_domain %}
+{% set lang = options.language %}
 
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{{ website_name }} - {{ website_name }} Privacy Policy</title>
+    <title>
+      {{ website_name }} - {{ website_name }} {{ t(key="privacy-page-title-suffix", lang=lang) }}
+    </title>
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico" />
     <style>
-      /* Headings */
+      /* Styles are preserved as in the original */
       .privacy-title,
       .privacy-section-title,
       .privacy-subtitle,
@@ -21,7 +24,6 @@ website.website_basic_info.site %} {% set website_domain = website.website_basic
         font-family: "Roboto Condensed", sans-serif;
         color: #000;
       }
-
       .privacy-title {
         font-size: 64px;
         font-style: normal;
@@ -29,51 +31,43 @@ website.website_basic_info.site %} {% set website_domain = website.website_basic
         line-height: 70px;
         letter-spacing: -0.2px;
       }
-
       .privacy-section-title {
-        font-size: 54px; /* Adjusted for better hierarchy */
+        font-size: 54px;
         font-style: normal;
         font-weight: 600;
-        line-height: 60px; /* Adjusted */
+        line-height: 60px;
         letter-spacing: -0.2px;
-        margin-top: 30px; /* Added margin */
-        border-bottom: 1px solid #eee; /* Added separator */
-        padding-bottom: 5px; /* Added padding */
+        margin-top: 30px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 5px;
       }
-
       .privacy-subtitle {
-        font-size: 28px; /* Adjusted for better hierarchy */
+        font-size: 28px;
         font-style: normal;
         font-weight: 600;
-        line-height: 36px; /* Adjusted */
-        letter-spacing: -0.1px; /* Adjusted */
-        margin-top: 20px; /* Added margin */
+        line-height: 36px;
+        letter-spacing: -0.1px;
+        margin-top: 20px;
       }
-
-      /* Paragraphs */
       .privacy-text {
         font-size: 16px;
         font-style: normal;
         font-weight: 400;
         line-height: 24px;
         letter-spacing: 0.128px;
-        margin-bottom: 15px; /* Added spacing */
+        margin-bottom: 15px;
       }
-
-      /* Lists */
       .privacy-list {
-        list-style: disc; /* Changed to standard disc */
-        margin-left: 20px; /* Added indentation */
-        margin-bottom: 15px; /* Added spacing */
+        list-style: disc;
+        margin-left: 20px;
+        margin-bottom: 15px;
       }
       .privacy-list-item {
-        margin-bottom: 10px; /* Added spacing between items */
+        margin-bottom: 10px;
       }
       .privacy-list-item p {
-        margin-bottom: 0; /* Remove extra margin inside list items */
+        margin-bottom: 0;
       }
-
-      /* Table styling */
       .uc-privacy-container table {
         width: 100%;
         border-collapse: collapse;
@@ -84,34 +78,30 @@ website.website_basic_info.site %} {% set website_domain = website.website_basic
         border: 1px solid #ddd;
         padding: 8px;
         text-align: left;
-        vertical-align: top; /* Align content top */
+        vertical-align: top;
       }
       .uc-privacy-container th {
         background-color: #f2f2f2;
         font-weight: bold;
       }
       .uc-privacy-container td ul {
-        margin-left: 15px; /* Indent lists within table cells */
+        margin-left: 15px;
         padding-left: 0;
         margin-bottom: 0;
       }
       .uc-privacy-container td li {
         margin-bottom: 5px;
       }
-
-      /* General container */
       .uc-privacy-container {
-        max-width: 900px; /* Limit width for readability */
-        margin: 20px auto; /* Center container */
+        max-width: 900px;
+        margin: 20px auto;
         padding: 20px;
       }
-
       hr {
         margin: 30px 0;
         border: 0;
         border-top: 1px solid #eee;
       }
-
       .important-note {
         background-color: #fff3cd;
         border-left: 5px solid #ffeeba;
@@ -122,24 +112,17 @@ website.website_basic_info.site %} {% set website_domain = website.website_basic
   </head>
   <body>
     <div class="uc-privacy-container">
-      <h1 class="privacy-title">Privacy Policy</h1>
-      <p class="privacy-text"><strong>Effective Date:</strong> 03 June 2025</p>
-      <p class="privacy-text"><strong>Last Updated:</strong> 03 June 2025</p>
+      <h1 class="privacy-title">{{ t(key="privacy-h1", lang=lang) }}</h1>
+      <p class="privacy-text">
+        <strong>{{ t(key="privacy-effective-date-label", lang=lang) }}</strong> {{
+        t(key="privacy-effective-date-value", lang=lang) }}
+      </p>
+      <p class="privacy-text">
+        <strong>{{ t(key="privacy-last-updated-label", lang=lang) }}</strong> {{
+        t(key="privacy-last-updated-value", lang=lang) }}
+      </p>
 
-      {#
-      <div class="important-note">
-        <p class="privacy-text">
-          <strong>Please Note:</strong> This Privacy Policy is provided as a template. It is
-          essential to have it reviewed by a legal professional qualified in data protection law
-          (specifically GDPR and requirements like Google's API Services User Data Policy) to ensure
-          it accurately reflects your data processing activities and complies with all legal
-          requirements for {{ website_name }} and the {{ website_name }} application. Ensure all
-          placeholders `[...]` are accurately filled.
-        </p>
-      </div>
-      #}
-
-      <h2 class="privacy-section-title">1. Introduction & Who We Are</h2>
+      <h2 class="privacy-section-title">{{ t(key="privacy-s1-h2", lang=lang) }}</h2>
       <p class="privacy-text">
         Welcome to {{ website_name }}! This Privacy Policy explains how
         <strong>{{ website_name }}"</strong> ("we", "us", "our") collects, uses, shares, and
@@ -150,14 +133,9 @@ website.website_basic_info.site %} {% set website_domain = website.website_basic
         our application.
       </p>
       <p class="privacy-text">
-        <strong>{{ website_name }}</strong>, located at Rotterdam, The Netherlands, is the
-        <strong>Data Controller</strong> responsible for the processing of your personal data under
-        the General Data Protection Regulation (GDPR).
+        <strong>{{ website_name }}</strong>, {{ t(key="privacy-s1-p2", lang=lang) }}
       </p>
-      <p class="privacy-text">
-        Our commitment is to protect your privacy and handle your data responsibly and
-        transparently. Our primary goals in processing personal information include:
-      </p>
+      <p class="privacy-text">{{ t(key="privacy-s1-p3", lang=lang) }}</p>
       <ul class="privacy-list">
         <li class="privacy-list-item">
           <p class="privacy-text">
@@ -166,32 +144,19 @@ website.website_basic_info.site %} {% set website_domain = website.website_basic
           </p>
         </li>
         <li class="privacy-list-item">
-          <p class="privacy-text">
-            Managing your user account (which may include authentication via Google OAuth2),
-            processing payments (if applicable), and providing customer support.
-          </p>
+          <p class="privacy-text">{{ t(key="privacy-s1-li2", lang=lang) }}</p>
         </li>
         <li class="privacy-list-item">
-          <p class="privacy-text">
-            Improving and personalizing the Service, including enhancing our AI models (often using
-            anonymized or aggregated data).
-          </p>
+          <p class="privacy-text">{{ t(key="privacy-s1-li3", lang=lang) }}</p>
         </li>
         <li class="privacy-list-item">
-          <p class="privacy-text">Ensuring the security and integrity of our Service.</p>
+          <p class="privacy-text">{{ t(key="privacy-s1-li4", lang=lang) }}</p>
         </li>
         <li class="privacy-list-item">
-          <p class="privacy-text">
-            Complying with legal obligations, including those related to data accessed via Google
-            APIs, and communicating with you about the Service.
-          </p>
+          <p class="privacy-text">{{ t(key="privacy-s1-li5", lang=lang) }}</p>
         </li>
       </ul>
-      <p class="privacy-text">
-        We adhere to GDPR, the Google API Services User Data Policy (see Section 14), and other
-        relevant regulations to protect your data against unauthorized access, disclosure,
-        alteration, and destruction.
-      </p>
+      <p class="privacy-text">{{ t(key="privacy-s1-p4", lang=lang) }}</p>
       <ul class="privacy-list">
         <li class="privacy-list-item">
           <p class="privacy-text">
@@ -205,10 +170,8 @@ website.website_basic_info.site %} {% set website_domain = website.website_basic
         Your privacy is our priority. This commitment extends to our collaboration with third-party
         services involved in delivering {{ website_name }}.
       </p>
-
       <hr />
-
-      <h2 class="privacy-section-title">2. Scope of this Policy</h2>
+      <h2 class="privacy-section-title">{{ t(key="privacy-s2-h2", lang=lang) }}</h2>
       <p class="privacy-text">
         This policy applies to all personal data processed by {{ website_name }} in relation to your
         use of the {{ website_name }} Service, including data collected via our website, the
@@ -216,62 +179,32 @@ website.website_basic_info.site %} {% set website_domain = website.website_basic
         them), and communications with us. It covers website visitors, registered users,
         subscribers, and anyone interacting with the Service.
       </p>
-
       <hr />
-
-      <h2 class="privacy-section-title">3. Information We Collect</h2>
+      <h2 class="privacy-section-title">{{ t(key="privacy-s3-h2", lang=lang) }}</h2>
       <p class="privacy-text">
         We collect different types of information depending on how you interact with {{ website_name
         }}:
       </p>
-      <h3 class="privacy-subtitle">3.1. Information You Provide Directly</h3>
+      <h3 class="privacy-subtitle">{{ t(key="privacy-s3-1-h3", lang=lang) }}</h3>
       <ul class="privacy-list">
-        <li class="privacy-list-item">
-          <strong>Account Information:</strong> When you register, we collect information such as
-          your name, email address, and password. If you register or log in using Google OAuth2, we
-          will collect information as described in Section 3.4.
-        </li>
-        <li class="privacy-list-item">
-          <strong>Payment Information:</strong> If you subscribe to paid features, we (or our
-          third-party payment processor) collect billing details like your name, address, and
-          payment card information. We do not store your full payment card details ourselves.
-        </li>
+        <li class="privacy-list-item">{{ t(key="privacy-s3-1-li1", lang=lang) }}</li>
+        <li class="privacy-list-item">{{ t(key="privacy-s3-1-li2", lang=lang) }}</li>
         <li class="privacy-list-item">
           <strong>Input Data:</strong> We collect the prompts, text descriptions, images, or other
           data you provide as input to generate content using {{ website_name }}'s AI features
           (e.g., Lora models). This may include data you authorize us to access from your Google
           services (see Section 3.4).
         </li>
-        <li class="privacy-list-item">
-          <strong>Communications:</strong> If you contact us for support or feedback, we collect the
-          information contained in your communications (e.g., email content, support ticket
-          details).
-        </li>
+        <li class="privacy-list-item">{{ t(key="privacy-s3-1-li4", lang=lang) }}</li>
       </ul>
-      <h3 class="privacy-subtitle">3.2. Information Collected Automatically</h3>
+      <h3 class="privacy-subtitle">{{ t(key="privacy-s3-2-h3", lang=lang) }}</h3>
       <ul class="privacy-list">
-        <li class="privacy-list-item">
-          <strong>Usage Data:</strong> Information about how you interact with the Service, such as
-          features used, content generated, time spent, clicks, settings preferences, and error
-          logs.
-        </li>
-        <li class="privacy-list-item">
-          <strong>Device and Connection Information:</strong> Technical data including your IP
-          address, browser type and version, operating system, device identifiers (where
-          applicable), and general location derived from your IP address.
-        </li>
-        <li class="privacy-list-item">
-          <strong>Cookies and Tracking Technologies:</strong> We use cookies and similar
-          technologies to operate the Service, understand usage, and for analytics. See Section 9
-          ("Cookies") for details.
-        </li>
+        <li class="privacy-list-item">{{ t(key="privacy-s3-2-li1", lang=lang) }}</li>
+        <li class="privacy-list-item">{{ t(key="privacy-s3-2-li2", lang=lang) }}</li>
+        <li class="privacy-list-item">{{ t(key="privacy-s3-2-li3", lang=lang) }}</li>
       </ul>
-      <h3 class="privacy-subtitle">3.4. Information Received via Google OAuth2 (If Applicable)</h3>
-      <p class="privacy-text">
-        If you choose to connect your Google account to our Service using OAuth2 (e.g., for signing
-        in or accessing Google services like Google Drive), we will collect and process information
-        from Google based on the permissions you grant. This may include:
-      </p>
+      <h3 class="privacy-subtitle">{{ t(key="privacy-s3-4-h3", lang=lang) }}</h3>
+      <p class="privacy-text">{{ t(key="privacy-s3-4-p1", lang=lang) }}</p>
       <ul class="privacy-list">
         <li class="privacy-list-item">
           <strong>Your basic Google profile information:</strong> This includes your email address,
@@ -279,60 +212,37 @@ website.website_basic_info.site %} {% set website_domain = website.website_basic
           to personalize your experience within {{ website_name }}.
         </li>
         <li class="privacy-list-item">
-          <strong>If you connect Google Drive:</strong>
+          <strong>{{ t(key="privacy-s3-4-li2-title", lang=lang) }}</strong>
           <ul>
             <li style="list-style-type: circle; margin-left: 20px">
-              To allow you to use files from your Google Drive as input, we may access the names,
-              identifiers, and content of specific files you explicitly select within our
-              application. This access is typically read-only for the selected files.
+              {{ t(key="privacy-s3-4-li2-sub1", lang=lang) }}
             </li>
             <li style="list-style-type: circle; margin-left: 20px">
-              To allow you to save generated content to your Google Drive, we may require permission
-              to create new files in a location you specify within your Google Drive.
+              {{ t(key="privacy-s3-4-li2-sub2", lang=lang) }}
             </li>
           </ul>
         </li>
         <li class="privacy-list-item">
-          <p class="privacy-text">
-            The specific data accessed and the permissions requested will be clearly presented to
-            you during the Google OAuth2 consent process. We only access data that is necessary for
-            the functionality you choose to use.
-          </p>
+          <p class="privacy-text">{{ t(key="privacy-s3-4-li3", lang=lang) }}</p>
         </li>
       </ul>
-      <p class="privacy-text">
-        Our use of information received from Google APIs will adhere to the Google API Services User
-        Data Policy, including the Limited Use requirements (see Section 14).
-      </p>
-
+      <p class="privacy-text">{{ t(key="privacy-s3-4-p2", lang=lang) }}</p>
       <hr />
-
-      <h2 class="privacy-section-title">4. How We Use Your Information & Legal Basis (GDPR)</h2>
-      <p class="privacy-text">
-        We process your personal data based on specific legal grounds under GDPR:
-      </p>
+      <h2 class="privacy-section-title">{{ t(key="privacy-s4-h2", lang=lang) }}</h2>
+      <p class="privacy-text">{{ t(key="privacy-s4-p1", lang=lang) }}</p>
       <ul class="privacy-list">
         <li class="privacy-list-item">
-          <strong
-            >To Provide and Manage the Service (Legal Basis: Art. 6(1)(b) GDPR - Performance of
-            Contract):</strong
-          >
+          <strong>{{ t(key="privacy-s4-li1-title", lang=lang) }}</strong>
           <ul style="list-style: circle; margin-left: 20px; margin-top: 5px">
+            <li>{{ t(key="privacy-s4-li1-sub1", lang=lang) }}</li>
+            <li>{{ t(key="privacy-s4-li1-sub2", lang=lang) }}</li>
+            <li>{{ t(key="privacy-s4-li1-sub3", lang=lang) }}</li>
+            <li>{{ t(key="privacy-s4-li1-sub4", lang=lang) }}</li>
+            <li>{{ t(key="privacy-s4-li1-sub5", lang=lang) }}</li>
             <li>
-              Creating and managing your user account, including authentication using credentials
-              you create or via Google OAuth2.
-            </li>
-            <li>
-              Processing your input data (including any data accessed via Google APIs with your
-              consent) to generate requested AI content (images, videos).
-            </li>
-            <li>Delivering the generated content to you.</li>
-            <li>Processing payments and managing subscriptions.</li>
-            <li>Providing customer support and responding to inquiries.</li>
-            <li>
-              <strong>How we use Google data accessed via OAuth2:</strong> If you choose to register
-              or sign in using your Google account, we access your Google basic profile information
-              for authentication purposes. Specifically, we retrieve your
+              <strong>{{ t(key="privacy-s4-li1-sub6-title", lang=lang) }}</strong> If you choose to
+              register or sign in using your Google account, we access your Google basic profile
+              information for authentication purposes. Specifically, we retrieve your
               <strong>Email address, Full Name, and Profile Picture</strong> from Google. This
               information is used solely to:
               <ul>
@@ -340,7 +250,7 @@ website.website_basic_info.site %} {% set website_domain = website.website_basic
                   Create and manage your user account on {{ website_name }}.
                 </li>
                 <li style="list-style-type: circle; margin-left: 15px">
-                  Pre-fill your account details (name and email) within our Service.
+                  {{ t(key="privacy-s4-li1-sub6-ss2", lang=lang) }}
                 </li>
                 <li style="list-style-type: circle; margin-left: 15px">
                   Display your name and profile picture within your user account on {{ website_name
@@ -355,244 +265,170 @@ website.website_basic_info.site %} {% set website_domain = website.website_basic
           </ul>
         </li>
         <li class="privacy-list-item">
-          <strong
-            >To Improve and Develop the Service (Legal Basis: Art. 6(1)(f) GDPR - Legitimate
-            Interests):</strong
-          >
+          <strong>{{ t(key="privacy-s4-li2-title", lang=lang) }}</strong>
           <ul style="list-style: circle; margin-left: 20px; margin-top: 5px">
-            <li>
-              Analyzing usage patterns to understand user needs and enhance features (Usage Data).
-            </li>
-            <li>
-              Improving the performance, accuracy, and safety of our AI models. This may involve
-              analyzing Input Data (including data accessed via Google APIs if used for model
-              training, which requires explicit disclosure and compliance with Limited Use) and
-              Generated Content, typically in an anonymized or aggregated form where feasible. Our
-              legitimate interest is in providing a better, safer, and more effective Service.
-            </li>
-            <li>Troubleshooting and debugging issues.</li>
+            <li>{{ t(key="privacy-s4-li2-sub1", lang=lang) }}</li>
+            <li>{{ t(key="privacy-s4-li2-sub2", lang=lang) }}</li>
+            <li>{{ t(key="privacy-s4-li2-sub3", lang=lang) }}</li>
           </ul>
         </li>
         <li class="privacy-list-item">
-          <strong
-            >For Security and Compliance (Legal Basis: Art. 6(1)(f) GDPR - Legitimate Interests;
-            Art. 6(1)(c) GDPR - Legal Obligation):</strong
-          >
+          <strong>{{ t(key="privacy-s4-li3-title", lang=lang) }}</strong>
           <ul style="list-style: circle; margin-left: 20px; margin-top: 5px">
-            <li>
-              Protecting the security and integrity of our Service, preventing fraud and abuse
-              (Usage Data, Device Info).
-            </li>
-            <li>
-              Complying with applicable laws, regulations, and legal processes, including
-              requirements from Google regarding API usage.
-            </li>
+            <li>{{ t(key="privacy-s4-li3-sub1", lang=lang) }}</li>
+            <li>{{ t(key="privacy-s4-li3-sub2", lang=lang) }}</li>
           </ul>
         </li>
         <li class="privacy-list-item">
-          <strong
-            >For Communication & Marketing (Legal Basis: Art. 6(1)(a) GDPR - Consent; Art. 6(1)(f)
-            GDPR - Legitimate Interests):</strong
-          >
+          <strong>{{ t(key="privacy-s4-li4-title", lang=lang) }}</strong>
           <ul style="list-style: circle; margin-left: 20px; margin-top: 5px">
-            <li>
-              Sending important service-related communications (e.g., account updates, security
-              alerts) (Legitimate Interest/Contract).
-            </li>
-            <li>
-              Sending promotional communications or newsletters *if* you have opted-in (Consent).
-              You can opt-out at any time.
-            </li>
+            <li>{{ t(key="privacy-s4-li4-sub1", lang=lang) }}</li>
+            <li>{{ t(key="privacy-s4-li4-sub2", lang=lang) }}</li>
           </ul>
         </li>
       </ul>
-
       <hr />
-
-      <h2 class="privacy-section-title">5. Data Sharing and Disclosure</h2>
-      <p class="privacy-text">
-        We do not sell your personal data. We may share your information in the following limited
-        circumstances:
-      </p>
-      <h3 class="privacy-subtitle">5.1. Third-Party Service Providers (Subprocessors)</h3>
-      <p class="privacy-text">
-        We engage trusted third-party companies and individuals to perform services on our behalf
-        (e.g., payment processing, data hosting, analytics, security, customer support, AI
-        infrastructure). These subprocessors only have access to the personal data necessary to
-        perform their tasks and are contractually obligated (via Data Processing Agreements - DPAs
-        where required by GDPR) to protect your data and use it solely for the purposes we specify.
-      </p>
-      <p class="privacy-text">Key categories of subprocessors may include:</p>
+      <h2 class="privacy-section-title">{{ t(key="privacy-s5-h2", lang=lang) }}</h2>
+      <p class="privacy-text">{{ t(key="privacy-s5-p1", lang=lang) }}</p>
+      <h3 class="privacy-subtitle">{{ t(key="privacy-s5-1-h3", lang=lang) }}</h3>
+      <p class="privacy-text">{{ t(key="privacy-s5-1-p1", lang=lang) }}</p>
+      <p class="privacy-text">{{ t(key="privacy-s5-1-p2", lang=lang) }}</p>
       <table>
         <thead>
           <tr>
-            <th>Service Name / Category</th>
-            <th>Provider (Example/Actual)</th>
-            <th>Purpose(s)</th>
-            <th>Potential Personal Data Types Processed</th>
-            <th>Privacy Policy Link / Location</th>
+            <th>{{ t(key="privacy-table-header-service", lang=lang) }}</th>
+            <th>{{ t(key="privacy-table-header-provider", lang=lang) }}</th>
+            <th>{{ t(key="privacy-table-header-purpose", lang=lang) }}</th>
+            <th>{{ t(key="privacy-table-header-data", lang=lang) }}</th>
+            <th>{{ t(key="privacy-table-header-policy", lang=lang) }}</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>Payment Processing</td>
+            <td>{{ t(key="privacy-table-r1-c1", lang=lang) }}</td>
             <td>Stripe, Inc.</td>
-            <td>Processing subscription payments, fraud prevention.</td>
-            <td>
-              Name, Email, Billing Address, Payment Method Information (partial, tokenized),
-              Purchase History, IP Address.
-            </td>
+            <td>{{ t(key="privacy-table-r1-c3", lang=lang) }}</td>
+            <td>{{ t(key="privacy-table-r1-c4", lang=lang) }}</td>
             <td>
               <a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer"
-                >Stripe Privacy Policy</a
+                >{{ t(key="privacy-table-link-stripe", lang=lang) }}</a
               >
             </td>
           </tr>
           <tr>
-            <td>Cloud Hosting & Infrastructure (Primary Application)</td>
+            <td>{{ t(key="privacy-table-r2-c1", lang=lang) }}</td>
             <td>Hetzner Online GmbH</td>
             <td>Hosting the {{ website_name }} application, database management.</td>
-            <td>Account Info, Usage Data, IP Addresses (in logs).</td>
+            <td>{{ t(key="privacy-table-r2-c4", lang=lang) }}</td>
             <td>
               <a
                 href="https://www.hetzner.com/legal/privacy-policy"
                 target="_blank"
                 rel="noopener noreferrer"
-                >Hetzner Privacy Policy</a
+                >{{ t(key="privacy-table-link-hetzner", lang=lang) }}</a
               >
             </td>
           </tr>
           <tr>
-            <td>Object Storage (e.g., for user uploads, generated content)</td>
+            <td>{{ t(key="privacy-table-r3-c1", lang=lang) }}</td>
             <td>Amazon Web Services EMEA SARL (AWS S3)</td>
-            <td>
-              Storing user-uploaded files, generated content (images, videos, etc.), application
-              assets, backups.
-            </td>
-            <td>
-              Input Data (if directly uploaded by user), Generated Output files, User-uploaded files
-              which may contain personal data.
-            </td>
+            <td>{{ t(key="privacy-table-r3-c3", lang=lang) }}</td>
+            <td>{{ t(key="privacy-table-r3-c4", lang=lang) }}</td>
             <td>
               <a href="https://aws.amazon.com/privacy/" target="_blank" rel="noopener noreferrer"
-                >AWS Privacy Notice</a
+                >{{ t(key="privacy-table-link-aws", lang=lang) }}</a
               >
             </td>
           </tr>
           <tr>
-            <td>Email Delivery Service</td>
+            <td>{{ t(key="privacy-table-r4-c1", lang=lang) }}</td>
             <td>Amazon Web Services EMEA SARL (AWS SES)</td>
-            <td>
-              Sending transactional emails (e.g., account verification, password resets, important
-              service notifications) and marketing emails (with consent).
-            </td>
-            <td>
-              Email Address, Name (if used in email personalization), content of emails (which might
-              include personal data if relevant to the communication), IP address (for email
-              delivery tracking).
-            </td>
+            <td>{{ t(key="privacy-table-r4-c3", lang=lang) }}</td>
+            <td>{{ t(key="privacy-table-r4-c4", lang=lang) }}</td>
             <td>
               <a href="https://aws.amazon.com/privacy/" target="_blank" rel="noopener noreferrer"
-                >AWS Privacy Notice</a
+                >{{ t(key="privacy-table-link-aws", lang=lang) }}</a
               >
             </td>
           </tr>
           <tr>
-            <td>AI Model Infrastructure</td>
+            <td>{{ t(key="privacy-table-r5-c1", lang=lang) }}</td>
             <td>fal - Features & Labels Inc</td>
-            <td>Running the AI models for content generation.</td>
-            <td>
-              Input Data (prompts), potentially Usage Data (for optimisation). Anonymization applied
-              where possible.
-            </td>
+            <td>{{ t(key="privacy-table-r5-c3", lang=lang) }}</td>
+            <td>{{ t(key="privacy-table-r5-c4", lang=lang) }}</td>
             <td>
               <a href="https://fal.ai/privacy" target="_blank" rel="noopener noreferrer"
-                >fal.ai Privacy Policy</a
+                >{{ t(key="privacy-table-link-fal", lang=lang) }}</a
               >
             </td>
           </tr>
           <tr>
-            <td>Analytics</td>
+            <td>{{ t(key="privacy-table-r6-c1", lang=lang) }}</td>
             <td>Google Ireland Limited (Google Analytics)</td>
-            <td>
-              Understanding website/app usage, improving user experience, performance tracking.
-            </td>
-            <td>
-              IP Address (often anonymized), Device/Browser Information, Interaction Logs (clicks,
-              pages visited, time spent), Approximate Location (IP-based), User ID (if implemented).
-            </td>
+            <td>{{ t(key="privacy-table-r6-c3", lang=lang) }}</td>
+            <td>{{ t(key="privacy-table-r6-c4", lang=lang) }}</td>
             <td>
               <a
                 href="https://policies.google.com/privacy"
                 target="_blank"
                 rel="noopener noreferrer"
-                >Google Privacy Policy</a
+                >{{ t(key="privacy-table-link-google", lang=lang) }}</a
               >
             </td>
           </tr>
           <tr>
-            <td>Security / CDN</td>
+            <td>{{ t(key="privacy-table-r7-c1", lang=lang) }}</td>
             <td>Cloudflare, Inc.</td>
-            <td>Website security, performance optimization (CDN), bot protection.</td>
-            <td>IP Address, Security Logs, Device/Browser Information (for challenges).</td>
+            <td>{{ t(key="privacy-table-r7-c3", lang=lang) }}</td>
+            <td>{{ t(key="privacy-table-r7-c4", lang=lang) }}</td>
             <td>
               <a
                 href="https://www.cloudflare.com/privacypolicy/"
                 target="_blank"
                 rel="noopener noreferrer"
-                >Cloudflare Privacy Policy</a
+                >{{ t(key="privacy-table-link-cloudflare", lang=lang) }}</a
               >
             </td>
           </tr>
           <tr>
-            <td>Advertising / Marketing Pixels (If Used)</td>
+            <td>{{ t(key="privacy-table-r8-c1", lang=lang) }}</td>
             <td>Meta Platforms Ireland Ltd. (Meta Pixel)</td>
-            <td>
-              Tracking ad campaign effectiveness, remarketing (if consent given), website analytics.
-            </td>
-            <td>
-              IP Address, Device/Browser Information, Interaction Logs (pages visited, actions
-              taken), Email/User ID (if matched via hashing, with consent).
-            </td>
+            <td>{{ t(key="privacy-table-r8-c3", lang=lang) }}</td>
+            <td>{{ t(key="privacy-table-r8-c4", lang=lang) }}</td>
             <td>
               <a
                 href="https://www.facebook.com/privacy/explanation"
                 target="_blank"
                 rel="noopener noreferrer"
-                >Meta Privacy Policy</a
+                >{{ t(key="privacy-table-link-meta", lang=lang) }}</a
               >
             </td>
           </tr>
           <tr>
-            <td>Customer Support Platform</td>
+            <td>{{ t(key="privacy-table-r9-c1", lang=lang) }}</td>
             <td>Zendesk</td>
-            <td>Managing support tickets and communications.</td>
-            <td>Name, Email, Communication History, Account Info (as needed for support).</td>
+            <td>{{ t(key="privacy-table-r9-c3", lang=lang) }}</td>
+            <td>{{ t(key="privacy-table-r9-c4", lang=lang) }}</td>
             <td>
               <a
                 href="https://www.zendesk.com/company/agreements-and-terms/privacy-notice"
                 target="_blank"
                 rel="noopener noreferrer"
-                >Zendesk Privacy Notice</a
+                >{{ t(key="privacy-table-link-zendesk", lang=lang) }}</a
               >
             </td>
           </tr>
         </tbody>
       </table>
-      <h3 class="privacy-subtitle">5.2. Legal Requirements</h3>
-      <p class="privacy-text">
-        We may disclose your information if required by law, subpoena, or other legal process, or if
-        we have a good faith belief that disclosure is necessary to protect our rights, protect your
-        safety or the safety of others, investigate fraud, or respond to a government request.
-      </p>
-      <h3 class="privacy-subtitle">5.3. Business Transfers</h3>
+      <h3 class="privacy-subtitle">{{ t(key="privacy-s5-2-h3", lang=lang) }}</h3>
+      <p class="privacy-text">{{ t(key="privacy-s5-2-p1", lang=lang) }}</p>
+      <h3 class="privacy-subtitle">{{ t(key="privacy-s5-3-h3", lang=lang) }}</h3>
       <p class="privacy-text">
         In the event of a merger, acquisition, bankruptcy, dissolution, reorganization, or similar
         transaction or proceeding involving {{ website_name }}, your information may be transferred
         as part of that transaction, subject to standard confidentiality arrangements.
       </p>
-
-      <h3 class="privacy-subtitle">5.4. Handling of Google User Data</h3>
+      <h3 class="privacy-subtitle">{{ t(key="privacy-s5-4-h3", lang=lang) }}</h3>
       <p class="privacy-text">
         Notwithstanding anything else in this Privacy Policy, if you provide {{ website_name }}
         access to your Google user data (specifically, your email address, full name, and profile
@@ -605,39 +441,18 @@ website.website_basic_info.site %} {% set website_domain = website.website_basic
           name, profile picture) to authenticate you, create your account within {{ website_name }},
           and pre-fill your profile details as described in Section 3.4 and Section 4.
         </li>
+        <li class="privacy-list-item">{{ t(key="privacy-s5-4-li2", lang=lang) }}</li>
+        <li class="privacy-list-item">{{ t(key="privacy-s5-4-li3", lang=lang) }}</li>
         <li class="privacy-list-item">
-          We will not transfer this Google-sourced basic profile information to others unless doing
-          so is necessary to provide and improve these authentication and account management
-          features (e.g., to our backend service providers strictly for these purposes, under
-          confidentiality obligations), to comply with applicable law, or as part of a merger,
-          acquisition, or sale of assets (with notice to you).
-        </li>
-        <li class="privacy-list-item">
-          The App will not use this Google-sourced basic profile information for serving
-          advertisements.
-        </li>
-        <li class="privacy-list-item">
-          The App will not allow humans to read this Google-sourced basic profile information
-          unless:
+          {{ t(key="privacy-s5-4-li4-title", lang=lang) }}
           <ul style="list-style: circle; margin-left: 20px; margin-top: 5px">
-            <li>
-              We have your affirmative agreement for a specific, legitimate purpose (e.g., assisting
-              with an account issue you reported).
-            </li>
-            <li>Doing so is necessary for security purposes such as investigating abuse.</li>
-            <li>To comply with applicable law.</li>
-            <li>
-              For the App's internal operations (e.g., customer support, troubleshooting) related to
-              your account, and even then only when the data is directly relevant to the operation
-              and access is limited and logged.
-            </li>
+            <li>{{ t(key="privacy-s5-4-li4-sub1", lang=lang) }}</li>
+            <li>{{ t(key="privacy-s5-4-li4-sub2", lang=lang) }}</li>
+            <li>{{ t(key="privacy-s5-4-li4-sub3", lang=lang) }}</li>
+            <li>{{ t(key="privacy-s5-4-li4-sub4", lang=lang) }}</li>
           </ul>
         </li>
-        <li class="privacy-list-item">
-          Our use and transfer of information received from Google APIs will adhere to the Google
-          API Services User Data Policy, including the Limited Use requirements (see Section 14 for
-          more details).
-        </li>
+        <li class="privacy-list-item">{{ t(key="privacy-s5-4-li5", lang=lang) }}</li>
       </ul>
       <p class="privacy-text">
         To be clear, {{ website_name }} does not access sensitive Google scopes like Gmail content
@@ -645,258 +460,134 @@ website.website_basic_info.site %} {% set website_domain = website.website_basic
         content generation is provided directly by you and is distinct from the Google basic profile
         information used for authentication.
       </p>
-
       <hr />
-
-      <h2 class="privacy-section-title">6. International Data Transfers</h2>
-      <p class="privacy-text">
-        Your personal information may be transferred to, and processed in, countries other than the
-        country in which you reside. These countries may have data protection laws that are
-        different from the laws of your country (particularly if you are in the EU/EEA).
-      </p>
-      <p class="privacy-text">
-        Specifically, some of our third-party service providers (as listed in Section 5) may be
-        located outside the European Economic Area (EEA), for example, in the United States.
-      </p>
-      <p class="privacy-text">
-        Where we transfer your personal data outside the EEA, we take appropriate safeguards to
-        ensure your data receives an adequate level of protection. This typically includes relying
-        on:
-      </p>
+      <h2 class="privacy-section-title">{{ t(key="privacy-s6-h2", lang=lang) }}</h2>
+      <p class="privacy-text">{{ t(key="privacy-s6-p1", lang=lang) }}</p>
+      <p class="privacy-text">{{ t(key="privacy-s6-p2", lang=lang) }}</p>
+      <p class="privacy-text">{{ t(key="privacy-s6-p3", lang=lang) }}</p>
       <ul class="privacy-list">
-        <li class="privacy-list-item">
-          An adequacy decision by the European Commission confirming the country provides adequate
-          protection.
-        </li>
-        <li class="privacy-list-item">
-          Standard Contractual Clauses (SCCs) approved by the European Commission, implemented
-          between us and the third-party provider.
-        </li>
-        <li class="privacy-list-item">
-          For transfers to the U.S., we may rely on providers certified under the EU-U.S. Data
-          Privacy Framework (or its successor) or utilize SCCs.
-        </li>
+        <li class="privacy-list-item">{{ t(key="privacy-s6-li1", lang=lang) }}</li>
+        <li class="privacy-list-item">{{ t(key="privacy-s6-li2", lang=lang) }}</li>
+        <li class="privacy-list-item">{{ t(key="privacy-s6-li3", lang=lang) }}</li>
       </ul>
       <p class="privacy-text">
         Our primary servers for the {{ website_name }} application are located in: the European
         Union, Helsinki, Finland.
       </p>
-
       <hr />
-
-      <h2 class="privacy-section-title">7. Data Storage and Protection</h2>
-      <h3 class="privacy-subtitle">Data Security Measures:</h3>
-      <p class="privacy-text">
-        We implement appropriate technical and organizational security measures designed to protect
-        your personal data, including any data accessed via Google APIs, against accidental or
-        unlawful destruction, loss, alteration, unauthorized disclosure, or access. These measures
-        include:
-      </p>
+      <h2 class="privacy-section-title">{{ t(key="privacy-s7-h2", lang=lang) }}</h2>
+      <h3 class="privacy-subtitle">{{ t(key="privacy-s7-h3", lang=lang) }}</h3>
+      <p class="privacy-text">{{ t(key="privacy-s7-p1", lang=lang) }}</p>
       <ul class="privacy-list">
         <li class="privacy-list-item">
-          <strong>Encryption</strong>: Using encryption (e.g., TLS/SSL) for data in transit and
-          encryption for sensitive data at rest.
+          <strong>{{ t(key="privacy-s7-li1-title", lang=lang) }}</strong>{{
+          t(key="privacy-s7-li1-text", lang=lang) }}
         </li>
         <li class="privacy-list-item">
-          <strong>Access Control</strong>: Limiting access to personal data to authorized personnel
-          with a legitimate need to know, based on roles and responsibilities, and in accordance
-          with policies such as Google's Limited Use requirements.
+          <strong>{{ t(key="privacy-s7-li2-title", lang=lang) }}</strong>{{
+          t(key="privacy-s7-li2-text", lang=lang) }}
         </li>
         <li class="privacy-list-item">
-          <strong>Security Audits and Monitoring</strong>: Regularly reviewing our security
-          practices and monitoring systems for potential vulnerabilities and attacks.
+          <strong>{{ t(key="privacy-s7-li3-title", lang=lang) }}</strong>{{
+          t(key="privacy-s7-li3-text", lang=lang) }}
         </li>
         <li class="privacy-list-item">
-          <strong>Secure Development Practices:</strong> Incorporating security considerations into
-          our software development lifecycle.
+          <strong>{{ t(key="privacy-s7-li4-title", lang=lang) }}</strong>{{
+          t(key="privacy-s7-li4-text", lang=lang) }}
         </li>
       </ul>
-      <p class="privacy-text">
-        However, please note that no method of transmission over the Internet or electronic storage
-        is 100% secure. While we strive to use commercially acceptable means to protect your
-        personal data, we cannot guarantee its absolute security.
-      </p>
-
+      <p class="privacy-text">{{ t(key="privacy-s7-p2", lang=lang) }}</p>
       <hr />
-
-      <h2 class="privacy-section-title">8. Data Retention</h2>
-      <p class="privacy-text">
-        We retain your personal data only for as long as necessary to fulfill the purposes for which
-        we collected it, including for the purposes of satisfying any legal, accounting, or
-        reporting requirements, and for providing and improving the Service.
-      </p>
-      <p class="privacy-text">To determine the appropriate retention period, we consider:</p>
+      <h2 class="privacy-section-title">{{ t(key="privacy-s8-h2", lang=lang) }}</h2>
+      <p class="privacy-text">{{ t(key="privacy-s8-p1", lang=lang) }}</p>
+      <p class="privacy-text">{{ t(key="privacy-s8-p2", lang=lang) }}</p>
       <ul class="privacy-list">
-        <li class="privacy-list-item">The amount, nature, and sensitivity of the personal data.</li>
-        <li class="privacy-list-item">
-          The potential risk of harm from unauthorized use or disclosure.
-        </li>
-        <li class="privacy-list-item">
-          The purposes for which we process the data (including the purpose of authentication using
-          Google basic profile information if you choose to use Google Sign-In) and whether we can
-          achieve those purposes through other means.
-        </li>
-        <li class="privacy-list-item">
-          Applicable legal requirements (e.g., financial record retention periods) and any specific
-          retention requirements from services like Google for basic profile data accessed via their
-          APIs for authentication.
-        </li>
+        <li class="privacy-list-item">{{ t(key="privacy-s8-li1", lang=lang) }}</li>
+        <li class="privacy-list-item">{{ t(key="privacy-s8-li2", lang=lang) }}</li>
+        <li class="privacy-list-item">{{ t(key="privacy-s8-li3", lang=lang) }}</li>
+        <li class="privacy-list-item">{{ t(key="privacy-s8-li4", lang=lang) }}</li>
       </ul>
-      <p class="privacy-text">Generally:</p>
+      <p class="privacy-text">{{ t(key="privacy-s8-p3", lang=lang) }}</p>
       <ul class="privacy-list">
         <li class="privacy-list-item">
-          <strong
-            >Account Information (including Google-derived basic profile data such as your email,
-            name, and profile picture, if you sign in with Google):</strong
-          >
-          Retained for as long as your account is active with {{ website_name }} and for a
-          reasonable period thereafter (e.g., to allow for account reactivation, to address
-          post-termination queries, or as required by law).
+          <strong>{{ t(key="privacy-s8-li5-title", lang=lang) }}</strong> Retained for as long as
+          your account is active with {{ website_name }} and for a reasonable period thereafter
+          (e.g., to allow for account reactivation, to address post-termination queries, or as
+          required by law).
         </li>
         <li class="privacy-list-item">
-          <strong
-            >Input Data (provided directly by you for AI generation) & Generated Output:</strong
-          >
-          May be retained as necessary to provide the Service to you (e.g., allowing you to access
-          your past generations) and potentially for model improvement (often anonymized or
-          aggregated, and subject to your consent where applicable, such as in our model consent
-          policy). You may have options within {{ website_name }} to delete specific inputs and/or
-          outputs. [User Action: Clarify if users can delete their input/output, e.g., "You can
-          delete your generated content and associated inputs directly from your account
-          dashboard."]
+          <strong>{{ t(key="privacy-s8-li6-title", lang=lang) }}</strong> May be retained as
+          necessary to provide the Service to you (e.g., allowing you to access your past
+          generations) and potentially for model improvement (often anonymized or aggregated, and
+          subject to your consent where applicable, such as in our model consent policy). You may
+          have options within {{ website_name }} to delete specific inputs and/or outputs. [User
+          Action: Clarify if users can delete their input/output, e.g., "You can delete your
+          generated content and associated inputs directly from your account dashboard."]
         </li>
         <li class="privacy-list-item">
-          <strong>Usage Data:</strong> Often retained for a specific period (e.g., 12-24 months) for
-          analysis to improve our Service, and then may be aggregated or deleted.
+          <strong>{{ t(key="privacy-s8-li7-title", lang=lang) }}</strong>{{
+          t(key="privacy-s8-li7-text", lang=lang) }}
         </li>
         <li class="privacy-list-item">
-          <strong>Billing Information (if applicable):</strong> Retained according to legal
-          requirements for financial records.
+          <strong>{{ t(key="privacy-s8-li8-title", lang=lang) }}</strong>{{
+          t(key="privacy-s8-li8-text", lang=lang) }}
         </li>
       </ul>
-      <p class="privacy-text">
-        You can request the deletion of your account and associated personal data, including any
-        basic profile data retrieved from Google services for authentication, subject to the rights
-        outlined in Section 10. We will also delete your Google user data (email, name, profile
-        picture used for authentication) upon your request to delete your account, or if it's no
-        longer needed for the stated purpose of account management and authentication.
-      </p>
-
+      <p class="privacy-text">{{ t(key="privacy-s8-p4", lang=lang) }}</p>
       <hr />
-
-      <h2 class="privacy-section-title">9. Cookies and Tracking Technologies</h2>
+      <h2 class="privacy-section-title">{{ t(key="privacy-s9-h2", lang=lang) }}</h2>
       <p class="privacy-text">
         We use cookies (small text files stored on your device) and similar tracking technologies
         (like web beacons or pixels) on our website and within the {{ website_name }} application.
       </p>
-      <h3 class="privacy-subtitle">Types of Cookies We Use:</h3>
+      <h3 class="privacy-subtitle">{{ t(key="privacy-s9-h3", lang=lang) }}</h3>
       <ul class="privacy-list">
-        <li class="privacy-list-item">
-          <strong>Strictly Necessary Cookies:</strong> Essential for the operation of the Service
-          (e.g., authentication, security, session management). These cannot be disabled. (Legal
-          Basis: Contract/Legitimate Interest).
-        </li>
-        <li class="privacy-list-item">
-          <strong>Performance and Analytics Cookies:</strong> Help us understand how users interact
-          with the Service, measure performance, and identify areas for improvement (e.g., Google
-          Analytics). (Legal Basis: Consent, or Legitimate Interest with safeguards).
-        </li>
-        <li class="privacy-list-item">
-          <strong>Functional Cookies:</strong> Enable enhanced functionality and personalization
-          (e.g., remembering preferences). (Legal Basis: Consent).
-        </li>
-        <li class="privacy-list-item">
-          <strong>Advertising and Targeting Cookies:</strong> Used by us or third parties (like
-          Meta) to deliver relevant advertising, measure campaign effectiveness, and track users
-          across websites (if applicable). (Legal Basis: Consent).
-        </li>
+        <li class="privacy-list-item">{{ t(key="privacy-s9-li1", lang=lang) }}</li>
+        <li class="privacy-list-item">{{ t(key="privacy-s9-li2", lang=lang) }}</li>
+        <li class="privacy-list-item">{{ t(key="privacy-s9-li3", lang=lang) }}</li>
+        <li class="privacy-list-item">{{ t(key="privacy-s9-li4", lang=lang) }}</li>
       </ul>
-      <h3 class="privacy-subtitle">Your Choices and Consent:</h3>
+      <h3 class="privacy-subtitle">{{ t(key="privacy-s9-2-h3", lang=lang) }}</h3>
+      <p class="privacy-text">{{ t(key="privacy-s9-2-p1", lang=lang) }}</p>
       <p class="privacy-text">
-        When you first visit our website or use the app where non-essential cookies are used, we
-        will request your consent via a cookie banner or similar mechanism. You can manage your
-        preferences and withdraw consent at any time through our cookie settings tool or your
-        browser settings.
-      </p>
-      <p class="privacy-text">
-        For more detailed information about the specific cookies we use, their purposes, and how to
-        manage them, please see our separate
-        <a href="{{cookie_link | safe}}" target="_blank" rel="noopener noreferrer">Cookie Policy</a
+        {{ t(key="privacy-s9-2-p2-prefix", lang=lang) }}
+        <a href="{{cookie_link | safe}}" target="_blank" rel="noopener noreferrer"
+          >{{ t(key="privacy-s9-2-p2-link-text", lang=lang) }}</a
         >.
       </p>
-
       <hr />
-
-      <h2 class="privacy-section-title">10. Your Data Protection Rights (GDPR)</h2>
-      <p class="privacy-text">
-        If you are located in the European Economic Area (EEA) or UK, you have the following rights
-        regarding your personal data:
-      </p>
+      <h2 class="privacy-section-title">{{ t(key="privacy-s10-h2", lang=lang) }}</h2>
+      <p class="privacy-text">{{ t(key="privacy-s10-p1", lang=lang) }}</p>
       <ul class="privacy-list">
         <li class="privacy-list-item">
-          <p class="privacy-text">
-            <strong>Right of Access (Article 15 GDPR):</strong> To request access to the personal
-            information we hold about you, including any data obtained from Google.
-          </p>
+          <p class="privacy-text">{{ t(key="privacy-s10-li1", lang=lang) }}</p>
         </li>
         <li class="privacy-list-item">
-          <p class="privacy-text">
-            <strong>Right to Rectification (Article 16 GDPR):</strong> To request correction of
-            inaccurate or incomplete data.
-          </p>
+          <p class="privacy-text">{{ t(key="privacy-s10-li2", lang=lang) }}</p>
         </li>
         <li class="privacy-list-item">
-          <p class="privacy-text">
-            <strong>Right to Erasure ('Right to be Forgotten') (Article 17 GDPR):</strong> To
-            request deletion of your personal data under certain conditions. This includes data
-            obtained via Google OAuth2.
-          </p>
+          <p class="privacy-text">{{ t(key="privacy-s10-li3", lang=lang) }}</p>
         </li>
         <li class="privacy-list-item">
-          <p class="privacy-text">
-            <strong>Right to Restriction of Processing (Article 18 GDPR):</strong> To request
-            restriction of processing under certain conditions.
-          </p>
+          <p class="privacy-text">{{ t(key="privacy-s10-li4", lang=lang) }}</p>
         </li>
         <li class="privacy-list-item">
-          <p class="privacy-text">
-            <strong>Right to Data Portability (Article 20 GDPR):</strong> To receive your data in a
-            machine-readable format and transmit it to another controller.
-          </p>
+          <p class="privacy-text">{{ t(key="privacy-s10-li5", lang=lang) }}</p>
         </li>
         <li class="privacy-list-item">
-          <p class="privacy-text">
-            <strong>Right to Object (Article 21 GDPR):</strong> To object to processing based on
-            legitimate interests or for direct marketing.
-          </p>
+          <p class="privacy-text">{{ t(key="privacy-s10-li6", lang=lang) }}</p>
         </li>
         <li class="privacy-list-item">
-          <p class="privacy-text">
-            <strong>Right to Withdraw Consent (Article 7(3) GDPR):</strong> To withdraw consent at
-            any time where processing is based on consent (including consent for accessing Google
-            data), without affecting prior lawful processing. You can also typically manage or
-            revoke Google's access to your data via your Google Account security settings page.
-          </p>
+          <p class="privacy-text">{{ t(key="privacy-s10-li7", lang=lang) }}</p>
         </li>
         <li class="privacy-list-item">
-          <p class="privacy-text">
-            <strong>Right to Lodge a Complaint (Article 77 GDPR):</strong> To lodge a complaint with
-            your local supervisory authority (Data Protection Authority) if you believe our
-            processing infringes GDPR.
-          </p>
+          <p class="privacy-text">{{ t(key="privacy-s10-li8", lang=lang) }}</p>
         </li>
       </ul>
-      <h3 class="privacy-subtitle">Exercising Your Rights:</h3>
-      <p class="privacy-text">
-        To exercise these rights, including requesting deletion of your data (including
-        Google-sourced data), please contact us using the details in Section 1 ("Introduction & Who
-        We Are") or Section 13 ("Contact Us"). We will respond within the timeframes required by
-        GDPR (typically one month), potentially after verifying your identity.
-      </p>
-
+      <h3 class="privacy-subtitle">{{ t(key="privacy-s10-h3", lang=lang) }}</h3>
+      <p class="privacy-text">{{ t(key="privacy-s10-p2", lang=lang) }}</p>
       <hr />
-
-      <h2 class="privacy-section-title">11. Children's Privacy</h2>
+      <h2 class="privacy-section-title">{{ t(key="privacy-s11-h2", lang=lang) }}</h2>
       <p class="privacy-text">
         The {{ website_name }} Service is not intended for or directed at children under the age of
         16 (or a higher age if stipulated by local law). We do not knowingly collect personal
@@ -904,46 +595,27 @@ website.website_basic_info.site %} {% set website_domain = website.website_basic
         from a child under 16 without verification of parental consent, we will take steps to remove
         that information from our servers.
       </p>
-
       <hr />
-
-      <h2 class="privacy-section-title">12. Policy Updates and Changes</h2>
-      <p class="privacy-text">
-        We may update this Privacy Policy from time to time to reflect changes in our practices,
-        technology, legal requirements (including changes to Google's API policies), or other
-        factors. When we make significant changes, we will notify you through the Service (e.g., via
-        a notification within the app or website) or by email, and we will update the "Last Updated"
-        date at the top of this policy.
-      </p>
-      <p class="privacy-text">
-        We encourage you to review this policy periodically to stay informed about how we protect
-        your information.
-      </p>
-
+      <h2 class="privacy-section-title">{{ t(key="privacy-s12-h2", lang=lang) }}</h2>
+      <p class="privacy-text">{{ t(key="privacy-s12-p1", lang=lang) }}</p>
+      <p class="privacy-text">{{ t(key="privacy-s12-p2", lang=lang) }}</p>
       <hr />
-
-      <h2 class="privacy-section-title">13. Contact Us</h2>
+      <h2 class="privacy-section-title">{{ t(key="privacy-s13-h2", lang=lang) }}</h2>
+      <p class="privacy-text">{{ t(key="privacy-s13-p1", lang=lang) }}</p>
       <p class="privacy-text">
-        If you have any questions, concerns, or requests regarding this Privacy Policy, our data
-        practices, or our handling of Google user data, please contact us:
+        <strong>{{ website_name }}</strong><br />Rotterdam, The Netherlands<br />Email: support@{{
+        website_domain | safe }}<br />
       </p>
-      <p class="privacy-text">
-        <strong>{{ website_name }}</strong><br />
-        Rotterdam, The Netherlands<br />
-        Email: support@{{ website_domain | safe }}<br />
-      </p>
-
       <hr />
-
-      <h2 class="privacy-section-title">14. Google API Services User Data Policy Compliance</h2>
+      <h2 class="privacy-section-title">{{ t(key="privacy-s14-h2", lang=lang) }}</h2>
       <p class="privacy-text">
-        Our use and transfer of information received from Google APIs will adhere to the
+        {{ t(key="privacy-s14-p1-prefix", lang=lang) }}
         <a
           href="https://developers.google.com/terms/api-services-user-data-policy"
           target="_blank"
           rel="noopener noreferrer"
-          >Google API Services User Data Policy</a
-        >, including the Limited Use requirements.
+          >{{ t(key="privacy-s14-p1-link-text", lang=lang) }}</a
+        >, {{ t(key="privacy-s14-p1-suffix", lang=lang) }}
       </p>
       <p class="privacy-text">
         This means that any data obtained via Google APIs (such as your basic profile information
@@ -959,17 +631,10 @@ website.website_basic_info.site %} {% set website_domain = website.website_basic
           and its use are described in Section 3.4 and Section 4 of this policy and will be clearly
           presented to you during the OAuth consent flow.
         </li>
+        <li class="privacy-list-item">{{ t(key="privacy-s14-li2", lang=lang) }}</li>
+        <li class="privacy-list-item">{{ t(key="privacy-s14-li3", lang=lang) }}</li>
         <li class="privacy-list-item">
-          <strong>No Sale of Data:</strong> We do not sell your Google user data.
-        </li>
-        <li class="privacy-list-item">
-          <strong>No Use for Advertising:</strong> We do not use or transfer your Google user data
-          for serving advertisements, including personalized, re-targeted, or interest-based
-          advertising.
-        </li>
-        <li class="privacy-list-item">
-          <strong>Limited Transfer:</strong> We will not transfer your Google user data to others
-          unless it is:
+          {{ t(key="privacy-s14-li4-title", lang=lang) }}
           <ul style="list-style: circle; margin-left: 20px; margin-top: 5px">
             <li>
               Necessary to provide or improve the authentication and account management features
@@ -977,37 +642,21 @@ website.website_basic_info.site %} {% set website_domain = website.website_basic
               choosing to sign in with Google). This may include sharing with our necessary service
               providers under strict confidentiality agreements for these specific purposes.
             </li>
-            <li>To comply with applicable laws.</li>
-            <li>
-              As part of a merger, acquisition, or sale of assets of Jissicko Software (with prior
-              notice to you).
-            </li>
-            <li>
-              Necessary for security purposes (e.g., investigating abuse related to account access).
-            </li>
+            <li>{{ t(key="privacy-s14-li4-sub2", lang=lang) }}</li>
+            <li>{{ t(key="privacy-s14-li4-sub3", lang=lang) }}</li>
+            <li>{{ t(key="privacy-s14-li4-sub4", lang=lang) }}</li>
           </ul>
         </li>
         <li class="privacy-list-item">
-          <strong>No Human Reading (unless exceptions apply):</strong> We do not allow humans to
-          read your Google user data (email, name, profile picture) unless:
+          {{ t(key="privacy-s14-li5-title", lang=lang) }}
           <ul style="list-style: circle; margin-left: 20px; margin-top: 5px">
-            <li>
-              We have your affirmative consent for specific data related to a support request or
-              account issue you've raised.
-            </li>
-            <li>It is necessary for security purposes (e.g., investigating account abuse).</li>
-            <li>To comply with applicable laws.</li>
-            <li>
-              The data is used for internal operations directly related to managing your account or
-              providing support, and access is limited, logged, and directly relevant to the
-              operation.
-            </li>
+            <li>{{ t(key="privacy-s14-li5-sub1", lang=lang) }}</li>
+            <li>{{ t(key="privacy-s14-li5-sub2", lang=lang) }}</li>
+            <li>{{ t(key="privacy-s14-li5-sub3", lang=lang) }}</li>
+            <li>{{ t(key="privacy-s14-li5-sub4", lang=lang) }}</li>
           </ul>
         </li>
-        <li class="privacy-list-item">
-          <strong>Secure Data Handling:</strong> We maintain robust security practices as outlined
-          in Section 7 to protect your Google user data.
-        </li>
+        <li class="privacy-list-item">{{ t(key="privacy-s14-li6", lang=lang) }}</li>
       </ul>
       <p class="privacy-text">
         You can revoke our access to your Google data at any time via your Google account security

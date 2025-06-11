@@ -1,5 +1,7 @@
 <!-- prettier-ignore -->
-{% set logout_partial_link = options.website.website_routes.auth_routes.logout_partial%}
+{% set logout_partial_link = options.website.website_routes.auth_routes.logout_partial %}
+{% set register_link = options.website.website_routes.auth_routes.register %}
+{% set logout_partial_link = options.website.website_routes.auth_routes.logout_partial %}
 {% set register_link = options.website.website_routes.auth_routes.register %}
 
 <div id="navbar-user">
@@ -17,8 +19,8 @@
         id="shiningButton-{{ timestamp }}"
         class="relative flex flex-row gap-1 overflow-hidden px-2 sm:px-4 py-1 sm:py-2 font-semibold text-white bg-gradient-to-r from-violet-500 to-pink-500 rounded-lg shadow-md transition-all duration-150 hover:shadow-lg hover:brightness-110 active:scale-95 active:brightness-90 cursor-pointer"
       >
-        <span class="hidden sm:flex">Buy</span>
-        Credits
+        <span class="hidden sm:flex">{{ t(key="navbar-buy", lang=lang) }}</span>
+        {{ t(key="navbar-credits", lang=lang) }}
         <script>
           shiningBtn("shiningButton-{{ timestamp }}");
         </script>
@@ -61,7 +63,7 @@
             hx-swap="innerHTML"
             class="flex px-4 py-3 hover:bg-base-300 cursor-pointer"
           >
-            Logout
+            {{ t(key="navbar-logout", lang=lang) }}
           </a>
         </li>
       </ul>

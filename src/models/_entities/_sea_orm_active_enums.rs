@@ -112,7 +112,17 @@ impl Default for ImageFormat {
 }
 
 #[derive(
-    Debug, Clone, PartialEq, Eq, EnumIter, DeriveActiveEnum, Serialize, Deserialize, PartialOrd, Ord,
+    Clone,
+    Copy,
+    Debug,
+    Serialize,
+    Deserialize,
+    EnumIter,
+    Display,
+    EnumString,
+    DeriveActiveEnum,
+    PartialEq,
+    Eq,
 )]
 #[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "language")]
 pub enum Language {

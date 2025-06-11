@@ -2,7 +2,7 @@ use loco_rs::prelude::*;
 
 use derive_more::{AsRef, Constructor, From};
 use futures::future::{join_all, try_join_all};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 use crate::controllers::dashboard::WebsiteOptions;
@@ -92,7 +92,7 @@ impl From<&UserCreditModel> for CreditsViewModel {
     }
 }
 
-#[derive(Debug, Serialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct ImageView {
     pub pid: Uuid,
     pub training_model_id: Option<i32>,

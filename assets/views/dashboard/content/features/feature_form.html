@@ -17,30 +17,32 @@ options.user %}
       class="input input-bordered w-full"
     />
     <label class="label" for="feature-title">
-      <span class="label-text">Short, descriptive title</span>
+      <span class="label-text">{{ t(key="feature-form-label-title", lang=lang) }}</span>
     </label>
     <input
       id="feature-title"
       name="title"
       type="text"
-      placeholder="E.g., Funnels, Click tracking"
+      placeholder="{{ t(key='feature-form-placeholder-title', lang=lang) }}"
       class="input input-bordered w-full"
     />
   </div>
 
   <div class="form-control w-full mt-4">
     <label class="label" for="feature-description">
-      <span class="label-text">Description</span>
+      <span class="label-text">{{ t(key="feature-form-label-description", lang=lang) }}</span>
     </label>
     <textarea
       id="feature-description"
       name="description"
       class="textarea textarea-bordered h-24 w-full"
-      placeholder="Describe the feature and why it's useful..."
+      placeholder="{{ t(key='feature-form-placeholder-description', lang=lang) }}"
     ></textarea>
   </div>
 
   <div class="card-actions justify-end mt-6">
-    <button id="feature-btn" type="submit" class="btn btn-primary w-full">Suggest feature</button>
+    <button id="feature-btn" type="submit" class="btn btn-primary w-full">
+      {{ t(key="feature-form-button-submit", lang=lang) }}
+    </button>
   </div>
 </form>

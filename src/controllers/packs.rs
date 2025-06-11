@@ -8,7 +8,7 @@ use serde::Deserialize;
 use crate::{
     controllers::dashboard::WebsiteOptions,
     domain::{domain_services::image_generation::ImageGenerationService, website::Website},
-    middleware::cookie::ExtractConsentState,
+    middleware::{cookie::ExtractConsentState, i18nv2::LangEngine},
     models::{
         images::ImagesModelList,
         join::user_pack::{load_user_and_one_pack, load_user_one_training_model_one_pack},
@@ -148,6 +148,7 @@ pub async fn show_pack(
     Extension(website): Extension<Website>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
     let user: Option<UserView> = match auth {
         Ok(auth) => {
@@ -167,6 +168,7 @@ pub async fn show_pack(
 
     let website_options = WebsiteOptions::new()
         .website(&website)
+        .language(&lang)
         .cc_cookie(&cc_cookie)
         .set_user(user)
         .pack(pack)
@@ -185,6 +187,7 @@ pub async fn show_pack_partial(
     Extension(website): Extension<Website>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
     let user: Option<UserView> = match auth {
         Ok(auth) => {
@@ -204,12 +207,13 @@ pub async fn show_pack_partial(
 
     let website_options = WebsiteOptions::new()
         .website(&website)
+        .language(&lang)
         .cc_cookie(&cc_cookie)
         .set_user(user)
         .pack(pack)
         .pack_images(pack_images)
         .web_images(&images)
-        .is_pack();
+        .is_pack_partial();
 
     views::packs::packs(v, &website_options)
 }

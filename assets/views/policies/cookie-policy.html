@@ -1,12 +1,13 @@
-{% set website = options.website %}
+{% set website = options.website %} {% set lang = options.language %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{{ website.website_basic_info.name }} - Cookie Policy</title>
+    <title>
+      {{ website.website_basic_info.name }} {{ t(key="cookie-page-title-suffix", lang=lang) }}
+    </title>
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico" />
-
     <style>
       /* Reuse styles from Privacy Policy for consistency */
       body {
@@ -94,218 +95,147 @@
     </style>
   </head>
   <body>
-    <h1>Cookie Policy</h1>
-    <p><strong>Last Updated:</strong>29 May 2025</p>
-    <p><strong>Effective Date:</strong>29 May 2025</p>
-
-    {#
-    <div class="important-note">
-      <p>
-        <strong>Disclaimer:</strong> This Cookie Policy is provided as a template. Please review it
-        carefully, fill in the specific details accurately reflecting your website's cookie usage,
-        and consult with a legal professional to ensure full compliance with GDPR and other
-        applicable regulations.
-      </p>
-    </div>
-    #}
-
-    <h2>1. Introduction</h2>
+    <h1>{{ t(key="cookie-h1", lang=lang) }}</h1>
     <p>
-      This Cookie Policy explains how Jissicko Software ("we", "us", "our") uses cookies and similar
-      tracking technologies on our {{ website.website_basic_info.name }} application and associated
-      website(s) (collectively, the "Service"), accessible via [Your Website URL, e.g.,
-      pictora.com]. It explains what these technologies are, why we use them, and your rights to
-      control our use of them.
+      <strong>{{ t(key="cookie-last-updated-label", lang=lang) }}</strong>{{
+      t(key="cookie-last-updated-date", lang=lang) }}
     </p>
     <p>
-      This policy should be read alongside our
+      <strong>{{ t(key="cookie-effective-date-label", lang=lang) }}</strong>{{
+      t(key="cookie-effective-date-value", lang=lang) }}
+    </p>
+
+    {# ... #}
+
+    <h2>{{ t(key="cookie-s1-h2", lang=lang) }}</h2>
+    <p>
+      {{ t(key="cookie-s1-p1-prefix", lang=lang) }} {{ website.website_basic_info.name }} {{
+      t(key="cookie-s1-p1-suffix", lang=lang) }}
+    </p>
+    <p>
+      {{ t(key="cookie-s1-p2-prefix", lang=lang) }}
       <a
         href="{{ website.website_routes.policy.cookie | safe }}"
         target="_blank"
         rel="noopener noreferrer"
-        >Privacy Policy</a
-      >, which provides more detailed information about how we handle your personal data.
+        >{{ t(key="cookie-s1-p2-link-text", lang=lang) }}</a
+      >, {{ t(key="cookie-s1-p2-suffix", lang=lang) }}
     </p>
 
-    <h2>2. What Are Cookies?</h2>
-    <p>
-      Cookies are small data files placed on your computer or mobile device when you visit a website
-      or use an application. They are widely used to make websites and applications work, or work
-      more efficiently, as well as to provide reporting information.
-    </p>
-    <p>
-      Cookies set by the website owner (in this case, Jissicko Software) are called "first-party
-      cookies". Cookies set by parties other than the website owner are called "third-party
-      cookies". Third-party cookies enable third-party features or functionality to be provided on
-      or through the website (e.g., analytics, advertising, interactive content).
-    </p>
-    <p>
-      Cookies can remain on your device for different periods. "Session cookies" exist only while
-      your browser is open and are deleted automatically once you close your browser. "Persistent
-      cookies" survive after your browser is closed and can be used by the website to recognize your
-      computer when you return.
-    </p>
+    <h2>{{ t(key="cookie-s2-h2", lang=lang) }}</h2>
+    <p>{{ t(key="cookie-s2-p1", lang=lang) }}</p>
+    <p>{{ t(key="cookie-s2-p2", lang=lang) }}</p>
+    <p>{{ t(key="cookie-s2-p3", lang=lang) }}</p>
 
-    <h2>3. Why Do We Use Cookies?</h2>
-    <p>
-      We use first-party and third-party cookies for several reasons. Some cookies are required for
-      technical reasons in order for our Service to operate – these are referred to as "necessary"
-      or "essential" cookies. Other cookies enable us to track usage patterns and enhance the
-      experience on our Service (Analytics), and potentially to help deliver relevant marketing
-      messages (Marketing).
-    </p>
+    <h2>{{ t(key="cookie-s3-h2", lang=lang) }}</h2>
+    <p>{{ t(key="cookie-s3-p1", lang=lang) }}</p>
 
-    <h2>4. Types of Cookies Used on {{ website.website_basic_info.name }}</h2>
-    <p>We classify the cookies used on our Service as follows:</p>
+    <h2>{{ t(key="cookie-s4-h2-prefix", lang=lang) }} {{ website.website_basic_info.name }}</h2>
+    <p>{{ t(key="cookie-s4-p1", lang=lang) }}</p>
     <ul>
       <li>
         <p>
-          <strong>Necessary Cookies:</strong> These are strictly necessary to provide you with the
-          core services available through {{ website.website_basic_info.name }} and to use some of
-          its essential features, such as secure login, session management, and security functions.
-          Because these cookies are strictly necessary to deliver the Service, you cannot refuse
-          them without impacting how the Service functions. You can block or delete them by changing
-          your browser settings (see Section 7 below), but this may affect Service functionality.
+          <strong>{{ t(key="cookie-s4-li1-title", lang=lang) }}</strong> {{
+          t(key="cookie-s4-li1-text-prefix", lang=lang) }} {{ website.website_basic_info.name }} {{
+          t(key="cookie-s4-li1-text-suffix", lang=lang) }}
         </p>
       </li>
       <li>
         <p>
-          <strong>Analytics Cookies (Performance Cookies):</strong> These cookies collect
-          information about how you use our Service, for instance, which features you use most
-          often, how long you spend on certain tasks, and if you receive error messages. This
-          information helps us understand usage patterns, improve the performance and usability of
-          {{ website.website_basic_info.name }}, and enhance our AI models. We use Google Analytics
-          for this purpose. These cookies are only placed and used if you provide your consent via
-          our cookie management tool.
+          <strong>{{ t(key="cookie-s4-li2-title", lang=lang) }}</strong> {{
+          t(key="cookie-s4-li2-text-prefix", lang=lang) }} {{ website.website_basic_info.name }} {{
+          t(key="cookie-s4-li2-text-suffix", lang=lang) }}
         </p>
       </li>
       <li>
         <p>
-          <strong>Marketing Cookies (Targeting Cookies):</strong> These cookies may be used to
-          understand user interests, track the effectiveness of our own marketing campaigns (e.g.,
-          user acquisition), or potentially work with advertising partners (like Meta/Facebook) to
-          show you relevant ads on other platforms. These cookies record your visit to our Service
-          and potentially your browsing activity elsewhere. These cookies are only placed and used
-          if you provide your consent via our cookie management tool.
+          <strong>{{ t(key="cookie-s4-li3-title", lang=lang) }}</strong> {{
+          t(key="cookie-s4-li3-text", lang=lang) }}
         </p>
       </li>
     </ul>
 
-    <h2>5. Specific Cookies We Use (Examples)</h2>
-    <p>
-      Below is a list describing some of the specific first-party and third-party cookies that may
-      be used by the Service. **Please note:** This list is not exhaustive and the specific cookies,
-      especially third-party ones, may change over time. Use your browser's developer tools to
-      inspect the cookies currently active during your session for the most up-to-date information.
-    </p>
+    <h2>{{ t(key="cookie-s5-h2", lang=lang) }}</h2>
+    <p>{{ t(key="cookie-s5-p1", lang=lang) }}</p>
 
     <table>
       <thead>
         <tr>
-          <th>Cookie Name(s)</th>
-          <th>Provider</th>
-          <th>Purpose</th>
-          <th>Type & Duration</th>
+          <th>{{ t(key="cookie-table-header1", lang=lang) }}</th>
+          <th>{{ t(key="cookie-table-header2", lang=lang) }}</th>
+          <th>{{ t(key="cookie-table-header3", lang=lang) }}</th>
+          <th>{{ t(key="cookie-table-header4", lang=lang) }}</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td><code>session</code> (or similar)</td>
+          <td><code>session</code> {{ t(key="cookie-table-r1-c1-suffix", lang=lang) }}</td>
           <td>Jissicko Software (Loco Framework)</td>
-          <td>Maintains your logged-in session state.</td>
-          <td>Necessary / Session</td>
+          <td>{{ t(key="cookie-table-r1-c3", lang=lang) }}</td>
+          <td>{{ t(key="cookie-table-r1-c4", lang=lang) }}</td>
         </tr>
         <tr>
-          <td><code>cc_cookie</code> (or your configured name)</td>
+          <td><code>cc_cookie</code> {{ t(key="cookie-table-r2-c1-suffix", lang=lang) }}</td>
           <td>Jissicko Software (via CookieConsent library)</td>
-          <td>Stores your cookie consent preferences.</td>
-          <td>Necessary / Persistent (Typically 1 year)</td>
+          <td>{{ t(key="cookie-table-r2-c3", lang=lang) }}</td>
+          <td>{{ t(key="cookie-table-r2-c4", lang=lang) }}</td>
         </tr>
         <tr>
           <td>[e.g., <code>csrf_token</code>]</td>
           <td>Jissicko Software (Loco Framework / Security)</td>
-          <td>Helps prevent Cross-Site Request Forgery attacks.</td>
-          <td>Necessary / Session or Persistent</td>
+          <td>{{ t(key="cookie-table-r3-c3", lang=lang) }}</td>
+          <td>{{ t(key="cookie-table-r3-c4", lang=lang) }}</td>
         </tr>
         <tr>
           <td>[Any other auth cookies]</td>
           <td>Jissicko Software (Authentication)</td>
-          <td>Related to authentication mechanisms (e.g., "remember me").</td>
-          <td>Necessary / Session or Persistent</td>
+          <td>{{ t(key="cookie-table-r4-c3", lang=lang) }}</td>
+          <td>{{ t(key="cookie-table-r4-c4", lang=lang) }}</td>
         </tr>
         <tr>
           <td><code>_ga</code>, <code>_gid</code>, <code>_ga_*</code></td>
           <td>Google Analytics</td>
-          <td>
-            Used to distinguish users and collect statistical usage data (anonymously where
-            possible).
-          </td>
-          <td>Analytics / Persistent (Duration varies, e.g., 2 years for _ga)</td>
+          <td>{{ t(key="cookie-table-r5-c3", lang=lang) }}</td>
+          <td>{{ t(key="cookie-table-r5-c4", lang=lang) }}</td>
         </tr>
         <tr>
           <td><code>_fbp</code>, <code>_fbc</code></td>
           <td>Meta (Facebook) Pixel</td>
-          <td>Used for advertising measurement, optimization, and audience building.</td>
-          <td>Marketing / Persistent (Duration varies, e.g., 3 months)</td>
+          <td>{{ t(key="cookie-table-r6-c3", lang=lang) }}</td>
+          <td>{{ t(key="cookie-table-r6-c4", lang=lang) }}</td>
         </tr>
-        <!-- Add other specific cookies if you identify them -->
       </tbody>
     </table>
-    <p>
-      <em
-        >You must consent to Analytics and Marketing cookies via our consent management tool for
-        them to be set and used.</em
-      >
-    </p>
+    <p><em>{{ t(key="cookie-table-footer", lang=lang) }}</em></p>
 
-    <h2>6. Third-Party Cookies</h2>
-    <p>
-      As indicated above, certain features or functionalities of our Service rely on third-party
-      providers who may set their own cookies on your device. This includes:
-    </p>
+    <h2>{{ t(key="cookie-s6-h2", lang=lang) }}</h2>
+    <p>{{ t(key="cookie-s6-p1", lang=lang) }}</p>
     <ul>
       <li>
-        <strong>Google Analytics:</strong> To analyze website traffic and usage. Google's use of
-        data is governed by their own policies.
+        <strong>{{ t(key="cookie-s6-li1-title", lang=lang) }}</strong> {{
+        t(key="cookie-s6-li1-text", lang=lang) }}
       </li>
       <li>
-        <strong>Meta (Facebook) Pixel:</strong> For tracking conversions from Facebook ads,
-        optimizing ads, and building targeted audiences. Meta's use of data is governed by their own
-        policies.
+        <strong>{{ t(key="cookie-s6-li2-title", lang=lang) }}</strong> {{
+        t(key="cookie-s6-li2-text", lang=lang) }}
       </li>
-      <li>
-        [List any other significant third parties setting cookies, e.g., payment processors if they
-        set persistent tracking cookies, embedded video providers, etc.]
-      </li>
+      <li>{{ t(key="cookie-s6-li3", lang=lang) }}</li>
     </ul>
-    <p>
-      These third parties control the cookies they set. We recommend you review their respective
-      privacy and cookie policies for more information on how they use cookies and process data.
-    </p>
+    <p>{{ t(key="cookie-s6-p2", lang=lang) }}</p>
 
-    <h2>7. Your Choices and Managing Cookies</h2>
-    <p>
-      You have the right to decide whether to accept or reject cookies other than Necessary cookies.
-    </p>
+    <h2>{{ t(key="cookie-s7-h2", lang=lang) }}</h2>
+    <p>{{ t(key="cookie-s7-p1", lang=lang) }}</p>
     <ul>
       <li>
         <p>
-          <strong>Cookie Consent Tool:</strong> When you first visit our Service, you will be
-          presented with a cookie banner allowing you to accept all cookies, reject non-essential
-          cookies, or manage your preferences for specific categories (Analytics, Marketing). You
-          can typically change your preferences at any time by clicking on a "Cookie Settings" or
-          "Manage Consent" link or button (usually found in the website footer). [Ensure such a
-          link/button exists and is functional]. Rejecting cookies via this tool will prevent
-          Analytics and Marketing cookies from being set or used going forward.
+          <strong>{{ t(key="cookie-s7-li1-title", lang=lang) }}</strong> {{
+          t(key="cookie-s7-li1-text", lang=lang) }}
         </p>
       </li>
       <li>
         <p>
-          <strong>Browser Settings:</strong> Most web browsers allow you to control cookies through
-          their settings preferences. You can set your browser to block or delete cookies. However,
-          if you block all cookies (including Necessary ones), you may not be able to access all or
-          parts of our Service, and some functionality may be impaired. Find out how to manage
-          cookies on popular browsers:
+          <strong>{{ t(key="cookie-s7-li2-title", lang=lang) }}</strong> {{
+          t(key="cookie-s7-li2-text", lang=lang) }}
         </p>
         <ul>
           <li>
@@ -313,7 +243,7 @@
               href="https://support.google.com/chrome/answer/95647"
               target="_blank"
               rel="noopener noreferrer"
-              >Google Chrome</a
+              >{{ t(key="cookie-browser-link-chrome", lang=lang) }}</a
             >
           </li>
           <li>
@@ -321,7 +251,7 @@
               href="https://support.mozilla.org/en-US/kb/enhanced-tracking-protection-firefox-desktop"
               target="_blank"
               rel="noopener noreferrer"
-              >Mozilla Firefox</a
+              >{{ t(key="cookie-browser-link-firefox", lang=lang) }}</a
             >
           </li>
           <li>
@@ -329,7 +259,7 @@
               href="https://support.microsoft.com/en-us/microsoft-edge/delete-cookies-in-microsoft-edge-63947406-40ac-c3b8-57b9-2a946a29ae09"
               target="_blank"
               rel="noopener noreferrer"
-              >Microsoft Edge</a
+              >{{ t(key="cookie-browser-link-edge", lang=lang) }}</a
             >
           </li>
           <li>
@@ -337,7 +267,7 @@
               href="https://support.apple.com/guide/safari/manage-cookies-and-website-data-sfri11471/mac"
               target="_blank"
               rel="noopener noreferrer"
-              >Safari (macOS)</a
+              >{{ t(key="cookie-browser-link-safari-mac", lang=lang) }}</a
             >
           </li>
           <li>
@@ -345,7 +275,7 @@
               href="https://support.apple.com/en-us/HT201265"
               target="_blank"
               rel="noopener noreferrer"
-              >Safari (iOS)</a
+              >{{ t(key="cookie-browser-link-safari-ios", lang=lang) }}</a
             >
           </li>
           <li>
@@ -353,44 +283,37 @@
               href="https://help.opera.com/en/latest/web-preferences/"
               target="_blank"
               rel="noopener noreferrer"
-              >Opera</a
+              >{{ t(key="cookie-browser-link-opera", lang=lang) }}</a
             >
           </li>
         </ul>
       </li>
       <li>
         <p>
-          <strong>Third-Party Opt-Outs:</strong> For third-party advertising cookies, you can often
-          opt out via industry opt-out programs like the
+          <strong>{{ t(key="cookie-s7-li3-title", lang=lang) }}</strong> {{
+          t(key="cookie-s7-li3-text-prefix", lang=lang) }}
           <a href="http://www.aboutads.info/choices/" target="_blank" rel="noopener noreferrer"
-            >Digital Advertising Alliance (DAA)</a
+            >{{ t(key="cookie-s7-li3-link1-text", lang=lang) }}</a
           >
-          opt-out page or the
+          {{ t(key="cookie-s7-li3-text-middle", lang=lang) }}
           <a href="https://youronlinechoices.eu/" target="_blank" rel="noopener noreferrer"
-            >Network Advertising Initiative (NAI)</a
+            >{{ t(key="cookie-s7-li3-link2-text", lang=lang) }}</a
           >
-          opt-out page (check applicability for your region).
+          {{ t(key="cookie-s7-li3-text-suffix", lang=lang) }}
         </p>
       </li>
     </ul>
 
-    <h2>8. Changes to This Cookie Policy</h2>
-    <p>
-      We may update this Cookie Policy from time to time to reflect changes in our practices,
-      technology, legal requirements, or other factors. When we make changes, we will update the
-      "Last Updated" date at the top of this policy. We encourage you to review this policy
-      periodically.
-    </p>
+    <h2>{{ t(key="cookie-s8-h2", lang=lang) }}</h2>
+    <p>{{ t(key="cookie-s8-p1", lang=lang) }}</p>
 
-    <h2>9. Contact Us</h2>
-    <p>
-      If you have any questions about our use of cookies or this Cookie Policy, please contact us
-      at:
-    </p>
+    <h2>{{ t(key="cookie-s9-h2", lang=lang) }}</h2>
+    <p>{{ t(key="cookie-s9-p1", lang=lang) }}</p>
     <p class="privacy-text">
       <strong>Jissicko Software</strong><br />
-      Rotterdam, The Netherlands<br />
-      Email: support@replicapixel.com<br />
+      {{ t(key="cookie-contact-location", lang=lang) }}<br />
+      {{ t(key="cookie-contact-email-label", lang=lang) }} {{ t(key="cookie-contact-email-value",
+      lang=lang) }}<br />
     </p>
   </body>
 </html>

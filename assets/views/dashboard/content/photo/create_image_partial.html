@@ -1,5 +1,6 @@
 {% set image_sizes = options.website.website_fields.image_sizes %} {% set quality_models =
 options.website.website_fields.quality_model %} {% set training_models = options.training_models %}
+{% set lang = options.language %}
 
 <form
   x-data="{ selectedModelName: '' }"
@@ -19,13 +20,15 @@ options.website.website_fields.quality_model %} {% set training_models = options
 >
   <div class="rounded-lg border border-base-300 bg-base-100 shadow-lg flex flex-col">
     <div class="w-full max-w-full px-4 py-2 rounded-t-lg">
-      <label for="prompt" class="sr-only">Your Image Description</label>
+      <label for="prompt" class="sr-only"
+        >{{ t(key="create-image-form-prompt-label", lang=lang) }}</label
+      >
       <textarea
         id="prompt"
         name="prompt"
         rows="1"
         class="block w-full resize-none min-h-[50px] max-h-[200px] px-0 text-sm bg-transparent border-0 focus:ring-0 focus:outline-none text-base-content placeholder-base-content/60 overflow-auto"
-        placeholder="Describe the image you want to create..."
+        placeholder="{{ t(key='create-image-form-prompt-placeholder', lang=lang) }}"
         required
         :disabled="$store.imageGenForm.isLoading"
         oninput="autoResize(this)"
@@ -53,12 +56,12 @@ options.website.website_fields.quality_model %} {% set training_models = options
       class="px-4 pt-3 pb-2 border-t border-base-300 grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-4"
     >
       <h3 class="text-xs text-center font-semibold text-base-content/80 md:col-span-2">
-        Advanced Options
+        {{ t(key="create-image-form-advanced-options-title", lang=lang) }}
       </h3>
 
       <div>
         <label for="training_model_pid" class="block text-xs mb-1 text-base-content/70"
-          >Model</label
+          >{{ t(key="create-image-form-label-model", lang=lang) }}</label
         >
         <select
           id="training_model_pid"
@@ -74,13 +77,15 @@ options.website.website_fields.quality_model %} {% set training_models = options
             {{ training_model.name }}
           </option>
           {% endfor %} {% else %}
-          <option value="">No models selected</option>
+          <option value="">{{ t(key="create-image-form-no-models-option", lang=lang) }}</option>
           {% endif %}
         </select>
       </div>
 
       <div>
-        <label for="image_size" class="block text-xs mb-1 text-base-content/70">Image Size</label>
+        <label for="image_size" class="block text-xs mb-1 text-base-content/70"
+          >{{ t(key="create-image-form-label-image-size", lang=lang) }}</label
+        >
         <select
           id="image_size"
           name="image_size"
@@ -96,7 +101,7 @@ options.website.website_fields.quality_model %} {% set training_models = options
       <div class="md:col-span-2">
         <div class="flex justify-between items-center mb-1">
           <label for="num_inference_steps" class="block text-xs text-base-content/70">
-            Quality Steps
+            {{ t(key="create-image-form-label-quality-steps", lang=lang) }}
           </label>
           <span
             class="text-xs font-medium text-base-content/90"
@@ -120,7 +125,7 @@ options.website.website_fields.quality_model %} {% set training_models = options
         <!-- Left: Image Counter Controls -->
         <div class="flex flex-col items-center">
           <label class="block text-xs mb-1 text-base-content/70 text-center">
-            Number of Images
+            {{ t(key="create-image-form-label-num-images", lang=lang) }}
           </label>
           <input type="hidden" name="num_images" x-model="$store.imageGenForm.numImages" />
           <div class="flex items-center space-x-2">
@@ -128,7 +133,7 @@ options.website.website_fields.quality_model %} {% set training_models = options
             <button
               type="button"
               class="btn btn-sm btn-outline join-item"
-              aria-label="Decrease number of images"
+              aria-label="{{ t(key='create-image-form-aria-decrease-images', lang=lang) }}"
               :disabled="$store.imageGenForm.numImages <= 1 || $store.imageGenForm.isLoading"
               x-on:click="$store.imageGenForm.decrementImages()"
             >
@@ -153,7 +158,7 @@ options.website.website_fields.quality_model %} {% set training_models = options
             <button
               type="button"
               class="btn btn-sm btn-outline join-item"
-              aria-label="Increase number of images"
+              aria-label="{{ t(key='create-image-form-aria-increase-images', lang=lang) }}"
               :disabled="$store.imageGenForm.numImages >= 20 || $store.imageGenForm.isLoading"
               x-on:click="$store.imageGenForm.incrementImages()"
             >
@@ -172,7 +177,9 @@ options.website.website_fields.quality_model %} {% set training_models = options
 
         <!-- Right: Quick Set Buttons -->
         <div class="flex flex-col items-center">
-          <label class="block text-xs mb-1 text-base-content/70 text-center"> Quick </label>
+          <label class="block text-xs mb-1 text-base-content/70 text-center">
+            {{ t(key="create-image-form-label-quick-set", lang=lang) }}
+          </label>
           <div class="flex items-center gap-2">
             <button
               type="button"
@@ -204,7 +211,7 @@ options.website.website_fields.quality_model %} {% set training_models = options
 
       <div>
         <label for="model" class="block text-xs mb-1 text-base-content/70"
-          >Image Generation Quality</label
+          >{{ t(key="create-image-form-label-image-quality", lang=lang) }}</label
         >
         <select
           id="image-quality"
@@ -224,7 +231,7 @@ options.website.website_fields.quality_model %} {% set training_models = options
         type="button"
         id="toggle-advanced-options"
         class="btn btn-ghost btn-square btn-sm"
-        aria-label="Toggle Advanced Options"
+        aria-label="{{ t(key='create-image-form-aria-toggle-advanced', lang=lang) }}"
         aria-controls="advanced-options"
         x-on:click="$store.imageGenForm.toggleAdvancedOptions()"
         :aria-expanded="$store.imageGenForm.advancedOptionsOpen.toString()"
@@ -251,17 +258,19 @@ options.website.website_fields.quality_model %} {% set training_models = options
       >
         <div
           class="text-lg font-semibold text-base-content truncate flex items-center justify-center gap-2"
-          title="Number of Images"
+          title="{{ t(key='create-image-form-title-num-images', lang=lang) }}"
         >
           <span class="w-5 h-5">{% include "partials/svg/image.html" %}</span>
           <span class="font-medium" x-text="$store.imageGenForm.numImages"></span>
         </div>
         <div
           class="text-xs md:text-lg font-semibold text-base-content truncate flex items-center justify-center gap-2"
-          title="Selected Model"
+          title="{{ t(key='create-image-form-title-selected-model', lang=lang) }}"
         >
           <span class="hidden sm:block">{% include "partials/svg/model_svg.html" %}</span>
-          <span class="sm:hidden text-xs">M:</span>
+          <span class="sm:hidden text-xs"
+            >{{ t(key="create-image-form-model-short-label", lang=lang) }}</span
+          >
           <span class="font-medium" x-text="selectedModelName"></span>
         </div>
       </div>
@@ -271,7 +280,9 @@ options.website.website_fields.quality_model %} {% set training_models = options
           x-show="$store.imageGenForm.isLoading"
           class="loading loading-spinner loading-xs"
         ></span>
-        <span x-show="!$store.imageGenForm.isLoading">Take Photo</span>
+        <span x-show="!$store.imageGenForm.isLoading"
+          >{{ t(key="create-image-form-submit-button", lang=lang) }}</span
+        >
       </button>
     </div>
   </div>

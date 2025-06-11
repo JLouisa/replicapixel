@@ -1,4 +1,5 @@
 use crate::controllers::dashboard::WebsiteOptions;
+use crate::domain::cookie::UserCookieTrait;
 use crate::models::users::RegisterParams;
 use crate::models::UserModel;
 use crate::service::stripe::stripe::StripeClient;
@@ -8,7 +9,6 @@ use loco_rs::prelude::*;
 use std::fmt::Debug;
 
 use loco_oauth2::models::oauth2_sessions::OAuth2SessionsTrait;
-use loco_oauth2::models::users::OAuth2UserTrait;
 
 use axum::extract::Query;
 use axum::response::{IntoResponse, Redirect};
@@ -18,7 +18,7 @@ use axum::{
     http::{header, HeaderMap, HeaderValue, StatusCode},
     Json,
 };
-use axum_extra::extract::cookie::{Cookie as AxumCookie, CookieJar, SameSite};
+use axum_extra::extract::cookie::CookieJar;
 use axum_session::{DatabasePool, Session, SessionNullPool};
 
 use serde::de::DeserializeOwned;
@@ -99,71 +99,6 @@ pub fn routes() -> Routes {
     // )
 }
 
-pub trait CookieTrait<T>: OAuth2UserTrait<T> + ModelTrait {
-    fn create_cookie_base(
-        &self,
-        ctx: &AppContext,
-        same_site: SameSite,
-    ) -> Result<AxumCookie<'static>>;
-    fn create_cookie(&self, ctx: &AppContext) -> Result<AxumCookie<'static>>;
-    fn create_cookie_strict(&self, ctx: &AppContext) -> Result<AxumCookie<'static>>;
-    fn logout_cookie() -> AxumCookie<'static>;
-}
-
-// Implement the trait for your model
-impl CookieTrait<OAuth2UserProfile> for UserModel {
-    fn create_cookie_base(
-        &self,
-        ctx: &AppContext,
-        same_site: SameSite,
-    ) -> Result<AxumCookie<'static>> {
-        let jwt_secret = ctx.config.get_jwt_config()?;
-        let days = 7;
-        let jwt_ttl_secs = jwt_secret.expiration * days;
-
-        let expiration_time =
-            time::OffsetDateTime::now_utc() + time::Duration::seconds(jwt_ttl_secs as i64);
-
-        let token = self
-            .generate_jwt(&jwt_secret.secret, jwt_ttl_secs as u64)
-            .or_else(|e| {
-                tracing::error!("Failed to generate JWT: {:?}", e);
-                unauthorized("unauthorized!")
-            })?;
-
-        let cookie = AxumCookie::build(("auth", token))
-            .path("/")
-            .http_only(!cfg!(debug_assertions))
-            .secure(!cfg!(debug_assertions))
-            .same_site(same_site)
-            .expires(expiration_time)
-            .max_age(time::Duration::seconds(jwt_ttl_secs as i64))
-            // .domain("replicapixel.com")
-            .build();
-
-        Ok(cookie)
-    }
-    // Public method for Lax cookie (e.g., for OAuth)
-    fn create_cookie(&self, ctx: &AppContext) -> Result<AxumCookie<'static>> {
-        self.create_cookie_base(ctx, SameSite::Lax)
-    }
-    // Public method for Strict cookie (e.g., for standard login)
-    fn create_cookie_strict(&self, ctx: &AppContext) -> Result<AxumCookie<'static>> {
-        self.create_cookie_base(ctx, SameSite::Strict)
-    }
-    // Public method for logging out
-    fn logout_cookie() -> AxumCookie<'static> {
-        AxumCookie::build(("auth", ""))
-            .path("/")
-            .http_only(true)
-            .secure(!cfg!(debug_assertions))
-            .same_site(SameSite::Lax)
-            .expires(time::OffsetDateTime::now_utc() - time::Duration::days(1))
-            .max_age(time::Duration::seconds(0))
-            .build()
-    }
-}
-
 #[derive(Debug, Deserialize)]
 pub struct GoogleTokenPayload {
     token: String,
@@ -221,7 +156,7 @@ async fn google_ott(
 
 pub async fn google_callback_jwt<
     T: DeserializeOwned + Send,
-    U: CookieTrait<T>,
+    U: UserCookieTrait<T>,
     V: OAuth2SessionsTrait<U>,
     W: DatabasePool + Clone + Debug + Sync + Send + 'static,
 >(

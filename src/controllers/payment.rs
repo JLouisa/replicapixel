@@ -14,6 +14,7 @@ pub struct PaymentController;
 use crate::{
     controllers::{auth::HxRedirect, dashboard::WebsiteOptions},
     domain::website::Website,
+    middleware::i18nv2::LangEngine,
     models::{
         users::UserPid,
         PlanModel,
@@ -247,6 +248,7 @@ pub async fn prepare_handler(
     State(_ctx): State<AppContext>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
     let link = format!(
         "{}{}/{}/{}",
@@ -255,7 +257,10 @@ pub async fn prepare_handler(
         pid,
         plan
     );
-    let website_options = WebsiteOptions::new().website(&website).link(&link);
+    let website_options = WebsiteOptions::new()
+        .website(&website)
+        .language(&lang)
+        .link(&link);
     views::payment::prepare(v, &website_options)
 }
 
@@ -298,7 +303,7 @@ async fn success_handler(
     params: Query<PaymentRedirectParams>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
-    // State(_): State<AppContext>,
+    LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
     tracing::info!(
         "User successfully completed payment process. session_id: {:?}",
@@ -309,6 +314,7 @@ async fn success_handler(
         .status(CheckOutStatus::Processing);
     let website_options = WebsiteOptions::new()
         .website(&website)
+        .language(&lang)
         .stripe_options(&stripe_options);
     views::payment::stripe_status(v, &website_options)
 }
@@ -316,11 +322,13 @@ async fn success_handler(
 async fn cancel_handler(
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
     tracing::info!("User cancelled payment process.");
     let stripe_options = StripeWebOptions::new().status(CheckOutStatus::Cancelled);
     let website_options = WebsiteOptions::new()
         .website(&website)
+        .language(&lang)
         .stripe_options(&stripe_options);
     views::payment::stripe_status(v, &website_options)
 }
@@ -330,6 +338,7 @@ async fn status_handler(
     Extension(stripe_client): Extension<StripeClient>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
     dbg!(&session_id_str);
     // 1. Parse Session ID
@@ -354,6 +363,7 @@ async fn status_handler(
         let stripe_options = StripeWebOptions::new().status(CheckOutStatus::Succeeded);
         let website_options = WebsiteOptions::new()
             .website(&website)
+            .language(&lang)
             .stripe_options(&stripe_options);
         views::payment::stripe_status_partials(v, &website_options)
     } else {
@@ -371,11 +381,13 @@ pub async fn payment_home(
     State(ctx): State<AppContext>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     let website_options = WebsiteOptions::new()
         .website(&website)
+        .language(&lang)
         .user(user.into())
         .user_credits(user_credits.into());
     views::payment::payment_home(v, &website_options)
@@ -386,11 +398,13 @@ pub async fn payment_home_partial(
     State(ctx): State<AppContext>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     let website_options = WebsiteOptions::new()
         .website(&website)
+        .language(&lang)
         .user(user.into())
         .user_credits(user_credits.into());
     views::payment::payment_home_partial(v, &website_options)

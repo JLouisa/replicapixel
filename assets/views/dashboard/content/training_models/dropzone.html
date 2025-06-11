@@ -28,8 +28,12 @@
           <div
             class="mt-4 flex flex-wrap justify-center text-sm text-base-content/80 pointer-events-none"
           >
-            <span class="pe-1 font-medium text-base-content">Drop your file here or</span>
-            <span class="link link-primary font-semibold">browse</span>
+            <span class="pe-1 font-medium text-base-content"
+              >{{ t(key="dropzone-prompt-prefix", lang=lang) }}</span
+            >
+            <span class="link link-primary font-semibold"
+              >{{ t(key="dropzone-prompt-browse", lang=lang) }}</span
+            >
           </div>
           <p class="mt-1 text-xs text-base-content/60 pointer-events-none">
             <span
@@ -104,7 +108,7 @@
               <span
                 class="text-xs text-base-content/80"
                 x-text="$store.createModelForm.humanFileSize(file.size)"
-                >Loading</span
+                >{{ t(key="dropzone-file-size-loading", lang=lang) }}</span
               >
             </div>
 

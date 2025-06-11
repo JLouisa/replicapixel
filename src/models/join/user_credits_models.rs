@@ -217,7 +217,7 @@ pub async fn load_user_credits_settings(
             return Err(JoinError::UserNotFound(pid_string));
         } else {
             return Err(JoinError::UserNotFound(format!(
-                "User {} found, but query with credits failed.",
+                "User {} found, but query with user settings failed.",
                 pid_string
             )));
         }
@@ -237,6 +237,44 @@ pub async fn load_user_credits_settings(
 
     // Return the combined data
     Ok((user, user_credit_model, user_settings))
+}
+
+pub async fn load_user_by_email_and_settings(
+    db: &impl ConnectionTrait,
+    email: &str,
+) -> Result<(UserModel, UserSettingsModel), JoinError> {
+    let query_results = UserEntity::find()
+        .filter(users::Column::Email.eq(email.to_string()))
+        .join(JoinType::InnerJoin, users::Relation::UserSettings.def())
+        .select_also(user_settings::Entity)
+        .all(db)
+        .await?;
+
+    if query_results.is_empty() {
+        let user_exists = UserEntity::find()
+            .filter(users::Column::Email.eq(&email.to_string()))
+            .count(db)
+            .await?
+            > 0;
+        if !user_exists {
+            return Err(JoinError::UserNotFound(email.to_string()));
+        } else {
+            return Err(JoinError::UserNotFound(format!(
+                "User {} found, but query with user settings failed.",
+                email.to_string()
+            )));
+        }
+    }
+
+    let user = query_results[0].0.clone();
+
+    let user_settings = query_results[0]
+        .1 // Option<UserCreditModel>
+        .clone()
+        .ok_or_else(|| JoinError::SettingsMissingInvariant(user.id))?;
+
+    // Return the combined data
+    Ok((user, user_settings))
 }
 
 pub async fn load_user_and_settings(

@@ -1,4 +1,5 @@
 <!-- prettier-ignore -->
+
 {% set home_link = "/" %}
 {% set studio_link = website.website_routes.dashboard_routes.base %}
 {% set studio_partial_link = website.website_routes.dashboard_routes.sidebar.photo_partial %}
@@ -26,33 +27,39 @@
   </div>
 
   <!-- Desktop nav -->
+
   <div class="hidden md:flex items-center gap-2 lg:gap-12">
     <ul class="flex flex-row gap-2 lg:gap-8 items-center font-semibold">
       <li>
-        <a
-          href="{{studio_link}}"
-          hx-get="{{ studio_link }}"
-          hx-target="#app"
-          hx-swap="innerHTML"
-          hx-push-url="{{ studio_link }}"
-          class="p-2 text-white text-base hover:text-gray-300"
-          >Studio</a
+        <a href="#home-packs" class="p-2 text-white text-base hover:text-gray-300"
+          >{{ t(key="nav-link-packs", lang=lang) }}</a
         >
       </li>
-      <li><a href="#home-packs" class="p-2 text-white text-base hover:text-gray-300">Packs</a></li>
       <li>
-        <a href="#features" class="p-2 text-white text-base hover:text-gray-300">Features</a>
+        <a href="#features" class="p-2 text-white text-base hover:text-gray-300"
+          >{{ t(key="nav-link-features", lang=lang) }}</a
+        >
       </li>
-      <li><a href="#pricing" class="p-2 text-white text-base hover:text-gray-300">Pricing</a></li>
+      <li>
+        <a href="#pricing" class="p-2 text-white text-base hover:text-gray-300"
+          >{{ t(key="nav-link-pricing", lang=lang) }}</a
+        >
+      </li>
+      <li>{% include "partials/parts/language_menu.html" %}</li>
     </ul>
     {% include "partials/parts/validated/validate_navbar.html" %}
   </div>
   <div class="md:hidden flex items-center gap-2">
-    <div id="home-burger-menu-trigger" aria-label="Open menu" class="cursor-pointer">
+    <div
+      id="home-burger-menu-trigger"
+      aria-label="{{ t(key='nav-mobile-aria-open-menu', lang=lang) }}"
+      class="cursor-pointer"
+    >
       {% include "partials/svg/mobile_menu.html" %}
     </div>
   </div>
 </nav>
 
 <!-- ✅ Mobile nav toggle — placed outside the hidden desktop nav -->
+
 {% include "partials/parts/navbar_mobile/navbar_mobile.html" %}

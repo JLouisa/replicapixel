@@ -2,16 +2,18 @@
   <div class="flex flex-col gap-4 items-center justify-center">
     <div class="p-2 flex flex-row gap-2 items-center justify-center">
       {% include "partials/svg/triple_stars.html" %}
-      <div class="text-w text-center text-sm flex items-center justify-center">Ai-Comparison</div>
+      <div class="text-w text-center text-sm flex items-center justify-center">
+        {{ t(key="features-ai-comparison-badge", lang=lang) }}
+      </div>
     </div>
     <div class="flex flex-col gap-4 items-center justify-center">
       <div class="text-w text-center font-bricon text-5xl font-medium">
         Why {{website_name}} Outperforms
       </div>
       <div class="text-w text-center text-lg">
-        Precision AI Photography
+        {{ t(key="features-subtitle-line-1", lang=lang) }}
         <br class="sm:hidden" />
-        with unmatched quality and realism
+        {{ t(key="features-subtitle-line-2", lang=lang) }}
       </div>
     </div>
   </div>
@@ -25,20 +27,20 @@
             <div class="ring-offset-base-100 w-8 rounded-full ring-2 ring-offset-2">
               <img
                 src="https://replicapixel-web.s3.eu-central-1.amazonaws.com/others/dalle.webp"
-                alt="DALL·E 3 logo"
+                alt='{{ t(key="features-dalle-logo-alt", lang=lang) }}'
               />
             </div>
           </div>
-          <span class="text-lg font-semibold">DALL·E 3</span>
+          <span class="text-lg font-semibold">{{ t(key="features-dalle-title", lang=lang) }}</span>
         </div>
         <div class="flex flex-col gap-2">
           <div class="flex items-center justify-start gap-2">
             <div>{% include "partials/svg/x.html" %}</div>
-            <span>No Face Training</span>
+            <span>{{ t(key="features-dalle-point-1", lang=lang) }}</span>
           </div>
           <div class="flex items-center justify-start gap-2">
             <div class="text-green-500">{% include "partials/svg/check_circle.html" %}</div>
-            <span>Detailed Images</span>
+            <span>{{ t(key="features-dalle-point-2", lang=lang) }}</span>
           </div>
         </div>
       </div>
@@ -46,24 +48,17 @@
         class="bg-white/5 rounded-lg border-solid border-white/13 border p-6 flex flex-col gap-6 items-start justify-center flex-1"
       >
         <div class="flex items-center justify-center gap-4">
-          {#
-          <div class="avatar">
-            <div class="ring-2 ring-offset-base-100 w-8 rounded-full ring-offset-2 p-1">
-              {% include "partials/svg/logo.html" %}
-            </div>
-          </div>
-          #}
           <span class="shrink-0 w-8 h-8 relative">{% include "partials/svg/logo.html" %}</span>
           <span class="text-lg font-semibold">{{website_name}}</span>
         </div>
         <div class="flex flex-col gap-2">
           <div class="flex items-center justify-start gap-2">
             <div class="text-green-500">{% include "partials/svg/check_circle.html" %}</div>
-            <span>Your Face AI</span>
+            <span>{{ t(key="features-own-point-1", lang=lang) }}</span>
           </div>
           <div class="flex items-center justify-start gap-2">
             <div class="text-green-500">{% include "partials/svg/check_circle.html" %}</div>
-            <span>Perfect Realism</span>
+            <span>{{ t(key="features-own-point-2", lang=lang) }}</span>
           </div>
         </div>
       </div>
@@ -76,16 +71,18 @@
               <img src="https://avatars.githubusercontent.com/u/61396273?s=200&v=4" />
             </div>
           </div>
-          <span class="text-lg font-semibold">Midjourney</span>
+          <span class="text-lg font-semibold"
+            >{{ t(key="features-midjourney-title", lang=lang) }}</span
+          >
         </div>
         <div class="flex flex-col gap-2">
           <div class="flex items-center justify-start gap-2">
             <div>{% include "partials/svg/x.html" %}</div>
-            <span>Generic Likeness</span>
+            <span>{{ t(key="features-midjourney-point-1", lang=lang) }}</span>
           </div>
           <div class="flex items-center justify-start gap-2">
             <div class="text-green-500">{% include "partials/svg/check_circle.html" %}</div>
-            <span>Artistic AI</span>
+            <span>{{ t(key="features-midjourney-point-2", lang=lang) }}</span>
           </div>
         </div>
       </div>
@@ -95,60 +92,110 @@
         <!-- head -->
         <thead class="bg-white/5">
           <tr>
-            <th class="p-6 w-1/2 text-lg font-semibold text-w">Features</th>
-            <th class="p-6 text-lg font-semibold text-w">DALL·E</th>
+            <th class="p-6 w-1/2 text-lg font-semibold text-w">
+              {{ t(key="features-table-header-features", lang=lang) }}
+            </th>
+            <th class="p-6 text-lg font-semibold text-w">
+              {{ t(key="features-table-header-dalle", lang=lang) }}
+            </th>
             <th class="p-6 text-lg font-semibold text-w">{{website_name}}</th>
-            <th class="p-6 text-lg font-semibold text-w">Midjourney</th>
+            <th class="p-6 text-lg font-semibold text-w">
+              {{ t(key="features-table-header-midjourney", lang=lang) }}
+            </th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td class="p-6 text-lg">Primary Use Case</td>
-            <td class="p-6 text-lg text-w">General Images</td>
-            <td class="text-success p-6 text-lg">Your AI Twin</td>
-            <td class="p-6 text-lg text-w">Artistic Images</td>
+            <td class="p-6 text-lg">{{ t(key="features-table-use-case-label", lang=lang) }}</td>
+            <td class="p-6 text-lg text-w">
+              {{ t(key="features-table-use-case-dalle", lang=lang) }}
+            </td>
+            <td class="text-success p-6 text-lg">
+              {{ t(key="features-table-use-case-own", lang=lang) }}
+            </td>
+            <td class="p-6 text-lg text-w">
+              {{ t(key="features-table-use-case-midjourney", lang=lang) }}
+            </td>
           </tr>
           <tr>
-            <td class="p-6 text-lg">Character Consistency</td>
-            <td class="p-6 text-lg text-w">Face Varies</td>
-            <td class="text-success p-6 text-lg">Always You</td>
-            <td class="p-6 text-lg text-w">Face Changes</td>
+            <td class="p-6 text-lg">{{ t(key="features-table-consistency-label", lang=lang) }}</td>
+            <td class="p-6 text-lg text-w">
+              {{ t(key="features-table-consistency-dalle", lang=lang) }}
+            </td>
+            <td class="text-success p-6 text-lg">
+              {{ t(key="features-table-consistency-own", lang=lang) }}
+            </td>
+            <td class="p-6 text-lg text-w">
+              {{ t(key="features-table-consistency-midjourney", lang=lang) }}
+            </td>
           </tr>
           <tr>
-            <td class="p-6 text-lg">Photorealism</td>
-            <td class="p-6 text-lg text-w">Very Real</td>
-            <td class="text-success p-6 text-lg">Flawless Realism</td>
-            <td class="p-6 text-lg text-w">Super Real</td>
+            <td class="p-6 text-lg">{{ t(key="features-table-photorealism-label", lang=lang) }}</td>
+            <td class="p-6 text-lg text-w">
+              {{ t(key="features-table-photorealism-dalle", lang=lang) }}
+            </td>
+            <td class="text-success p-6 text-lg">
+              {{ t(key="features-table-photorealism-own", lang=lang) }}
+            </td>
+            <td class="p-6 text-lg text-w">
+              {{ t(key="features-table-photorealism-midjourney", lang=lang) }}
+            </td>
           </tr>
           <tr>
-            <td class="p-6 text-lg">Photorealism</td>
-            <td class="p-6 text-lg text-w">Okay Likeness</td>
-            <td class="text-success p-6 text-lg">Perfect You</td>
-            <td class="p-6 text-lg text-w">Good Likeness</td>
+            <td class="p-6 text-lg">{{ t(key="features-table-likeness-label", lang=lang) }}</td>
+            <td class="p-6 text-lg text-w">
+              {{ t(key="features-table-likeness-dalle", lang=lang) }}
+            </td>
+            <td class="text-success p-6 text-lg">
+              {{ t(key="features-table-likeness-own", lang=lang) }}
+            </td>
+            <td class="p-6 text-lg text-w">
+              {{ t(key="features-table-likeness-midjourney", lang=lang) }}
+            </td>
           </tr>
           <tr>
-            <td class="p-6 text-lg">Image Detail & Clarity</td>
-            <td class="p-6 text-lg text-w">High Detail</td>
-            <td class="text-success p-6 text-lg">Ultra Clear</td>
-            <td class="p-6 text-lg text-w">Great Detail</td>
+            <td class="p-6 text-lg">{{ t(key="features-table-clarity-label", lang=lang) }}</td>
+            <td class="p-6 text-lg text-w">
+              {{ t(key="features-table-clarity-dalle", lang=lang) }}
+            </td>
+            <td class="text-success p-6 text-lg">
+              {{ t(key="features-table-clarity-own", lang=lang) }}
+            </td>
+            <td class="p-6 text-lg text-w">
+              {{ t(key="features-table-clarity-midjourney", lang=lang) }}
+            </td>
           </tr>
           <tr>
-            <td class="p-6 text-lg">Training on Specific Individuals</td>
-            <td class="p-6 text-lg text-w">No Training</td>
-            <td class="text-success p-6 text-lg">Your Training</td>
-            <td class="p-6 text-lg text-w">No Training</td>
+            <td class="p-6 text-lg">{{ t(key="features-table-training-label", lang=lang) }}</td>
+            <td class="p-6 text-lg text-w">
+              {{ t(key="features-table-training-dalle", lang=lang) }}
+            </td>
+            <td class="text-success p-6 text-lg">
+              {{ t(key="features-table-training-own", lang=lang) }}
+            </td>
+            <td class="p-6 text-lg text-w">
+              {{ t(key="features-table-training-midjourney", lang=lang) }}
+            </td>
           </tr>
           <tr>
-            <td class="p-6 text-lg">Ease of Achieving Specific Likeness</td>
-            <td class="p-6 text-lg text-w">Likeness Hard</td>
-            <td class="text-success p-6 text-lg">Easy Likeness</td>
-            <td class="p-6 text-lg text-w">Likeness Hard</td>
+            <td class="p-6 text-lg">{{ t(key="features-table-ease-label", lang=lang) }}</td>
+            <td class="p-6 text-lg text-w">{{ t(key="features-table-ease-dalle", lang=lang) }}</td>
+            <td class="text-success p-6 text-lg">
+              {{ t(key="features-table-ease-own", lang=lang) }}
+            </td>
+            <td class="p-6 text-lg text-w">
+              {{ t(key="features-table-ease-midjourney", lang=lang) }}
+            </td>
           </tr>
           <tr>
-            <td class="p-6 text-lg">Video Generation</td>
-            <td class="p-6 text-lg text-w">No Video</td>
-            <td class="text-success p-6 text-lg">Video Ready</td>
-            <td class="p-6 text-lg text-w">No Video</td>
+            <td class="p-6 text-lg">{{ t(key="features-table-video-label", lang=lang) }}</td>
+            <td class="p-6 text-lg text-w">{{ t(key="features-table-video-dalle", lang=lang) }}</td>
+            <td class="text-success p-6 text-lg">
+              {{ t(key="features-table-video-own", lang=lang) }}
+            </td>
+            <td class="p-6 text-lg text-w">
+              {{ t(key="features-table-video-midjourney", lang=lang) }}
+            </td>
           </tr>
         </tbody>
       </table>

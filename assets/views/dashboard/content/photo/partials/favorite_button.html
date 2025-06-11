@@ -6,7 +6,8 @@ options.image %} {% if image.is_favorite %}
   hx-swap="outerHTML"
   class="btn btn-xs md:btn-md"
 >
-  <span class="hidden sm:inline">Remove Favorite</span> {% include "partials/svg/bookmark.html" %}
+  <span class="hidden sm:inline">{{ t(key="image-action-remove-favorite", lang=lang) }}</span> {%
+  include "partials/svg/bookmark.html" %}
 </button>
 {% else %}
 <button
@@ -15,6 +16,7 @@ options.image %} {% if image.is_favorite %}
   hx-swap="outerHTML"
   class="btn btn-secondary btn-xs md:btn-md"
 >
-  <span class="hidden sm:inline">Add to Favorites</span>{% include "partials/svg/bookmark.html" %}
+  <span class="hidden sm:inline">{{ t(key="image-action-add-favorite", lang=lang) }}</span>{%
+  include "partials/svg/bookmark.html" %}
 </button>
 {% endif %}

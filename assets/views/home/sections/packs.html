@@ -12,16 +12,18 @@
   <div class="flex flex-col gap-4 items-center justify-center">
     <div class="p-2 flex flex-row gap-2 items-center justify-center">
       {% include "partials/svg/triple_stars.html" %}
-      <div class="text-w text-center text-sm flex items-center justify-center">Ai Packs</div>
+      <div class="text-w text-center text-sm flex items-center justify-center">
+        {{ t(key="packs-section-badge", lang=lang) }}
+      </div>
     </div>
     <div class="flex flex-col gap-4 items-center justify-center">
       <div class="text-w text-center font-bricon text-5xl font-medium">
-        Tons of AI Packs to choose from
+        {{ t(key="packs-section-title", lang=lang) }}
       </div>
       <div class="text-w text-center text-lg">
-        With just one click,
+        {{ t(key="packs-section-tagline-prefix", lang=lang) }}
         <br class="sm:hidden" />
-        {{website_name}} will takes care of the rest
+        {{website_name}} {{ t(key="packs-section-tagline-suffix", lang=lang) }}
       </div>
     </div>
   </div>
@@ -36,7 +38,7 @@
           hx-swap="innerHTML"
           class="text-2xl transition-all duration-300 cursor-pointer hover:text-grn-to"
         >
-          See more
+          {{ t(key="packs-section-see-more", lang=lang) }}
         </span>
         <span
           class="absolute bottom-0 left-0 w-0 h-0.5 bg-grn-to transition-all duration-300 group-hover:w-full"

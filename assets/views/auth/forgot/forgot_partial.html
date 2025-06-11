@@ -1,4 +1,6 @@
 <!-- prettier-ignore -->
+{% set website = options.website %}
+{% set lang = options.language %}
 {% set forget_api_link = website.website_routes.auth_routes.api_forgot %}
 {% set login_link = website.website_routes.auth_routes.login  %}
 {% set login_partial_link = website.website_routes.auth_routes.login_partial %}
@@ -8,10 +10,12 @@
 <div id="auth-form" class="min-h-screen flex items-center justify-center bg-gray-600">
   <div class="w-full max-w-md bg-white shadow-lg rounded-lg">
     <div class="bg-gray-100 rounded-t-lg w-full p-8">
-      <h1 class="text-center text-2xl font-bold text-gray-800">Forgot Password</h1>
+      <h1 class="text-center text-2xl font-bold text-gray-800">
+        {{ t(key="auth-forgot-title", lang=lang) }}
+      </h1>
       <div class="mt-4">
         <p class="text-center text-sm text-gray-800">
-          Enter your email address to reset your password.
+          {{ t(key="auth-forgot-instruction", lang=lang) }}
         </p>
       </div>
     </div>
@@ -28,7 +32,7 @@
             id="email"
             name="email"
             type="email"
-            placeholder="Email"
+            placeholder="{{ t(key='auth-placeholder-email', lang=lang) }}"
           />
           <div class="absolute left-0 inset-y-0 flex items-center">
             <svg
@@ -47,7 +51,7 @@
             id="password-reset-btn"
             class="w-full text-white py-2 px-4 uppercase rounded bg-indigo-500 hover:bg-indigo-600 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5 cursor-pointer"
           >
-            Send Password Reset
+            {{ t(key="auth-forgot-button", lang=lang) }}
           </button>
           <a
             href="{{ login_partial_link | safe }}"
@@ -56,7 +60,7 @@
             hx-swap="outerHTML"
             hx-push-url="{{ login_link | safe }}"
             class="text-sm text-primary cursor-pointer mt-4"
-            >Already know your password?</a
+            >{{ t(key="auth-forgot-login-prompt", lang=lang) }}</a
           >
           <a
             href="{{ home_link | safe }}"
@@ -65,13 +69,12 @@
             hx-target="#app"
             hx-swap="innerHTML"
             class="text-sm text-primary cursor-pointer mt-4 text-center"
-            >Home
+            >{{ t(key="auth-home-link", lang=lang) }}
           </a>
         </div>
       </form>
-
       <script>
-        updatePageTitle("{% block title %}ReplicaPixel | Forgot{% endblock title %}");
+        updatePageTitle("{{ t(key='auth-forgot-page-title', lang=lang) }}");
       </script>
     </div>
   </div>

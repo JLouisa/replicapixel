@@ -48,10 +48,10 @@ pub struct RegisterParams {
     pub email_notifications: bool,
     #[serde(default)]
     pub marketing: bool,
+    #[serde(default)]
+    pub language: Language,
     #[serde(skip_deserializing, default)]
     pub theme_preference: ThemePreference,
-    #[serde(skip_deserializing, default)]
-    pub language: Language,
     #[serde(skip_deserializing, default)]
     pub picture: Option<String>,
 }

@@ -3,40 +3,22 @@ website_base_link = options.website.website_routes.image.base %} {% if options.i
 <button
   hx-delete="{{ website_restore_link | safe }}/{{ image.pid }}"
   hx-target="#container3-{{ image.pid }}"
-  hx-confirm="Are you sure you want to delete this item?"
+  hx-confirm="{{ t(key='image-action-confirm-restore', lang=lang) }}"
   hx-swap="outerHTML"
   class="btn btn-info btn-xs md:btn-md"
 >
-  <span class="hidden sm:inline">Restore</span> {% include "partials/svg/restore.html" %}
+  <span class="hidden sm:inline">{{ t(key="image-action-restore", lang=lang) }}</span> {% include
+  "partials/svg/restore.html" %}
 </button>
 {% else %}
 <button
   hx-delete="{{ website_base_link | safe }}/{{ image.pid }}"
   hx-target="#container3-{{ image.pid }}"
-  hx-confirm="Are you sure you want to delete this item?"
+  hx-confirm="{{ t(key='image-action-confirm-delete', lang=lang) }}"
   hx-swap="outerHTML"
   class="btn btn-error btn-xs md:btn-md"
 >
-  <span class="hidden sm:inline">Delete</span> {% include "partials/svg/trash.html" %}
+  <span class="hidden sm:inline">{{ t(key="image-action-delete", lang=lang) }}</span> {% include
+  "partials/svg/trash.html" %}
 </button>
-{% endif %} {# {% if is_deleted %}
-<button
-  hx-delete="{{ website.website_routes.image.image_restore | safe }}/{{ image.pid }}"
-  hx-target="#container3-{{ image.pid }}"
-  hx-confirm="Are you sure you want to delete this item?"
-  hx-swap="outerHTML"
-  class="btn btn-info btn-xs md:btn-md"
->
-  <span class="hidden sm:inline">Restore</span> {% include "partials/svg/restore.html" %}
-</button>
-{% else %}
-<button
-  hx-delete="{{ website.website_routes.image.base | safe }}/{{ image.pid }}"
-  hx-target="#container3-{{ image.pid }}"
-  hx-confirm="Are you sure you want to delete this item?"
-  hx-swap="outerHTML"
-  class="btn btn-error btn-xs md:btn-md"
->
-  <span class="hidden sm:inline">Delete</span> {% include "partials/svg/trash.html" %}
-</button>
-{% endif %} #}
+{% endif %}

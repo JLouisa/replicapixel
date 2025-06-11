@@ -9,9 +9,11 @@
   <div class="card w-full max-w-md bg-base-100 shadow-xl">
     <div class="card-body items-center text-center">
       <div class="mb-6" id="iconContainer">{% include "partials/svg/processing.html" %}</div>
-      <h2 class="card-title text-2xl mb-2 justify-center" id="statusText">Processing Payment...</h2>
+      <h2 class="card-title text-2xl mb-2 justify-center" id="statusText">
+        {{ t(key="payment-status-processing-title", lang=lang) }}
+      </h2>
       <p class="text-base-content/80" id="messageText">
-        Please wait while we process your payment...
+        {{ t(key="payment-status-processing-text", lang=lang) }}
       </p>
     </div>
   </div>
@@ -24,16 +26,18 @@
       <div class="mb-6 text-success" id="iconContainer">
         {% include "partials/svg/completed_checked.html" %}
       </div>
-      <h2 class="card-title text-2xl mb-2 justify-center" id="statusText">Payment Successful!</h2>
+      <h2 class="card-title text-2xl mb-2 justify-center" id="statusText">
+        {{ t(key="payment-status-succeeded-title", lang=lang) }}
+      </h2>
       <p class="text-base-content/80" id="messageText">
-        Thank you for your purchase! You will receive a confirmation email shortly.
+        {{ t(key="payment-status-succeeded-text", lang=lang) }}
       </p>
       <button
         id="returnButton"
         class="btn btn-primary mt-6 hidden"
         onclick="window.location.href = '{{ options.website.website_routes.dashboard_routes.base | safe }}'"
       >
-        Return to Homepage
+        {{ t(key="payment-status-return-button", lang=lang) }}
       </button>
     </div>
   </div>
@@ -59,16 +63,18 @@
       <div class="mb-6 text-warning" id="iconContainer">
         {% include "partials/svg/checkout_cancelled.html" %}
       </div>
-      <h2 class="card-title text-2xl mb-2 justify-center" id="statusText">Payment Cancelled</h2>
+      <h2 class="card-title text-2xl mb-2 justify-center" id="statusText">
+        {{ t(key="payment-status-cancelled-title", lang=lang) }}
+      </h2>
       <p class="text-base-content/80" id="messageText">
-        Not the one you wanted? Let's try a different one
+        {{ t(key="payment-status-cancelled-text", lang=lang) }}
       </p>
       <button
         id="returnButton"
         class="btn btn-primary mt-6 hidden"
         onclick="window.location.href = '{{ options.website.website_routes.home.base | safe }}'"
       >
-        Return to Homepage
+        {{ t(key="payment-status-return-button", lang=lang) }}
       </button>
     </div>
   </div>

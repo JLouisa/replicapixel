@@ -6,7 +6,9 @@ use crate::controllers::home::{WebGallery, WebImages};
 use crate::controllers::payment::StripeWebOptions;
 use crate::domain::features::{FeatureView, FeatureViewList};
 use crate::domain::website::Website;
-use crate::middleware::cookie::{CookieConsent, CookieConsentLayer, ExtractConsentState};
+use crate::middleware::cookie::{CookieConsent, ExtractConsentState};
+use crate::middleware::i18nv2::LangEngine;
+use crate::models::_entities::sea_orm_active_enums::Language;
 use crate::models::feature_request::FeatureRequestModelList;
 use crate::models::feature_vote::FeatureVoteModelList;
 use crate::models::images::ImagesModelList;
@@ -228,8 +230,6 @@ pub fn routes() -> Routes {
             routes::Dashboard::DASHBOARD_TEST_CLEAR,
             get(dashboard_test_clear),
         )
-        // .add(routes::Dashboard::BILLING_NEW, get(billing_dashboard_new))
-        .layer(CookieConsentLayer::new())
 }
 
 async fn load_user(db: &DatabaseConnection, pid: &UserPid) -> Result<UserModel> {
@@ -323,6 +323,7 @@ pub enum CurrentPage {
 #[must_use]
 pub struct WebsiteOptions<'a> {
     pub website: Option<&'a Website>,
+    pub language: Option<&'a Language>,
     pub cc_cookie: Option<&'a CookieConsent>,
     pub current_page: Option<CurrentPage>,
     pub user: Option<UserView>,
@@ -347,15 +348,16 @@ pub struct WebsiteOptions<'a> {
     pub login: Option<&'a LoginParams>,
     pub auth_error: Option<&'a AuthError>,
     pub stripe_options: Option<&'a StripeWebOptions>,
-    pub is_logged_in: Option<bool>,
-    pub is_ott: Option<bool>,
-    pub is_home: Option<bool>,
-    pub is_initial_load: Option<bool>,
-    pub is_pack_partial: Option<bool>,
-    pub is_pack: Option<bool>,
-    pub is_deleted: Option<bool>,
-    pub is_favorite: Option<bool>,
-    pub is_image_gen: Option<bool>,
+    pub is_logged_in: bool,
+    pub is_ott: bool,
+    pub is_home: bool,
+    pub is_initial_load: bool,
+    pub is_pack_partial: bool,
+    pub is_pack: bool,
+    pub is_deleted: bool,
+    pub is_favorite: bool,
+    pub is_image_gen: bool,
+    pub is_other: bool,
     // ... other fields
 }
 
@@ -369,6 +371,13 @@ impl<'a> WebsiteOptions<'a> {
     pub fn website(self, website: &'a Website) -> Self {
         Self {
             website: Some(website),
+            ..self
+        }
+    }
+    /// Sets the options required for a full-page layout.
+    pub fn language(self, language: &'a Language) -> Self {
+        Self {
+            language: Some(language),
             ..self
         }
     }
@@ -540,63 +549,70 @@ impl<'a> WebsiteOptions<'a> {
     // Sets the bool for is_logged_in.
     pub fn is_logged_in(self) -> Self {
         Self {
-            is_logged_in: Some(true),
+            is_logged_in: true,
             ..self
         }
     }
     // Sets the bool for is_home.
     pub fn is_home(self) -> Self {
         Self {
-            is_home: Some(true),
+            is_home: true,
             ..self
         }
     }
     // Sets the bool for is_deleted.
     pub fn is_deleted(self) -> Self {
         Self {
-            is_deleted: Some(true),
+            is_deleted: true,
             ..self
         }
     }
     // Sets the bool for is_favorite.
     pub fn is_favorite(self) -> Self {
         Self {
-            is_favorite: Some(true),
+            is_favorite: true,
             ..self
         }
     }
     // Sets the bool for is_initial_load.
     pub fn is_initial_load(self) -> Self {
         Self {
-            is_initial_load: Some(true),
+            is_initial_load: true,
             ..self
         }
     }
     // Sets the bool for is_image_gen.
     pub fn is_image_gen(self) -> Self {
         Self {
-            is_image_gen: Some(true),
+            is_image_gen: true,
             ..self
         }
     }
     // Sets the bool for is_pack_partial.
     pub fn is_pack_partial(self) -> Self {
         Self {
-            is_pack_partial: Some(true),
+            is_pack_partial: true,
             ..self
         }
     }
     // Sets the bool for is_pack.
     pub fn is_pack(self) -> Self {
         Self {
-            is_pack: Some(true),
+            is_pack: true,
             ..self
         }
     }
     // Sets the bool for google ott.
     pub fn is_ott(self) -> Self {
         Self {
-            is_ott: Some(true),
+            is_ott: true,
+            ..self
+        }
+    }
+    // Sets the bool for is_other.
+    pub fn is_other(self) -> Self {
+        Self {
+            is_other: true,
             ..self
         }
     }
@@ -609,6 +625,7 @@ pub async fn billing_dashboard_new(
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
     ExtractConsentState(cc_cookie): ExtractConsentState,
+    LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
     let user_pid = match auth {
         Ok(auth) => UserPid::new(&auth.claims.pid),
@@ -624,6 +641,7 @@ pub async fn billing_dashboard_new(
 
     let website_options: WebsiteOptions = WebsiteOptions::new()
         .website(&website)
+        .language(&lang)
         .cc_cookie(&cc_cookie)
         .user(user.into())
         .user_credits(user_credits.into())
@@ -638,6 +656,7 @@ pub async fn billing_partial_dashboard_new(
     State(ctx): State<AppContext>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
     let user_pid = match auth {
         Ok(auth) => UserPid::new(&auth.claims.pid),
@@ -653,62 +672,12 @@ pub async fn billing_partial_dashboard_new(
 
     let website_options: WebsiteOptions = WebsiteOptions::new()
         .website(&website)
+        .language(&lang)
         .orders(&orders_view)
         .current_page(CurrentPage::Billing);
 
     Ok(views::dashboard::billing_partial_dashboard_new(v, &website_options).into_response())
 }
-
-// #[debug_handler]
-// pub async fn billing_dashboard(
-//     auth: Result<auth::JWT>,
-//     ExtractConsentState(cc_cookie): ExtractConsentState,
-//     Extension(website): Extension<Website>,
-//     State(ctx): State<AppContext>,
-//     ViewEngine(v): ViewEngine<TeraView>,
-// ) -> Result<impl IntoResponse> {
-//     let user_pid = match auth {
-//         Ok(auth) => UserPid::new(&auth.claims.pid),
-//         Err(_) => {
-//             return Ok(Redirect::to(AuthRoutes::Auth::LOGIN).into_response());
-//         }
-//     };
-//     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
-//     let orders = load_transactions(&ctx.db, user.id).await?;
-//     let plans = load_plans(&ctx.db).await?;
-//     let orders_view = TransactionViewList::from_model(orders, plans);
-//     Ok(views::dashboard::billing_dashboard(
-//         v,
-//         &website,
-//         user.into(),
-//         &user_credits.into(),
-//         &orders_view,
-//         &cc_cookie,
-//     )
-//     .into_response())
-// }
-// #[debug_handler]
-// pub async fn billing_partial_dashboard(
-//     auth: Result<auth::JWT>,
-//     State(ctx): State<AppContext>,
-//     Extension(website): Extension<Website>,
-//     ViewEngine(v): ViewEngine<TeraView>,
-// ) -> Result<impl IntoResponse> {
-//     let user_pid = match auth {
-//         Ok(auth) => UserPid::new(&auth.claims.pid),
-//         Err(_) => {
-//             return Ok(HxRedirect::login().into_response());
-//         }
-//     };
-//     let user = load_user(&ctx.db, &user_pid).await?;
-//     let orders = load_transactions(&ctx.db, user.id).await?;
-//     let plans = load_plans(&ctx.db).await?;
-//     let orders_view = TransactionViewList::from_model(orders, plans);
-//     Ok(
-//         views::dashboard::billing_partial_dashboard(v, &website, user.into(), &orders_view)
-//             .into_response(),
-//     )
-// }
 
 #[debug_handler]
 pub async fn features_dashboard(
@@ -717,6 +686,7 @@ pub async fn features_dashboard(
     Extension(website): Extension<Website>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
     let user_pid = match auth {
         Ok(auth) => UserPid::new(&auth.claims.pid),
@@ -732,6 +702,7 @@ pub async fn features_dashboard(
 
     let website_options: WebsiteOptions = WebsiteOptions::new()
         .website(&website)
+        .language(&lang)
         .cc_cookie(&cc_cookie)
         .user(user.into())
         .user_credits(user_credits.into())
@@ -746,6 +717,7 @@ pub async fn features_partial_dashboard(
     State(ctx): State<AppContext>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
     let user_pid = match auth {
         Ok(auth) => UserPid::new(&auth.claims.pid),
@@ -760,62 +732,12 @@ pub async fn features_partial_dashboard(
 
     let website_options: WebsiteOptions = WebsiteOptions::new()
         .website(&website)
+        .language(&lang)
         .user(user.into())
         .features(&features_view);
 
     Ok(views::dashboard::features_partial_dashboard(v, &website_options).into_response())
 }
-
-// #[debug_handler]
-// pub async fn features_dashboard(
-//     auth: Result<auth::JWT>,
-//     ExtractConsentState(cc_cookie): ExtractConsentState,
-//     Extension(website): Extension<Website>,
-//     State(ctx): State<AppContext>,
-//     ViewEngine(v): ViewEngine<TeraView>,
-// ) -> Result<impl IntoResponse> {
-//     let user_pid = match auth {
-//         Ok(auth) => UserPid::new(&auth.claims.pid),
-//         Err(_) => {
-//             return Ok(Redirect::to(AuthRoutes::Auth::LOGIN).into_response());
-//         }
-//     };
-//     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
-//     let features = load_features(&ctx.db).await?;
-//     let votes = load_votes(&ctx.db, user.id).await?;
-//     let features_view = FeatureViewList::convert(features, votes);
-//     Ok(views::dashboard::features_dashboard(
-//         v,
-//         &website,
-//         user.into(),
-//         &user_credits.into(),
-//         &features_view,
-//         &cc_cookie,
-//     )
-//     .into_response())
-// }
-// #[debug_handler]
-// pub async fn features_partial_dashboard(
-//     auth: Result<auth::JWT>,
-//     State(ctx): State<AppContext>,
-//     Extension(website): Extension<Website>,
-//     ViewEngine(v): ViewEngine<TeraView>,
-// ) -> Result<impl IntoResponse> {
-//     let user_pid = match auth {
-//         Ok(auth) => UserPid::new(&auth.claims.pid),
-//         Err(_) => {
-//             return Ok(HxRedirect::login().into_response());
-//         }
-//     };
-//     let user = load_user(&ctx.db, &user_pid).await?;
-//     let features = load_features(&ctx.db).await?;
-//     let votes = load_votes(&ctx.db, user.id).await?;
-//     let features_view = FeatureViewList::convert(features, votes);
-//     Ok(
-//         views::dashboard::features_partial_dashboard(v, &website, user.into(), &features_view)
-//             .into_response(),
-//     )
-// }
 
 #[debug_handler]
 pub async fn settings_dashboard(
@@ -824,6 +746,7 @@ pub async fn settings_dashboard(
     Extension(website): Extension<Website>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
     let user_pid = match auth {
         Ok(auth) => UserPid::new(&auth.claims.pid),
@@ -836,6 +759,7 @@ pub async fn settings_dashboard(
 
     let website_options: WebsiteOptions = WebsiteOptions::new()
         .website(&website)
+        .language(&lang)
         .cc_cookie(&cc_cookie)
         .user(user.into())
         .user_credits(user_credits.into())
@@ -850,6 +774,7 @@ pub async fn settings_partial_dashboard(
     State(ctx): State<AppContext>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
     let user_pid = match auth {
         Ok(auth) => UserPid::new(&auth.claims.pid),
@@ -861,64 +786,12 @@ pub async fn settings_partial_dashboard(
 
     let website_options: WebsiteOptions = WebsiteOptions::new()
         .website(&website)
+        .language(&lang)
         .user(user.into())
         .user_settings(user_settings.into());
 
     Ok(views::dashboard::settings_partial_dashboard(v, &website_options).into_response())
 }
-
-// #[debug_handler]
-// pub async fn settings_dashboard(
-//     auth: Result<auth::JWT>,
-//     ExtractConsentState(cc_cookie): ExtractConsentState,
-//     Extension(website): Extension<Website>,
-//     State(ctx): State<AppContext>,
-//     ViewEngine(v): ViewEngine<TeraView>,
-// ) -> Result<impl IntoResponse> {
-//     let user_pid = match auth {
-//         Ok(auth) => UserPid::new(&auth.claims.pid),
-//         Err(_) => {
-//             return Ok(Redirect::to(AuthRoutes::Auth::LOGIN).into_response());
-//         }
-//     };
-//     let (user, user_credits, user_settings) =
-//         load_user_credits_settings(&ctx.db, &user_pid).await?;
-//     let is_oauth = is_oauth(&ctx.db, user.id).await?;
-//     Ok(views::dashboard::settings_dashboard(
-//         v,
-//         &website,
-//         &user.into(),
-//         &user_credits.into(),
-//         &user_settings.into(),
-//         &cc_cookie,
-//         is_oauth,
-//     )
-//     .into_response())
-// }
-// #[debug_handler]
-// pub async fn settings_partial_dashboard(
-//     auth: Result<auth::JWT>,
-//     State(ctx): State<AppContext>,
-//     Extension(website): Extension<Website>,
-//     ViewEngine(v): ViewEngine<TeraView>,
-// ) -> Result<impl IntoResponse> {
-//     let user_pid = match auth {
-//         Ok(auth) => UserPid::new(&auth.claims.pid),
-//         Err(_) => {
-//             return Ok(HxRedirect::login().into_response());
-//         }
-//     };
-//     let (user, user_settings) = load_user_and_settings(&ctx.db, &user_pid).await?;
-//     let is_oauth = is_oauth(&ctx.db, user.id).await?;
-//     Ok(views::dashboard::settings_partial_dashboard(
-//         v,
-//         &website,
-//         &user.into(),
-//         &user_settings.into(),
-//         is_oauth,
-//     )
-//     .into_response())
-// }
 
 #[debug_handler]
 pub async fn training_dashboard(
@@ -927,6 +800,7 @@ pub async fn training_dashboard(
     Extension(website): Extension<Website>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
     let user_pid = match auth {
         Ok(auth) => UserPid::new(&auth.claims.pid),
@@ -939,6 +813,7 @@ pub async fn training_dashboard(
 
     let website_options: WebsiteOptions = WebsiteOptions::new()
         .website(&website)
+        .language(&lang)
         .cc_cookie(&cc_cookie)
         .user(user.into())
         .user_credits(user_credits.into())
@@ -953,6 +828,7 @@ pub async fn training_partial_dashboard(
     State(ctx): State<AppContext>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
     let user_pid = match auth {
         Ok(auth) => UserPid::new(&auth.claims.pid),
@@ -965,6 +841,7 @@ pub async fn training_partial_dashboard(
 
     let website_options: WebsiteOptions = WebsiteOptions::new()
         .website(&website)
+        .language(&lang)
         .user(user.into())
         .user_credits(user_credits.into())
         .training_models(training_models.into())
@@ -973,57 +850,6 @@ pub async fn training_partial_dashboard(
     Ok(views::dashboard::training_partial_dashboard(v, &website_options).into_response())
 }
 
-// #[debug_handler]
-// pub async fn training_dashboard(
-//     auth: Result<auth::JWT>,
-//     ExtractConsentState(cc_cookie): ExtractConsentState,
-//     Extension(website): Extension<Website>,
-//     State(ctx): State<AppContext>,
-//     ViewEngine(v): ViewEngine<TeraView>,
-// ) -> Result<impl IntoResponse> {
-//     let user_pid = match auth {
-//         Ok(auth) => UserPid::new(&auth.claims.pid),
-//         Err(_) => {
-//             return Ok(Redirect::to(AuthRoutes::Auth::LOGIN).into_response());
-//         }
-//     };
-//     let (user, user_credits, training_models) =
-//         load_user_credit_training(&ctx.db, &user_pid).await?;
-//     Ok(views::dashboard::training_dashboard(
-//         v,
-//         &website,
-//         &user.into(),
-//         &user_credits.into(),
-//         &training_models.into(),
-//         &cc_cookie,
-//     )
-//     .into_response())
-// }
-// #[debug_handler]
-// pub async fn training_partial_dashboard(
-//     auth: Result<auth::JWT>,
-//     State(ctx): State<AppContext>,
-//     Extension(website): Extension<Website>,
-//     ViewEngine(v): ViewEngine<TeraView>,
-// ) -> Result<impl IntoResponse> {
-//     let user_pid = match auth {
-//         Ok(auth) => UserPid::new(&auth.claims.pid),
-//         Err(_) => {
-//             return Ok(HxRedirect::login().into_response());
-//         }
-//     };
-//     let (user, user_credits, training_models) =
-//         load_user_credit_training(&ctx.db, &user_pid).await?;
-//     Ok(views::dashboard::training_partial_dashboard(
-//         v,
-//         &website,
-//         &user.into(),
-//         &user_credits.into(),
-//         &training_models.into(),
-//     )
-//     .into_response())
-// }
-
 #[debug_handler]
 pub async fn new_training_dashboard(
     auth: Result<auth::JWT>,
@@ -1031,6 +857,7 @@ pub async fn new_training_dashboard(
     Extension(website): Extension<Website>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
     let user_pid = match auth {
         Ok(auth) => UserPid::new(&auth.claims.pid),
@@ -1043,6 +870,7 @@ pub async fn new_training_dashboard(
 
     let website_options: WebsiteOptions = WebsiteOptions::new()
         .website(&website)
+        .language(&lang)
         .cc_cookie(&cc_cookie)
         .user(user.into())
         .user_credits(user_credits.into())
@@ -1057,6 +885,7 @@ pub async fn new_training_dashboard_partials(
     Extension(website): Extension<Website>,
     State(_ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
     let _user_pid = match auth {
         Ok(auth) => UserPid::new(&auth.claims.pid),
@@ -1064,7 +893,7 @@ pub async fn new_training_dashboard_partials(
             return Ok(HxRedirect::login().into_response());
         }
     };
-    let website_options: WebsiteOptions = WebsiteOptions::new().website(&website);
+    let website_options: WebsiteOptions = WebsiteOptions::new().website(&website).language(&lang);
     Ok(views::dashboard::create_training_dashboard_partial(v, &website_options).into_response())
 }
 
@@ -1075,6 +904,7 @@ pub async fn packs_dashboard(
     Extension(website): Extension<Website>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
     let user_pid = match auth {
         Ok(auth) => UserPid::new(&auth.claims.pid),
@@ -1091,6 +921,7 @@ pub async fn packs_dashboard(
 
     let website_options: WebsiteOptions = WebsiteOptions::new()
         .website(&website)
+        .language(&lang)
         .cc_cookie(&cc_cookie)
         .user(user.into())
         .user_credits(user_credits.into())
@@ -1106,6 +937,7 @@ pub async fn packs_partial_dashboard(
     State(ctx): State<AppContext>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
     let user_pid = match auth {
         Ok(auth) => UserPid::new(&auth.claims.pid),
@@ -1121,67 +953,13 @@ pub async fn packs_partial_dashboard(
 
     let website_options: WebsiteOptions = WebsiteOptions::new()
         .website(&website)
+        .language(&lang)
         .training_models(training_models.into())
         .packs(packs.into())
         .current_page(CurrentPage::Packs);
 
     Ok(views::dashboard::packs_partial_dashboard(v, &website_options).into_response())
 }
-
-// #[debug_handler]
-// pub async fn packs_dashboard(
-//     auth: Result<auth::JWT>,
-//     ExtractConsentState(cc_cookie): ExtractConsentState,
-//     Extension(website): Extension<Website>,
-//     State(ctx): State<AppContext>,
-//     ViewEngine(v): ViewEngine<TeraView>,
-// ) -> Result<impl IntoResponse> {
-//     let user_pid = match auth {
-//         Ok(auth) => UserPid::new(&auth.claims.pid),
-//         Err(_) => {
-//             return Ok(Redirect::to(AuthRoutes::Auth::LOGIN).into_response());
-//         }
-//     };
-//     let (user, user_credits, training_models) =
-//         load_user_credit_training(&ctx.db, &user_pid).await?;
-//     let packs = match load_cached_web(&ctx).await {
-//         Ok(images) => images.packs,
-//         Err(_) => load_packs(&ctx.db).await?.into(),
-//     };
-//     Ok(views::dashboard::packs_dashboard(
-//         v,
-//         &website,
-//         &user.into(),
-//         &user_credits.into(),
-//         &training_models.into(),
-//         &packs,
-//         &cc_cookie,
-//     )
-//     .into_response())
-// }
-// #[debug_handler]
-// pub async fn packs_partial_dashboard(
-//     auth: Result<auth::JWT>,
-//     State(ctx): State<AppContext>,
-//     Extension(website): Extension<Website>,
-//     ViewEngine(v): ViewEngine<TeraView>,
-// ) -> Result<impl IntoResponse> {
-//     let user_pid = match auth {
-//         Ok(auth) => UserPid::new(&auth.claims.pid),
-//         Err(_) => {
-//             return Ok(HxRedirect::login().into_response());
-//         }
-//     };
-//     let (_, training_models) = load_user_and_training(&ctx.db, &user_pid).await?;
-//     let packs = match load_cached_web(&ctx).await {
-//         Ok(images) => images.packs,
-//         Err(_) => load_packs(&ctx.db).await?.into(),
-//     };
-//     Ok(
-//         views::dashboard::packs_partial_dashboard(v, &website, &training_models.into(), &packs)
-//             .into_response(),
-//     )
-// }
 
 #[debug_handler]
 pub async fn album_deleted_dashboard(
@@ -1192,6 +970,7 @@ pub async fn album_deleted_dashboard(
     Extension(cache): Extension<RedisCacheDriver>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
     let user_pid = match auth {
         Ok(auth) => UserPid::new(&auth.claims.pid),
@@ -1208,6 +987,7 @@ pub async fn album_deleted_dashboard(
 
     let website_options: WebsiteOptions = WebsiteOptions::new()
         .website(&website)
+        .language(&lang)
         .cc_cookie(&cc_cookie)
         .user(user.into())
         .user_credits(user_credits.into())
@@ -1228,6 +1008,7 @@ pub async fn album_deleted_partial_dashboard(
     Extension(cache): Extension<RedisCacheDriver>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
     let user_pid = match auth {
         Ok(auth) => UserPid::new(&auth.claims.pid),
@@ -1246,6 +1027,7 @@ pub async fn album_deleted_partial_dashboard(
 
     let website_options: WebsiteOptions = WebsiteOptions::new()
         .website(&website)
+        .language(&lang)
         .user(user.into())
         .user_credits(user_credits.into())
         .training_models(training_models.into())
@@ -1254,81 +1036,6 @@ pub async fn album_deleted_partial_dashboard(
 
     Ok(views::dashboard::photo_partial_dashboard(v, &website_options).into_response())
 }
-
-// #[debug_handler]
-// pub async fn album_deleted_dashboard(
-//     auth: Result<auth::JWT>,
-//     ExtractConsentState(cc_cookie): ExtractConsentState,
-//     State(ctx): State<AppContext>,
-//     Extension(s3_client): Extension<AwsS3>,
-//     Extension(cache): Extension<RedisCacheDriver>,
-//     Extension(website): Extension<Website>,
-//     ViewEngine(v): ViewEngine<TeraView>,
-// ) -> Result<impl IntoResponse> {
-//     let user_pid = match auth {
-//         Ok(auth) => UserPid::new(&auth.claims.pid),
-//         Err(_) => {
-//             return Ok(Redirect::to(AuthRoutes::Auth::LOGIN).into_response());
-//         }
-//     };
-//     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
-//     let training_models: TrainingModelList = TrainingModelList::empty();
-//     let is_deleted = true;
-//     let is_favorite = false;
-//     let images: ImageViewList = load_first_images(&ctx.db, user.id, is_favorite, is_deleted)
-//         .await?
-//         .into();
-//     let images = images.populate_s3_pre_urls(&s3_client, &cache).await;
-//     let current_page = "deleted";
-//     Ok(views::dashboard::photo_dashboard(
-//         v,
-//         &website,
-//         &user.into(),
-//         &user_credits.into(),
-//         &images,
-//         &training_models.into(),
-//         is_deleted,
-//         is_favorite,
-//         &cc_cookie,
-//         current_page,
-//     )
-//     .into_response())
-// }
-
-// #[debug_handler]
-// pub async fn album_deleted_partial_dashboard(
-//     auth: Result<auth::JWT>,
-//     State(ctx): State<AppContext>,
-//     Extension(s3_client): Extension<AwsS3>,
-//     Extension(cache): Extension<RedisCacheDriver>,
-//     Extension(website): Extension<Website>,
-//     ViewEngine(v): ViewEngine<TeraView>,
-// ) -> Result<impl IntoResponse> {
-//     let user_pid = match auth {
-//         Ok(auth) => UserPid::new(&auth.claims.pid),
-//         Err(_) => {
-//             return Ok(HxRedirect::login().into_response());
-//         }
-//     };
-//     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
-//     let training_models: TrainingModelList = TrainingModelList::empty();
-//     let is_deleted = true;
-//     let is_favorite = false;
-//     let images: ImageViewList = load_first_images(&ctx.db, user.id, is_favorite, is_deleted)
-//         .await?
-//         .into();
-//     let images = images.populate_s3_pre_urls(&s3_client, &cache).await;
-//     Ok(views::dashboard::photo_partial_dashboard(
-//         v,
-//         &website,
-//         &images,
-//         &training_models.into(),
-//         &user_credits.into(),
-//         is_deleted,
-//         is_favorite,
-//     )
-//     .into_response())
-// }
 
 #[debug_handler]
 pub async fn album_favorite_dashboard(
@@ -1339,6 +1046,7 @@ pub async fn album_favorite_dashboard(
     Extension(cache): Extension<RedisCacheDriver>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
     let user_pid = match auth {
         Ok(auth) => UserPid::new(&auth.claims.pid),
@@ -1355,6 +1063,7 @@ pub async fn album_favorite_dashboard(
 
     let website_options: WebsiteOptions = WebsiteOptions::new()
         .website(&website)
+        .language(&lang)
         .cc_cookie(&cc_cookie)
         .user(user.into())
         .user_credits(user_credits.into())
@@ -1375,6 +1084,7 @@ pub async fn album_favorite_partial_dashboard(
     Extension(cache): Extension<RedisCacheDriver>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
     let user_pid = match auth {
         Ok(auth) => UserPid::new(&auth.claims.pid),
@@ -1391,6 +1101,7 @@ pub async fn album_favorite_partial_dashboard(
 
     let website_options: WebsiteOptions = WebsiteOptions::new()
         .website(&website)
+        .language(&lang)
         .user(user.into())
         .user_credits(user_credits.into())
         .training_models(training_models.into())
@@ -1399,82 +1110,6 @@ pub async fn album_favorite_partial_dashboard(
 
     Ok(views::dashboard::photo_partial_dashboard(v, &website_options).into_response())
 }
-
-// #[debug_handler]
-// pub async fn album_favorite_dashboard(
-//     auth: Result<auth::JWT>,
-//     ExtractConsentState(cc_cookie): ExtractConsentState,
-//     State(ctx): State<AppContext>,
-//     Extension(s3_client): Extension<AwsS3>,
-//     Extension(cache): Extension<RedisCacheDriver>,
-//     Extension(website): Extension<Website>,
-//     ViewEngine(v): ViewEngine<TeraView>,
-// ) -> Result<impl IntoResponse> {
-//     let user_pid = match auth {
-//         Ok(auth) => UserPid::new(&auth.claims.pid),
-//         Err(_) => {
-//             return Ok(Redirect::to(AuthRoutes::Auth::LOGIN).into_response());
-//         }
-//     };
-//     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
-//     let training_models: TrainingModelList = TrainingModelList::empty();
-//     let is_deleted = false;
-//     let is_favorite = true;
-//     let images: ImageViewList = load_first_images(&ctx.db, user.id, is_favorite, is_deleted)
-//         .await?
-//         .into();
-//     let images = images.populate_s3_pre_urls(&s3_client, &cache).await;
-//     let current_page = "favorite";
-//     Ok(views::dashboard::photo_dashboard(
-//         v,
-//         &website,
-//         &user.into(),
-//         &user_credits.into(),
-//         &images,
-//         &training_models.into(),
-//         is_deleted,
-//         is_favorite,
-//         &cc_cookie,
-//         current_page,
-//     )
-//     .into_response())
-// }
-
-// #[debug_handler]
-// pub async fn album_favorite_partial_dashboard(
-//     auth: Result<auth::JWT>,
-//     State(ctx): State<AppContext>,
-//     Extension(s3_client): Extension<AwsS3>,
-//     Extension(cache): Extension<RedisCacheDriver>,
-//     Extension(website): Extension<Website>,
-//     ViewEngine(v): ViewEngine<TeraView>,
-// ) -> Result<impl IntoResponse> {
-//     let user_pid = match auth {
-//         Ok(auth) => UserPid::new(&auth.claims.pid),
-//         Err(_) => {
-//             return Ok(HxRedirect::login().into_response());
-//         }
-//     };
-//     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
-//     let training_models: TrainingModelList = TrainingModelList::empty();
-//     let is_deleted = false;
-//     let is_favorite = true;
-//     let images: ImageViewList = load_first_images(&ctx.db, user.id, is_favorite, is_deleted)
-//         .await?
-//         .into();
-//     let images = images.populate_s3_pre_urls(&s3_client, &cache).await;
-
-//     Ok(views::dashboard::photo_partial_dashboard(
-//         v,
-//         &website,
-//         &images,
-//         &training_models.into(),
-//         &user_credits.into(),
-//         is_deleted,
-//         is_favorite,
-//     )
-//     .into_response())
-// }
 
 #[debug_handler]
 pub async fn photo_dashboard(
@@ -1485,6 +1120,7 @@ pub async fn photo_dashboard(
     Extension(cache): Extension<RedisCacheDriver>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
     let user_pid = match auth {
         Ok(auth) => UserPid::new(&auth.claims.pid),
@@ -1501,6 +1137,7 @@ pub async fn photo_dashboard(
 
     let website_options: WebsiteOptions = WebsiteOptions::new()
         .website(&website)
+        .language(&lang)
         .cc_cookie(&cc_cookie)
         .user(user.into())
         .user_credits(user_credits.into())
@@ -1520,6 +1157,7 @@ pub async fn photo_partial_dashboard(
     Extension(cache): Extension<RedisCacheDriver>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
     let user_pid = match auth {
         Ok(auth) => UserPid::new(&auth.claims.pid),
@@ -1538,6 +1176,7 @@ pub async fn photo_partial_dashboard(
 
     let website_options: WebsiteOptions = WebsiteOptions::new()
         .website(&website)
+        .language(&lang)
         .user(user.into())
         .user_credits(user_credits.into())
         .training_models(training_models.into())
@@ -1545,79 +1184,3 @@ pub async fn photo_partial_dashboard(
 
     Ok(views::dashboard::photo_partial_dashboard(v, &website_options).into_response())
 }
-
-// #[debug_handler]
-// pub async fn photo_dashboard(
-//     auth: Result<auth::JWT>,
-//     ExtractConsentState(cc_cookie): ExtractConsentState,
-//     State(ctx): State<AppContext>,
-//     Extension(s3_client): Extension<AwsS3>,
-//     Extension(cache): Extension<RedisCacheDriver>,
-//     Extension(website): Extension<Website>,
-//     ViewEngine(v): ViewEngine<TeraView>,
-// ) -> Result<impl IntoResponse> {
-//     let user_pid = match auth {
-//         Ok(auth) => UserPid::new(&auth.claims.pid),
-//         Err(_) => {
-//             return Ok(Redirect::to(AuthRoutes::Auth::LOGIN).into_response());
-//         }
-//     };
-//     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
-//     let training_models = load_item_all_completed(&ctx, user.id).await?;
-//     let is_deleted = false;
-//     let is_favorite = false;
-//     let images: ImageViewList = load_first_images(&ctx.db, user.id, is_favorite, is_deleted)
-//         .await?
-//         .into();
-//     let images = images.populate_s3_pre_urls(&s3_client, &cache).await;
-//     let current_page = "album";
-//     Ok(views::dashboard::photo_dashboard(
-//         v,
-//         &website,
-//         &user.into(),
-//         &user_credits.into(),
-//         &images,
-//         &training_models.into(),
-//         is_deleted,
-//         is_favorite,
-//         &cc_cookie,
-//         current_page,
-//     )
-//     .into_response())
-// }
-
-// #[debug_handler]
-// pub async fn photo_partial_dashboard(
-//     auth: Result<auth::JWT>,
-//     State(ctx): State<AppContext>,
-//     Extension(s3_client): Extension<AwsS3>,
-//     Extension(cache): Extension<RedisCacheDriver>,
-//     Extension(website): Extension<Website>,
-//     ViewEngine(v): ViewEngine<TeraView>,
-// ) -> Result<impl IntoResponse> {
-//     let user_pid = match auth {
-//         Ok(auth) => UserPid::new(&auth.claims.pid),
-//         Err(_) => {
-//             return Ok(HxRedirect::login().into_response());
-//         }
-//     };
-//     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
-//     let training_models = load_item_all_completed(&ctx, user.id).await?;
-//     let is_deleted = false;
-//     let is_favorite = false;
-//     let images: ImageViewList = load_first_images(&ctx.db, user.id, is_favorite, is_deleted)
-//         .await?
-//         .into();
-//     let images = images.populate_s3_pre_urls(&s3_client, &cache).await;
-
-//     Ok(views::dashboard::photo_partial_dashboard(
-//         v,
-//         &website,
-//         &images,
-//         &training_models.into(),
-//         &user_credits.into(),
-//         is_deleted,
-//         is_favorite,
-//     )
-//     .into_response())
-// }

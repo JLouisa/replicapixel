@@ -1,9 +1,15 @@
+use crate::middleware::cookie::CookieConsentLayer;
+// use crate::middleware::i18n::I18n;
 #[allow(unused_imports)]
 use crate::{
     controllers, initializers, models::_entities::users, tasks, workers::downloader::DownloadWorker,
 };
 use async_trait::async_trait;
 use loco_rs::cache;
+
+// use axum::Router as AxumRouter;
+// use loco_rs::controller::middleware::{self, MiddlewareLayer};
+
 use loco_rs::{
     app::{AppContext, Hooks, Initializer},
     bgworker::{BackgroundWorker, Queue},
@@ -17,6 +23,27 @@ use loco_rs::{
 };
 use migration::Migrator;
 use std::path::Path;
+
+// #[derive(Clone)]
+// pub struct I18nMiddlewareLayer;
+
+// impl MiddlewareLayer for I18nMiddlewareLayer {
+//     fn name(&self) -> &'static str {
+//         "i18n-path-rewriter"
+//     }
+
+//     // This config can be empty as we don't configure it from a file.
+//     fn config(&self) -> serde_json::Result<serde_json::Value> {
+//         Ok(serde_json::json!({}))
+//     }
+
+//     /// This is the key. The `apply` function takes the router and returns
+//     /// a new router wrapped in our middleware.
+//     fn apply(&self, app: AxumRouter<AppContext>) -> Result<AxumRouter<AppContext>> {
+//         // Apply your `tower::Layer` to the router.
+//         Ok(app.layer(I18n::new()))
+//     }
+// }
 
 pub struct App;
 #[async_trait]
@@ -57,6 +84,17 @@ impl Hooks for App {
         ])
     }
 
+    // async fn before_routes(_ctx: &AppContext) -> Result<AxumRouter<AppContext>> {
+    //     let router = AxumRouter::new().layer(I18n::new());
+    //     Ok(router)
+    // }
+
+    // fn middlewares(ctx: &AppContext) -> Vec<Box<dyn MiddlewareLayer>> {
+    //     let mut default_stack = middleware::default_middleware_stack(ctx);
+    //     default_stack.push(Box::new(I18nMiddlewareLayer));
+    //     default_stack
+    // }
+
     fn routes(_ctx: &AppContext) -> AppRoutes {
         AppRoutes::with_default_routes()
             .add_route(controllers::other::routes())
@@ -68,17 +106,22 @@ impl Hooks for App {
             .add_route(controllers::oauth2::routes())
             .add_route(controllers::payment::routes())
             .add_route(controllers::images::routes())
-            .add_route(controllers::home::routes())
-            .add_route(controllers::dashboard::routes())
+            .add_route(controllers::home::routes().layer(CookieConsentLayer::new()))
+            .add_route(controllers::dashboard::routes().layer(CookieConsentLayer::new()))
             .add_route(controllers::training_models::routes())
             .add_route(controllers::webhooks::routes())
             .add_route(controllers::policy::routes())
-            .add_route(controllers::auth::routes())
+            .add_route(controllers::auth::routes().layer(CookieConsentLayer::new()))
     }
     async fn connect_workers(ctx: &AppContext, queue: &Queue) -> Result<()> {
         queue.register(DownloadWorker::build(ctx)).await?;
         Ok(())
     }
+
+    // async fn after_routes(router: AxumRouter, _ctx: &AppContext) -> Result<AxumRouter> {
+    //     let router_with_i18n = router.layer(I18n::new());
+    //     Ok(router_with_i18n)
+    // }
 
     #[allow(unused_variables)]
     fn register_tasks(tasks: &mut Tasks) {
@@ -93,13 +136,6 @@ impl Hooks for App {
             .await?;
         Ok(())
     }
-    // async fn after_context(ctx: AppContext) -> Result<AppContext> {
-    //     Ok(AppContext {
-    //         cache: cache::Cache::new(Box::new(Settings::init(&ctx).redis().await)).into(),
-    //         ..ctx
-    //     })
-    // }
-
     async fn after_context(ctx: AppContext) -> Result<AppContext> {
         Ok(AppContext {
             cache: cache::Cache::new(cache::drivers::inmem::new()).into(),

@@ -1,7 +1,7 @@
 {% set pricing_list = website.website_home.pricing %} {% set checkout_prepare_link =
 website.website_routes.payment.payment_prepare_route %}
 
-<div
+<section
   id="pricing"
   class="flex flex-col gap-12 items-center justify-center relative mx-auto max-w-7xl p-2 sm:p-0"
 >
@@ -10,12 +10,16 @@ website.website_routes.payment.payment_prepare_route %}
       <div class="p-2 flex flex-row gap-2 items-center justify-center">
         {% include "partials/svg/triple_stars.html" %}
         <div class="text-center font-inter text-sm relative flex items-center justify-center">
-          Pricing
+          {{ t(key="pricing-section-badge", lang=lang) }}
         </div>
       </div>
       <div class="flex flex-col gap-4 items-center justify-center">
-        <div class="text-center font-bricon text-5xl font-medium">Choose Your Plan</div>
-        <div class="text-center font-inter text-lg">Select the perfect plan for your needs</div>
+        <div class="text-center font-bricon text-5xl font-medium">
+          {{ t(key="pricing-section-title", lang=lang) }}
+        </div>
+        <div class="text-center font-inter text-lg">
+          {{ t(key="pricing-section-subtitle", lang=lang) }}
+        </div>
       </div>
     </div>
 
@@ -51,7 +55,9 @@ website.website_routes.payment.payment_prepare_route %}
             );
           "
         >
-          <div class="text-center font-inter text-xs font-medium">Most Popular</div>
+          <div class="text-center font-inter text-xs font-medium">
+            {{ t(key="pricing-popular-badge", lang=lang) }}
+          </div>
         </div>
         {% endif %}
         <div class="py-8 px-6 flex flex-col gap-3 items-center justify-center self-stretch">
@@ -124,4 +130,4 @@ website.website_routes.payment.payment_prepare_route %}
       {% endfor %}
     </div>
   </div>
-</div>
+</section>

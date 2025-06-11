@@ -5,6 +5,7 @@
 {% set website = options.website %}
 {% set is_favorite = options.is_favorite %}
 {% set is_deleted = options.is_deleted %}
+{% set lang = options.language %}
 
 <!-- Dashboard Content Section -->
 <div class="flex flex-1 overflow-y-auto px-4">
@@ -16,7 +17,7 @@
   </div>
   {% else %}
   <div id="no-images" class="flex flex-col mx-auto items-center justify-center min-h-screen">
-    <p class="text-gray-500 text-lg">No images available. Create some to get started!</p>
+    <p class="text-gray-500 text-lg">{{ t(key="studio-empty-state-message", lang=lang) }}</p>
     {% include "partials/svg/ghost.html" %}
   </div>
   {% endif %}

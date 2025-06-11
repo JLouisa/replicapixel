@@ -1,5 +1,5 @@
-{% set website = options.website %} {% set user = options.user %} {% set models =
-options.training_models %} {% set credits = options.user_credits %}
+{% set website = options.website %} {% set lang = options.language %} {% set user = options.user %}
+{% set models = options.training_models %} {% set credits = options.user_credits %}
 
 <div class="w-full flex flex-col">
   <div>
@@ -16,7 +16,7 @@ options.training_models %} {% set credits = options.user_credits %}
         hx-push-url="{{ website.website_routes.dashboard_routes.create_training_models | safe }}"
         hx-swap="innerHTML"
       >
-        Create Replica
+        {{ t(key="training-models-create-replica-button", lang=lang) }}
       </button>
     </div>
     {% endif %}
@@ -32,7 +32,9 @@ options.training_models %} {% set credits = options.user_credits %}
     </div>
     {% else %}
     <div class="h-full flex flex-col w-full mx-auto items-center justify-center text-center">
-      <p class="text-gray-500 text-lg mb-4">No Replicas available. Create some to get started!</p>
+      <p class="text-gray-500 text-lg mb-4">
+        {{ t(key="training-models-empty-state-message", lang=lang) }}
+      </p>
       {% include "partials/svg/ghost.html" %}
     </div>
     {% endif %}
@@ -40,10 +42,10 @@ options.training_models %} {% set credits = options.user_credits %}
 
   <script>
     if (typeof updatePageTitle === "function") {
-      updatePageTitle("ReplicaPixel | Replica");
+      updatePageTitle("{{ t(key='training-models-page-title', lang=lang) }}");
     } else {
-      console.warn("updatePageTitle function not found.");
-      document.title = "ReplicaPixel | Replica";
+      console.warn("{{ t(key='training-models-script-warning', lang=lang) }}");
+      document.title = "{{ t(key='training-models-page-title', lang=lang) }}";
     }
   </script>
 </div>

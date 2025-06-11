@@ -64,8 +64,15 @@ pub fn partial_login(v: impl ViewRenderer, website: &Website) -> Result<impl Int
     )
 }
 
-pub fn forgot(v: &impl ViewRenderer) -> Result<impl IntoResponse> {
-    return format::render().view(v, "auth/forgot/partials/forgot_msg.html", data!({}));
+pub fn forgot(
+    v: &impl ViewRenderer,
+    website_options: &WebsiteOptions,
+) -> Result<impl IntoResponse> {
+    return format::render().view(
+        v,
+        "auth/forgot/partials/forgot_msg.html",
+        data!({"options": website_options}),
+    );
 }
 
 // ============== View Models for the View Templates ==============

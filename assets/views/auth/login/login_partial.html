@@ -1,5 +1,6 @@
 <!-- prettier-ignore -->
 {% set website = options.website %}
+{% set lang = options.language %}
 {% set login_params = options.login %}
 {% set auth_error = options.auth_error %}
 {% set login_api_link = website.website_routes.auth_routes.api_login %}
@@ -14,7 +15,7 @@
 <div id="auth-form" class="min-h-screen flex items-center justify-center bg-gray-600">
   <div class="w-full max-w-md bg-white shadow-lg rounded-lg">
     <div class="bg-gray-100 rounded-t-lg w-full p-8">
-      <p class="text-center text-sm">Sign in with</p>
+      <p class="text-center text-sm">{{ t(key="auth-signin-with", lang=lang) }}</p>
       <div>
         <div class="flex items-center justify-center space-x-4 mt-3">
           <button
@@ -39,7 +40,7 @@
                 d="M43.611 20.083 43.595 20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"
               />
             </svg>
-            Google
+            {{ t(key="auth-google-button", lang=lang) }}
           </button>
           <button
             disabled
@@ -52,13 +53,15 @@
                 d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"
               ></path>
             </svg>
-            Github
+            {{ t(key="auth-github-button", lang=lang) }}
           </button>
         </div>
       </div>
     </div>
     <div class="rounded-b-lg pt-4 pb-12 px-4 lg:px-12">
-      <div class="divider mt-3 text-gray-500">Or sign in with credentials</div>
+      <div class="divider mt-3 text-gray-500">
+        {{ t(key="auth-credentials-divider", lang=lang) }}
+      </div>
       <form
         hx-post="{{ login_api_link  | safe }}"
         hx-ext="form-json"
@@ -72,8 +75,8 @@
           <input class="appearance-none border pl-12 border-gray-100 shadow-sm focus:shadow-md
           focus:placeholder-gray-600 transition rounded-md w-full py-3 text-gray-600 leading-tight
           focus:outline-none focus:ring-gray-600 focus:shadow-outline" id="email" name="email"
-          type="text" placeholder="Email" required value="{{ login_params.email | default
-          (value="")}}" />
+          type="text" placeholder="{{ t(key='auth-placeholder-email', lang=lang) }}" required
+          value="{{ login_params.email | default (value="")}}" />
           <div class="absolute left-0 inset-y-0 flex items-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -93,22 +96,22 @@
             id="password"
             name="password"
             type="password"
-            placeholder="Password"
+            placeholder="{{ t(key='auth-placeholder-password', lang=lang) }}"
             required
           />
           <div class="absolute left-0 inset-y-0 flex items-center">
             {% include "partials/svg/lock.html" %}
           </div>
         </div>
-
         <!-- Remember Me & Password Forgot -->
         <div class="mt-4 flex items-center justify-between text-gray-500">
           <label class="cursor-pointer flex items-center gap-2" for="remember">
             <input type="checkbox" class="checkbox checkbox-primary" checked="{{
             login_params.remember | default (value="true")}}" id="remember" name="remember" />
-            <span class="text-sm text-gray-800">Remember me</span>
+            <span class="text-sm text-gray-800"
+              >{{ t(key="auth-login-checkbox-remember", lang=lang) }}</span
+            >
           </label>
-
           <a
             href="{{forgot_link | safe}}"
             hx-get="{{ forgot_partial_link | safe }}"
@@ -116,7 +119,7 @@
             hx-target="#auth-form"
             hx-swap="outerHTML"
             class="text-sm text-primary cursor-pointer"
-            >Forgot Password?</a
+            >{{ t(key="auth-login-forgot-password-link", lang=lang) }}</a
           >
         </div>
         <!-- Login Error -->
@@ -126,7 +129,7 @@
             id="login-btn"
             class="w-full text-white py-2 px-4 uppercase rounded bg-indigo-500 hover:bg-indigo-600 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:hover:bg-gray-400 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5 disabled:hover:translate-y-0"
           >
-            Sign in
+            {{ t(key="auth-login-button", lang=lang) }}
           </button>
           <a
             href="{{ register_link | safe }}"
@@ -135,24 +138,16 @@
             hx-swap="outerHTML"
             hx-push-url="{{ register_link | safe }}"
             class="text-sm text-primary cursor-pointer mt-4"
-            >Don't have an account?</a
+            >{{ t(key="auth-login-register-prompt", lang=lang) }}</a
           >
-          <a
-            class="text-sm text-primary cursor-pointer mt-4"
-            href="/"
-            {#
-            hx-get="/partial/home"
-            hx-target="#app"
-            hx-swap="innerHTML"
-            hx-push-url="/"
-            #}
-            >Home
+          <a class="text-sm text-primary cursor-pointer mt-4" href="/" {# ... #}
+            >{{ t(key="auth-home-link", lang=lang) }}
           </a>
         </div>
       </form>
     </div>
   </div>
   <script>
-    updatePageTitle("{% block title %}ReplicaPixel | Login{% endblock title %}");
+    updatePageTitle("{{ t(key='auth-login-page-title', lang=lang) }}");
   </script>
 </div>

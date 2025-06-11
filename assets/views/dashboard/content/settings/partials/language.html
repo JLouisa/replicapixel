@@ -6,15 +6,5 @@
       <p class="text-sm text-base-content/70">Select your preferred language</p>
     </div>
   </div>
-  <div>
-    <span
-      id="language-notification-spinner"
-      class="htmx-indicator loading loading-spinner loading-sm ml-2"
-    ></span>
-    <select class="select select-bordered w-32" value="{language}">
-      <option value="english">English</option>
-      <option value="spanish">Spanish</option>
-      <option value="french">French</option>
-    </select>
-  </div>
+  {% include "partials/parts/language_menu.html" %}
 </div>

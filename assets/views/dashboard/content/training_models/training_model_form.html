@@ -30,7 +30,9 @@
             <line x1="12" y1="3" x2="12" y2="15" />
           </svg>
         </div>
-        <h1 class="text-3xl font-bold text-base-content">Create Model</h1>
+        <h1 class="text-3xl font-bold text-base-content">
+          {{ t(key="create-model-title", lang=lang) }}
+        </h1>
       </div>
 
       <div class="space-y-1">
@@ -44,7 +46,7 @@
               #}
               class="appearance-none border pl-12 border-gray-100 shadow-sm focus:shadow-md focus:placeholder-gray-600 transition rounded-md w-full py-3 text-gray-600 leading-tight focus:outline-none focus:ring-gray-600 focus:shadow-outline"
               type="text"
-              placeholder="Model Name"
+              placeholder="{{ t(key='create-model-placeholder-name', lang=lang) }}"
               required
               x-model="$store.createModelForm.name"
             />
@@ -57,7 +59,7 @@
               id="age"
               class="appearance-none border pl-12 border-gray-100 shadow-sm focus:shadow-md focus:placeholder-gray-600 transition rounded-md w-full py-3 text-gray-600 leading-tight focus:outline-none focus:ring-gray-600 focus:shadow-outline"
               type="number"
-              placeholder="Enter age (18-120)"
+              placeholder="{{ t(key='create-model-placeholder-age', lang=lang) }}"
               min="18"
               max="120"
               required
@@ -76,7 +78,9 @@
               required
               x-model="$store.createModelForm.sex"
             >
-              <option value="" disabled selected>Select Sex</option>
+              <option value="" disabled selected>
+                {{ t(key="create-model-select-sex", lang=lang) }}
+              </option>
               {% for sex in website.website_fields.create_model.sex %}
               <option value="{{ sex }}">{{ sex | capitalize }}</option>
               {% endfor %}
@@ -92,7 +96,9 @@
               required
               x-model="$store.createModelForm.eye_color"
             >
-              <option value="" disabled selected>Select Eye Color</option>
+              <option value="" disabled selected>
+                {{ t(key="create-model-select-eye-color", lang=lang) }}
+              </option>
               {% for color in website.website_fields.create_model.eye_color %}
               <option value="{{ color }}">{{ color | capitalize }}</option>
               {% endfor %}
@@ -110,7 +116,9 @@
               required
               x-model="$store.createModelForm.ethnicity"
             >
-              <option value="" disabled selected>Select Ethnicity</option>
+              <option value="" disabled selected>
+                {{ t(key="create-model-select-ethnicity", lang=lang) }}
+              </option>
               {% for ethnicity in website.website_fields.create_model.ethnicity %}
               <option value="{{ ethnicity }}">{{ ethnicity }}</option>
               {% endfor %}
@@ -126,9 +134,11 @@
               required
               x-model="$store.createModelForm.bald"
             >
-              <option value="" disabled selected>Are you bald?</option>
-              <option value="true">Yes</option>
-              <option value="false">No</option>
+              <option value="" disabled selected>
+                {{ t(key="create-model-select-bald", lang=lang) }}
+              </option>
+              <option value="true">{{ t(key="create-model-yes", lang=lang) }}</option>
+              <option value="false">{{ t(key="create-model-no", lang=lang) }}</option>
             </select>
             <div class="absolute left-0 inset-y-0 flex items-center"></div>
           </div>
@@ -146,7 +156,9 @@
               type="checkbox"
               x-model="$store.createModelForm.based_on"
             />
-            <span class="label-text text-base-content/90">Based on a real person?</span>
+            <span class="label-text text-base-content/90"
+              >{{ t(key="create-model-label-real-person", lang=lang) }}</span
+            >
           </label>
         </div>
       </div>
@@ -164,15 +176,19 @@
             <div
               class="label-text text-xs sm:text-sm text-base-content/90 flex flex-col min-[380px]:flex-row min-[380px]:flex-wrap min-[380px]:items-baseline min-[380px]:gap-x-1"
             >
-              <span>I agree to the </span>
+              <span>{{ t(key="create-model-consent-prefix", lang=lang) }}</span>
               <a
                 href="{{ website.website_routes.policy.model_consent | safe }}"
                 target="_blank"
                 class="link link-primary hover:link-hover font-medium"
               >
-                <span class="min-[380px]:hidden">Consent Agreement</span>
+                <span class="min-[380px]:hidden"
+                  >{{ t(key="create-model-consent-link-short", lang=lang) }}</span
+                >
                 <!-- Shorter text -->
-                <span class="hidden min-[380px]:inline">Model Creation Consent Agreement</span>
+                <span class="hidden min-[380px]:inline"
+                  >{{ t(key="create-model-consent-link-full", lang=lang) }}</span
+                >
                 <!-- Full text -->
               </a>
               <span class="text-error ml-1">*</span>
@@ -186,8 +202,12 @@
           class="btn btn-primary w-full mt-4 flex items-center justify-center gap-2"
         >
           <span class="size-5"> {% include "partials/svg/upload.html" %} </span>
-          <span class="inline min-[400px]:hidden">Create</span>
-          <span class="hidden min-[400px]:inline">Create & Upload Model</span>
+          <span class="inline min-[400px]:hidden"
+            >{{ t(key="create-model-button-short", lang=lang) }}</span
+          >
+          <span class="hidden min-[400px]:inline"
+            >{{ t(key="create-model-button-full", lang=lang) }}</span
+          >
         </button>
       </div>
     </form>

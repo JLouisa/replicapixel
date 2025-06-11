@@ -3,7 +3,9 @@
 #![allow(clippy::unused_async)]
 use crate::controllers::auth::HxRedirect;
 use crate::controllers::dashboard::{CurrentPage, WebsiteOptions};
+use crate::domain::website::Website;
 use crate::middleware::cookie::ExtractConsentState;
+use crate::middleware::i18nv2::LangEngine;
 use crate::models::join::user_credits_models::load_user_credit_training;
 use crate::models::packs::PackModelList;
 use crate::models::users::UserPid;
@@ -12,7 +14,6 @@ use crate::service::redis::redis::{load_cached_web, load_from_file_and_cache};
 use crate::views;
 use crate::views::auth::UserView;
 use crate::views::packs::PackViewList;
-use crate::{domain::website::Website, middleware::cookie::CookieConsentLayer};
 use axum::{debug_handler, Extension};
 use derive_more::Constructor;
 use loco_rs::prelude::*;
@@ -69,7 +70,6 @@ pub fn routes() -> Routes {
             routes::Home::DASHBOARD_PACKS_EXTEND,
             get(render_dashboard_extend_packs_partial),
         )
-        .layer(CookieConsentLayer::new())
 }
 
 pub async fn load_user(db: &DatabaseConnection, user_pid: &UserPid) -> Result<UserModel> {
@@ -160,6 +160,7 @@ pub async fn render_home(
     Extension(website): Extension<Website>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
     let user: Option<UserView> = match auth {
         Ok(auth) => {
@@ -176,6 +177,7 @@ pub async fn render_home(
 
     let website_options = WebsiteOptions::new()
         .website(&website)
+        .language(&lang)
         .cc_cookie(&cc_cookie)
         .set_user(user)
         .web_images(&images)
@@ -191,6 +193,7 @@ pub async fn render_home_partial(
     Extension(website): Extension<Website>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
     let user: Option<UserView> = match auth {
         Ok(auth) => {
@@ -207,6 +210,7 @@ pub async fn render_home_partial(
 
     let website_options = WebsiteOptions::new()
         .website(&website)
+        .language(&lang)
         .cc_cookie(&cc_cookie)
         .set_user(user)
         .web_images(&images)
@@ -221,6 +225,7 @@ pub async fn render_dashboard_extend_partial(
     State(ctx): State<AppContext>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
     let user_pid = match auth {
         Ok(auth) => UserPid::new(&auth.claims.pid),
@@ -233,6 +238,7 @@ pub async fn render_dashboard_extend_partial(
 
     let website_options = WebsiteOptions::new()
         .website(&website)
+        .language(&lang)
         .user(user.into())
         .user_credits(user_credits.into())
         .training_models(training_models.into())
@@ -246,6 +252,7 @@ pub async fn render_dashboard_extend_packs_partial(
     State(ctx): State<AppContext>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
     let user_pid = match auth {
         Ok(auth) => UserPid::new(&auth.claims.pid),
@@ -262,6 +269,7 @@ pub async fn render_dashboard_extend_packs_partial(
 
     let website_options: WebsiteOptions = WebsiteOptions::new()
         .website(&website)
+        .language(&lang)
         .user(user.into())
         .user_credits(user_credits.into())
         .training_models(training_models.into())

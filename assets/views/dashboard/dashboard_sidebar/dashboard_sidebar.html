@@ -28,7 +28,7 @@
     <!-- Model Section -->
     <li
       class="text-base-content tooltip tooltip-right"
-      data-tip="Replicas"
+      data-tip='{{ t(key="sidebar-tooltip-replicas", lang=lang) }}'
       :class="active === 'models' ? 'bg-base-300' : 'hover:bg-base-300'"
     >
       <a
@@ -49,7 +49,7 @@
     <!-- Packs Section -->
     <li
       class="text-base-content tooltip tooltip-right"
-      data-tip="Packs"
+      data-tip='{{ t(key="sidebar-tooltip-packs", lang=lang) }}'
       :class="active === 'packs' ? 'bg-base-300' : 'hover:bg-base-300'"
     >
       <a
@@ -62,7 +62,7 @@
         #}
         preload="mouseover"
         class="h-16 px-6 flex justify-center items-center w-full cursor-pointer"
-        data-tip="Packs"
+        data-tip='{{ t(key="sidebar-tooltip-packs", lang=lang) }}'
         @click="active = 'packs'"
       >
         {% include "partials/svg/pack.html" %}
@@ -71,7 +71,7 @@
     <!-- Album Section -->
     <li
       class="text-base-content tooltip tooltip-right"
-      data-tip="Album"
+      data-tip='{{ t(key="sidebar-tooltip-album", lang=lang) }}'
       :class="active === 'album' ? 'bg-base-300' : 'hover:bg-base-300'"
     >
       <a
@@ -89,7 +89,7 @@
     <!-- Favorite Section -->
     <li
       class="text-base-content tooltip tooltip-right cursor-pointer"
-      data-tip="Favorite"
+      data-tip='{{ t(key="sidebar-tooltip-favorite", lang=lang) }}'
       :class="active === 'favorite' ? 'bg-base-300' : 'hover:bg-base-300'"
     >
       <a
@@ -107,7 +107,7 @@
     <!-- Deleted Section -->
     <li
       class="text-base-content tooltip tooltip-right cursor-pointer"
-      data-tip="Deleted"
+      data-tip='{{ t(key="sidebar-tooltip-deleted", lang=lang) }}'
       :class="active === 'deleted' ? 'bg-base-300' : 'hover:bg-base-300'"
     >
       <a
@@ -125,7 +125,7 @@
     <!-- Features Section -->
     <li
       class="text-base-content tooltip tooltip-right"
-      data-tip="Features"
+      data-tip='{{ t(key="sidebar-tooltip-features", lang=lang) }}'
       :class="active === 'features' ? 'bg-base-300' : 'hover:bg-base-300'"
     >
       <a
@@ -143,8 +143,8 @@
     <!-- Todo Video Section -->
     <li
       class="relative text-base-content tooltip tooltip-right bg-gray-700 cursor-not-allowed opacity-50 z-10"
-      data-tip="Video feature coming soon"
-      aria-label="Video feature coming soon"
+      data-tip='{{ t(key="sidebar-tooltip-video-soon", lang=lang) }}'
+      aria-label='{{ t(key="sidebar-tooltip-video-soon", lang=lang) }}'
     >
       <div class="h-16 px-6 flex justify-center items-center w-full">
         {% include "partials/svg/video.html" %}
@@ -154,8 +154,8 @@
     <!-- Todo Influencer Section -->
     <li
       class="relative text-base-content tooltip tooltip-right bg-gray-700 cursor-not-allowed opacity-50 z-10"
-      data-tip="Create Influencer feature coming soon"
-      aria-label="Create Influencer feature coming soon"
+      data-tip='{{ t(key="sidebar-tooltip-influencer-soon", lang=lang) }}'
+      aria-label='{{ t(key="sidebar-tooltip-influencer-soon", lang=lang) }}'
     >
       <div class="h-16 px-6 flex justify-center items-center w-full">
         {% include "partials/svg/influencer.html" %}
@@ -165,7 +165,7 @@
     <!-- Order History Section -->
     <li
       class="text-base-content tooltip tooltip-right"
-      data-tip="Order History"
+      data-tip='{{ t(key="sidebar-tooltip-order-history", lang=lang) }}'
       :class="active === 'billing' ? 'bg-base-300' : 'hover:bg-base-300'"
     >
       <a
@@ -183,7 +183,7 @@
     <!-- Settings Section -->
     <li
       class="tooltip tooltip-right text-base-content"
-      data-tip="Packs"
+      data-tip='{{ t(key="sidebar-tooltip-packs", lang=lang) }}'
       :class="active === 'settings' ? 'bg-base-300' : 'hover:bg-base-300'"
     >
       <a
@@ -193,7 +193,7 @@
         hx-swap="innerHTML"
         preload="mouseover"
         class="h-16 px-6 flex justify-center items-center w-full cursor-pointer"
-        data-tip="settings"
+        data-tip='{{ t(key="sidebar-tooltip-settings", lang=lang) }}'
         @click="active = 'settings'"
       >
         {% include "partials/svg/settings.html" %}
@@ -211,7 +211,7 @@
       hx-swap="innerHTML"
       preload="mouseover"
       class="h-16 w-full mx-auto flex items-center justify-center hover:bg-red-200 focus:outline-none cursor-pointer tooltip tooltip-right text-base-content"
-      data-tip="Logout"
+      data-tip='{{ t(key="sidebar-tooltip-logout", lang=lang) }}'
     >
       {% include "partials/svg/logout.html" %}
     </div>

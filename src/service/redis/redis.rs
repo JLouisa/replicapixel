@@ -9,15 +9,20 @@ use redis::{
     io::tcp::{socket2::TcpKeepalive, TcpSettings},
     AsyncCommands, Client, IntoConnectionInfo, RedisResult,
 };
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::{sync::Arc, time::Duration};
-use strum::{AsRefStr, EnumString};
+use strum::AsRefStr;
 use thiserror::Error;
+use uuid::Uuid;
 
+use crate::{
+    controllers::home::WebImages,
+    models::{users::UserPid, UserModel},
+    views::images::ImageView,
+};
+use serde::de::DeserializeOwned;
 use std::path::Path;
 use tokio::fs;
-
-use crate::{controllers::home::WebImages, views::images::ImageView};
 
 pub type Cache = Arc<loco_rs::cache::Cache>;
 pub type RedisDbResult<T> = std::result::Result<T, RedisDbError>;
@@ -54,14 +59,40 @@ pub enum RedisDbError {
     ConversionError(#[from] serde_json::Error),
 }
 
-#[derive(Debug, Clone, EnumString, AsRefStr)]
+#[derive(Debug, Clone, AsRefStr)]
 pub enum RedisKey {
-    PasswordReset,
-    Verification,
-    S3PreUrl,
-    Session,
-    User,
-    Queue,
+    User(UserPid),
+    UserSetting(UserPid),
+    S3PreUrl(Uuid),
+    Website,
+}
+
+impl ImageView {
+    pub fn redis_key(&self) -> RedisKey {
+        RedisKey::S3PreUrl(self.pid.clone())
+    }
+}
+
+impl UserModel {
+    pub fn redis_user_settings_key(&self) -> RedisKey {
+        let user_pid = UserPid::new(self.pid.clone());
+        RedisKey::UserSetting(user_pid)
+    }
+    pub fn redis_user_key(&self) -> RedisKey {
+        let user_pid = UserPid::new(self.pid.clone());
+        RedisKey::User(user_pid)
+    }
+}
+
+impl RedisKey {
+    pub fn to_key(&self) -> String {
+        match self {
+            Self::User(uuid) => format!("user:{}", uuid.as_ref()),
+            Self::UserSetting(uuid) => format!("user:setting:{}", uuid.as_ref()),
+            Self::S3PreUrl(uuid) => format!("s3:preurl:{}", uuid),
+            Self::Website => String::from("website"),
+        }
+    }
 }
 
 #[derive(Clone, Debug, Deserialize, Constructor)]
@@ -120,6 +151,7 @@ impl CacheDriver for RedisCacheDriver {
         };
         Ok(result)
     }
+
     async fn insert(&self, key: &str, value: &str) -> CacheResult<()> {
         let mut conn = self.client.clone();
         let result: () = match conn.set(key, value).await {
@@ -179,6 +211,31 @@ impl RedisCacheDriver {
             Err(e) => Err(RedisDbError::RedisError(e)),
         }
     }
+    pub async fn set<T: Serialize + Send + Sync>(
+        &self,
+        key: &RedisKey,
+        value: &T,
+        time: u64,
+    ) -> RedisDbResult<()> {
+        let mut conn = self.client.clone();
+        let item = serde_json::to_string(value)?;
+        let result: () = match conn.set_ex(key.to_key(), item, time).await {
+            Ok(result) => result,
+            Err(_) => (),
+        };
+        Ok(result)
+    }
+    pub async fn get<T: DeserializeOwned + Send>(
+        &self,
+        key: &RedisKey,
+    ) -> RedisDbResult<Option<T>> {
+        let mut conn = self.client.clone();
+        let result: Option<String> = conn.get(key.to_key()).await?;
+        match result {
+            Some(json_str) => Ok(Some(serde_json::from_str::<T>(&json_str)?)),
+            None => Ok(None),
+        }
+    }
     pub async fn set_s3_pre_url(&self, key: &ImageView) -> RedisDbResult<()> {
         let mut conn = self.client.clone();
         let time = 60 * 60 * 23;
@@ -189,11 +246,14 @@ impl RedisCacheDriver {
     }
     pub async fn get_s3_pre_url(&self, key: &ImageView) -> RedisDbResult<String> {
         let mut conn = self.client.clone();
-
         let value: Option<String> = conn
             .get(key.pid.to_string())
             .await
             .map_err(RedisDbError::from)?;
+        value.ok_or(RedisDbError::NotFound)
+    }
+    pub async fn get_s3_pre_url_new(&self, key: &ImageView) -> RedisDbResult<String> {
+        let value = self.get(&key.redis_key()).await?;
         value.ok_or(RedisDbError::NotFound)
     }
     pub async fn get_web_images(&self) -> RedisDbResult<WebImages> {
@@ -223,6 +283,19 @@ impl RedisCacheDriver {
             .await?;
         Ok(())
     }
+    // pub async fn set_web_images(&self, web: &WebImages) -> RedisDbResult<()> {
+    //     let mut conn = self.client.clone();
+
+    //     let value = serde_json::to_string(web)?;
+    //     let _: () = conn
+    //         .set_ex(
+    //             WEB_IMAGES_CACHE_KEY.to_owned(),
+    //             value,
+    //             WEB_IMAGES_TTL_SECONDS,
+    //         )
+    //         .await?;
+    //     Ok(())
+    // }
 }
 
 async fn fetch_and_cache_web_images(ctx: &AppContext) -> CacheResult<WebImages> {

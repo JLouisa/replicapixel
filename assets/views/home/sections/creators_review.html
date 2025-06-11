@@ -2,7 +2,7 @@
 
 <div class="flex flex-col items-center gap-4 max-w-7xl my-28 mb-16 mx-auto p-2 md:p-0">
   <div class="text-w flex items-center justify-center gap-4 font-sans">
-    {% include "partials/svg/triple_stars.html" %} Ai Studio
+    {% include "partials/svg/triple_stars.html" %} {{ t(key="testimonials-badge", lang=lang) }}
   </div>
   <div class="flex flex-col items-center gap-4 w-full relative">
     <!-- Glow Background Effect -->
@@ -18,10 +18,10 @@
       "
     ></div>
     <div class="text-w text-5xl font-medium text-center font-brico w-full">
-      What Our Customers Are Saying
+      {{ t(key="testimonials-title", lang=lang) }}
     </div>
     <div class="text-w text-lg text-center font-sans">
-      Studio-quality AI photos with perfect likeness every time.
+      {{ t(key="testimonials-tagline", lang=lang) }}
     </div>
   </div>
 

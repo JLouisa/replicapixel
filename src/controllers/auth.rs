@@ -2,23 +2,29 @@
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
 use crate::{
-    controllers::{
-        dashboard::{CurrentPage, WebsiteOptions},
-        oauth2::CookieTrait,
+    controllers::dashboard::{CurrentPage, WebsiteOptions},
+    domain::{
+        cookie::{AppCookie, CookieTrait, UserCookieTrait},
+        website::Website,
     },
-    domain::website::Website,
     mailers::{
         auth::AuthMailer,
         transaction::{CheckoutCompletedEmailData, CheckoutMailer},
     },
-    middleware::cookie::ExtractConsentState,
+    middleware::{cookie::ExtractConsentState, i18nv2::LangEngine},
     models::{
-        _entities::{sea_orm_active_enums::Account, users},
-        join::user_credits_models::{load_user_and_credits, load_user_credit_training},
+        _entities::{
+            sea_orm_active_enums::{Account, Language},
+            users,
+        },
+        join::user_credits_models::{load_user_and_settings, load_user_credit_training},
         users::{LoginParams, PasswordChangeParams, RegisterParams, UserPid},
-        PlanModel, TransactionModel, UserModel,
+        PlanModel, TransactionModel, UserModel, UserSettingsModel,
     },
-    service::stripe::stripe::StripeClient,
+    service::{
+        redis::redis::{RedisCacheDriver, RedisKey},
+        stripe::stripe::StripeClient,
+    },
     views::{self, auth::CurrentResponse},
 };
 use axum::{
@@ -29,6 +35,7 @@ use axum::{
     response::{IntoResponse, Redirect, Response},
     Extension,
 };
+use axum_extra::extract::CookieJar;
 use chrono::Utc;
 use derive_more::Constructor;
 use loco_rs::{controller::ErrorDetail, prelude::*};
@@ -109,6 +116,7 @@ pub mod routes {
         pub const API_PASSWORD_CHANGE_ID: &'static str = "/api/auth/password-change/{id}";
         pub const API_PASSWORD_CHANGE: &'static str = "/api/auth/password-change";
         pub const API_CHECK_USER: &'static str = "/api/auth/check-user";
+        pub const API_SET_LANGUAGE: &'static str = "/api/auth/language";
     }
 }
 
@@ -135,7 +143,8 @@ pub fn routes() -> Routes {
         .add(routes::Auth::API_MAGIC_LINK_TOKEN, get(get_password))
         .add(routes::Auth::API_MAGIC_LINK_TOKEN, post(set_password))
         .add(routes::Auth::API_PASSWORD_CHANGE_ID, post(change_password))
-        .add(routes::Auth::API_CHECK_USER, get(check_user))
+        .add(routes::Auth::API_SET_LANGUAGE, post(set_language))
+    // .add(routes::Auth::API_CHECK_USER, get(check_user))
     // .add("/api/auth/test/welcome", get(test_welcome_mail))
     // .add("/api/auth/test/forgot_password", get(test_forgot_password))
     // .add("/api/auth/test/magic_link", get(test_magic_link))
@@ -251,6 +260,44 @@ async fn load_user(db: &DatabaseConnection, user_pid: &UserPid) -> Result<UserMo
     Ok(item)
 }
 
+async fn get_user_settings(
+    db: &DatabaseConnection,
+    cache: &RedisCacheDriver,
+    user_pid: &UserPid,
+) -> Result<UserSettingsModel> {
+    let cache_key = RedisKey::UserSetting(user_pid.clone());
+    // Try cache first
+    if let Ok(Some(cached)) = cache.get::<UserSettingsModel>(&cache_key).await {
+        return Ok(cached);
+    }
+    // Cache miss → load from DB
+    let (_, settings) = load_user_and_settings(db, user_pid).await?;
+
+    let time = 60 * 60 * 24 * 30; // 30 days
+
+    // Update cache
+    let _ = cache.set(&cache_key, &settings, time).await;
+    Ok(settings)
+}
+
+async fn set_user_settings(
+    db: &DatabaseConnection,
+    cache: &RedisCacheDriver,
+    user_pid: &UserPid,
+    user_settings: &UserSettingsModel,
+    lang: &Language,
+) -> Result<()> {
+    let settings = user_settings.set_language_preference(db, lang).await?;
+    let cache_key = RedisKey::UserSetting(user_pid.clone());
+    let _ = cache.set(&cache_key, &settings, 60 * 60 * 24 * 7).await;
+    Ok(())
+}
+
+#[derive(Debug, Deserialize, Validate)]
+pub struct SetLanguagePayload {
+    pub lang: Language,
+}
+
 #[derive(Debug, Deserialize, Serialize, Validate)]
 pub struct ForgotParams {
     #[validate(email(message = "Email is invalid"))]
@@ -328,6 +375,31 @@ pub async fn test_magic_link(
     AuthMailer::send_magic_link(&ctx, &user, &website.website_basic_info).await?;
     Ok((StatusCode::OK).into_response())
 }
+
+async fn set_language(
+    auth: Result<auth::JWT>, // Use the lightweight extractor
+    jar: CookieJar,
+    State(ctx): State<AppContext>,
+    Extension(cache): Extension<RedisCacheDriver>,
+    Json(payload): Json<SetLanguagePayload>,
+) -> Result<Response> {
+    // If user is logged in, update their DB record for future logins.
+    let lang_code = match auth {
+        Ok(auth) => {
+            let user_pid = UserPid::new(&auth.claims.pid);
+            let (_, settings) = load_user_and_settings(&ctx.db, &user_pid).await?;
+            let _ = set_user_settings(&ctx.db, &cache, &user_pid, &settings, &payload.lang).await?;
+            settings.language
+        }
+        Err(_) => payload.lang,
+    };
+
+    // Always update the cookie for the current session.
+    let cookie = AppCookie::create_language_cookie(lang_code);
+
+    Ok((jar.add(cookie), StatusCode::NO_CONTENT).into_response())
+}
+
 #[debug_handler]
 pub async fn change_password(
     auth: auth::JWT,
@@ -335,6 +407,7 @@ pub async fn change_password(
     State(ctx): State<AppContext>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
     Json(params): Json<PasswordChangeParams>,
 ) -> Result<impl IntoResponse> {
     params.validate()?;
@@ -353,6 +426,7 @@ pub async fn change_password(
     if !valid {
         let website_options = WebsiteOptions::new()
             .website(&website)
+            .language(&lang)
             .user(user.into())
             .message("There was an error with your password");
         return views::settings::password_change(v, &website_options);
@@ -363,52 +437,12 @@ pub async fn change_password(
         .reset_password(&ctx.db, &params.password)
         .await?;
 
-    let website_options = WebsiteOptions::new().website(&website).user(user.into());
-
-    views::settings::password_change(v, &website_options)
-}
-
-#[debug_handler]
-pub async fn check_user(
-    auth: Result<auth::JWT>,
-    State(ctx): State<AppContext>,
-    Extension(website): Extension<Website>,
-    ViewEngine(v): ViewEngine<TeraView>,
-) -> Result<impl IntoResponse> {
-    let user_pid = match auth {
-        Ok(auth) => UserPid::new(&auth.claims.pid),
-        Err(_) => {
-            return format::render().view(
-                &v,
-                "partials/parts/google_ott.html",
-                data!({"website": website, "is_home": true}),
-            );
-        }
-    };
-    let (user, user_credits) = match load_user_and_credits(&ctx.db, &user_pid).await {
-        Ok((user, user_credits)) => (user, user_credits),
-        Err(_) => {
-            let website_options = WebsiteOptions::new().website(&website).is_home();
-            return format::render().view(
-                &v,
-                "partials/parts/google_ott.html",
-                data!({"website": website_options.website, "is_home": website_options.is_home}),
-            );
-        }
-    };
-
     let website_options = WebsiteOptions::new()
         .website(&website)
-        .user(user.into())
-        .user_credits(user_credits.into())
-        .is_home();
+        .language(&lang)
+        .user(user.into());
 
-    format::render().view(
-        &v,
-        "partials/parts/home_validated.html",
-        data!({"website": website_options.website, "user": website_options.user,
-        "credits": website_options.user_credits, "is_home": website_options.is_home}),
-    )
+    views::settings::password_change(v, &website_options)
 }
 
 /// Register function creates a new user with the given parameters and sends a
@@ -419,12 +453,14 @@ async fn register(
     ViewEngine(v): ViewEngine<TeraView>,
     Extension(website): Extension<Website>,
     State(ctx): State<AppContext>,
+    LangEngine(lang): LangEngine,
     Json(params): Json<RegisterParams>,
 ) -> Result<Response> {
     if let Err(err) = params.validate() {
         let error_msg = AuthError::default().register_error(err.errors());
         let website_options = WebsiteOptions::new()
             .website(&website)
+            .language(&lang)
             .register(&params)
             .auth_error(&error_msg);
         return format::render().view(
@@ -451,6 +487,7 @@ async fn register(
                     ;
                     let website_options = WebsiteOptions::new()
                         .website(&website)
+                        .language(&lang)
                         .register(&params)
                         .auth_error(&error_msg);
                     return format::render().view(
@@ -464,6 +501,7 @@ async fn register(
                         error_msg.register_msg("Something went wrong. Please try again.");
                     let website_options = WebsiteOptions::new()
                         .website(&website)
+                        .language(&lang)
                         .register(&params)
                         .auth_error(&error_msg);
                     return format::render().view(
@@ -485,7 +523,7 @@ async fn register(
 
     // Ok(HxRedirect(routes::Auth::LOGIN_PARTIAL.to_string()).into_response())
 
-    let website_options = WebsiteOptions::new().website(&website);
+    let website_options = WebsiteOptions::new().website(&website).language(&lang);
     format::render().view(
         &v,
         "auth/login/login_partial.html",
@@ -503,6 +541,7 @@ async fn verify(
     Extension(website): Extension<Website>,
     State(ctx): State<AppContext>,
     Path(token): Path<String>,
+    LangEngine(lang): LangEngine,
 ) -> Result<Response> {
     use chrono::Duration;
 
@@ -511,6 +550,7 @@ async fn verify(
     if user.email_verified_at.is_some() {
         let website_options = WebsiteOptions::new()
             .website(&website)
+            .language(&lang)
             .message("Email already verified");
         return format::render().view(
             &v,
@@ -523,6 +563,7 @@ async fn verify(
         if Utc::now().naive_utc() > sent_at.naive_utc() + Duration::hours(1) {
             let website_options = WebsiteOptions::new()
                 .website(&website)
+                .language(&lang)
                 .message("Email already verified");
             return format::render().view(
                 &v,
@@ -537,7 +578,7 @@ async fn verify(
 
     let active_model = user.into_active_model();
     let _user = active_model.verified(&ctx.db).await?;
-    let website_options = WebsiteOptions::new().website(&website);
+    let website_options = WebsiteOptions::new().website(&website).language(&lang);
     format::render().view(
         &v,
         "auth/verify/email_verified.html",
@@ -550,6 +591,7 @@ async fn resent_verification_token(
     ViewEngine(v): ViewEngine<TeraView>,
     Extension(website): Extension<Website>,
     State(ctx): State<AppContext>,
+    LangEngine(lang): LangEngine,
     Json(email_params): Json<MagicLinkParams>,
 ) -> Result<Response> {
     let user = UserModel::find_by_email(&ctx.db, &email_params.email).await?;
@@ -561,7 +603,7 @@ async fn resent_verification_token(
 
     AuthMailer::send_verification_link(&ctx, &user, &website.website_basic_info).await?;
 
-    let website_options = WebsiteOptions::new().website(&website);
+    let website_options = WebsiteOptions::new().website(&website).language(&lang);
     format::render().view(
         &v,
         "auth/verify/email_verification_send.html",
@@ -591,8 +633,11 @@ async fn api_login(
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
     Extension(website): Extension<Website>,
+    Extension(cache): Extension<RedisCacheDriver>,
+    cookie_jar: CookieJar,
+    LangEngine(lang): LangEngine,
     Json(params): Json<LoginParams>,
-) -> Result<Response> {
+) -> Result<impl IntoResponse> {
     let user = match users::Model::find_by_email(&ctx.db, &params.email).await {
         Ok(user) => user,
         Err(err) => {
@@ -601,6 +646,7 @@ async fn api_login(
             let error_msg = AuthError::default().login_error();
             let website_options = WebsiteOptions::new()
                 .website(&website)
+                .language(&lang)
                 .auth_error(&error_msg)
                 .login(&params);
             return format::render().view(
@@ -615,6 +661,7 @@ async fn api_login(
         let error_msg = AuthError::default().verify_error();
         let website_options = WebsiteOptions::new()
             .website(&website)
+            .language(&lang)
             .auth_error(&error_msg)
             .user(user.into());
         return format::render().view(
@@ -628,6 +675,7 @@ async fn api_login(
         let error_msg = AuthError::default().verify_error();
         let website_options = WebsiteOptions::new()
             .website(&website)
+            .language(&lang)
             .auth_error(&error_msg)
             .user(user.into());
         return format::render().view(
@@ -637,37 +685,35 @@ async fn api_login(
         );
     }
 
-    let cookie = user.create_cookie_strict(&ctx)?;
-
-    let cookie_value = HeaderValue::from_str(&cookie.to_string())
-        .map_err(|_| loco_rs::Error::Unauthorized("failed to build cookie header".to_string()))?;
-
     let user_pid = UserPid::new(&user.pid.to_string());
     let (user, user_credits, training_models) =
         load_user_credit_training(&ctx.db, &user_pid).await?;
+    let settings = get_user_settings(&ctx.db, &cache, &user_pid).await?;
+
+    let cookie = user.create_cookie_strict(&ctx)?;
+    let cookie_lang = AppCookie::create_language_cookie(settings.language);
 
     let website_options = WebsiteOptions::new()
         .website(&website)
+        .language(&lang)
         .user(user.into())
+        .language(&settings.language)
         .user_credits(user_credits.into())
         .training_models(training_models.into())
         .current_page(CurrentPage::Models);
-    let mut view_response = format::render().view(
+
+    let view_response = format::render().view(
         &v,
         "dashboard/dashboard_base_extend_partial.html",
         data!({"options": website_options}),
     )?;
 
-    view_response
-        .headers_mut()
-        .insert(header::SET_COOKIE, cookie_value);
-
-    Ok(view_response)
+    Ok((cookie_jar.add(cookie).add(cookie_lang), view_response).into_response())
 }
 
 #[debug_handler]
 async fn logout(State(_ctx): State<AppContext>) -> Result<Response> {
-    let cookie = UserModel::logout_cookie();
+    let cookie = AppCookie::logout_cookie();
     let cookie_str = cookie.to_string();
 
     // Create headers for removing the cookie and redirecting
@@ -683,8 +729,9 @@ async fn logout_partial(
     State(_ctx): State<AppContext>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
-    let cookie = UserModel::logout_cookie();
+    let cookie = AppCookie::logout_cookie();
 
     let cookie_header_value = cookie.to_string();
     let cookie_header = HeaderValue::from_str(&cookie_header_value).map_err(|_| {
@@ -694,7 +741,7 @@ async fn logout_partial(
         )
     })?;
 
-    let website_options = WebsiteOptions::new().website(&website);
+    let website_options = WebsiteOptions::new().website(&website).language(&lang);
     let view_response = format::render().view(
         &v,
         "auth/login/login_partial.html",
@@ -784,6 +831,7 @@ pub async fn get_login(
     ViewEngine(v): ViewEngine<TeraView>,
     Extension(website): Extension<Website>,
     State(ctx): State<AppContext>,
+    LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
     let view_response = if auth.is_ok() {
         let user_pid = UserPid::new(&auth.unwrap().claims.pid);
@@ -791,6 +839,7 @@ pub async fn get_login(
             load_user_credit_training(&ctx.db, &user_pid).await?;
         let website_options = WebsiteOptions::new()
             .website(&website)
+            .language(&lang)
             .cc_cookie(&cc_cookie)
             .user(user.into())
             .user_credits(user_credits.into())
@@ -807,7 +856,7 @@ pub async fn get_login(
         format::render().view(
             &v,
             "auth/login/login_form.html",
-            data!({"options": WebsiteOptions::new().website(&website)}),
+            data!({"options": WebsiteOptions::new().website(&website).language(&lang)}),
         )?
     };
 
@@ -830,6 +879,7 @@ pub async fn partial_login(
     ViewEngine(v): ViewEngine<TeraView>,
     Extension(website): Extension<Website>,
     State(ctx): State<AppContext>,
+    LangEngine(lang): LangEngine,
 ) -> Result<Response> {
     let view_response = if auth.is_ok() {
         let user_pid = UserPid::new(&auth.unwrap().claims.pid);
@@ -837,6 +887,7 @@ pub async fn partial_login(
             load_user_credit_training(&ctx.db, &user_pid).await?;
         let website_options = WebsiteOptions::new()
             .website(&website)
+            .language(&lang)
             .user(user.into())
             .user_credits(user_credits.into())
             .training_models(training_models.into())
@@ -850,7 +901,7 @@ pub async fn partial_login(
         format::render().view(
             &v,
             "auth/login/login_partial.html",
-            data!({"options": WebsiteOptions::new().website(&website)}),
+            data!({"options": WebsiteOptions::new().website(&website).language(&lang)}),
         )?
     };
 
@@ -862,11 +913,12 @@ pub async fn get_register(
     ViewEngine(v): ViewEngine<TeraView>,
     Extension(website): Extension<Website>,
     State(_ctx): State<AppContext>,
+    LangEngine(lang): LangEngine,
 ) -> Result<Response> {
     format::render().view(
         &v,
         "auth/register/register_form.html",
-        data!({"options": WebsiteOptions::new().website(&website)}),
+        data!({"options": WebsiteOptions::new().website(&website).language(&lang)}),
     )
 }
 
@@ -875,11 +927,12 @@ pub async fn partial_register(
     ViewEngine(v): ViewEngine<TeraView>,
     Extension(website): Extension<Website>,
     State(_ctx): State<AppContext>,
+    LangEngine(lang): LangEngine,
 ) -> Result<Response> {
     format::render().view(
         &v,
         "auth/register/register_partial.html",
-        data!({"options": WebsiteOptions::new().website(&website)}),
+        data!({"options": WebsiteOptions::new().website(&website).language(&lang)}),
     )
 }
 
@@ -888,11 +941,12 @@ pub async fn get_forgot(
     ViewEngine(v): ViewEngine<TeraView>,
     Extension(website): Extension<Website>,
     State(_ctx): State<AppContext>,
+    LangEngine(lang): LangEngine,
 ) -> Result<Response> {
     format::render().view(
         &v,
         "auth/forgot/forgot_form.html",
-        data!({"options": WebsiteOptions::new().website(&website)}),
+        data!({"options": WebsiteOptions::new().website(&website).language(&lang)}),
     )
 }
 
@@ -901,11 +955,12 @@ pub async fn partial_forgot(
     ViewEngine(v): ViewEngine<TeraView>,
     Extension(website): Extension<Website>,
     State(_ctx): State<AppContext>,
+    LangEngine(lang): LangEngine,
 ) -> Result<Response> {
     format::render().view(
         &v,
         "auth/forgot/forgot_partial.html",
-        data!({"options": WebsiteOptions::new().website(&website)}),
+        data!({"options": WebsiteOptions::new().website(&website).language(&lang)}),
     )
 }
 
@@ -918,6 +973,7 @@ async fn api_forgot(
     ViewEngine(v): ViewEngine<TeraView>,
     State(ctx): State<AppContext>,
     Extension(website): Extension<Website>,
+    LangEngine(lang): LangEngine,
     Json(params): Json<ForgotParams>,
 ) -> Result<impl IntoResponse> {
     // let email_regex = get_allow_email_domain_re();
@@ -928,29 +984,30 @@ async fn api_forgot(
     //     );
     //     return views::auth::forgot(&v);
     // }
+    let website_options = WebsiteOptions::new().language(&lang);
     match params.validate() {
         Ok(()) => {}
         Err(_) => {
-            return views::auth::forgot(&v);
+            return views::auth::forgot(&v, &website_options);
         }
     };
 
     let Ok(user) = users::Model::find_by_email(&ctx.db, &params.email).await else {
         // we don't want to expose our users email. if the email is invalid we still
         // returning success to the caller
-        return views::auth::forgot(&v);
+        return views::auth::forgot(&v, &website_options);
     };
 
     let is_oauth = is_oauth(&ctx.db, user.id).await?;
     if is_oauth {
-        return views::auth::forgot(&v);
+        return views::auth::forgot(&v, &website_options);
     }
 
     let user = user.into_active_model().create_magic_link(&ctx.db).await?;
 
     AuthMailer::forgot_password(&ctx, &user, &website.website_basic_info).await?;
 
-    views::auth::forgot(&v)
+    views::auth::forgot(&v, &website_options)
 }
 
 #[debug_handler]
@@ -958,6 +1015,7 @@ pub async fn get_password(
     Path(token): Path<String>,
     ViewEngine(v): ViewEngine<TeraView>,
     Extension(website): Extension<Website>,
+    LangEngine(lang): LangEngine,
     State(ctx): State<AppContext>,
 ) -> Result<Response> {
     let Ok(user) = users::Model::find_by_magic_token(&ctx.db, &token).await else {
@@ -970,6 +1028,7 @@ pub async fn get_password(
             let auth_error = AuthError::default().general_msg("Password reset link expired");
             let website_options = WebsiteOptions::new()
                 .website(&website)
+                .language(&lang)
                 .auth_error(&auth_error);
             return format::render().view(
                 &v,
@@ -978,7 +1037,10 @@ pub async fn get_password(
             );
         }
     }
-    let website_options = WebsiteOptions::new().website(&website).message(&token);
+    let website_options = WebsiteOptions::new()
+        .website(&website)
+        .language(&lang)
+        .message(&token);
     format::render().view(
         &v,
         "auth/verify/password_reset.html",
@@ -992,13 +1054,17 @@ pub async fn set_password(
     ViewEngine(v): ViewEngine<TeraView>,
     Extension(website): Extension<Website>,
     State(ctx): State<AppContext>,
+    LangEngine(lang): LangEngine,
     Json(params): Json<PasswordMagicParams>,
 ) -> Result<Response> {
     let error_msg = match params.validate() {
         Ok(()) => AuthError::default(),
         Err(_) => {
             let error = AuthError::default().password_reset_error();
-            let website_options = WebsiteOptions::new().website(&website).auth_error(&error);
+            let website_options = WebsiteOptions::new()
+                .website(&website)
+                .language(&lang)
+                .auth_error(&error);
             return format::render().view(
                 &v,
                 "auth/verify/password_reset_partial.html",
@@ -1022,7 +1088,7 @@ pub async fn set_password(
         );
     }
 
-    let website_options = WebsiteOptions::new().website(&website);
+    let website_options = WebsiteOptions::new().website(&website).language(&lang);
 
     if user.account != Account::Website {
         user.into_active_model().clear_magic_link(&ctx.db).await?;

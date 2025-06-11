@@ -1,9 +1,12 @@
 {% set orders = options.orders %} {% set website = options.website %} {% set stripe_receipt_link =
-options.website.website_routes.payment.payment_stripe_url_from_order %}
+options.website.website_routes.payment.payment_stripe_url_from_order %} {% set lang =
+options.language %}
 <div class="container mx-auto px-4 py-8 max-w-7xl">
   <div class="mb-8 flex flex-col justify-center items-center">
-    <h1 class="text-3xl font-bold text-base-content">Order History</h1>
-    <p class="text-base-content/70 mt-2">View your recent purchases and order status</p>
+    <h1 class="text-3xl font-bold text-base-content">
+      {{ t(key="billing-page-title", lang=lang) }}
+    </h1>
+    <p class="text-base-content/70 mt-2">{{ t(key="billing-page-subtitle", lang=lang) }}</p>
   </div>
 
   <div class="space-y-6">
@@ -50,25 +53,33 @@ options.website.website_routes.payment.payment_stripe_url_from_order %}
                 class="btn btn-primary btn-sm"
                 onclick="document.getElementById('order-{{ order.pid }}').showModal()"
               >
-                View
+                {{ t(key="billing-button-view-order", lang=lang) }}
               </button>
               <dialog id="order-{{ order.pid }}" class="modal">
                 <div class="modal-box w-11/12 max-w-2xl">
-                  <h3 class="text-lg font-bold mb-4">Order Details</h3>
+                  <h3 class="text-lg font-bold mb-4">
+                    {{ t(key="billing-modal-title", lang=lang) }}
+                  </h3>
 
                   <div class="space-y-3">
                     {# --- Basic Info --- #}
                     <div class="flex justify-between items-center">
-                      <span class="font-medium text-gray-600">Order ID:</span>
+                      <span class="font-medium text-gray-600"
+                        >{{ t(key="billing-modal-label-order-id", lang=lang) }}</span
+                      >
                       <span class="font-mono text-sm">#{{ order.id }}</span>
                     </div>
                     <div class="flex justify-between items-center">
-                      <span class="font-medium text-gray-600">Date Placed:</span>
+                      <span class="font-medium text-gray-600"
+                        >{{ t(key="billing-modal-label-date", lang=lang) }}</span
+                      >
                       {# Adjust the format string as needed #}
                       <span>{{ order.created_at }}</span>
                     </div>
                     <div class="flex justify-between items-center">
-                      <span class="font-medium text-gray-600">Status:</span>
+                      <span class="font-medium text-gray-600"
+                        >{{ t(key="billing-modal-label-status", lang=lang) }}</span
+                      >
                       {# Use a helper to display status nicely, maybe add badges later #}
                       <span
                         class="badge {% if order.status == 'Completed' %}badge-success{% elif order.status == 'Pending' %}badge-warning{% elif order.status == 'Failed' %}badge-error{% else %}badge-ghost{% endif %}"
@@ -80,7 +91,9 @@ options.website.website_routes.payment.payment_stripe_url_from_order %}
                     {# --- Plan & Credits --- #}
                     <div class="divider my-1"></div>
                     <div class="flex justify-between items-center">
-                      <span class="font-medium text-gray-600">Plan:</span>
+                      <span class="font-medium text-gray-600"
+                        >{{ t(key="billing-modal-label-plan", lang=lang) }}</span
+                      >
                       {# Check if related plan data (e.g., name) is available #} {% if order.plan
                       and order.plan %}
                       <span>{{ order.plan | capitalize }}</span>
@@ -89,22 +102,30 @@ options.website.website_routes.payment.payment_stripe_url_from_order %}
                       {% endif %}
                     </div>
                     <div class="flex justify-between items-center">
-                      <span class="font-medium text-gray-600">Credits Purchased:</span>
+                      <span class="font-medium text-gray-600"
+                        >{{ t(key="billing-modal-label-credits", lang=lang) }}</span
+                      >
                       <span>{{ order.credit_amount }} Credits</span>
                     </div>
                     {% if order.model_amount > 0 %} {# Optionally show model amount if used #}
                     <div class="flex justify-between items-center">
-                      <span class="font-medium text-gray-600">Model Amount Purchased:</span>
+                      <span class="font-medium text-gray-600"
+                        >{{ t(key="billing-modal-label-models", lang=lang) }}</span
+                      >
                       <span>{{ order.model_amount }} Models</span>
                     </div>
                     {% endif %} {# --- Payment --- #}
                     <div class="divider my-1"></div>
                     <div class="flex justify-between items-center">
-                      <span class="font-medium text-gray-600">Amount Paid:</span>
+                      <span class="font-medium text-gray-600"
+                        >{{ t(key="billing-modal-label-amount", lang=lang) }}</span
+                      >
                       <span class="font-semibold"> ${{ order.payment_amount }} </span>
                     </div>
                     <div class="flex justify-between items-center">
-                      <span class="font-medium text-gray-600">Payment ID:</span>
+                      <span class="font-medium text-gray-600"
+                        >{{ t(key="billing-modal-label-payment-id", lang=lang) }}</span
+                      >
                       {# Shorten or hide if too technical, useful for support #}
                       <span class="font-mono text-xs" title="{{ order.pid }}"
                         >{{ order.pid | truncate(length=20, end="...") }}</span
@@ -120,7 +141,7 @@ options.website.website_routes.payment.payment_stripe_url_from_order %}
                       onclick="fetchAndOpenReceipt('{{ stripe_receipt_link | safe }}', '{{ order.pid }}')"
                       class="btn btn-primary btn-sm"
                     >
-                      View Receipt
+                      {{ t(key="billing-modal-button-view-receipt", lang=lang) }}
                     </a>
                     {% endif %}
                   </div>
@@ -128,7 +149,7 @@ options.website.website_routes.payment.payment_stripe_url_from_order %}
 
                 {# Click outside to close backdrop #}
                 <form method="dialog" class="modal-backdrop">
-                  <button>close</button>
+                  <button>{{ t(key="billing-modal-button-close", lang=lang) }}</button>
                 </form>
               </dialog>
               {% endif %}
@@ -141,18 +162,22 @@ options.website.website_routes.payment.payment_stripe_url_from_order %}
     <div
       class="text-center text-base-content/60 p-10 bg-base-100 rounded-lg border border-base-300/50"
     >
-      No orders found.
+      {{ t(key="billing-empty-state", lang=lang) }}
     </div>
     {% endif %}
   </div>
 
   {% if orders and orders | length >= 5 %}
   <div class="flex items-center justify-center mt-8">
-    <button class="btn btn-primary w-full sm:w-auto">Load more</button>
+    <button class="btn btn-primary w-full sm:w-auto">
+      {{ t(key="billing-button-load-more", lang=lang) }}
+    </button>
   </div>
   {% endif %}
 
   <script>
-    updatePageTitle("{% block title %}ReplicaPixel | Billing{% endblock title %}");
+    updatePageTitle(
+      "{% block title %}{{ t(key='billing-script-page-title', lang=lang) }}{% endblock title %}"
+    );
   </script>
 </div>
