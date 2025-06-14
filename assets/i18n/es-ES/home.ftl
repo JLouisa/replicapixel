@@ -156,3 +156,16 @@ footer-copyright-suffix = . Todos los derechos reservados.
 footer-bottom-link-cookie = Cookies
 footer-bottom-link-terms = Términos y Condiciones
 footer-bottom-link-privacy = Política de Privacidad
+
+## =================================
+## Validate
+## ==== Pricing Button Validate
+studio-button-short = Estudio
+studio-button-long = Hacer Fotos
+## ==== Pricing Plan CTA Buttons
+pricing-cta-basic = Elegir Basic
+pricing-cta-max = Elegir Max
+pricing-cta-premium = Elegir Premium
+## ==== Common CTA / Status
+cta-take-photos = Hacer Fotos
+cta-getting-started = Primeros pasos

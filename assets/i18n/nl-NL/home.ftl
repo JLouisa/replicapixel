@@ -156,3 +156,16 @@ footer-copyright-suffix = . Alle rechten voorbehouden.
 footer-bottom-link-cookie = Cookies
 footer-bottom-link-terms = Algemene Voorwaarden
 footer-bottom-link-privacy = Privacybeleid
+
+## =================================
+## Validate
+## ==== Pricing Button Validate
+studio-button-short = Studio
+studio-button-long = Foto's maken
+## ==== Pricing Plan CTA Buttons
+pricing-cta-basic = Kies Basic
+pricing-cta-max = Kies Max
+pricing-cta-premium = Kies Premium
+## ==== Common CTA / Status
+cta-take-photos = Foto's maken
+cta-getting-started = Aan de slag
