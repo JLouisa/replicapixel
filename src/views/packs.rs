@@ -4,7 +4,10 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     controllers::{dashboard::WebsiteOptions, home::WebGallery},
-    models::{packs::PackModelList, PackModel},
+    models::{
+        packs::{PackModelList, PackTranslated, PackTranslatedList},
+        PackModel,
+    },
 };
 
 pub fn get_all_packs(
@@ -80,6 +83,25 @@ impl From<PackModel> for PackView {
         }
     }
 }
+impl From<PackTranslated> for PackView {
+    fn from(p: PackTranslated) -> Self {
+        Self {
+            id: p.id,
+            pid: p.pid,
+            title: p.title,
+            title_url: p.title_url,
+            short_description: p.short_description,
+            full_description: p.full_description,
+            credits: p.credits,
+            num_images: p.num_images,
+            main_image: p.main_image,
+            used: p.used,
+            is_popular: p.popular,
+            images: p.images,
+            features: p.features,
+        }
+    }
+}
 impl PackView {
     pub fn create_item_groups(&self) -> WebGallery {
         let list = self.images.clone().unwrap();
@@ -118,7 +140,16 @@ impl PackViewList {
         self.0.clone()
     }
 }
-
+impl Default for PackViewList {
+    fn default() -> Self {
+        Self(vec![])
+    }
+}
+impl From<PackTranslatedList> for PackViewList {
+    fn from(p: PackTranslatedList) -> Self {
+        Self(p.0.into_iter().map(|x| x.into()).collect())
+    }
+}
 impl From<PackModelList> for PackViewList {
     fn from(p: PackModelList) -> Self {
         Self(p.0.into_iter().map(|x| x.into()).collect())

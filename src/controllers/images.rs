@@ -19,7 +19,7 @@ use crate::models::images::{
 };
 use crate::models::join::user_credits_models::load_user_and_one_training_model;
 use crate::models::join::user_image::load_user_and_image;
-use crate::models::packs::PacksDomain;
+use crate::models::packs::PackDomain;
 use crate::models::users::UserPid;
 use crate::models::{ImageActiveModel, ImageModel, TrainingModelModel, UserCreditModel, UserModel};
 use crate::service::aws::s3::{AwsS3, S3Folders, S3Key};
@@ -145,7 +145,7 @@ pub trait ImageGenerationTrait {
     fn quality_model(&self) -> WebhookPayload;
     fn process(self, model: &Option<TrainingModelModel>, user_pid: &UserModel) -> ImageNewList;
 }
-impl ImageGenerationTrait for PacksDomain {
+impl ImageGenerationTrait for PackDomain {
     fn formatted_prompt(&self, _model: &TrainingModelModel) -> UserPrompt {
         let prompt = self.pack_prompts.clone();
         UserPrompt::new(prompt)

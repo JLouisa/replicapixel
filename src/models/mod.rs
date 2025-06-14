@@ -19,6 +19,11 @@ pub type PackActiveModel = packs::ActiveModel;
 pub type PackModel = packs::Model;
 pub type PackEntity = packs::Entity;
 
+pub mod packs_translations;
+pub type PackTranslationActiveModel = packs_translations::ActiveModel;
+pub type PackTranslationModel = packs_translations::Model;
+pub type PackTranslationEntity = packs_translations::Entity;
+
 pub mod transactions;
 pub type TransactionActiveModel = transactions::ActiveModel;
 pub type TransactionModel = transactions::Model;
@@ -37,6 +42,11 @@ pub mod plans;
 pub type PlanActiveModel = plans::ActiveModel;
 pub type PlanModel = plans::Model;
 pub type PlanEntity = plans::Entity;
+
+pub mod plans_translations;
+pub type PlanTranslationActiveModel = plans_translations::ActiveModel;
+pub type PlanTranslationModel = plans_translations::Model;
+pub type PlanTranslationEntity = plans_translations::Entity;
 
 pub mod handled_stripe_events;
 pub type StripeEventModel = handled_stripe_events::Model;

@@ -44,15 +44,25 @@ export type Images = $Result.DefaultSelection<Prisma.$ImagesPayload>
  */
 export type Plans = $Result.DefaultSelection<Prisma.$PlansPayload>
 /**
- * Model Transactions
+ * Model Plans_translations
  * 
  */
-export type Transactions = $Result.DefaultSelection<Prisma.$TransactionsPayload>
+export type Plans_translations = $Result.DefaultSelection<Prisma.$Plans_translationsPayload>
 /**
  * Model Packs
  * 
  */
 export type Packs = $Result.DefaultSelection<Prisma.$PacksPayload>
+/**
+ * Model Packs_translations
+ * 
+ */
+export type Packs_translations = $Result.DefaultSelection<Prisma.$Packs_translationsPayload>
+/**
+ * Model Transactions
+ * 
+ */
+export type Transactions = $Result.DefaultSelection<Prisma.$TransactionsPayload>
 /**
  * Model HandledStripeEvent
  * 
@@ -482,14 +492,14 @@ export class PrismaClient<
   get plans(): Prisma.PlansDelegate<ExtArgs, ClientOptions>;
 
   /**
-   * `prisma.transactions`: Exposes CRUD operations for the **Transactions** model.
+   * `prisma.plans_translations`: Exposes CRUD operations for the **Plans_translations** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more Transactions
-    * const transactions = await prisma.transactions.findMany()
+    * // Fetch zero or more Plans_translations
+    * const plans_translations = await prisma.plans_translations.findMany()
     * ```
     */
-  get transactions(): Prisma.TransactionsDelegate<ExtArgs, ClientOptions>;
+  get plans_translations(): Prisma.Plans_translationsDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.packs`: Exposes CRUD operations for the **Packs** model.
@@ -500,6 +510,26 @@ export class PrismaClient<
     * ```
     */
   get packs(): Prisma.PacksDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.packs_translations`: Exposes CRUD operations for the **Packs_translations** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Packs_translations
+    * const packs_translations = await prisma.packs_translations.findMany()
+    * ```
+    */
+  get packs_translations(): Prisma.Packs_translationsDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.transactions`: Exposes CRUD operations for the **Transactions** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Transactions
+    * const transactions = await prisma.transactions.findMany()
+    * ```
+    */
+  get transactions(): Prisma.TransactionsDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.handledStripeEvent`: Exposes CRUD operations for the **HandledStripeEvent** model.
@@ -1016,8 +1046,10 @@ export namespace Prisma {
     UserCredits: 'UserCredits',
     Images: 'Images',
     Plans: 'Plans',
-    Transactions: 'Transactions',
+    Plans_translations: 'Plans_translations',
     Packs: 'Packs',
+    Packs_translations: 'Packs_translations',
+    Transactions: 'Transactions',
     HandledStripeEvent: 'HandledStripeEvent',
     HandledFalEvent: 'HandledFalEvent',
     seaql_migrations: 'seaql_migrations',
@@ -1043,7 +1075,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "users" | "oAuth2Session" | "trainingModels" | "userCredits" | "images" | "plans" | "transactions" | "packs" | "handledStripeEvent" | "handledFalEvent" | "seaql_migrations" | "notification" | "userSettings" | "featureRequest" | "featureVote"
+      modelProps: "users" | "oAuth2Session" | "trainingModels" | "userCredits" | "images" | "plans" | "plans_translations" | "packs" | "packs_translations" | "transactions" | "handledStripeEvent" | "handledFalEvent" | "seaql_migrations" | "notification" | "userSettings" | "featureRequest" | "featureVote"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1491,77 +1523,77 @@ export namespace Prisma {
           }
         }
       }
-      Transactions: {
-        payload: Prisma.$TransactionsPayload<ExtArgs>
-        fields: Prisma.TransactionsFieldRefs
+      Plans_translations: {
+        payload: Prisma.$Plans_translationsPayload<ExtArgs>
+        fields: Prisma.Plans_translationsFieldRefs
         operations: {
           findUnique: {
-            args: Prisma.TransactionsFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$TransactionsPayload> | null
+            args: Prisma.Plans_translationsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Plans_translationsPayload> | null
           }
           findUniqueOrThrow: {
-            args: Prisma.TransactionsFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$TransactionsPayload>
+            args: Prisma.Plans_translationsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Plans_translationsPayload>
           }
           findFirst: {
-            args: Prisma.TransactionsFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$TransactionsPayload> | null
+            args: Prisma.Plans_translationsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Plans_translationsPayload> | null
           }
           findFirstOrThrow: {
-            args: Prisma.TransactionsFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$TransactionsPayload>
+            args: Prisma.Plans_translationsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Plans_translationsPayload>
           }
           findMany: {
-            args: Prisma.TransactionsFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$TransactionsPayload>[]
+            args: Prisma.Plans_translationsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Plans_translationsPayload>[]
           }
           create: {
-            args: Prisma.TransactionsCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$TransactionsPayload>
+            args: Prisma.Plans_translationsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Plans_translationsPayload>
           }
           createMany: {
-            args: Prisma.TransactionsCreateManyArgs<ExtArgs>
+            args: Prisma.Plans_translationsCreateManyArgs<ExtArgs>
             result: BatchPayload
           }
           createManyAndReturn: {
-            args: Prisma.TransactionsCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$TransactionsPayload>[]
+            args: Prisma.Plans_translationsCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Plans_translationsPayload>[]
           }
           delete: {
-            args: Prisma.TransactionsDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$TransactionsPayload>
+            args: Prisma.Plans_translationsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Plans_translationsPayload>
           }
           update: {
-            args: Prisma.TransactionsUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$TransactionsPayload>
+            args: Prisma.Plans_translationsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Plans_translationsPayload>
           }
           deleteMany: {
-            args: Prisma.TransactionsDeleteManyArgs<ExtArgs>
+            args: Prisma.Plans_translationsDeleteManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateMany: {
-            args: Prisma.TransactionsUpdateManyArgs<ExtArgs>
+            args: Prisma.Plans_translationsUpdateManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateManyAndReturn: {
-            args: Prisma.TransactionsUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$TransactionsPayload>[]
+            args: Prisma.Plans_translationsUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Plans_translationsPayload>[]
           }
           upsert: {
-            args: Prisma.TransactionsUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$TransactionsPayload>
+            args: Prisma.Plans_translationsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Plans_translationsPayload>
           }
           aggregate: {
-            args: Prisma.TransactionsAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateTransactions>
+            args: Prisma.Plans_translationsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePlans_translations>
           }
           groupBy: {
-            args: Prisma.TransactionsGroupByArgs<ExtArgs>
-            result: $Utils.Optional<TransactionsGroupByOutputType>[]
+            args: Prisma.Plans_translationsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Plans_translationsGroupByOutputType>[]
           }
           count: {
-            args: Prisma.TransactionsCountArgs<ExtArgs>
-            result: $Utils.Optional<TransactionsCountAggregateOutputType> | number
+            args: Prisma.Plans_translationsCountArgs<ExtArgs>
+            result: $Utils.Optional<Plans_translationsCountAggregateOutputType> | number
           }
         }
       }
@@ -1636,6 +1668,154 @@ export namespace Prisma {
           count: {
             args: Prisma.PacksCountArgs<ExtArgs>
             result: $Utils.Optional<PacksCountAggregateOutputType> | number
+          }
+        }
+      }
+      Packs_translations: {
+        payload: Prisma.$Packs_translationsPayload<ExtArgs>
+        fields: Prisma.Packs_translationsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.Packs_translationsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Packs_translationsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.Packs_translationsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Packs_translationsPayload>
+          }
+          findFirst: {
+            args: Prisma.Packs_translationsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Packs_translationsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.Packs_translationsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Packs_translationsPayload>
+          }
+          findMany: {
+            args: Prisma.Packs_translationsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Packs_translationsPayload>[]
+          }
+          create: {
+            args: Prisma.Packs_translationsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Packs_translationsPayload>
+          }
+          createMany: {
+            args: Prisma.Packs_translationsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.Packs_translationsCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Packs_translationsPayload>[]
+          }
+          delete: {
+            args: Prisma.Packs_translationsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Packs_translationsPayload>
+          }
+          update: {
+            args: Prisma.Packs_translationsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Packs_translationsPayload>
+          }
+          deleteMany: {
+            args: Prisma.Packs_translationsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.Packs_translationsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.Packs_translationsUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Packs_translationsPayload>[]
+          }
+          upsert: {
+            args: Prisma.Packs_translationsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Packs_translationsPayload>
+          }
+          aggregate: {
+            args: Prisma.Packs_translationsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePacks_translations>
+          }
+          groupBy: {
+            args: Prisma.Packs_translationsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Packs_translationsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.Packs_translationsCountArgs<ExtArgs>
+            result: $Utils.Optional<Packs_translationsCountAggregateOutputType> | number
+          }
+        }
+      }
+      Transactions: {
+        payload: Prisma.$TransactionsPayload<ExtArgs>
+        fields: Prisma.TransactionsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TransactionsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TransactionsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionsPayload>
+          }
+          findFirst: {
+            args: Prisma.TransactionsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TransactionsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionsPayload>
+          }
+          findMany: {
+            args: Prisma.TransactionsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionsPayload>[]
+          }
+          create: {
+            args: Prisma.TransactionsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionsPayload>
+          }
+          createMany: {
+            args: Prisma.TransactionsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.TransactionsCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionsPayload>[]
+          }
+          delete: {
+            args: Prisma.TransactionsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionsPayload>
+          }
+          update: {
+            args: Prisma.TransactionsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionsPayload>
+          }
+          deleteMany: {
+            args: Prisma.TransactionsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TransactionsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.TransactionsUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionsPayload>[]
+          }
+          upsert: {
+            args: Prisma.TransactionsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionsPayload>
+          }
+          aggregate: {
+            args: Prisma.TransactionsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTransactions>
+          }
+          groupBy: {
+            args: Prisma.TransactionsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TransactionsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TransactionsCountArgs<ExtArgs>
+            result: $Utils.Optional<TransactionsCountAggregateOutputType> | number
           }
         }
       }
@@ -2247,8 +2427,10 @@ export namespace Prisma {
     userCredits?: UserCreditsOmit
     images?: ImagesOmit
     plans?: PlansOmit
-    transactions?: TransactionsOmit
+    plans_translations?: Plans_translationsOmit
     packs?: PacksOmit
+    packs_translations?: Packs_translationsOmit
+    transactions?: TransactionsOmit
     handledStripeEvent?: HandledStripeEventOmit
     handledFalEvent?: HandledFalEventOmit
     seaql_migrations?: seaql_migrationsOmit
@@ -2475,10 +2657,12 @@ export namespace Prisma {
    */
 
   export type PlansCountOutputType = {
+    translations: number
     transactions: number
   }
 
   export type PlansCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    translations?: boolean | PlansCountOutputTypeCountTranslationsArgs
     transactions?: boolean | PlansCountOutputTypeCountTransactionsArgs
   }
 
@@ -2496,6 +2680,13 @@ export namespace Prisma {
   /**
    * PlansCountOutputType without action
    */
+  export type PlansCountOutputTypeCountTranslationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: Plans_translationsWhereInput
+  }
+
+  /**
+   * PlansCountOutputType without action
+   */
   export type PlansCountOutputTypeCountTransactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TransactionsWhereInput
   }
@@ -2507,10 +2698,12 @@ export namespace Prisma {
 
   export type PacksCountOutputType = {
     Images: number
+    translations: number
   }
 
   export type PacksCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     Images?: boolean | PacksCountOutputTypeCountImagesArgs
+    translations?: boolean | PacksCountOutputTypeCountTranslationsArgs
   }
 
   // Custom InputTypes
@@ -2529,6 +2722,13 @@ export namespace Prisma {
    */
   export type PacksCountOutputTypeCountImagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ImagesWhereInput
+  }
+
+  /**
+   * PacksCountOutputType without action
+   */
+  export type PacksCountOutputTypeCountTranslationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: Packs_translationsWhereInput
   }
 
 
@@ -9082,50 +9282,50 @@ export namespace Prisma {
   export type PlansMinAggregateOutputType = {
     id: number | null
     pid: string | null
-    name: string | null
     plan_name: $Enums.PlanNames | null
     credit_amount: number | null
     model_amount: number | null
     price_cents: bigint | null
     stripe_price_id: string | null
-    subtitle: string | null
-    cta: string | null
+    is_popular: boolean | null
     created_at: Date | null
     updated_at: Date | null
-    is_popular: boolean | null
+    name: string | null
+    subtitle: string | null
+    cta: string | null
   }
 
   export type PlansMaxAggregateOutputType = {
     id: number | null
     pid: string | null
-    name: string | null
     plan_name: $Enums.PlanNames | null
     credit_amount: number | null
     model_amount: number | null
     price_cents: bigint | null
     stripe_price_id: string | null
-    subtitle: string | null
-    cta: string | null
+    is_popular: boolean | null
     created_at: Date | null
     updated_at: Date | null
-    is_popular: boolean | null
+    name: string | null
+    subtitle: string | null
+    cta: string | null
   }
 
   export type PlansCountAggregateOutputType = {
     id: number
     pid: number
-    name: number
     plan_name: number
     credit_amount: number
     model_amount: number
     price_cents: number
     stripe_price_id: number
+    is_popular: number
+    created_at: number
+    updated_at: number
+    name: number
     subtitle: number
     features: number
     cta: number
-    created_at: number
-    updated_at: number
-    is_popular: number
     _all: number
   }
 
@@ -9147,50 +9347,50 @@ export namespace Prisma {
   export type PlansMinAggregateInputType = {
     id?: true
     pid?: true
-    name?: true
     plan_name?: true
     credit_amount?: true
     model_amount?: true
     price_cents?: true
     stripe_price_id?: true
-    subtitle?: true
-    cta?: true
+    is_popular?: true
     created_at?: true
     updated_at?: true
-    is_popular?: true
+    name?: true
+    subtitle?: true
+    cta?: true
   }
 
   export type PlansMaxAggregateInputType = {
     id?: true
     pid?: true
-    name?: true
     plan_name?: true
     credit_amount?: true
     model_amount?: true
     price_cents?: true
     stripe_price_id?: true
-    subtitle?: true
-    cta?: true
+    is_popular?: true
     created_at?: true
     updated_at?: true
-    is_popular?: true
+    name?: true
+    subtitle?: true
+    cta?: true
   }
 
   export type PlansCountAggregateInputType = {
     id?: true
     pid?: true
-    name?: true
     plan_name?: true
     credit_amount?: true
     model_amount?: true
     price_cents?: true
     stripe_price_id?: true
+    is_popular?: true
+    created_at?: true
+    updated_at?: true
+    name?: true
     subtitle?: true
     features?: true
     cta?: true
-    created_at?: true
-    updated_at?: true
-    is_popular?: true
     _all?: true
   }
 
@@ -9283,18 +9483,18 @@ export namespace Prisma {
   export type PlansGroupByOutputType = {
     id: number
     pid: string
-    name: string
     plan_name: $Enums.PlanNames
     credit_amount: number
     model_amount: number
     price_cents: bigint
     stripe_price_id: string
+    is_popular: boolean
+    created_at: Date
+    updated_at: Date
+    name: string
     subtitle: string
     features: string[]
     cta: string
-    created_at: Date
-    updated_at: Date
-    is_popular: boolean
     _count: PlansCountAggregateOutputType | null
     _avg: PlansAvgAggregateOutputType | null
     _sum: PlansSumAggregateOutputType | null
@@ -9319,18 +9519,19 @@ export namespace Prisma {
   export type PlansSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     pid?: boolean
-    name?: boolean
     plan_name?: boolean
     credit_amount?: boolean
     model_amount?: boolean
     price_cents?: boolean
     stripe_price_id?: boolean
+    is_popular?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    name?: boolean
     subtitle?: boolean
     features?: boolean
     cta?: boolean
-    created_at?: boolean
-    updated_at?: boolean
-    is_popular?: boolean
+    translations?: boolean | Plans$translationsArgs<ExtArgs>
     transactions?: boolean | Plans$transactionsArgs<ExtArgs>
     _count?: boolean | PlansCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["plans"]>
@@ -9338,56 +9539,57 @@ export namespace Prisma {
   export type PlansSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     pid?: boolean
-    name?: boolean
     plan_name?: boolean
     credit_amount?: boolean
     model_amount?: boolean
     price_cents?: boolean
     stripe_price_id?: boolean
+    is_popular?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    name?: boolean
     subtitle?: boolean
     features?: boolean
     cta?: boolean
-    created_at?: boolean
-    updated_at?: boolean
-    is_popular?: boolean
   }, ExtArgs["result"]["plans"]>
 
   export type PlansSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     pid?: boolean
-    name?: boolean
     plan_name?: boolean
     credit_amount?: boolean
     model_amount?: boolean
     price_cents?: boolean
     stripe_price_id?: boolean
+    is_popular?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    name?: boolean
     subtitle?: boolean
     features?: boolean
     cta?: boolean
-    created_at?: boolean
-    updated_at?: boolean
-    is_popular?: boolean
   }, ExtArgs["result"]["plans"]>
 
   export type PlansSelectScalar = {
     id?: boolean
     pid?: boolean
-    name?: boolean
     plan_name?: boolean
     credit_amount?: boolean
     model_amount?: boolean
     price_cents?: boolean
     stripe_price_id?: boolean
+    is_popular?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    name?: boolean
     subtitle?: boolean
     features?: boolean
     cta?: boolean
-    created_at?: boolean
-    updated_at?: boolean
-    is_popular?: boolean
   }
 
-  export type PlansOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pid" | "name" | "plan_name" | "credit_amount" | "model_amount" | "price_cents" | "stripe_price_id" | "subtitle" | "features" | "cta" | "created_at" | "updated_at" | "is_popular", ExtArgs["result"]["plans"]>
+  export type PlansOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pid" | "plan_name" | "credit_amount" | "model_amount" | "price_cents" | "stripe_price_id" | "is_popular" | "created_at" | "updated_at" | "name" | "subtitle" | "features" | "cta", ExtArgs["result"]["plans"]>
   export type PlansInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    translations?: boolean | Plans$translationsArgs<ExtArgs>
     transactions?: boolean | Plans$transactionsArgs<ExtArgs>
     _count?: boolean | PlansCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -9397,23 +9599,24 @@ export namespace Prisma {
   export type $PlansPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Plans"
     objects: {
+      translations: Prisma.$Plans_translationsPayload<ExtArgs>[]
       transactions: Prisma.$TransactionsPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
       pid: string
-      name: string
       plan_name: $Enums.PlanNames
       credit_amount: number
       model_amount: number
       price_cents: bigint
       stripe_price_id: string
+      is_popular: boolean
+      created_at: Date
+      updated_at: Date
+      name: string
       subtitle: string
       features: string[]
       cta: string
-      created_at: Date
-      updated_at: Date
-      is_popular: boolean
     }, ExtArgs["result"]["plans"]>
     composites: {}
   }
@@ -9808,6 +10011,7 @@ export namespace Prisma {
    */
   export interface Prisma__PlansClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    translations<T extends Plans$translationsArgs<ExtArgs> = {}>(args?: Subset<T, Plans$translationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$Plans_translationsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     transactions<T extends Plans$transactionsArgs<ExtArgs> = {}>(args?: Subset<T, Plans$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -9840,18 +10044,18 @@ export namespace Prisma {
   interface PlansFieldRefs {
     readonly id: FieldRef<"Plans", 'Int'>
     readonly pid: FieldRef<"Plans", 'String'>
-    readonly name: FieldRef<"Plans", 'String'>
     readonly plan_name: FieldRef<"Plans", 'PlanNames'>
     readonly credit_amount: FieldRef<"Plans", 'Int'>
     readonly model_amount: FieldRef<"Plans", 'Int'>
     readonly price_cents: FieldRef<"Plans", 'BigInt'>
     readonly stripe_price_id: FieldRef<"Plans", 'String'>
+    readonly is_popular: FieldRef<"Plans", 'Boolean'>
+    readonly created_at: FieldRef<"Plans", 'DateTime'>
+    readonly updated_at: FieldRef<"Plans", 'DateTime'>
+    readonly name: FieldRef<"Plans", 'String'>
     readonly subtitle: FieldRef<"Plans", 'String'>
     readonly features: FieldRef<"Plans", 'String[]'>
     readonly cta: FieldRef<"Plans", 'String'>
-    readonly created_at: FieldRef<"Plans", 'DateTime'>
-    readonly updated_at: FieldRef<"Plans", 'DateTime'>
-    readonly is_popular: FieldRef<"Plans", 'Boolean'>
   }
     
 
@@ -10240,6 +10444,30 @@ export namespace Prisma {
   }
 
   /**
+   * Plans.translations
+   */
+  export type Plans$translationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Plans_translations
+     */
+    select?: Plans_translationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Plans_translations
+     */
+    omit?: Plans_translationsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Plans_translationsInclude<ExtArgs> | null
+    where?: Plans_translationsWhereInput
+    orderBy?: Plans_translationsOrderByWithRelationInput | Plans_translationsOrderByWithRelationInput[]
+    cursor?: Plans_translationsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Plans_translationsScalarFieldEnum | Plans_translationsScalarFieldEnum[]
+  }
+
+  /**
    * Plans.transactions
    */
   export type Plans$transactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -10279,6 +10507,3607 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: PlansInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Plans_translations
+   */
+
+  export type AggregatePlans_translations = {
+    _count: Plans_translationsCountAggregateOutputType | null
+    _avg: Plans_translationsAvgAggregateOutputType | null
+    _sum: Plans_translationsSumAggregateOutputType | null
+    _min: Plans_translationsMinAggregateOutputType | null
+    _max: Plans_translationsMaxAggregateOutputType | null
+  }
+
+  export type Plans_translationsAvgAggregateOutputType = {
+    id: number | null
+    plan_id: number | null
+  }
+
+  export type Plans_translationsSumAggregateOutputType = {
+    id: number | null
+    plan_id: number | null
+  }
+
+  export type Plans_translationsMinAggregateOutputType = {
+    id: number | null
+    plan_id: number | null
+    language: $Enums.Language | null
+    name: string | null
+    subtitle: string | null
+    cta: string | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type Plans_translationsMaxAggregateOutputType = {
+    id: number | null
+    plan_id: number | null
+    language: $Enums.Language | null
+    name: string | null
+    subtitle: string | null
+    cta: string | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type Plans_translationsCountAggregateOutputType = {
+    id: number
+    plan_id: number
+    language: number
+    name: number
+    subtitle: number
+    features: number
+    cta: number
+    created_at: number
+    updated_at: number
+    _all: number
+  }
+
+
+  export type Plans_translationsAvgAggregateInputType = {
+    id?: true
+    plan_id?: true
+  }
+
+  export type Plans_translationsSumAggregateInputType = {
+    id?: true
+    plan_id?: true
+  }
+
+  export type Plans_translationsMinAggregateInputType = {
+    id?: true
+    plan_id?: true
+    language?: true
+    name?: true
+    subtitle?: true
+    cta?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type Plans_translationsMaxAggregateInputType = {
+    id?: true
+    plan_id?: true
+    language?: true
+    name?: true
+    subtitle?: true
+    cta?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type Plans_translationsCountAggregateInputType = {
+    id?: true
+    plan_id?: true
+    language?: true
+    name?: true
+    subtitle?: true
+    features?: true
+    cta?: true
+    created_at?: true
+    updated_at?: true
+    _all?: true
+  }
+
+  export type Plans_translationsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Plans_translations to aggregate.
+     */
+    where?: Plans_translationsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Plans_translations to fetch.
+     */
+    orderBy?: Plans_translationsOrderByWithRelationInput | Plans_translationsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: Plans_translationsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Plans_translations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Plans_translations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Plans_translations
+    **/
+    _count?: true | Plans_translationsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: Plans_translationsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: Plans_translationsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Plans_translationsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Plans_translationsMaxAggregateInputType
+  }
+
+  export type GetPlans_translationsAggregateType<T extends Plans_translationsAggregateArgs> = {
+        [P in keyof T & keyof AggregatePlans_translations]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePlans_translations[P]>
+      : GetScalarType<T[P], AggregatePlans_translations[P]>
+  }
+
+
+
+
+  export type Plans_translationsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: Plans_translationsWhereInput
+    orderBy?: Plans_translationsOrderByWithAggregationInput | Plans_translationsOrderByWithAggregationInput[]
+    by: Plans_translationsScalarFieldEnum[] | Plans_translationsScalarFieldEnum
+    having?: Plans_translationsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Plans_translationsCountAggregateInputType | true
+    _avg?: Plans_translationsAvgAggregateInputType
+    _sum?: Plans_translationsSumAggregateInputType
+    _min?: Plans_translationsMinAggregateInputType
+    _max?: Plans_translationsMaxAggregateInputType
+  }
+
+  export type Plans_translationsGroupByOutputType = {
+    id: number
+    plan_id: number
+    language: $Enums.Language
+    name: string
+    subtitle: string
+    features: string[]
+    cta: string
+    created_at: Date
+    updated_at: Date
+    _count: Plans_translationsCountAggregateOutputType | null
+    _avg: Plans_translationsAvgAggregateOutputType | null
+    _sum: Plans_translationsSumAggregateOutputType | null
+    _min: Plans_translationsMinAggregateOutputType | null
+    _max: Plans_translationsMaxAggregateOutputType | null
+  }
+
+  type GetPlans_translationsGroupByPayload<T extends Plans_translationsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Plans_translationsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Plans_translationsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Plans_translationsGroupByOutputType[P]>
+            : GetScalarType<T[P], Plans_translationsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type Plans_translationsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    plan_id?: boolean
+    language?: boolean
+    name?: boolean
+    subtitle?: boolean
+    features?: boolean
+    cta?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    plan?: boolean | PlansDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["plans_translations"]>
+
+  export type Plans_translationsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    plan_id?: boolean
+    language?: boolean
+    name?: boolean
+    subtitle?: boolean
+    features?: boolean
+    cta?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    plan?: boolean | PlansDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["plans_translations"]>
+
+  export type Plans_translationsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    plan_id?: boolean
+    language?: boolean
+    name?: boolean
+    subtitle?: boolean
+    features?: boolean
+    cta?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    plan?: boolean | PlansDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["plans_translations"]>
+
+  export type Plans_translationsSelectScalar = {
+    id?: boolean
+    plan_id?: boolean
+    language?: boolean
+    name?: boolean
+    subtitle?: boolean
+    features?: boolean
+    cta?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }
+
+  export type Plans_translationsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "plan_id" | "language" | "name" | "subtitle" | "features" | "cta" | "created_at" | "updated_at", ExtArgs["result"]["plans_translations"]>
+  export type Plans_translationsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    plan?: boolean | PlansDefaultArgs<ExtArgs>
+  }
+  export type Plans_translationsIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    plan?: boolean | PlansDefaultArgs<ExtArgs>
+  }
+  export type Plans_translationsIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    plan?: boolean | PlansDefaultArgs<ExtArgs>
+  }
+
+  export type $Plans_translationsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Plans_translations"
+    objects: {
+      plan: Prisma.$PlansPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      plan_id: number
+      language: $Enums.Language
+      name: string
+      subtitle: string
+      features: string[]
+      cta: string
+      created_at: Date
+      updated_at: Date
+    }, ExtArgs["result"]["plans_translations"]>
+    composites: {}
+  }
+
+  type Plans_translationsGetPayload<S extends boolean | null | undefined | Plans_translationsDefaultArgs> = $Result.GetResult<Prisma.$Plans_translationsPayload, S>
+
+  type Plans_translationsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<Plans_translationsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Plans_translationsCountAggregateInputType | true
+    }
+
+  export interface Plans_translationsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Plans_translations'], meta: { name: 'Plans_translations' } }
+    /**
+     * Find zero or one Plans_translations that matches the filter.
+     * @param {Plans_translationsFindUniqueArgs} args - Arguments to find a Plans_translations
+     * @example
+     * // Get one Plans_translations
+     * const plans_translations = await prisma.plans_translations.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends Plans_translationsFindUniqueArgs>(args: SelectSubset<T, Plans_translationsFindUniqueArgs<ExtArgs>>): Prisma__Plans_translationsClient<$Result.GetResult<Prisma.$Plans_translationsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Plans_translations that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {Plans_translationsFindUniqueOrThrowArgs} args - Arguments to find a Plans_translations
+     * @example
+     * // Get one Plans_translations
+     * const plans_translations = await prisma.plans_translations.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends Plans_translationsFindUniqueOrThrowArgs>(args: SelectSubset<T, Plans_translationsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__Plans_translationsClient<$Result.GetResult<Prisma.$Plans_translationsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Plans_translations that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Plans_translationsFindFirstArgs} args - Arguments to find a Plans_translations
+     * @example
+     * // Get one Plans_translations
+     * const plans_translations = await prisma.plans_translations.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends Plans_translationsFindFirstArgs>(args?: SelectSubset<T, Plans_translationsFindFirstArgs<ExtArgs>>): Prisma__Plans_translationsClient<$Result.GetResult<Prisma.$Plans_translationsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Plans_translations that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Plans_translationsFindFirstOrThrowArgs} args - Arguments to find a Plans_translations
+     * @example
+     * // Get one Plans_translations
+     * const plans_translations = await prisma.plans_translations.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends Plans_translationsFindFirstOrThrowArgs>(args?: SelectSubset<T, Plans_translationsFindFirstOrThrowArgs<ExtArgs>>): Prisma__Plans_translationsClient<$Result.GetResult<Prisma.$Plans_translationsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Plans_translations that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Plans_translationsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Plans_translations
+     * const plans_translations = await prisma.plans_translations.findMany()
+     * 
+     * // Get first 10 Plans_translations
+     * const plans_translations = await prisma.plans_translations.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const plans_translationsWithIdOnly = await prisma.plans_translations.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends Plans_translationsFindManyArgs>(args?: SelectSubset<T, Plans_translationsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$Plans_translationsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Plans_translations.
+     * @param {Plans_translationsCreateArgs} args - Arguments to create a Plans_translations.
+     * @example
+     * // Create one Plans_translations
+     * const Plans_translations = await prisma.plans_translations.create({
+     *   data: {
+     *     // ... data to create a Plans_translations
+     *   }
+     * })
+     * 
+     */
+    create<T extends Plans_translationsCreateArgs>(args: SelectSubset<T, Plans_translationsCreateArgs<ExtArgs>>): Prisma__Plans_translationsClient<$Result.GetResult<Prisma.$Plans_translationsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Plans_translations.
+     * @param {Plans_translationsCreateManyArgs} args - Arguments to create many Plans_translations.
+     * @example
+     * // Create many Plans_translations
+     * const plans_translations = await prisma.plans_translations.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends Plans_translationsCreateManyArgs>(args?: SelectSubset<T, Plans_translationsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Plans_translations and returns the data saved in the database.
+     * @param {Plans_translationsCreateManyAndReturnArgs} args - Arguments to create many Plans_translations.
+     * @example
+     * // Create many Plans_translations
+     * const plans_translations = await prisma.plans_translations.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Plans_translations and only return the `id`
+     * const plans_translationsWithIdOnly = await prisma.plans_translations.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends Plans_translationsCreateManyAndReturnArgs>(args?: SelectSubset<T, Plans_translationsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$Plans_translationsPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Plans_translations.
+     * @param {Plans_translationsDeleteArgs} args - Arguments to delete one Plans_translations.
+     * @example
+     * // Delete one Plans_translations
+     * const Plans_translations = await prisma.plans_translations.delete({
+     *   where: {
+     *     // ... filter to delete one Plans_translations
+     *   }
+     * })
+     * 
+     */
+    delete<T extends Plans_translationsDeleteArgs>(args: SelectSubset<T, Plans_translationsDeleteArgs<ExtArgs>>): Prisma__Plans_translationsClient<$Result.GetResult<Prisma.$Plans_translationsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Plans_translations.
+     * @param {Plans_translationsUpdateArgs} args - Arguments to update one Plans_translations.
+     * @example
+     * // Update one Plans_translations
+     * const plans_translations = await prisma.plans_translations.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends Plans_translationsUpdateArgs>(args: SelectSubset<T, Plans_translationsUpdateArgs<ExtArgs>>): Prisma__Plans_translationsClient<$Result.GetResult<Prisma.$Plans_translationsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Plans_translations.
+     * @param {Plans_translationsDeleteManyArgs} args - Arguments to filter Plans_translations to delete.
+     * @example
+     * // Delete a few Plans_translations
+     * const { count } = await prisma.plans_translations.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends Plans_translationsDeleteManyArgs>(args?: SelectSubset<T, Plans_translationsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Plans_translations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Plans_translationsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Plans_translations
+     * const plans_translations = await prisma.plans_translations.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends Plans_translationsUpdateManyArgs>(args: SelectSubset<T, Plans_translationsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Plans_translations and returns the data updated in the database.
+     * @param {Plans_translationsUpdateManyAndReturnArgs} args - Arguments to update many Plans_translations.
+     * @example
+     * // Update many Plans_translations
+     * const plans_translations = await prisma.plans_translations.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Plans_translations and only return the `id`
+     * const plans_translationsWithIdOnly = await prisma.plans_translations.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends Plans_translationsUpdateManyAndReturnArgs>(args: SelectSubset<T, Plans_translationsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$Plans_translationsPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Plans_translations.
+     * @param {Plans_translationsUpsertArgs} args - Arguments to update or create a Plans_translations.
+     * @example
+     * // Update or create a Plans_translations
+     * const plans_translations = await prisma.plans_translations.upsert({
+     *   create: {
+     *     // ... data to create a Plans_translations
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Plans_translations we want to update
+     *   }
+     * })
+     */
+    upsert<T extends Plans_translationsUpsertArgs>(args: SelectSubset<T, Plans_translationsUpsertArgs<ExtArgs>>): Prisma__Plans_translationsClient<$Result.GetResult<Prisma.$Plans_translationsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Plans_translations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Plans_translationsCountArgs} args - Arguments to filter Plans_translations to count.
+     * @example
+     * // Count the number of Plans_translations
+     * const count = await prisma.plans_translations.count({
+     *   where: {
+     *     // ... the filter for the Plans_translations we want to count
+     *   }
+     * })
+    **/
+    count<T extends Plans_translationsCountArgs>(
+      args?: Subset<T, Plans_translationsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Plans_translationsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Plans_translations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Plans_translationsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Plans_translationsAggregateArgs>(args: Subset<T, Plans_translationsAggregateArgs>): Prisma.PrismaPromise<GetPlans_translationsAggregateType<T>>
+
+    /**
+     * Group by Plans_translations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Plans_translationsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends Plans_translationsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: Plans_translationsGroupByArgs['orderBy'] }
+        : { orderBy?: Plans_translationsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, Plans_translationsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPlans_translationsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Plans_translations model
+   */
+  readonly fields: Plans_translationsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Plans_translations.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__Plans_translationsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    plan<T extends PlansDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PlansDefaultArgs<ExtArgs>>): Prisma__PlansClient<$Result.GetResult<Prisma.$PlansPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Plans_translations model
+   */ 
+  interface Plans_translationsFieldRefs {
+    readonly id: FieldRef<"Plans_translations", 'Int'>
+    readonly plan_id: FieldRef<"Plans_translations", 'Int'>
+    readonly language: FieldRef<"Plans_translations", 'Language'>
+    readonly name: FieldRef<"Plans_translations", 'String'>
+    readonly subtitle: FieldRef<"Plans_translations", 'String'>
+    readonly features: FieldRef<"Plans_translations", 'String[]'>
+    readonly cta: FieldRef<"Plans_translations", 'String'>
+    readonly created_at: FieldRef<"Plans_translations", 'DateTime'>
+    readonly updated_at: FieldRef<"Plans_translations", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Plans_translations findUnique
+   */
+  export type Plans_translationsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Plans_translations
+     */
+    select?: Plans_translationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Plans_translations
+     */
+    omit?: Plans_translationsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Plans_translationsInclude<ExtArgs> | null
+    /**
+     * Filter, which Plans_translations to fetch.
+     */
+    where: Plans_translationsWhereUniqueInput
+  }
+
+  /**
+   * Plans_translations findUniqueOrThrow
+   */
+  export type Plans_translationsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Plans_translations
+     */
+    select?: Plans_translationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Plans_translations
+     */
+    omit?: Plans_translationsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Plans_translationsInclude<ExtArgs> | null
+    /**
+     * Filter, which Plans_translations to fetch.
+     */
+    where: Plans_translationsWhereUniqueInput
+  }
+
+  /**
+   * Plans_translations findFirst
+   */
+  export type Plans_translationsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Plans_translations
+     */
+    select?: Plans_translationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Plans_translations
+     */
+    omit?: Plans_translationsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Plans_translationsInclude<ExtArgs> | null
+    /**
+     * Filter, which Plans_translations to fetch.
+     */
+    where?: Plans_translationsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Plans_translations to fetch.
+     */
+    orderBy?: Plans_translationsOrderByWithRelationInput | Plans_translationsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Plans_translations.
+     */
+    cursor?: Plans_translationsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Plans_translations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Plans_translations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Plans_translations.
+     */
+    distinct?: Plans_translationsScalarFieldEnum | Plans_translationsScalarFieldEnum[]
+  }
+
+  /**
+   * Plans_translations findFirstOrThrow
+   */
+  export type Plans_translationsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Plans_translations
+     */
+    select?: Plans_translationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Plans_translations
+     */
+    omit?: Plans_translationsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Plans_translationsInclude<ExtArgs> | null
+    /**
+     * Filter, which Plans_translations to fetch.
+     */
+    where?: Plans_translationsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Plans_translations to fetch.
+     */
+    orderBy?: Plans_translationsOrderByWithRelationInput | Plans_translationsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Plans_translations.
+     */
+    cursor?: Plans_translationsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Plans_translations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Plans_translations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Plans_translations.
+     */
+    distinct?: Plans_translationsScalarFieldEnum | Plans_translationsScalarFieldEnum[]
+  }
+
+  /**
+   * Plans_translations findMany
+   */
+  export type Plans_translationsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Plans_translations
+     */
+    select?: Plans_translationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Plans_translations
+     */
+    omit?: Plans_translationsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Plans_translationsInclude<ExtArgs> | null
+    /**
+     * Filter, which Plans_translations to fetch.
+     */
+    where?: Plans_translationsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Plans_translations to fetch.
+     */
+    orderBy?: Plans_translationsOrderByWithRelationInput | Plans_translationsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Plans_translations.
+     */
+    cursor?: Plans_translationsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Plans_translations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Plans_translations.
+     */
+    skip?: number
+    distinct?: Plans_translationsScalarFieldEnum | Plans_translationsScalarFieldEnum[]
+  }
+
+  /**
+   * Plans_translations create
+   */
+  export type Plans_translationsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Plans_translations
+     */
+    select?: Plans_translationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Plans_translations
+     */
+    omit?: Plans_translationsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Plans_translationsInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Plans_translations.
+     */
+    data: XOR<Plans_translationsCreateInput, Plans_translationsUncheckedCreateInput>
+  }
+
+  /**
+   * Plans_translations createMany
+   */
+  export type Plans_translationsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Plans_translations.
+     */
+    data: Plans_translationsCreateManyInput | Plans_translationsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Plans_translations createManyAndReturn
+   */
+  export type Plans_translationsCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Plans_translations
+     */
+    select?: Plans_translationsSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Plans_translations
+     */
+    omit?: Plans_translationsOmit<ExtArgs> | null
+    /**
+     * The data used to create many Plans_translations.
+     */
+    data: Plans_translationsCreateManyInput | Plans_translationsCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Plans_translationsIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Plans_translations update
+   */
+  export type Plans_translationsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Plans_translations
+     */
+    select?: Plans_translationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Plans_translations
+     */
+    omit?: Plans_translationsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Plans_translationsInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Plans_translations.
+     */
+    data: XOR<Plans_translationsUpdateInput, Plans_translationsUncheckedUpdateInput>
+    /**
+     * Choose, which Plans_translations to update.
+     */
+    where: Plans_translationsWhereUniqueInput
+  }
+
+  /**
+   * Plans_translations updateMany
+   */
+  export type Plans_translationsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Plans_translations.
+     */
+    data: XOR<Plans_translationsUpdateManyMutationInput, Plans_translationsUncheckedUpdateManyInput>
+    /**
+     * Filter which Plans_translations to update
+     */
+    where?: Plans_translationsWhereInput
+    /**
+     * Limit how many Plans_translations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Plans_translations updateManyAndReturn
+   */
+  export type Plans_translationsUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Plans_translations
+     */
+    select?: Plans_translationsSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Plans_translations
+     */
+    omit?: Plans_translationsOmit<ExtArgs> | null
+    /**
+     * The data used to update Plans_translations.
+     */
+    data: XOR<Plans_translationsUpdateManyMutationInput, Plans_translationsUncheckedUpdateManyInput>
+    /**
+     * Filter which Plans_translations to update
+     */
+    where?: Plans_translationsWhereInput
+    /**
+     * Limit how many Plans_translations to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Plans_translationsIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Plans_translations upsert
+   */
+  export type Plans_translationsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Plans_translations
+     */
+    select?: Plans_translationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Plans_translations
+     */
+    omit?: Plans_translationsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Plans_translationsInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Plans_translations to update in case it exists.
+     */
+    where: Plans_translationsWhereUniqueInput
+    /**
+     * In case the Plans_translations found by the `where` argument doesn't exist, create a new Plans_translations with this data.
+     */
+    create: XOR<Plans_translationsCreateInput, Plans_translationsUncheckedCreateInput>
+    /**
+     * In case the Plans_translations was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<Plans_translationsUpdateInput, Plans_translationsUncheckedUpdateInput>
+  }
+
+  /**
+   * Plans_translations delete
+   */
+  export type Plans_translationsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Plans_translations
+     */
+    select?: Plans_translationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Plans_translations
+     */
+    omit?: Plans_translationsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Plans_translationsInclude<ExtArgs> | null
+    /**
+     * Filter which Plans_translations to delete.
+     */
+    where: Plans_translationsWhereUniqueInput
+  }
+
+  /**
+   * Plans_translations deleteMany
+   */
+  export type Plans_translationsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Plans_translations to delete
+     */
+    where?: Plans_translationsWhereInput
+    /**
+     * Limit how many Plans_translations to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Plans_translations without action
+   */
+  export type Plans_translationsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Plans_translations
+     */
+    select?: Plans_translationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Plans_translations
+     */
+    omit?: Plans_translationsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Plans_translationsInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Packs
+   */
+
+  export type AggregatePacks = {
+    _count: PacksCountAggregateOutputType | null
+    _avg: PacksAvgAggregateOutputType | null
+    _sum: PacksSumAggregateOutputType | null
+    _min: PacksMinAggregateOutputType | null
+    _max: PacksMaxAggregateOutputType | null
+  }
+
+  export type PacksAvgAggregateOutputType = {
+    id: number | null
+    credits: number | null
+    num_images: number | null
+    num_inference_steps: number | null
+    stars: number | null
+    used: number | null
+  }
+
+  export type PacksSumAggregateOutputType = {
+    id: number | null
+    credits: number | null
+    num_images: number | null
+    num_inference_steps: number | null
+    stars: number | null
+    used: number | null
+  }
+
+  export type PacksMinAggregateOutputType = {
+    id: number | null
+    pid: string | null
+    pack_prompts: string | null
+    credits: number | null
+    num_images: number | null
+    num_inference_steps: number | null
+    stars: number | null
+    used: number | null
+    popular: boolean | null
+    main_image: string | null
+    created_at: Date | null
+    updated_at: Date | null
+    title: string | null
+    title_url: string | null
+    short_description: string | null
+    full_description: string | null
+  }
+
+  export type PacksMaxAggregateOutputType = {
+    id: number | null
+    pid: string | null
+    pack_prompts: string | null
+    credits: number | null
+    num_images: number | null
+    num_inference_steps: number | null
+    stars: number | null
+    used: number | null
+    popular: boolean | null
+    main_image: string | null
+    created_at: Date | null
+    updated_at: Date | null
+    title: string | null
+    title_url: string | null
+    short_description: string | null
+    full_description: string | null
+  }
+
+  export type PacksCountAggregateOutputType = {
+    id: number
+    pid: number
+    pack_prompts: number
+    credits: number
+    num_images: number
+    num_inference_steps: number
+    stars: number
+    used: number
+    popular: number
+    main_image: number
+    images: number
+    created_at: number
+    updated_at: number
+    title: number
+    title_url: number
+    short_description: number
+    full_description: number
+    features: number
+    _all: number
+  }
+
+
+  export type PacksAvgAggregateInputType = {
+    id?: true
+    credits?: true
+    num_images?: true
+    num_inference_steps?: true
+    stars?: true
+    used?: true
+  }
+
+  export type PacksSumAggregateInputType = {
+    id?: true
+    credits?: true
+    num_images?: true
+    num_inference_steps?: true
+    stars?: true
+    used?: true
+  }
+
+  export type PacksMinAggregateInputType = {
+    id?: true
+    pid?: true
+    pack_prompts?: true
+    credits?: true
+    num_images?: true
+    num_inference_steps?: true
+    stars?: true
+    used?: true
+    popular?: true
+    main_image?: true
+    created_at?: true
+    updated_at?: true
+    title?: true
+    title_url?: true
+    short_description?: true
+    full_description?: true
+  }
+
+  export type PacksMaxAggregateInputType = {
+    id?: true
+    pid?: true
+    pack_prompts?: true
+    credits?: true
+    num_images?: true
+    num_inference_steps?: true
+    stars?: true
+    used?: true
+    popular?: true
+    main_image?: true
+    created_at?: true
+    updated_at?: true
+    title?: true
+    title_url?: true
+    short_description?: true
+    full_description?: true
+  }
+
+  export type PacksCountAggregateInputType = {
+    id?: true
+    pid?: true
+    pack_prompts?: true
+    credits?: true
+    num_images?: true
+    num_inference_steps?: true
+    stars?: true
+    used?: true
+    popular?: true
+    main_image?: true
+    images?: true
+    created_at?: true
+    updated_at?: true
+    title?: true
+    title_url?: true
+    short_description?: true
+    full_description?: true
+    features?: true
+    _all?: true
+  }
+
+  export type PacksAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Packs to aggregate.
+     */
+    where?: PacksWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Packs to fetch.
+     */
+    orderBy?: PacksOrderByWithRelationInput | PacksOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PacksWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Packs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Packs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Packs
+    **/
+    _count?: true | PacksCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: PacksAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PacksSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PacksMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PacksMaxAggregateInputType
+  }
+
+  export type GetPacksAggregateType<T extends PacksAggregateArgs> = {
+        [P in keyof T & keyof AggregatePacks]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePacks[P]>
+      : GetScalarType<T[P], AggregatePacks[P]>
+  }
+
+
+
+
+  export type PacksGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PacksWhereInput
+    orderBy?: PacksOrderByWithAggregationInput | PacksOrderByWithAggregationInput[]
+    by: PacksScalarFieldEnum[] | PacksScalarFieldEnum
+    having?: PacksScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PacksCountAggregateInputType | true
+    _avg?: PacksAvgAggregateInputType
+    _sum?: PacksSumAggregateInputType
+    _min?: PacksMinAggregateInputType
+    _max?: PacksMaxAggregateInputType
+  }
+
+  export type PacksGroupByOutputType = {
+    id: number
+    pid: string
+    pack_prompts: string
+    credits: number
+    num_images: number
+    num_inference_steps: number
+    stars: number
+    used: number
+    popular: boolean
+    main_image: string
+    images: string[]
+    created_at: Date
+    updated_at: Date
+    title: string
+    title_url: string
+    short_description: string
+    full_description: string
+    features: string[]
+    _count: PacksCountAggregateOutputType | null
+    _avg: PacksAvgAggregateOutputType | null
+    _sum: PacksSumAggregateOutputType | null
+    _min: PacksMinAggregateOutputType | null
+    _max: PacksMaxAggregateOutputType | null
+  }
+
+  type GetPacksGroupByPayload<T extends PacksGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PacksGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PacksGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PacksGroupByOutputType[P]>
+            : GetScalarType<T[P], PacksGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PacksSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    pid?: boolean
+    pack_prompts?: boolean
+    credits?: boolean
+    num_images?: boolean
+    num_inference_steps?: boolean
+    stars?: boolean
+    used?: boolean
+    popular?: boolean
+    main_image?: boolean
+    images?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    title?: boolean
+    title_url?: boolean
+    short_description?: boolean
+    full_description?: boolean
+    features?: boolean
+    Images?: boolean | Packs$ImagesArgs<ExtArgs>
+    translations?: boolean | Packs$translationsArgs<ExtArgs>
+    _count?: boolean | PacksCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["packs"]>
+
+  export type PacksSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    pid?: boolean
+    pack_prompts?: boolean
+    credits?: boolean
+    num_images?: boolean
+    num_inference_steps?: boolean
+    stars?: boolean
+    used?: boolean
+    popular?: boolean
+    main_image?: boolean
+    images?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    title?: boolean
+    title_url?: boolean
+    short_description?: boolean
+    full_description?: boolean
+    features?: boolean
+  }, ExtArgs["result"]["packs"]>
+
+  export type PacksSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    pid?: boolean
+    pack_prompts?: boolean
+    credits?: boolean
+    num_images?: boolean
+    num_inference_steps?: boolean
+    stars?: boolean
+    used?: boolean
+    popular?: boolean
+    main_image?: boolean
+    images?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    title?: boolean
+    title_url?: boolean
+    short_description?: boolean
+    full_description?: boolean
+    features?: boolean
+  }, ExtArgs["result"]["packs"]>
+
+  export type PacksSelectScalar = {
+    id?: boolean
+    pid?: boolean
+    pack_prompts?: boolean
+    credits?: boolean
+    num_images?: boolean
+    num_inference_steps?: boolean
+    stars?: boolean
+    used?: boolean
+    popular?: boolean
+    main_image?: boolean
+    images?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    title?: boolean
+    title_url?: boolean
+    short_description?: boolean
+    full_description?: boolean
+    features?: boolean
+  }
+
+  export type PacksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pid" | "pack_prompts" | "credits" | "num_images" | "num_inference_steps" | "stars" | "used" | "popular" | "main_image" | "images" | "created_at" | "updated_at" | "title" | "title_url" | "short_description" | "full_description" | "features", ExtArgs["result"]["packs"]>
+  export type PacksInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    Images?: boolean | Packs$ImagesArgs<ExtArgs>
+    translations?: boolean | Packs$translationsArgs<ExtArgs>
+    _count?: boolean | PacksCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type PacksIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type PacksIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $PacksPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Packs"
+    objects: {
+      Images: Prisma.$ImagesPayload<ExtArgs>[]
+      translations: Prisma.$Packs_translationsPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      pid: string
+      pack_prompts: string
+      credits: number
+      num_images: number
+      num_inference_steps: number
+      stars: number
+      used: number
+      popular: boolean
+      main_image: string
+      images: string[]
+      created_at: Date
+      updated_at: Date
+      title: string
+      title_url: string
+      short_description: string
+      full_description: string
+      features: string[]
+    }, ExtArgs["result"]["packs"]>
+    composites: {}
+  }
+
+  type PacksGetPayload<S extends boolean | null | undefined | PacksDefaultArgs> = $Result.GetResult<Prisma.$PacksPayload, S>
+
+  type PacksCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PacksFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PacksCountAggregateInputType | true
+    }
+
+  export interface PacksDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Packs'], meta: { name: 'Packs' } }
+    /**
+     * Find zero or one Packs that matches the filter.
+     * @param {PacksFindUniqueArgs} args - Arguments to find a Packs
+     * @example
+     * // Get one Packs
+     * const packs = await prisma.packs.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PacksFindUniqueArgs>(args: SelectSubset<T, PacksFindUniqueArgs<ExtArgs>>): Prisma__PacksClient<$Result.GetResult<Prisma.$PacksPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Packs that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PacksFindUniqueOrThrowArgs} args - Arguments to find a Packs
+     * @example
+     * // Get one Packs
+     * const packs = await prisma.packs.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PacksFindUniqueOrThrowArgs>(args: SelectSubset<T, PacksFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PacksClient<$Result.GetResult<Prisma.$PacksPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Packs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PacksFindFirstArgs} args - Arguments to find a Packs
+     * @example
+     * // Get one Packs
+     * const packs = await prisma.packs.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PacksFindFirstArgs>(args?: SelectSubset<T, PacksFindFirstArgs<ExtArgs>>): Prisma__PacksClient<$Result.GetResult<Prisma.$PacksPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Packs that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PacksFindFirstOrThrowArgs} args - Arguments to find a Packs
+     * @example
+     * // Get one Packs
+     * const packs = await prisma.packs.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PacksFindFirstOrThrowArgs>(args?: SelectSubset<T, PacksFindFirstOrThrowArgs<ExtArgs>>): Prisma__PacksClient<$Result.GetResult<Prisma.$PacksPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Packs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PacksFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Packs
+     * const packs = await prisma.packs.findMany()
+     * 
+     * // Get first 10 Packs
+     * const packs = await prisma.packs.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const packsWithIdOnly = await prisma.packs.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PacksFindManyArgs>(args?: SelectSubset<T, PacksFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PacksPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Packs.
+     * @param {PacksCreateArgs} args - Arguments to create a Packs.
+     * @example
+     * // Create one Packs
+     * const Packs = await prisma.packs.create({
+     *   data: {
+     *     // ... data to create a Packs
+     *   }
+     * })
+     * 
+     */
+    create<T extends PacksCreateArgs>(args: SelectSubset<T, PacksCreateArgs<ExtArgs>>): Prisma__PacksClient<$Result.GetResult<Prisma.$PacksPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Packs.
+     * @param {PacksCreateManyArgs} args - Arguments to create many Packs.
+     * @example
+     * // Create many Packs
+     * const packs = await prisma.packs.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PacksCreateManyArgs>(args?: SelectSubset<T, PacksCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Packs and returns the data saved in the database.
+     * @param {PacksCreateManyAndReturnArgs} args - Arguments to create many Packs.
+     * @example
+     * // Create many Packs
+     * const packs = await prisma.packs.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Packs and only return the `id`
+     * const packsWithIdOnly = await prisma.packs.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PacksCreateManyAndReturnArgs>(args?: SelectSubset<T, PacksCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PacksPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Packs.
+     * @param {PacksDeleteArgs} args - Arguments to delete one Packs.
+     * @example
+     * // Delete one Packs
+     * const Packs = await prisma.packs.delete({
+     *   where: {
+     *     // ... filter to delete one Packs
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PacksDeleteArgs>(args: SelectSubset<T, PacksDeleteArgs<ExtArgs>>): Prisma__PacksClient<$Result.GetResult<Prisma.$PacksPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Packs.
+     * @param {PacksUpdateArgs} args - Arguments to update one Packs.
+     * @example
+     * // Update one Packs
+     * const packs = await prisma.packs.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PacksUpdateArgs>(args: SelectSubset<T, PacksUpdateArgs<ExtArgs>>): Prisma__PacksClient<$Result.GetResult<Prisma.$PacksPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Packs.
+     * @param {PacksDeleteManyArgs} args - Arguments to filter Packs to delete.
+     * @example
+     * // Delete a few Packs
+     * const { count } = await prisma.packs.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PacksDeleteManyArgs>(args?: SelectSubset<T, PacksDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Packs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PacksUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Packs
+     * const packs = await prisma.packs.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PacksUpdateManyArgs>(args: SelectSubset<T, PacksUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Packs and returns the data updated in the database.
+     * @param {PacksUpdateManyAndReturnArgs} args - Arguments to update many Packs.
+     * @example
+     * // Update many Packs
+     * const packs = await prisma.packs.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Packs and only return the `id`
+     * const packsWithIdOnly = await prisma.packs.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PacksUpdateManyAndReturnArgs>(args: SelectSubset<T, PacksUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PacksPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Packs.
+     * @param {PacksUpsertArgs} args - Arguments to update or create a Packs.
+     * @example
+     * // Update or create a Packs
+     * const packs = await prisma.packs.upsert({
+     *   create: {
+     *     // ... data to create a Packs
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Packs we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PacksUpsertArgs>(args: SelectSubset<T, PacksUpsertArgs<ExtArgs>>): Prisma__PacksClient<$Result.GetResult<Prisma.$PacksPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Packs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PacksCountArgs} args - Arguments to filter Packs to count.
+     * @example
+     * // Count the number of Packs
+     * const count = await prisma.packs.count({
+     *   where: {
+     *     // ... the filter for the Packs we want to count
+     *   }
+     * })
+    **/
+    count<T extends PacksCountArgs>(
+      args?: Subset<T, PacksCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PacksCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Packs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PacksAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PacksAggregateArgs>(args: Subset<T, PacksAggregateArgs>): Prisma.PrismaPromise<GetPacksAggregateType<T>>
+
+    /**
+     * Group by Packs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PacksGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PacksGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PacksGroupByArgs['orderBy'] }
+        : { orderBy?: PacksGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PacksGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPacksGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Packs model
+   */
+  readonly fields: PacksFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Packs.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PacksClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    Images<T extends Packs$ImagesArgs<ExtArgs> = {}>(args?: Subset<T, Packs$ImagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImagesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    translations<T extends Packs$translationsArgs<ExtArgs> = {}>(args?: Subset<T, Packs$translationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$Packs_translationsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Packs model
+   */ 
+  interface PacksFieldRefs {
+    readonly id: FieldRef<"Packs", 'Int'>
+    readonly pid: FieldRef<"Packs", 'String'>
+    readonly pack_prompts: FieldRef<"Packs", 'String'>
+    readonly credits: FieldRef<"Packs", 'Int'>
+    readonly num_images: FieldRef<"Packs", 'Int'>
+    readonly num_inference_steps: FieldRef<"Packs", 'Int'>
+    readonly stars: FieldRef<"Packs", 'Int'>
+    readonly used: FieldRef<"Packs", 'Int'>
+    readonly popular: FieldRef<"Packs", 'Boolean'>
+    readonly main_image: FieldRef<"Packs", 'String'>
+    readonly images: FieldRef<"Packs", 'String[]'>
+    readonly created_at: FieldRef<"Packs", 'DateTime'>
+    readonly updated_at: FieldRef<"Packs", 'DateTime'>
+    readonly title: FieldRef<"Packs", 'String'>
+    readonly title_url: FieldRef<"Packs", 'String'>
+    readonly short_description: FieldRef<"Packs", 'String'>
+    readonly full_description: FieldRef<"Packs", 'String'>
+    readonly features: FieldRef<"Packs", 'String[]'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Packs findUnique
+   */
+  export type PacksFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Packs
+     */
+    select?: PacksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Packs
+     */
+    omit?: PacksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PacksInclude<ExtArgs> | null
+    /**
+     * Filter, which Packs to fetch.
+     */
+    where: PacksWhereUniqueInput
+  }
+
+  /**
+   * Packs findUniqueOrThrow
+   */
+  export type PacksFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Packs
+     */
+    select?: PacksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Packs
+     */
+    omit?: PacksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PacksInclude<ExtArgs> | null
+    /**
+     * Filter, which Packs to fetch.
+     */
+    where: PacksWhereUniqueInput
+  }
+
+  /**
+   * Packs findFirst
+   */
+  export type PacksFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Packs
+     */
+    select?: PacksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Packs
+     */
+    omit?: PacksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PacksInclude<ExtArgs> | null
+    /**
+     * Filter, which Packs to fetch.
+     */
+    where?: PacksWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Packs to fetch.
+     */
+    orderBy?: PacksOrderByWithRelationInput | PacksOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Packs.
+     */
+    cursor?: PacksWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Packs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Packs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Packs.
+     */
+    distinct?: PacksScalarFieldEnum | PacksScalarFieldEnum[]
+  }
+
+  /**
+   * Packs findFirstOrThrow
+   */
+  export type PacksFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Packs
+     */
+    select?: PacksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Packs
+     */
+    omit?: PacksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PacksInclude<ExtArgs> | null
+    /**
+     * Filter, which Packs to fetch.
+     */
+    where?: PacksWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Packs to fetch.
+     */
+    orderBy?: PacksOrderByWithRelationInput | PacksOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Packs.
+     */
+    cursor?: PacksWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Packs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Packs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Packs.
+     */
+    distinct?: PacksScalarFieldEnum | PacksScalarFieldEnum[]
+  }
+
+  /**
+   * Packs findMany
+   */
+  export type PacksFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Packs
+     */
+    select?: PacksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Packs
+     */
+    omit?: PacksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PacksInclude<ExtArgs> | null
+    /**
+     * Filter, which Packs to fetch.
+     */
+    where?: PacksWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Packs to fetch.
+     */
+    orderBy?: PacksOrderByWithRelationInput | PacksOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Packs.
+     */
+    cursor?: PacksWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Packs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Packs.
+     */
+    skip?: number
+    distinct?: PacksScalarFieldEnum | PacksScalarFieldEnum[]
+  }
+
+  /**
+   * Packs create
+   */
+  export type PacksCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Packs
+     */
+    select?: PacksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Packs
+     */
+    omit?: PacksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PacksInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Packs.
+     */
+    data: XOR<PacksCreateInput, PacksUncheckedCreateInput>
+  }
+
+  /**
+   * Packs createMany
+   */
+  export type PacksCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Packs.
+     */
+    data: PacksCreateManyInput | PacksCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Packs createManyAndReturn
+   */
+  export type PacksCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Packs
+     */
+    select?: PacksSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Packs
+     */
+    omit?: PacksOmit<ExtArgs> | null
+    /**
+     * The data used to create many Packs.
+     */
+    data: PacksCreateManyInput | PacksCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Packs update
+   */
+  export type PacksUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Packs
+     */
+    select?: PacksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Packs
+     */
+    omit?: PacksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PacksInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Packs.
+     */
+    data: XOR<PacksUpdateInput, PacksUncheckedUpdateInput>
+    /**
+     * Choose, which Packs to update.
+     */
+    where: PacksWhereUniqueInput
+  }
+
+  /**
+   * Packs updateMany
+   */
+  export type PacksUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Packs.
+     */
+    data: XOR<PacksUpdateManyMutationInput, PacksUncheckedUpdateManyInput>
+    /**
+     * Filter which Packs to update
+     */
+    where?: PacksWhereInput
+    /**
+     * Limit how many Packs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Packs updateManyAndReturn
+   */
+  export type PacksUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Packs
+     */
+    select?: PacksSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Packs
+     */
+    omit?: PacksOmit<ExtArgs> | null
+    /**
+     * The data used to update Packs.
+     */
+    data: XOR<PacksUpdateManyMutationInput, PacksUncheckedUpdateManyInput>
+    /**
+     * Filter which Packs to update
+     */
+    where?: PacksWhereInput
+    /**
+     * Limit how many Packs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Packs upsert
+   */
+  export type PacksUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Packs
+     */
+    select?: PacksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Packs
+     */
+    omit?: PacksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PacksInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Packs to update in case it exists.
+     */
+    where: PacksWhereUniqueInput
+    /**
+     * In case the Packs found by the `where` argument doesn't exist, create a new Packs with this data.
+     */
+    create: XOR<PacksCreateInput, PacksUncheckedCreateInput>
+    /**
+     * In case the Packs was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PacksUpdateInput, PacksUncheckedUpdateInput>
+  }
+
+  /**
+   * Packs delete
+   */
+  export type PacksDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Packs
+     */
+    select?: PacksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Packs
+     */
+    omit?: PacksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PacksInclude<ExtArgs> | null
+    /**
+     * Filter which Packs to delete.
+     */
+    where: PacksWhereUniqueInput
+  }
+
+  /**
+   * Packs deleteMany
+   */
+  export type PacksDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Packs to delete
+     */
+    where?: PacksWhereInput
+    /**
+     * Limit how many Packs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Packs.Images
+   */
+  export type Packs$ImagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Images
+     */
+    select?: ImagesSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Images
+     */
+    omit?: ImagesOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ImagesInclude<ExtArgs> | null
+    where?: ImagesWhereInput
+    orderBy?: ImagesOrderByWithRelationInput | ImagesOrderByWithRelationInput[]
+    cursor?: ImagesWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ImagesScalarFieldEnum | ImagesScalarFieldEnum[]
+  }
+
+  /**
+   * Packs.translations
+   */
+  export type Packs$translationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Packs_translations
+     */
+    select?: Packs_translationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Packs_translations
+     */
+    omit?: Packs_translationsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Packs_translationsInclude<ExtArgs> | null
+    where?: Packs_translationsWhereInput
+    orderBy?: Packs_translationsOrderByWithRelationInput | Packs_translationsOrderByWithRelationInput[]
+    cursor?: Packs_translationsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Packs_translationsScalarFieldEnum | Packs_translationsScalarFieldEnum[]
+  }
+
+  /**
+   * Packs without action
+   */
+  export type PacksDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Packs
+     */
+    select?: PacksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Packs
+     */
+    omit?: PacksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PacksInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Packs_translations
+   */
+
+  export type AggregatePacks_translations = {
+    _count: Packs_translationsCountAggregateOutputType | null
+    _avg: Packs_translationsAvgAggregateOutputType | null
+    _sum: Packs_translationsSumAggregateOutputType | null
+    _min: Packs_translationsMinAggregateOutputType | null
+    _max: Packs_translationsMaxAggregateOutputType | null
+  }
+
+  export type Packs_translationsAvgAggregateOutputType = {
+    id: number | null
+    pack_id: number | null
+  }
+
+  export type Packs_translationsSumAggregateOutputType = {
+    id: number | null
+    pack_id: number | null
+  }
+
+  export type Packs_translationsMinAggregateOutputType = {
+    id: number | null
+    pack_id: number | null
+    language: $Enums.Language | null
+    title: string | null
+    short_description: string | null
+    full_description: string | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type Packs_translationsMaxAggregateOutputType = {
+    id: number | null
+    pack_id: number | null
+    language: $Enums.Language | null
+    title: string | null
+    short_description: string | null
+    full_description: string | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type Packs_translationsCountAggregateOutputType = {
+    id: number
+    pack_id: number
+    language: number
+    title: number
+    short_description: number
+    full_description: number
+    features: number
+    created_at: number
+    updated_at: number
+    _all: number
+  }
+
+
+  export type Packs_translationsAvgAggregateInputType = {
+    id?: true
+    pack_id?: true
+  }
+
+  export type Packs_translationsSumAggregateInputType = {
+    id?: true
+    pack_id?: true
+  }
+
+  export type Packs_translationsMinAggregateInputType = {
+    id?: true
+    pack_id?: true
+    language?: true
+    title?: true
+    short_description?: true
+    full_description?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type Packs_translationsMaxAggregateInputType = {
+    id?: true
+    pack_id?: true
+    language?: true
+    title?: true
+    short_description?: true
+    full_description?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type Packs_translationsCountAggregateInputType = {
+    id?: true
+    pack_id?: true
+    language?: true
+    title?: true
+    short_description?: true
+    full_description?: true
+    features?: true
+    created_at?: true
+    updated_at?: true
+    _all?: true
+  }
+
+  export type Packs_translationsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Packs_translations to aggregate.
+     */
+    where?: Packs_translationsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Packs_translations to fetch.
+     */
+    orderBy?: Packs_translationsOrderByWithRelationInput | Packs_translationsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: Packs_translationsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Packs_translations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Packs_translations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Packs_translations
+    **/
+    _count?: true | Packs_translationsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: Packs_translationsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: Packs_translationsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Packs_translationsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Packs_translationsMaxAggregateInputType
+  }
+
+  export type GetPacks_translationsAggregateType<T extends Packs_translationsAggregateArgs> = {
+        [P in keyof T & keyof AggregatePacks_translations]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePacks_translations[P]>
+      : GetScalarType<T[P], AggregatePacks_translations[P]>
+  }
+
+
+
+
+  export type Packs_translationsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: Packs_translationsWhereInput
+    orderBy?: Packs_translationsOrderByWithAggregationInput | Packs_translationsOrderByWithAggregationInput[]
+    by: Packs_translationsScalarFieldEnum[] | Packs_translationsScalarFieldEnum
+    having?: Packs_translationsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Packs_translationsCountAggregateInputType | true
+    _avg?: Packs_translationsAvgAggregateInputType
+    _sum?: Packs_translationsSumAggregateInputType
+    _min?: Packs_translationsMinAggregateInputType
+    _max?: Packs_translationsMaxAggregateInputType
+  }
+
+  export type Packs_translationsGroupByOutputType = {
+    id: number
+    pack_id: number
+    language: $Enums.Language
+    title: string
+    short_description: string
+    full_description: string
+    features: string[]
+    created_at: Date
+    updated_at: Date
+    _count: Packs_translationsCountAggregateOutputType | null
+    _avg: Packs_translationsAvgAggregateOutputType | null
+    _sum: Packs_translationsSumAggregateOutputType | null
+    _min: Packs_translationsMinAggregateOutputType | null
+    _max: Packs_translationsMaxAggregateOutputType | null
+  }
+
+  type GetPacks_translationsGroupByPayload<T extends Packs_translationsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Packs_translationsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Packs_translationsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Packs_translationsGroupByOutputType[P]>
+            : GetScalarType<T[P], Packs_translationsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type Packs_translationsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    pack_id?: boolean
+    language?: boolean
+    title?: boolean
+    short_description?: boolean
+    full_description?: boolean
+    features?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    pack?: boolean | PacksDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["packs_translations"]>
+
+  export type Packs_translationsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    pack_id?: boolean
+    language?: boolean
+    title?: boolean
+    short_description?: boolean
+    full_description?: boolean
+    features?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    pack?: boolean | PacksDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["packs_translations"]>
+
+  export type Packs_translationsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    pack_id?: boolean
+    language?: boolean
+    title?: boolean
+    short_description?: boolean
+    full_description?: boolean
+    features?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    pack?: boolean | PacksDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["packs_translations"]>
+
+  export type Packs_translationsSelectScalar = {
+    id?: boolean
+    pack_id?: boolean
+    language?: boolean
+    title?: boolean
+    short_description?: boolean
+    full_description?: boolean
+    features?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }
+
+  export type Packs_translationsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pack_id" | "language" | "title" | "short_description" | "full_description" | "features" | "created_at" | "updated_at", ExtArgs["result"]["packs_translations"]>
+  export type Packs_translationsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    pack?: boolean | PacksDefaultArgs<ExtArgs>
+  }
+  export type Packs_translationsIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    pack?: boolean | PacksDefaultArgs<ExtArgs>
+  }
+  export type Packs_translationsIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    pack?: boolean | PacksDefaultArgs<ExtArgs>
+  }
+
+  export type $Packs_translationsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Packs_translations"
+    objects: {
+      pack: Prisma.$PacksPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      pack_id: number
+      language: $Enums.Language
+      title: string
+      short_description: string
+      full_description: string
+      features: string[]
+      created_at: Date
+      updated_at: Date
+    }, ExtArgs["result"]["packs_translations"]>
+    composites: {}
+  }
+
+  type Packs_translationsGetPayload<S extends boolean | null | undefined | Packs_translationsDefaultArgs> = $Result.GetResult<Prisma.$Packs_translationsPayload, S>
+
+  type Packs_translationsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<Packs_translationsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Packs_translationsCountAggregateInputType | true
+    }
+
+  export interface Packs_translationsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Packs_translations'], meta: { name: 'Packs_translations' } }
+    /**
+     * Find zero or one Packs_translations that matches the filter.
+     * @param {Packs_translationsFindUniqueArgs} args - Arguments to find a Packs_translations
+     * @example
+     * // Get one Packs_translations
+     * const packs_translations = await prisma.packs_translations.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends Packs_translationsFindUniqueArgs>(args: SelectSubset<T, Packs_translationsFindUniqueArgs<ExtArgs>>): Prisma__Packs_translationsClient<$Result.GetResult<Prisma.$Packs_translationsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Packs_translations that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {Packs_translationsFindUniqueOrThrowArgs} args - Arguments to find a Packs_translations
+     * @example
+     * // Get one Packs_translations
+     * const packs_translations = await prisma.packs_translations.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends Packs_translationsFindUniqueOrThrowArgs>(args: SelectSubset<T, Packs_translationsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__Packs_translationsClient<$Result.GetResult<Prisma.$Packs_translationsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Packs_translations that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Packs_translationsFindFirstArgs} args - Arguments to find a Packs_translations
+     * @example
+     * // Get one Packs_translations
+     * const packs_translations = await prisma.packs_translations.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends Packs_translationsFindFirstArgs>(args?: SelectSubset<T, Packs_translationsFindFirstArgs<ExtArgs>>): Prisma__Packs_translationsClient<$Result.GetResult<Prisma.$Packs_translationsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Packs_translations that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Packs_translationsFindFirstOrThrowArgs} args - Arguments to find a Packs_translations
+     * @example
+     * // Get one Packs_translations
+     * const packs_translations = await prisma.packs_translations.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends Packs_translationsFindFirstOrThrowArgs>(args?: SelectSubset<T, Packs_translationsFindFirstOrThrowArgs<ExtArgs>>): Prisma__Packs_translationsClient<$Result.GetResult<Prisma.$Packs_translationsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Packs_translations that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Packs_translationsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Packs_translations
+     * const packs_translations = await prisma.packs_translations.findMany()
+     * 
+     * // Get first 10 Packs_translations
+     * const packs_translations = await prisma.packs_translations.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const packs_translationsWithIdOnly = await prisma.packs_translations.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends Packs_translationsFindManyArgs>(args?: SelectSubset<T, Packs_translationsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$Packs_translationsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Packs_translations.
+     * @param {Packs_translationsCreateArgs} args - Arguments to create a Packs_translations.
+     * @example
+     * // Create one Packs_translations
+     * const Packs_translations = await prisma.packs_translations.create({
+     *   data: {
+     *     // ... data to create a Packs_translations
+     *   }
+     * })
+     * 
+     */
+    create<T extends Packs_translationsCreateArgs>(args: SelectSubset<T, Packs_translationsCreateArgs<ExtArgs>>): Prisma__Packs_translationsClient<$Result.GetResult<Prisma.$Packs_translationsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Packs_translations.
+     * @param {Packs_translationsCreateManyArgs} args - Arguments to create many Packs_translations.
+     * @example
+     * // Create many Packs_translations
+     * const packs_translations = await prisma.packs_translations.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends Packs_translationsCreateManyArgs>(args?: SelectSubset<T, Packs_translationsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Packs_translations and returns the data saved in the database.
+     * @param {Packs_translationsCreateManyAndReturnArgs} args - Arguments to create many Packs_translations.
+     * @example
+     * // Create many Packs_translations
+     * const packs_translations = await prisma.packs_translations.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Packs_translations and only return the `id`
+     * const packs_translationsWithIdOnly = await prisma.packs_translations.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends Packs_translationsCreateManyAndReturnArgs>(args?: SelectSubset<T, Packs_translationsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$Packs_translationsPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Packs_translations.
+     * @param {Packs_translationsDeleteArgs} args - Arguments to delete one Packs_translations.
+     * @example
+     * // Delete one Packs_translations
+     * const Packs_translations = await prisma.packs_translations.delete({
+     *   where: {
+     *     // ... filter to delete one Packs_translations
+     *   }
+     * })
+     * 
+     */
+    delete<T extends Packs_translationsDeleteArgs>(args: SelectSubset<T, Packs_translationsDeleteArgs<ExtArgs>>): Prisma__Packs_translationsClient<$Result.GetResult<Prisma.$Packs_translationsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Packs_translations.
+     * @param {Packs_translationsUpdateArgs} args - Arguments to update one Packs_translations.
+     * @example
+     * // Update one Packs_translations
+     * const packs_translations = await prisma.packs_translations.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends Packs_translationsUpdateArgs>(args: SelectSubset<T, Packs_translationsUpdateArgs<ExtArgs>>): Prisma__Packs_translationsClient<$Result.GetResult<Prisma.$Packs_translationsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Packs_translations.
+     * @param {Packs_translationsDeleteManyArgs} args - Arguments to filter Packs_translations to delete.
+     * @example
+     * // Delete a few Packs_translations
+     * const { count } = await prisma.packs_translations.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends Packs_translationsDeleteManyArgs>(args?: SelectSubset<T, Packs_translationsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Packs_translations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Packs_translationsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Packs_translations
+     * const packs_translations = await prisma.packs_translations.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends Packs_translationsUpdateManyArgs>(args: SelectSubset<T, Packs_translationsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Packs_translations and returns the data updated in the database.
+     * @param {Packs_translationsUpdateManyAndReturnArgs} args - Arguments to update many Packs_translations.
+     * @example
+     * // Update many Packs_translations
+     * const packs_translations = await prisma.packs_translations.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Packs_translations and only return the `id`
+     * const packs_translationsWithIdOnly = await prisma.packs_translations.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends Packs_translationsUpdateManyAndReturnArgs>(args: SelectSubset<T, Packs_translationsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$Packs_translationsPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Packs_translations.
+     * @param {Packs_translationsUpsertArgs} args - Arguments to update or create a Packs_translations.
+     * @example
+     * // Update or create a Packs_translations
+     * const packs_translations = await prisma.packs_translations.upsert({
+     *   create: {
+     *     // ... data to create a Packs_translations
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Packs_translations we want to update
+     *   }
+     * })
+     */
+    upsert<T extends Packs_translationsUpsertArgs>(args: SelectSubset<T, Packs_translationsUpsertArgs<ExtArgs>>): Prisma__Packs_translationsClient<$Result.GetResult<Prisma.$Packs_translationsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Packs_translations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Packs_translationsCountArgs} args - Arguments to filter Packs_translations to count.
+     * @example
+     * // Count the number of Packs_translations
+     * const count = await prisma.packs_translations.count({
+     *   where: {
+     *     // ... the filter for the Packs_translations we want to count
+     *   }
+     * })
+    **/
+    count<T extends Packs_translationsCountArgs>(
+      args?: Subset<T, Packs_translationsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Packs_translationsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Packs_translations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Packs_translationsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Packs_translationsAggregateArgs>(args: Subset<T, Packs_translationsAggregateArgs>): Prisma.PrismaPromise<GetPacks_translationsAggregateType<T>>
+
+    /**
+     * Group by Packs_translations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Packs_translationsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends Packs_translationsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: Packs_translationsGroupByArgs['orderBy'] }
+        : { orderBy?: Packs_translationsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, Packs_translationsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPacks_translationsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Packs_translations model
+   */
+  readonly fields: Packs_translationsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Packs_translations.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__Packs_translationsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    pack<T extends PacksDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PacksDefaultArgs<ExtArgs>>): Prisma__PacksClient<$Result.GetResult<Prisma.$PacksPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Packs_translations model
+   */ 
+  interface Packs_translationsFieldRefs {
+    readonly id: FieldRef<"Packs_translations", 'Int'>
+    readonly pack_id: FieldRef<"Packs_translations", 'Int'>
+    readonly language: FieldRef<"Packs_translations", 'Language'>
+    readonly title: FieldRef<"Packs_translations", 'String'>
+    readonly short_description: FieldRef<"Packs_translations", 'String'>
+    readonly full_description: FieldRef<"Packs_translations", 'String'>
+    readonly features: FieldRef<"Packs_translations", 'String[]'>
+    readonly created_at: FieldRef<"Packs_translations", 'DateTime'>
+    readonly updated_at: FieldRef<"Packs_translations", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Packs_translations findUnique
+   */
+  export type Packs_translationsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Packs_translations
+     */
+    select?: Packs_translationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Packs_translations
+     */
+    omit?: Packs_translationsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Packs_translationsInclude<ExtArgs> | null
+    /**
+     * Filter, which Packs_translations to fetch.
+     */
+    where: Packs_translationsWhereUniqueInput
+  }
+
+  /**
+   * Packs_translations findUniqueOrThrow
+   */
+  export type Packs_translationsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Packs_translations
+     */
+    select?: Packs_translationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Packs_translations
+     */
+    omit?: Packs_translationsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Packs_translationsInclude<ExtArgs> | null
+    /**
+     * Filter, which Packs_translations to fetch.
+     */
+    where: Packs_translationsWhereUniqueInput
+  }
+
+  /**
+   * Packs_translations findFirst
+   */
+  export type Packs_translationsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Packs_translations
+     */
+    select?: Packs_translationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Packs_translations
+     */
+    omit?: Packs_translationsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Packs_translationsInclude<ExtArgs> | null
+    /**
+     * Filter, which Packs_translations to fetch.
+     */
+    where?: Packs_translationsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Packs_translations to fetch.
+     */
+    orderBy?: Packs_translationsOrderByWithRelationInput | Packs_translationsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Packs_translations.
+     */
+    cursor?: Packs_translationsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Packs_translations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Packs_translations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Packs_translations.
+     */
+    distinct?: Packs_translationsScalarFieldEnum | Packs_translationsScalarFieldEnum[]
+  }
+
+  /**
+   * Packs_translations findFirstOrThrow
+   */
+  export type Packs_translationsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Packs_translations
+     */
+    select?: Packs_translationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Packs_translations
+     */
+    omit?: Packs_translationsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Packs_translationsInclude<ExtArgs> | null
+    /**
+     * Filter, which Packs_translations to fetch.
+     */
+    where?: Packs_translationsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Packs_translations to fetch.
+     */
+    orderBy?: Packs_translationsOrderByWithRelationInput | Packs_translationsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Packs_translations.
+     */
+    cursor?: Packs_translationsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Packs_translations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Packs_translations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Packs_translations.
+     */
+    distinct?: Packs_translationsScalarFieldEnum | Packs_translationsScalarFieldEnum[]
+  }
+
+  /**
+   * Packs_translations findMany
+   */
+  export type Packs_translationsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Packs_translations
+     */
+    select?: Packs_translationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Packs_translations
+     */
+    omit?: Packs_translationsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Packs_translationsInclude<ExtArgs> | null
+    /**
+     * Filter, which Packs_translations to fetch.
+     */
+    where?: Packs_translationsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Packs_translations to fetch.
+     */
+    orderBy?: Packs_translationsOrderByWithRelationInput | Packs_translationsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Packs_translations.
+     */
+    cursor?: Packs_translationsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Packs_translations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Packs_translations.
+     */
+    skip?: number
+    distinct?: Packs_translationsScalarFieldEnum | Packs_translationsScalarFieldEnum[]
+  }
+
+  /**
+   * Packs_translations create
+   */
+  export type Packs_translationsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Packs_translations
+     */
+    select?: Packs_translationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Packs_translations
+     */
+    omit?: Packs_translationsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Packs_translationsInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Packs_translations.
+     */
+    data: XOR<Packs_translationsCreateInput, Packs_translationsUncheckedCreateInput>
+  }
+
+  /**
+   * Packs_translations createMany
+   */
+  export type Packs_translationsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Packs_translations.
+     */
+    data: Packs_translationsCreateManyInput | Packs_translationsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Packs_translations createManyAndReturn
+   */
+  export type Packs_translationsCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Packs_translations
+     */
+    select?: Packs_translationsSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Packs_translations
+     */
+    omit?: Packs_translationsOmit<ExtArgs> | null
+    /**
+     * The data used to create many Packs_translations.
+     */
+    data: Packs_translationsCreateManyInput | Packs_translationsCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Packs_translationsIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Packs_translations update
+   */
+  export type Packs_translationsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Packs_translations
+     */
+    select?: Packs_translationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Packs_translations
+     */
+    omit?: Packs_translationsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Packs_translationsInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Packs_translations.
+     */
+    data: XOR<Packs_translationsUpdateInput, Packs_translationsUncheckedUpdateInput>
+    /**
+     * Choose, which Packs_translations to update.
+     */
+    where: Packs_translationsWhereUniqueInput
+  }
+
+  /**
+   * Packs_translations updateMany
+   */
+  export type Packs_translationsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Packs_translations.
+     */
+    data: XOR<Packs_translationsUpdateManyMutationInput, Packs_translationsUncheckedUpdateManyInput>
+    /**
+     * Filter which Packs_translations to update
+     */
+    where?: Packs_translationsWhereInput
+    /**
+     * Limit how many Packs_translations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Packs_translations updateManyAndReturn
+   */
+  export type Packs_translationsUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Packs_translations
+     */
+    select?: Packs_translationsSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Packs_translations
+     */
+    omit?: Packs_translationsOmit<ExtArgs> | null
+    /**
+     * The data used to update Packs_translations.
+     */
+    data: XOR<Packs_translationsUpdateManyMutationInput, Packs_translationsUncheckedUpdateManyInput>
+    /**
+     * Filter which Packs_translations to update
+     */
+    where?: Packs_translationsWhereInput
+    /**
+     * Limit how many Packs_translations to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Packs_translationsIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Packs_translations upsert
+   */
+  export type Packs_translationsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Packs_translations
+     */
+    select?: Packs_translationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Packs_translations
+     */
+    omit?: Packs_translationsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Packs_translationsInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Packs_translations to update in case it exists.
+     */
+    where: Packs_translationsWhereUniqueInput
+    /**
+     * In case the Packs_translations found by the `where` argument doesn't exist, create a new Packs_translations with this data.
+     */
+    create: XOR<Packs_translationsCreateInput, Packs_translationsUncheckedCreateInput>
+    /**
+     * In case the Packs_translations was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<Packs_translationsUpdateInput, Packs_translationsUncheckedUpdateInput>
+  }
+
+  /**
+   * Packs_translations delete
+   */
+  export type Packs_translationsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Packs_translations
+     */
+    select?: Packs_translationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Packs_translations
+     */
+    omit?: Packs_translationsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Packs_translationsInclude<ExtArgs> | null
+    /**
+     * Filter which Packs_translations to delete.
+     */
+    where: Packs_translationsWhereUniqueInput
+  }
+
+  /**
+   * Packs_translations deleteMany
+   */
+  export type Packs_translationsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Packs_translations to delete
+     */
+    where?: Packs_translationsWhereInput
+    /**
+     * Limit how many Packs_translations to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Packs_translations without action
+   */
+  export type Packs_translationsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Packs_translations
+     */
+    select?: Packs_translationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Packs_translations
+     */
+    omit?: Packs_translationsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Packs_translationsInclude<ExtArgs> | null
   }
 
 
@@ -11490,1291 +15319,6 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: TransactionsInclude<ExtArgs> | null
-  }
-
-
-  /**
-   * Model Packs
-   */
-
-  export type AggregatePacks = {
-    _count: PacksCountAggregateOutputType | null
-    _avg: PacksAvgAggregateOutputType | null
-    _sum: PacksSumAggregateOutputType | null
-    _min: PacksMinAggregateOutputType | null
-    _max: PacksMaxAggregateOutputType | null
-  }
-
-  export type PacksAvgAggregateOutputType = {
-    id: number | null
-    credits: number | null
-    num_images: number | null
-    num_inference_steps: number | null
-    stars: number | null
-    used: number | null
-  }
-
-  export type PacksSumAggregateOutputType = {
-    id: number | null
-    credits: number | null
-    num_images: number | null
-    num_inference_steps: number | null
-    stars: number | null
-    used: number | null
-  }
-
-  export type PacksMinAggregateOutputType = {
-    id: number | null
-    pid: string | null
-    title: string | null
-    title_url: string | null
-    short_description: string | null
-    full_description: string | null
-    pack_prompts: string | null
-    credits: number | null
-    num_images: number | null
-    num_inference_steps: number | null
-    stars: number | null
-    used: number | null
-    popular: boolean | null
-    main_image: string | null
-    created_at: Date | null
-    updated_at: Date | null
-  }
-
-  export type PacksMaxAggregateOutputType = {
-    id: number | null
-    pid: string | null
-    title: string | null
-    title_url: string | null
-    short_description: string | null
-    full_description: string | null
-    pack_prompts: string | null
-    credits: number | null
-    num_images: number | null
-    num_inference_steps: number | null
-    stars: number | null
-    used: number | null
-    popular: boolean | null
-    main_image: string | null
-    created_at: Date | null
-    updated_at: Date | null
-  }
-
-  export type PacksCountAggregateOutputType = {
-    id: number
-    pid: number
-    title: number
-    title_url: number
-    short_description: number
-    full_description: number
-    pack_prompts: number
-    credits: number
-    num_images: number
-    num_inference_steps: number
-    stars: number
-    used: number
-    popular: number
-    main_image: number
-    images: number
-    features: number
-    created_at: number
-    updated_at: number
-    _all: number
-  }
-
-
-  export type PacksAvgAggregateInputType = {
-    id?: true
-    credits?: true
-    num_images?: true
-    num_inference_steps?: true
-    stars?: true
-    used?: true
-  }
-
-  export type PacksSumAggregateInputType = {
-    id?: true
-    credits?: true
-    num_images?: true
-    num_inference_steps?: true
-    stars?: true
-    used?: true
-  }
-
-  export type PacksMinAggregateInputType = {
-    id?: true
-    pid?: true
-    title?: true
-    title_url?: true
-    short_description?: true
-    full_description?: true
-    pack_prompts?: true
-    credits?: true
-    num_images?: true
-    num_inference_steps?: true
-    stars?: true
-    used?: true
-    popular?: true
-    main_image?: true
-    created_at?: true
-    updated_at?: true
-  }
-
-  export type PacksMaxAggregateInputType = {
-    id?: true
-    pid?: true
-    title?: true
-    title_url?: true
-    short_description?: true
-    full_description?: true
-    pack_prompts?: true
-    credits?: true
-    num_images?: true
-    num_inference_steps?: true
-    stars?: true
-    used?: true
-    popular?: true
-    main_image?: true
-    created_at?: true
-    updated_at?: true
-  }
-
-  export type PacksCountAggregateInputType = {
-    id?: true
-    pid?: true
-    title?: true
-    title_url?: true
-    short_description?: true
-    full_description?: true
-    pack_prompts?: true
-    credits?: true
-    num_images?: true
-    num_inference_steps?: true
-    stars?: true
-    used?: true
-    popular?: true
-    main_image?: true
-    images?: true
-    features?: true
-    created_at?: true
-    updated_at?: true
-    _all?: true
-  }
-
-  export type PacksAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Packs to aggregate.
-     */
-    where?: PacksWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Packs to fetch.
-     */
-    orderBy?: PacksOrderByWithRelationInput | PacksOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: PacksWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Packs from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Packs.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned Packs
-    **/
-    _count?: true | PacksCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to average
-    **/
-    _avg?: PacksAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: PacksSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: PacksMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: PacksMaxAggregateInputType
-  }
-
-  export type GetPacksAggregateType<T extends PacksAggregateArgs> = {
-        [P in keyof T & keyof AggregatePacks]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregatePacks[P]>
-      : GetScalarType<T[P], AggregatePacks[P]>
-  }
-
-
-
-
-  export type PacksGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: PacksWhereInput
-    orderBy?: PacksOrderByWithAggregationInput | PacksOrderByWithAggregationInput[]
-    by: PacksScalarFieldEnum[] | PacksScalarFieldEnum
-    having?: PacksScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: PacksCountAggregateInputType | true
-    _avg?: PacksAvgAggregateInputType
-    _sum?: PacksSumAggregateInputType
-    _min?: PacksMinAggregateInputType
-    _max?: PacksMaxAggregateInputType
-  }
-
-  export type PacksGroupByOutputType = {
-    id: number
-    pid: string
-    title: string
-    title_url: string
-    short_description: string
-    full_description: string
-    pack_prompts: string
-    credits: number
-    num_images: number
-    num_inference_steps: number
-    stars: number
-    used: number
-    popular: boolean
-    main_image: string
-    images: string[]
-    features: string[]
-    created_at: Date
-    updated_at: Date
-    _count: PacksCountAggregateOutputType | null
-    _avg: PacksAvgAggregateOutputType | null
-    _sum: PacksSumAggregateOutputType | null
-    _min: PacksMinAggregateOutputType | null
-    _max: PacksMaxAggregateOutputType | null
-  }
-
-  type GetPacksGroupByPayload<T extends PacksGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<PacksGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof PacksGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], PacksGroupByOutputType[P]>
-            : GetScalarType<T[P], PacksGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type PacksSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    pid?: boolean
-    title?: boolean
-    title_url?: boolean
-    short_description?: boolean
-    full_description?: boolean
-    pack_prompts?: boolean
-    credits?: boolean
-    num_images?: boolean
-    num_inference_steps?: boolean
-    stars?: boolean
-    used?: boolean
-    popular?: boolean
-    main_image?: boolean
-    images?: boolean
-    features?: boolean
-    created_at?: boolean
-    updated_at?: boolean
-    Images?: boolean | Packs$ImagesArgs<ExtArgs>
-    _count?: boolean | PacksCountOutputTypeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["packs"]>
-
-  export type PacksSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    pid?: boolean
-    title?: boolean
-    title_url?: boolean
-    short_description?: boolean
-    full_description?: boolean
-    pack_prompts?: boolean
-    credits?: boolean
-    num_images?: boolean
-    num_inference_steps?: boolean
-    stars?: boolean
-    used?: boolean
-    popular?: boolean
-    main_image?: boolean
-    images?: boolean
-    features?: boolean
-    created_at?: boolean
-    updated_at?: boolean
-  }, ExtArgs["result"]["packs"]>
-
-  export type PacksSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    pid?: boolean
-    title?: boolean
-    title_url?: boolean
-    short_description?: boolean
-    full_description?: boolean
-    pack_prompts?: boolean
-    credits?: boolean
-    num_images?: boolean
-    num_inference_steps?: boolean
-    stars?: boolean
-    used?: boolean
-    popular?: boolean
-    main_image?: boolean
-    images?: boolean
-    features?: boolean
-    created_at?: boolean
-    updated_at?: boolean
-  }, ExtArgs["result"]["packs"]>
-
-  export type PacksSelectScalar = {
-    id?: boolean
-    pid?: boolean
-    title?: boolean
-    title_url?: boolean
-    short_description?: boolean
-    full_description?: boolean
-    pack_prompts?: boolean
-    credits?: boolean
-    num_images?: boolean
-    num_inference_steps?: boolean
-    stars?: boolean
-    used?: boolean
-    popular?: boolean
-    main_image?: boolean
-    images?: boolean
-    features?: boolean
-    created_at?: boolean
-    updated_at?: boolean
-  }
-
-  export type PacksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pid" | "title" | "title_url" | "short_description" | "full_description" | "pack_prompts" | "credits" | "num_images" | "num_inference_steps" | "stars" | "used" | "popular" | "main_image" | "images" | "features" | "created_at" | "updated_at", ExtArgs["result"]["packs"]>
-  export type PacksInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    Images?: boolean | Packs$ImagesArgs<ExtArgs>
-    _count?: boolean | PacksCountOutputTypeDefaultArgs<ExtArgs>
-  }
-  export type PacksIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-  export type PacksIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-
-  export type $PacksPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "Packs"
-    objects: {
-      Images: Prisma.$ImagesPayload<ExtArgs>[]
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      id: number
-      pid: string
-      title: string
-      title_url: string
-      short_description: string
-      full_description: string
-      pack_prompts: string
-      credits: number
-      num_images: number
-      num_inference_steps: number
-      stars: number
-      used: number
-      popular: boolean
-      main_image: string
-      images: string[]
-      features: string[]
-      created_at: Date
-      updated_at: Date
-    }, ExtArgs["result"]["packs"]>
-    composites: {}
-  }
-
-  type PacksGetPayload<S extends boolean | null | undefined | PacksDefaultArgs> = $Result.GetResult<Prisma.$PacksPayload, S>
-
-  type PacksCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<PacksFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: PacksCountAggregateInputType | true
-    }
-
-  export interface PacksDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Packs'], meta: { name: 'Packs' } }
-    /**
-     * Find zero or one Packs that matches the filter.
-     * @param {PacksFindUniqueArgs} args - Arguments to find a Packs
-     * @example
-     * // Get one Packs
-     * const packs = await prisma.packs.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends PacksFindUniqueArgs>(args: SelectSubset<T, PacksFindUniqueArgs<ExtArgs>>): Prisma__PacksClient<$Result.GetResult<Prisma.$PacksPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one Packs that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {PacksFindUniqueOrThrowArgs} args - Arguments to find a Packs
-     * @example
-     * // Get one Packs
-     * const packs = await prisma.packs.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends PacksFindUniqueOrThrowArgs>(args: SelectSubset<T, PacksFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PacksClient<$Result.GetResult<Prisma.$PacksPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Packs that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {PacksFindFirstArgs} args - Arguments to find a Packs
-     * @example
-     * // Get one Packs
-     * const packs = await prisma.packs.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends PacksFindFirstArgs>(args?: SelectSubset<T, PacksFindFirstArgs<ExtArgs>>): Prisma__PacksClient<$Result.GetResult<Prisma.$PacksPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Packs that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {PacksFindFirstOrThrowArgs} args - Arguments to find a Packs
-     * @example
-     * // Get one Packs
-     * const packs = await prisma.packs.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends PacksFindFirstOrThrowArgs>(args?: SelectSubset<T, PacksFindFirstOrThrowArgs<ExtArgs>>): Prisma__PacksClient<$Result.GetResult<Prisma.$PacksPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more Packs that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {PacksFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all Packs
-     * const packs = await prisma.packs.findMany()
-     * 
-     * // Get first 10 Packs
-     * const packs = await prisma.packs.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const packsWithIdOnly = await prisma.packs.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends PacksFindManyArgs>(args?: SelectSubset<T, PacksFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PacksPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a Packs.
-     * @param {PacksCreateArgs} args - Arguments to create a Packs.
-     * @example
-     * // Create one Packs
-     * const Packs = await prisma.packs.create({
-     *   data: {
-     *     // ... data to create a Packs
-     *   }
-     * })
-     * 
-     */
-    create<T extends PacksCreateArgs>(args: SelectSubset<T, PacksCreateArgs<ExtArgs>>): Prisma__PacksClient<$Result.GetResult<Prisma.$PacksPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many Packs.
-     * @param {PacksCreateManyArgs} args - Arguments to create many Packs.
-     * @example
-     * // Create many Packs
-     * const packs = await prisma.packs.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends PacksCreateManyArgs>(args?: SelectSubset<T, PacksCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create many Packs and returns the data saved in the database.
-     * @param {PacksCreateManyAndReturnArgs} args - Arguments to create many Packs.
-     * @example
-     * // Create many Packs
-     * const packs = await prisma.packs.createManyAndReturn({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Create many Packs and only return the `id`
-     * const packsWithIdOnly = await prisma.packs.createManyAndReturn({
-     *   select: { id: true },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    createManyAndReturn<T extends PacksCreateManyAndReturnArgs>(args?: SelectSubset<T, PacksCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PacksPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Delete a Packs.
-     * @param {PacksDeleteArgs} args - Arguments to delete one Packs.
-     * @example
-     * // Delete one Packs
-     * const Packs = await prisma.packs.delete({
-     *   where: {
-     *     // ... filter to delete one Packs
-     *   }
-     * })
-     * 
-     */
-    delete<T extends PacksDeleteArgs>(args: SelectSubset<T, PacksDeleteArgs<ExtArgs>>): Prisma__PacksClient<$Result.GetResult<Prisma.$PacksPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one Packs.
-     * @param {PacksUpdateArgs} args - Arguments to update one Packs.
-     * @example
-     * // Update one Packs
-     * const packs = await prisma.packs.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends PacksUpdateArgs>(args: SelectSubset<T, PacksUpdateArgs<ExtArgs>>): Prisma__PacksClient<$Result.GetResult<Prisma.$PacksPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more Packs.
-     * @param {PacksDeleteManyArgs} args - Arguments to filter Packs to delete.
-     * @example
-     * // Delete a few Packs
-     * const { count } = await prisma.packs.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends PacksDeleteManyArgs>(args?: SelectSubset<T, PacksDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Packs.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {PacksUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many Packs
-     * const packs = await prisma.packs.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends PacksUpdateManyArgs>(args: SelectSubset<T, PacksUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Packs and returns the data updated in the database.
-     * @param {PacksUpdateManyAndReturnArgs} args - Arguments to update many Packs.
-     * @example
-     * // Update many Packs
-     * const packs = await prisma.packs.updateManyAndReturn({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Update zero or more Packs and only return the `id`
-     * const packsWithIdOnly = await prisma.packs.updateManyAndReturn({
-     *   select: { id: true },
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    updateManyAndReturn<T extends PacksUpdateManyAndReturnArgs>(args: SelectSubset<T, PacksUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PacksPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Create or update one Packs.
-     * @param {PacksUpsertArgs} args - Arguments to update or create a Packs.
-     * @example
-     * // Update or create a Packs
-     * const packs = await prisma.packs.upsert({
-     *   create: {
-     *     // ... data to create a Packs
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the Packs we want to update
-     *   }
-     * })
-     */
-    upsert<T extends PacksUpsertArgs>(args: SelectSubset<T, PacksUpsertArgs<ExtArgs>>): Prisma__PacksClient<$Result.GetResult<Prisma.$PacksPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of Packs.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {PacksCountArgs} args - Arguments to filter Packs to count.
-     * @example
-     * // Count the number of Packs
-     * const count = await prisma.packs.count({
-     *   where: {
-     *     // ... the filter for the Packs we want to count
-     *   }
-     * })
-    **/
-    count<T extends PacksCountArgs>(
-      args?: Subset<T, PacksCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], PacksCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a Packs.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {PacksAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends PacksAggregateArgs>(args: Subset<T, PacksAggregateArgs>): Prisma.PrismaPromise<GetPacksAggregateType<T>>
-
-    /**
-     * Group by Packs.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {PacksGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends PacksGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: PacksGroupByArgs['orderBy'] }
-        : { orderBy?: PacksGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, PacksGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPacksGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the Packs model
-   */
-  readonly fields: PacksFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for Packs.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__PacksClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    Images<T extends Packs$ImagesArgs<ExtArgs> = {}>(args?: Subset<T, Packs$ImagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImagesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the Packs model
-   */ 
-  interface PacksFieldRefs {
-    readonly id: FieldRef<"Packs", 'Int'>
-    readonly pid: FieldRef<"Packs", 'String'>
-    readonly title: FieldRef<"Packs", 'String'>
-    readonly title_url: FieldRef<"Packs", 'String'>
-    readonly short_description: FieldRef<"Packs", 'String'>
-    readonly full_description: FieldRef<"Packs", 'String'>
-    readonly pack_prompts: FieldRef<"Packs", 'String'>
-    readonly credits: FieldRef<"Packs", 'Int'>
-    readonly num_images: FieldRef<"Packs", 'Int'>
-    readonly num_inference_steps: FieldRef<"Packs", 'Int'>
-    readonly stars: FieldRef<"Packs", 'Int'>
-    readonly used: FieldRef<"Packs", 'Int'>
-    readonly popular: FieldRef<"Packs", 'Boolean'>
-    readonly main_image: FieldRef<"Packs", 'String'>
-    readonly images: FieldRef<"Packs", 'String[]'>
-    readonly features: FieldRef<"Packs", 'String[]'>
-    readonly created_at: FieldRef<"Packs", 'DateTime'>
-    readonly updated_at: FieldRef<"Packs", 'DateTime'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * Packs findUnique
-   */
-  export type PacksFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Packs
-     */
-    select?: PacksSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Packs
-     */
-    omit?: PacksOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: PacksInclude<ExtArgs> | null
-    /**
-     * Filter, which Packs to fetch.
-     */
-    where: PacksWhereUniqueInput
-  }
-
-  /**
-   * Packs findUniqueOrThrow
-   */
-  export type PacksFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Packs
-     */
-    select?: PacksSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Packs
-     */
-    omit?: PacksOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: PacksInclude<ExtArgs> | null
-    /**
-     * Filter, which Packs to fetch.
-     */
-    where: PacksWhereUniqueInput
-  }
-
-  /**
-   * Packs findFirst
-   */
-  export type PacksFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Packs
-     */
-    select?: PacksSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Packs
-     */
-    omit?: PacksOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: PacksInclude<ExtArgs> | null
-    /**
-     * Filter, which Packs to fetch.
-     */
-    where?: PacksWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Packs to fetch.
-     */
-    orderBy?: PacksOrderByWithRelationInput | PacksOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Packs.
-     */
-    cursor?: PacksWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Packs from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Packs.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Packs.
-     */
-    distinct?: PacksScalarFieldEnum | PacksScalarFieldEnum[]
-  }
-
-  /**
-   * Packs findFirstOrThrow
-   */
-  export type PacksFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Packs
-     */
-    select?: PacksSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Packs
-     */
-    omit?: PacksOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: PacksInclude<ExtArgs> | null
-    /**
-     * Filter, which Packs to fetch.
-     */
-    where?: PacksWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Packs to fetch.
-     */
-    orderBy?: PacksOrderByWithRelationInput | PacksOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Packs.
-     */
-    cursor?: PacksWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Packs from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Packs.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Packs.
-     */
-    distinct?: PacksScalarFieldEnum | PacksScalarFieldEnum[]
-  }
-
-  /**
-   * Packs findMany
-   */
-  export type PacksFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Packs
-     */
-    select?: PacksSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Packs
-     */
-    omit?: PacksOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: PacksInclude<ExtArgs> | null
-    /**
-     * Filter, which Packs to fetch.
-     */
-    where?: PacksWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Packs to fetch.
-     */
-    orderBy?: PacksOrderByWithRelationInput | PacksOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing Packs.
-     */
-    cursor?: PacksWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Packs from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Packs.
-     */
-    skip?: number
-    distinct?: PacksScalarFieldEnum | PacksScalarFieldEnum[]
-  }
-
-  /**
-   * Packs create
-   */
-  export type PacksCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Packs
-     */
-    select?: PacksSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Packs
-     */
-    omit?: PacksOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: PacksInclude<ExtArgs> | null
-    /**
-     * The data needed to create a Packs.
-     */
-    data: XOR<PacksCreateInput, PacksUncheckedCreateInput>
-  }
-
-  /**
-   * Packs createMany
-   */
-  export type PacksCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many Packs.
-     */
-    data: PacksCreateManyInput | PacksCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * Packs createManyAndReturn
-   */
-  export type PacksCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Packs
-     */
-    select?: PacksSelectCreateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Packs
-     */
-    omit?: PacksOmit<ExtArgs> | null
-    /**
-     * The data used to create many Packs.
-     */
-    data: PacksCreateManyInput | PacksCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * Packs update
-   */
-  export type PacksUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Packs
-     */
-    select?: PacksSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Packs
-     */
-    omit?: PacksOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: PacksInclude<ExtArgs> | null
-    /**
-     * The data needed to update a Packs.
-     */
-    data: XOR<PacksUpdateInput, PacksUncheckedUpdateInput>
-    /**
-     * Choose, which Packs to update.
-     */
-    where: PacksWhereUniqueInput
-  }
-
-  /**
-   * Packs updateMany
-   */
-  export type PacksUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update Packs.
-     */
-    data: XOR<PacksUpdateManyMutationInput, PacksUncheckedUpdateManyInput>
-    /**
-     * Filter which Packs to update
-     */
-    where?: PacksWhereInput
-    /**
-     * Limit how many Packs to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * Packs updateManyAndReturn
-   */
-  export type PacksUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Packs
-     */
-    select?: PacksSelectUpdateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Packs
-     */
-    omit?: PacksOmit<ExtArgs> | null
-    /**
-     * The data used to update Packs.
-     */
-    data: XOR<PacksUpdateManyMutationInput, PacksUncheckedUpdateManyInput>
-    /**
-     * Filter which Packs to update
-     */
-    where?: PacksWhereInput
-    /**
-     * Limit how many Packs to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * Packs upsert
-   */
-  export type PacksUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Packs
-     */
-    select?: PacksSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Packs
-     */
-    omit?: PacksOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: PacksInclude<ExtArgs> | null
-    /**
-     * The filter to search for the Packs to update in case it exists.
-     */
-    where: PacksWhereUniqueInput
-    /**
-     * In case the Packs found by the `where` argument doesn't exist, create a new Packs with this data.
-     */
-    create: XOR<PacksCreateInput, PacksUncheckedCreateInput>
-    /**
-     * In case the Packs was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<PacksUpdateInput, PacksUncheckedUpdateInput>
-  }
-
-  /**
-   * Packs delete
-   */
-  export type PacksDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Packs
-     */
-    select?: PacksSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Packs
-     */
-    omit?: PacksOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: PacksInclude<ExtArgs> | null
-    /**
-     * Filter which Packs to delete.
-     */
-    where: PacksWhereUniqueInput
-  }
-
-  /**
-   * Packs deleteMany
-   */
-  export type PacksDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Packs to delete
-     */
-    where?: PacksWhereInput
-    /**
-     * Limit how many Packs to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * Packs.Images
-   */
-  export type Packs$ImagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Images
-     */
-    select?: ImagesSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Images
-     */
-    omit?: ImagesOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ImagesInclude<ExtArgs> | null
-    where?: ImagesWhereInput
-    orderBy?: ImagesOrderByWithRelationInput | ImagesOrderByWithRelationInput[]
-    cursor?: ImagesWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: ImagesScalarFieldEnum | ImagesScalarFieldEnum[]
-  }
-
-  /**
-   * Packs without action
-   */
-  export type PacksDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Packs
-     */
-    select?: PacksSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Packs
-     */
-    omit?: PacksOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: PacksInclude<ExtArgs> | null
   }
 
 
@@ -20363,21 +22907,75 @@ export namespace Prisma {
   export const PlansScalarFieldEnum: {
     id: 'id',
     pid: 'pid',
-    name: 'name',
     plan_name: 'plan_name',
     credit_amount: 'credit_amount',
     model_amount: 'model_amount',
     price_cents: 'price_cents',
     stripe_price_id: 'stripe_price_id',
+    is_popular: 'is_popular',
+    created_at: 'created_at',
+    updated_at: 'updated_at',
+    name: 'name',
+    subtitle: 'subtitle',
+    features: 'features',
+    cta: 'cta'
+  };
+
+  export type PlansScalarFieldEnum = (typeof PlansScalarFieldEnum)[keyof typeof PlansScalarFieldEnum]
+
+
+  export const Plans_translationsScalarFieldEnum: {
+    id: 'id',
+    plan_id: 'plan_id',
+    language: 'language',
+    name: 'name',
     subtitle: 'subtitle',
     features: 'features',
     cta: 'cta',
     created_at: 'created_at',
-    updated_at: 'updated_at',
-    is_popular: 'is_popular'
+    updated_at: 'updated_at'
   };
 
-  export type PlansScalarFieldEnum = (typeof PlansScalarFieldEnum)[keyof typeof PlansScalarFieldEnum]
+  export type Plans_translationsScalarFieldEnum = (typeof Plans_translationsScalarFieldEnum)[keyof typeof Plans_translationsScalarFieldEnum]
+
+
+  export const PacksScalarFieldEnum: {
+    id: 'id',
+    pid: 'pid',
+    pack_prompts: 'pack_prompts',
+    credits: 'credits',
+    num_images: 'num_images',
+    num_inference_steps: 'num_inference_steps',
+    stars: 'stars',
+    used: 'used',
+    popular: 'popular',
+    main_image: 'main_image',
+    images: 'images',
+    created_at: 'created_at',
+    updated_at: 'updated_at',
+    title: 'title',
+    title_url: 'title_url',
+    short_description: 'short_description',
+    full_description: 'full_description',
+    features: 'features'
+  };
+
+  export type PacksScalarFieldEnum = (typeof PacksScalarFieldEnum)[keyof typeof PacksScalarFieldEnum]
+
+
+  export const Packs_translationsScalarFieldEnum: {
+    id: 'id',
+    pack_id: 'pack_id',
+    language: 'language',
+    title: 'title',
+    short_description: 'short_description',
+    full_description: 'full_description',
+    features: 'features',
+    created_at: 'created_at',
+    updated_at: 'updated_at'
+  };
+
+  export type Packs_translationsScalarFieldEnum = (typeof Packs_translationsScalarFieldEnum)[keyof typeof Packs_translationsScalarFieldEnum]
 
 
   export const TransactionsScalarFieldEnum: {
@@ -20396,30 +22994,6 @@ export namespace Prisma {
   };
 
   export type TransactionsScalarFieldEnum = (typeof TransactionsScalarFieldEnum)[keyof typeof TransactionsScalarFieldEnum]
-
-
-  export const PacksScalarFieldEnum: {
-    id: 'id',
-    pid: 'pid',
-    title: 'title',
-    title_url: 'title_url',
-    short_description: 'short_description',
-    full_description: 'full_description',
-    pack_prompts: 'pack_prompts',
-    credits: 'credits',
-    num_images: 'num_images',
-    num_inference_steps: 'num_inference_steps',
-    stars: 'stars',
-    used: 'used',
-    popular: 'popular',
-    main_image: 'main_image',
-    images: 'images',
-    features: 'features',
-    created_at: 'created_at',
-    updated_at: 'updated_at'
-  };
-
-  export type PacksScalarFieldEnum = (typeof PacksScalarFieldEnum)[keyof typeof PacksScalarFieldEnum]
 
 
   export const HandledStripeEventScalarFieldEnum: {
@@ -20750,20 +23324,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'NotificationType'
-   */
-  export type EnumNotificationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotificationType'>
-    
-
-
-  /**
-   * Reference to a field of type 'NotificationType[]'
-   */
-  export type ListEnumNotificationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotificationType[]'>
-    
-
-
-  /**
    * Reference to a field of type 'Language'
    */
   export type EnumLanguageFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Language'>
@@ -20774,6 +23334,20 @@ export namespace Prisma {
    * Reference to a field of type 'Language[]'
    */
   export type ListEnumLanguageFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Language[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'NotificationType'
+   */
+  export type EnumNotificationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotificationType'>
+    
+
+
+  /**
+   * Reference to a field of type 'NotificationType[]'
+   */
+  export type ListEnumNotificationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotificationType[]'>
     
 
 
@@ -21401,75 +23975,78 @@ export namespace Prisma {
     NOT?: PlansWhereInput | PlansWhereInput[]
     id?: IntFilter<"Plans"> | number
     pid?: UuidFilter<"Plans"> | string
-    name?: StringFilter<"Plans"> | string
     plan_name?: EnumPlanNamesFilter<"Plans"> | $Enums.PlanNames
     credit_amount?: IntFilter<"Plans"> | number
     model_amount?: IntFilter<"Plans"> | number
     price_cents?: BigIntFilter<"Plans"> | bigint | number
     stripe_price_id?: StringFilter<"Plans"> | string
+    is_popular?: BoolFilter<"Plans"> | boolean
+    created_at?: DateTimeFilter<"Plans"> | Date | string
+    updated_at?: DateTimeFilter<"Plans"> | Date | string
+    name?: StringFilter<"Plans"> | string
     subtitle?: StringFilter<"Plans"> | string
     features?: StringNullableListFilter<"Plans">
     cta?: StringFilter<"Plans"> | string
-    created_at?: DateTimeFilter<"Plans"> | Date | string
-    updated_at?: DateTimeFilter<"Plans"> | Date | string
-    is_popular?: BoolFilter<"Plans"> | boolean
+    translations?: Plans_translationsListRelationFilter
     transactions?: TransactionsListRelationFilter
   }
 
   export type PlansOrderByWithRelationInput = {
     id?: SortOrder
     pid?: SortOrder
-    name?: SortOrder
     plan_name?: SortOrder
     credit_amount?: SortOrder
     model_amount?: SortOrder
     price_cents?: SortOrder
     stripe_price_id?: SortOrder
+    is_popular?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    name?: SortOrder
     subtitle?: SortOrder
     features?: SortOrder
     cta?: SortOrder
-    created_at?: SortOrder
-    updated_at?: SortOrder
-    is_popular?: SortOrder
+    translations?: Plans_translationsOrderByRelationAggregateInput
     transactions?: TransactionsOrderByRelationAggregateInput
   }
 
   export type PlansWhereUniqueInput = Prisma.AtLeast<{
     id?: number
     pid?: string
-    name?: string
     plan_name?: $Enums.PlanNames
     stripe_price_id?: string
+    name?: string
     AND?: PlansWhereInput | PlansWhereInput[]
     OR?: PlansWhereInput[]
     NOT?: PlansWhereInput | PlansWhereInput[]
     credit_amount?: IntFilter<"Plans"> | number
     model_amount?: IntFilter<"Plans"> | number
     price_cents?: BigIntFilter<"Plans"> | bigint | number
+    is_popular?: BoolFilter<"Plans"> | boolean
+    created_at?: DateTimeFilter<"Plans"> | Date | string
+    updated_at?: DateTimeFilter<"Plans"> | Date | string
     subtitle?: StringFilter<"Plans"> | string
     features?: StringNullableListFilter<"Plans">
     cta?: StringFilter<"Plans"> | string
-    created_at?: DateTimeFilter<"Plans"> | Date | string
-    updated_at?: DateTimeFilter<"Plans"> | Date | string
-    is_popular?: BoolFilter<"Plans"> | boolean
+    translations?: Plans_translationsListRelationFilter
     transactions?: TransactionsListRelationFilter
-  }, "id" | "pid" | "name" | "plan_name" | "stripe_price_id">
+  }, "id" | "pid" | "plan_name" | "stripe_price_id" | "name">
 
   export type PlansOrderByWithAggregationInput = {
     id?: SortOrder
     pid?: SortOrder
-    name?: SortOrder
     plan_name?: SortOrder
     credit_amount?: SortOrder
     model_amount?: SortOrder
     price_cents?: SortOrder
     stripe_price_id?: SortOrder
+    is_popular?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    name?: SortOrder
     subtitle?: SortOrder
     features?: SortOrder
     cta?: SortOrder
-    created_at?: SortOrder
-    updated_at?: SortOrder
-    is_popular?: SortOrder
     _count?: PlansCountOrderByAggregateInput
     _avg?: PlansAvgOrderByAggregateInput
     _max?: PlansMaxOrderByAggregateInput
@@ -21483,18 +24060,299 @@ export namespace Prisma {
     NOT?: PlansScalarWhereWithAggregatesInput | PlansScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"Plans"> | number
     pid?: UuidWithAggregatesFilter<"Plans"> | string
-    name?: StringWithAggregatesFilter<"Plans"> | string
     plan_name?: EnumPlanNamesWithAggregatesFilter<"Plans"> | $Enums.PlanNames
     credit_amount?: IntWithAggregatesFilter<"Plans"> | number
     model_amount?: IntWithAggregatesFilter<"Plans"> | number
     price_cents?: BigIntWithAggregatesFilter<"Plans"> | bigint | number
     stripe_price_id?: StringWithAggregatesFilter<"Plans"> | string
+    is_popular?: BoolWithAggregatesFilter<"Plans"> | boolean
+    created_at?: DateTimeWithAggregatesFilter<"Plans"> | Date | string
+    updated_at?: DateTimeWithAggregatesFilter<"Plans"> | Date | string
+    name?: StringWithAggregatesFilter<"Plans"> | string
     subtitle?: StringWithAggregatesFilter<"Plans"> | string
     features?: StringNullableListFilter<"Plans">
     cta?: StringWithAggregatesFilter<"Plans"> | string
-    created_at?: DateTimeWithAggregatesFilter<"Plans"> | Date | string
-    updated_at?: DateTimeWithAggregatesFilter<"Plans"> | Date | string
-    is_popular?: BoolWithAggregatesFilter<"Plans"> | boolean
+  }
+
+  export type Plans_translationsWhereInput = {
+    AND?: Plans_translationsWhereInput | Plans_translationsWhereInput[]
+    OR?: Plans_translationsWhereInput[]
+    NOT?: Plans_translationsWhereInput | Plans_translationsWhereInput[]
+    id?: IntFilter<"Plans_translations"> | number
+    plan_id?: IntFilter<"Plans_translations"> | number
+    language?: EnumLanguageFilter<"Plans_translations"> | $Enums.Language
+    name?: StringFilter<"Plans_translations"> | string
+    subtitle?: StringFilter<"Plans_translations"> | string
+    features?: StringNullableListFilter<"Plans_translations">
+    cta?: StringFilter<"Plans_translations"> | string
+    created_at?: DateTimeFilter<"Plans_translations"> | Date | string
+    updated_at?: DateTimeFilter<"Plans_translations"> | Date | string
+    plan?: XOR<PlansScalarRelationFilter, PlansWhereInput>
+  }
+
+  export type Plans_translationsOrderByWithRelationInput = {
+    id?: SortOrder
+    plan_id?: SortOrder
+    language?: SortOrder
+    name?: SortOrder
+    subtitle?: SortOrder
+    features?: SortOrder
+    cta?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    plan?: PlansOrderByWithRelationInput
+  }
+
+  export type Plans_translationsWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    plan_id_language?: Plans_translationsPlan_idLanguageCompoundUniqueInput
+    AND?: Plans_translationsWhereInput | Plans_translationsWhereInput[]
+    OR?: Plans_translationsWhereInput[]
+    NOT?: Plans_translationsWhereInput | Plans_translationsWhereInput[]
+    plan_id?: IntFilter<"Plans_translations"> | number
+    language?: EnumLanguageFilter<"Plans_translations"> | $Enums.Language
+    name?: StringFilter<"Plans_translations"> | string
+    subtitle?: StringFilter<"Plans_translations"> | string
+    features?: StringNullableListFilter<"Plans_translations">
+    cta?: StringFilter<"Plans_translations"> | string
+    created_at?: DateTimeFilter<"Plans_translations"> | Date | string
+    updated_at?: DateTimeFilter<"Plans_translations"> | Date | string
+    plan?: XOR<PlansScalarRelationFilter, PlansWhereInput>
+  }, "id" | "plan_id_language">
+
+  export type Plans_translationsOrderByWithAggregationInput = {
+    id?: SortOrder
+    plan_id?: SortOrder
+    language?: SortOrder
+    name?: SortOrder
+    subtitle?: SortOrder
+    features?: SortOrder
+    cta?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    _count?: Plans_translationsCountOrderByAggregateInput
+    _avg?: Plans_translationsAvgOrderByAggregateInput
+    _max?: Plans_translationsMaxOrderByAggregateInput
+    _min?: Plans_translationsMinOrderByAggregateInput
+    _sum?: Plans_translationsSumOrderByAggregateInput
+  }
+
+  export type Plans_translationsScalarWhereWithAggregatesInput = {
+    AND?: Plans_translationsScalarWhereWithAggregatesInput | Plans_translationsScalarWhereWithAggregatesInput[]
+    OR?: Plans_translationsScalarWhereWithAggregatesInput[]
+    NOT?: Plans_translationsScalarWhereWithAggregatesInput | Plans_translationsScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"Plans_translations"> | number
+    plan_id?: IntWithAggregatesFilter<"Plans_translations"> | number
+    language?: EnumLanguageWithAggregatesFilter<"Plans_translations"> | $Enums.Language
+    name?: StringWithAggregatesFilter<"Plans_translations"> | string
+    subtitle?: StringWithAggregatesFilter<"Plans_translations"> | string
+    features?: StringNullableListFilter<"Plans_translations">
+    cta?: StringWithAggregatesFilter<"Plans_translations"> | string
+    created_at?: DateTimeWithAggregatesFilter<"Plans_translations"> | Date | string
+    updated_at?: DateTimeWithAggregatesFilter<"Plans_translations"> | Date | string
+  }
+
+  export type PacksWhereInput = {
+    AND?: PacksWhereInput | PacksWhereInput[]
+    OR?: PacksWhereInput[]
+    NOT?: PacksWhereInput | PacksWhereInput[]
+    id?: IntFilter<"Packs"> | number
+    pid?: UuidFilter<"Packs"> | string
+    pack_prompts?: StringFilter<"Packs"> | string
+    credits?: IntFilter<"Packs"> | number
+    num_images?: IntFilter<"Packs"> | number
+    num_inference_steps?: IntFilter<"Packs"> | number
+    stars?: IntFilter<"Packs"> | number
+    used?: IntFilter<"Packs"> | number
+    popular?: BoolFilter<"Packs"> | boolean
+    main_image?: StringFilter<"Packs"> | string
+    images?: StringNullableListFilter<"Packs">
+    created_at?: DateTimeFilter<"Packs"> | Date | string
+    updated_at?: DateTimeFilter<"Packs"> | Date | string
+    title?: StringFilter<"Packs"> | string
+    title_url?: StringFilter<"Packs"> | string
+    short_description?: StringFilter<"Packs"> | string
+    full_description?: StringFilter<"Packs"> | string
+    features?: StringNullableListFilter<"Packs">
+    Images?: ImagesListRelationFilter
+    translations?: Packs_translationsListRelationFilter
+  }
+
+  export type PacksOrderByWithRelationInput = {
+    id?: SortOrder
+    pid?: SortOrder
+    pack_prompts?: SortOrder
+    credits?: SortOrder
+    num_images?: SortOrder
+    num_inference_steps?: SortOrder
+    stars?: SortOrder
+    used?: SortOrder
+    popular?: SortOrder
+    main_image?: SortOrder
+    images?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    title?: SortOrder
+    title_url?: SortOrder
+    short_description?: SortOrder
+    full_description?: SortOrder
+    features?: SortOrder
+    Images?: ImagesOrderByRelationAggregateInput
+    translations?: Packs_translationsOrderByRelationAggregateInput
+  }
+
+  export type PacksWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    pid?: string
+    title_url?: string
+    AND?: PacksWhereInput | PacksWhereInput[]
+    OR?: PacksWhereInput[]
+    NOT?: PacksWhereInput | PacksWhereInput[]
+    pack_prompts?: StringFilter<"Packs"> | string
+    credits?: IntFilter<"Packs"> | number
+    num_images?: IntFilter<"Packs"> | number
+    num_inference_steps?: IntFilter<"Packs"> | number
+    stars?: IntFilter<"Packs"> | number
+    used?: IntFilter<"Packs"> | number
+    popular?: BoolFilter<"Packs"> | boolean
+    main_image?: StringFilter<"Packs"> | string
+    images?: StringNullableListFilter<"Packs">
+    created_at?: DateTimeFilter<"Packs"> | Date | string
+    updated_at?: DateTimeFilter<"Packs"> | Date | string
+    title?: StringFilter<"Packs"> | string
+    short_description?: StringFilter<"Packs"> | string
+    full_description?: StringFilter<"Packs"> | string
+    features?: StringNullableListFilter<"Packs">
+    Images?: ImagesListRelationFilter
+    translations?: Packs_translationsListRelationFilter
+  }, "id" | "pid" | "title_url">
+
+  export type PacksOrderByWithAggregationInput = {
+    id?: SortOrder
+    pid?: SortOrder
+    pack_prompts?: SortOrder
+    credits?: SortOrder
+    num_images?: SortOrder
+    num_inference_steps?: SortOrder
+    stars?: SortOrder
+    used?: SortOrder
+    popular?: SortOrder
+    main_image?: SortOrder
+    images?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    title?: SortOrder
+    title_url?: SortOrder
+    short_description?: SortOrder
+    full_description?: SortOrder
+    features?: SortOrder
+    _count?: PacksCountOrderByAggregateInput
+    _avg?: PacksAvgOrderByAggregateInput
+    _max?: PacksMaxOrderByAggregateInput
+    _min?: PacksMinOrderByAggregateInput
+    _sum?: PacksSumOrderByAggregateInput
+  }
+
+  export type PacksScalarWhereWithAggregatesInput = {
+    AND?: PacksScalarWhereWithAggregatesInput | PacksScalarWhereWithAggregatesInput[]
+    OR?: PacksScalarWhereWithAggregatesInput[]
+    NOT?: PacksScalarWhereWithAggregatesInput | PacksScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"Packs"> | number
+    pid?: UuidWithAggregatesFilter<"Packs"> | string
+    pack_prompts?: StringWithAggregatesFilter<"Packs"> | string
+    credits?: IntWithAggregatesFilter<"Packs"> | number
+    num_images?: IntWithAggregatesFilter<"Packs"> | number
+    num_inference_steps?: IntWithAggregatesFilter<"Packs"> | number
+    stars?: IntWithAggregatesFilter<"Packs"> | number
+    used?: IntWithAggregatesFilter<"Packs"> | number
+    popular?: BoolWithAggregatesFilter<"Packs"> | boolean
+    main_image?: StringWithAggregatesFilter<"Packs"> | string
+    images?: StringNullableListFilter<"Packs">
+    created_at?: DateTimeWithAggregatesFilter<"Packs"> | Date | string
+    updated_at?: DateTimeWithAggregatesFilter<"Packs"> | Date | string
+    title?: StringWithAggregatesFilter<"Packs"> | string
+    title_url?: StringWithAggregatesFilter<"Packs"> | string
+    short_description?: StringWithAggregatesFilter<"Packs"> | string
+    full_description?: StringWithAggregatesFilter<"Packs"> | string
+    features?: StringNullableListFilter<"Packs">
+  }
+
+  export type Packs_translationsWhereInput = {
+    AND?: Packs_translationsWhereInput | Packs_translationsWhereInput[]
+    OR?: Packs_translationsWhereInput[]
+    NOT?: Packs_translationsWhereInput | Packs_translationsWhereInput[]
+    id?: IntFilter<"Packs_translations"> | number
+    pack_id?: IntFilter<"Packs_translations"> | number
+    language?: EnumLanguageFilter<"Packs_translations"> | $Enums.Language
+    title?: StringFilter<"Packs_translations"> | string
+    short_description?: StringFilter<"Packs_translations"> | string
+    full_description?: StringFilter<"Packs_translations"> | string
+    features?: StringNullableListFilter<"Packs_translations">
+    created_at?: DateTimeFilter<"Packs_translations"> | Date | string
+    updated_at?: DateTimeFilter<"Packs_translations"> | Date | string
+    pack?: XOR<PacksScalarRelationFilter, PacksWhereInput>
+  }
+
+  export type Packs_translationsOrderByWithRelationInput = {
+    id?: SortOrder
+    pack_id?: SortOrder
+    language?: SortOrder
+    title?: SortOrder
+    short_description?: SortOrder
+    full_description?: SortOrder
+    features?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    pack?: PacksOrderByWithRelationInput
+  }
+
+  export type Packs_translationsWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    pack_id_language?: Packs_translationsPack_idLanguageCompoundUniqueInput
+    AND?: Packs_translationsWhereInput | Packs_translationsWhereInput[]
+    OR?: Packs_translationsWhereInput[]
+    NOT?: Packs_translationsWhereInput | Packs_translationsWhereInput[]
+    pack_id?: IntFilter<"Packs_translations"> | number
+    language?: EnumLanguageFilter<"Packs_translations"> | $Enums.Language
+    title?: StringFilter<"Packs_translations"> | string
+    short_description?: StringFilter<"Packs_translations"> | string
+    full_description?: StringFilter<"Packs_translations"> | string
+    features?: StringNullableListFilter<"Packs_translations">
+    created_at?: DateTimeFilter<"Packs_translations"> | Date | string
+    updated_at?: DateTimeFilter<"Packs_translations"> | Date | string
+    pack?: XOR<PacksScalarRelationFilter, PacksWhereInput>
+  }, "id" | "pack_id_language">
+
+  export type Packs_translationsOrderByWithAggregationInput = {
+    id?: SortOrder
+    pack_id?: SortOrder
+    language?: SortOrder
+    title?: SortOrder
+    short_description?: SortOrder
+    full_description?: SortOrder
+    features?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    _count?: Packs_translationsCountOrderByAggregateInput
+    _avg?: Packs_translationsAvgOrderByAggregateInput
+    _max?: Packs_translationsMaxOrderByAggregateInput
+    _min?: Packs_translationsMinOrderByAggregateInput
+    _sum?: Packs_translationsSumOrderByAggregateInput
+  }
+
+  export type Packs_translationsScalarWhereWithAggregatesInput = {
+    AND?: Packs_translationsScalarWhereWithAggregatesInput | Packs_translationsScalarWhereWithAggregatesInput[]
+    OR?: Packs_translationsScalarWhereWithAggregatesInput[]
+    NOT?: Packs_translationsScalarWhereWithAggregatesInput | Packs_translationsScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"Packs_translations"> | number
+    pack_id?: IntWithAggregatesFilter<"Packs_translations"> | number
+    language?: EnumLanguageWithAggregatesFilter<"Packs_translations"> | $Enums.Language
+    title?: StringWithAggregatesFilter<"Packs_translations"> | string
+    short_description?: StringWithAggregatesFilter<"Packs_translations"> | string
+    full_description?: StringWithAggregatesFilter<"Packs_translations"> | string
+    features?: StringNullableListFilter<"Packs_translations">
+    created_at?: DateTimeWithAggregatesFilter<"Packs_translations"> | Date | string
+    updated_at?: DateTimeWithAggregatesFilter<"Packs_translations"> | Date | string
   }
 
   export type TransactionsWhereInput = {
@@ -21590,128 +24448,6 @@ export namespace Prisma {
     status?: EnumStatusWithAggregatesFilter<"Transactions"> | $Enums.Status
     created_at?: DateTimeWithAggregatesFilter<"Transactions"> | Date | string
     updated_at?: DateTimeWithAggregatesFilter<"Transactions"> | Date | string
-  }
-
-  export type PacksWhereInput = {
-    AND?: PacksWhereInput | PacksWhereInput[]
-    OR?: PacksWhereInput[]
-    NOT?: PacksWhereInput | PacksWhereInput[]
-    id?: IntFilter<"Packs"> | number
-    pid?: UuidFilter<"Packs"> | string
-    title?: StringFilter<"Packs"> | string
-    title_url?: StringFilter<"Packs"> | string
-    short_description?: StringFilter<"Packs"> | string
-    full_description?: StringFilter<"Packs"> | string
-    pack_prompts?: StringFilter<"Packs"> | string
-    credits?: IntFilter<"Packs"> | number
-    num_images?: IntFilter<"Packs"> | number
-    num_inference_steps?: IntFilter<"Packs"> | number
-    stars?: IntFilter<"Packs"> | number
-    used?: IntFilter<"Packs"> | number
-    popular?: BoolFilter<"Packs"> | boolean
-    main_image?: StringFilter<"Packs"> | string
-    images?: StringNullableListFilter<"Packs">
-    features?: StringNullableListFilter<"Packs">
-    created_at?: DateTimeFilter<"Packs"> | Date | string
-    updated_at?: DateTimeFilter<"Packs"> | Date | string
-    Images?: ImagesListRelationFilter
-  }
-
-  export type PacksOrderByWithRelationInput = {
-    id?: SortOrder
-    pid?: SortOrder
-    title?: SortOrder
-    title_url?: SortOrder
-    short_description?: SortOrder
-    full_description?: SortOrder
-    pack_prompts?: SortOrder
-    credits?: SortOrder
-    num_images?: SortOrder
-    num_inference_steps?: SortOrder
-    stars?: SortOrder
-    used?: SortOrder
-    popular?: SortOrder
-    main_image?: SortOrder
-    images?: SortOrder
-    features?: SortOrder
-    created_at?: SortOrder
-    updated_at?: SortOrder
-    Images?: ImagesOrderByRelationAggregateInput
-  }
-
-  export type PacksWhereUniqueInput = Prisma.AtLeast<{
-    id?: number
-    pid?: string
-    title_url?: string
-    AND?: PacksWhereInput | PacksWhereInput[]
-    OR?: PacksWhereInput[]
-    NOT?: PacksWhereInput | PacksWhereInput[]
-    title?: StringFilter<"Packs"> | string
-    short_description?: StringFilter<"Packs"> | string
-    full_description?: StringFilter<"Packs"> | string
-    pack_prompts?: StringFilter<"Packs"> | string
-    credits?: IntFilter<"Packs"> | number
-    num_images?: IntFilter<"Packs"> | number
-    num_inference_steps?: IntFilter<"Packs"> | number
-    stars?: IntFilter<"Packs"> | number
-    used?: IntFilter<"Packs"> | number
-    popular?: BoolFilter<"Packs"> | boolean
-    main_image?: StringFilter<"Packs"> | string
-    images?: StringNullableListFilter<"Packs">
-    features?: StringNullableListFilter<"Packs">
-    created_at?: DateTimeFilter<"Packs"> | Date | string
-    updated_at?: DateTimeFilter<"Packs"> | Date | string
-    Images?: ImagesListRelationFilter
-  }, "id" | "pid" | "title_url">
-
-  export type PacksOrderByWithAggregationInput = {
-    id?: SortOrder
-    pid?: SortOrder
-    title?: SortOrder
-    title_url?: SortOrder
-    short_description?: SortOrder
-    full_description?: SortOrder
-    pack_prompts?: SortOrder
-    credits?: SortOrder
-    num_images?: SortOrder
-    num_inference_steps?: SortOrder
-    stars?: SortOrder
-    used?: SortOrder
-    popular?: SortOrder
-    main_image?: SortOrder
-    images?: SortOrder
-    features?: SortOrder
-    created_at?: SortOrder
-    updated_at?: SortOrder
-    _count?: PacksCountOrderByAggregateInput
-    _avg?: PacksAvgOrderByAggregateInput
-    _max?: PacksMaxOrderByAggregateInput
-    _min?: PacksMinOrderByAggregateInput
-    _sum?: PacksSumOrderByAggregateInput
-  }
-
-  export type PacksScalarWhereWithAggregatesInput = {
-    AND?: PacksScalarWhereWithAggregatesInput | PacksScalarWhereWithAggregatesInput[]
-    OR?: PacksScalarWhereWithAggregatesInput[]
-    NOT?: PacksScalarWhereWithAggregatesInput | PacksScalarWhereWithAggregatesInput[]
-    id?: IntWithAggregatesFilter<"Packs"> | number
-    pid?: UuidWithAggregatesFilter<"Packs"> | string
-    title?: StringWithAggregatesFilter<"Packs"> | string
-    title_url?: StringWithAggregatesFilter<"Packs"> | string
-    short_description?: StringWithAggregatesFilter<"Packs"> | string
-    full_description?: StringWithAggregatesFilter<"Packs"> | string
-    pack_prompts?: StringWithAggregatesFilter<"Packs"> | string
-    credits?: IntWithAggregatesFilter<"Packs"> | number
-    num_images?: IntWithAggregatesFilter<"Packs"> | number
-    num_inference_steps?: IntWithAggregatesFilter<"Packs"> | number
-    stars?: IntWithAggregatesFilter<"Packs"> | number
-    used?: IntWithAggregatesFilter<"Packs"> | number
-    popular?: BoolWithAggregatesFilter<"Packs"> | boolean
-    main_image?: StringWithAggregatesFilter<"Packs"> | string
-    images?: StringNullableListFilter<"Packs">
-    features?: StringNullableListFilter<"Packs">
-    created_at?: DateTimeWithAggregatesFilter<"Packs"> | Date | string
-    updated_at?: DateTimeWithAggregatesFilter<"Packs"> | Date | string
   }
 
   export type HandledStripeEventWhereInput = {
@@ -22770,122 +25506,438 @@ export namespace Prisma {
 
   export type PlansCreateInput = {
     pid: string
-    name: string
     plan_name: $Enums.PlanNames
     credit_amount: number
     model_amount: number
     price_cents: bigint | number
     stripe_price_id: string
+    is_popular?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+    name: string
     subtitle: string
     features?: PlansCreatefeaturesInput | string[]
     cta: string
-    created_at?: Date | string
-    updated_at?: Date | string
-    is_popular?: boolean
+    translations?: Plans_translationsCreateNestedManyWithoutPlanInput
     transactions?: TransactionsCreateNestedManyWithoutPlanInput
   }
 
   export type PlansUncheckedCreateInput = {
     id?: number
     pid: string
-    name: string
     plan_name: $Enums.PlanNames
     credit_amount: number
     model_amount: number
     price_cents: bigint | number
     stripe_price_id: string
+    is_popular?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+    name: string
     subtitle: string
     features?: PlansCreatefeaturesInput | string[]
     cta: string
-    created_at?: Date | string
-    updated_at?: Date | string
-    is_popular?: boolean
+    translations?: Plans_translationsUncheckedCreateNestedManyWithoutPlanInput
     transactions?: TransactionsUncheckedCreateNestedManyWithoutPlanInput
   }
 
   export type PlansUpdateInput = {
     pid?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
     plan_name?: EnumPlanNamesFieldUpdateOperationsInput | $Enums.PlanNames
     credit_amount?: IntFieldUpdateOperationsInput | number
     model_amount?: IntFieldUpdateOperationsInput | number
     price_cents?: BigIntFieldUpdateOperationsInput | bigint | number
     stripe_price_id?: StringFieldUpdateOperationsInput | string
+    is_popular?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: StringFieldUpdateOperationsInput | string
     subtitle?: StringFieldUpdateOperationsInput | string
     features?: PlansUpdatefeaturesInput | string[]
     cta?: StringFieldUpdateOperationsInput | string
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    is_popular?: BoolFieldUpdateOperationsInput | boolean
+    translations?: Plans_translationsUpdateManyWithoutPlanNestedInput
     transactions?: TransactionsUpdateManyWithoutPlanNestedInput
   }
 
   export type PlansUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     pid?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
     plan_name?: EnumPlanNamesFieldUpdateOperationsInput | $Enums.PlanNames
     credit_amount?: IntFieldUpdateOperationsInput | number
     model_amount?: IntFieldUpdateOperationsInput | number
     price_cents?: BigIntFieldUpdateOperationsInput | bigint | number
     stripe_price_id?: StringFieldUpdateOperationsInput | string
+    is_popular?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: StringFieldUpdateOperationsInput | string
     subtitle?: StringFieldUpdateOperationsInput | string
     features?: PlansUpdatefeaturesInput | string[]
     cta?: StringFieldUpdateOperationsInput | string
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    is_popular?: BoolFieldUpdateOperationsInput | boolean
+    translations?: Plans_translationsUncheckedUpdateManyWithoutPlanNestedInput
     transactions?: TransactionsUncheckedUpdateManyWithoutPlanNestedInput
   }
 
   export type PlansCreateManyInput = {
     id?: number
     pid: string
-    name: string
     plan_name: $Enums.PlanNames
     credit_amount: number
     model_amount: number
     price_cents: bigint | number
     stripe_price_id: string
+    is_popular?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+    name: string
     subtitle: string
     features?: PlansCreatefeaturesInput | string[]
     cta: string
-    created_at?: Date | string
-    updated_at?: Date | string
-    is_popular?: boolean
   }
 
   export type PlansUpdateManyMutationInput = {
     pid?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
     plan_name?: EnumPlanNamesFieldUpdateOperationsInput | $Enums.PlanNames
     credit_amount?: IntFieldUpdateOperationsInput | number
     model_amount?: IntFieldUpdateOperationsInput | number
     price_cents?: BigIntFieldUpdateOperationsInput | bigint | number
     stripe_price_id?: StringFieldUpdateOperationsInput | string
+    is_popular?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: StringFieldUpdateOperationsInput | string
     subtitle?: StringFieldUpdateOperationsInput | string
     features?: PlansUpdatefeaturesInput | string[]
     cta?: StringFieldUpdateOperationsInput | string
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    is_popular?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type PlansUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     pid?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
     plan_name?: EnumPlanNamesFieldUpdateOperationsInput | $Enums.PlanNames
     credit_amount?: IntFieldUpdateOperationsInput | number
     model_amount?: IntFieldUpdateOperationsInput | number
     price_cents?: BigIntFieldUpdateOperationsInput | bigint | number
     stripe_price_id?: StringFieldUpdateOperationsInput | string
+    is_popular?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: StringFieldUpdateOperationsInput | string
     subtitle?: StringFieldUpdateOperationsInput | string
     features?: PlansUpdatefeaturesInput | string[]
     cta?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type Plans_translationsCreateInput = {
+    language: $Enums.Language
+    name: string
+    subtitle: string
+    features?: Plans_translationsCreatefeaturesInput | string[]
+    cta: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    plan: PlansCreateNestedOneWithoutTranslationsInput
+  }
+
+  export type Plans_translationsUncheckedCreateInput = {
+    id?: number
+    plan_id: number
+    language: $Enums.Language
+    name: string
+    subtitle: string
+    features?: Plans_translationsCreatefeaturesInput | string[]
+    cta: string
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type Plans_translationsUpdateInput = {
+    language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    name?: StringFieldUpdateOperationsInput | string
+    subtitle?: StringFieldUpdateOperationsInput | string
+    features?: Plans_translationsUpdatefeaturesInput | string[]
+    cta?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    is_popular?: BoolFieldUpdateOperationsInput | boolean
+    plan?: PlansUpdateOneRequiredWithoutTranslationsNestedInput
+  }
+
+  export type Plans_translationsUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    plan_id?: IntFieldUpdateOperationsInput | number
+    language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    name?: StringFieldUpdateOperationsInput | string
+    subtitle?: StringFieldUpdateOperationsInput | string
+    features?: Plans_translationsUpdatefeaturesInput | string[]
+    cta?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type Plans_translationsCreateManyInput = {
+    id?: number
+    plan_id: number
+    language: $Enums.Language
+    name: string
+    subtitle: string
+    features?: Plans_translationsCreatefeaturesInput | string[]
+    cta: string
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type Plans_translationsUpdateManyMutationInput = {
+    language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    name?: StringFieldUpdateOperationsInput | string
+    subtitle?: StringFieldUpdateOperationsInput | string
+    features?: Plans_translationsUpdatefeaturesInput | string[]
+    cta?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type Plans_translationsUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    plan_id?: IntFieldUpdateOperationsInput | number
+    language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    name?: StringFieldUpdateOperationsInput | string
+    subtitle?: StringFieldUpdateOperationsInput | string
+    features?: Plans_translationsUpdatefeaturesInput | string[]
+    cta?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PacksCreateInput = {
+    pid: string
+    pack_prompts: string
+    credits: number
+    num_images: number
+    num_inference_steps?: number
+    stars?: number
+    used?: number
+    popular?: boolean
+    main_image?: string
+    images?: PacksCreateimagesInput | string[]
+    created_at?: Date | string
+    updated_at?: Date | string
+    title: string
+    title_url: string
+    short_description: string
+    full_description: string
+    features?: PacksCreatefeaturesInput | string[]
+    Images?: ImagesCreateNestedManyWithoutPackInput
+    translations?: Packs_translationsCreateNestedManyWithoutPackInput
+  }
+
+  export type PacksUncheckedCreateInput = {
+    id?: number
+    pid: string
+    pack_prompts: string
+    credits: number
+    num_images: number
+    num_inference_steps?: number
+    stars?: number
+    used?: number
+    popular?: boolean
+    main_image?: string
+    images?: PacksCreateimagesInput | string[]
+    created_at?: Date | string
+    updated_at?: Date | string
+    title: string
+    title_url: string
+    short_description: string
+    full_description: string
+    features?: PacksCreatefeaturesInput | string[]
+    Images?: ImagesUncheckedCreateNestedManyWithoutPackInput
+    translations?: Packs_translationsUncheckedCreateNestedManyWithoutPackInput
+  }
+
+  export type PacksUpdateInput = {
+    pid?: StringFieldUpdateOperationsInput | string
+    pack_prompts?: StringFieldUpdateOperationsInput | string
+    credits?: IntFieldUpdateOperationsInput | number
+    num_images?: IntFieldUpdateOperationsInput | number
+    num_inference_steps?: IntFieldUpdateOperationsInput | number
+    stars?: IntFieldUpdateOperationsInput | number
+    used?: IntFieldUpdateOperationsInput | number
+    popular?: BoolFieldUpdateOperationsInput | boolean
+    main_image?: StringFieldUpdateOperationsInput | string
+    images?: PacksUpdateimagesInput | string[]
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    title?: StringFieldUpdateOperationsInput | string
+    title_url?: StringFieldUpdateOperationsInput | string
+    short_description?: StringFieldUpdateOperationsInput | string
+    full_description?: StringFieldUpdateOperationsInput | string
+    features?: PacksUpdatefeaturesInput | string[]
+    Images?: ImagesUpdateManyWithoutPackNestedInput
+    translations?: Packs_translationsUpdateManyWithoutPackNestedInput
+  }
+
+  export type PacksUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    pid?: StringFieldUpdateOperationsInput | string
+    pack_prompts?: StringFieldUpdateOperationsInput | string
+    credits?: IntFieldUpdateOperationsInput | number
+    num_images?: IntFieldUpdateOperationsInput | number
+    num_inference_steps?: IntFieldUpdateOperationsInput | number
+    stars?: IntFieldUpdateOperationsInput | number
+    used?: IntFieldUpdateOperationsInput | number
+    popular?: BoolFieldUpdateOperationsInput | boolean
+    main_image?: StringFieldUpdateOperationsInput | string
+    images?: PacksUpdateimagesInput | string[]
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    title?: StringFieldUpdateOperationsInput | string
+    title_url?: StringFieldUpdateOperationsInput | string
+    short_description?: StringFieldUpdateOperationsInput | string
+    full_description?: StringFieldUpdateOperationsInput | string
+    features?: PacksUpdatefeaturesInput | string[]
+    Images?: ImagesUncheckedUpdateManyWithoutPackNestedInput
+    translations?: Packs_translationsUncheckedUpdateManyWithoutPackNestedInput
+  }
+
+  export type PacksCreateManyInput = {
+    id?: number
+    pid: string
+    pack_prompts: string
+    credits: number
+    num_images: number
+    num_inference_steps?: number
+    stars?: number
+    used?: number
+    popular?: boolean
+    main_image?: string
+    images?: PacksCreateimagesInput | string[]
+    created_at?: Date | string
+    updated_at?: Date | string
+    title: string
+    title_url: string
+    short_description: string
+    full_description: string
+    features?: PacksCreatefeaturesInput | string[]
+  }
+
+  export type PacksUpdateManyMutationInput = {
+    pid?: StringFieldUpdateOperationsInput | string
+    pack_prompts?: StringFieldUpdateOperationsInput | string
+    credits?: IntFieldUpdateOperationsInput | number
+    num_images?: IntFieldUpdateOperationsInput | number
+    num_inference_steps?: IntFieldUpdateOperationsInput | number
+    stars?: IntFieldUpdateOperationsInput | number
+    used?: IntFieldUpdateOperationsInput | number
+    popular?: BoolFieldUpdateOperationsInput | boolean
+    main_image?: StringFieldUpdateOperationsInput | string
+    images?: PacksUpdateimagesInput | string[]
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    title?: StringFieldUpdateOperationsInput | string
+    title_url?: StringFieldUpdateOperationsInput | string
+    short_description?: StringFieldUpdateOperationsInput | string
+    full_description?: StringFieldUpdateOperationsInput | string
+    features?: PacksUpdatefeaturesInput | string[]
+  }
+
+  export type PacksUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    pid?: StringFieldUpdateOperationsInput | string
+    pack_prompts?: StringFieldUpdateOperationsInput | string
+    credits?: IntFieldUpdateOperationsInput | number
+    num_images?: IntFieldUpdateOperationsInput | number
+    num_inference_steps?: IntFieldUpdateOperationsInput | number
+    stars?: IntFieldUpdateOperationsInput | number
+    used?: IntFieldUpdateOperationsInput | number
+    popular?: BoolFieldUpdateOperationsInput | boolean
+    main_image?: StringFieldUpdateOperationsInput | string
+    images?: PacksUpdateimagesInput | string[]
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    title?: StringFieldUpdateOperationsInput | string
+    title_url?: StringFieldUpdateOperationsInput | string
+    short_description?: StringFieldUpdateOperationsInput | string
+    full_description?: StringFieldUpdateOperationsInput | string
+    features?: PacksUpdatefeaturesInput | string[]
+  }
+
+  export type Packs_translationsCreateInput = {
+    language: $Enums.Language
+    title: string
+    short_description: string
+    full_description: string
+    features?: Packs_translationsCreatefeaturesInput | string[]
+    created_at?: Date | string
+    updated_at?: Date | string
+    pack: PacksCreateNestedOneWithoutTranslationsInput
+  }
+
+  export type Packs_translationsUncheckedCreateInput = {
+    id?: number
+    pack_id: number
+    language: $Enums.Language
+    title: string
+    short_description: string
+    full_description: string
+    features?: Packs_translationsCreatefeaturesInput | string[]
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type Packs_translationsUpdateInput = {
+    language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    title?: StringFieldUpdateOperationsInput | string
+    short_description?: StringFieldUpdateOperationsInput | string
+    full_description?: StringFieldUpdateOperationsInput | string
+    features?: Packs_translationsUpdatefeaturesInput | string[]
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    pack?: PacksUpdateOneRequiredWithoutTranslationsNestedInput
+  }
+
+  export type Packs_translationsUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    pack_id?: IntFieldUpdateOperationsInput | number
+    language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    title?: StringFieldUpdateOperationsInput | string
+    short_description?: StringFieldUpdateOperationsInput | string
+    full_description?: StringFieldUpdateOperationsInput | string
+    features?: Packs_translationsUpdatefeaturesInput | string[]
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type Packs_translationsCreateManyInput = {
+    id?: number
+    pack_id: number
+    language: $Enums.Language
+    title: string
+    short_description: string
+    full_description: string
+    features?: Packs_translationsCreatefeaturesInput | string[]
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type Packs_translationsUpdateManyMutationInput = {
+    language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    title?: StringFieldUpdateOperationsInput | string
+    short_description?: StringFieldUpdateOperationsInput | string
+    full_description?: StringFieldUpdateOperationsInput | string
+    features?: Packs_translationsUpdatefeaturesInput | string[]
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type Packs_translationsUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    pack_id?: IntFieldUpdateOperationsInput | number
+    language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    title?: StringFieldUpdateOperationsInput | string
+    short_description?: StringFieldUpdateOperationsInput | string
+    full_description?: StringFieldUpdateOperationsInput | string
+    features?: Packs_translationsUpdatefeaturesInput | string[]
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TransactionsCreateInput = {
@@ -22984,154 +26036,6 @@ export namespace Prisma {
     currency?: StringFieldUpdateOperationsInput | string
     payment_id?: StringFieldUpdateOperationsInput | string
     status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type PacksCreateInput = {
-    pid: string
-    title: string
-    title_url: string
-    short_description: string
-    full_description: string
-    pack_prompts: string
-    credits: number
-    num_images: number
-    num_inference_steps?: number
-    stars?: number
-    used?: number
-    popular?: boolean
-    main_image?: string
-    images?: PacksCreateimagesInput | string[]
-    features?: PacksCreatefeaturesInput | string[]
-    created_at?: Date | string
-    updated_at?: Date | string
-    Images?: ImagesCreateNestedManyWithoutPackInput
-  }
-
-  export type PacksUncheckedCreateInput = {
-    id?: number
-    pid: string
-    title: string
-    title_url: string
-    short_description: string
-    full_description: string
-    pack_prompts: string
-    credits: number
-    num_images: number
-    num_inference_steps?: number
-    stars?: number
-    used?: number
-    popular?: boolean
-    main_image?: string
-    images?: PacksCreateimagesInput | string[]
-    features?: PacksCreatefeaturesInput | string[]
-    created_at?: Date | string
-    updated_at?: Date | string
-    Images?: ImagesUncheckedCreateNestedManyWithoutPackInput
-  }
-
-  export type PacksUpdateInput = {
-    pid?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    title_url?: StringFieldUpdateOperationsInput | string
-    short_description?: StringFieldUpdateOperationsInput | string
-    full_description?: StringFieldUpdateOperationsInput | string
-    pack_prompts?: StringFieldUpdateOperationsInput | string
-    credits?: IntFieldUpdateOperationsInput | number
-    num_images?: IntFieldUpdateOperationsInput | number
-    num_inference_steps?: IntFieldUpdateOperationsInput | number
-    stars?: IntFieldUpdateOperationsInput | number
-    used?: IntFieldUpdateOperationsInput | number
-    popular?: BoolFieldUpdateOperationsInput | boolean
-    main_image?: StringFieldUpdateOperationsInput | string
-    images?: PacksUpdateimagesInput | string[]
-    features?: PacksUpdatefeaturesInput | string[]
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    Images?: ImagesUpdateManyWithoutPackNestedInput
-  }
-
-  export type PacksUncheckedUpdateInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    pid?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    title_url?: StringFieldUpdateOperationsInput | string
-    short_description?: StringFieldUpdateOperationsInput | string
-    full_description?: StringFieldUpdateOperationsInput | string
-    pack_prompts?: StringFieldUpdateOperationsInput | string
-    credits?: IntFieldUpdateOperationsInput | number
-    num_images?: IntFieldUpdateOperationsInput | number
-    num_inference_steps?: IntFieldUpdateOperationsInput | number
-    stars?: IntFieldUpdateOperationsInput | number
-    used?: IntFieldUpdateOperationsInput | number
-    popular?: BoolFieldUpdateOperationsInput | boolean
-    main_image?: StringFieldUpdateOperationsInput | string
-    images?: PacksUpdateimagesInput | string[]
-    features?: PacksUpdatefeaturesInput | string[]
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    Images?: ImagesUncheckedUpdateManyWithoutPackNestedInput
-  }
-
-  export type PacksCreateManyInput = {
-    id?: number
-    pid: string
-    title: string
-    title_url: string
-    short_description: string
-    full_description: string
-    pack_prompts: string
-    credits: number
-    num_images: number
-    num_inference_steps?: number
-    stars?: number
-    used?: number
-    popular?: boolean
-    main_image?: string
-    images?: PacksCreateimagesInput | string[]
-    features?: PacksCreatefeaturesInput | string[]
-    created_at?: Date | string
-    updated_at?: Date | string
-  }
-
-  export type PacksUpdateManyMutationInput = {
-    pid?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    title_url?: StringFieldUpdateOperationsInput | string
-    short_description?: StringFieldUpdateOperationsInput | string
-    full_description?: StringFieldUpdateOperationsInput | string
-    pack_prompts?: StringFieldUpdateOperationsInput | string
-    credits?: IntFieldUpdateOperationsInput | number
-    num_images?: IntFieldUpdateOperationsInput | number
-    num_inference_steps?: IntFieldUpdateOperationsInput | number
-    stars?: IntFieldUpdateOperationsInput | number
-    used?: IntFieldUpdateOperationsInput | number
-    popular?: BoolFieldUpdateOperationsInput | boolean
-    main_image?: StringFieldUpdateOperationsInput | string
-    images?: PacksUpdateimagesInput | string[]
-    features?: PacksUpdatefeaturesInput | string[]
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type PacksUncheckedUpdateManyInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    pid?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    title_url?: StringFieldUpdateOperationsInput | string
-    short_description?: StringFieldUpdateOperationsInput | string
-    full_description?: StringFieldUpdateOperationsInput | string
-    pack_prompts?: StringFieldUpdateOperationsInput | string
-    credits?: IntFieldUpdateOperationsInput | number
-    num_images?: IntFieldUpdateOperationsInput | number
-    num_inference_steps?: IntFieldUpdateOperationsInput | number
-    stars?: IntFieldUpdateOperationsInput | number
-    used?: IntFieldUpdateOperationsInput | number
-    popular?: BoolFieldUpdateOperationsInput | boolean
-    main_image?: StringFieldUpdateOperationsInput | string
-    images?: PacksUpdateimagesInput | string[]
-    features?: PacksUpdatefeaturesInput | string[]
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -24385,21 +27289,31 @@ export namespace Prisma {
     isEmpty?: boolean
   }
 
+  export type Plans_translationsListRelationFilter = {
+    every?: Plans_translationsWhereInput
+    some?: Plans_translationsWhereInput
+    none?: Plans_translationsWhereInput
+  }
+
+  export type Plans_translationsOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type PlansCountOrderByAggregateInput = {
     id?: SortOrder
     pid?: SortOrder
-    name?: SortOrder
     plan_name?: SortOrder
     credit_amount?: SortOrder
     model_amount?: SortOrder
     price_cents?: SortOrder
     stripe_price_id?: SortOrder
+    is_popular?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    name?: SortOrder
     subtitle?: SortOrder
     features?: SortOrder
     cta?: SortOrder
-    created_at?: SortOrder
-    updated_at?: SortOrder
-    is_popular?: SortOrder
   }
 
   export type PlansAvgOrderByAggregateInput = {
@@ -24412,33 +27326,33 @@ export namespace Prisma {
   export type PlansMaxOrderByAggregateInput = {
     id?: SortOrder
     pid?: SortOrder
-    name?: SortOrder
     plan_name?: SortOrder
     credit_amount?: SortOrder
     model_amount?: SortOrder
     price_cents?: SortOrder
     stripe_price_id?: SortOrder
-    subtitle?: SortOrder
-    cta?: SortOrder
+    is_popular?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
-    is_popular?: SortOrder
+    name?: SortOrder
+    subtitle?: SortOrder
+    cta?: SortOrder
   }
 
   export type PlansMinOrderByAggregateInput = {
     id?: SortOrder
     pid?: SortOrder
-    name?: SortOrder
     plan_name?: SortOrder
     credit_amount?: SortOrder
     model_amount?: SortOrder
     price_cents?: SortOrder
     stripe_price_id?: SortOrder
-    subtitle?: SortOrder
-    cta?: SortOrder
+    is_popular?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
-    is_popular?: SortOrder
+    name?: SortOrder
+    subtitle?: SortOrder
+    cta?: SortOrder
   }
 
   export type PlansSumOrderByAggregateInput = {
@@ -24474,9 +27388,216 @@ export namespace Prisma {
     _max?: NestedBigIntFilter<$PrismaModel>
   }
 
+  export type EnumLanguageFilter<$PrismaModel = never> = {
+    equals?: $Enums.Language | EnumLanguageFieldRefInput<$PrismaModel>
+    in?: $Enums.Language[] | ListEnumLanguageFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Language[] | ListEnumLanguageFieldRefInput<$PrismaModel>
+    not?: NestedEnumLanguageFilter<$PrismaModel> | $Enums.Language
+  }
+
   export type PlansScalarRelationFilter = {
     is?: PlansWhereInput
     isNot?: PlansWhereInput
+  }
+
+  export type Plans_translationsPlan_idLanguageCompoundUniqueInput = {
+    plan_id: number
+    language: $Enums.Language
+  }
+
+  export type Plans_translationsCountOrderByAggregateInput = {
+    id?: SortOrder
+    plan_id?: SortOrder
+    language?: SortOrder
+    name?: SortOrder
+    subtitle?: SortOrder
+    features?: SortOrder
+    cta?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type Plans_translationsAvgOrderByAggregateInput = {
+    id?: SortOrder
+    plan_id?: SortOrder
+  }
+
+  export type Plans_translationsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    plan_id?: SortOrder
+    language?: SortOrder
+    name?: SortOrder
+    subtitle?: SortOrder
+    cta?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type Plans_translationsMinOrderByAggregateInput = {
+    id?: SortOrder
+    plan_id?: SortOrder
+    language?: SortOrder
+    name?: SortOrder
+    subtitle?: SortOrder
+    cta?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type Plans_translationsSumOrderByAggregateInput = {
+    id?: SortOrder
+    plan_id?: SortOrder
+  }
+
+  export type EnumLanguageWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Language | EnumLanguageFieldRefInput<$PrismaModel>
+    in?: $Enums.Language[] | ListEnumLanguageFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Language[] | ListEnumLanguageFieldRefInput<$PrismaModel>
+    not?: NestedEnumLanguageWithAggregatesFilter<$PrismaModel> | $Enums.Language
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumLanguageFilter<$PrismaModel>
+    _max?: NestedEnumLanguageFilter<$PrismaModel>
+  }
+
+  export type Packs_translationsListRelationFilter = {
+    every?: Packs_translationsWhereInput
+    some?: Packs_translationsWhereInput
+    none?: Packs_translationsWhereInput
+  }
+
+  export type Packs_translationsOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type PacksCountOrderByAggregateInput = {
+    id?: SortOrder
+    pid?: SortOrder
+    pack_prompts?: SortOrder
+    credits?: SortOrder
+    num_images?: SortOrder
+    num_inference_steps?: SortOrder
+    stars?: SortOrder
+    used?: SortOrder
+    popular?: SortOrder
+    main_image?: SortOrder
+    images?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    title?: SortOrder
+    title_url?: SortOrder
+    short_description?: SortOrder
+    full_description?: SortOrder
+    features?: SortOrder
+  }
+
+  export type PacksAvgOrderByAggregateInput = {
+    id?: SortOrder
+    credits?: SortOrder
+    num_images?: SortOrder
+    num_inference_steps?: SortOrder
+    stars?: SortOrder
+    used?: SortOrder
+  }
+
+  export type PacksMaxOrderByAggregateInput = {
+    id?: SortOrder
+    pid?: SortOrder
+    pack_prompts?: SortOrder
+    credits?: SortOrder
+    num_images?: SortOrder
+    num_inference_steps?: SortOrder
+    stars?: SortOrder
+    used?: SortOrder
+    popular?: SortOrder
+    main_image?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    title?: SortOrder
+    title_url?: SortOrder
+    short_description?: SortOrder
+    full_description?: SortOrder
+  }
+
+  export type PacksMinOrderByAggregateInput = {
+    id?: SortOrder
+    pid?: SortOrder
+    pack_prompts?: SortOrder
+    credits?: SortOrder
+    num_images?: SortOrder
+    num_inference_steps?: SortOrder
+    stars?: SortOrder
+    used?: SortOrder
+    popular?: SortOrder
+    main_image?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    title?: SortOrder
+    title_url?: SortOrder
+    short_description?: SortOrder
+    full_description?: SortOrder
+  }
+
+  export type PacksSumOrderByAggregateInput = {
+    id?: SortOrder
+    credits?: SortOrder
+    num_images?: SortOrder
+    num_inference_steps?: SortOrder
+    stars?: SortOrder
+    used?: SortOrder
+  }
+
+  export type PacksScalarRelationFilter = {
+    is?: PacksWhereInput
+    isNot?: PacksWhereInput
+  }
+
+  export type Packs_translationsPack_idLanguageCompoundUniqueInput = {
+    pack_id: number
+    language: $Enums.Language
+  }
+
+  export type Packs_translationsCountOrderByAggregateInput = {
+    id?: SortOrder
+    pack_id?: SortOrder
+    language?: SortOrder
+    title?: SortOrder
+    short_description?: SortOrder
+    full_description?: SortOrder
+    features?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type Packs_translationsAvgOrderByAggregateInput = {
+    id?: SortOrder
+    pack_id?: SortOrder
+  }
+
+  export type Packs_translationsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    pack_id?: SortOrder
+    language?: SortOrder
+    title?: SortOrder
+    short_description?: SortOrder
+    full_description?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type Packs_translationsMinOrderByAggregateInput = {
+    id?: SortOrder
+    pack_id?: SortOrder
+    language?: SortOrder
+    title?: SortOrder
+    short_description?: SortOrder
+    full_description?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type Packs_translationsSumOrderByAggregateInput = {
+    id?: SortOrder
+    pack_id?: SortOrder
   }
 
   export type TransactionsCountOrderByAggregateInput = {
@@ -24540,83 +27661,6 @@ export namespace Prisma {
     credit_amount?: SortOrder
     model_amount?: SortOrder
     payment_amount?: SortOrder
-  }
-
-  export type PacksCountOrderByAggregateInput = {
-    id?: SortOrder
-    pid?: SortOrder
-    title?: SortOrder
-    title_url?: SortOrder
-    short_description?: SortOrder
-    full_description?: SortOrder
-    pack_prompts?: SortOrder
-    credits?: SortOrder
-    num_images?: SortOrder
-    num_inference_steps?: SortOrder
-    stars?: SortOrder
-    used?: SortOrder
-    popular?: SortOrder
-    main_image?: SortOrder
-    images?: SortOrder
-    features?: SortOrder
-    created_at?: SortOrder
-    updated_at?: SortOrder
-  }
-
-  export type PacksAvgOrderByAggregateInput = {
-    id?: SortOrder
-    credits?: SortOrder
-    num_images?: SortOrder
-    num_inference_steps?: SortOrder
-    stars?: SortOrder
-    used?: SortOrder
-  }
-
-  export type PacksMaxOrderByAggregateInput = {
-    id?: SortOrder
-    pid?: SortOrder
-    title?: SortOrder
-    title_url?: SortOrder
-    short_description?: SortOrder
-    full_description?: SortOrder
-    pack_prompts?: SortOrder
-    credits?: SortOrder
-    num_images?: SortOrder
-    num_inference_steps?: SortOrder
-    stars?: SortOrder
-    used?: SortOrder
-    popular?: SortOrder
-    main_image?: SortOrder
-    created_at?: SortOrder
-    updated_at?: SortOrder
-  }
-
-  export type PacksMinOrderByAggregateInput = {
-    id?: SortOrder
-    pid?: SortOrder
-    title?: SortOrder
-    title_url?: SortOrder
-    short_description?: SortOrder
-    full_description?: SortOrder
-    pack_prompts?: SortOrder
-    credits?: SortOrder
-    num_images?: SortOrder
-    num_inference_steps?: SortOrder
-    stars?: SortOrder
-    used?: SortOrder
-    popular?: SortOrder
-    main_image?: SortOrder
-    created_at?: SortOrder
-    updated_at?: SortOrder
-  }
-
-  export type PacksSumOrderByAggregateInput = {
-    id?: SortOrder
-    credits?: SortOrder
-    num_images?: SortOrder
-    num_inference_steps?: SortOrder
-    stars?: SortOrder
-    used?: SortOrder
   }
 
   export type HandledStripeEventCountOrderByAggregateInput = {
@@ -24735,13 +27779,6 @@ export namespace Prisma {
     _max?: NestedEnumNotificationTypeFilter<$PrismaModel>
   }
 
-  export type EnumLanguageFilter<$PrismaModel = never> = {
-    equals?: $Enums.Language | EnumLanguageFieldRefInput<$PrismaModel>
-    in?: $Enums.Language[] | ListEnumLanguageFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Language[] | ListEnumLanguageFieldRefInput<$PrismaModel>
-    not?: NestedEnumLanguageFilter<$PrismaModel> | $Enums.Language
-  }
-
   export type EnumThemePreferenceFilter<$PrismaModel = never> = {
     equals?: $Enums.ThemePreference | EnumThemePreferenceFieldRefInput<$PrismaModel>
     in?: $Enums.ThemePreference[] | ListEnumThemePreferenceFieldRefInput<$PrismaModel>
@@ -24790,16 +27827,6 @@ export namespace Prisma {
   export type UserSettingsSumOrderByAggregateInput = {
     id?: SortOrder
     user_id?: SortOrder
-  }
-
-  export type EnumLanguageWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.Language | EnumLanguageFieldRefInput<$PrismaModel>
-    in?: $Enums.Language[] | ListEnumLanguageFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Language[] | ListEnumLanguageFieldRefInput<$PrismaModel>
-    not?: NestedEnumLanguageWithAggregatesFilter<$PrismaModel> | $Enums.Language
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumLanguageFilter<$PrismaModel>
-    _max?: NestedEnumLanguageFilter<$PrismaModel>
   }
 
   export type EnumThemePreferenceWithAggregatesFilter<$PrismaModel = never> = {
@@ -25490,11 +28517,25 @@ export namespace Prisma {
     set: string[]
   }
 
+  export type Plans_translationsCreateNestedManyWithoutPlanInput = {
+    create?: XOR<Plans_translationsCreateWithoutPlanInput, Plans_translationsUncheckedCreateWithoutPlanInput> | Plans_translationsCreateWithoutPlanInput[] | Plans_translationsUncheckedCreateWithoutPlanInput[]
+    connectOrCreate?: Plans_translationsCreateOrConnectWithoutPlanInput | Plans_translationsCreateOrConnectWithoutPlanInput[]
+    createMany?: Plans_translationsCreateManyPlanInputEnvelope
+    connect?: Plans_translationsWhereUniqueInput | Plans_translationsWhereUniqueInput[]
+  }
+
   export type TransactionsCreateNestedManyWithoutPlanInput = {
     create?: XOR<TransactionsCreateWithoutPlanInput, TransactionsUncheckedCreateWithoutPlanInput> | TransactionsCreateWithoutPlanInput[] | TransactionsUncheckedCreateWithoutPlanInput[]
     connectOrCreate?: TransactionsCreateOrConnectWithoutPlanInput | TransactionsCreateOrConnectWithoutPlanInput[]
     createMany?: TransactionsCreateManyPlanInputEnvelope
     connect?: TransactionsWhereUniqueInput | TransactionsWhereUniqueInput[]
+  }
+
+  export type Plans_translationsUncheckedCreateNestedManyWithoutPlanInput = {
+    create?: XOR<Plans_translationsCreateWithoutPlanInput, Plans_translationsUncheckedCreateWithoutPlanInput> | Plans_translationsCreateWithoutPlanInput[] | Plans_translationsUncheckedCreateWithoutPlanInput[]
+    connectOrCreate?: Plans_translationsCreateOrConnectWithoutPlanInput | Plans_translationsCreateOrConnectWithoutPlanInput[]
+    createMany?: Plans_translationsCreateManyPlanInputEnvelope
+    connect?: Plans_translationsWhereUniqueInput | Plans_translationsWhereUniqueInput[]
   }
 
   export type TransactionsUncheckedCreateNestedManyWithoutPlanInput = {
@@ -25521,6 +28562,20 @@ export namespace Prisma {
     push?: string | string[]
   }
 
+  export type Plans_translationsUpdateManyWithoutPlanNestedInput = {
+    create?: XOR<Plans_translationsCreateWithoutPlanInput, Plans_translationsUncheckedCreateWithoutPlanInput> | Plans_translationsCreateWithoutPlanInput[] | Plans_translationsUncheckedCreateWithoutPlanInput[]
+    connectOrCreate?: Plans_translationsCreateOrConnectWithoutPlanInput | Plans_translationsCreateOrConnectWithoutPlanInput[]
+    upsert?: Plans_translationsUpsertWithWhereUniqueWithoutPlanInput | Plans_translationsUpsertWithWhereUniqueWithoutPlanInput[]
+    createMany?: Plans_translationsCreateManyPlanInputEnvelope
+    set?: Plans_translationsWhereUniqueInput | Plans_translationsWhereUniqueInput[]
+    disconnect?: Plans_translationsWhereUniqueInput | Plans_translationsWhereUniqueInput[]
+    delete?: Plans_translationsWhereUniqueInput | Plans_translationsWhereUniqueInput[]
+    connect?: Plans_translationsWhereUniqueInput | Plans_translationsWhereUniqueInput[]
+    update?: Plans_translationsUpdateWithWhereUniqueWithoutPlanInput | Plans_translationsUpdateWithWhereUniqueWithoutPlanInput[]
+    updateMany?: Plans_translationsUpdateManyWithWhereWithoutPlanInput | Plans_translationsUpdateManyWithWhereWithoutPlanInput[]
+    deleteMany?: Plans_translationsScalarWhereInput | Plans_translationsScalarWhereInput[]
+  }
+
   export type TransactionsUpdateManyWithoutPlanNestedInput = {
     create?: XOR<TransactionsCreateWithoutPlanInput, TransactionsUncheckedCreateWithoutPlanInput> | TransactionsCreateWithoutPlanInput[] | TransactionsUncheckedCreateWithoutPlanInput[]
     connectOrCreate?: TransactionsCreateOrConnectWithoutPlanInput | TransactionsCreateOrConnectWithoutPlanInput[]
@@ -25535,6 +28590,20 @@ export namespace Prisma {
     deleteMany?: TransactionsScalarWhereInput | TransactionsScalarWhereInput[]
   }
 
+  export type Plans_translationsUncheckedUpdateManyWithoutPlanNestedInput = {
+    create?: XOR<Plans_translationsCreateWithoutPlanInput, Plans_translationsUncheckedCreateWithoutPlanInput> | Plans_translationsCreateWithoutPlanInput[] | Plans_translationsUncheckedCreateWithoutPlanInput[]
+    connectOrCreate?: Plans_translationsCreateOrConnectWithoutPlanInput | Plans_translationsCreateOrConnectWithoutPlanInput[]
+    upsert?: Plans_translationsUpsertWithWhereUniqueWithoutPlanInput | Plans_translationsUpsertWithWhereUniqueWithoutPlanInput[]
+    createMany?: Plans_translationsCreateManyPlanInputEnvelope
+    set?: Plans_translationsWhereUniqueInput | Plans_translationsWhereUniqueInput[]
+    disconnect?: Plans_translationsWhereUniqueInput | Plans_translationsWhereUniqueInput[]
+    delete?: Plans_translationsWhereUniqueInput | Plans_translationsWhereUniqueInput[]
+    connect?: Plans_translationsWhereUniqueInput | Plans_translationsWhereUniqueInput[]
+    update?: Plans_translationsUpdateWithWhereUniqueWithoutPlanInput | Plans_translationsUpdateWithWhereUniqueWithoutPlanInput[]
+    updateMany?: Plans_translationsUpdateManyWithWhereWithoutPlanInput | Plans_translationsUpdateManyWithWhereWithoutPlanInput[]
+    deleteMany?: Plans_translationsScalarWhereInput | Plans_translationsScalarWhereInput[]
+  }
+
   export type TransactionsUncheckedUpdateManyWithoutPlanNestedInput = {
     create?: XOR<TransactionsCreateWithoutPlanInput, TransactionsUncheckedCreateWithoutPlanInput> | TransactionsCreateWithoutPlanInput[] | TransactionsUncheckedCreateWithoutPlanInput[]
     connectOrCreate?: TransactionsCreateOrConnectWithoutPlanInput | TransactionsCreateOrConnectWithoutPlanInput[]
@@ -25547,6 +28616,158 @@ export namespace Prisma {
     update?: TransactionsUpdateWithWhereUniqueWithoutPlanInput | TransactionsUpdateWithWhereUniqueWithoutPlanInput[]
     updateMany?: TransactionsUpdateManyWithWhereWithoutPlanInput | TransactionsUpdateManyWithWhereWithoutPlanInput[]
     deleteMany?: TransactionsScalarWhereInput | TransactionsScalarWhereInput[]
+  }
+
+  export type Plans_translationsCreatefeaturesInput = {
+    set: string[]
+  }
+
+  export type PlansCreateNestedOneWithoutTranslationsInput = {
+    create?: XOR<PlansCreateWithoutTranslationsInput, PlansUncheckedCreateWithoutTranslationsInput>
+    connectOrCreate?: PlansCreateOrConnectWithoutTranslationsInput
+    connect?: PlansWhereUniqueInput
+  }
+
+  export type EnumLanguageFieldUpdateOperationsInput = {
+    set?: $Enums.Language
+  }
+
+  export type Plans_translationsUpdatefeaturesInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type PlansUpdateOneRequiredWithoutTranslationsNestedInput = {
+    create?: XOR<PlansCreateWithoutTranslationsInput, PlansUncheckedCreateWithoutTranslationsInput>
+    connectOrCreate?: PlansCreateOrConnectWithoutTranslationsInput
+    upsert?: PlansUpsertWithoutTranslationsInput
+    connect?: PlansWhereUniqueInput
+    update?: XOR<XOR<PlansUpdateToOneWithWhereWithoutTranslationsInput, PlansUpdateWithoutTranslationsInput>, PlansUncheckedUpdateWithoutTranslationsInput>
+  }
+
+  export type PacksCreateimagesInput = {
+    set: string[]
+  }
+
+  export type PacksCreatefeaturesInput = {
+    set: string[]
+  }
+
+  export type ImagesCreateNestedManyWithoutPackInput = {
+    create?: XOR<ImagesCreateWithoutPackInput, ImagesUncheckedCreateWithoutPackInput> | ImagesCreateWithoutPackInput[] | ImagesUncheckedCreateWithoutPackInput[]
+    connectOrCreate?: ImagesCreateOrConnectWithoutPackInput | ImagesCreateOrConnectWithoutPackInput[]
+    createMany?: ImagesCreateManyPackInputEnvelope
+    connect?: ImagesWhereUniqueInput | ImagesWhereUniqueInput[]
+  }
+
+  export type Packs_translationsCreateNestedManyWithoutPackInput = {
+    create?: XOR<Packs_translationsCreateWithoutPackInput, Packs_translationsUncheckedCreateWithoutPackInput> | Packs_translationsCreateWithoutPackInput[] | Packs_translationsUncheckedCreateWithoutPackInput[]
+    connectOrCreate?: Packs_translationsCreateOrConnectWithoutPackInput | Packs_translationsCreateOrConnectWithoutPackInput[]
+    createMany?: Packs_translationsCreateManyPackInputEnvelope
+    connect?: Packs_translationsWhereUniqueInput | Packs_translationsWhereUniqueInput[]
+  }
+
+  export type ImagesUncheckedCreateNestedManyWithoutPackInput = {
+    create?: XOR<ImagesCreateWithoutPackInput, ImagesUncheckedCreateWithoutPackInput> | ImagesCreateWithoutPackInput[] | ImagesUncheckedCreateWithoutPackInput[]
+    connectOrCreate?: ImagesCreateOrConnectWithoutPackInput | ImagesCreateOrConnectWithoutPackInput[]
+    createMany?: ImagesCreateManyPackInputEnvelope
+    connect?: ImagesWhereUniqueInput | ImagesWhereUniqueInput[]
+  }
+
+  export type Packs_translationsUncheckedCreateNestedManyWithoutPackInput = {
+    create?: XOR<Packs_translationsCreateWithoutPackInput, Packs_translationsUncheckedCreateWithoutPackInput> | Packs_translationsCreateWithoutPackInput[] | Packs_translationsUncheckedCreateWithoutPackInput[]
+    connectOrCreate?: Packs_translationsCreateOrConnectWithoutPackInput | Packs_translationsCreateOrConnectWithoutPackInput[]
+    createMany?: Packs_translationsCreateManyPackInputEnvelope
+    connect?: Packs_translationsWhereUniqueInput | Packs_translationsWhereUniqueInput[]
+  }
+
+  export type PacksUpdateimagesInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type PacksUpdatefeaturesInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type ImagesUpdateManyWithoutPackNestedInput = {
+    create?: XOR<ImagesCreateWithoutPackInput, ImagesUncheckedCreateWithoutPackInput> | ImagesCreateWithoutPackInput[] | ImagesUncheckedCreateWithoutPackInput[]
+    connectOrCreate?: ImagesCreateOrConnectWithoutPackInput | ImagesCreateOrConnectWithoutPackInput[]
+    upsert?: ImagesUpsertWithWhereUniqueWithoutPackInput | ImagesUpsertWithWhereUniqueWithoutPackInput[]
+    createMany?: ImagesCreateManyPackInputEnvelope
+    set?: ImagesWhereUniqueInput | ImagesWhereUniqueInput[]
+    disconnect?: ImagesWhereUniqueInput | ImagesWhereUniqueInput[]
+    delete?: ImagesWhereUniqueInput | ImagesWhereUniqueInput[]
+    connect?: ImagesWhereUniqueInput | ImagesWhereUniqueInput[]
+    update?: ImagesUpdateWithWhereUniqueWithoutPackInput | ImagesUpdateWithWhereUniqueWithoutPackInput[]
+    updateMany?: ImagesUpdateManyWithWhereWithoutPackInput | ImagesUpdateManyWithWhereWithoutPackInput[]
+    deleteMany?: ImagesScalarWhereInput | ImagesScalarWhereInput[]
+  }
+
+  export type Packs_translationsUpdateManyWithoutPackNestedInput = {
+    create?: XOR<Packs_translationsCreateWithoutPackInput, Packs_translationsUncheckedCreateWithoutPackInput> | Packs_translationsCreateWithoutPackInput[] | Packs_translationsUncheckedCreateWithoutPackInput[]
+    connectOrCreate?: Packs_translationsCreateOrConnectWithoutPackInput | Packs_translationsCreateOrConnectWithoutPackInput[]
+    upsert?: Packs_translationsUpsertWithWhereUniqueWithoutPackInput | Packs_translationsUpsertWithWhereUniqueWithoutPackInput[]
+    createMany?: Packs_translationsCreateManyPackInputEnvelope
+    set?: Packs_translationsWhereUniqueInput | Packs_translationsWhereUniqueInput[]
+    disconnect?: Packs_translationsWhereUniqueInput | Packs_translationsWhereUniqueInput[]
+    delete?: Packs_translationsWhereUniqueInput | Packs_translationsWhereUniqueInput[]
+    connect?: Packs_translationsWhereUniqueInput | Packs_translationsWhereUniqueInput[]
+    update?: Packs_translationsUpdateWithWhereUniqueWithoutPackInput | Packs_translationsUpdateWithWhereUniqueWithoutPackInput[]
+    updateMany?: Packs_translationsUpdateManyWithWhereWithoutPackInput | Packs_translationsUpdateManyWithWhereWithoutPackInput[]
+    deleteMany?: Packs_translationsScalarWhereInput | Packs_translationsScalarWhereInput[]
+  }
+
+  export type ImagesUncheckedUpdateManyWithoutPackNestedInput = {
+    create?: XOR<ImagesCreateWithoutPackInput, ImagesUncheckedCreateWithoutPackInput> | ImagesCreateWithoutPackInput[] | ImagesUncheckedCreateWithoutPackInput[]
+    connectOrCreate?: ImagesCreateOrConnectWithoutPackInput | ImagesCreateOrConnectWithoutPackInput[]
+    upsert?: ImagesUpsertWithWhereUniqueWithoutPackInput | ImagesUpsertWithWhereUniqueWithoutPackInput[]
+    createMany?: ImagesCreateManyPackInputEnvelope
+    set?: ImagesWhereUniqueInput | ImagesWhereUniqueInput[]
+    disconnect?: ImagesWhereUniqueInput | ImagesWhereUniqueInput[]
+    delete?: ImagesWhereUniqueInput | ImagesWhereUniqueInput[]
+    connect?: ImagesWhereUniqueInput | ImagesWhereUniqueInput[]
+    update?: ImagesUpdateWithWhereUniqueWithoutPackInput | ImagesUpdateWithWhereUniqueWithoutPackInput[]
+    updateMany?: ImagesUpdateManyWithWhereWithoutPackInput | ImagesUpdateManyWithWhereWithoutPackInput[]
+    deleteMany?: ImagesScalarWhereInput | ImagesScalarWhereInput[]
+  }
+
+  export type Packs_translationsUncheckedUpdateManyWithoutPackNestedInput = {
+    create?: XOR<Packs_translationsCreateWithoutPackInput, Packs_translationsUncheckedCreateWithoutPackInput> | Packs_translationsCreateWithoutPackInput[] | Packs_translationsUncheckedCreateWithoutPackInput[]
+    connectOrCreate?: Packs_translationsCreateOrConnectWithoutPackInput | Packs_translationsCreateOrConnectWithoutPackInput[]
+    upsert?: Packs_translationsUpsertWithWhereUniqueWithoutPackInput | Packs_translationsUpsertWithWhereUniqueWithoutPackInput[]
+    createMany?: Packs_translationsCreateManyPackInputEnvelope
+    set?: Packs_translationsWhereUniqueInput | Packs_translationsWhereUniqueInput[]
+    disconnect?: Packs_translationsWhereUniqueInput | Packs_translationsWhereUniqueInput[]
+    delete?: Packs_translationsWhereUniqueInput | Packs_translationsWhereUniqueInput[]
+    connect?: Packs_translationsWhereUniqueInput | Packs_translationsWhereUniqueInput[]
+    update?: Packs_translationsUpdateWithWhereUniqueWithoutPackInput | Packs_translationsUpdateWithWhereUniqueWithoutPackInput[]
+    updateMany?: Packs_translationsUpdateManyWithWhereWithoutPackInput | Packs_translationsUpdateManyWithWhereWithoutPackInput[]
+    deleteMany?: Packs_translationsScalarWhereInput | Packs_translationsScalarWhereInput[]
+  }
+
+  export type Packs_translationsCreatefeaturesInput = {
+    set: string[]
+  }
+
+  export type PacksCreateNestedOneWithoutTranslationsInput = {
+    create?: XOR<PacksCreateWithoutTranslationsInput, PacksUncheckedCreateWithoutTranslationsInput>
+    connectOrCreate?: PacksCreateOrConnectWithoutTranslationsInput
+    connect?: PacksWhereUniqueInput
+  }
+
+  export type Packs_translationsUpdatefeaturesInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type PacksUpdateOneRequiredWithoutTranslationsNestedInput = {
+    create?: XOR<PacksCreateWithoutTranslationsInput, PacksUncheckedCreateWithoutTranslationsInput>
+    connectOrCreate?: PacksCreateOrConnectWithoutTranslationsInput
+    upsert?: PacksUpsertWithoutTranslationsInput
+    connect?: PacksWhereUniqueInput
+    update?: XOR<XOR<PacksUpdateToOneWithWhereWithoutTranslationsInput, PacksUpdateWithoutTranslationsInput>, PacksUncheckedUpdateWithoutTranslationsInput>
   }
 
   export type PlansCreateNestedOneWithoutTransactionsInput = {
@@ -25577,66 +28798,6 @@ export namespace Prisma {
     update?: XOR<XOR<UsersUpdateToOneWithWhereWithoutTransactionsInput, UsersUpdateWithoutTransactionsInput>, UsersUncheckedUpdateWithoutTransactionsInput>
   }
 
-  export type PacksCreateimagesInput = {
-    set: string[]
-  }
-
-  export type PacksCreatefeaturesInput = {
-    set: string[]
-  }
-
-  export type ImagesCreateNestedManyWithoutPackInput = {
-    create?: XOR<ImagesCreateWithoutPackInput, ImagesUncheckedCreateWithoutPackInput> | ImagesCreateWithoutPackInput[] | ImagesUncheckedCreateWithoutPackInput[]
-    connectOrCreate?: ImagesCreateOrConnectWithoutPackInput | ImagesCreateOrConnectWithoutPackInput[]
-    createMany?: ImagesCreateManyPackInputEnvelope
-    connect?: ImagesWhereUniqueInput | ImagesWhereUniqueInput[]
-  }
-
-  export type ImagesUncheckedCreateNestedManyWithoutPackInput = {
-    create?: XOR<ImagesCreateWithoutPackInput, ImagesUncheckedCreateWithoutPackInput> | ImagesCreateWithoutPackInput[] | ImagesUncheckedCreateWithoutPackInput[]
-    connectOrCreate?: ImagesCreateOrConnectWithoutPackInput | ImagesCreateOrConnectWithoutPackInput[]
-    createMany?: ImagesCreateManyPackInputEnvelope
-    connect?: ImagesWhereUniqueInput | ImagesWhereUniqueInput[]
-  }
-
-  export type PacksUpdateimagesInput = {
-    set?: string[]
-    push?: string | string[]
-  }
-
-  export type PacksUpdatefeaturesInput = {
-    set?: string[]
-    push?: string | string[]
-  }
-
-  export type ImagesUpdateManyWithoutPackNestedInput = {
-    create?: XOR<ImagesCreateWithoutPackInput, ImagesUncheckedCreateWithoutPackInput> | ImagesCreateWithoutPackInput[] | ImagesUncheckedCreateWithoutPackInput[]
-    connectOrCreate?: ImagesCreateOrConnectWithoutPackInput | ImagesCreateOrConnectWithoutPackInput[]
-    upsert?: ImagesUpsertWithWhereUniqueWithoutPackInput | ImagesUpsertWithWhereUniqueWithoutPackInput[]
-    createMany?: ImagesCreateManyPackInputEnvelope
-    set?: ImagesWhereUniqueInput | ImagesWhereUniqueInput[]
-    disconnect?: ImagesWhereUniqueInput | ImagesWhereUniqueInput[]
-    delete?: ImagesWhereUniqueInput | ImagesWhereUniqueInput[]
-    connect?: ImagesWhereUniqueInput | ImagesWhereUniqueInput[]
-    update?: ImagesUpdateWithWhereUniqueWithoutPackInput | ImagesUpdateWithWhereUniqueWithoutPackInput[]
-    updateMany?: ImagesUpdateManyWithWhereWithoutPackInput | ImagesUpdateManyWithWhereWithoutPackInput[]
-    deleteMany?: ImagesScalarWhereInput | ImagesScalarWhereInput[]
-  }
-
-  export type ImagesUncheckedUpdateManyWithoutPackNestedInput = {
-    create?: XOR<ImagesCreateWithoutPackInput, ImagesUncheckedCreateWithoutPackInput> | ImagesCreateWithoutPackInput[] | ImagesUncheckedCreateWithoutPackInput[]
-    connectOrCreate?: ImagesCreateOrConnectWithoutPackInput | ImagesCreateOrConnectWithoutPackInput[]
-    upsert?: ImagesUpsertWithWhereUniqueWithoutPackInput | ImagesUpsertWithWhereUniqueWithoutPackInput[]
-    createMany?: ImagesCreateManyPackInputEnvelope
-    set?: ImagesWhereUniqueInput | ImagesWhereUniqueInput[]
-    disconnect?: ImagesWhereUniqueInput | ImagesWhereUniqueInput[]
-    delete?: ImagesWhereUniqueInput | ImagesWhereUniqueInput[]
-    connect?: ImagesWhereUniqueInput | ImagesWhereUniqueInput[]
-    update?: ImagesUpdateWithWhereUniqueWithoutPackInput | ImagesUpdateWithWhereUniqueWithoutPackInput[]
-    updateMany?: ImagesUpdateManyWithWhereWithoutPackInput | ImagesUpdateManyWithWhereWithoutPackInput[]
-    deleteMany?: ImagesScalarWhereInput | ImagesScalarWhereInput[]
-  }
-
   export type UsersCreateNestedOneWithoutNotificationsInput = {
     create?: XOR<UsersCreateWithoutNotificationsInput, UsersUncheckedCreateWithoutNotificationsInput>
     connectOrCreate?: UsersCreateOrConnectWithoutNotificationsInput
@@ -25659,10 +28820,6 @@ export namespace Prisma {
     create?: XOR<UsersCreateWithoutSettingsInput, UsersUncheckedCreateWithoutSettingsInput>
     connectOrCreate?: UsersCreateOrConnectWithoutSettingsInput
     connect?: UsersWhereUniqueInput
-  }
-
-  export type EnumLanguageFieldUpdateOperationsInput = {
-    set?: $Enums.Language
   }
 
   export type EnumThemePreferenceFieldUpdateOperationsInput = {
@@ -26194,6 +29351,23 @@ export namespace Prisma {
     _max?: NestedBigIntFilter<$PrismaModel>
   }
 
+  export type NestedEnumLanguageFilter<$PrismaModel = never> = {
+    equals?: $Enums.Language | EnumLanguageFieldRefInput<$PrismaModel>
+    in?: $Enums.Language[] | ListEnumLanguageFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Language[] | ListEnumLanguageFieldRefInput<$PrismaModel>
+    not?: NestedEnumLanguageFilter<$PrismaModel> | $Enums.Language
+  }
+
+  export type NestedEnumLanguageWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Language | EnumLanguageFieldRefInput<$PrismaModel>
+    in?: $Enums.Language[] | ListEnumLanguageFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Language[] | ListEnumLanguageFieldRefInput<$PrismaModel>
+    not?: NestedEnumLanguageWithAggregatesFilter<$PrismaModel> | $Enums.Language
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumLanguageFilter<$PrismaModel>
+    _max?: NestedEnumLanguageFilter<$PrismaModel>
+  }
+
   export type NestedEnumNotificationTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.NotificationType | EnumNotificationTypeFieldRefInput<$PrismaModel>
     in?: $Enums.NotificationType[] | ListEnumNotificationTypeFieldRefInput<$PrismaModel>
@@ -26211,28 +29385,11 @@ export namespace Prisma {
     _max?: NestedEnumNotificationTypeFilter<$PrismaModel>
   }
 
-  export type NestedEnumLanguageFilter<$PrismaModel = never> = {
-    equals?: $Enums.Language | EnumLanguageFieldRefInput<$PrismaModel>
-    in?: $Enums.Language[] | ListEnumLanguageFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Language[] | ListEnumLanguageFieldRefInput<$PrismaModel>
-    not?: NestedEnumLanguageFilter<$PrismaModel> | $Enums.Language
-  }
-
   export type NestedEnumThemePreferenceFilter<$PrismaModel = never> = {
     equals?: $Enums.ThemePreference | EnumThemePreferenceFieldRefInput<$PrismaModel>
     in?: $Enums.ThemePreference[] | ListEnumThemePreferenceFieldRefInput<$PrismaModel>
     notIn?: $Enums.ThemePreference[] | ListEnumThemePreferenceFieldRefInput<$PrismaModel>
     not?: NestedEnumThemePreferenceFilter<$PrismaModel> | $Enums.ThemePreference
-  }
-
-  export type NestedEnumLanguageWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.Language | EnumLanguageFieldRefInput<$PrismaModel>
-    in?: $Enums.Language[] | ListEnumLanguageFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Language[] | ListEnumLanguageFieldRefInput<$PrismaModel>
-    not?: NestedEnumLanguageWithAggregatesFilter<$PrismaModel> | $Enums.Language
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumLanguageFilter<$PrismaModel>
-    _max?: NestedEnumLanguageFilter<$PrismaModel>
   }
 
   export type NestedEnumThemePreferenceWithAggregatesFilter<$PrismaModel = never> = {
@@ -27441,10 +30598,6 @@ export namespace Prisma {
 
   export type PacksCreateWithoutImagesInput = {
     pid: string
-    title: string
-    title_url: string
-    short_description: string
-    full_description: string
     pack_prompts: string
     credits: number
     num_images: number
@@ -27454,18 +30607,19 @@ export namespace Prisma {
     popular?: boolean
     main_image?: string
     images?: PacksCreateimagesInput | string[]
-    features?: PacksCreatefeaturesInput | string[]
     created_at?: Date | string
     updated_at?: Date | string
+    title: string
+    title_url: string
+    short_description: string
+    full_description: string
+    features?: PacksCreatefeaturesInput | string[]
+    translations?: Packs_translationsCreateNestedManyWithoutPackInput
   }
 
   export type PacksUncheckedCreateWithoutImagesInput = {
     id?: number
     pid: string
-    title: string
-    title_url: string
-    short_description: string
-    full_description: string
     pack_prompts: string
     credits: number
     num_images: number
@@ -27475,9 +30629,14 @@ export namespace Prisma {
     popular?: boolean
     main_image?: string
     images?: PacksCreateimagesInput | string[]
-    features?: PacksCreatefeaturesInput | string[]
     created_at?: Date | string
     updated_at?: Date | string
+    title: string
+    title_url: string
+    short_description: string
+    full_description: string
+    features?: PacksCreatefeaturesInput | string[]
+    translations?: Packs_translationsUncheckedCreateNestedManyWithoutPackInput
   }
 
   export type PacksCreateOrConnectWithoutImagesInput = {
@@ -27628,10 +30787,6 @@ export namespace Prisma {
 
   export type PacksUpdateWithoutImagesInput = {
     pid?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    title_url?: StringFieldUpdateOperationsInput | string
-    short_description?: StringFieldUpdateOperationsInput | string
-    full_description?: StringFieldUpdateOperationsInput | string
     pack_prompts?: StringFieldUpdateOperationsInput | string
     credits?: IntFieldUpdateOperationsInput | number
     num_images?: IntFieldUpdateOperationsInput | number
@@ -27641,18 +30796,19 @@ export namespace Prisma {
     popular?: BoolFieldUpdateOperationsInput | boolean
     main_image?: StringFieldUpdateOperationsInput | string
     images?: PacksUpdateimagesInput | string[]
-    features?: PacksUpdatefeaturesInput | string[]
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    title?: StringFieldUpdateOperationsInput | string
+    title_url?: StringFieldUpdateOperationsInput | string
+    short_description?: StringFieldUpdateOperationsInput | string
+    full_description?: StringFieldUpdateOperationsInput | string
+    features?: PacksUpdatefeaturesInput | string[]
+    translations?: Packs_translationsUpdateManyWithoutPackNestedInput
   }
 
   export type PacksUncheckedUpdateWithoutImagesInput = {
     id?: IntFieldUpdateOperationsInput | number
     pid?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    title_url?: StringFieldUpdateOperationsInput | string
-    short_description?: StringFieldUpdateOperationsInput | string
-    full_description?: StringFieldUpdateOperationsInput | string
     pack_prompts?: StringFieldUpdateOperationsInput | string
     credits?: IntFieldUpdateOperationsInput | number
     num_images?: IntFieldUpdateOperationsInput | number
@@ -27662,9 +30818,45 @@ export namespace Prisma {
     popular?: BoolFieldUpdateOperationsInput | boolean
     main_image?: StringFieldUpdateOperationsInput | string
     images?: PacksUpdateimagesInput | string[]
-    features?: PacksUpdatefeaturesInput | string[]
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    title?: StringFieldUpdateOperationsInput | string
+    title_url?: StringFieldUpdateOperationsInput | string
+    short_description?: StringFieldUpdateOperationsInput | string
+    full_description?: StringFieldUpdateOperationsInput | string
+    features?: PacksUpdatefeaturesInput | string[]
+    translations?: Packs_translationsUncheckedUpdateManyWithoutPackNestedInput
+  }
+
+  export type Plans_translationsCreateWithoutPlanInput = {
+    language: $Enums.Language
+    name: string
+    subtitle: string
+    features?: Plans_translationsCreatefeaturesInput | string[]
+    cta: string
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type Plans_translationsUncheckedCreateWithoutPlanInput = {
+    id?: number
+    language: $Enums.Language
+    name: string
+    subtitle: string
+    features?: Plans_translationsCreatefeaturesInput | string[]
+    cta: string
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type Plans_translationsCreateOrConnectWithoutPlanInput = {
+    where: Plans_translationsWhereUniqueInput
+    create: XOR<Plans_translationsCreateWithoutPlanInput, Plans_translationsUncheckedCreateWithoutPlanInput>
+  }
+
+  export type Plans_translationsCreateManyPlanInputEnvelope = {
+    data: Plans_translationsCreateManyPlanInput | Plans_translationsCreateManyPlanInput[]
+    skipDuplicates?: boolean
   }
 
   export type TransactionsCreateWithoutPlanInput = {
@@ -27704,6 +30896,37 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type Plans_translationsUpsertWithWhereUniqueWithoutPlanInput = {
+    where: Plans_translationsWhereUniqueInput
+    update: XOR<Plans_translationsUpdateWithoutPlanInput, Plans_translationsUncheckedUpdateWithoutPlanInput>
+    create: XOR<Plans_translationsCreateWithoutPlanInput, Plans_translationsUncheckedCreateWithoutPlanInput>
+  }
+
+  export type Plans_translationsUpdateWithWhereUniqueWithoutPlanInput = {
+    where: Plans_translationsWhereUniqueInput
+    data: XOR<Plans_translationsUpdateWithoutPlanInput, Plans_translationsUncheckedUpdateWithoutPlanInput>
+  }
+
+  export type Plans_translationsUpdateManyWithWhereWithoutPlanInput = {
+    where: Plans_translationsScalarWhereInput
+    data: XOR<Plans_translationsUpdateManyMutationInput, Plans_translationsUncheckedUpdateManyWithoutPlanInput>
+  }
+
+  export type Plans_translationsScalarWhereInput = {
+    AND?: Plans_translationsScalarWhereInput | Plans_translationsScalarWhereInput[]
+    OR?: Plans_translationsScalarWhereInput[]
+    NOT?: Plans_translationsScalarWhereInput | Plans_translationsScalarWhereInput[]
+    id?: IntFilter<"Plans_translations"> | number
+    plan_id?: IntFilter<"Plans_translations"> | number
+    language?: EnumLanguageFilter<"Plans_translations"> | $Enums.Language
+    name?: StringFilter<"Plans_translations"> | string
+    subtitle?: StringFilter<"Plans_translations"> | string
+    features?: StringNullableListFilter<"Plans_translations">
+    cta?: StringFilter<"Plans_translations"> | string
+    created_at?: DateTimeFilter<"Plans_translations"> | Date | string
+    updated_at?: DateTimeFilter<"Plans_translations"> | Date | string
+  }
+
   export type TransactionsUpsertWithWhereUniqueWithoutPlanInput = {
     where: TransactionsWhereUniqueInput
     update: XOR<TransactionsUpdateWithoutPlanInput, TransactionsUncheckedUpdateWithoutPlanInput>
@@ -27720,37 +30943,362 @@ export namespace Prisma {
     data: XOR<TransactionsUpdateManyMutationInput, TransactionsUncheckedUpdateManyWithoutPlanInput>
   }
 
-  export type PlansCreateWithoutTransactionsInput = {
+  export type PlansCreateWithoutTranslationsInput = {
     pid: string
-    name: string
     plan_name: $Enums.PlanNames
     credit_amount: number
     model_amount: number
     price_cents: bigint | number
     stripe_price_id: string
+    is_popular?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+    name: string
     subtitle: string
     features?: PlansCreatefeaturesInput | string[]
     cta: string
+    transactions?: TransactionsCreateNestedManyWithoutPlanInput
+  }
+
+  export type PlansUncheckedCreateWithoutTranslationsInput = {
+    id?: number
+    pid: string
+    plan_name: $Enums.PlanNames
+    credit_amount: number
+    model_amount: number
+    price_cents: bigint | number
+    stripe_price_id: string
+    is_popular?: boolean
     created_at?: Date | string
     updated_at?: Date | string
+    name: string
+    subtitle: string
+    features?: PlansCreatefeaturesInput | string[]
+    cta: string
+    transactions?: TransactionsUncheckedCreateNestedManyWithoutPlanInput
+  }
+
+  export type PlansCreateOrConnectWithoutTranslationsInput = {
+    where: PlansWhereUniqueInput
+    create: XOR<PlansCreateWithoutTranslationsInput, PlansUncheckedCreateWithoutTranslationsInput>
+  }
+
+  export type PlansUpsertWithoutTranslationsInput = {
+    update: XOR<PlansUpdateWithoutTranslationsInput, PlansUncheckedUpdateWithoutTranslationsInput>
+    create: XOR<PlansCreateWithoutTranslationsInput, PlansUncheckedCreateWithoutTranslationsInput>
+    where?: PlansWhereInput
+  }
+
+  export type PlansUpdateToOneWithWhereWithoutTranslationsInput = {
+    where?: PlansWhereInput
+    data: XOR<PlansUpdateWithoutTranslationsInput, PlansUncheckedUpdateWithoutTranslationsInput>
+  }
+
+  export type PlansUpdateWithoutTranslationsInput = {
+    pid?: StringFieldUpdateOperationsInput | string
+    plan_name?: EnumPlanNamesFieldUpdateOperationsInput | $Enums.PlanNames
+    credit_amount?: IntFieldUpdateOperationsInput | number
+    model_amount?: IntFieldUpdateOperationsInput | number
+    price_cents?: BigIntFieldUpdateOperationsInput | bigint | number
+    stripe_price_id?: StringFieldUpdateOperationsInput | string
+    is_popular?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: StringFieldUpdateOperationsInput | string
+    subtitle?: StringFieldUpdateOperationsInput | string
+    features?: PlansUpdatefeaturesInput | string[]
+    cta?: StringFieldUpdateOperationsInput | string
+    transactions?: TransactionsUpdateManyWithoutPlanNestedInput
+  }
+
+  export type PlansUncheckedUpdateWithoutTranslationsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    pid?: StringFieldUpdateOperationsInput | string
+    plan_name?: EnumPlanNamesFieldUpdateOperationsInput | $Enums.PlanNames
+    credit_amount?: IntFieldUpdateOperationsInput | number
+    model_amount?: IntFieldUpdateOperationsInput | number
+    price_cents?: BigIntFieldUpdateOperationsInput | bigint | number
+    stripe_price_id?: StringFieldUpdateOperationsInput | string
+    is_popular?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: StringFieldUpdateOperationsInput | string
+    subtitle?: StringFieldUpdateOperationsInput | string
+    features?: PlansUpdatefeaturesInput | string[]
+    cta?: StringFieldUpdateOperationsInput | string
+    transactions?: TransactionsUncheckedUpdateManyWithoutPlanNestedInput
+  }
+
+  export type ImagesCreateWithoutPackInput = {
+    pid: string
+    user_prompt: string
+    sys_prompt: string
+    alt: string
+    image_cost?: number
+    num_inference_steps: number
+    content_type: $Enums.ImageFormat
+    status: $Enums.Status
+    image_size: $Enums.ImageSize
+    fal_ai_request_id?: string | null
+    width?: number | null
+    height?: number | null
+    image_s3_key: string
+    image_url_fal?: string | null
+    is_favorite?: boolean
+    deleted_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    user: UsersCreateNestedOneWithoutImagesInput
+    training_model?: TrainingModelsCreateNestedOneWithoutImagesInput
+  }
+
+  export type ImagesUncheckedCreateWithoutPackInput = {
+    id?: number
+    pid: string
+    user_id: number
+    training_model_id?: number | null
+    user_prompt: string
+    sys_prompt: string
+    alt: string
+    image_cost?: number
+    num_inference_steps: number
+    content_type: $Enums.ImageFormat
+    status: $Enums.Status
+    image_size: $Enums.ImageSize
+    fal_ai_request_id?: string | null
+    width?: number | null
+    height?: number | null
+    image_s3_key: string
+    image_url_fal?: string | null
+    is_favorite?: boolean
+    deleted_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type ImagesCreateOrConnectWithoutPackInput = {
+    where: ImagesWhereUniqueInput
+    create: XOR<ImagesCreateWithoutPackInput, ImagesUncheckedCreateWithoutPackInput>
+  }
+
+  export type ImagesCreateManyPackInputEnvelope = {
+    data: ImagesCreateManyPackInput | ImagesCreateManyPackInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type Packs_translationsCreateWithoutPackInput = {
+    language: $Enums.Language
+    title: string
+    short_description: string
+    full_description: string
+    features?: Packs_translationsCreatefeaturesInput | string[]
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type Packs_translationsUncheckedCreateWithoutPackInput = {
+    id?: number
+    language: $Enums.Language
+    title: string
+    short_description: string
+    full_description: string
+    features?: Packs_translationsCreatefeaturesInput | string[]
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type Packs_translationsCreateOrConnectWithoutPackInput = {
+    where: Packs_translationsWhereUniqueInput
+    create: XOR<Packs_translationsCreateWithoutPackInput, Packs_translationsUncheckedCreateWithoutPackInput>
+  }
+
+  export type Packs_translationsCreateManyPackInputEnvelope = {
+    data: Packs_translationsCreateManyPackInput | Packs_translationsCreateManyPackInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ImagesUpsertWithWhereUniqueWithoutPackInput = {
+    where: ImagesWhereUniqueInput
+    update: XOR<ImagesUpdateWithoutPackInput, ImagesUncheckedUpdateWithoutPackInput>
+    create: XOR<ImagesCreateWithoutPackInput, ImagesUncheckedCreateWithoutPackInput>
+  }
+
+  export type ImagesUpdateWithWhereUniqueWithoutPackInput = {
+    where: ImagesWhereUniqueInput
+    data: XOR<ImagesUpdateWithoutPackInput, ImagesUncheckedUpdateWithoutPackInput>
+  }
+
+  export type ImagesUpdateManyWithWhereWithoutPackInput = {
+    where: ImagesScalarWhereInput
+    data: XOR<ImagesUpdateManyMutationInput, ImagesUncheckedUpdateManyWithoutPackInput>
+  }
+
+  export type Packs_translationsUpsertWithWhereUniqueWithoutPackInput = {
+    where: Packs_translationsWhereUniqueInput
+    update: XOR<Packs_translationsUpdateWithoutPackInput, Packs_translationsUncheckedUpdateWithoutPackInput>
+    create: XOR<Packs_translationsCreateWithoutPackInput, Packs_translationsUncheckedCreateWithoutPackInput>
+  }
+
+  export type Packs_translationsUpdateWithWhereUniqueWithoutPackInput = {
+    where: Packs_translationsWhereUniqueInput
+    data: XOR<Packs_translationsUpdateWithoutPackInput, Packs_translationsUncheckedUpdateWithoutPackInput>
+  }
+
+  export type Packs_translationsUpdateManyWithWhereWithoutPackInput = {
+    where: Packs_translationsScalarWhereInput
+    data: XOR<Packs_translationsUpdateManyMutationInput, Packs_translationsUncheckedUpdateManyWithoutPackInput>
+  }
+
+  export type Packs_translationsScalarWhereInput = {
+    AND?: Packs_translationsScalarWhereInput | Packs_translationsScalarWhereInput[]
+    OR?: Packs_translationsScalarWhereInput[]
+    NOT?: Packs_translationsScalarWhereInput | Packs_translationsScalarWhereInput[]
+    id?: IntFilter<"Packs_translations"> | number
+    pack_id?: IntFilter<"Packs_translations"> | number
+    language?: EnumLanguageFilter<"Packs_translations"> | $Enums.Language
+    title?: StringFilter<"Packs_translations"> | string
+    short_description?: StringFilter<"Packs_translations"> | string
+    full_description?: StringFilter<"Packs_translations"> | string
+    features?: StringNullableListFilter<"Packs_translations">
+    created_at?: DateTimeFilter<"Packs_translations"> | Date | string
+    updated_at?: DateTimeFilter<"Packs_translations"> | Date | string
+  }
+
+  export type PacksCreateWithoutTranslationsInput = {
+    pid: string
+    pack_prompts: string
+    credits: number
+    num_images: number
+    num_inference_steps?: number
+    stars?: number
+    used?: number
+    popular?: boolean
+    main_image?: string
+    images?: PacksCreateimagesInput | string[]
+    created_at?: Date | string
+    updated_at?: Date | string
+    title: string
+    title_url: string
+    short_description: string
+    full_description: string
+    features?: PacksCreatefeaturesInput | string[]
+    Images?: ImagesCreateNestedManyWithoutPackInput
+  }
+
+  export type PacksUncheckedCreateWithoutTranslationsInput = {
+    id?: number
+    pid: string
+    pack_prompts: string
+    credits: number
+    num_images: number
+    num_inference_steps?: number
+    stars?: number
+    used?: number
+    popular?: boolean
+    main_image?: string
+    images?: PacksCreateimagesInput | string[]
+    created_at?: Date | string
+    updated_at?: Date | string
+    title: string
+    title_url: string
+    short_description: string
+    full_description: string
+    features?: PacksCreatefeaturesInput | string[]
+    Images?: ImagesUncheckedCreateNestedManyWithoutPackInput
+  }
+
+  export type PacksCreateOrConnectWithoutTranslationsInput = {
+    where: PacksWhereUniqueInput
+    create: XOR<PacksCreateWithoutTranslationsInput, PacksUncheckedCreateWithoutTranslationsInput>
+  }
+
+  export type PacksUpsertWithoutTranslationsInput = {
+    update: XOR<PacksUpdateWithoutTranslationsInput, PacksUncheckedUpdateWithoutTranslationsInput>
+    create: XOR<PacksCreateWithoutTranslationsInput, PacksUncheckedCreateWithoutTranslationsInput>
+    where?: PacksWhereInput
+  }
+
+  export type PacksUpdateToOneWithWhereWithoutTranslationsInput = {
+    where?: PacksWhereInput
+    data: XOR<PacksUpdateWithoutTranslationsInput, PacksUncheckedUpdateWithoutTranslationsInput>
+  }
+
+  export type PacksUpdateWithoutTranslationsInput = {
+    pid?: StringFieldUpdateOperationsInput | string
+    pack_prompts?: StringFieldUpdateOperationsInput | string
+    credits?: IntFieldUpdateOperationsInput | number
+    num_images?: IntFieldUpdateOperationsInput | number
+    num_inference_steps?: IntFieldUpdateOperationsInput | number
+    stars?: IntFieldUpdateOperationsInput | number
+    used?: IntFieldUpdateOperationsInput | number
+    popular?: BoolFieldUpdateOperationsInput | boolean
+    main_image?: StringFieldUpdateOperationsInput | string
+    images?: PacksUpdateimagesInput | string[]
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    title?: StringFieldUpdateOperationsInput | string
+    title_url?: StringFieldUpdateOperationsInput | string
+    short_description?: StringFieldUpdateOperationsInput | string
+    full_description?: StringFieldUpdateOperationsInput | string
+    features?: PacksUpdatefeaturesInput | string[]
+    Images?: ImagesUpdateManyWithoutPackNestedInput
+  }
+
+  export type PacksUncheckedUpdateWithoutTranslationsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    pid?: StringFieldUpdateOperationsInput | string
+    pack_prompts?: StringFieldUpdateOperationsInput | string
+    credits?: IntFieldUpdateOperationsInput | number
+    num_images?: IntFieldUpdateOperationsInput | number
+    num_inference_steps?: IntFieldUpdateOperationsInput | number
+    stars?: IntFieldUpdateOperationsInput | number
+    used?: IntFieldUpdateOperationsInput | number
+    popular?: BoolFieldUpdateOperationsInput | boolean
+    main_image?: StringFieldUpdateOperationsInput | string
+    images?: PacksUpdateimagesInput | string[]
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    title?: StringFieldUpdateOperationsInput | string
+    title_url?: StringFieldUpdateOperationsInput | string
+    short_description?: StringFieldUpdateOperationsInput | string
+    full_description?: StringFieldUpdateOperationsInput | string
+    features?: PacksUpdatefeaturesInput | string[]
+    Images?: ImagesUncheckedUpdateManyWithoutPackNestedInput
+  }
+
+  export type PlansCreateWithoutTransactionsInput = {
+    pid: string
+    plan_name: $Enums.PlanNames
+    credit_amount: number
+    model_amount: number
+    price_cents: bigint | number
+    stripe_price_id: string
     is_popular?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+    name: string
+    subtitle: string
+    features?: PlansCreatefeaturesInput | string[]
+    cta: string
+    translations?: Plans_translationsCreateNestedManyWithoutPlanInput
   }
 
   export type PlansUncheckedCreateWithoutTransactionsInput = {
     id?: number
     pid: string
-    name: string
     plan_name: $Enums.PlanNames
     credit_amount: number
     model_amount: number
     price_cents: bigint | number
     stripe_price_id: string
+    is_popular?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+    name: string
     subtitle: string
     features?: PlansCreatefeaturesInput | string[]
     cta: string
-    created_at?: Date | string
-    updated_at?: Date | string
-    is_popular?: boolean
+    translations?: Plans_translationsUncheckedCreateNestedManyWithoutPlanInput
   }
 
   export type PlansCreateOrConnectWithoutTransactionsInput = {
@@ -27829,35 +31377,37 @@ export namespace Prisma {
 
   export type PlansUpdateWithoutTransactionsInput = {
     pid?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
     plan_name?: EnumPlanNamesFieldUpdateOperationsInput | $Enums.PlanNames
     credit_amount?: IntFieldUpdateOperationsInput | number
     model_amount?: IntFieldUpdateOperationsInput | number
     price_cents?: BigIntFieldUpdateOperationsInput | bigint | number
     stripe_price_id?: StringFieldUpdateOperationsInput | string
+    is_popular?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: StringFieldUpdateOperationsInput | string
     subtitle?: StringFieldUpdateOperationsInput | string
     features?: PlansUpdatefeaturesInput | string[]
     cta?: StringFieldUpdateOperationsInput | string
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    is_popular?: BoolFieldUpdateOperationsInput | boolean
+    translations?: Plans_translationsUpdateManyWithoutPlanNestedInput
   }
 
   export type PlansUncheckedUpdateWithoutTransactionsInput = {
     id?: IntFieldUpdateOperationsInput | number
     pid?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
     plan_name?: EnumPlanNamesFieldUpdateOperationsInput | $Enums.PlanNames
     credit_amount?: IntFieldUpdateOperationsInput | number
     model_amount?: IntFieldUpdateOperationsInput | number
     price_cents?: BigIntFieldUpdateOperationsInput | bigint | number
     stripe_price_id?: StringFieldUpdateOperationsInput | string
+    is_popular?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: StringFieldUpdateOperationsInput | string
     subtitle?: StringFieldUpdateOperationsInput | string
     features?: PlansUpdatefeaturesInput | string[]
     cta?: StringFieldUpdateOperationsInput | string
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
-    is_popular?: BoolFieldUpdateOperationsInput | boolean
+    translations?: Plans_translationsUncheckedUpdateManyWithoutPlanNestedInput
   }
 
   export type UsersUpsertWithoutTransactionsInput = {
@@ -27922,79 +31472,6 @@ export namespace Prisma {
     settings?: UserSettingsUncheckedUpdateOneWithoutUserNestedInput
     featureRequests?: FeatureRequestUncheckedUpdateManyWithoutUserNestedInput
     featureVote?: FeatureVoteUncheckedUpdateManyWithoutUserNestedInput
-  }
-
-  export type ImagesCreateWithoutPackInput = {
-    pid: string
-    user_prompt: string
-    sys_prompt: string
-    alt: string
-    image_cost?: number
-    num_inference_steps: number
-    content_type: $Enums.ImageFormat
-    status: $Enums.Status
-    image_size: $Enums.ImageSize
-    fal_ai_request_id?: string | null
-    width?: number | null
-    height?: number | null
-    image_s3_key: string
-    image_url_fal?: string | null
-    is_favorite?: boolean
-    deleted_at?: Date | string | null
-    created_at?: Date | string
-    updated_at?: Date | string
-    user: UsersCreateNestedOneWithoutImagesInput
-    training_model?: TrainingModelsCreateNestedOneWithoutImagesInput
-  }
-
-  export type ImagesUncheckedCreateWithoutPackInput = {
-    id?: number
-    pid: string
-    user_id: number
-    training_model_id?: number | null
-    user_prompt: string
-    sys_prompt: string
-    alt: string
-    image_cost?: number
-    num_inference_steps: number
-    content_type: $Enums.ImageFormat
-    status: $Enums.Status
-    image_size: $Enums.ImageSize
-    fal_ai_request_id?: string | null
-    width?: number | null
-    height?: number | null
-    image_s3_key: string
-    image_url_fal?: string | null
-    is_favorite?: boolean
-    deleted_at?: Date | string | null
-    created_at?: Date | string
-    updated_at?: Date | string
-  }
-
-  export type ImagesCreateOrConnectWithoutPackInput = {
-    where: ImagesWhereUniqueInput
-    create: XOR<ImagesCreateWithoutPackInput, ImagesUncheckedCreateWithoutPackInput>
-  }
-
-  export type ImagesCreateManyPackInputEnvelope = {
-    data: ImagesCreateManyPackInput | ImagesCreateManyPackInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type ImagesUpsertWithWhereUniqueWithoutPackInput = {
-    where: ImagesWhereUniqueInput
-    update: XOR<ImagesUpdateWithoutPackInput, ImagesUncheckedUpdateWithoutPackInput>
-    create: XOR<ImagesCreateWithoutPackInput, ImagesUncheckedCreateWithoutPackInput>
-  }
-
-  export type ImagesUpdateWithWhereUniqueWithoutPackInput = {
-    where: ImagesWhereUniqueInput
-    data: XOR<ImagesUpdateWithoutPackInput, ImagesUncheckedUpdateWithoutPackInput>
-  }
-
-  export type ImagesUpdateManyWithWhereWithoutPackInput = {
-    where: ImagesScalarWhereInput
-    data: XOR<ImagesUpdateManyMutationInput, ImagesUncheckedUpdateManyWithoutPackInput>
   }
 
   export type UsersCreateWithoutNotificationsInput = {
@@ -29113,6 +32590,17 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type Plans_translationsCreateManyPlanInput = {
+    id?: number
+    language: $Enums.Language
+    name: string
+    subtitle: string
+    features?: Plans_translationsCreatefeaturesInput | string[]
+    cta: string
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
   export type TransactionsCreateManyPlanInput = {
     id?: number
     pid: string
@@ -29125,6 +32613,38 @@ export namespace Prisma {
     status: $Enums.Status
     created_at?: Date | string
     updated_at?: Date | string
+  }
+
+  export type Plans_translationsUpdateWithoutPlanInput = {
+    language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    name?: StringFieldUpdateOperationsInput | string
+    subtitle?: StringFieldUpdateOperationsInput | string
+    features?: Plans_translationsUpdatefeaturesInput | string[]
+    cta?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type Plans_translationsUncheckedUpdateWithoutPlanInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    name?: StringFieldUpdateOperationsInput | string
+    subtitle?: StringFieldUpdateOperationsInput | string
+    features?: Plans_translationsUpdatefeaturesInput | string[]
+    cta?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type Plans_translationsUncheckedUpdateManyWithoutPlanInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    name?: StringFieldUpdateOperationsInput | string
+    subtitle?: StringFieldUpdateOperationsInput | string
+    features?: Plans_translationsUpdatefeaturesInput | string[]
+    cta?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TransactionsUpdateWithoutPlanInput = {
@@ -29188,6 +32708,17 @@ export namespace Prisma {
     image_url_fal?: string | null
     is_favorite?: boolean
     deleted_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type Packs_translationsCreateManyPackInput = {
+    id?: number
+    language: $Enums.Language
+    title: string
+    short_description: string
+    full_description: string
+    features?: Packs_translationsCreatefeaturesInput | string[]
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -29259,6 +32790,38 @@ export namespace Prisma {
     image_url_fal?: NullableStringFieldUpdateOperationsInput | string | null
     is_favorite?: BoolFieldUpdateOperationsInput | boolean
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type Packs_translationsUpdateWithoutPackInput = {
+    language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    title?: StringFieldUpdateOperationsInput | string
+    short_description?: StringFieldUpdateOperationsInput | string
+    full_description?: StringFieldUpdateOperationsInput | string
+    features?: Packs_translationsUpdatefeaturesInput | string[]
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type Packs_translationsUncheckedUpdateWithoutPackInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    title?: StringFieldUpdateOperationsInput | string
+    short_description?: StringFieldUpdateOperationsInput | string
+    full_description?: StringFieldUpdateOperationsInput | string
+    features?: Packs_translationsUpdatefeaturesInput | string[]
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type Packs_translationsUncheckedUpdateManyWithoutPackInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    language?: EnumLanguageFieldUpdateOperationsInput | $Enums.Language
+    title?: StringFieldUpdateOperationsInput | string
+    short_description?: StringFieldUpdateOperationsInput | string
+    full_description?: StringFieldUpdateOperationsInput | string
+    features?: Packs_translationsUpdatefeaturesInput | string[]
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }

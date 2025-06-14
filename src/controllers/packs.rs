@@ -11,11 +11,14 @@ use crate::{
     middleware::{cookie::ExtractConsentState, i18nv2::LangEngine},
     models::{
         images::ImagesModelList,
-        join::user_pack::{load_user_and_one_pack, load_user_one_training_model_one_pack},
+        join::user_pack::{
+            load_pack_and_translation, load_user_and_one_pack,
+            load_user_one_training_model_one_pack,
+        },
         users::UserPid,
         ImageModel,
         _entities::sea_orm_active_enums::ImageSize,
-        packs::{PackModelList, PacksDomain},
+        packs::{PackDomain, PackModelList},
         training_models::TrainingModelList,
         PackModel, TrainingModelModel, UserModel,
     },
@@ -95,14 +98,18 @@ async fn load_models_all(db: &DatabaseConnection, id: i32) -> Result<TrainingMod
     let list = TrainingModelModel::find_all_completed_by_user_id(db, id).await?;
     Ok(TrainingModelList::new(list))
 }
-// async fn load_pack_by_pid(db: &DatabaseConnection, pid: &Uuid) -> Result<PackModel> {
-//     let pack = PackModel::find_by_pid(db, pid).await?;
+// async fn load_pack_by_title_url(db: &DatabaseConnection, title_url: &str) -> Result<PackModel> {
+//     let pack = PackModel::find_by_title_url(db, title_url).await?;
 //     Ok(pack)
 // }
-async fn load_pack_by_title_url(db: &DatabaseConnection, title_url: &str) -> Result<PackModel> {
-    let pack = PackModel::find_by_title_url(db, title_url).await?;
-    Ok(pack)
-}
+// async fn load_pack_by_title_url_translated(
+//     db: &DatabaseConnection,
+//     title_url: &str,
+//     lang: &Language,
+// ) -> Result<PackModel> {
+//     let pack = PackModel::find_by_title_url(db, title_url).await?;
+//     Ok(pack)
+// }
 async fn load_packs_all(db: &DatabaseConnection) -> Result<PackModelList> {
     let pack = PackModel::find_all_packs(db).await?;
     Ok(PackModelList::new(pack))
@@ -161,8 +168,8 @@ pub async fn show_pack(
         }
         Err(_) => None,
     };
-    let images = load_cached_web(&ctx).await?;
-    let pack = load_pack_by_title_url(&ctx.db, &title_url).await?;
+    let images = load_cached_web(&ctx, &lang).await?;
+    let pack = load_pack_and_translation(&ctx.db, &title_url, &lang).await?;
     let pack: PackView = pack.into();
     let pack_images = pack.clone().create_item_groups();
 
@@ -200,8 +207,9 @@ pub async fn show_pack_partial(
         }
         Err(_) => None,
     };
-    let images = load_cached_web(&ctx).await?;
-    let pack = load_pack_by_title_url(&ctx.db, &title_url).await?;
+    let images = load_cached_web(&ctx, &lang).await?;
+    // let pack = load_pack_by_title_url(&ctx.db, &title_url).await?;
+    let pack = load_pack_and_translation(&ctx.db, &title_url, &lang).await?;
     let pack: PackView = pack.into();
     let pack_images = pack.clone().create_item_groups();
 
@@ -236,7 +244,7 @@ pub async fn generate_packs_images(
         load_everything(&ctx.db, &user_pid, &form, &pack_pid).await?;
 
     // 1. Call the Domain Service to perform the core logic
-    let pack_domain = PacksDomain::from_model(pack, form.image_size);
+    let pack_domain = PackDomain::from_model(pack, form.image_size);
     let (updated_credits_model, _) =
         ImageGenerationService::generate(&ctx, &fal_ai_client, pack_domain, &user, &training_model)
             .await?;

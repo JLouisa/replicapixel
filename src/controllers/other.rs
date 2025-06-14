@@ -2,7 +2,6 @@
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
 use crate::middleware::i18nv2::LangEngine;
-use crate::models::_entities::sea_orm_active_enums::Language;
 use crate::views;
 use crate::{controllers::dashboard::WebsiteOptions, domain::website::Website};
 use axum::{debug_handler, Extension};

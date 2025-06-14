@@ -17,7 +17,7 @@ use uuid::Uuid;
 
 use crate::{
     controllers::home::WebImages,
-    models::{users::UserPid, UserModel},
+    models::{users::UserPid, UserModel, _entities::sea_orm_active_enums::Language},
     views::images::ImageView,
 };
 use serde::de::DeserializeOwned;
@@ -64,7 +64,7 @@ pub enum RedisKey {
     User(UserPid),
     UserSetting(UserPid),
     S3PreUrl(Uuid),
-    Website,
+    Website(Language),
 }
 
 impl ImageView {
@@ -90,7 +90,7 @@ impl RedisKey {
             Self::User(uuid) => format!("user:{}", uuid.as_ref()),
             Self::UserSetting(uuid) => format!("user:setting:{}", uuid.as_ref()),
             Self::S3PreUrl(uuid) => format!("s3:preurl:{}", uuid),
-            Self::Website => String::from("website"),
+            Self::Website(lang) => format!("website:{}", lang),
         }
     }
 }
@@ -298,14 +298,18 @@ impl RedisCacheDriver {
     // }
 }
 
-async fn fetch_and_cache_web_images(ctx: &AppContext) -> CacheResult<WebImages> {
-    let images = WebImages::web_images(&ctx.db).await;
+async fn fetch_and_cache_web_images(
+    ctx: &AppContext,
+    lang: &Language,
+    key: &RedisKey,
+) -> CacheResult<WebImages> {
+    let images = WebImages::web_images(&ctx.db, lang).await;
     match serde_json::to_string(&images) {
         Ok(serialized) => {
             if let Err(e) = ctx
                 .cache
                 .insert_with_expiry(
-                    "web",
+                    &key.to_key(),
                     &serialized,
                     Duration::from_secs(WEB_IMAGES_TTL_SECONDS),
                 )
@@ -320,22 +324,23 @@ async fn fetch_and_cache_web_images(ctx: &AppContext) -> CacheResult<WebImages> 
     }
     Ok(images)
 }
-pub async fn load_cached_web(ctx: &AppContext) -> CacheResult<WebImages> {
-    match ctx.cache.get("web").await {
+pub async fn load_cached_web(ctx: &AppContext, lang: &Language) -> CacheResult<WebImages> {
+    let key = RedisKey::Website(lang.to_owned());
+    match ctx.cache.get(&key.to_key()).await {
         Ok(Some(cached)) => match serde_json::from_str::<WebImages>(&cached) {
             Ok(data) => Ok(data),
             Err(err) => {
                 tracing::error!("Failed to deserialize cached web images: {}", err);
-                fetch_and_cache_web_images(ctx).await
+                fetch_and_cache_web_images(ctx, lang, &key).await
             }
         },
         Ok(None) => {
             tracing::info!("Web images not found in cache, loading from DB.");
-            fetch_and_cache_web_images(ctx).await
+            fetch_and_cache_web_images(ctx, lang, &key).await
         }
         Err(err) => {
             tracing::error!("Failed to read from cache: {}", err);
-            fetch_and_cache_web_images(ctx).await
+            fetch_and_cache_web_images(ctx, lang, &key).await
         }
     }
 }

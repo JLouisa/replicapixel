@@ -20,7 +20,7 @@ use crate::{
         PlanModel,
         _entities::sea_orm_active_enums::{CheckOutStatus, Currency, PlanNames},
         join::{user_credits_models::load_user_and_credits, user_order::load_user_and_order},
-        plans::PlanModelList,
+        plans::{PlanDomain, PlanDomainList, PlanModelList},
         UserModel,
     },
     service::stripe::{
@@ -435,14 +435,36 @@ impl From<PlanModel> for PricingView {
             }
             None => None,
         };
-        let currency = Currency::default();
         Self {
             pid: plan.pid,
             plan_name: plan.plan_name,
             subtitle: plan.subtitle,
             credit_amount: plan.credit_amount,
             model_amount: plan.model_amount,
-            currency,
+            currency: Currency::default(),
+            price: plan.price_cents as f64 / 100.0,
+            features: feature,
+            cta: plan.cta,
+            is_popular: plan.is_popular,
+        }
+    }
+}
+impl From<PlanDomain> for PricingView {
+    fn from(plan: PlanDomain) -> Self {
+        let feature = match plan.features {
+            Some(f) => {
+                let features: Vec<Feature> = f.iter().map(|f| Feature::new(f.to_owned())).collect();
+                Some(features)
+            }
+            None => None,
+        };
+        Self {
+            pid: plan.pid,
+            plan_name: plan.plan_name,
+            subtitle: plan.subtitle,
+            credit_amount: plan.credit_amount,
+            model_amount: plan.model_amount,
+            currency: Currency::default(),
             price: plan.price_cents as f64 / 100.0,
             features: feature,
             cta: plan.cta,
@@ -455,11 +477,16 @@ impl From<PlanModel> for PricingView {
 pub struct PricingViewList(Vec<PricingView>);
 impl From<PlanModelList> for PricingViewList {
     fn from(mut list: PlanModelList) -> PricingViewList {
-        list.0.sort_by_key(|p| p.id); // Sort in-place
+        list.0.sort_by_key(|p| p.id);
         Self(list.0.into_iter().map(PricingView::from).collect())
     }
 }
-
+impl From<PlanDomainList> for PricingViewList {
+    fn from(mut list: PlanDomainList) -> Self {
+        list.0.sort_by_key(|p| p.id);
+        Self(list.0.into_iter().map(PricingView::from).collect())
+    }
+}
 impl PricingViewList {
     pub fn mock_plans() -> Self {
         let list = vec![

@@ -16,7 +16,7 @@ use crate::models::join::user_credits_models::{
     load_user_and_credits, load_user_and_settings, load_user_and_training,
     load_user_credit_training, load_user_credits_settings,
 };
-use crate::models::packs::PackModelList;
+use crate::models::packs::PackTranslatedList;
 use crate::models::training_models::TrainingModelList;
 use crate::models::transactions::TransactionModelList;
 use crate::models::users::{LoginParams, RegisterParams, UserPid};
@@ -249,9 +249,16 @@ pub async fn load_first_images(
     let list = ImageModel::find_x_images_by_user_id(db, id, fav, del, 30).await?;
     Ok(ImagesModelList::new(list))
 }
-async fn load_packs(db: &DatabaseConnection) -> Result<PackModelList> {
-    let list = PackModel::find_all_packs(db).await?;
-    Ok(PackModelList::new(list))
+// async fn load_packs(db: &DatabaseConnection) -> Result<PackModelList> {
+//     let list = PackModel::find_all_packs(db).await?;
+//     Ok(PackModelList::new(list))
+// }
+async fn load_packs_translated(
+    db: &DatabaseConnection,
+    lang: &Language,
+) -> Result<PackTranslatedList> {
+    let list = PackModel::find_all_translated(db, lang).await?;
+    Ok(list)
 }
 
 async fn load_features(db: &DatabaseConnection) -> Result<FeatureRequestModelList> {
@@ -914,9 +921,9 @@ pub async fn packs_dashboard(
     };
     let (user, user_credits, training_models) =
         load_user_credit_training(&ctx.db, &user_pid).await?;
-    let packs = match load_cached_web(&ctx).await {
+    let packs = match load_cached_web(&ctx, &lang).await {
         Ok(images) => images.packs,
-        Err(_) => load_packs(&ctx.db).await?.into(),
+        Err(_) => load_packs_translated(&ctx.db, &lang).await?.into(),
     };
 
     let website_options: WebsiteOptions = WebsiteOptions::new()
@@ -946,9 +953,9 @@ pub async fn packs_partial_dashboard(
         }
     };
     let (_, training_models) = load_user_and_training(&ctx.db, &user_pid).await?;
-    let packs = match load_cached_web(&ctx).await {
+    let packs = match load_cached_web(&ctx, &lang).await {
         Ok(images) => images.packs,
-        Err(_) => load_packs(&ctx.db).await?.into(),
+        Err(_) => load_packs_translated(&ctx.db, &lang).await?.into(),
     };
 
     let website_options: WebsiteOptions = WebsiteOptions::new()

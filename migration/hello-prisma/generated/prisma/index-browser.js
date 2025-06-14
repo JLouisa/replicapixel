@@ -211,18 +211,63 @@ exports.Prisma.ImagesScalarFieldEnum = {
 exports.Prisma.PlansScalarFieldEnum = {
   id: 'id',
   pid: 'pid',
-  name: 'name',
   plan_name: 'plan_name',
   credit_amount: 'credit_amount',
   model_amount: 'model_amount',
   price_cents: 'price_cents',
   stripe_price_id: 'stripe_price_id',
+  is_popular: 'is_popular',
+  created_at: 'created_at',
+  updated_at: 'updated_at',
+  name: 'name',
+  subtitle: 'subtitle',
+  features: 'features',
+  cta: 'cta'
+};
+
+exports.Prisma.Plans_translationsScalarFieldEnum = {
+  id: 'id',
+  plan_id: 'plan_id',
+  language: 'language',
+  name: 'name',
   subtitle: 'subtitle',
   features: 'features',
   cta: 'cta',
   created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.PacksScalarFieldEnum = {
+  id: 'id',
+  pid: 'pid',
+  pack_prompts: 'pack_prompts',
+  credits: 'credits',
+  num_images: 'num_images',
+  num_inference_steps: 'num_inference_steps',
+  stars: 'stars',
+  used: 'used',
+  popular: 'popular',
+  main_image: 'main_image',
+  images: 'images',
+  created_at: 'created_at',
   updated_at: 'updated_at',
-  is_popular: 'is_popular'
+  title: 'title',
+  title_url: 'title_url',
+  short_description: 'short_description',
+  full_description: 'full_description',
+  features: 'features'
+};
+
+exports.Prisma.Packs_translationsScalarFieldEnum = {
+  id: 'id',
+  pack_id: 'pack_id',
+  language: 'language',
+  title: 'title',
+  short_description: 'short_description',
+  full_description: 'full_description',
+  features: 'features',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
 };
 
 exports.Prisma.TransactionsScalarFieldEnum = {
@@ -236,27 +281,6 @@ exports.Prisma.TransactionsScalarFieldEnum = {
   currency: 'currency',
   payment_id: 'payment_id',
   status: 'status',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
-};
-
-exports.Prisma.PacksScalarFieldEnum = {
-  id: 'id',
-  pid: 'pid',
-  title: 'title',
-  title_url: 'title_url',
-  short_description: 'short_description',
-  full_description: 'full_description',
-  pack_prompts: 'pack_prompts',
-  credits: 'credits',
-  num_images: 'num_images',
-  num_inference_steps: 'num_inference_steps',
-  stars: 'stars',
-  used: 'used',
-  popular: 'popular',
-  main_image: 'main_image',
-  images: 'images',
-  features: 'features',
   created_at: 'created_at',
   updated_at: 'updated_at'
 };
@@ -409,18 +433,18 @@ exports.PlanNames = exports.$Enums.PlanNames = {
   Max: 'Max'
 };
 
-exports.NotificationType = exports.$Enums.NotificationType = {
-  Message: 'Message',
-  System_update: 'System_update',
-  Promotion: 'Promotion'
-};
-
 exports.Language = exports.$Enums.Language = {
   English: 'English',
   Spanish: 'Spanish',
   German: 'German',
   Italian: 'Italian',
   Dutch: 'Dutch'
+};
+
+exports.NotificationType = exports.$Enums.NotificationType = {
+  Message: 'Message',
+  System_update: 'System_update',
+  Promotion: 'Promotion'
 };
 
 exports.ThemePreference = exports.$Enums.ThemePreference = {
@@ -444,8 +468,10 @@ exports.Prisma.ModelName = {
   UserCredits: 'UserCredits',
   Images: 'Images',
   Plans: 'Plans',
-  Transactions: 'Transactions',
+  Plans_translations: 'Plans_translations',
   Packs: 'Packs',
+  Packs_translations: 'Packs_translations',
+  Transactions: 'Transactions',
   HandledStripeEvent: 'HandledStripeEvent',
   HandledFalEvent: 'HandledFalEvent',
   seaql_migrations: 'seaql_migrations',

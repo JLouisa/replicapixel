@@ -3,13 +3,15 @@
 #![allow(clippy::unused_async)]
 use crate::controllers::auth::HxRedirect;
 use crate::controllers::dashboard::{CurrentPage, WebsiteOptions};
+use crate::controllers::payment::PricingViewList;
 use crate::domain::website::Website;
 use crate::middleware::cookie::ExtractConsentState;
 use crate::middleware::i18nv2::LangEngine;
+use crate::models::_entities::sea_orm_active_enums::Language;
 use crate::models::join::user_credits_models::load_user_credit_training;
 use crate::models::packs::PackModelList;
 use crate::models::users::UserPid;
-use crate::models::{PackModel, UserModel};
+use crate::models::{PackModel, PlanModel, UserModel};
 use crate::service::redis::redis::{load_cached_web, load_from_file_and_cache};
 use crate::views;
 use crate::views::auth::UserView;
@@ -77,14 +79,20 @@ pub async fn load_user(db: &DatabaseConnection, user_pid: &UserPid) -> Result<Us
     Ok(item)
 }
 async fn load_packs(db: &DatabaseConnection) -> Result<PackModelList> {
-    // let list = PackModel::find_first_12_packs(db).await?;
     let list = PackModel::find_all_packs(db).await?;
     Ok(PackModelList::new(list))
 }
-// async fn load_plans(db: &DatabaseConnection) -> Result<PlanModelList> {
-//     let list = PlanModel::find_all(db).await?;
-//     Ok(list)
-// }
+async fn load_packs_translated(db: &DatabaseConnection, lang: &Language) -> Result<PackViewList> {
+    let list = PackModel::find_all_translated(db, lang).await?;
+    Ok(list.into())
+}
+async fn load_pricing_translated(
+    db: &DatabaseConnection,
+    lang: &Language,
+) -> Result<PricingViewList> {
+    let list = PlanModel::find_all_translated(db, lang).await?;
+    Ok(list.into())
+}
 
 #[debug_handler]
 pub async fn robots_txt(State(ctx): State<AppContext>) -> impl IntoResponse {
@@ -173,7 +181,7 @@ pub async fn render_home(
         }
         Err(_) => None,
     };
-    let images = load_cached_web(&ctx).await?;
+    let images = load_cached_web(&ctx, &lang).await?;
 
     let website_options = WebsiteOptions::new()
         .website(&website)
@@ -206,7 +214,7 @@ pub async fn render_home_partial(
         }
         Err(_) => None,
     };
-    let images = load_cached_web(&ctx).await?;
+    let images = load_cached_web(&ctx, &lang).await?;
 
     let website_options = WebsiteOptions::new()
         .website(&website)
@@ -262,7 +270,7 @@ pub async fn render_dashboard_extend_packs_partial(
     };
     let (user, user_credits, training_models) =
         load_user_credit_training(&ctx.db, &user_pid).await?;
-    let packs = match load_cached_web(&ctx).await {
+    let packs = match load_cached_web(&ctx, &lang).await {
         Ok(images) => images.packs,
         Err(_) => load_packs(&ctx.db).await?.into(),
     };
@@ -302,10 +310,10 @@ pub struct WebImages {
     studio: String,
     pub packs: PackViewList,
     creators: Vec<String>,
-    // plans: PricingViewList,
+    plans: PricingViewList,
 }
 impl WebImages {
-    pub async fn web_images(db: &DatabaseConnection) -> WebImages {
+    pub async fn web_images(db: &DatabaseConnection, lang: &Language) -> WebImages {
         let hero_panel = vec![
             String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/packs/sexy+halloween/a22ec84c-dcd7-4cbd-b872-1963aa140355.webp"),
             String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/packs/nature/f40a699f-8064-4015-80d2-ffb68228ac2e.webp"),
@@ -375,11 +383,11 @@ impl WebImages {
             "https://replicapixel-web.s3.eu-central-1.amazonaws.com/others/studio.webp",
         );
 
-        let packs = match load_packs(db).await {
+        let packs = match load_packs_translated(db, lang).await {
             Ok(packs) => packs,
             Err(e) => {
                 tracing::error!("Failed to load packs: {}", e);
-                PackModelList::new(vec![])
+                PackViewList::default()
             }
         }
         .into();
@@ -403,13 +411,13 @@ impl WebImages {
             ),
         ];
 
-        // let plans = match load_plans(db).await {
-        //     Ok(plan) => plan.into(),
-        //     Err(e) => {
-        //         tracing::error!("Failed to load plans: {}", e);
-        //         PlanViewList::mock_plans()
-        //     }
-        // };
+        let plans = match load_pricing_translated(db, lang).await {
+            Ok(pack) => pack,
+            Err(e) => {
+                tracing::error!("Failed to load plans: {}", e);
+                PricingViewList::default()
+            }
+        };
 
         let web_images = WebImages::new(
             hero_panel,
@@ -418,7 +426,7 @@ impl WebImages {
             studio,
             packs,
             creators,
-            // plans,
+            plans,
         );
         web_images
     }

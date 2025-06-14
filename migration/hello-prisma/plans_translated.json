@@ -1,0 +1,192 @@
+[
+  {
+    "plan_id": 1,
+    "language": "English",
+    "name": "Basic",
+    "subtitle": "For individuals & testing",
+    "features": ["No Monthly Subscription", "Use Any Photo Pack", "No Watermarks", "24/7 Support"],
+    "cta": "Choose Basic"
+  },
+  {
+    "plan_id": 2,
+    "language": "English",
+    "name": "Premium",
+    "subtitle": "For creators & small teams",
+    "features": [
+      "No Monthly Subscription",
+      "Use Any Photo Pack",
+      "Priority Processing",
+      "No Watermarks",
+      "24/7 Support"
+    ],
+    "cta": "Choose Premium"
+  },
+  {
+    "plan_id": 3,
+    "language": "English",
+    "name": "Max",
+    "subtitle": "For agencies & heavy users",
+    "features": ["No Monthly Subscription", "Use Any Photo Pack", "No Watermarks", "24/7 Support"],
+    "cta": "Choose Max"
+  },
+  {
+    "plan_id": 1,
+    "language": "German",
+    "name": "Basic",
+    "subtitle": "Für Einzelpersonen & zum Testen",
+    "features": [
+      "Kein monatliches Abonnement",
+      "Jedes Foto-Paket verwenden",
+      "Keine Wasserzeichen",
+      "24/7-Support"
+    ],
+    "cta": "Basic wählen"
+  },
+  {
+    "plan_id": 2,
+    "language": "German",
+    "name": "Premium",
+    "subtitle": "Für Kreative & kleine Teams",
+    "features": [
+      "Kein monatliches Abonnement",
+      "Jedes Foto-Paket verwenden",
+      "Bevorzugte Verarbeitung",
+      "Keine Wasserzeichen",
+      "24/7-Support"
+    ],
+    "cta": "Premium wählen"
+  },
+  {
+    "plan_id": 3,
+    "language": "German",
+    "name": "Max",
+    "subtitle": "Für Agenturen & Vielnutzer",
+    "features": [
+      "Kein monatliches Abonnement",
+      "Jedes Foto-Paket verwenden",
+      "Keine Wasserzeichen",
+      "24/7-Support"
+    ],
+    "cta": "Max wählen"
+  },
+  {
+    "plan_id": 1,
+    "language": "Spanish",
+    "name": "Basic",
+    "subtitle": "Para particulares y pruebas",
+    "features": [
+      "Sin suscripción mensual",
+      "Usa cualquier paquete de fotos",
+      "Sin marcas de agua",
+      "Soporte 24/7"
+    ],
+    "cta": "Elegir Basic"
+  },
+  {
+    "plan_id": 2,
+    "language": "Spanish",
+    "name": "Premium",
+    "subtitle": "Para creadores y equipos pequeños",
+    "features": [
+      "Sin suscripción mensual",
+      "Usa cualquier paquete de fotos",
+      "Procesamiento prioritario",
+      "Sin marcas de agua",
+      "Soporte 24/7"
+    ],
+    "cta": "Elegir Premium"
+  },
+  {
+    "plan_id": 3,
+    "language": "Spanish",
+    "name": "Max",
+    "subtitle": "Para agencias y usuarios intensivos",
+    "features": [
+      "Sin suscripción mensual",
+      "Usa cualquier paquete de fotos",
+      "Sin marcas de agua",
+      "Soporte 24/7"
+    ],
+    "cta": "Elegir Max"
+  },
+  {
+    "plan_id": 1,
+    "language": "Italian",
+    "name": "Basic",
+    "subtitle": "Per privati e per test",
+    "features": [
+      "Nessun abbonamento mensile",
+      "Usa qualsiasi pacchetto di foto",
+      "Nessun watermark",
+      "Supporto 24/7"
+    ],
+    "cta": "Scegli Basic"
+  },
+  {
+    "plan_id": 2,
+    "language": "Italian",
+    "name": "Premium",
+    "subtitle": "Per creatori e piccoli team",
+    "features": [
+      "Nessun abbonamento mensile",
+      "Usa qualsiasi pacchetto di foto",
+      "Elaborazione prioritaria",
+      "Nessun watermark",
+      "Supporto 24/7"
+    ],
+    "cta": "Scegli Premium"
+  },
+  {
+    "plan_id": 3,
+    "language": "Italian",
+    "name": "Max",
+    "subtitle": "Per agenzie e utenti intensivi",
+    "features": [
+      "Nessun abbonamento mensile",
+      "Usa qualsiasi pacchetto di foto",
+      "Nessun watermark",
+      "Supporto 24/7"
+    ],
+    "cta": "Scegli Max"
+  },
+  {
+    "plan_id": 1,
+    "language": "Dutch",
+    "name": "Basic",
+    "subtitle": "Voor individuen & om te testen",
+    "features": [
+      "Geen maandelijks abonnement",
+      "Gebruik elk fotopakket",
+      "Geen watermerken",
+      "24/7 ondersteuning"
+    ],
+    "cta": "Kies Basic"
+  },
+  {
+    "plan_id": 2,
+    "language": "Dutch",
+    "name": "Premium",
+    "subtitle": "Voor makers & kleine teams",
+    "features": [
+      "Geen maandelijks abonnement",
+      "Gebruik elk fotopakket",
+      "Verwerking met voorrang",
+      "Geen watermerken",
+      "24/7 ondersteuning"
+    ],
+    "cta": "Kies Premium"
+  },
+  {
+    "plan_id": 3,
+    "language": "Dutch",
+    "name": "Max",
+    "subtitle": "Voor bureaus & zware gebruikers",
+    "features": [
+      "Geen maandelijks abonnement",
+      "Gebruik elk fotopakket",
+      "Geen watermerken",
+      "24/7 ondersteuning"
+    ],
+    "cta": "Kies Max"
+  }
+]

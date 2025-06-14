@@ -58,7 +58,7 @@ model OAuth2Session {
   created_at                     DateTime         @default(now())
   updated_at                     DateTime         @default(now())
   
-  user                           Users             @relation(fields: [user_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  user                           Users            @relation(fields: [user_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
 
   @@map("o_auth2_sessions")
   @@index([session_id], name: "idx-oauth2-session_id")
@@ -149,73 +149,106 @@ model Images {
 }
 
 model Plans {
+  id                              Int                   @id @default(autoincrement())
+  pid                             String                @unique @db.Uuid
+  plan_name                       PlanNames             @unique
+  credit_amount                   Int             
+  model_amount                    Int             
+  price_cents                     BigInt              
+  stripe_price_id                 String                @unique
+  is_popular                      Boolean               @default(false)
+  created_at                      DateTime              @default(now()) @db.Timestamptz
+  updated_at                      DateTime              @default(now()) @db.Timestamptz
+  name                            String                @unique
+  subtitle                        String                @db.VarChar(255)
+  features                        String[]              @db.Text @default([])
+  cta                             String                @db.VarChar(255)
+
+  translations                    Plans_translations[]  @relation("PlanToTranslations")
+  transactions                    Transactions[]        @relation("PlanToTransactions")
+
+  @@index([pid], name: "idx-plan-pid")
+}
+
+model Plans_translations {
   id                              Int             @id @default(autoincrement())
-  pid                             String          @unique @db.Uuid
-  name                            String          @unique
-  plan_name                       PlanNames       @unique
-  credit_amount                   Int
-  model_amount                    Int
-  price_cents                     BigInt
-  stripe_price_id                 String          @unique
+  plan_id                         Int       
+  language                        Language                    
+  name                            String          @db.VarChar(255)        
   subtitle                        String          @db.VarChar(255)
   features                        String[]        @db.Text @default([])
   cta                             String          @db.VarChar(255)
   created_at                      DateTime        @default(now()) @db.Timestamptz
   updated_at                      DateTime        @default(now()) @db.Timestamptz
-  is_popular                      Boolean         @default(false)
+  plan                            Plans           @relation("PlanToTranslations", fields: [plan_id], references: [id], onDelete: Cascade)
 
-  transactions                    Transactions[]  @relation("PlanToTransactions")
-
-  @@index([pid], name: "idx-plan-pid")
+  @@unique([plan_id, language])
+  @@index([plan_id])
 }
-
-model Transactions {
-  id                              Int             @id @default(autoincrement())
-  pid                             String          @unique @db.Uuid
-  user_id                         Int     
-  plan_id                         Int     
-  credit_amount                   Int     
-  model_amount                    Int     
-  payment_amount                  BigInt
-  currency                        String          @db.VarChar(16)
-  payment_id                      String          @db.VarChar(255)
-  status                          Status      
-  created_at                      DateTime        @default(now()) @db.Timestamptz
-  updated_at                      DateTime        @default(now()) @db.Timestamptz
-
-  plan                            Plans           @relation("PlanToTransactions", fields: [plan_id], references: [id])
-  user                            Users           @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  @@index([pid], name: "idx-transactions-pid")
-  @@index([user_id], name: "idx-transactions-user_id")
-}
-
-
 
 model Packs {
-  id                              Int              @id @default(autoincrement())
-  pid                             String           @unique @db.Uuid
-  title                           String           @db.VarChar(255)
-  title_url                       String           @unique @db.VarChar(255)
-  short_description               String           @db.VarChar(255)
-  full_description                String           @db.Text
-  pack_prompts                    String           
-  credits                         Int         
-  num_images                      Int              
-  num_inference_steps             Int              @default(50)
-  stars                           Int              @default(5)
-  used                            Int              @default(0)
-  popular                         Boolean          @default(false)
-  main_image                      String           @default("url")
-  images                          String[]         @db.Text @default([])  
-  features                        String[]         @db.Text @default([])
-  created_at                      DateTime         @default(now()) @db.Timestamptz
-  updated_at                      DateTime         @default(now()) @db.Timestamptz
-
+  id                              Int                  @id @default(autoincrement())
+  pid                             String               @unique @db.Uuid
+  pack_prompts                    String     
+  credits                         Int    
+  num_images                      Int    
+  num_inference_steps             Int                  @default(50)
+  stars                           Int                  @default(5)
+  used                            Int                  @default(0)
+  popular                         Boolean              @default(false)
+  main_image                      String               @default("url")
+  images                          String[]             @db.Text @default([])
+  created_at                      DateTime             @default(now()) @db.Timestamptz
+  updated_at                      DateTime             @default(now()) @db.Timestamptz
+  title                           String               @db.VarChar(255)
+  title_url                       String               @unique @db.VarChar(255)
+  short_description               String               @db.VarChar(255)
+  full_description                String               @db.Text
+  features                        String[]             @db.Text @default([])
   Images                          Images[]
+
+  translations                    Packs_translations[] @relation("PackToTranslations")
 
   @@index([pid], name: "idx-packs-pid")
   @@index([title_url], name: "idx-title-pid")
+}
+
+model Packs_translations {
+  id                              Int                   @id @default(autoincrement())
+  pack_id                         Int           
+  language                        Language                    
+  title                           String                @db.VarChar(255)
+  short_description               String                @db.VarChar(255)
+  full_description                String                @db.Text
+  features                        String[]              @db.Text @default([])
+  created_at                      DateTime              @default(now()) @db.Timestamptz
+  updated_at                      DateTime              @default(now()) @db.Timestamptz
+
+  pack                            Packs                 @relation("PackToTranslations", fields: [pack_id], references: [id], onDelete: Cascade)
+
+  @@unique([pack_id, language])
+  @@index([pack_id])
+}
+
+model Transactions {
+  id                              Int                   @id @default(autoincrement())
+  pid                             String                @unique @db.Uuid
+  user_id                         Int           
+  plan_id                         Int           
+  credit_amount                   Int           
+  model_amount                    Int           
+  payment_amount                  BigInt      
+  currency                        String                @db.VarChar(16)
+  payment_id                      String                @db.VarChar(255)
+  status                          Status            
+  created_at                      DateTime              @default(now()) @db.Timestamptz
+  updated_at                      DateTime              @default(now()) @db.Timestamptz
+      
+  plan                            Plans                 @relation("PlanToTransactions", fields: [plan_id], references: [id])
+  user                            Users                 @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([pid], name: "idx-transactions-pid")
+  @@index([user_id], name: "idx-transactions-user_id")
 }
 
 model HandledStripeEvent {
@@ -226,7 +259,7 @@ model HandledStripeEvent {
 }
 
 model HandledFalEvent {
-  request_id                      String             @id 
+  request_id                      String           @id 
   processed_at                    DateTime         @default(now())
 
   @@map("handled_fal_events")

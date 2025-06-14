@@ -1,0 +1,42 @@
+[
+  {
+    "plan_id": 1,
+    "language": "English",
+    "name": "Basic",
+    "subtitle": "For individuals & testing",
+    "features": [
+      "No Monthly Subscription",
+      "Use Any Photo Pack",
+      "No Watermarks",
+      "24/7 Support"
+    ],
+    "cta": "Choose Basic"
+  },
+  {
+    "plan_id": 2,
+    "language": "English",
+    "name": "Premium",
+    "subtitle": "For creators & small teams",
+    "features": [
+      "No Monthly Subscription",
+      "Use Any Photo Pack",
+      "Priority Processing",
+      "No Watermarks",
+      "24/7 Support"
+    ],
+    "cta": "Choose Premium"
+  },
+  {
+    "plan_id": 3,
+    "language": "English",
+    "name": "Max",
+    "subtitle": "For agencies & heavy users",
+    "features": [
+      "No Monthly Subscription",
+      "Use Any Photo Pack",
+      "No Watermarks",
+      "24/7 Support"
+    ],
+    "cta": "Choose Max"
+  }
+]

@@ -149,22 +149,83 @@ model Images {
 model Plans {
   id              Int       @id @default(autoincrement())
   pid             String    @unique @db.Uuid
-  name            String    @unique
   plan_name       PlanNames @unique
   credit_amount   Int
   model_amount    Int
   price_cents     BigInt
   stripe_price_id String    @unique
+  is_popular      Boolean   @default(false)
+  created_at      DateTime  @default(now()) @db.Timestamptz
+  updated_at      DateTime  @default(now()) @db.Timestamptz
+  name            String    @unique
   subtitle        String    @db.VarChar(255)
   features        String[]  @default([]) @db.Text
   cta             String    @db.VarChar(255)
-  created_at      DateTime  @default(now()) @db.Timestamptz
-  updated_at      DateTime  @default(now()) @db.Timestamptz
-  is_popular      Boolean   @default(false)
 
-  transactions Transactions[] @relation("PlanToTransactions")
+  translations Plans_translations[] @relation("PlanToTranslations")
+  transactions Transactions[]       @relation("PlanToTransactions")
 
   @@index([pid], name: "idx-plan-pid")
+}
+
+model Plans_translations {
+  id         Int      @id @default(autoincrement())
+  plan_id    Int
+  language   Language
+  name       String
+  subtitle   String   @db.VarChar(255)
+  features   String[] @default([]) @db.Text
+  cta        String   @db.VarChar(255)
+  created_at DateTime @default(now()) @db.Timestamptz
+  updated_at DateTime @default(now()) @db.Timestamptz
+  plan       Plans    @relation("PlanToTranslations", fields: [plan_id], references: [id], onDelete: Cascade)
+
+  @@unique([plan_id, language])
+  @@index([plan_id])
+}
+
+model Packs {
+  id                  Int      @id @default(autoincrement())
+  pid                 String   @unique @db.Uuid
+  pack_prompts        String
+  credits             Int
+  num_images          Int
+  num_inference_steps Int      @default(50)
+  stars               Int      @default(5)
+  used                Int      @default(0)
+  popular             Boolean  @default(false)
+  main_image          String   @default("url")
+  images              String[] @default([]) @db.Text
+  created_at          DateTime @default(now()) @db.Timestamptz
+  updated_at          DateTime @default(now()) @db.Timestamptz
+  title               String   @db.VarChar(255)
+  title_url           String   @unique @db.VarChar(255)
+  short_description   String   @db.VarChar(255)
+  full_description    String   @db.Text
+  features            String[] @default([]) @db.Text
+  Images              Images[]
+
+  translations Packs_translations[] @relation("PackToTranslations")
+
+  @@index([pid], name: "idx-packs-pid")
+  @@index([title_url], name: "idx-title-pid")
+}
+
+model Packs_translations {
+  id                Int      @id @default(autoincrement())
+  pack_id           Int
+  language          Language
+  title             String   @db.VarChar(255)
+  short_description String   @db.VarChar(255)
+  full_description  String   @db.Text
+  features          String[] @default([]) @db.Text
+  created_at        DateTime @default(now()) @db.Timestamptz
+  updated_at        DateTime @default(now()) @db.Timestamptz
+
+  pack Packs @relation("PackToTranslations", fields: [pack_id], references: [id], onDelete: Cascade)
+
+  @@unique([pack_id, language])
+  @@index([pack_id])
 }
 
 model Transactions {
@@ -186,32 +247,6 @@ model Transactions {
 
   @@index([pid], name: "idx-transactions-pid")
   @@index([user_id], name: "idx-transactions-user_id")
-}
-
-model Packs {
-  id                  Int      @id @default(autoincrement())
-  pid                 String   @unique @db.Uuid
-  title               String   @db.VarChar(255)
-  title_url           String   @unique @db.VarChar(255)
-  short_description   String   @db.VarChar(255)
-  full_description    String   @db.Text
-  pack_prompts        String
-  credits             Int
-  num_images          Int
-  num_inference_steps Int      @default(50)
-  stars               Int      @default(5)
-  used                Int      @default(0)
-  popular             Boolean  @default(false)
-  main_image          String   @default("url")
-  images              String[] @default([]) @db.Text
-  features            String[] @default([]) @db.Text
-  created_at          DateTime @default(now()) @db.Timestamptz
-  updated_at          DateTime @default(now()) @db.Timestamptz
-
-  Images Images[]
-
-  @@index([pid], name: "idx-packs-pid")
-  @@index([title_url], name: "idx-title-pid")
 }
 
 model HandledStripeEvent {

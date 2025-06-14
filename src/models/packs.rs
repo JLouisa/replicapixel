@@ -1,3 +1,10 @@
+use std::collections::HashMap;
+
+use crate::models::{
+    PackTranslationModel, _entities::sea_orm_active_enums::Language,
+    packs_translations::PackTranslationModelList,
+};
+
 pub use super::_entities::packs::{ActiveModel, Entity, Model};
 use super::{
     PackModel,
@@ -7,7 +14,7 @@ use derive_more::{AsRef, Constructor, Debug};
 use sea_orm::{entity::prelude::*, Condition, QueryOrder, QuerySelect};
 pub type Packs = Entity;
 use loco_rs::prelude::*;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 #[async_trait::async_trait]
 impl ActiveModelBehavior for ActiveModel {
@@ -28,8 +35,8 @@ impl ActiveModelBehavior for ActiveModel {
 #[derive(Debug, Clone, AsRef, Constructor)]
 pub struct PackModelList(pub Vec<PackModel>);
 
-#[derive(Debug, Clone)]
-pub struct PacksDomain {
+#[derive(Debug, Serialize, Clone)]
+pub struct PackDomain {
     pub id: i32,
     pub pid: Uuid,
     pub title: String,
@@ -42,7 +49,7 @@ pub struct PacksDomain {
     pub main_image: String,
     pub image_size: ImageSize,
 }
-impl PacksDomain {
+impl PackDomain {
     pub fn from_model(packs: PackModel, image_size: ImageSize) -> Self {
         Self {
             id: packs.id,
@@ -57,6 +64,111 @@ impl PacksDomain {
             main_image: packs.main_image,
             image_size,
         }
+    }
+}
+
+#[derive(Debug, Serialize, Clone)]
+pub struct PackTranslated {
+    pub id: i32,
+    pub pid: Uuid,
+    pub pack_prompts: String,
+    pub credits: i32,
+    pub num_images: i32,
+    pub num_inference_steps: i32,
+    pub images: Option<Vec<String>>,
+    pub main_image: String,
+    pub used: i32,
+    pub stars: i32,
+    pub popular: bool,
+    pub title_url: String,
+    pub title: String,
+    pub full_description: String,
+    pub short_description: String,
+    pub features: Option<Vec<String>>,
+}
+impl PackTranslated {
+    pub fn from_model(packs: PackModel) -> Self {
+        Self {
+            id: packs.id,
+            pid: packs.pid,
+            pack_prompts: packs.pack_prompts,
+            credits: packs.credits,
+            num_images: packs.num_images,
+            num_inference_steps: packs.num_inference_steps,
+            images: packs.images,
+            main_image: packs.main_image,
+            used: packs.used,
+            stars: packs.stars,
+            popular: packs.popular,
+            title_url: packs.title_url,
+            title: packs.title,
+            full_description: packs.full_description,
+            short_description: packs.short_description,
+            features: packs.features,
+        }
+    }
+}
+impl PackTranslated {
+    pub fn translate(pack: Model, translation: PackTranslationModel) -> Self {
+        Self {
+            id: pack.id,
+            pid: pack.pid,
+            pack_prompts: pack.pack_prompts,
+            credits: pack.credits,
+            num_images: pack.num_images,
+            num_inference_steps: pack.num_inference_steps,
+            images: pack.images,
+            main_image: pack.main_image,
+            used: pack.used,
+            stars: pack.stars,
+            popular: pack.popular,
+            title_url: pack.title_url,
+            title: translation.title,
+            full_description: translation.full_description,
+            short_description: translation.short_description,
+            features: translation.features,
+        }
+    }
+}
+
+#[derive(Debug, Constructor, Serialize, Clone)]
+pub struct PackTranslatedList(pub Vec<PackTranslated>);
+impl PackTranslatedList {
+    pub fn translate(
+        packs: PackModelList,
+        translations: PackTranslationModelList,
+        lang: &Language,
+    ) -> Self {
+        if lang == &Language::English {
+            return packs.into();
+        }
+        let language = lang.clone();
+        let mut translation_map = HashMap::new();
+        for translation in translations.0 {
+            if translation.language == language {
+                translation_map.insert(translation.pack_id, translation);
+            }
+        }
+
+        let mut list = Vec::new();
+        for plan in packs.0 {
+            if let Some(translation) = translation_map.get(&plan.id) {
+                list.push(PackTranslated::translate(plan, (*translation).clone()));
+            }
+        }
+
+        Self(list)
+    }
+}
+impl From<PackModelList> for PackTranslatedList {
+    fn from(packs: PackModelList) -> Self {
+        Self(
+            packs
+                .0
+                .iter()
+                .map(|p| PackTranslated::from_model(p.clone()))
+                .collect(),
+        )
     }
 }
 
@@ -158,6 +270,17 @@ where
 
 // implement your read-oriented logic here
 impl Model {
+    pub async fn find_all_translated(
+        db: &DatabaseConnection,
+        lang: &Language,
+    ) -> ModelResult<PackTranslatedList> {
+        let packs = Model::find_all_packs(db).await?;
+        let packs_list = PackModelList::new(packs);
+        let translations = PackTranslationModel::find_all(db).await?;
+        let translations_list = PackTranslationModelList::new(translations);
+        let packs_translated = PackTranslatedList::translate(packs_list, translations_list, lang);
+        Ok(packs_translated)
+    }
     pub async fn find_by_title_url(db: &DatabaseConnection, title_url: &str) -> ModelResult<Self> {
         let condition = Condition::all().add(packs::Column::TitleUrl.eq(title_url.to_owned()));
         let pack = Entity::find().filter(condition).one(db).await?;

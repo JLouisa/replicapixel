@@ -1,9 +1,17 @@
+use std::collections::HashMap;
+
 use super::_entities::plans;
 pub use super::_entities::plans::{ActiveModel, Entity, Model};
+use derive_more::{AsRef, Constructor};
 use loco_rs::prelude::*;
 use sea_orm::entity::prelude::*;
+use serde::Serialize;
 pub type Plans = Entity;
-use crate::models::_entities::sea_orm_active_enums::PlanNames;
+use crate::models::{
+    PlanTranslationModel,
+    _entities::sea_orm_active_enums::{Language, PlanNames},
+    plans_translations::PlanTranslationModelList,
+};
 
 #[async_trait::async_trait]
 impl ActiveModelBehavior for ActiveModel {
@@ -21,11 +29,131 @@ impl ActiveModelBehavior for ActiveModel {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Constructor, Clone, AsRef)]
 pub struct PlanModelList(pub Vec<Model>);
+
+#[derive(Debug, Constructor, Serialize, Clone)]
+pub struct PlanDomain {
+    pub id: i32,
+    pub pid: Uuid,
+    pub plan_name: PlanNames,
+    pub credit_amount: i32,
+    pub model_amount: i32,
+    pub price_cents: i64,
+    pub is_popular: bool,
+    pub name: String,
+    pub subtitle: String,
+    pub features: Option<Vec<String>>,
+    pub cta: String,
+}
+impl PlanDomain {
+    pub fn from_model(packs: Model) -> Self {
+        Self {
+            id: packs.id,
+            pid: packs.pid,
+            plan_name: packs.plan_name,
+            credit_amount: packs.credit_amount,
+            model_amount: packs.model_amount,
+            price_cents: packs.price_cents,
+            is_popular: packs.is_popular,
+            name: packs.name,
+            subtitle: packs.subtitle,
+            features: packs.features,
+            cta: packs.cta,
+        }
+    }
+    pub fn translate(plan: Model, translation: PlanTranslationModel) -> Self {
+        Self {
+            id: plan.id,
+            pid: plan.pid,
+            plan_name: plan.plan_name,
+            credit_amount: plan.credit_amount,
+            model_amount: plan.model_amount,
+            price_cents: plan.price_cents,
+            is_popular: plan.is_popular,
+            name: plan.name,
+            subtitle: translation.subtitle,
+            features: translation.features,
+            cta: translation.cta,
+        }
+    }
+}
+
+#[derive(Debug, Constructor, Serialize, Clone)]
+pub struct PlanDomainList(pub Vec<PlanDomain>);
+impl From<PlanModelList> for PlanDomainList {
+    fn from(plans: PlanModelList) -> Self {
+        Self(
+            plans
+                .0
+                .iter()
+                .map(|p| PlanDomain::from_model(p.clone()))
+                .collect(),
+        )
+    }
+}
+
+impl PlanDomainList {
+    pub fn translate(
+        plans: PlanModelList,
+        translations: PlanTranslationModelList,
+        lang: &Language,
+    ) -> Self {
+        let language = lang.clone();
+        if language == Language::English {
+            return plans.into();
+        }
+        let mut translation_map = HashMap::new();
+        for translation in translations.0 {
+            if translation.language == language {
+                translation_map.insert(translation.plan_id, translation);
+            }
+        }
+
+        let mut list = Vec::new();
+        for plan in plans.0 {
+            if let Some(translation) = translation_map.get(&plan.id) {
+                list.push(PlanDomain::translate(plan, (*translation).clone()));
+            }
+        }
+
+        Self(list)
+    }
+}
+
+// #[derive(Debug, Constructor, Serialize, Clone)]
+// pub struct PlanDomainList(pub Vec<PlanDomain>);
+// impl PlanDomainList {
+//     pub fn translate(
+//         plans: PlanModelList,
+//         translations: PlanTranslationModelList,
+//         lang: Language,
+//     ) -> Self {
+//         let mut list = Vec::new();
+//         for plan in plans.0 {
+//             if let Some(translation) = translations
+//                 .0
+//                 .iter()
+//                 .find(|t| t.plan_id == plan.id && t.language == lang)
+//             {
+//                 list.push(PlanDomain::translate(plan, translation.clone()));
+//             }
+//         }
+//         Self(list)
+//     }
+// }
 
 // implement your read-oriented logic here
 impl Model {
+    pub async fn find_all_translated(
+        db: &DatabaseConnection,
+        lang: &Language,
+    ) -> ModelResult<PlanDomainList> {
+        let plans = Model::find_all(db).await?;
+        let translations = PlanTranslationModel::find_all(db).await?;
+        let plans = PlanDomainList::translate(plans, translations, lang);
+        Ok(plans)
+    }
     pub async fn find_by_pid(db: &DatabaseConnection, pid: &Uuid) -> ModelResult<Self> {
         let user = Entity::find()
             .filter(
