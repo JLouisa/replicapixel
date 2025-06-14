@@ -17,7 +17,7 @@ async function importTranslationsFromJSON() {
 
   // Sort by IDs to insert in a deterministic order
   // plans_json.sort((a, b) => a.plan_id - b.plan_id);
-  packs_json.sort((a, b) => a.pack_id - b.pack_id);
+  packs_json.sort((a: number, b: number) => a.pack_id - b.pack_id);
 
   // // Insert into the database
   // await prisma.plans_translations.createMany({ data: plans_json });
