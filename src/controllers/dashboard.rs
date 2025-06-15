@@ -1,12 +1,10 @@
 #![allow(clippy::missing_errors_doc)]
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
-use crate::controllers::auth::{AuthError, HxRedirect};
-use crate::controllers::home::{WebGallery, WebImages};
-use crate::controllers::payment::StripeWebOptions;
-use crate::domain::features::{FeatureView, FeatureViewList};
-use crate::domain::website::Website;
-use crate::middleware::cookie::{CookieConsent, ExtractConsentState};
+use crate::controllers::auth::HxRedirect;
+use crate::domain::features::FeatureViewList;
+use crate::domain::website::{Website, WebsiteOptions};
+use crate::middleware::cookie::ExtractConsentState;
 use crate::middleware::i18nv2::LangEngine;
 use crate::models::_entities::sea_orm_active_enums::Language;
 use crate::models::feature_request::FeatureRequestModelList;
@@ -19,7 +17,7 @@ use crate::models::join::user_credits_models::{
 use crate::models::packs::PackTranslatedList;
 use crate::models::training_models::TrainingModelList;
 use crate::models::transactions::TransactionModelList;
-use crate::models::users::{LoginParams, RegisterParams, UserPid};
+use crate::models::users::{RegisterParams, UserPid};
 use crate::models::{
     FeatureRequestModel, FeatureVoteModel, ImageModel, OAuth2SessionModel, PackModel, PlanModel,
     TrainingModelModel, TransactionModel, UserModel,
@@ -27,12 +25,8 @@ use crate::models::{
 use crate::service::aws::s3::AwsS3;
 use crate::service::redis::redis::{load_cached_web, RedisCacheDriver};
 use crate::views;
-use crate::views::auth::{UserCreditsView, UserView};
 use crate::views::dashboard::TransactionViewList;
-use crate::views::images::{ImageView, ImageViewList};
-use crate::views::packs::{PackView, PackViewList};
-use crate::views::settings::UserSettingsView;
-use crate::views::training_models::{TrainingModelView, TrainingModelViewList};
+use crate::views::images::ImageViewList;
 use axum::response::Redirect;
 use axum::Extension;
 use axum::{debug_handler, extract::State, response::IntoResponse};
@@ -343,7 +337,8 @@ pub async fn billing_dashboard_new(
         .user(user.into())
         .user_credits(user_credits.into())
         .orders(&orders_view)
-        .current_page(CurrentPage::Billing);
+        .current_page(CurrentPage::Billing)
+        .build();
 
     Ok(views::dashboard::billing_dashboard_new(v, &website_options).into_response())
 }
@@ -371,7 +366,8 @@ pub async fn billing_partial_dashboard_new(
         .website(&website)
         .language(&lang)
         .orders(&orders_view)
-        .current_page(CurrentPage::Billing);
+        .current_page(CurrentPage::Billing)
+        .build();
 
     Ok(views::dashboard::billing_partial_dashboard_new(v, &website_options).into_response())
 }
@@ -404,7 +400,8 @@ pub async fn features_dashboard(
         .user(user.into())
         .user_credits(user_credits.into())
         .features(&features_view)
-        .current_page(CurrentPage::Features);
+        .current_page(CurrentPage::Features)
+        .build();
 
     Ok(views::dashboard::features_dashboard(v, &website_options).into_response())
 }
@@ -431,7 +428,8 @@ pub async fn features_partial_dashboard(
         .website(&website)
         .language(&lang)
         .user(user.into())
-        .features(&features_view);
+        .features(&features_view)
+        .build();
 
     Ok(views::dashboard::features_partial_dashboard(v, &website_options).into_response())
 }
@@ -461,7 +459,8 @@ pub async fn settings_dashboard(
         .user(user.into())
         .user_credits(user_credits.into())
         .user_settings(user_settings.into())
-        .current_page(CurrentPage::Settings);
+        .current_page(CurrentPage::Settings)
+        .build();
 
     Ok(views::dashboard::settings_dashboard(v, &website_options).into_response())
 }
@@ -485,7 +484,8 @@ pub async fn settings_partial_dashboard(
         .website(&website)
         .language(&lang)
         .user(user.into())
-        .user_settings(user_settings.into());
+        .user_settings(user_settings.into())
+        .build();
 
     Ok(views::dashboard::settings_partial_dashboard(v, &website_options).into_response())
 }
@@ -515,7 +515,8 @@ pub async fn training_dashboard(
         .user(user.into())
         .user_credits(user_credits.into())
         .training_models(training_models.into())
-        .current_page(CurrentPage::Models);
+        .current_page(CurrentPage::Models)
+        .build();
 
     Ok(views::dashboard::training_dashboard(v, &website_options).into_response())
 }
@@ -542,7 +543,8 @@ pub async fn training_partial_dashboard(
         .user(user.into())
         .user_credits(user_credits.into())
         .training_models(training_models.into())
-        .current_page(CurrentPage::Models);
+        .current_page(CurrentPage::Models)
+        .build();
 
     Ok(views::dashboard::training_partial_dashboard(v, &website_options).into_response())
 }
@@ -572,7 +574,8 @@ pub async fn new_training_dashboard(
         .user(user.into())
         .user_credits(user_credits.into())
         .training_models(training_models.into())
-        .current_page(CurrentPage::Models);
+        .current_page(CurrentPage::Models)
+        .build();
 
     Ok(views::dashboard::create_training_dashboard(v, &website_options).into_response())
 }
@@ -590,7 +593,10 @@ pub async fn new_training_dashboard_partials(
             return Ok(HxRedirect::login().into_response());
         }
     };
-    let website_options: WebsiteOptions = WebsiteOptions::new().website(&website).language(&lang);
+    let website_options: WebsiteOptions = WebsiteOptions::new()
+        .website(&website)
+        .language(&lang)
+        .build();
     Ok(views::dashboard::create_training_dashboard_partial(v, &website_options).into_response())
 }
 
@@ -599,6 +605,7 @@ pub async fn packs_dashboard(
     auth: Result<auth::JWT>,
     ExtractConsentState(cc_cookie): ExtractConsentState,
     Extension(website): Extension<Website>,
+    Extension(cache): Extension<RedisCacheDriver>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
     LangEngine(lang): LangEngine,
@@ -611,8 +618,8 @@ pub async fn packs_dashboard(
     };
     let (user, user_credits, training_models) =
         load_user_credit_training(&ctx.db, &user_pid).await?;
-    let packs = match load_cached_web(&ctx, &lang).await {
-        Ok(images) => images.packs,
+    let packs = match load_cached_web(&ctx, &lang, &cache).await {
+        Ok(images) => images.packs().clone(),
         Err(_) => load_packs_translated(&ctx.db, &lang).await?.into(),
     };
     let packs = packs.into();
@@ -624,7 +631,8 @@ pub async fn packs_dashboard(
         .user_credits(user_credits.into())
         .training_models(training_models.into())
         .packs(&packs)
-        .current_page(CurrentPage::Packs);
+        .current_page(CurrentPage::Packs)
+        .build();
 
     Ok(views::dashboard::packs_dashboard(v, &website_options).into_response())
 }
@@ -633,6 +641,7 @@ pub async fn packs_partial_dashboard(
     auth: Result<auth::JWT>,
     State(ctx): State<AppContext>,
     Extension(website): Extension<Website>,
+    Extension(cache): Extension<RedisCacheDriver>,
     ViewEngine(v): ViewEngine<TeraView>,
     LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
@@ -643,8 +652,8 @@ pub async fn packs_partial_dashboard(
         }
     };
     let (_, training_models) = load_user_and_training(&ctx.db, &user_pid).await?;
-    let packs = match load_cached_web(&ctx, &lang).await {
-        Ok(images) => images.packs,
+    let packs = match load_cached_web(&ctx, &lang, &cache).await {
+        Ok(images) => images.packs().clone(),
         Err(_) => load_packs_translated(&ctx.db, &lang).await?.into(),
     };
     let packs = packs.into();
@@ -653,7 +662,8 @@ pub async fn packs_partial_dashboard(
         .language(&lang)
         .training_models(training_models.into())
         .packs(&packs)
-        .current_page(CurrentPage::Packs);
+        .current_page(CurrentPage::Packs)
+        .build();
 
     Ok(views::dashboard::packs_partial_dashboard(v, &website_options).into_response())
 }
@@ -692,7 +702,8 @@ pub async fn album_deleted_dashboard(
         .images(&images)
         .current_page(CurrentPage::Deleted)
         .is_deleted()
-        .is_initial_load();
+        .is_initial_load()
+        .build();
 
     Ok(views::dashboard::photo_dashboard(v, &website_options).into_response())
 }
@@ -729,7 +740,8 @@ pub async fn album_deleted_partial_dashboard(
         .user_credits(user_credits.into())
         .training_models(training_models.into())
         .images(&images)
-        .is_deleted();
+        .is_deleted()
+        .build();
 
     Ok(views::dashboard::photo_partial_dashboard(v, &website_options).into_response())
 }
@@ -768,7 +780,8 @@ pub async fn album_favorite_dashboard(
         .images(&images)
         .current_page(CurrentPage::Favorite)
         .is_favorite()
-        .is_initial_load();
+        .is_initial_load()
+        .build();
 
     Ok(views::dashboard::photo_dashboard(v, &website_options).into_response())
 }
@@ -803,7 +816,8 @@ pub async fn album_favorite_partial_dashboard(
         .user_credits(user_credits.into())
         .training_models(training_models.into())
         .images(&images)
-        .is_favorite();
+        .is_favorite()
+        .build();
 
     Ok(views::dashboard::photo_partial_dashboard(v, &website_options).into_response())
 }
@@ -841,7 +855,8 @@ pub async fn photo_dashboard(
         .training_models(training_models.into())
         .images(&images)
         .current_page(CurrentPage::Album)
-        .is_initial_load();
+        .is_initial_load()
+        .build();
 
     Ok(views::dashboard::photo_dashboard(v, &website_options).into_response())
 }
@@ -877,306 +892,8 @@ pub async fn photo_partial_dashboard(
         .user(user.into())
         .user_credits(user_credits.into())
         .training_models(training_models.into())
-        .images(&images);
+        .images(&images)
+        .build();
 
     Ok(views::dashboard::photo_partial_dashboard(v, &website_options).into_response())
-}
-
-#[derive(Serialize, Default)]
-#[must_use]
-pub struct WebsiteOptions<'a> {
-    pub website: Option<&'a Website>,
-    pub language: Language,
-    pub cc_cookie: Option<&'a CookieConsent>,
-    pub current_page: Option<CurrentPage>,
-    pub user: Option<UserView>,
-    pub user_credits: Option<UserCreditsView>,
-    pub orders: Option<&'a TransactionViewList>,
-    pub plans: Option<HashMap<i32, PlanModel>>,
-    pub feature: Option<&'a FeatureView>,
-    pub features: Option<&'a FeatureViewList>,
-    pub user_settings: Option<UserSettingsView>,
-    pub training_model: Option<TrainingModelView>,
-    pub training_models: Option<TrainingModelViewList>,
-    pub pack: Option<PackView>,
-    pub packs: Option<&'a PackViewList>,
-    pub pack_images: Option<WebGallery>,
-    pub image: Option<&'a ImageView>,
-    pub images: Option<&'a ImageViewList>,
-    pub web_gallery: Option<&'a WebGallery>,
-    pub web_images: Option<&'a WebImages>,
-    pub link: Option<&'a str>,
-    pub message: Option<&'a str>,
-    pub register: Option<&'a RegisterParams>,
-    pub login: Option<&'a LoginParams>,
-    pub auth_error: Option<&'a AuthError>,
-    pub stripe_options: Option<&'a StripeWebOptions>,
-    pub is_logged_in: bool,
-    pub is_ott: bool,
-    pub is_home: bool,
-    pub is_initial_load: bool,
-    pub is_pack_partial: bool,
-    pub is_pack: bool,
-    pub is_deleted: bool,
-    pub is_favorite: bool,
-    pub is_image_gen: bool,
-    pub is_other: bool,
-    // ... other fields
-}
-
-impl<'a> WebsiteOptions<'a> {
-    /// Creates a new, empty set of options to begin a builder chain.
-    /// This is an alias for `WebsiteOptions::default()`.
-    pub fn new() -> Self {
-        Self::default()
-    }
-    /// Sets the options required for a full-page layout.
-    pub fn website(self, website: &'a Website) -> Self {
-        Self {
-            website: Some(website),
-            ..self
-        }
-    }
-    /// Sets the options required for a full-page layout.
-    pub fn language(self, language: &'a Language) -> Self {
-        Self {
-            language: language.clone(),
-            ..self
-        }
-    }
-    /// Sets the concent of cookies.
-    pub fn cc_cookie(self, cc_cookie: &'a CookieConsent) -> Self {
-        Self {
-            cc_cookie: Some(cc_cookie),
-            ..self
-        }
-    }
-    /// Sets the authenticated user.
-    pub fn user(self, user: UserView) -> Self {
-        Self {
-            user: Some(user),
-            ..self
-        }
-    }
-    /// Sets the authenticated user.
-    pub fn set_user(self, user: Option<UserView>) -> Self {
-        Self { user, ..self }
-    }
-    /// Sets the user's credits.
-    pub fn user_credits(self, user_credits: UserCreditsView) -> Self {
-        Self {
-            user_credits: Some(user_credits),
-            ..self
-        }
-    }
-    /// Sets the user's orders.
-    pub fn orders(self, orders: &'a TransactionViewList) -> Self {
-        Self {
-            orders: Some(orders),
-            ..self
-        }
-    }
-    // Sets the current page.
-    pub fn current_page(self, current_page: CurrentPage) -> Self {
-        Self {
-            current_page: Some(current_page),
-            ..self
-        }
-    }
-    // Sets the features.
-    pub fn feature(self, feature: &'a FeatureView) -> Self {
-        Self {
-            feature: Some(feature),
-            ..self
-        }
-    }
-    // Sets the features.
-    pub fn features(self, features: &'a FeatureViewList) -> Self {
-        Self {
-            features: Some(features),
-            ..self
-        }
-    }
-    // Sets the settings.
-    pub fn user_settings(self, settings: UserSettingsView) -> Self {
-        Self {
-            user_settings: Some(settings),
-            ..self
-        }
-    }
-    // Sets a training model.
-    pub fn training_model(self, training_model: TrainingModelView) -> Self {
-        Self {
-            training_model: Some(training_model),
-            ..self
-        }
-    }
-    // Sets the training models.
-    pub fn training_models(self, training_models: TrainingModelViewList) -> Self {
-        Self {
-            training_models: Some(training_models),
-            ..self
-        }
-    }
-    // Sets one pack.
-    pub fn pack(self, pack: PackView) -> Self {
-        Self {
-            pack: Some(pack),
-            ..self
-        }
-    }
-    // Sets the packs.
-    pub fn packs(self, packs: &'a PackViewList) -> Self {
-        Self {
-            packs: Some(packs),
-            ..self
-        }
-    }
-    // Sets the packs.
-    pub fn pack_images(self, packs: WebGallery) -> Self {
-        Self {
-            pack_images: Some(packs),
-            ..self
-        }
-    }
-    // Sets the images.
-    pub fn image(self, image: &'a ImageView) -> Self {
-        Self {
-            image: Some(image),
-            ..self
-        }
-    }
-    // Sets the images.
-    pub fn images(self, images: &'a ImageViewList) -> Self {
-        Self {
-            images: Some(images),
-            ..self
-        }
-    }
-    // Sets the web gallery.
-    pub fn web_gallery(self, web_gallery: &'a WebGallery) -> Self {
-        Self {
-            web_gallery: Some(web_gallery),
-            ..self
-        }
-    }
-    // Sets the web images.
-    pub fn web_images(self, web_images: &'a WebImages) -> Self {
-        Self {
-            web_images: Some(web_images),
-            ..self
-        }
-    }
-    // Sets the link.
-    pub fn link(self, link: &'a str) -> Self {
-        Self {
-            link: Some(link),
-            ..self
-        }
-    }
-    // Sets the message.
-    pub fn message(self, message: &'a str) -> Self {
-        Self {
-            message: Some(message),
-            ..self
-        }
-    }
-    // Sets the register params.
-    pub fn register(self, register: &'a RegisterParams) -> Self {
-        Self {
-            register: Some(register),
-            ..self
-        }
-    }
-    // Sets the register params.
-    pub fn login(self, login: &'a LoginParams) -> Self {
-        Self {
-            login: Some(login),
-            ..self
-        }
-    }
-    // Sets the auth error.
-    pub fn auth_error(self, auth_error: &'a AuthError) -> Self {
-        Self {
-            auth_error: Some(auth_error),
-            ..self
-        }
-    }
-    // Sets the stripe options.
-    pub fn stripe_options(self, stripe_options: &'a StripeWebOptions) -> Self {
-        Self {
-            stripe_options: Some(stripe_options),
-            ..self
-        }
-    }
-    // Sets the bool for is_logged_in.
-    pub fn is_logged_in(self) -> Self {
-        Self {
-            is_logged_in: true,
-            ..self
-        }
-    }
-    // Sets the bool for is_home.
-    pub fn is_home(self) -> Self {
-        Self {
-            is_home: true,
-            ..self
-        }
-    }
-    // Sets the bool for is_deleted.
-    pub fn is_deleted(self) -> Self {
-        Self {
-            is_deleted: true,
-            ..self
-        }
-    }
-    // Sets the bool for is_favorite.
-    pub fn is_favorite(self) -> Self {
-        Self {
-            is_favorite: true,
-            ..self
-        }
-    }
-    // Sets the bool for is_initial_load.
-    pub fn is_initial_load(self) -> Self {
-        Self {
-            is_initial_load: true,
-            ..self
-        }
-    }
-    // Sets the bool for is_image_gen.
-    pub fn is_image_gen(self) -> Self {
-        Self {
-            is_image_gen: true,
-            ..self
-        }
-    }
-    // Sets the bool for is_pack_partial.
-    pub fn is_pack_partial(self) -> Self {
-        Self {
-            is_pack_partial: true,
-            ..self
-        }
-    }
-    // Sets the bool for is_pack.
-    pub fn is_pack(self) -> Self {
-        Self {
-            is_pack: true,
-            ..self
-        }
-    }
-    // Sets the bool for google ott.
-    pub fn is_ott(self) -> Self {
-        Self {
-            is_ott: true,
-            ..self
-        }
-    }
-    // Sets the bool for is_other.
-    pub fn is_other(self) -> Self {
-        Self {
-            is_other: true,
-            ..self
-        }
-    }
 }

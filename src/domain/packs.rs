@@ -1,15 +1,6 @@
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-// Game of Thrones
-// Harry Potter
-// Star Wars
-// Cyberpunk
-// Halloween
-// Bodybuilder
-// Sexy
-
-
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Packs {
     id: i32,

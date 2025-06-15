@@ -1,5 +1,6 @@
-use crate::controllers::dashboard::WebsiteOptions;
 use loco_rs::prelude::*;
+
+use crate::domain::website::WebsiteOptions;
 
 pub fn documentation(
     v: impl ViewRenderer,

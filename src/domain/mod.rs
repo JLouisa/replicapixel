@@ -8,6 +8,5 @@ pub mod packs;
 pub mod response;
 pub mod settings;
 pub mod sitemap;
-pub mod training_models;
 pub mod url;
 pub mod website;

@@ -1,7 +1,18 @@
+use derive_more::Constructor;
+use loco_rs::app::AppContext;
+use sea_orm::DatabaseConnection;
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+use strum::IntoEnumIterator;
+use tokio::join;
+
+use crate::controllers::auth::AuthError;
 use crate::controllers::dashboard::routes::DashboardRoutes;
+use crate::controllers::dashboard::CurrentPage;
+use crate::controllers::home::{load_packs_translated, load_pricing_translated};
 use crate::controllers::other::routes::OtherRoutes;
 use crate::controllers::packs::routes::PackRoutes;
-use crate::controllers::payment::PricingViewList;
+use crate::controllers::payment::{PricingViewList, StripeWebOptions};
 use crate::controllers::settings::routes::SettingRoutes;
 use crate::controllers::starter::routes::StarterRoutes;
 use crate::controllers::{
@@ -9,16 +20,22 @@ use crate::controllers::{
     images::routes::ImageRoutes, oauth2::routes::OAuth2Routes, payment::routes::PaymentRoutes,
     policy::routes::PolicyRoutes, training_models::routes::TrainingModelRoutes,
 };
+use crate::domain::features::{FeatureView, FeatureViewList};
 use crate::domain::settings::Settings;
+use crate::middleware::cookie::CookieConsent;
+use crate::models::users::{LoginParams, RegisterParams};
 use crate::models::PlanModel;
 use crate::models::_entities::sea_orm_active_enums::ImageSize;
 use crate::models::_entities::sea_orm_active_enums::Language;
 use crate::models::_entities::sea_orm_active_enums::{BasedOn, Emotion, Ethnicity, EyeColor, Sex};
 use crate::service::fal_ai::fal_client::FalAiImageModel;
-use derive_more::Constructor;
-use loco_rs::app::AppContext;
-use serde::{Deserialize, Serialize};
-use strum::IntoEnumIterator;
+use crate::service::redis::redis::RedisCacheDriver;
+use crate::views::auth::{UserCreditsView, UserView};
+use crate::views::dashboard::TransactionViewList;
+use crate::views::images::{ImageView, ImageViewList};
+use crate::views::packs::{PackView, PackViewList};
+use crate::views::settings::UserSettingsView;
+use crate::views::training_models::{TrainingModelView, TrainingModelViewList};
 
 #[derive(Debug, Serialize, Deserialize, Constructor, Clone)]
 pub struct WebsiteRoutes {
@@ -152,6 +169,163 @@ impl Website {
     }
 }
 
+#[derive(Debug, Serialize, Deserialize, Constructor, Clone)]
+pub struct WebGallery {
+    images_r0: Vec<String>,
+    images_r1: Vec<String>,
+    images_r2: Vec<String>,
+    images_r3: Vec<String>,
+    images_r4: Vec<String>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Constructor, Clone)]
+struct WebBeforeAfter {
+    before: String,
+    after: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, Constructor, Clone)]
+pub struct WebImages {
+    hero_panel: Vec<String>,
+    gallery: WebGallery,
+    before_after: WebBeforeAfter,
+    studio: String,
+    packs: PackViewList,
+    creators: Vec<String>,
+    plans: PricingViewList,
+}
+impl WebImages {
+    pub fn packs(&self) -> &PackViewList {
+        &self.packs
+    }
+    pub async fn web_images(
+        db: &DatabaseConnection,
+        lang: &Language,
+        cache: &RedisCacheDriver,
+    ) -> WebImages {
+        let hero_panel = vec![
+            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/packs/sexy+halloween/a22ec84c-dcd7-4cbd-b872-1963aa140355.webp"),
+            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/packs/nature/f40a699f-8064-4015-80d2-ffb68228ac2e.webp"),
+            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/packs/cosplay/f193a28b-83e3-4a1c-b13e-3637acb85c84.webp"),
+            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/packs/cosplay/a97bb59a-be4f-4b3f-92b5-e8c25a03e361.webp"),
+            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/packs/cosplay/53d42133-d8be-47a8-863b-1a489b2a736e.webp"),
+            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/packs/sexy-valentine/fcf51df7-27d6-48ad-a34e-a96a78ddeb02.webp"),
+            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/packs/spiritual/3b7e781a-6b40-4ef8-8d58-b52bcabddc87.webp"),
+        ];
+        let web_images0 = vec![
+            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/nature-hero.webp"),
+            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/corporate-headshot.webp"),
+            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/mma-fe.webp"),
+            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/wife1.webp"),
+            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/street-fighter.webp"),
+            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/nature3.webp"),
+        ];
+        let web_images1 = vec![
+            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/nature2.webp"),
+            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/packs/cosplay/f193a28b-83e3-4a1c-b13e-3637acb85c84.webp"),
+            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/packs/sexy+halloween/e5557da7-416a-466c-a5a7-bf7232232ee3.webp"),
+            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/cosplay1-small.webp"),
+            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/machina2.webp"),
+            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/cosplay2-small.webp"),
+        ];
+        let web_images2 = vec![
+            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/packs/cosplay/a97bb59a-be4f-4b3f-92b5-e8c25a03e361.webp"),
+            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/machina1.webp"),
+            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/angel.webp"),
+            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/packs/cosplay/f193a28b-83e3-4a1c-b13e-3637acb85c84.webp"),
+            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/emo-girl.webp"),
+            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/blackwidow.webp"),
+        ];
+        let web_images3 = vec![
+            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/packs/sexy+halloween/a22ec84c-dcd7-4cbd-b872-1963aa140355.webp"),
+            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/packs/cosplay/53d42133-d8be-47a8-863b-1a489b2a736e.webp"),
+            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/nature1.webp"),
+            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/dracula-wife.webp"),
+            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/cosplay3.webp"),
+            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/model-show.webp"),
+        ];
+        let web_images4 = vec![
+            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/packs/spiritual/e1ee3b51-53a0-4254-9a09-8d734ea7195a.webp"),
+            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/easter1.webp"),
+            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/model-makeup.webp"),
+            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/white-dress.webp"),
+            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/model-closeup.webp"),
+            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/packs/sexy+halloween/f861732f-79ed-4c0d-904d-c43b714807c8.webp"),
+        ];
+        let gallery = WebGallery::new(
+            web_images0,
+            web_images1,
+            web_images2,
+            web_images3,
+            web_images4,
+        );
+        let before_after = WebBeforeAfter::new(
+            String::from(
+                "https://replicapixel-web.s3.eu-central-1.amazonaws.com/others/home-before.webp",
+            ),
+            String::from(
+                "https://replicapixel-web.s3.eu-central-1.amazonaws.com/others/home-after.webp",
+            ),
+        );
+
+        let studio = String::from(
+            "https://replicapixel-web.s3.eu-central-1.amazonaws.com/others/studio.webp",
+        );
+
+        let creators = vec![
+            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/others/got.webp"),
+            String::from(
+                "https://replicapixel-web.s3.eu-central-1.amazonaws.com/others/dynasty.webp",
+            ),
+            String::from(
+                "https://replicapixel-web.s3.eu-central-1.amazonaws.com/others/cosplay-widow.webp",
+            ),
+            String::from(
+                "https://replicapixel-web.s3.eu-central-1.amazonaws.com/others/elf-queen.webp",
+            ),
+            String::from(
+                "https://replicapixel-web.s3.eu-central-1.amazonaws.com/others/dynasty2.webp",
+            ),
+            String::from(
+                "https://replicapixel-web.s3.eu-central-1.amazonaws.com/others/cosplay-lara.webp",
+            ),
+        ];
+
+        // Loading functions concurrently.
+        let (packs_result, plans_result) = join!(
+            load_packs_translated(db, lang, cache),
+            load_pricing_translated(db, lang, cache)
+        );
+
+        let packs = match packs_result {
+            Ok(packs) => packs,
+            Err(e) => {
+                tracing::error!("Failed to load packs: {}", e);
+                PackViewList::default()
+            }
+        }
+        .into();
+        let plans = match plans_result {
+            Ok(plans) => plans,
+            Err(e) => {
+                tracing::error!("Failed to load plans: {}", e);
+                PricingViewList::default()
+            }
+        };
+
+        let web_images = WebImages::new(
+            hero_panel,
+            gallery,
+            before_after,
+            studio,
+            packs,
+            creators,
+            plans,
+        );
+        web_images
+    }
+}
+
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct HomeReview {
     pub id: i32,
@@ -243,125 +417,315 @@ impl HomeReview {
     }
 }
 
-// #[derive(Debug, Serialize, Deserialize, Clone)]
-// pub struct PlanView {
-//     pub pid: Uuid,
-//     pub plan_name: PlanNames,
-//     pub credit_amount: i32,
-//     pub model_amount: i32,
-//     pub price: f64,
-//     pub subtitle: String,
-//     pub features: Vec<Feature>,
-//     pub cta: String,
-//     pub is_popular: bool,
-// }
-// impl From<PlanModel> for PlanView {
-//     fn from(plan: PlanModel) -> Self {
-//         let features = match plan.features {
-//             Some(f) => f.iter().map(|f| Feature(f.to_owned())).collect(),
-//             None => vec![],
-//         };
-//         Self {
-//             pid: plan.pid,
-//             plan_name: plan.plan_name,
-//             price: plan.price_cents as f64 / 100.0,
-//             subtitle: plan.subtitle,
-//             credit_amount: plan.credit_amount,
-//             model_amount: plan.model_amount,
-//             features,
-//             cta: plan.cta,
-//             is_popular: plan.is_popular,
-//         }
-//     }
-// }
-// impl From<&PlanModel> for PlanView {
-//     fn from(plan: &PlanModel) -> Self {
-//         let features = match plan.features.clone() {
-//             Some(f) => f.iter().map(|f| Feature(f.to_owned())).collect(),
-//             None => vec![],
-//         };
-//         Self {
-//             pid: plan.pid.clone(),
-//             plan_name: plan.plan_name.clone(),
-//             price: plan.price_cents as f64 / 100.0,
-//             subtitle: plan.subtitle.clone(),
-//             credit_amount: plan.credit_amount.clone(),
-//             model_amount: plan.model_amount.clone(),
-//             features,
-//             cta: plan.cta.clone(),
-//             is_popular: plan.is_popular.clone(),
-//         }
-//     }
-// }
-// #[derive(Debug, Serialize, Deserialize, Clone, Constructor)]
-// pub struct PlanViewList(pub Vec<PlanView>);
-// impl PlanViewList {
-//     pub fn mock_plans() -> PlanViewList {
-//         PlanViewList::new(vec![
-//             PlanView::basic(),
-//             PlanView::premium(),
-//             PlanView::max(),
-//         ])
-//     }
-// }
-// impl From<PlanModelList> for PlanViewList {
-//     fn from(list: PlanModelList) -> PlanViewList {
-//         Self(list.0.iter().map(PlanView::from).collect())
-//     }
-// }
-// impl PlanView {
-//     pub fn basic() -> Self {
-//         Self {
-//             pid: Uuid::parse_str("cd08b105-5880-4fd1-872a-acf711a5b8ef").unwrap(),
-//             plan_name: PlanNames::Basic,
-//             price: 9.99,
-//             credit_amount: 50,
-//             model_amount: 1,
-//             subtitle: "For individuals & testing".to_owned(),
-//             features: vec![
-//                 Feature::new("No monthly subscription!".to_owned()),
-//                 Feature::new("Use any photo pack".to_owned()),
-//                 Feature::new("No Watermarked photos".to_owned()),
-//                 Feature::new("24/7 Support".to_owned()),
-//             ],
-//             cta: "Choose Basic".to_owned(),
-//             is_popular: false,
-//         }
-//     }
-//     pub fn premium() -> Self {
-//         Self {
-//             pid: Uuid::parse_str("af12e69f-f7e6-4628-b2bd-41ca3489d3af").unwrap(),
-//             plan_name: PlanNames::Premium,
-//             price: 39.99,
-//             credit_amount: 250,
-//             model_amount: 7,
-//             subtitle: "For creators & small teams".to_owned(),
-//             features: vec![
-//                 Feature::new("No monthly subscription!".to_owned()),
-//                 Feature::new("Use any photo pack".to_owned()),
-//                 Feature::new("No Watermarked photos".to_owned()),
-//                 Feature::new("24/7 Support".to_owned()),
-//             ],
-//             cta: "Choose Premium".to_owned(),
-//             is_popular: true,
-//         }
-//     }
-//     pub fn max() -> Self {
-//         Self {
-//             pid: Uuid::parse_str("cd1c6ed7-7a24-4b53-840b-23c81bcc0f4c").unwrap(),
-//             plan_name: PlanNames::Max,
-//             price: 99.99,
-//             credit_amount: 1100,
-//             model_amount: 16,
-//             subtitle: "For agencies & heavy users".to_owned(),
-//             features: vec![
-//                 Feature::new("No monthly subscription!".to_owned()),
-//                 Feature::new("Use any photo pack".to_owned()),
-//                 Feature::new("No Watermarked photos".to_owned()),
-//                 Feature::new("24/7 Support".to_owned()),
-//             ],
-//             cta: "Choose Max".to_owned(),
-//             is_popular: false,
-//         }
-//     }
-// }
+#[derive(Serialize, Default)]
+#[must_use]
+pub struct WebsiteOptions<'a> {
+    pub website: Option<&'a Website>,
+    pub language: Language,
+    pub cc_cookie: Option<&'a CookieConsent>,
+    pub current_page: Option<CurrentPage>,
+    pub user: Option<UserView>,
+    pub user_credits: Option<UserCreditsView>,
+    pub orders: Option<&'a TransactionViewList>,
+    pub plans: Option<HashMap<i32, PlanModel>>,
+    pub feature: Option<&'a FeatureView>,
+    pub features: Option<&'a FeatureViewList>,
+    pub user_settings: Option<UserSettingsView>,
+    pub training_model: Option<TrainingModelView>,
+    pub training_models: Option<TrainingModelViewList>,
+    pub pack: Option<PackView>,
+    pub packs: Option<&'a PackViewList>,
+    pub pack_images: Option<WebGallery>,
+    pub image: Option<&'a ImageView>,
+    pub images: Option<&'a ImageViewList>,
+    pub web_gallery: Option<&'a WebGallery>,
+    pub web_images: Option<&'a WebImages>,
+    pub link: Option<&'a str>,
+    pub message: Option<&'a str>,
+    pub register: Option<&'a RegisterParams>,
+    pub login: Option<&'a LoginParams>,
+    pub auth_error: Option<&'a AuthError>,
+    pub stripe_options: Option<&'a StripeWebOptions>,
+    pub is_logged_in: bool,
+    pub is_ott: bool,
+    pub is_home: bool,
+    pub is_initial_load: bool,
+    pub is_pack_partial: bool,
+    pub is_pack: bool,
+    pub is_deleted: bool,
+    pub is_favorite: bool,
+    pub is_image_gen: bool,
+    pub is_other: bool,
+    pub is_production: bool,
+}
+
+impl<'a> WebsiteOptions<'a> {
+    /// Creates a new, empty set of options to begin a builder chain.
+    /// This is an alias for `WebsiteOptions::default()`.
+    pub fn new() -> Self {
+        Self {
+            is_production: !cfg!(debug_assertions),
+            ..Self::default()
+        }
+    }
+    /// Sets the options required for a full-page layout.
+    pub fn website(self, website: &'a Website) -> Self {
+        Self {
+            website: Some(website),
+            ..self
+        }
+    }
+    /// Sets the options required for a full-page layout.
+    pub fn language(self, language: &'a Language) -> Self {
+        Self {
+            language: language.clone(),
+            ..self
+        }
+    }
+    /// Sets the concent of cookies.
+    pub fn cc_cookie(self, cc_cookie: &'a CookieConsent) -> Self {
+        Self {
+            cc_cookie: Some(cc_cookie),
+            ..self
+        }
+    }
+    /// Sets the authenticated user.
+    pub fn user(self, user: UserView) -> Self {
+        Self {
+            user: Some(user),
+            ..self
+        }
+    }
+    /// Sets the authenticated user.
+    pub fn set_user(self, user: Option<UserView>) -> Self {
+        Self { user, ..self }
+    }
+    /// Sets the user's credits.
+    pub fn user_credits(self, user_credits: UserCreditsView) -> Self {
+        Self {
+            user_credits: Some(user_credits),
+            ..self
+        }
+    }
+    /// Sets the user's orders.
+    pub fn orders(self, orders: &'a TransactionViewList) -> Self {
+        Self {
+            orders: Some(orders),
+            ..self
+        }
+    }
+    // Sets the current page.
+    pub fn current_page(self, current_page: CurrentPage) -> Self {
+        Self {
+            current_page: Some(current_page),
+            ..self
+        }
+    }
+    // Sets the features.
+    pub fn feature(self, feature: &'a FeatureView) -> Self {
+        Self {
+            feature: Some(feature),
+            ..self
+        }
+    }
+    // Sets the features.
+    pub fn features(self, features: &'a FeatureViewList) -> Self {
+        Self {
+            features: Some(features),
+            ..self
+        }
+    }
+    // Sets the settings.
+    pub fn user_settings(self, settings: UserSettingsView) -> Self {
+        Self {
+            user_settings: Some(settings),
+            ..self
+        }
+    }
+    // Sets a training model.
+    pub fn training_model(self, training_model: TrainingModelView) -> Self {
+        Self {
+            training_model: Some(training_model),
+            ..self
+        }
+    }
+    // Sets the training models.
+    pub fn training_models(self, training_models: TrainingModelViewList) -> Self {
+        Self {
+            training_models: Some(training_models),
+            ..self
+        }
+    }
+    // Sets one pack.
+    pub fn pack(self, pack: PackView) -> Self {
+        Self {
+            pack: Some(pack),
+            ..self
+        }
+    }
+    // Sets the packs.
+    pub fn packs(self, packs: &'a PackViewList) -> Self {
+        Self {
+            packs: Some(packs),
+            ..self
+        }
+    }
+    // Sets the packs.
+    pub fn pack_images(self, packs: WebGallery) -> Self {
+        Self {
+            pack_images: Some(packs),
+            ..self
+        }
+    }
+    // Sets the images.
+    pub fn image(self, image: &'a ImageView) -> Self {
+        Self {
+            image: Some(image),
+            ..self
+        }
+    }
+    // Sets the images.
+    pub fn images(self, images: &'a ImageViewList) -> Self {
+        Self {
+            images: Some(images),
+            ..self
+        }
+    }
+    // Sets the web gallery.
+    pub fn web_gallery(self, web_gallery: &'a WebGallery) -> Self {
+        Self {
+            web_gallery: Some(web_gallery),
+            ..self
+        }
+    }
+    // Sets the web images.
+    pub fn web_images(self, web_images: &'a WebImages) -> Self {
+        Self {
+            web_images: Some(web_images),
+            ..self
+        }
+    }
+    // Sets the link.
+    pub fn link(self, link: &'a str) -> Self {
+        Self {
+            link: Some(link),
+            ..self
+        }
+    }
+    // Sets the message.
+    pub fn message(self, message: &'a str) -> Self {
+        Self {
+            message: Some(message),
+            ..self
+        }
+    }
+    // Sets the register params.
+    pub fn register(self, register: &'a RegisterParams) -> Self {
+        Self {
+            register: Some(register),
+            ..self
+        }
+    }
+    // Sets the register params.
+    pub fn login(self, login: &'a LoginParams) -> Self {
+        Self {
+            login: Some(login),
+            ..self
+        }
+    }
+    // Sets the auth error.
+    pub fn auth_error(self, auth_error: &'a AuthError) -> Self {
+        Self {
+            auth_error: Some(auth_error),
+            ..self
+        }
+    }
+    // Sets the stripe options.
+    pub fn stripe_options(self, stripe_options: &'a StripeWebOptions) -> Self {
+        Self {
+            stripe_options: Some(stripe_options),
+            ..self
+        }
+    }
+    // Sets the bool for is_logged_in.
+    pub fn is_logged_in(self) -> Self {
+        Self {
+            is_logged_in: true,
+            ..self
+        }
+    }
+    // Sets the bool for is_home.
+    pub fn is_home(self) -> Self {
+        Self {
+            is_home: true,
+            ..self
+        }
+    }
+    // Sets the bool for is_deleted.
+    pub fn is_deleted(self) -> Self {
+        Self {
+            is_deleted: true,
+            ..self
+        }
+    }
+    // Sets the bool for is_favorite.
+    pub fn is_favorite(self) -> Self {
+        Self {
+            is_favorite: true,
+            ..self
+        }
+    }
+    // Sets the bool for is_initial_load.
+    pub fn is_initial_load(self) -> Self {
+        Self {
+            is_initial_load: true,
+            ..self
+        }
+    }
+    // Sets the bool for is_image_gen.
+    pub fn is_image_gen(self) -> Self {
+        Self {
+            is_image_gen: true,
+            ..self
+        }
+    }
+    // Sets the bool for is_pack_partial.
+    pub fn is_pack_partial(self) -> Self {
+        Self {
+            is_pack_partial: true,
+            ..self
+        }
+    }
+    // Sets the bool for is_pack.
+    pub fn is_pack(self) -> Self {
+        Self {
+            is_pack: true,
+            ..self
+        }
+    }
+    // Sets the bool for google ott.
+    pub fn is_ott(self) -> Self {
+        Self {
+            is_ott: true,
+            ..self
+        }
+    }
+    // Sets the bool for is_other.
+    pub fn is_other(self) -> Self {
+        Self {
+            is_other: true,
+            ..self
+        }
+    }
+    // Sets the bool for is_production.
+    pub fn is_production(self) -> Self {
+        Self {
+            is_production: !cfg!(debug_assertions),
+            ..self
+        }
+    }
+    // Returns the built struct.
+    pub fn build(self) -> Self {
+        self
+    }
+}

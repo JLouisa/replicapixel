@@ -1,4 +1,3 @@
-use crate::controllers::dashboard::WebsiteOptions;
 use crate::domain::cookie::UserCookieTrait;
 use crate::models::users::RegisterParams;
 use crate::models::UserModel;
@@ -21,7 +20,7 @@ use serde::de::DeserializeOwned;
 use serde::Deserialize;
 
 use super::dashboard::routes::Dashboard;
-use crate::domain::website::Website;
+use crate::domain::website::{Website, WebsiteOptions};
 use crate::models::{o_auth2_sessions, users, users::OAuth2UserProfile};
 use google_oauth::AsyncClient;
 use loco_oauth2::controllers::oauth2::{

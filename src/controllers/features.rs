@@ -5,8 +5,10 @@ use axum::{debug_handler, Extension};
 use loco_rs::prelude::*;
 
 use crate::{
-    controllers::dashboard::WebsiteOptions,
-    domain::{features::FeatureView, website::Website},
+    domain::{
+        features::FeatureView,
+        website::{Website, WebsiteOptions},
+    },
     models::{
         feature_request::FeatureParams, users::UserPid, FeatureRequestActiveModel,
         FeatureRequestEntity, FeatureRequestModel, UserModel,
@@ -110,6 +112,7 @@ pub async fn vote(
     let feature_view = FeatureView::process_one(&feature_processed.0, feature_processed.1);
     let website_options = WebsiteOptions::new()
         .website(&website)
-        .feature(&feature_view);
+        .feature(&feature_view)
+        .build();
     views::features::vote_update(v, &website_options)
 }

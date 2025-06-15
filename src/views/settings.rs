@@ -1,5 +1,5 @@
 use crate::{
-    controllers::dashboard::WebsiteOptions,
+    domain::website::WebsiteOptions,
     models::{
         UserSettingsModel,
         _entities::sea_orm_active_enums::{Language, ThemePreference},

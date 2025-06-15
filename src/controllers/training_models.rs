@@ -1,9 +1,8 @@
 #![allow(clippy::missing_errors_doc)]
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
-use crate::controllers::dashboard::WebsiteOptions;
 use crate::domain::response::{handle_general_response, handle_general_response_text};
-use crate::domain::website::Website;
+use crate::domain::website::{Website, WebsiteOptions};
 use crate::models::_entities::sea_orm_active_enums::Status;
 use crate::models::_entities::training_models::{ActiveModel, Entity, Model};
 use crate::models::join::user_credits_models::load_user_and_one_training_model;
@@ -169,7 +168,8 @@ pub async fn check_model(
     }
     let website_options = WebsiteOptions::new()
         .website(&website)
-        .training_model(model.into());
+        .training_model(model.into())
+        .build();
     views::training_models::training_models_update(v, &website_options)
 }
 

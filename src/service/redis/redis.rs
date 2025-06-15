@@ -16,7 +16,7 @@ use thiserror::Error;
 use uuid::Uuid;
 
 use crate::{
-    controllers::home::WebImages,
+    domain::website::WebImages,
     models::{users::UserPid, UserModel, _entities::sea_orm_active_enums::Language},
     views::images::ImageView,
 };
@@ -29,9 +29,12 @@ pub type RedisDbResult<T> = std::result::Result<T, RedisDbError>;
 
 use redis::aio::ConnectionManager;
 
-const WEB_IMAGES_CACHE_KEY: &str = "web";
 const WEB_IMAGES_TTL_SECONDS: u64 = match !cfg!(debug_assertions) {
     true => 3600,
+    false => 60,
+};
+const REDIS_TTL_SECONDS: u64 = match !cfg!(debug_assertions) {
+    true => 3600 * 24,
     false => 60,
 };
 
@@ -65,14 +68,15 @@ pub enum RedisKey {
     UserSetting(UserPid),
     S3PreUrl(Uuid),
     Website(Language),
+    Packs(Language),
+    Pricing(Language),
+    WebImages,
 }
-
 impl ImageView {
     pub fn redis_key(&self) -> RedisKey {
         RedisKey::S3PreUrl(self.pid.clone())
     }
 }
-
 impl UserModel {
     pub fn redis_user_settings_key(&self) -> RedisKey {
         let user_pid = UserPid::new(self.pid.clone());
@@ -83,7 +87,6 @@ impl UserModel {
         RedisKey::User(user_pid)
     }
 }
-
 impl RedisKey {
     pub fn to_key(&self) -> String {
         match self {
@@ -91,6 +94,9 @@ impl RedisKey {
             Self::UserSetting(uuid) => format!("user:setting:{}", uuid.as_ref()),
             Self::S3PreUrl(uuid) => format!("s3:preurl:{}", uuid),
             Self::Website(lang) => format!("website:{}", lang),
+            Self::Packs(lang) => format!("packs:{}", lang),
+            Self::Pricing(lang) => format!("pricing:{}", lang),
+            Self::WebImages => String::from("web:images"),
         }
     }
 }
@@ -215,9 +221,10 @@ impl RedisCacheDriver {
         &self,
         key: &RedisKey,
         value: &T,
-        time: u64,
+        time: Option<u64>,
     ) -> RedisDbResult<()> {
         let mut conn = self.client.clone();
+        let time = time.unwrap_or(REDIS_TTL_SECONDS);
         let item = serde_json::to_string(value)?;
         let result: () = match conn.set_ex(key.to_key(), item, time).await {
             Ok(result) => result,
@@ -259,10 +266,8 @@ impl RedisCacheDriver {
     pub async fn get_web_images(&self) -> RedisDbResult<WebImages> {
         let mut conn = self.client.clone();
 
-        let value: Option<String> = conn
-            .get(WEB_IMAGES_CACHE_KEY.to_owned())
-            .await
-            .map_err(RedisDbError::from)?;
+        let key = RedisKey::WebImages;
+        let value: Option<String> = conn.get(key.to_key()).await.map_err(RedisDbError::from)?;
         let value = match value {
             Some(web) => web,
             None => return Err(RedisDbError::NotFound),
@@ -273,37 +278,22 @@ impl RedisCacheDriver {
     pub async fn set_web_images(&self, web: &WebImages) -> RedisDbResult<()> {
         let mut conn = self.client.clone();
 
+        let key = RedisKey::WebImages;
         let value = serde_json::to_string(web)?;
         let _: () = conn
-            .set_ex(
-                WEB_IMAGES_CACHE_KEY.to_owned(),
-                value,
-                WEB_IMAGES_TTL_SECONDS,
-            )
+            .set_ex(key.to_key(), value, WEB_IMAGES_TTL_SECONDS)
             .await?;
         Ok(())
     }
-    // pub async fn set_web_images(&self, web: &WebImages) -> RedisDbResult<()> {
-    //     let mut conn = self.client.clone();
-
-    //     let value = serde_json::to_string(web)?;
-    //     let _: () = conn
-    //         .set_ex(
-    //             WEB_IMAGES_CACHE_KEY.to_owned(),
-    //             value,
-    //             WEB_IMAGES_TTL_SECONDS,
-    //         )
-    //         .await?;
-    //     Ok(())
-    // }
 }
 
 async fn fetch_and_cache_web_images(
     ctx: &AppContext,
     lang: &Language,
     key: &RedisKey,
+    cache: &RedisCacheDriver,
 ) -> CacheResult<WebImages> {
-    let images = WebImages::web_images(&ctx.db, lang).await;
+    let images = WebImages::web_images(&ctx.db, lang, &cache).await;
     match serde_json::to_string(&images) {
         Ok(serialized) => {
             if let Err(e) = ctx
@@ -324,23 +314,27 @@ async fn fetch_and_cache_web_images(
     }
     Ok(images)
 }
-pub async fn load_cached_web(ctx: &AppContext, lang: &Language) -> CacheResult<WebImages> {
+pub async fn load_cached_web(
+    ctx: &AppContext,
+    lang: &Language,
+    cache: &RedisCacheDriver,
+) -> CacheResult<WebImages> {
     let key = RedisKey::Website(lang.to_owned());
     match ctx.cache.get(&key.to_key()).await {
         Ok(Some(cached)) => match serde_json::from_str::<WebImages>(&cached) {
             Ok(data) => Ok(data),
             Err(err) => {
                 tracing::error!("Failed to deserialize cached web images: {}", err);
-                fetch_and_cache_web_images(ctx, lang, &key).await
+                fetch_and_cache_web_images(ctx, lang, &key, &cache).await
             }
         },
         Ok(None) => {
-            tracing::info!("Web images not found in cache, loading from DB.");
-            fetch_and_cache_web_images(ctx, lang, &key).await
+            // tracing::info!("Web images not found in cache, loading from DB.");
+            fetch_and_cache_web_images(ctx, lang, &key, &cache).await
         }
         Err(err) => {
             tracing::error!("Failed to read from cache: {}", err);
-            fetch_and_cache_web_images(ctx, lang, &key).await
+            fetch_and_cache_web_images(ctx, lang, &key, &cache).await
         }
     }
 }

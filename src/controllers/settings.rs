@@ -2,8 +2,7 @@
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
 use crate::{
-    controllers::dashboard::WebsiteOptions,
-    domain::website::Website,
+    domain::website::{Website, WebsiteOptions},
     models::{
         _entities::sea_orm_active_enums::ThemePreference,
         join::user_credits_models::load_user_and_settings, users::UserPid,
@@ -80,7 +79,8 @@ pub async fn update_email_notifications(
         .await?;
     let website_options = WebsiteOptions::new()
         .website(&website)
-        .user_settings(user_settings.into());
+        .user_settings(user_settings.into())
+        .build();
     views::settings::email_notification(v, &website_options)
 }
 
@@ -100,7 +100,8 @@ pub async fn update_marketing_notifications(
         .await?;
     let website_options = WebsiteOptions::new()
         .website(&website)
-        .user_settings(user_settings.into());
+        .user_settings(user_settings.into())
+        .build();
     views::settings::marketing_notifications(v, &website_options)
 }
 
@@ -123,6 +124,7 @@ pub async fn update_dark_mode(
         .await?;
     let website_options = WebsiteOptions::new()
         .website(&website)
-        .user_settings(user_settings.into());
+        .user_settings(user_settings.into())
+        .build();
     views::settings::dark_mode(v, &website_options)
 }

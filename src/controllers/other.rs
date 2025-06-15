@@ -1,9 +1,9 @@
 #![allow(clippy::missing_errors_doc)]
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
+use crate::domain::website::{Website, WebsiteOptions};
 use crate::middleware::i18nv2::LangEngine;
 use crate::views;
-use crate::{controllers::dashboard::WebsiteOptions, domain::website::Website};
 use axum::{debug_handler, Extension};
 use loco_rs::prelude::*;
 
@@ -50,6 +50,7 @@ pub async fn documentation(
     let website_options: WebsiteOptions = WebsiteOptions::new()
         .website(&website)
         .language(&lang)
-        .is_other();
+        .is_other()
+        .build();
     views::other::documentation(v, &website_options)
 }

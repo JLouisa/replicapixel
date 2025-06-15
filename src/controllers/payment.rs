@@ -12,8 +12,8 @@ use stripe::{
 };
 pub struct PaymentController;
 use crate::{
-    controllers::{auth::HxRedirect, dashboard::WebsiteOptions},
-    domain::website::Website,
+    controllers::auth::HxRedirect,
+    domain::website::{Website, WebsiteOptions},
     middleware::i18nv2::LangEngine,
     models::{
         users::UserPid,
@@ -260,7 +260,8 @@ pub async fn prepare_handler(
     let website_options = WebsiteOptions::new()
         .website(&website)
         .language(&lang)
-        .link(&link);
+        .link(&link)
+        .build();
     views::payment::prepare(v, &website_options)
 }
 
@@ -315,7 +316,8 @@ async fn success_handler(
     let website_options = WebsiteOptions::new()
         .website(&website)
         .language(&lang)
-        .stripe_options(&stripe_options);
+        .stripe_options(&stripe_options)
+        .build();
     views::payment::stripe_status(v, &website_options)
 }
 
@@ -329,7 +331,8 @@ async fn cancel_handler(
     let website_options = WebsiteOptions::new()
         .website(&website)
         .language(&lang)
-        .stripe_options(&stripe_options);
+        .stripe_options(&stripe_options)
+        .build();
     views::payment::stripe_status(v, &website_options)
 }
 
@@ -364,7 +367,8 @@ async fn status_handler(
         let website_options = WebsiteOptions::new()
             .website(&website)
             .language(&lang)
-            .stripe_options(&stripe_options);
+            .stripe_options(&stripe_options)
+            .build();
         views::payment::stripe_status_partials(v, &website_options)
     } else {
         tracing::warn!(session_id = %session_id_str, status = ?session.status, payment_status = ?session.payment_status, "Redirected session is not yet successful.");
@@ -389,7 +393,8 @@ pub async fn payment_home(
         .website(&website)
         .language(&lang)
         .user(user.into())
-        .user_credits(user_credits.into());
+        .user_credits(user_credits.into())
+        .build();
     views::payment::payment_home(v, &website_options)
 }
 #[debug_handler]
@@ -406,7 +411,8 @@ pub async fn payment_home_partial(
         .website(&website)
         .language(&lang)
         .user(user.into())
-        .user_credits(user_credits.into());
+        .user_credits(user_credits.into())
+        .build();
     views::payment::payment_home_partial(v, &website_options)
 }
 

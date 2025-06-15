@@ -2,10 +2,10 @@
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
 use crate::{
-    controllers::dashboard::{CurrentPage, WebsiteOptions},
+    controllers::dashboard::CurrentPage,
     domain::{
         cookie::{AppCookie, CookieTrait, UserCookieTrait},
-        website::Website,
+        website::{Website, WebsiteOptions},
     },
     mailers::{
         auth::AuthMailer,
@@ -273,7 +273,7 @@ async fn get_user_settings(
     // Cache miss → load from DB
     let (_, settings) = load_user_and_settings(db, user_pid).await?;
 
-    let time = 60 * 60 * 24 * 30; // 30 days
+    let time = Some(60 * 60 * 24 * 30); // 30 days
 
     // Update cache
     let _ = cache.set(&cache_key, &settings, time).await;
@@ -289,7 +289,8 @@ async fn set_user_settings(
 ) -> Result<()> {
     let settings = user_settings.set_language_preference(db, lang).await?;
     let cache_key = RedisKey::UserSetting(user_pid.clone());
-    let _ = cache.set(&cache_key, &settings, 60 * 60 * 24 * 7).await;
+    let time = Some(60 * 60 * 24 * 7); // 7 days
+    let _ = cache.set(&cache_key, &settings, time).await;
     Ok(())
 }
 

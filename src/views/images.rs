@@ -5,7 +5,7 @@ use futures::future::{join_all, try_join_all};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-use crate::controllers::dashboard::WebsiteOptions;
+use crate::domain::website::WebsiteOptions;
 use crate::models::_entities::sea_orm_active_enums::Status;
 use crate::models::images::{ImageNew, ImagesModelList};
 use crate::models::{ImageModel, UserCreditModel};

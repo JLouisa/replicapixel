@@ -3,7 +3,7 @@ use loco_rs::prelude::*;
 use serde::Serialize;
 use std::collections::HashMap;
 
-use crate::controllers::dashboard::WebsiteOptions;
+use crate::domain::website::WebsiteOptions;
 use crate::models::_entities::sea_orm_active_enums::{PlanNames, Status};
 use crate::models::transactions::TransactionModelList;
 use crate::models::{PlanModel, TransactionModel};

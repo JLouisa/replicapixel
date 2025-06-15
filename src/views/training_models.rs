@@ -1,7 +1,6 @@
-use crate::controllers::dashboard::WebsiteOptions;
-use crate::models::_entities::sea_orm_active_enums::Status;
 use crate::models::_entities::training_models::Model as TrainingModel;
 use crate::models::training_models::TrainingModelList;
+use crate::{domain::website::WebsiteOptions, models::_entities::sea_orm_active_enums::Status};
 use derive_more::{AsRef, Constructor};
 use loco_rs::prelude::*;
 use serde::Serialize;

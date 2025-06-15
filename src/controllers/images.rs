@@ -8,10 +8,9 @@ use loco_rs::prelude::*;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-use crate::controllers::dashboard::WebsiteOptions;
 use crate::domain::domain_services::image_generation::ImageGenerationService;
 use crate::domain::url::Url;
-use crate::domain::website::Website;
+use crate::domain::website::{Website, WebsiteOptions};
 use crate::middleware::i18nv2::LangEngine;
 use crate::models::_entities::sea_orm_active_enums::{ImageFormat, ImageSize, Status};
 use crate::models::images::{
@@ -400,7 +399,8 @@ pub async fn generate(
         .language(&lang)
         .images(&saved_images)
         .user_credits(updated_credits.into())
-        .is_image_gen();
+        .is_image_gen()
+        .build();
 
     // 3. Render the view using the View Models
     views::images::img_completed(&v, &website_options)
@@ -471,7 +471,8 @@ pub async fn check_img(
             .language(&lang)
             .images(&image_list)
             .user_credits(user_credits.into())
-            .is_image_gen();
+            .is_image_gen()
+            .build();
 
         return views::images::img_completed(&v, &website_options);
     }
@@ -484,7 +485,8 @@ pub async fn check_img(
             .website(&website)
             .language(&lang)
             .user_credits(user_credits.into())
-            .is_image_gen();
+            .is_image_gen()
+            .build();
 
         return views::images::img_completed(&v, &website_options);
     }
@@ -513,7 +515,8 @@ async fn image_infinite_handler(
     let website_options = WebsiteOptions::new()
         .website(&website)
         .language(&lang)
-        .images(&images);
+        .images(&images)
+        .build();
 
     views::images::img_infinite_loading(&v, &website_options)
 }
@@ -535,7 +538,8 @@ pub async fn favorite_toggle(
     let website_options = WebsiteOptions::new()
         .website(&website)
         .language(&lang)
-        .image(&image);
+        .image(&image)
+        .build();
     views::images::favorite(&v, &website_options)
 }
 

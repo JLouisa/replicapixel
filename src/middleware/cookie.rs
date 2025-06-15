@@ -98,7 +98,7 @@ where
                 Ok(decoded_value) => {
                     match serde_json::from_str::<CookieConsentData>(&decoded_value) {
                         Ok(data) => {
-                            tracing::debug!("Parsed CookieConsentData: {:?}", data);
+                            // tracing::debug!("Parsed CookieConsentData: {:?}", data);
                             consent_state.necessary = true;
 
                             if let Some(categories) = data.categories {

@@ -6,8 +6,10 @@ use loco_rs::prelude::*;
 use serde::Deserialize;
 
 use crate::{
-    controllers::dashboard::WebsiteOptions,
-    domain::{domain_services::image_generation::ImageGenerationService, website::Website},
+    domain::{
+        domain_services::image_generation::ImageGenerationService,
+        website::{Website, WebsiteOptions},
+    },
     middleware::{cookie::ExtractConsentState, i18nv2::LangEngine},
     models::{
         images::ImagesModelList,
@@ -136,7 +138,8 @@ pub async fn get_all_packs(
     let website_options = WebsiteOptions::new()
         .website(&website)
         .packs(&pack)
-        .is_pack_partial();
+        .is_pack_partial()
+        .build();
     views::packs::get_all_packs(v, &website_options)
 }
 
@@ -146,6 +149,7 @@ pub async fn show_pack(
     Path(title_url): Path<String>,
     ExtractConsentState(cc_cookie): ExtractConsentState,
     Extension(website): Extension<Website>,
+    Extension(cache): Extension<RedisCacheDriver>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
     LangEngine(lang): LangEngine,
@@ -161,7 +165,7 @@ pub async fn show_pack(
         }
         Err(_) => None,
     };
-    let images = load_cached_web(&ctx, &lang).await?;
+    let images = load_cached_web(&ctx, &lang, &cache).await?;
     let pack: PackView = match lang {
         Language::English => {
             let pack = load_pack_by_title_url(&ctx.db, &title_url).await?;
@@ -182,7 +186,8 @@ pub async fn show_pack(
         .pack(pack)
         .pack_images(pack_images)
         .web_images(&images)
-        .is_pack();
+        .is_pack()
+        .build();
 
     views::packs::packs(v, &website_options)
 }
@@ -192,6 +197,7 @@ pub async fn show_pack_partial(
     auth: Result<auth::JWT>,
     Path(title_url): Path<String>,
     Extension(website): Extension<Website>,
+    Extension(cache): Extension<RedisCacheDriver>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
     LangEngine(lang): LangEngine,
@@ -207,7 +213,7 @@ pub async fn show_pack_partial(
         }
         Err(_) => None,
     };
-    let images = load_cached_web(&ctx, &lang).await?;
+    let images = load_cached_web(&ctx, &lang, &cache).await?;
     let pack: PackView = match lang {
         Language::English => {
             let pack = load_pack_by_title_url(&ctx.db, &title_url).await?;
@@ -227,7 +233,8 @@ pub async fn show_pack_partial(
         .pack(pack)
         .pack_images(pack_images)
         .web_images(&images)
-        .is_pack_partial();
+        .is_pack_partial()
+        .build();
 
     views::packs::packs_partial(v, &website_options)
 }
@@ -268,7 +275,8 @@ pub async fn generate_packs_images(
         .user(user.into())
         .user_credits(updated_credits_model.into())
         .training_models(training_models.into())
-        .images(&images);
+        .images(&images)
+        .build();
 
     // 3. Render the view
     views::dashboard::photo_partial_dashboard(v, &website_options)

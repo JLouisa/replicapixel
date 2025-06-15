@@ -5,8 +5,7 @@ use loco_rs::prelude::ViewRenderer;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    controllers::dashboard::WebsiteOptions,
-    domain::website::Website,
+    domain::website::{Website, WebsiteOptions},
     models::{UserCreditModel, UserModel, _entities::sea_orm_active_enums::Account},
 };
 

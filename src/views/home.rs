@@ -1,5 +1,6 @@
-use crate::controllers::dashboard::WebsiteOptions;
 use loco_rs::prelude::*;
+
+use crate::domain::website::WebsiteOptions;
 
 pub fn home(v: impl ViewRenderer, website_options: &WebsiteOptions) -> Result<impl IntoResponse> {
     format::render().view(

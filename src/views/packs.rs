@@ -3,7 +3,7 @@ use loco_rs::prelude::*;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    controllers::{dashboard::WebsiteOptions, home::WebGallery},
+    domain::website::{WebGallery, WebsiteOptions},
     models::{
         packs::{PackModelList, PackTranslated, PackTranslatedList},
         PackModel,

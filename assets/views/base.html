@@ -12,7 +12,7 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
   <head>
-    {% include "partials/cookie/consent.html" %}
+    {% if options.is_production %} {% include "partials/cookie/consent.html" %} {% endif %}
 
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -66,45 +66,16 @@
           localStorage.setItem("theme", newTheme);
         });
       }
+
+      console.log("Production: {{options.is_production}}");
     </script>
+    {#
     <style>
       body {
         font-family: "Inter", sans-serif;
       }
-
-      @keyframes shine {
-        0% {
-          transform: translateX(-100%) skewX(-20deg);
-          opacity: 0.6;
-        }
-        80% {
-          opacity: 0.6;
-        }
-        100% {
-          transform: translateX(100%) skewX(-20deg);
-          opacity: 0;
-        }
-      }
-
-      .animate-shine-active::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(
-          to right,
-          rgba(255, 255, 255, 0) 0%,
-          rgba(255, 255, 255, 1) 50%,
-          rgba(255, 255, 255, 0) 100%
-        );
-        opacity: 0;
-        transform: translateX(-100%) skewX(-20deg);
-        animation: shine 1.2s ease-out;
-        pointer-events: none;
-      }
     </style>
+    #}
   </head>
   <body>
     <!-- App -->
