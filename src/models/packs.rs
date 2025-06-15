@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use crate::models::{
     PackTranslationModel, _entities::sea_orm_active_enums::Language,
-    packs_translations::PackTranslationModelList,
+    join::packs::load_pack_and_all_translated, packs_translations::PackTranslationModelList,
 };
 
 pub use super::_entities::packs::{ActiveModel, Entity, Model};
@@ -33,7 +33,12 @@ impl ActiveModelBehavior for ActiveModel {
 }
 
 #[derive(Debug, Clone, AsRef, Constructor)]
-pub struct PackModelList(pub Vec<PackModel>);
+pub struct PackModelList(Vec<PackModel>);
+impl PackModelList {
+    pub fn into_inner(self) -> Vec<PackModel> {
+        self.0
+    }
+}
 
 #[derive(Debug, Serialize, Clone)]
 pub struct PackDomain {
@@ -150,7 +155,7 @@ impl PackTranslatedList {
             }
         }
 
-        let mut list = Vec::new();
+        let mut list = Vec::with_capacity(packs.as_ref().len());
         for plan in packs.0 {
             if let Some(translation) = translation_map.get(&plan.id) {
                 list.push(PackTranslated::translate(plan, (*translation).clone()));
@@ -159,7 +164,31 @@ impl PackTranslatedList {
 
         Self(list)
     }
+    pub fn from_related(
+        packs_with_translations: Vec<(PackModel, Vec<PackTranslationModel>)>,
+        lang: &Language,
+    ) -> Self {
+        let pack_list = packs_with_translations
+            .into_iter()
+            .map(|(pack, translations)| {
+                if *lang == Language::English {
+                    return PackTranslated::from_model(pack);
+                }
+                let target_translation = translations
+                    .iter()
+                    .find(|translation| translation.language == *lang);
+
+                match target_translation {
+                    Some(translation) => PackTranslated::translate(pack, translation.clone()),
+                    None => PackTranslated::from_model(pack),
+                }
+            })
+            .collect();
+
+        Self(pack_list)
+    }
 }
+
 impl From<PackModelList> for PackTranslatedList {
     fn from(packs: PackModelList) -> Self {
         Self(
@@ -263,7 +292,7 @@ where
     } else {
         Ok(s.split(',')
             .map(|item| item.trim().to_string())
-            .filter(|item| !item.is_empty()) // Remove empty strings resulting from trailing commas or multiple commas
+            .filter(|item| !item.is_empty())
             .collect())
     }
 }
@@ -274,11 +303,10 @@ impl Model {
         db: &DatabaseConnection,
         lang: &Language,
     ) -> ModelResult<PackTranslatedList> {
-        let packs = Model::find_all_packs(db).await?;
-        let packs_list = PackModelList::new(packs);
-        let translations = PackTranslationModel::find_all(db).await?;
-        let translations_list = PackTranslationModelList::new(translations);
-        let packs_translated = PackTranslatedList::translate(packs_list, translations_list, lang);
+        if *lang == Language::English {
+            return Ok(PackModelList::new(Model::find_all_packs(db).await?).into());
+        }
+        let packs_translated = load_pack_and_all_translated(db, lang).await?;
         Ok(packs_translated)
     }
     pub async fn find_by_title_url(db: &DatabaseConnection, title_url: &str) -> ModelResult<Self> {

@@ -2,6 +2,9 @@
 {% set website = options.website %}
 {% set gallery = options.pack_images %}
 {% set lang = options.language %}
+{% set pack = options.pack %}
+{% set web_images = options.web_images %}
+{% set user = options.user %}
 {% set login_link = website.website_routes.auth_routes.login %}
 {% set login_partial_link = website.website_routes.auth_routes.login_partial %}
 {% set website_name = website.website_basic_info.name %}
@@ -29,6 +32,7 @@
     </div>
   </div>
   <script>
+    updatePageTitle("{{ website.website_basic_info.name }} | {{ pack.title }}");
     document.body.addEventListener("htmx:afterSwap", function (evt) {
       if (evt.detail.target.id === "app") {
         window.scrollTo(0, 0);

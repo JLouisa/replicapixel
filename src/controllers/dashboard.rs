@@ -33,7 +33,6 @@ use crate::views::images::{ImageView, ImageViewList};
 use crate::views::packs::{PackView, PackViewList};
 use crate::views::settings::UserSettingsView;
 use crate::views::training_models::{TrainingModelView, TrainingModelViewList};
-// use axum::extract::Query;
 use axum::response::Redirect;
 use axum::Extension;
 use axum::{debug_handler, extract::State, response::IntoResponse};
@@ -249,10 +248,6 @@ pub async fn load_first_images(
     let list = ImageModel::find_x_images_by_user_id(db, id, fav, del, 30).await?;
     Ok(ImagesModelList::new(list))
 }
-// async fn load_packs(db: &DatabaseConnection) -> Result<PackModelList> {
-//     let list = PackModel::find_all_packs(db).await?;
-//     Ok(PackModelList::new(list))
-// }
 async fn load_packs_translated(
     db: &DatabaseConnection,
     lang: &Language,
@@ -307,12 +302,6 @@ pub async fn dashboard_test_clear(State(ctx): State<AppContext>) -> Result<impl 
     };
 }
 
-// #[derive(Debug, Deserialize, Clone, PartialEq, Eq)]
-// #[serde(rename_all = "lowercase")]
-// pub struct PartialQuery {
-//     pub is_partial: Option<bool>,
-// }
-
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, Eq)]
 #[serde(rename_all = "lowercase")]
 pub enum CurrentPage {
@@ -324,305 +313,6 @@ pub enum CurrentPage {
     Deleted,
     Favorite,
     Album,
-}
-
-#[derive(Serialize, Default)]
-#[must_use]
-pub struct WebsiteOptions<'a> {
-    pub website: Option<&'a Website>,
-    pub language: Language,
-    pub cc_cookie: Option<&'a CookieConsent>,
-    pub current_page: Option<CurrentPage>,
-    pub user: Option<UserView>,
-    pub user_credits: Option<UserCreditsView>,
-    pub orders: Option<&'a TransactionViewList>,
-    pub plans: Option<HashMap<i32, PlanModel>>,
-    pub feature: Option<&'a FeatureView>,
-    pub features: Option<&'a FeatureViewList>,
-    pub user_settings: Option<UserSettingsView>,
-    pub training_model: Option<TrainingModelView>,
-    pub training_models: Option<TrainingModelViewList>,
-    pub pack: Option<PackView>,
-    pub packs: Option<PackViewList>,
-    pub pack_images: Option<WebGallery>,
-    pub image: Option<&'a ImageView>,
-    pub images: Option<&'a ImageViewList>,
-    pub web_gallery: Option<&'a WebGallery>,
-    pub web_images: Option<&'a WebImages>,
-    pub link: Option<&'a str>,
-    pub message: Option<&'a str>,
-    pub register: Option<&'a RegisterParams>,
-    pub login: Option<&'a LoginParams>,
-    pub auth_error: Option<&'a AuthError>,
-    pub stripe_options: Option<&'a StripeWebOptions>,
-    pub is_logged_in: bool,
-    pub is_ott: bool,
-    pub is_home: bool,
-    pub is_initial_load: bool,
-    pub is_pack_partial: bool,
-    pub is_pack: bool,
-    pub is_deleted: bool,
-    pub is_favorite: bool,
-    pub is_image_gen: bool,
-    pub is_other: bool,
-    // ... other fields
-}
-
-impl<'a> WebsiteOptions<'a> {
-    /// Creates a new, empty set of options to begin a builder chain.
-    /// This is an alias for `WebsiteOptions::default()`.
-    pub fn new() -> Self {
-        Self::default()
-    }
-    /// Sets the options required for a full-page layout.
-    pub fn website(self, website: &'a Website) -> Self {
-        Self {
-            website: Some(website),
-            ..self
-        }
-    }
-    /// Sets the options required for a full-page layout.
-    pub fn language(self, language: &'a Language) -> Self {
-        Self {
-            language: language.clone(),
-            ..self
-        }
-    }
-    /// Sets the concent of cookies.
-    pub fn cc_cookie(self, cc_cookie: &'a CookieConsent) -> Self {
-        Self {
-            cc_cookie: Some(cc_cookie),
-            ..self
-        }
-    }
-    /// Sets the authenticated user.
-    pub fn user(self, user: UserView) -> Self {
-        Self {
-            user: Some(user),
-            ..self
-        }
-    }
-    /// Sets the authenticated user.
-    pub fn set_user(self, user: Option<UserView>) -> Self {
-        Self { user, ..self }
-    }
-    /// Sets the user's credits.
-    pub fn user_credits(self, user_credits: UserCreditsView) -> Self {
-        Self {
-            user_credits: Some(user_credits),
-            ..self
-        }
-    }
-    /// Sets the user's orders.
-    pub fn orders(self, orders: &'a TransactionViewList) -> Self {
-        Self {
-            orders: Some(orders),
-            ..self
-        }
-    }
-    // Sets the current page.
-    pub fn current_page(self, current_page: CurrentPage) -> Self {
-        Self {
-            current_page: Some(current_page),
-            ..self
-        }
-    }
-    // Sets the features.
-    pub fn feature(self, feature: &'a FeatureView) -> Self {
-        Self {
-            feature: Some(feature),
-            ..self
-        }
-    }
-    // Sets the features.
-    pub fn features(self, features: &'a FeatureViewList) -> Self {
-        Self {
-            features: Some(features),
-            ..self
-        }
-    }
-    // Sets the settings.
-    pub fn user_settings(self, settings: UserSettingsView) -> Self {
-        Self {
-            user_settings: Some(settings),
-            ..self
-        }
-    }
-    // Sets a training model.
-    pub fn training_model(self, training_model: TrainingModelView) -> Self {
-        Self {
-            training_model: Some(training_model),
-            ..self
-        }
-    }
-    // Sets the training models.
-    pub fn training_models(self, training_models: TrainingModelViewList) -> Self {
-        Self {
-            training_models: Some(training_models),
-            ..self
-        }
-    }
-    // Sets one pack.
-    pub fn pack(self, pack: PackView) -> Self {
-        Self {
-            pack: Some(pack),
-            ..self
-        }
-    }
-    // Sets the packs.
-    pub fn packs(self, packs: PackViewList) -> Self {
-        Self {
-            packs: Some(packs),
-            ..self
-        }
-    }
-    // Sets the packs.
-    pub fn pack_images(self, packs: WebGallery) -> Self {
-        Self {
-            pack_images: Some(packs),
-            ..self
-        }
-    }
-    // Sets the images.
-    pub fn image(self, image: &'a ImageView) -> Self {
-        Self {
-            image: Some(image),
-            ..self
-        }
-    }
-    // Sets the images.
-    pub fn images(self, images: &'a ImageViewList) -> Self {
-        Self {
-            images: Some(images),
-            ..self
-        }
-    }
-    // Sets the web gallery.
-    pub fn web_gallery(self, web_gallery: &'a WebGallery) -> Self {
-        Self {
-            web_gallery: Some(web_gallery),
-            ..self
-        }
-    }
-    // Sets the web images.
-    pub fn web_images(self, web_images: &'a WebImages) -> Self {
-        Self {
-            web_images: Some(web_images),
-            ..self
-        }
-    }
-    // Sets the link.
-    pub fn link(self, link: &'a str) -> Self {
-        Self {
-            link: Some(link),
-            ..self
-        }
-    }
-    // Sets the message.
-    pub fn message(self, message: &'a str) -> Self {
-        Self {
-            message: Some(message),
-            ..self
-        }
-    }
-    // Sets the register params.
-    pub fn register(self, register: &'a RegisterParams) -> Self {
-        Self {
-            register: Some(register),
-            ..self
-        }
-    }
-    // Sets the register params.
-    pub fn login(self, login: &'a LoginParams) -> Self {
-        Self {
-            login: Some(login),
-            ..self
-        }
-    }
-    // Sets the auth error.
-    pub fn auth_error(self, auth_error: &'a AuthError) -> Self {
-        Self {
-            auth_error: Some(auth_error),
-            ..self
-        }
-    }
-    // Sets the stripe options.
-    pub fn stripe_options(self, stripe_options: &'a StripeWebOptions) -> Self {
-        Self {
-            stripe_options: Some(stripe_options),
-            ..self
-        }
-    }
-    // Sets the bool for is_logged_in.
-    pub fn is_logged_in(self) -> Self {
-        Self {
-            is_logged_in: true,
-            ..self
-        }
-    }
-    // Sets the bool for is_home.
-    pub fn is_home(self) -> Self {
-        Self {
-            is_home: true,
-            ..self
-        }
-    }
-    // Sets the bool for is_deleted.
-    pub fn is_deleted(self) -> Self {
-        Self {
-            is_deleted: true,
-            ..self
-        }
-    }
-    // Sets the bool for is_favorite.
-    pub fn is_favorite(self) -> Self {
-        Self {
-            is_favorite: true,
-            ..self
-        }
-    }
-    // Sets the bool for is_initial_load.
-    pub fn is_initial_load(self) -> Self {
-        Self {
-            is_initial_load: true,
-            ..self
-        }
-    }
-    // Sets the bool for is_image_gen.
-    pub fn is_image_gen(self) -> Self {
-        Self {
-            is_image_gen: true,
-            ..self
-        }
-    }
-    // Sets the bool for is_pack_partial.
-    pub fn is_pack_partial(self) -> Self {
-        Self {
-            is_pack_partial: true,
-            ..self
-        }
-    }
-    // Sets the bool for is_pack.
-    pub fn is_pack(self) -> Self {
-        Self {
-            is_pack: true,
-            ..self
-        }
-    }
-    // Sets the bool for google ott.
-    pub fn is_ott(self) -> Self {
-        Self {
-            is_ott: true,
-            ..self
-        }
-    }
-    // Sets the bool for is_other.
-    pub fn is_other(self) -> Self {
-        Self {
-            is_other: true,
-            ..self
-        }
-    }
 }
 
 #[debug_handler]
@@ -925,7 +615,7 @@ pub async fn packs_dashboard(
         Ok(images) => images.packs,
         Err(_) => load_packs_translated(&ctx.db, &lang).await?.into(),
     };
-
+    let packs = packs.into();
     let website_options: WebsiteOptions = WebsiteOptions::new()
         .website(&website)
         .language(&lang)
@@ -933,7 +623,7 @@ pub async fn packs_dashboard(
         .user(user.into())
         .user_credits(user_credits.into())
         .training_models(training_models.into())
-        .packs(packs.into())
+        .packs(&packs)
         .current_page(CurrentPage::Packs);
 
     Ok(views::dashboard::packs_dashboard(v, &website_options).into_response())
@@ -957,12 +647,12 @@ pub async fn packs_partial_dashboard(
         Ok(images) => images.packs,
         Err(_) => load_packs_translated(&ctx.db, &lang).await?.into(),
     };
-
+    let packs = packs.into();
     let website_options: WebsiteOptions = WebsiteOptions::new()
         .website(&website)
         .language(&lang)
         .training_models(training_models.into())
-        .packs(packs.into())
+        .packs(&packs)
         .current_page(CurrentPage::Packs);
 
     Ok(views::dashboard::packs_partial_dashboard(v, &website_options).into_response())
@@ -1190,4 +880,303 @@ pub async fn photo_partial_dashboard(
         .images(&images);
 
     Ok(views::dashboard::photo_partial_dashboard(v, &website_options).into_response())
+}
+
+#[derive(Serialize, Default)]
+#[must_use]
+pub struct WebsiteOptions<'a> {
+    pub website: Option<&'a Website>,
+    pub language: Language,
+    pub cc_cookie: Option<&'a CookieConsent>,
+    pub current_page: Option<CurrentPage>,
+    pub user: Option<UserView>,
+    pub user_credits: Option<UserCreditsView>,
+    pub orders: Option<&'a TransactionViewList>,
+    pub plans: Option<HashMap<i32, PlanModel>>,
+    pub feature: Option<&'a FeatureView>,
+    pub features: Option<&'a FeatureViewList>,
+    pub user_settings: Option<UserSettingsView>,
+    pub training_model: Option<TrainingModelView>,
+    pub training_models: Option<TrainingModelViewList>,
+    pub pack: Option<PackView>,
+    pub packs: Option<&'a PackViewList>,
+    pub pack_images: Option<WebGallery>,
+    pub image: Option<&'a ImageView>,
+    pub images: Option<&'a ImageViewList>,
+    pub web_gallery: Option<&'a WebGallery>,
+    pub web_images: Option<&'a WebImages>,
+    pub link: Option<&'a str>,
+    pub message: Option<&'a str>,
+    pub register: Option<&'a RegisterParams>,
+    pub login: Option<&'a LoginParams>,
+    pub auth_error: Option<&'a AuthError>,
+    pub stripe_options: Option<&'a StripeWebOptions>,
+    pub is_logged_in: bool,
+    pub is_ott: bool,
+    pub is_home: bool,
+    pub is_initial_load: bool,
+    pub is_pack_partial: bool,
+    pub is_pack: bool,
+    pub is_deleted: bool,
+    pub is_favorite: bool,
+    pub is_image_gen: bool,
+    pub is_other: bool,
+    // ... other fields
+}
+
+impl<'a> WebsiteOptions<'a> {
+    /// Creates a new, empty set of options to begin a builder chain.
+    /// This is an alias for `WebsiteOptions::default()`.
+    pub fn new() -> Self {
+        Self::default()
+    }
+    /// Sets the options required for a full-page layout.
+    pub fn website(self, website: &'a Website) -> Self {
+        Self {
+            website: Some(website),
+            ..self
+        }
+    }
+    /// Sets the options required for a full-page layout.
+    pub fn language(self, language: &'a Language) -> Self {
+        Self {
+            language: language.clone(),
+            ..self
+        }
+    }
+    /// Sets the concent of cookies.
+    pub fn cc_cookie(self, cc_cookie: &'a CookieConsent) -> Self {
+        Self {
+            cc_cookie: Some(cc_cookie),
+            ..self
+        }
+    }
+    /// Sets the authenticated user.
+    pub fn user(self, user: UserView) -> Self {
+        Self {
+            user: Some(user),
+            ..self
+        }
+    }
+    /// Sets the authenticated user.
+    pub fn set_user(self, user: Option<UserView>) -> Self {
+        Self { user, ..self }
+    }
+    /// Sets the user's credits.
+    pub fn user_credits(self, user_credits: UserCreditsView) -> Self {
+        Self {
+            user_credits: Some(user_credits),
+            ..self
+        }
+    }
+    /// Sets the user's orders.
+    pub fn orders(self, orders: &'a TransactionViewList) -> Self {
+        Self {
+            orders: Some(orders),
+            ..self
+        }
+    }
+    // Sets the current page.
+    pub fn current_page(self, current_page: CurrentPage) -> Self {
+        Self {
+            current_page: Some(current_page),
+            ..self
+        }
+    }
+    // Sets the features.
+    pub fn feature(self, feature: &'a FeatureView) -> Self {
+        Self {
+            feature: Some(feature),
+            ..self
+        }
+    }
+    // Sets the features.
+    pub fn features(self, features: &'a FeatureViewList) -> Self {
+        Self {
+            features: Some(features),
+            ..self
+        }
+    }
+    // Sets the settings.
+    pub fn user_settings(self, settings: UserSettingsView) -> Self {
+        Self {
+            user_settings: Some(settings),
+            ..self
+        }
+    }
+    // Sets a training model.
+    pub fn training_model(self, training_model: TrainingModelView) -> Self {
+        Self {
+            training_model: Some(training_model),
+            ..self
+        }
+    }
+    // Sets the training models.
+    pub fn training_models(self, training_models: TrainingModelViewList) -> Self {
+        Self {
+            training_models: Some(training_models),
+            ..self
+        }
+    }
+    // Sets one pack.
+    pub fn pack(self, pack: PackView) -> Self {
+        Self {
+            pack: Some(pack),
+            ..self
+        }
+    }
+    // Sets the packs.
+    pub fn packs(self, packs: &'a PackViewList) -> Self {
+        Self {
+            packs: Some(packs),
+            ..self
+        }
+    }
+    // Sets the packs.
+    pub fn pack_images(self, packs: WebGallery) -> Self {
+        Self {
+            pack_images: Some(packs),
+            ..self
+        }
+    }
+    // Sets the images.
+    pub fn image(self, image: &'a ImageView) -> Self {
+        Self {
+            image: Some(image),
+            ..self
+        }
+    }
+    // Sets the images.
+    pub fn images(self, images: &'a ImageViewList) -> Self {
+        Self {
+            images: Some(images),
+            ..self
+        }
+    }
+    // Sets the web gallery.
+    pub fn web_gallery(self, web_gallery: &'a WebGallery) -> Self {
+        Self {
+            web_gallery: Some(web_gallery),
+            ..self
+        }
+    }
+    // Sets the web images.
+    pub fn web_images(self, web_images: &'a WebImages) -> Self {
+        Self {
+            web_images: Some(web_images),
+            ..self
+        }
+    }
+    // Sets the link.
+    pub fn link(self, link: &'a str) -> Self {
+        Self {
+            link: Some(link),
+            ..self
+        }
+    }
+    // Sets the message.
+    pub fn message(self, message: &'a str) -> Self {
+        Self {
+            message: Some(message),
+            ..self
+        }
+    }
+    // Sets the register params.
+    pub fn register(self, register: &'a RegisterParams) -> Self {
+        Self {
+            register: Some(register),
+            ..self
+        }
+    }
+    // Sets the register params.
+    pub fn login(self, login: &'a LoginParams) -> Self {
+        Self {
+            login: Some(login),
+            ..self
+        }
+    }
+    // Sets the auth error.
+    pub fn auth_error(self, auth_error: &'a AuthError) -> Self {
+        Self {
+            auth_error: Some(auth_error),
+            ..self
+        }
+    }
+    // Sets the stripe options.
+    pub fn stripe_options(self, stripe_options: &'a StripeWebOptions) -> Self {
+        Self {
+            stripe_options: Some(stripe_options),
+            ..self
+        }
+    }
+    // Sets the bool for is_logged_in.
+    pub fn is_logged_in(self) -> Self {
+        Self {
+            is_logged_in: true,
+            ..self
+        }
+    }
+    // Sets the bool for is_home.
+    pub fn is_home(self) -> Self {
+        Self {
+            is_home: true,
+            ..self
+        }
+    }
+    // Sets the bool for is_deleted.
+    pub fn is_deleted(self) -> Self {
+        Self {
+            is_deleted: true,
+            ..self
+        }
+    }
+    // Sets the bool for is_favorite.
+    pub fn is_favorite(self) -> Self {
+        Self {
+            is_favorite: true,
+            ..self
+        }
+    }
+    // Sets the bool for is_initial_load.
+    pub fn is_initial_load(self) -> Self {
+        Self {
+            is_initial_load: true,
+            ..self
+        }
+    }
+    // Sets the bool for is_image_gen.
+    pub fn is_image_gen(self) -> Self {
+        Self {
+            is_image_gen: true,
+            ..self
+        }
+    }
+    // Sets the bool for is_pack_partial.
+    pub fn is_pack_partial(self) -> Self {
+        Self {
+            is_pack_partial: true,
+            ..self
+        }
+    }
+    // Sets the bool for is_pack.
+    pub fn is_pack(self) -> Self {
+        Self {
+            is_pack: true,
+            ..self
+        }
+    }
+    // Sets the bool for google ott.
+    pub fn is_ott(self) -> Self {
+        Self {
+            is_ott: true,
+            ..self
+        }
+    }
+    // Sets the bool for is_other.
+    pub fn is_other(self) -> Self {
+        Self {
+            is_other: true,
+            ..self
+        }
+    }
 }

@@ -1,13 +1,10 @@
 <!-- prettier-ignore -->
 {% set pack_link = options.website.website_routes.packs_routes.show_pack %} 
 {% set pack_partial_link = options.website.website_routes.packs_routes.show_pack_partial %}
-
-{% if options.is_pack_partial %}
-{% set pack_list = options.packs %}
-{% endif %}
+{% set packs = options.packs %}
 
 <div class="flex flex-row flex-wrap justify-center lg:justify-between items-stretch gap-6 w-full">
-  {% for pack in pack_list %}
+  {% for pack in packs %}
   <a
     id="pack-{{pack.pid}}"
     href="{{pack_link | safe}}/{{pack.title_url}}"

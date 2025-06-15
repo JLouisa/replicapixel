@@ -7,6 +7,7 @@ use loco_rs::prelude::*;
 use sea_orm::entity::prelude::*;
 use serde::Serialize;
 pub type Plans = Entity;
+use crate::models::_entities::plans_translations as plans_translations_entity;
 use crate::models::{
     PlanTranslationModel,
     _entities::sea_orm_active_enums::{Language, PlanNames},
@@ -110,7 +111,7 @@ impl PlanDomainList {
             }
         }
 
-        let mut list = Vec::new();
+        let mut list = Vec::with_capacity(plans.as_ref().len());
         for plan in plans.0 {
             if let Some(translation) = translation_map.get(&plan.id) {
                 list.push(PlanDomain::translate(plan, (*translation).clone()));
@@ -119,40 +120,51 @@ impl PlanDomainList {
 
         Self(list)
     }
-}
+    pub fn from_related(
+        packs_with_translations: Vec<(Model, Vec<PlanTranslationModel>)>,
+        lang: &Language,
+    ) -> Self {
+        let pack_list = packs_with_translations
+            .into_iter()
+            .map(|(pack, translations)| {
+                if *lang == Language::English {
+                    return PlanDomain::from_model(pack);
+                }
+                let target_translation = translations
+                    .iter()
+                    .find(|translation| translation.language == *lang);
 
-// #[derive(Debug, Constructor, Serialize, Clone)]
-// pub struct PlanDomainList(pub Vec<PlanDomain>);
-// impl PlanDomainList {
-//     pub fn translate(
-//         plans: PlanModelList,
-//         translations: PlanTranslationModelList,
-//         lang: Language,
-//     ) -> Self {
-//         let mut list = Vec::new();
-//         for plan in plans.0 {
-//             if let Some(translation) = translations
-//                 .0
-//                 .iter()
-//                 .find(|t| t.plan_id == plan.id && t.language == lang)
-//             {
-//                 list.push(PlanDomain::translate(plan, translation.clone()));
-//             }
-//         }
-//         Self(list)
-//     }
-// }
+                match target_translation {
+                    Some(translation) => PlanDomain::translate(pack, translation.clone()),
+                    None => PlanDomain::from_model(pack),
+                }
+            })
+            .collect();
+
+        Self(pack_list)
+    }
+}
 
 // implement your read-oriented logic here
 impl Model {
+    pub async fn load_plan_and_all_translated(
+        db: &DatabaseConnection,
+        lang: &Language,
+    ) -> ModelResult<PlanDomainList> {
+        let plans_with_translations = Entity::find()
+            .find_with_related(plans_translations_entity::Entity)
+            .all(db)
+            .await?;
+        Ok(PlanDomainList::from_related(plans_with_translations, lang))
+    }
     pub async fn find_all_translated(
         db: &DatabaseConnection,
         lang: &Language,
     ) -> ModelResult<PlanDomainList> {
-        let plans = Model::find_all(db).await?;
-        let translations = PlanTranslationModel::find_all(db).await?;
-        let plans = PlanDomainList::translate(plans, translations, lang);
-        Ok(plans)
+        if *lang == Language::English {
+            return Ok(Model::find_all(db).await?.into());
+        }
+        Ok(Model::load_plan_and_all_translated(db, lang).await?.into())
     }
     pub async fn find_by_pid(db: &DatabaseConnection, pid: &Uuid) -> ModelResult<Self> {
         let user = Entity::find()

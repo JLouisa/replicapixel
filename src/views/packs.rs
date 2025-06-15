@@ -25,15 +25,7 @@ pub fn packs(v: impl ViewRenderer, website_options: &WebsiteOptions) -> Result<i
     format::render().view(
         &v,
         "packs/pack_base.html",
-        data!(
-            {
-                "website": website_options.website, "cc_cookie": website_options.cc_cookie,
-                "web_images": website_options.web_images, "pack": website_options.pack,
-                "pack_images": website_options.pack_images,
-                "user": website_options.user, "is_pack": website_options.is_pack,
-                "options": website_options
-            }
-        ),
+        data!({ "options": website_options }),
     )
 }
 
@@ -134,10 +126,10 @@ impl PackView {
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, AsRef, Constructor)]
-pub struct PackViewList(pub Vec<PackView>);
+pub struct PackViewList(Vec<PackView>);
 impl PackViewList {
-    pub fn into_inner(&self) -> Vec<PackView> {
-        self.0.clone()
+    pub fn into_inner(self) -> Vec<PackView> {
+        self.0
     }
 }
 impl Default for PackViewList {
@@ -152,6 +144,6 @@ impl From<PackTranslatedList> for PackViewList {
 }
 impl From<PackModelList> for PackViewList {
     fn from(p: PackModelList) -> Self {
-        Self(p.0.into_iter().map(|x| x.into()).collect())
+        Self(p.into_inner().into_iter().map(|x| x.into()).collect())
     }
 }

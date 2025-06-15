@@ -20,6 +20,7 @@ use axum::{debug_handler, Extension};
 use derive_more::Constructor;
 use loco_rs::prelude::*;
 use serde::{Deserialize, Serialize};
+use tokio::join;
 
 // use crate::controllers::auth::routes as AuthRoutes;
 use axum::{http::StatusCode, response::IntoResponse};
@@ -188,6 +189,7 @@ pub async fn render_home(
         .language(&lang)
         .cc_cookie(&cc_cookie)
         .set_user(user)
+        .packs(&images.packs)
         .web_images(&images)
         .is_home();
 
@@ -221,6 +223,7 @@ pub async fn render_home_partial(
         .language(&lang)
         .cc_cookie(&cc_cookie)
         .set_user(user)
+        .packs(&images.packs)
         .web_images(&images)
         .is_home();
 
@@ -281,7 +284,7 @@ pub async fn render_dashboard_extend_packs_partial(
         .user(user.into())
         .user_credits(user_credits.into())
         .training_models(training_models.into())
-        .packs(packs.into())
+        .packs(&packs)
         .current_page(CurrentPage::Packs);
 
     Ok(views::dashboard::home_packs_partial_dashboard(v, &website_options).into_response())
@@ -383,15 +386,6 @@ impl WebImages {
             "https://replicapixel-web.s3.eu-central-1.amazonaws.com/others/studio.webp",
         );
 
-        let packs = match load_packs_translated(db, lang).await {
-            Ok(packs) => packs,
-            Err(e) => {
-                tracing::error!("Failed to load packs: {}", e);
-                PackViewList::default()
-            }
-        }
-        .into();
-
         let creators = vec![
             String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/others/got.webp"),
             String::from(
@@ -411,8 +405,22 @@ impl WebImages {
             ),
         ];
 
-        let plans = match load_pricing_translated(db, lang).await {
-            Ok(pack) => pack,
+        // Loading functions concurrently.
+        let (packs_result, plans_result) = join!(
+            load_packs_translated(db, lang),
+            load_pricing_translated(db, lang)
+        );
+
+        let packs = match packs_result {
+            Ok(packs) => packs,
+            Err(e) => {
+                tracing::error!("Failed to load packs: {}", e);
+                PackViewList::default()
+            }
+        }
+        .into();
+        let plans = match plans_result {
+            Ok(plans) => plans,
             Err(e) => {
                 tracing::error!("Failed to load plans: {}", e);
                 PricingViewList::default()

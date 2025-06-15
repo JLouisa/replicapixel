@@ -11,13 +11,13 @@ use crate::{
     middleware::{cookie::ExtractConsentState, i18nv2::LangEngine},
     models::{
         images::ImagesModelList,
-        join::user_pack::{
-            load_pack_and_translation, load_user_and_one_pack,
-            load_user_one_training_model_one_pack,
+        join::{
+            packs::load_pack_and_translation,
+            user_pack::{load_user_and_one_pack, load_user_one_training_model_one_pack},
         },
         users::UserPid,
         ImageModel,
-        _entities::sea_orm_active_enums::ImageSize,
+        _entities::sea_orm_active_enums::{ImageSize, Language},
         packs::{PackDomain, PackModelList},
         training_models::TrainingModelList,
         PackModel, TrainingModelModel, UserModel,
@@ -98,18 +98,11 @@ async fn load_models_all(db: &DatabaseConnection, id: i32) -> Result<TrainingMod
     let list = TrainingModelModel::find_all_completed_by_user_id(db, id).await?;
     Ok(TrainingModelList::new(list))
 }
-// async fn load_pack_by_title_url(db: &DatabaseConnection, title_url: &str) -> Result<PackModel> {
-//     let pack = PackModel::find_by_title_url(db, title_url).await?;
-//     Ok(pack)
-// }
-// async fn load_pack_by_title_url_translated(
-//     db: &DatabaseConnection,
-//     title_url: &str,
-//     lang: &Language,
-// ) -> Result<PackModel> {
-//     let pack = PackModel::find_by_title_url(db, title_url).await?;
-//     Ok(pack)
-// }
+async fn load_pack_by_title_url(db: &DatabaseConnection, title_url: &str) -> Result<PackModel> {
+    let pack = PackModel::find_by_title_url(db, title_url).await?;
+    Ok(pack)
+}
+
 async fn load_packs_all(db: &DatabaseConnection) -> Result<PackModelList> {
     let pack = PackModel::find_all_packs(db).await?;
     Ok(PackModelList::new(pack))
@@ -139,10 +132,10 @@ pub async fn get_all_packs(
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    let pack = load_packs_all(&ctx.db).await?;
+    let pack = load_packs_all(&ctx.db).await?.into();
     let website_options = WebsiteOptions::new()
         .website(&website)
-        .packs(pack.into())
+        .packs(&pack)
         .is_pack_partial();
     views::packs::get_all_packs(v, &website_options)
 }
@@ -169,8 +162,16 @@ pub async fn show_pack(
         Err(_) => None,
     };
     let images = load_cached_web(&ctx, &lang).await?;
-    let pack = load_pack_and_translation(&ctx.db, &title_url, &lang).await?;
-    let pack: PackView = pack.into();
+    let pack: PackView = match lang {
+        Language::English => {
+            let pack = load_pack_by_title_url(&ctx.db, &title_url).await?;
+            pack.into()
+        }
+        _ => {
+            let translated = load_pack_and_translation(&ctx.db, &title_url, &lang).await?;
+            translated.into()
+        }
+    };
     let pack_images = pack.clone().create_item_groups();
 
     let website_options = WebsiteOptions::new()
@@ -190,7 +191,6 @@ pub async fn show_pack(
 pub async fn show_pack_partial(
     auth: Result<auth::JWT>,
     Path(title_url): Path<String>,
-    ExtractConsentState(cc_cookie): ExtractConsentState,
     Extension(website): Extension<Website>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
@@ -208,22 +208,28 @@ pub async fn show_pack_partial(
         Err(_) => None,
     };
     let images = load_cached_web(&ctx, &lang).await?;
-    // let pack = load_pack_by_title_url(&ctx.db, &title_url).await?;
-    let pack = load_pack_and_translation(&ctx.db, &title_url, &lang).await?;
-    let pack: PackView = pack.into();
+    let pack: PackView = match lang {
+        Language::English => {
+            let pack = load_pack_by_title_url(&ctx.db, &title_url).await?;
+            pack.into()
+        }
+        _ => {
+            let translated = load_pack_and_translation(&ctx.db, &title_url, &lang).await?;
+            translated.into()
+        }
+    };
     let pack_images = pack.clone().create_item_groups();
 
     let website_options = WebsiteOptions::new()
         .website(&website)
         .language(&lang)
-        .cc_cookie(&cc_cookie)
         .set_user(user)
         .pack(pack)
         .pack_images(pack_images)
         .web_images(&images)
         .is_pack_partial();
 
-    views::packs::packs(v, &website_options)
+    views::packs::packs_partial(v, &website_options)
 }
 
 #[debug_handler]

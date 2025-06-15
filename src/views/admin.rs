@@ -12,7 +12,7 @@ pub fn packs(
     is_img: bool,
     admin_routes: &AdminRoutes,
 ) -> Result<impl IntoResponse> {
-    let mut list_packs = packs.into_inner();
+    let mut list_packs = packs.clone().into_inner();
     list_packs.reverse();
     format::render().view(
         &v,
