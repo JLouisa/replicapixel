@@ -204,53 +204,53 @@ impl WebImages {
         cache: &RedisCacheDriver,
     ) -> WebImages {
         let hero_panel = vec![
-            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/packs/sexy+halloween/a22ec84c-dcd7-4cbd-b872-1963aa140355.webp"),
-            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/packs/nature/f40a699f-8064-4015-80d2-ffb68228ac2e.webp"),
-            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/packs/cosplay/f193a28b-83e3-4a1c-b13e-3637acb85c84.webp"),
-            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/packs/cosplay/a97bb59a-be4f-4b3f-92b5-e8c25a03e361.webp"),
-            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/packs/cosplay/53d42133-d8be-47a8-863b-1a489b2a736e.webp"),
-            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/packs/sexy-valentine/fcf51df7-27d6-48ad-a34e-a96a78ddeb02.webp"),
-            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/packs/spiritual/3b7e781a-6b40-4ef8-8d58-b52bcabddc87.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/packs/sexy+halloween/a22ec84c-dcd7-4cbd-b872-1963aa140355.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/packs/nature/f40a699f-8064-4015-80d2-ffb68228ac2e.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/packs/cosplay/f193a28b-83e3-4a1c-b13e-3637acb85c84.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/packs/cosplay/a97bb59a-be4f-4b3f-92b5-e8c25a03e361.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/packs/cosplay/53d42133-d8be-47a8-863b-1a489b2a736e.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/packs/sexy-valentine/fcf51df7-27d6-48ad-a34e-a96a78ddeb02.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/packs/spiritual/3b7e781a-6b40-4ef8-8d58-b52bcabddc87.webp"),
         ];
         let web_images0 = vec![
-            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/nature-hero.webp"),
-            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/corporate-headshot.webp"),
-            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/mma-fe.webp"),
-            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/wife1.webp"),
-            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/street-fighter.webp"),
-            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/nature3.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/nature-hero.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/corporate-headshot.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/mma-fe.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/wife1.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/street-fighter.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/nature3.webp"),
         ];
         let web_images1 = vec![
-            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/nature2.webp"),
-            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/packs/cosplay/f193a28b-83e3-4a1c-b13e-3637acb85c84.webp"),
-            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/packs/sexy+halloween/e5557da7-416a-466c-a5a7-bf7232232ee3.webp"),
-            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/cosplay1-small.webp"),
-            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/machina2.webp"),
-            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/cosplay2-small.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/nature2.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/packs/cosplay/f193a28b-83e3-4a1c-b13e-3637acb85c84.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/packs/sexy+halloween/e5557da7-416a-466c-a5a7-bf7232232ee3.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/cosplay1-small.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/machina2.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/cosplay2-small.webp"),
         ];
         let web_images2 = vec![
-            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/packs/cosplay/a97bb59a-be4f-4b3f-92b5-e8c25a03e361.webp"),
-            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/machina1.webp"),
-            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/angel.webp"),
-            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/packs/cosplay/f193a28b-83e3-4a1c-b13e-3637acb85c84.webp"),
-            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/emo-girl.webp"),
-            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/blackwidow.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/packs/cosplay/a97bb59a-be4f-4b3f-92b5-e8c25a03e361.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/machina1.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/angel.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/packs/cosplay/f193a28b-83e3-4a1c-b13e-3637acb85c84.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/emo-girl.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/blackwidow.webp"),
         ];
         let web_images3 = vec![
-            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/packs/sexy+halloween/a22ec84c-dcd7-4cbd-b872-1963aa140355.webp"),
-            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/packs/cosplay/53d42133-d8be-47a8-863b-1a489b2a736e.webp"),
-            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/nature1.webp"),
-            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/dracula-wife.webp"),
-            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/cosplay3.webp"),
-            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/model-show.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/packs/sexy+halloween/a22ec84c-dcd7-4cbd-b872-1963aa140355.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/packs/cosplay/53d42133-d8be-47a8-863b-1a489b2a736e.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/nature1.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/dracula-wife.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/cosplay3.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/model-show.webp"),
         ];
         let web_images4 = vec![
-            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/packs/spiritual/e1ee3b51-53a0-4254-9a09-8d734ea7195a.webp"),
-            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/easter1.webp"),
-            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/model-makeup.webp"),
-            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/white-dress.webp"),
-            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/gallery/model-closeup.webp"),
-            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/packs/sexy+halloween/f861732f-79ed-4c0d-904d-c43b714807c8.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/packs/spiritual/e1ee3b51-53a0-4254-9a09-8d734ea7195a.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/easter1.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/model-makeup.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/white-dress.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/model-closeup.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/packs/sexy+halloween/f861732f-79ed-4c0d-904d-c43b714807c8.webp"),
         ];
         let gallery = WebGallery::new(
             web_images0,
@@ -260,35 +260,19 @@ impl WebImages {
             web_images4,
         );
         let before_after = WebBeforeAfter::new(
-            String::from(
-                "https://replicapixel-web.s3.eu-central-1.amazonaws.com/others/home-before.webp",
-            ),
-            String::from(
-                "https://replicapixel-web.s3.eu-central-1.amazonaws.com/others/home-after.webp",
-            ),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/others/home-before.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/others/home-after.webp"),
         );
 
-        let studio = String::from(
-            "https://replicapixel-web.s3.eu-central-1.amazonaws.com/others/studio.webp",
-        );
+        let studio = String::from("https://d2npyy9ae7osp9.cloudfront.net/others/studio.webp");
 
         let creators = vec![
-            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/others/got.webp"),
-            String::from(
-                "https://replicapixel-web.s3.eu-central-1.amazonaws.com/others/dynasty.webp",
-            ),
-            String::from(
-                "https://replicapixel-web.s3.eu-central-1.amazonaws.com/others/cosplay-widow.webp",
-            ),
-            String::from(
-                "https://replicapixel-web.s3.eu-central-1.amazonaws.com/others/elf-queen.webp",
-            ),
-            String::from(
-                "https://replicapixel-web.s3.eu-central-1.amazonaws.com/others/dynasty2.webp",
-            ),
-            String::from(
-                "https://replicapixel-web.s3.eu-central-1.amazonaws.com/others/cosplay-lara.webp",
-            ),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/others/got.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/others/dynasty.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/others/cosplay-widow.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/others/elf-queen.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/others/dynasty2.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/others/cosplay-lara.webp"),
         ];
 
         // Loading functions concurrently.
