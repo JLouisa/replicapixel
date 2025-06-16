@@ -11,18 +11,12 @@ use super::website::WebsiteBasicInfo;
 use crate::domain::website::Website;
 
 #[derive(Debug, Clone, Deserialize)]
-pub struct OtherSettings {
-    pub admin: String,
-}
-
-#[derive(Debug, Clone, Deserialize)]
 pub struct Settings {
     pub website: WebsiteBasicInfo,
     pub aws: AwsSettings,
     pub fal_ai: FalAiSettings,
     pub stripe: StripeSettings,
     pub redis: RedisSettings,
-    pub other: OtherSettings,
 }
 impl Settings {
     pub fn init(ctx: &AppContext) -> Self {
@@ -57,9 +51,5 @@ impl Settings {
     }
     pub async fn website(&self, ctx: &AppContext) -> Website {
         Website::init(&self, &ctx).await
-    }
-    pub fn other(&self) -> OtherSettings {
-        let other = self.other.clone();
-        other
     }
 }

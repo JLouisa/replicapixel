@@ -1,5 +1,6 @@
 [
   {
+    "id": 1,
     "plan_id": 1,
     "language": "English",
     "name": "Basic",
@@ -10,9 +11,76 @@
       "No Watermarks",
       "24/7 Support"
     ],
-    "cta": "Choose Basic"
+    "cta": "Choose Basic",
+    "created_at": "2025-06-14T15:02:29.841Z",
+    "updated_at": "2025-06-14T15:02:29.841Z"
   },
   {
+    "id": 2,
+    "plan_id": 1,
+    "language": "German",
+    "name": "Basic",
+    "subtitle": "Für Einzelpersonen & zum Testen",
+    "features": [
+      "Kein monatliches Abonnement",
+      "Jedes Foto-Paket verwenden",
+      "Keine Wasserzeichen",
+      "24/7-Support"
+    ],
+    "cta": "Basic wählen",
+    "created_at": "2025-06-14T15:02:29.841Z",
+    "updated_at": "2025-06-14T15:02:29.841Z"
+  },
+  {
+    "id": 3,
+    "plan_id": 1,
+    "language": "Spanish",
+    "name": "Basic",
+    "subtitle": "Para particulares y pruebas",
+    "features": [
+      "Sin suscripción mensual",
+      "Usa cualquier paquete de fotos",
+      "Sin marcas de agua",
+      "Soporte 24/7"
+    ],
+    "cta": "Elegir Basic",
+    "created_at": "2025-06-14T15:02:29.841Z",
+    "updated_at": "2025-06-14T15:02:29.841Z"
+  },
+  {
+    "id": 4,
+    "plan_id": 1,
+    "language": "Italian",
+    "name": "Basic",
+    "subtitle": "Per privati e per test",
+    "features": [
+      "Nessun abbonamento mensile",
+      "Usa qualsiasi pacchetto di foto",
+      "Nessun watermark",
+      "Supporto 24/7"
+    ],
+    "cta": "Scegli Basic",
+    "created_at": "2025-06-14T15:02:29.841Z",
+    "updated_at": "2025-06-14T15:02:29.841Z"
+  },
+  {
+    "id": 5,
+    "plan_id": 1,
+    "language": "Dutch",
+    "name": "Basic",
+    "subtitle": "Voor individuen & om te testen",
+    "features": [
+      "Geen maandelijks abonnement",
+      "Gebruik elk fotopakket",
+      "Geen watermerken",
+      "24/7 ondersteuning"
+    ],
+    "cta": "Kies Basic",
+    "created_at": "2025-06-14T15:02:29.841Z",
+    "updated_at": "2025-06-14T15:02:29.841Z"
+  },
+  {
+    "id": 6,
     "plan_id": 2,
     "language": "English",
     "name": "Premium",
@@ -24,9 +92,80 @@
       "No Watermarks",
       "24/7 Support"
     ],
-    "cta": "Choose Premium"
+    "cta": "Choose Premium",
+    "created_at": "2025-06-14T15:02:29.841Z",
+    "updated_at": "2025-06-14T15:02:29.841Z"
   },
   {
+    "id": 7,
+    "plan_id": 2,
+    "language": "German",
+    "name": "Premium",
+    "subtitle": "Für Kreative & kleine Teams",
+    "features": [
+      "Kein monatliches Abonnement",
+      "Jedes Foto-Paket verwenden",
+      "Bevorzugte Verarbeitung",
+      "Keine Wasserzeichen",
+      "24/7-Support"
+    ],
+    "cta": "Premium wählen",
+    "created_at": "2025-06-14T15:02:29.841Z",
+    "updated_at": "2025-06-14T15:02:29.841Z"
+  },
+  {
+    "id": 8,
+    "plan_id": 2,
+    "language": "Spanish",
+    "name": "Premium",
+    "subtitle": "Para creadores y equipos pequeños",
+    "features": [
+      "Sin suscripción mensual",
+      "Usa cualquier paquete de fotos",
+      "Procesamiento prioritario",
+      "Sin marcas de agua",
+      "Soporte 24/7"
+    ],
+    "cta": "Elegir Premium",
+    "created_at": "2025-06-14T15:02:29.841Z",
+    "updated_at": "2025-06-14T15:02:29.841Z"
+  },
+  {
+    "id": 9,
+    "plan_id": 2,
+    "language": "Italian",
+    "name": "Premium",
+    "subtitle": "Per creatori e piccoli team",
+    "features": [
+      "Nessun abbonamento mensile",
+      "Usa qualsiasi pacchetto di foto",
+      "Elaborazione prioritaria",
+      "Nessun watermark",
+      "Supporto 24/7"
+    ],
+    "cta": "Scegli Premium",
+    "created_at": "2025-06-14T15:02:29.841Z",
+    "updated_at": "2025-06-14T15:02:29.841Z"
+  },
+  {
+    "id": 10,
+    "plan_id": 2,
+    "language": "Dutch",
+    "name": "Premium",
+    "subtitle": "Voor makers & kleine teams",
+    "features": [
+      "Geen maandelijks abonnement",
+      "Gebruik elk fotopakket",
+      "Verwerking met voorrang",
+      "Geen watermerken",
+      "24/7 ondersteuning"
+    ],
+    "cta": "Kies Premium",
+    "created_at": "2025-06-14T15:02:29.841Z",
+    "updated_at": "2025-06-14T15:02:29.841Z"
+  },
+  {
+    "id": 11,
     "plan_id": 3,
     "language": "English",
     "name": "Max",
@@ -37,6 +176,72 @@
       "No Watermarks",
       "24/7 Support"
     ],
-    "cta": "Choose Max"
+    "cta": "Choose Max",
+    "created_at": "2025-06-14T15:02:29.841Z",
+    "updated_at": "2025-06-14T15:02:29.841Z"
+  },
+  {
+    "id": 12,
+    "plan_id": 3,
+    "language": "German",
+    "name": "Max",
+    "subtitle": "Für Agenturen & Vielnutzer",
+    "features": [
+      "Kein monatliches Abonnement",
+      "Jedes Foto-Paket verwenden",
+      "Keine Wasserzeichen",
+      "24/7-Support"
+    ],
+    "cta": "Max wählen",
+    "created_at": "2025-06-14T15:02:29.841Z",
+    "updated_at": "2025-06-14T15:02:29.841Z"
+  },
+  {
+    "id": 13,
+    "plan_id": 3,
+    "language": "Spanish",
+    "name": "Max",
+    "subtitle": "Para agencias y usuarios intensivos",
+    "features": [
+      "Sin suscripción mensual",
+      "Usa cualquier paquete de fotos",
+      "Sin marcas de agua",
+      "Soporte 24/7"
+    ],
+    "cta": "Elegir Max",
+    "created_at": "2025-06-14T15:02:29.841Z",
+    "updated_at": "2025-06-14T15:02:29.841Z"
+  },
+  {
+    "id": 14,
+    "plan_id": 3,
+    "language": "Italian",
+    "name": "Max",
+    "subtitle": "Per agenzie e utenti intensivi",
+    "features": [
+      "Nessun abbonamento mensile",
+      "Usa qualsiasi pacchetto di foto",
+      "Nessun watermark",
+      "Supporto 24/7"
+    ],
+    "cta": "Scegli Max",
+    "created_at": "2025-06-14T15:02:29.841Z",
+    "updated_at": "2025-06-14T15:02:29.841Z"
+  },
+  {
+    "id": 15,
+    "plan_id": 3,
+    "language": "Dutch",
+    "name": "Max",
+    "subtitle": "Voor bureaus & zware gebruikers",
+    "features": [
+      "Geen maandelijks abonnement",
+      "Gebruik elk fotopakket",
+      "Geen watermerken",
+      "24/7 ondersteuning"
+    ],
+    "cta": "Kies Max",
+    "created_at": "2025-06-14T15:02:29.841Z",
+    "updated_at": "2025-06-14T15:02:29.841Z"
   }
 ]

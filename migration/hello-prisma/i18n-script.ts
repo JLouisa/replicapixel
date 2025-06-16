@@ -5,6 +5,10 @@ import path from "path";
 
 const prisma = new PrismaClient();
 
+function bigIntToString(key: string, value: any) {
+  return typeof value === "bigint" ? value.toString() : value;
+}
+
 async function exportTranslationsToJSON() {
   // Retrieve all Plans with their translations
   const plans = await prisma.plans.findMany({});
@@ -12,37 +16,28 @@ async function exportTranslationsToJSON() {
   // Retrieve all Packs with their translations
   const packs = await prisma.packs.findMany({});
 
-  // Extract just the translation records
-  const plansTranslations = plans.map((translation) => ({
-    plan_id: translation.id,
-    language: "English",
-    name: translation.name,
-    subtitle: translation.subtitle,
-    features: translation.features,
-    cta: translation.cta,
-  }));
+  // Retrieve all Plans with their translations
+  const plansTranslations = await prisma.plans_translations.findMany({});
 
-  const packsTranslations = packs.map((translation) => ({
-    pack_id: translation.id,
-    language: "English",
-    title: translation.title,
-    short_description: translation.short_description,
-    full_description: translation.full_description,
-    features: translation.features,
-  }));
+  // Retrieve all Packs with their translations
+  const packsTranslations = await prisma.packs_translations.findMany({});
 
-  // Save to files
+  // Save to files with bigIntToString replacer
+  fs.writeFileSync(path.resolve(__dirname, "plans.json"), JSON.stringify(plans, bigIntToString, 2));
+
+  fs.writeFileSync(path.resolve(__dirname, "packs.json"), JSON.stringify(packs, bigIntToString, 2));
+
   fs.writeFileSync(
     path.resolve(__dirname, "plans_translations.json"),
-    JSON.stringify(plansTranslations, null, 2)
+    JSON.stringify(plansTranslations, bigIntToString, 2)
   );
 
   fs.writeFileSync(
     path.resolve(__dirname, "packs_translations.json"),
-    JSON.stringify(packsTranslations, null, 2)
+    JSON.stringify(packsTranslations, bigIntToString, 2)
   );
 
-  console.log("Export finished");
+  console.log("Export finished.");
 }
 
 exportTranslationsToJSON()

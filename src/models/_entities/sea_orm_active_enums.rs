@@ -412,3 +412,17 @@ impl Default for Account {
         Account::Website
     }
 }
+
+#[derive(Debug, Clone, PartialEq, Eq, EnumIter, DeriveActiveEnum, Serialize, Deserialize)]
+#[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "role")]
+pub enum Role {
+    #[sea_orm(string_value = "Admin")]
+    Admin,
+    #[sea_orm(string_value = "User")]
+    User,
+}
+impl Default for Role {
+    fn default() -> Self {
+        Role::User
+    }
+}

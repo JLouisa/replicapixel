@@ -2,17 +2,17 @@
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
 use crate::{
-    models::{join::user_pack::load_user_and_one_pack, packs::CreatePackPayload},
+    models::{
+        _entities::sea_orm_active_enums::Role, join::user_pack::load_user_and_one_pack,
+        packs::CreatePackPayload,
+    },
     views::{self},
 };
-use axum::{debug_handler, response::Redirect, Extension};
+use axum::{debug_handler, response::Redirect};
 use loco_rs::prelude::*;
 use routes::AdminRoutes;
 
-use crate::{
-    domain::settings::OtherSettings,
-    models::{packs::PackModelList, users::UserPid, PackModel, UserModel},
-};
+use crate::models::{packs::PackModelList, users::UserPid, PackModel, UserModel};
 
 pub mod routes {
     use serde::{Deserialize, Serialize};
@@ -80,17 +80,16 @@ async fn load_pack_one(db: &DatabaseConnection, pid: &Uuid) -> Result<PackModel>
 pub async fn edit_pack(
     auth: auth::JWT,
     Path(pack_pid): Path<Uuid>,
-    Extension(other): Extension<OtherSettings>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
     Json(mut form): Json<CreatePackPayload>,
 ) -> Result<impl IntoResponse> {
-    if auth.claims.pid != other.admin {
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let (user, pack) = load_user_and_one_pack(&ctx.db, &user_pid, &pack_pid).await?;
+    if user.role != Role::Admin {
         return Ok(Redirect::to("/login").into_response());
     }
     dbg!(&form);
-    let user_pid = UserPid::new(&auth.claims.pid);
-    let (user, pack) = load_user_and_one_pack(&ctx.db, &user_pid, &pack_pid).await?;
     form.pid = pack_pid.clone();
     form.sanitize_title_url_in_place();
     let _ = pack.update_pack_admin(&form, &ctx.db).await?;
@@ -105,15 +104,14 @@ pub async fn edit_pack(
 pub async fn edit_pack_view(
     auth: auth::JWT,
     Path(pid): Path<Uuid>,
-    Extension(other): Extension<OtherSettings>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    if auth.claims.pid != other.admin {
-        return Ok(Redirect::to("/login").into_response());
-    }
     let user_pid = UserPid::new(&auth.claims.pid);
     let user = load_user(&ctx.db, &user_pid).await?;
+    if user.role != Role::Admin {
+        return Ok(Redirect::to("/login").into_response());
+    }
     let pack = load_pack_one(&ctx.db, &pid).await?;
     let admin_routes = AdminRoutes::init();
     let view_output =
@@ -124,15 +122,14 @@ pub async fn edit_pack_view(
 #[debug_handler]
 pub async fn admin_packs(
     auth: auth::JWT,
-    Extension(other): Extension<OtherSettings>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    if auth.claims.pid != other.admin {
-        return Ok(Redirect::to("/login").into_response());
-    }
     let user_pid = UserPid::new(&auth.claims.pid);
     let user = load_user(&ctx.db, &user_pid).await?;
+    if user.role != Role::Admin {
+        return Ok(Redirect::to("/login").into_response());
+    }
     let packs = load_packs(&ctx.db).await?;
     let admin_routes = AdminRoutes::init();
     let view_output = views::admin::packs(v, &packs.into(), &user.into(), false, &admin_routes)?;
@@ -141,15 +138,14 @@ pub async fn admin_packs(
 #[debug_handler]
 pub async fn admin_packs_img(
     auth: auth::JWT,
-    Extension(other): Extension<OtherSettings>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
 ) -> Result<impl IntoResponse> {
-    if auth.claims.pid != other.admin {
-        return Ok(Redirect::to("/login").into_response());
-    }
     let user_pid = UserPid::new(&auth.claims.pid);
     let user = load_user(&ctx.db, &user_pid).await?;
+    if user.role != Role::Admin {
+        return Ok(Redirect::to("/login").into_response());
+    }
     let packs = load_packs(&ctx.db).await?;
     let admin_routes = AdminRoutes::init();
     let view_output = views::admin::packs(v, &packs.into(), &user.into(), true, &admin_routes)?;
@@ -159,19 +155,18 @@ pub async fn admin_packs_img(
 #[debug_handler]
 pub async fn add_pack(
     auth: auth::JWT,
-    Extension(other): Extension<OtherSettings>,
     State(ctx): State<AppContext>,
     ViewEngine(v): ViewEngine<TeraView>,
     Json(mut form): Json<CreatePackPayload>,
 ) -> Result<impl IntoResponse> {
-    if auth.claims.pid != other.admin {
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let user = load_user(&ctx.db, &user_pid).await?;
+    if user.role != Role::Admin {
         return Ok(Redirect::to("/login").into_response());
     }
     dbg!(&form);
     form.sanitize_title_url_in_place();
     form.save(&ctx.db).await?;
-    let user_pid = UserPid::new(&auth.claims.pid);
-    let user = load_user(&ctx.db, &user_pid).await?;
     let packs = load_packs(&ctx.db).await?;
     let admin_routes = AdminRoutes::init();
     let view_output =

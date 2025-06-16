@@ -103,7 +103,15 @@ export type FeatureVote = $Result.DefaultSelection<Prisma.$FeatureVotePayload>
  * Enums
  */
 export namespace $Enums {
-  export const Account: {
+  export const Role: {
+  Admin: 'Admin',
+  User: 'User'
+};
+
+export type Role = (typeof Role)[keyof typeof Role]
+
+
+export const Account: {
   Website: 'Website',
   Google: 'Google',
   Github: 'Github'
@@ -249,6 +257,10 @@ export const ImageFormat: {
 export type ImageFormat = (typeof ImageFormat)[keyof typeof ImageFormat]
 
 }
+
+export type Role = $Enums.Role
+
+export const Role: typeof $Enums.Role
 
 export type Account = $Enums.Account
 
@@ -2804,6 +2816,7 @@ export namespace Prisma {
     magicLink_token: string | null
     magicLink_expiration: Date | null
     account: $Enums.Account | null
+    role: $Enums.Role | null
   }
 
   export type UsersMaxAggregateOutputType = {
@@ -2823,6 +2836,7 @@ export namespace Prisma {
     magicLink_token: string | null
     magicLink_expiration: Date | null
     account: $Enums.Account | null
+    role: $Enums.Role | null
   }
 
   export type UsersCountAggregateOutputType = {
@@ -2842,6 +2856,7 @@ export namespace Prisma {
     magicLink_token: number
     magicLink_expiration: number
     account: number
+    role: number
     _all: number
   }
 
@@ -2871,6 +2886,7 @@ export namespace Prisma {
     magicLink_token?: true
     magicLink_expiration?: true
     account?: true
+    role?: true
   }
 
   export type UsersMaxAggregateInputType = {
@@ -2890,6 +2906,7 @@ export namespace Prisma {
     magicLink_token?: true
     magicLink_expiration?: true
     account?: true
+    role?: true
   }
 
   export type UsersCountAggregateInputType = {
@@ -2909,6 +2926,7 @@ export namespace Prisma {
     magicLink_token?: true
     magicLink_expiration?: true
     account?: true
+    role?: true
     _all?: true
   }
 
@@ -3015,6 +3033,7 @@ export namespace Prisma {
     magicLink_token: string | null
     magicLink_expiration: Date | null
     account: $Enums.Account
+    role: $Enums.Role
     _count: UsersCountAggregateOutputType | null
     _avg: UsersAvgAggregateOutputType | null
     _sum: UsersSumAggregateOutputType | null
@@ -3053,6 +3072,7 @@ export namespace Prisma {
     magicLink_token?: boolean
     magicLink_expiration?: boolean
     account?: boolean
+    role?: boolean
     TrainingModels?: boolean | Users$TrainingModelsArgs<ExtArgs>
     UserCredits?: boolean | Users$UserCreditsArgs<ExtArgs>
     Images?: boolean | Users$ImagesArgs<ExtArgs>
@@ -3082,6 +3102,7 @@ export namespace Prisma {
     magicLink_token?: boolean
     magicLink_expiration?: boolean
     account?: boolean
+    role?: boolean
   }, ExtArgs["result"]["users"]>
 
   export type UsersSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -3101,6 +3122,7 @@ export namespace Prisma {
     magicLink_token?: boolean
     magicLink_expiration?: boolean
     account?: boolean
+    role?: boolean
   }, ExtArgs["result"]["users"]>
 
   export type UsersSelectScalar = {
@@ -3120,9 +3142,10 @@ export namespace Prisma {
     magicLink_token?: boolean
     magicLink_expiration?: boolean
     account?: boolean
+    role?: boolean
   }
 
-  export type UsersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pid" | "email" | "password" | "api_key" | "name" | "stripe_customer_id" | "picture" | "reset_token" | "reset_sent_at" | "email_verification_token" | "email_verification_sent_at" | "email_verified_at" | "magicLink_token" | "magicLink_expiration" | "account", ExtArgs["result"]["users"]>
+  export type UsersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pid" | "email" | "password" | "api_key" | "name" | "stripe_customer_id" | "picture" | "reset_token" | "reset_sent_at" | "email_verification_token" | "email_verification_sent_at" | "email_verified_at" | "magicLink_token" | "magicLink_expiration" | "account" | "role", ExtArgs["result"]["users"]>
   export type UsersInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     TrainingModels?: boolean | Users$TrainingModelsArgs<ExtArgs>
     UserCredits?: boolean | Users$UserCreditsArgs<ExtArgs>
@@ -3168,6 +3191,7 @@ export namespace Prisma {
       magicLink_token: string | null
       magicLink_expiration: Date | null
       account: $Enums.Account
+      role: $Enums.Role
     }, ExtArgs["result"]["users"]>
     composites: {}
   }
@@ -3616,6 +3640,7 @@ export namespace Prisma {
     readonly magicLink_token: FieldRef<"Users", 'String'>
     readonly magicLink_expiration: FieldRef<"Users", 'DateTime'>
     readonly account: FieldRef<"Users", 'Account'>
+    readonly role: FieldRef<"Users", 'Role'>
   }
     
 
@@ -22814,7 +22839,8 @@ export namespace Prisma {
     email_verified_at: 'email_verified_at',
     magicLink_token: 'magicLink_token',
     magicLink_expiration: 'magicLink_expiration',
-    account: 'account'
+    account: 'account',
+    role: 'role'
   };
 
   export type UsersScalarFieldEnum = (typeof UsersScalarFieldEnum)[keyof typeof UsersScalarFieldEnum]
@@ -23177,6 +23203,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Role'
+   */
+  export type EnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role'>
+    
+
+
+  /**
+   * Reference to a field of type 'Role[]'
+   */
+  export type ListEnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Sex'
    */
   export type EnumSexFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Sex'>
@@ -23416,6 +23456,7 @@ export namespace Prisma {
     magicLink_token?: StringNullableFilter<"Users"> | string | null
     magicLink_expiration?: DateTimeNullableFilter<"Users"> | Date | string | null
     account?: EnumAccountFilter<"Users"> | $Enums.Account
+    role?: EnumRoleFilter<"Users"> | $Enums.Role
     TrainingModels?: TrainingModelsListRelationFilter
     UserCredits?: UserCreditsListRelationFilter
     Images?: ImagesListRelationFilter
@@ -23444,6 +23485,7 @@ export namespace Prisma {
     magicLink_token?: SortOrderInput | SortOrder
     magicLink_expiration?: SortOrderInput | SortOrder
     account?: SortOrder
+    role?: SortOrder
     TrainingModels?: TrainingModelsOrderByRelationAggregateInput
     UserCredits?: UserCreditsOrderByRelationAggregateInput
     Images?: ImagesOrderByRelationAggregateInput
@@ -23475,6 +23517,7 @@ export namespace Prisma {
     magicLink_token?: StringNullableFilter<"Users"> | string | null
     magicLink_expiration?: DateTimeNullableFilter<"Users"> | Date | string | null
     account?: EnumAccountFilter<"Users"> | $Enums.Account
+    role?: EnumRoleFilter<"Users"> | $Enums.Role
     TrainingModels?: TrainingModelsListRelationFilter
     UserCredits?: UserCreditsListRelationFilter
     Images?: ImagesListRelationFilter
@@ -23503,6 +23546,7 @@ export namespace Prisma {
     magicLink_token?: SortOrderInput | SortOrder
     magicLink_expiration?: SortOrderInput | SortOrder
     account?: SortOrder
+    role?: SortOrder
     _count?: UsersCountOrderByAggregateInput
     _avg?: UsersAvgOrderByAggregateInput
     _max?: UsersMaxOrderByAggregateInput
@@ -23530,6 +23574,7 @@ export namespace Prisma {
     magicLink_token?: StringNullableWithAggregatesFilter<"Users"> | string | null
     magicLink_expiration?: DateTimeNullableWithAggregatesFilter<"Users"> | Date | string | null
     account?: EnumAccountWithAggregatesFilter<"Users"> | $Enums.Account
+    role?: EnumRoleWithAggregatesFilter<"Users"> | $Enums.Role
   }
 
   export type OAuth2SessionWhereInput = {
@@ -24864,6 +24909,7 @@ export namespace Prisma {
     magicLink_token?: string | null
     magicLink_expiration?: Date | string | null
     account?: $Enums.Account
+    role?: $Enums.Role
     TrainingModels?: TrainingModelsCreateNestedManyWithoutUserInput
     UserCredits?: UserCreditsCreateNestedManyWithoutUserInput
     Images?: ImagesCreateNestedManyWithoutUserInput
@@ -24892,6 +24938,7 @@ export namespace Prisma {
     magicLink_token?: string | null
     magicLink_expiration?: Date | string | null
     account?: $Enums.Account
+    role?: $Enums.Role
     TrainingModels?: TrainingModelsUncheckedCreateNestedManyWithoutUserInput
     UserCredits?: UserCreditsUncheckedCreateNestedManyWithoutUserInput
     Images?: ImagesUncheckedCreateNestedManyWithoutUserInput
@@ -24919,6 +24966,7 @@ export namespace Prisma {
     magicLink_token?: NullableStringFieldUpdateOperationsInput | string | null
     magicLink_expiration?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: EnumAccountFieldUpdateOperationsInput | $Enums.Account
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     TrainingModels?: TrainingModelsUpdateManyWithoutUserNestedInput
     UserCredits?: UserCreditsUpdateManyWithoutUserNestedInput
     Images?: ImagesUpdateManyWithoutUserNestedInput
@@ -24947,6 +24995,7 @@ export namespace Prisma {
     magicLink_token?: NullableStringFieldUpdateOperationsInput | string | null
     magicLink_expiration?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: EnumAccountFieldUpdateOperationsInput | $Enums.Account
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     TrainingModels?: TrainingModelsUncheckedUpdateManyWithoutUserNestedInput
     UserCredits?: UserCreditsUncheckedUpdateManyWithoutUserNestedInput
     Images?: ImagesUncheckedUpdateManyWithoutUserNestedInput
@@ -24975,6 +25024,7 @@ export namespace Prisma {
     magicLink_token?: string | null
     magicLink_expiration?: Date | string | null
     account?: $Enums.Account
+    role?: $Enums.Role
   }
 
   export type UsersUpdateManyMutationInput = {
@@ -24993,6 +25043,7 @@ export namespace Prisma {
     magicLink_token?: NullableStringFieldUpdateOperationsInput | string | null
     magicLink_expiration?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: EnumAccountFieldUpdateOperationsInput | $Enums.Account
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
   }
 
   export type UsersUncheckedUpdateManyInput = {
@@ -25012,6 +25063,7 @@ export namespace Prisma {
     magicLink_token?: NullableStringFieldUpdateOperationsInput | string | null
     magicLink_expiration?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: EnumAccountFieldUpdateOperationsInput | $Enums.Account
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
   }
 
   export type OAuth2SessionCreateInput = {
@@ -26497,6 +26549,13 @@ export namespace Prisma {
     not?: NestedEnumAccountFilter<$PrismaModel> | $Enums.Account
   }
 
+  export type EnumRoleFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
+  }
+
   export type TrainingModelsListRelationFilter = {
     every?: TrainingModelsWhereInput
     some?: TrainingModelsWhereInput
@@ -26604,6 +26663,7 @@ export namespace Prisma {
     magicLink_token?: SortOrder
     magicLink_expiration?: SortOrder
     account?: SortOrder
+    role?: SortOrder
   }
 
   export type UsersAvgOrderByAggregateInput = {
@@ -26627,6 +26687,7 @@ export namespace Prisma {
     magicLink_token?: SortOrder
     magicLink_expiration?: SortOrder
     account?: SortOrder
+    role?: SortOrder
   }
 
   export type UsersMinOrderByAggregateInput = {
@@ -26646,6 +26707,7 @@ export namespace Prisma {
     magicLink_token?: SortOrder
     magicLink_expiration?: SortOrder
     account?: SortOrder
+    role?: SortOrder
   }
 
   export type UsersSumOrderByAggregateInput = {
@@ -26741,6 +26803,16 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumAccountFilter<$PrismaModel>
     _max?: NestedEnumAccountFilter<$PrismaModel>
+  }
+
+  export type EnumRoleWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleWithAggregatesFilter<$PrismaModel> | $Enums.Role
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumRoleFilter<$PrismaModel>
+    _max?: NestedEnumRoleFilter<$PrismaModel>
   }
 
   export type DateTimeFilter<$PrismaModel = never> = {
@@ -28087,6 +28159,10 @@ export namespace Prisma {
     set?: $Enums.Account
   }
 
+  export type EnumRoleFieldUpdateOperationsInput = {
+    set?: $Enums.Role
+  }
+
   export type TrainingModelsUpdateManyWithoutUserNestedInput = {
     create?: XOR<TrainingModelsCreateWithoutUserInput, TrainingModelsUncheckedCreateWithoutUserInput> | TrainingModelsCreateWithoutUserInput[] | TrainingModelsUncheckedCreateWithoutUserInput[]
     connectOrCreate?: TrainingModelsCreateOrConnectWithoutUserInput | TrainingModelsCreateOrConnectWithoutUserInput[]
@@ -28990,6 +29066,13 @@ export namespace Prisma {
     not?: NestedEnumAccountFilter<$PrismaModel> | $Enums.Account
   }
 
+  export type NestedEnumRoleFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
+  }
+
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -29098,6 +29181,16 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumAccountFilter<$PrismaModel>
     _max?: NestedEnumAccountFilter<$PrismaModel>
+  }
+
+  export type NestedEnumRoleWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleWithAggregatesFilter<$PrismaModel> | $Enums.Role
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumRoleFilter<$PrismaModel>
+    _max?: NestedEnumRoleFilter<$PrismaModel>
   }
 
   export type NestedDateTimeFilter<$PrismaModel = never> = {
@@ -30055,6 +30148,7 @@ export namespace Prisma {
     magicLink_token?: string | null
     magicLink_expiration?: Date | string | null
     account?: $Enums.Account
+    role?: $Enums.Role
     TrainingModels?: TrainingModelsCreateNestedManyWithoutUserInput
     UserCredits?: UserCreditsCreateNestedManyWithoutUserInput
     Images?: ImagesCreateNestedManyWithoutUserInput
@@ -30082,6 +30176,7 @@ export namespace Prisma {
     magicLink_token?: string | null
     magicLink_expiration?: Date | string | null
     account?: $Enums.Account
+    role?: $Enums.Role
     TrainingModels?: TrainingModelsUncheckedCreateNestedManyWithoutUserInput
     UserCredits?: UserCreditsUncheckedCreateNestedManyWithoutUserInput
     Images?: ImagesUncheckedCreateNestedManyWithoutUserInput
@@ -30124,6 +30219,7 @@ export namespace Prisma {
     magicLink_token?: NullableStringFieldUpdateOperationsInput | string | null
     magicLink_expiration?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: EnumAccountFieldUpdateOperationsInput | $Enums.Account
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     TrainingModels?: TrainingModelsUpdateManyWithoutUserNestedInput
     UserCredits?: UserCreditsUpdateManyWithoutUserNestedInput
     Images?: ImagesUpdateManyWithoutUserNestedInput
@@ -30151,6 +30247,7 @@ export namespace Prisma {
     magicLink_token?: NullableStringFieldUpdateOperationsInput | string | null
     magicLink_expiration?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: EnumAccountFieldUpdateOperationsInput | $Enums.Account
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     TrainingModels?: TrainingModelsUncheckedUpdateManyWithoutUserNestedInput
     UserCredits?: UserCreditsUncheckedUpdateManyWithoutUserNestedInput
     Images?: ImagesUncheckedUpdateManyWithoutUserNestedInput
@@ -30177,6 +30274,7 @@ export namespace Prisma {
     magicLink_token?: string | null
     magicLink_expiration?: Date | string | null
     account?: $Enums.Account
+    role?: $Enums.Role
     UserCredits?: UserCreditsCreateNestedManyWithoutUserInput
     Images?: ImagesCreateNestedManyWithoutUserInput
     Transactions?: TransactionsCreateNestedManyWithoutUserInput
@@ -30204,6 +30302,7 @@ export namespace Prisma {
     magicLink_token?: string | null
     magicLink_expiration?: Date | string | null
     account?: $Enums.Account
+    role?: $Enums.Role
     UserCredits?: UserCreditsUncheckedCreateNestedManyWithoutUserInput
     Images?: ImagesUncheckedCreateNestedManyWithoutUserInput
     Transactions?: TransactionsUncheckedCreateNestedManyWithoutUserInput
@@ -30303,6 +30402,7 @@ export namespace Prisma {
     magicLink_token?: NullableStringFieldUpdateOperationsInput | string | null
     magicLink_expiration?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: EnumAccountFieldUpdateOperationsInput | $Enums.Account
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     UserCredits?: UserCreditsUpdateManyWithoutUserNestedInput
     Images?: ImagesUpdateManyWithoutUserNestedInput
     Transactions?: TransactionsUpdateManyWithoutUserNestedInput
@@ -30330,6 +30430,7 @@ export namespace Prisma {
     magicLink_token?: NullableStringFieldUpdateOperationsInput | string | null
     magicLink_expiration?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: EnumAccountFieldUpdateOperationsInput | $Enums.Account
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     UserCredits?: UserCreditsUncheckedUpdateManyWithoutUserNestedInput
     Images?: ImagesUncheckedUpdateManyWithoutUserNestedInput
     Transactions?: TransactionsUncheckedUpdateManyWithoutUserNestedInput
@@ -30372,6 +30473,7 @@ export namespace Prisma {
     magicLink_token?: string | null
     magicLink_expiration?: Date | string | null
     account?: $Enums.Account
+    role?: $Enums.Role
     TrainingModels?: TrainingModelsCreateNestedManyWithoutUserInput
     Images?: ImagesCreateNestedManyWithoutUserInput
     Transactions?: TransactionsCreateNestedManyWithoutUserInput
@@ -30399,6 +30501,7 @@ export namespace Prisma {
     magicLink_token?: string | null
     magicLink_expiration?: Date | string | null
     account?: $Enums.Account
+    role?: $Enums.Role
     TrainingModels?: TrainingModelsUncheckedCreateNestedManyWithoutUserInput
     Images?: ImagesUncheckedCreateNestedManyWithoutUserInput
     Transactions?: TransactionsUncheckedCreateNestedManyWithoutUserInput
@@ -30441,6 +30544,7 @@ export namespace Prisma {
     magicLink_token?: NullableStringFieldUpdateOperationsInput | string | null
     magicLink_expiration?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: EnumAccountFieldUpdateOperationsInput | $Enums.Account
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     TrainingModels?: TrainingModelsUpdateManyWithoutUserNestedInput
     Images?: ImagesUpdateManyWithoutUserNestedInput
     Transactions?: TransactionsUpdateManyWithoutUserNestedInput
@@ -30468,6 +30572,7 @@ export namespace Prisma {
     magicLink_token?: NullableStringFieldUpdateOperationsInput | string | null
     magicLink_expiration?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: EnumAccountFieldUpdateOperationsInput | $Enums.Account
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     TrainingModels?: TrainingModelsUncheckedUpdateManyWithoutUserNestedInput
     Images?: ImagesUncheckedUpdateManyWithoutUserNestedInput
     Transactions?: TransactionsUncheckedUpdateManyWithoutUserNestedInput
@@ -30494,6 +30599,7 @@ export namespace Prisma {
     magicLink_token?: string | null
     magicLink_expiration?: Date | string | null
     account?: $Enums.Account
+    role?: $Enums.Role
     TrainingModels?: TrainingModelsCreateNestedManyWithoutUserInput
     UserCredits?: UserCreditsCreateNestedManyWithoutUserInput
     Transactions?: TransactionsCreateNestedManyWithoutUserInput
@@ -30521,6 +30627,7 @@ export namespace Prisma {
     magicLink_token?: string | null
     magicLink_expiration?: Date | string | null
     account?: $Enums.Account
+    role?: $Enums.Role
     TrainingModels?: TrainingModelsUncheckedCreateNestedManyWithoutUserInput
     UserCredits?: UserCreditsUncheckedCreateNestedManyWithoutUserInput
     Transactions?: TransactionsUncheckedCreateNestedManyWithoutUserInput
@@ -30671,6 +30778,7 @@ export namespace Prisma {
     magicLink_token?: NullableStringFieldUpdateOperationsInput | string | null
     magicLink_expiration?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: EnumAccountFieldUpdateOperationsInput | $Enums.Account
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     TrainingModels?: TrainingModelsUpdateManyWithoutUserNestedInput
     UserCredits?: UserCreditsUpdateManyWithoutUserNestedInput
     Transactions?: TransactionsUpdateManyWithoutUserNestedInput
@@ -30698,6 +30806,7 @@ export namespace Prisma {
     magicLink_token?: NullableStringFieldUpdateOperationsInput | string | null
     magicLink_expiration?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: EnumAccountFieldUpdateOperationsInput | $Enums.Account
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     TrainingModels?: TrainingModelsUncheckedUpdateManyWithoutUserNestedInput
     UserCredits?: UserCreditsUncheckedUpdateManyWithoutUserNestedInput
     Transactions?: TransactionsUncheckedUpdateManyWithoutUserNestedInput
@@ -31322,6 +31431,7 @@ export namespace Prisma {
     magicLink_token?: string | null
     magicLink_expiration?: Date | string | null
     account?: $Enums.Account
+    role?: $Enums.Role
     TrainingModels?: TrainingModelsCreateNestedManyWithoutUserInput
     UserCredits?: UserCreditsCreateNestedManyWithoutUserInput
     Images?: ImagesCreateNestedManyWithoutUserInput
@@ -31349,6 +31459,7 @@ export namespace Prisma {
     magicLink_token?: string | null
     magicLink_expiration?: Date | string | null
     account?: $Enums.Account
+    role?: $Enums.Role
     TrainingModels?: TrainingModelsUncheckedCreateNestedManyWithoutUserInput
     UserCredits?: UserCreditsUncheckedCreateNestedManyWithoutUserInput
     Images?: ImagesUncheckedCreateNestedManyWithoutUserInput
@@ -31437,6 +31548,7 @@ export namespace Prisma {
     magicLink_token?: NullableStringFieldUpdateOperationsInput | string | null
     magicLink_expiration?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: EnumAccountFieldUpdateOperationsInput | $Enums.Account
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     TrainingModels?: TrainingModelsUpdateManyWithoutUserNestedInput
     UserCredits?: UserCreditsUpdateManyWithoutUserNestedInput
     Images?: ImagesUpdateManyWithoutUserNestedInput
@@ -31464,6 +31576,7 @@ export namespace Prisma {
     magicLink_token?: NullableStringFieldUpdateOperationsInput | string | null
     magicLink_expiration?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: EnumAccountFieldUpdateOperationsInput | $Enums.Account
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     TrainingModels?: TrainingModelsUncheckedUpdateManyWithoutUserNestedInput
     UserCredits?: UserCreditsUncheckedUpdateManyWithoutUserNestedInput
     Images?: ImagesUncheckedUpdateManyWithoutUserNestedInput
@@ -31490,6 +31603,7 @@ export namespace Prisma {
     magicLink_token?: string | null
     magicLink_expiration?: Date | string | null
     account?: $Enums.Account
+    role?: $Enums.Role
     TrainingModels?: TrainingModelsCreateNestedManyWithoutUserInput
     UserCredits?: UserCreditsCreateNestedManyWithoutUserInput
     Images?: ImagesCreateNestedManyWithoutUserInput
@@ -31517,6 +31631,7 @@ export namespace Prisma {
     magicLink_token?: string | null
     magicLink_expiration?: Date | string | null
     account?: $Enums.Account
+    role?: $Enums.Role
     TrainingModels?: TrainingModelsUncheckedCreateNestedManyWithoutUserInput
     UserCredits?: UserCreditsUncheckedCreateNestedManyWithoutUserInput
     Images?: ImagesUncheckedCreateNestedManyWithoutUserInput
@@ -31559,6 +31674,7 @@ export namespace Prisma {
     magicLink_token?: NullableStringFieldUpdateOperationsInput | string | null
     magicLink_expiration?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: EnumAccountFieldUpdateOperationsInput | $Enums.Account
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     TrainingModels?: TrainingModelsUpdateManyWithoutUserNestedInput
     UserCredits?: UserCreditsUpdateManyWithoutUserNestedInput
     Images?: ImagesUpdateManyWithoutUserNestedInput
@@ -31586,6 +31702,7 @@ export namespace Prisma {
     magicLink_token?: NullableStringFieldUpdateOperationsInput | string | null
     magicLink_expiration?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: EnumAccountFieldUpdateOperationsInput | $Enums.Account
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     TrainingModels?: TrainingModelsUncheckedUpdateManyWithoutUserNestedInput
     UserCredits?: UserCreditsUncheckedUpdateManyWithoutUserNestedInput
     Images?: ImagesUncheckedUpdateManyWithoutUserNestedInput
@@ -31612,6 +31729,7 @@ export namespace Prisma {
     magicLink_token?: string | null
     magicLink_expiration?: Date | string | null
     account?: $Enums.Account
+    role?: $Enums.Role
     TrainingModels?: TrainingModelsCreateNestedManyWithoutUserInput
     UserCredits?: UserCreditsCreateNestedManyWithoutUserInput
     Images?: ImagesCreateNestedManyWithoutUserInput
@@ -31639,6 +31757,7 @@ export namespace Prisma {
     magicLink_token?: string | null
     magicLink_expiration?: Date | string | null
     account?: $Enums.Account
+    role?: $Enums.Role
     TrainingModels?: TrainingModelsUncheckedCreateNestedManyWithoutUserInput
     UserCredits?: UserCreditsUncheckedCreateNestedManyWithoutUserInput
     Images?: ImagesUncheckedCreateNestedManyWithoutUserInput
@@ -31681,6 +31800,7 @@ export namespace Prisma {
     magicLink_token?: NullableStringFieldUpdateOperationsInput | string | null
     magicLink_expiration?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: EnumAccountFieldUpdateOperationsInput | $Enums.Account
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     TrainingModels?: TrainingModelsUpdateManyWithoutUserNestedInput
     UserCredits?: UserCreditsUpdateManyWithoutUserNestedInput
     Images?: ImagesUpdateManyWithoutUserNestedInput
@@ -31708,6 +31828,7 @@ export namespace Prisma {
     magicLink_token?: NullableStringFieldUpdateOperationsInput | string | null
     magicLink_expiration?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: EnumAccountFieldUpdateOperationsInput | $Enums.Account
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     TrainingModels?: TrainingModelsUncheckedUpdateManyWithoutUserNestedInput
     UserCredits?: UserCreditsUncheckedUpdateManyWithoutUserNestedInput
     Images?: ImagesUncheckedUpdateManyWithoutUserNestedInput
@@ -31734,6 +31855,7 @@ export namespace Prisma {
     magicLink_token?: string | null
     magicLink_expiration?: Date | string | null
     account?: $Enums.Account
+    role?: $Enums.Role
     TrainingModels?: TrainingModelsCreateNestedManyWithoutUserInput
     UserCredits?: UserCreditsCreateNestedManyWithoutUserInput
     Images?: ImagesCreateNestedManyWithoutUserInput
@@ -31761,6 +31883,7 @@ export namespace Prisma {
     magicLink_token?: string | null
     magicLink_expiration?: Date | string | null
     account?: $Enums.Account
+    role?: $Enums.Role
     TrainingModels?: TrainingModelsUncheckedCreateNestedManyWithoutUserInput
     UserCredits?: UserCreditsUncheckedCreateNestedManyWithoutUserInput
     Images?: ImagesUncheckedCreateNestedManyWithoutUserInput
@@ -31826,6 +31949,7 @@ export namespace Prisma {
     magicLink_token?: NullableStringFieldUpdateOperationsInput | string | null
     magicLink_expiration?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: EnumAccountFieldUpdateOperationsInput | $Enums.Account
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     TrainingModels?: TrainingModelsUpdateManyWithoutUserNestedInput
     UserCredits?: UserCreditsUpdateManyWithoutUserNestedInput
     Images?: ImagesUpdateManyWithoutUserNestedInput
@@ -31853,6 +31977,7 @@ export namespace Prisma {
     magicLink_token?: NullableStringFieldUpdateOperationsInput | string | null
     magicLink_expiration?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: EnumAccountFieldUpdateOperationsInput | $Enums.Account
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     TrainingModels?: TrainingModelsUncheckedUpdateManyWithoutUserNestedInput
     UserCredits?: UserCreditsUncheckedUpdateManyWithoutUserNestedInput
     Images?: ImagesUncheckedUpdateManyWithoutUserNestedInput
@@ -31895,6 +32020,7 @@ export namespace Prisma {
     magicLink_token?: string | null
     magicLink_expiration?: Date | string | null
     account?: $Enums.Account
+    role?: $Enums.Role
     TrainingModels?: TrainingModelsCreateNestedManyWithoutUserInput
     UserCredits?: UserCreditsCreateNestedManyWithoutUserInput
     Images?: ImagesCreateNestedManyWithoutUserInput
@@ -31922,6 +32048,7 @@ export namespace Prisma {
     magicLink_token?: string | null
     magicLink_expiration?: Date | string | null
     account?: $Enums.Account
+    role?: $Enums.Role
     TrainingModels?: TrainingModelsUncheckedCreateNestedManyWithoutUserInput
     UserCredits?: UserCreditsUncheckedCreateNestedManyWithoutUserInput
     Images?: ImagesUncheckedCreateNestedManyWithoutUserInput
@@ -31990,6 +32117,7 @@ export namespace Prisma {
     magicLink_token?: NullableStringFieldUpdateOperationsInput | string | null
     magicLink_expiration?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: EnumAccountFieldUpdateOperationsInput | $Enums.Account
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     TrainingModels?: TrainingModelsUpdateManyWithoutUserNestedInput
     UserCredits?: UserCreditsUpdateManyWithoutUserNestedInput
     Images?: ImagesUpdateManyWithoutUserNestedInput
@@ -32017,6 +32145,7 @@ export namespace Prisma {
     magicLink_token?: NullableStringFieldUpdateOperationsInput | string | null
     magicLink_expiration?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: EnumAccountFieldUpdateOperationsInput | $Enums.Account
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     TrainingModels?: TrainingModelsUncheckedUpdateManyWithoutUserNestedInput
     UserCredits?: UserCreditsUncheckedUpdateManyWithoutUserNestedInput
     Images?: ImagesUncheckedUpdateManyWithoutUserNestedInput

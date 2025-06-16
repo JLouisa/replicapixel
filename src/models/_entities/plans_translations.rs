@@ -11,7 +11,6 @@ pub struct Model {
     pub id: i32,
     pub plan_id: i32,
     pub language: Language,
-    #[sea_orm(column_type = "Text")]
     pub name: String,
     pub subtitle: String,
     pub features: Option<Vec<String>>,

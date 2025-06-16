@@ -14,8 +14,9 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  // url      = env("DATABASE_URL")
   // url      = env("DATABASE_URL_LOCAL")
+  url      = env("DATABASE_URL_PROD")
 }
 
 model Users {
@@ -35,6 +36,7 @@ model Users {
   magicLink_token            String?   @db.VarChar(255)
   magicLink_expiration       DateTime? @db.Timestamptz
   account                    Account   @default(Website)
+  role                       Role      @default(User)
 
   TrainingModels  TrainingModels[]
   UserCredits     UserCredits[]
@@ -172,7 +174,7 @@ model Plans_translations {
   id         Int      @id @default(autoincrement())
   plan_id    Int
   language   Language
-  name       String
+  name       String   @db.VarChar(255)
   subtitle   String   @db.VarChar(255)
   features   String[] @default([]) @db.Text
   cta        String   @db.VarChar(255)
@@ -334,6 +336,13 @@ model FeatureVote {
 }
 
 // --- Enums ---
+enum Role {
+  Admin
+  User
+
+  @@map("role")
+}
+
 enum Account {
   Website
   Google

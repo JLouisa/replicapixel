@@ -80,7 +80,6 @@ impl Hooks for App {
             Box::new(initializers::redis::RedisClient),
             Box::new(initializers::axum_session::AxumSessionInitializer),
             Box::new(initializers::oauth2::OAuth2StoreInitializer),
-            Box::new(initializers::other::Other),
         ])
     }
 

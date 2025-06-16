@@ -133,7 +133,8 @@ exports.Prisma.UsersScalarFieldEnum = {
   email_verified_at: 'email_verified_at',
   magicLink_token: 'magicLink_token',
   magicLink_expiration: 'magicLink_expiration',
-  account: 'account'
+  account: 'account',
+  role: 'role'
 };
 
 exports.Prisma.OAuth2SessionScalarFieldEnum = {
@@ -371,6 +372,11 @@ exports.Account = exports.$Enums.Account = {
   Website: 'Website',
   Google: 'Google',
   Github: 'Github'
+};
+
+exports.Role = exports.$Enums.Role = {
+  Admin: 'Admin',
+  User: 'User'
 };
 
 exports.Sex = exports.$Enums.Sex = {

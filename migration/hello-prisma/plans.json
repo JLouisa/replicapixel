@@ -1,0 +1,66 @@
+[
+  {
+    "id": 1,
+    "pid": "cd08b105-5880-4fd1-872a-acf711a5b8ef",
+    "plan_name": "Basic",
+    "credit_amount": 50,
+    "model_amount": 1,
+    "price_cents": "999",
+    "stripe_price_id": "price_1RUFy3HsQkT5gWXDmkiKx6bn",
+    "is_popular": false,
+    "created_at": "2025-04-27T10:53:16.250Z",
+    "updated_at": "2025-04-27T10:53:16.250Z",
+    "name": "Basic",
+    "subtitle": "For individuals & testing",
+    "features": [
+      "No Monthly Subscription",
+      "Use Any Photo Pack",
+      "No Watermarks",
+      "24/7 Support"
+    ],
+    "cta": "Choose Basic"
+  },
+  {
+    "id": 2,
+    "pid": "af12e69f-f7e6-4628-b2bd-41ca3489d3af",
+    "plan_name": "Premium",
+    "credit_amount": 250,
+    "model_amount": 7,
+    "price_cents": "3999",
+    "stripe_price_id": "price_1RUFy1HsQkT5gWXDS4kTna59",
+    "is_popular": true,
+    "created_at": "2025-04-27T10:53:16.535Z",
+    "updated_at": "2025-04-27T10:53:16.535Z",
+    "name": "Premium",
+    "subtitle": "For creators & small teams",
+    "features": [
+      "No Monthly Subscription",
+      "Use Any Photo Pack",
+      "Priority Processing",
+      "No Watermarks",
+      "24/7 Support"
+    ],
+    "cta": "Choose Premium"
+  },
+  {
+    "id": 3,
+    "pid": "cd1c6ed7-7a24-4b53-840b-23c81bcc0f4c",
+    "plan_name": "Max",
+    "credit_amount": 1100,
+    "model_amount": 16,
+    "price_cents": "9999",
+    "stripe_price_id": "price_1RUFxxHsQkT5gWXDEML3s9fP",
+    "is_popular": false,
+    "created_at": "2025-04-27T10:53:16.767Z",
+    "updated_at": "2025-04-27T10:53:16.767Z",
+    "name": "Max",
+    "subtitle": "For agencies & heavy users",
+    "features": [
+      "No Monthly Subscription",
+      "Use Any Photo Pack",
+      "No Watermarks",
+      "24/7 Support"
+    ],
+    "cta": "Choose Max"
+  }
+]

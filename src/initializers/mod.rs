@@ -1,7 +1,6 @@
 pub mod axum_session;
 pub mod fal_client;
 pub mod oauth2;
-pub mod other;
 pub mod redis;
 pub mod s3;
 pub mod stripe;
