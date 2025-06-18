@@ -237,7 +237,7 @@ impl Model {
         request_id: &str,
     ) -> ModelResult<Self> {
         let condition =
-            Condition::all().add(training_models::Column::FalAiRequestId.eq(request_id));
+            Condition::all().add(training_models::Column::FalAiRequestId.eq(request_id.to_owned()));
         let training = Entity::find().filter(condition).one(db).await?;
         training.ok_or_else(|| ModelError::EntityNotFound)
     }

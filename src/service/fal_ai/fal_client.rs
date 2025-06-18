@@ -441,8 +441,8 @@ impl Default for FluxStatus {
 pub struct FileInfo {
     pub url: String,
     pub content_type: String,
-    pub file_name: String,
-    pub file_size: u64,
+    pub file_name: Option<String>,
+    pub file_size: Option<u64>,
     pub file_data: Option<String>,
 }
 
@@ -517,26 +517,19 @@ pub struct FluxApiWebhookResponse {
 
 impl FluxApiWebhookResponse {
     /// Extracts a successful payload from the response.
-    pub fn successful_img(&self) -> SuccessfulPayload {
-        let payload: SuccessfulPayload =
-            serde_json::from_value(self.payload.clone().unwrap()).unwrap();
-        payload
+    pub fn successful_img_opt(&self) -> Option<String> {
+        let value = self.payload.clone()?;
+        let new_value: SuccessfulPayload = serde_json::from_value(value).ok()?;
+        new_value
+            .images
+            .first()
+            .map(|first_image| first_image.url.clone())
     }
-
-    pub fn successful_training(&self) -> SuccessfulPayloadTraining {
-        let payload: SuccessfulPayloadTraining =
-            serde_json::from_value(self.payload.clone().unwrap()).unwrap();
-        payload
-    }
-
     pub fn successful_training_opt(&self) -> Option<String> {
-        let payload: SuccessfulPayloadTraining = match self.payload.clone() {
-            None => return None,
-            Some(value) => serde_json::from_value(value).unwrap(),
-        };
+        let value = self.payload.clone()?;
+        let payload: SuccessfulPayloadTraining = serde_json::from_value(value).ok()?;
         Some(payload.lora())
     }
-
     /// Extracts an error payload from the response.
     pub fn error(&self) -> ErrorPayload {
         let payload: ErrorPayload = serde_json::from_value(self.payload.clone().unwrap()).unwrap();

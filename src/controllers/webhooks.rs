@@ -100,7 +100,7 @@ pub async fn fal_ai_image(
         StatusResponse::Ok => {
             // If the status is OK, check if there's a payload
             if let Some(ref _payload) = response.payload {
-                let image_url = response.successful_img().image_url();
+                let image_url = response.successful_img_opt();
                 image_url
             } else {
                 // If there's no payload, get payload directly
@@ -154,6 +154,7 @@ pub async fn fal_ai_training(
     Extension(s3_client): Extension<AwsS3>,
     Json(response): Json<FluxApiWebhookResponse>,
 ) -> Result<Response> {
+    dbg!(&response.request_id);
     let train_model = TrainingModelModel::find_by_request_id(&ctx.db, &response.request_id).await?;
     let train = TrainingModelActiveModel::from(train_model);
 
@@ -162,18 +163,16 @@ pub async fn fal_ai_training(
         StatusResponse::Ok => {
             // If the status is OK, check if there's a payload
             if let Some(ref _payload) = response.payload {
-                let tensor_path_lora = response.successful_training().lora();
+                // let tensor_path_lora = response.successful_training().lora();
+                let tensor_path_lora = response.successful_training_opt();
                 tensor_path_lora
             } else {
                 // If there's no payload, get payload directly
                 let result = fal_ai_client
                     .request_result_training(&response.request_id)
-                    .await
-                    .map_err(|_| {
-                        loco_rs::Error::Message("Error processing Result Request: 103".to_string())
-                    })?
+                    .await?
                     .lora();
-                result
+                Some(result)
             }
         }
         StatusResponse::Error => {
@@ -201,7 +200,7 @@ pub async fn fal_ai_training(
 
     // If the status is OK, check if there's a payload
     train
-        .update_fal_ai_training_webhook(&ctx.db, Some(tensor_path_lora), Status::Completed)
+        .update_fal_ai_training_webhook(&ctx.db, tensor_path_lora, Status::Completed)
         .await?;
 
     //Todo Send Email to client that their model is finished training
