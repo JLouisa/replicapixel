@@ -14,7 +14,7 @@
 <li id="nav-auth" class="close-menu-buttons">
   <a
     href="{{login_link | safe}}"
-    hx-get="{{ login_link_partial | safe }}"
+    hx-get="{{ login_partial_link | safe }}"
     hx-target="#app"
     hx-push-url="{{ login_link | safe }}"
     hx-swap="innerHTML"
