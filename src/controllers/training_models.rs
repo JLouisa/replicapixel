@@ -91,7 +91,6 @@ pub async fn upload_training(
     let (pre_url, s3_key) = s3_client
         .presigned_save_url(&user.pid, &pre_url_request, None)
         .await?;
-    // .map_err(|_| loco_rs::Error::Message(String::from("Generating Pre-sign URL error: 101")))?;
 
     //2. Create and save Training Model in Database
     let training_params: TrainingModelParams = form.from_form(&user, &s3_key);

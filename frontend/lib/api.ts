@@ -55,7 +55,7 @@ const backendApi = {
   async get<T>(url: string, config?: Options): Promise<T> {
     try {
       const response = await axiosInstance.get<T>(url, config);
-      console.log(response.data);
+      // console.log(response.data);
       const serverResponse = new ServerResponseClass<T>(response.data);
       return serverResponse.getData();
     } catch (error) {
@@ -66,7 +66,7 @@ const backendApi = {
   async post<T>(url: string, body: any, config?: Options): Promise<T> {
     try {
       const response = await axiosInstance.post(url, body, config);
-      console.log("response login Data", response.data);
+      // console.log("response login Data", response.data);
       const serverResponse = new ServerResponseClass<T>(response.data);
       return serverResponse.getData();
     } catch (error) {
@@ -78,7 +78,7 @@ const backendApi = {
   async patch<T>(url: string, config?: Options): Promise<T> {
     try {
       const response = await axiosInstance.patch(url, null, config);
-      console.log(response.data);
+      // console.log(response.data);
       const serverResponse = new ServerResponseClass<T>(response.data);
       return serverResponse.getData();
     } catch (error) {
@@ -89,7 +89,7 @@ const backendApi = {
   async put<T>(url: string, body: any, config?: Options): Promise<T> {
     try {
       const response = await axiosInstance.put(url, body, config);
-      console.log(response.data);
+      // console.log(response.data);
       const serverResponse = new ServerResponseClass<T>(response.data);
       return serverResponse.getData();
     } catch (error) {
@@ -100,7 +100,7 @@ const backendApi = {
   async delete<T>(url: string, config?: Options): Promise<T> {
     try {
       const response = await axiosInstance.delete(url, config);
-      console.log(response.data);
+      // console.log(response.data);
       const serverResponse = new ServerResponseClass<T>(response.data);
       return serverResponse.getData();
     } catch (error) {
@@ -111,7 +111,7 @@ const backendApi = {
   async SimpleGet(url: string, config?: Options) {
     try {
       const response = await axiosInstance.get(url, config);
-      console.log(response.data.data);
+      // console.log(response.data.data);
       return response.data.data;
     } catch (error) {
       console.error("SimpleGet failed:", error);
@@ -122,7 +122,7 @@ const backendApi = {
   async SimplePost(url: string, body: any, config?: Options) {
     try {
       const response = await axiosInstance.post(url, body, config);
-      console.log(response.data);
+      // console.log(response.data);
       const result: ServerResponse = parse(ServerResponseSchema, response.data);
 
       return result;
@@ -135,7 +135,7 @@ const backendApi = {
   async SimpleUpdate(url: string, body: any, config?: Options) {
     try {
       const response = await axiosInstance.put(url, body, config);
-      console.log(response.data);
+      // console.log(response.data);
       const result: ServerResponse = parse(ServerResponseSchema, response.data);
       return result;
     } catch (error) {
@@ -147,7 +147,7 @@ const backendApi = {
   async SimplePatch(url: string, config?: Options) {
     try {
       const response = await axiosInstance.patch(url, config);
-      console.log(response.data);
+      // console.log(response.data);
       const result: ServerResponse = parse(ServerResponseSchema, response.data);
       return result;
     } catch (error) {
@@ -158,7 +158,7 @@ const backendApi = {
   async AnyPatch(url: string, config?: Options) {
     try {
       const response = await axiosInstance.patch(url, config);
-      console.log(response.data);
+      // console.log(response.data);
       return response.data;
     } catch (error) {
       console.error("SimplePatch request failed:", error);
@@ -168,7 +168,7 @@ const backendApi = {
   async SimpleDelete(url: string, config?: Options) {
     try {
       const response = await axiosInstance.delete(url, config);
-      console.log(response.data);
+      // console.log(response.data);
       const result: ServerResponse = parse(ServerResponseSchema, response.data);
       return result;
     } catch (error) {
@@ -185,8 +185,8 @@ const backendApi = {
     });
     try {
       const response = await axiosS3Instance.put(info.pre_url as string, payload, config);
-      console.log(response);
-      console.log(response.data);
+      // console.log(response);
+      // console.log(response.data);
       return response.data;
     } catch (error) {
       console.error("POST request failed:", error);
@@ -479,17 +479,17 @@ export const DAL = {
       async saveToS3(modelData: TrainingModelFormClass, file: File) {
         try {
           const preSignRequest = PreSignUrlRequestClass.newToServer(file.name, file.type);
-          console.log("preSignRequest SaveToS3: ", preSignRequest);
+          // console.log("preSignRequest SaveToS3: ", preSignRequest);
 
           // Step 1: Obtain presigned URL from the server
           const presignedResponse = await DAL.Backend.UploadService.getPreSignUrlForUploadTraining(
             modelData
           );
-          console.log("presignedResponse SaveToS3: ", presignedResponse);
+          // console.log("presignedResponse SaveToS3: ", presignedResponse);
 
           // Step 2: Upload the file to S3 using the presigned URL
           await DAL.Integrations.AwsS3.uploadToS3(presignedResponse, file);
-          console.log("Upload to S3 completed");
+          // console.log("Upload to S3 completed");
 
           // Step 3: Notify the server that the upload was successful
           const item = await DAL.Backend.UploadService.markUploadSuccess(presignedResponse);
@@ -505,7 +505,7 @@ export const DAL = {
   },
   // Function to introduce a delay
   delay: (ms: number) => {
-    console.log(`Pausing for ${ms / 1000} seconds...`);
+    // console.log(`Pausing for ${ms / 1000} seconds...`);
     return new Promise((resolve) => setTimeout(resolve, ms));
   },
   // Helper functions
@@ -518,7 +518,7 @@ export const DAL = {
     },
   },
   Console(message: string) {
-    console.log(message);
+    // console.log(message);
   },
   // Generic error handling function to reduce duplication
   handleError(action: string, error: any, useToast: boolean) {
@@ -548,7 +548,7 @@ export const DAL = {
         body: JSON.stringify({ uploaded: true }),
       });
 
-      console.log("✅ Upload complete");
+      // console.log("✅ Upload complete");
     } catch (err) {
       console.error("❌ Upload failed", err);
     }
