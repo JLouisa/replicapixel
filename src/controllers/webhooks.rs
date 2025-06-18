@@ -77,7 +77,7 @@ pub async fn stripe(
         None => return Ok((StatusCode::OK).into_response()),
     };
 
-    CheckoutMailer::send_checkout_completed(&ctx, &website.website_basic_info, &email_data).await?;
+    CheckoutMailer::send_checkout_completed(&ctx, &website, &email_data).await?;
 
     // 4. Acknowledge receipt to Stripe
     Ok((StatusCode::OK).into_response())

@@ -32,6 +32,7 @@
             padding: 20px 30px;
             text-align: center;
             border-bottom: 1px solid #eaeaea;
+            background-color: #c7c5c5;
         }
         .header img {
             max-width: 180px;
@@ -150,24 +151,22 @@
             <tr>
                 <td class="header">
                     <a href="{{ website_link }}" target="_blank">
-                        <img src="{{ logo_url }}" alt="{{ company_name }} Logo" width="180">
+                        <img src="{{ logo_url }}" alt="{{ company_name }} Logo" width="100">
                     </a>
                 </td>
             </tr>
-
-
             <tr>
                 <td class="content">
                     <h1>Payment Successful!</h1>
 
                     <p>Hi {{ customer_name }},</p>
 
-                    <p>Thank you for your purchase! We've successfully processed your payment for your {{ company_name }} plan.</p>
+                    <p>Thank you for your purchase! We've successfully processed your payment for your {{ company_name }} {{ plan_name }} plan.</p>
 
                     <p>Here's a summary of your transaction:</p>
 
 
-<table role="presentation" class="order-summary" border="0" cellpadding="0" cellspacing="0">
+                <table role="presentation" class="order-summary" border="0" cellpadding="0" cellspacing="0">
                         <tr>
                             <td class="label">Item:</td>
                             <td>{{ plan_name }}</td>
@@ -233,7 +232,7 @@
              <table width="100%" style="border-collapse: collapse;">
                 <tr>
                     <td class="aligncenter content-block">
-                        Questions? Email <a href="mailto:{{ support_email }}">{{ support_email }}</a> or visit our <a href="{{ help_center_link }}">Help Center</a>.
+                        Questions? Visit our <a href="{{ help_center_link }}">Documentations</a>.
                     </td>
                 </tr>
                  <tr>

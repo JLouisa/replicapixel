@@ -1,7 +1,7 @@
 #![allow(non_upper_case_globals)]
 
 use crate::{
-    domain::website::WebsiteBasicInfo,
+    domain::website::Website,
     models::{PlanModel, TransactionModel, UserModel},
 };
 use chrono::{Datelike, Utc};
@@ -28,7 +28,7 @@ impl CheckoutMailer {
     /// When email sending is failed
     pub async fn send_checkout_completed(
         ctx: &AppContext,
-        website: &WebsiteBasicInfo,
+        website: &Website,
         collection: &CheckoutCompletedEmailData,
     ) -> Result<()> {
         // Use loco_rs::Result
@@ -57,12 +57,13 @@ impl CheckoutMailer {
         let plan_credit_amount = collection.plan.credit_amount; // Assuming PlanModel has `credit_amount: i32` or similar
 
         // Get config values or set defaults
-        let company_name = website.name.to_owned();
-        let website_link = ctx.config.server.full_url();
-        let dashboard_link = format!("{}/dashboard", ctx.config.server.full_url());
-        let help_center_link = format!("{}/help", ctx.config.server.full_url());
-        let support_email = format!("{}/help", ctx.config.server.full_url()); //Todo Replace with real support email
-        let logo_url = format!("{}/assets/images/logo.png", ctx.config.server.full_url());
+        let company_name = &website.website_basic_info.name.to_owned();
+        let website_link = &website.website_basic_info.site;
+        let dashboard_link = format!("{}/dashboard", &website.website_basic_info.site);
+        let documentation_link = format!("{}/documentation", &website.website_basic_info.site);
+        let support_email = format!("{}/help", &website.website_basic_info.site); //Todo Replace with real support email
+        let logo_url =
+            String::from("https://replicapixel-web.s3.eu-central-1.amazonaws.com/others/logo.svg");
         let company_address_line1 = "Netherland".to_string();
         let company_address_line2 = "Netherland".to_string();
         let current_year = Utc::now().year().to_string();
@@ -75,7 +76,7 @@ impl CheckoutMailer {
             "transaction_id": transaction_id,
             "amount_paid": amount_paid_formatted,
             "dashboard_link": dashboard_link,
-            "help_center_link": help_center_link,
+            "documentation_link": documentation_link,
             "company_name": company_name,
             "website_link": website_link,
             "logo_url": logo_url,
@@ -93,7 +94,7 @@ impl CheckoutMailer {
             ctx,
             &checkout_completed,
             mailer::Args {
-                from: Some(website.from_mail()),
+                from: Some(website.website_basic_info.from_mail()),
                 to: collection.user.email.to_string(),
                 locals,
                 ..Default::default()

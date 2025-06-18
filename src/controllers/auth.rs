@@ -343,7 +343,7 @@ pub async fn test_transaction(
         stripe_receipt_url: None,
     };
 
-    CheckoutMailer::send_checkout_completed(&ctx, &website.website_basic_info, &collection).await?;
+    CheckoutMailer::send_checkout_completed(&ctx, &website, &collection).await?;
     Ok((StatusCode::OK).into_response())
 }
 #[debug_handler]
@@ -353,7 +353,7 @@ pub async fn test_welcome_mail(
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new("ab5e796c-a2cd-458e-ad6b-c3a898f44bd1");
     let user = load_user(&ctx.db, &user_pid).await?;
-    AuthMailer::send_welcome(&ctx, &user, &website.website_basic_info).await?;
+    AuthMailer::send_welcome(&ctx, &user, &website).await?;
     Ok((StatusCode::OK).into_response())
 }
 #[debug_handler]
@@ -363,7 +363,7 @@ pub async fn test_forgot_password(
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new("ab5e796c-a2cd-458e-ad6b-c3a898f44bd1");
     let user = load_user(&ctx.db, &user_pid).await?;
-    AuthMailer::forgot_password(&ctx, &user, &website.website_basic_info).await?;
+    AuthMailer::forgot_password(&ctx, &user, &website).await?;
     Ok((StatusCode::OK).into_response())
 }
 #[debug_handler]
@@ -373,7 +373,7 @@ pub async fn test_magic_link(
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new("ab5e796c-a2cd-458e-ad6b-c3a898f44bd1");
     let user = load_user(&ctx.db, &user_pid).await?;
-    AuthMailer::send_magic_link(&ctx, &user, &website.website_basic_info).await?;
+    AuthMailer::send_magic_link(&ctx, &user, &website).await?;
     Ok((StatusCode::OK).into_response())
 }
 
@@ -520,7 +520,7 @@ async fn register(
         .set_email_verification_sent(&ctx.db)
         .await?;
 
-    AuthMailer::send_welcome(&ctx, &user, &website.website_basic_info).await?;
+    AuthMailer::send_welcome(&ctx, &user, &website).await?;
 
     // Ok(HxRedirect(routes::Auth::LOGIN_PARTIAL.to_string()).into_response())
 
@@ -602,7 +602,7 @@ async fn resent_verification_token(
         .set_email_verification_sent(&ctx.db)
         .await?;
 
-    AuthMailer::send_verification_link(&ctx, &user, &website.website_basic_info).await?;
+    AuthMailer::send_verification_link(&ctx, &user, &website).await?;
 
     let website_options = WebsiteOptions::new().website(&website).language(&lang);
     format::render().view(
@@ -1006,7 +1006,7 @@ async fn api_forgot(
 
     let user = user.into_active_model().create_magic_link(&ctx.db).await?;
 
-    AuthMailer::forgot_password(&ctx, &user, &website.website_basic_info).await?;
+    AuthMailer::forgot_password(&ctx, &user, &website).await?;
 
     views::auth::forgot(&v, &website_options)
 }
