@@ -15,13 +15,7 @@ pub fn billing_dashboard_new(
     format::render().view(
         &v,
         "dashboard/content/billing/billing.html",
-        data!(
-            {
-                "website": website_options.website, "user": website_options.user,
-                "credits": website_options.user_credits, "cc_cookie": website_options.cc_cookie,
-                "options": website_options, "current_page": website_options.current_page
-            }
-        ),
+        data!({ "options": website_options }),
     )
 }
 pub fn billing_partial_dashboard_new(
@@ -42,14 +36,7 @@ pub fn features_dashboard(
     format::render().view(
         &v,
         "dashboard/content/features/features.html",
-        data!(
-            {
-                "website": website_options.website, "user": website_options.user, "credits": website_options.user_credits,
-                "features": website_options.features, "cc_cookie": website_options.cc_cookie,
-                "current_page": website_options.current_page, "options": website_options
-
-            }
-        ),
+        data!({ "options": website_options }),
     )
 }
 pub fn features_partial_dashboard(
@@ -70,13 +57,7 @@ pub fn settings_dashboard(
     format::render().view(
         &v,
         "dashboard/content/settings/settings.html",
-        data!(
-            {
-                "website": website_options.website, "user": website_options.user, "credits": website_options.user_credits,
-                "cc_cookie": website_options.cc_cookie, "user_settings": website_options.user_settings,
-                "current_page": website_options.current_page, "options": website_options
-            }
-        ),
+        data!({ "options": website_options }),
     )
 }
 pub fn settings_partial_dashboard(
@@ -97,14 +78,7 @@ pub fn training_dashboard(
     format::render().view(
         &v,
         "dashboard/content/training_models/training_models.html",
-        data!(
-            {
-                "website": website_options.website, "user": website_options.user, "credits": website_options.user_credits,
-                "models": website_options.training_models, "cc_cookie": website_options.cc_cookie,
-                "current_page": website_options.current_page, "options": website_options
-
-            }
-        ),
+        data!({ "options": website_options }),
     )
 }
 pub fn training_partial_dashboard(
@@ -125,13 +99,7 @@ pub fn create_training_dashboard(
     format::render().view(
         &v,
         "dashboard/content/training_models/extend_training_model_form.html",
-        data!(
-            {
-                "website": website_options.website, "user": website_options.user, "credits": website_options.user_credits,
-                "models": website_options.training_models, "cc_cookie": website_options.cc_cookie,
-                "current_page": website_options.current_page, "options": website_options
-            }
-        ),
+        data!({ "options": website_options }),
     )
 }
 pub fn create_training_dashboard_partial(
@@ -152,13 +120,7 @@ pub fn home_training_partial_dashboard(
     format::render().view(
         &v,
         "dashboard/dashboard_base_extend_partial.html",
-        data!(
-            {
-                "website": website_options.website, "user": website_options.user, "credits": website_options.user_credits,
-                "models": website_options.training_models, "is_logged_in": website_options.is_logged_in,
-                "current_page": website_options.current_page, "options": website_options
-            }
-        ),
+        data!({ "options": website_options }),
     )
 }
 
@@ -169,13 +131,7 @@ pub fn packs_dashboard(
     format::render().view(
         &v,
         "dashboard/content/packs/packs.html",
-        data!(
-            {
-                "website": website_options.website, "credits": website_options.user_credits, "packs": website_options.packs,
-                "cc_cookie": website_options.cc_cookie, "user": website_options.user, "models": website_options.training_models,
-                "current_page": website_options.current_page, "options": website_options
-            }
-        ),
+        data!({ "options": website_options }),
     )
 }
 pub fn packs_partial_dashboard(
@@ -195,13 +151,7 @@ pub fn home_packs_partial_dashboard(
     format::render().view(
         &v,
         "dashboard/content/packs/packs_extend.html",
-        data!(
-            {
-                "website": website_options.website, "credits": website_options.user_credits, "packs": website_options.packs,
-                "user": website_options.user, "models": website_options.training_models,
-                "current_page": website_options.current_page, "options": website_options
-            }
-        ),
+        data!({ "options": website_options }),
     )
 }
 
@@ -212,15 +162,7 @@ pub fn photo_dashboard(
     format::render().view(
         &v,
         "dashboard/content/photo/photo.html",
-        data!(
-              {
-                "website": website_options.website, "user": website_options.user, "images": website_options.images,
-                "training_models": website_options.training_models, "credits": website_options.user_credits,
-                "is_deleted": website_options.is_deleted, "is_favorite": website_options.is_favorite,
-                "is_initial_load": website_options.is_initial_load, "cc_cookie": website_options.cc_cookie,
-                "current_page": website_options.current_page, "options": website_options
-              }
-        ),
+        data!({ "options": website_options }),
     )
 }
 pub fn photo_partial_dashboard(

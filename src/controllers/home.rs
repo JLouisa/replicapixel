@@ -223,6 +223,7 @@ pub async fn render_home(
         .cc_cookie(&cc_cookie)
         .set_user(user)
         .packs(images.packs())
+        .web_gallery(&images.gallery)
         .web_images(&images)
         .is_home()
         .build();
@@ -259,6 +260,7 @@ pub async fn render_home_partial(
         .cc_cookie(&cc_cookie)
         .set_user(user)
         .packs(images.packs())
+        .web_gallery(&images.gallery)
         .web_images(&images)
         .is_home()
         .build();

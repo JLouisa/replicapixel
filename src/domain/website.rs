@@ -187,10 +187,10 @@ struct WebBeforeAfter {
 #[derive(Debug, Serialize, Deserialize, Constructor, Clone)]
 pub struct WebImages {
     hero_panel: Vec<String>,
-    gallery: WebGallery,
+    pub gallery: WebGallery,
     before_after: WebBeforeAfter,
     studio: String,
-    packs: PackViewList,
+    pub packs: PackViewList,
     creators: Vec<String>,
     plans: PricingViewList,
 }

@@ -21,7 +21,6 @@ pub fn img_infinite_loading(
         v,
         "dashboard/content/photo/image_partial.html",
         data!({ "options": website_options }),
-        // data!({"website": website, "images": images }),
     )
 }
 
@@ -30,7 +29,6 @@ pub fn one(v: &impl ViewRenderer, website_options: &WebsiteOptions) -> Result<Re
         v,
         "dashboard/content/photo/image_loading_partial.html",
         data!({ "options": website_options }),
-        // data!({ "website": website, "credits": credits, "images": image_list }),
     )
 }
 
@@ -39,7 +37,6 @@ pub fn img_completed(v: &impl ViewRenderer, website_options: &WebsiteOptions) ->
         v,
         "dashboard/content/photo/image_partial.html",
         data!({ "options": website_options }),
-        // data!({ "website": website, "credits": credits, "images": images, "is_image_gen": is_image_gen }),
     )
 }
 

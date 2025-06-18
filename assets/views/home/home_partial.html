@@ -1,12 +1,12 @@
 <!-- prettier-ignore -->
+{% set website = options.website %} 
+{% set lang = options.language %}
+{% set is_home = options.is_home %}
+{% set user = options.user %}
 {% set login_link = website.website_routes.auth_routes.login | safe %}
 {% set login_partial_link = website.website_routes.auth_routes.login_partial | safe %}
 {% set website_name = website.website_basic_info.name %}
-{% set gallery = web_images.gallery %}
-{% set website = options.website %} 
-{% set brandName = website.website_basic_info.name %} 
-{% set lang = options.language %}
-{% set is_home = options.is_home %}
+{% set brandName = website.website_basic_info.name %}
 
 <div class="relative xs:p-2 md:p-0 w-full">
   <div class="flex flex-col w-full">

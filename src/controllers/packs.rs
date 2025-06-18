@@ -166,16 +166,13 @@ pub async fn show_pack(
         Err(_) => None,
     };
     let images = load_cached_web(&ctx, &lang, &cache).await?;
-    let pack: PackView = match lang {
-        Language::English => {
-            let pack = load_pack_by_title_url(&ctx.db, &title_url).await?;
-            pack.into()
-        }
-        _ => {
-            let translated = load_pack_and_translation(&ctx.db, &title_url, &lang).await?;
-            translated.into()
-        }
-    };
+    let pack = images
+        .packs
+        .as_ref()
+        .iter()
+        .find(|p| p.title_url == title_url)
+        .unwrap()
+        .clone();
     let pack_images = pack.clone().create_item_groups();
 
     let website_options = WebsiteOptions::new()
@@ -184,7 +181,7 @@ pub async fn show_pack(
         .cc_cookie(&cc_cookie)
         .set_user(user)
         .pack(pack)
-        .pack_images(pack_images)
+        .web_gallery(&pack_images)
         .web_images(&images)
         .is_pack()
         .build();
@@ -213,7 +210,6 @@ pub async fn show_pack_partial(
         }
         Err(_) => None,
     };
-    let images = load_cached_web(&ctx, &lang, &cache).await?;
     let pack: PackView = match lang {
         Language::English => {
             let pack = load_pack_by_title_url(&ctx.db, &title_url).await?;
@@ -224,6 +220,7 @@ pub async fn show_pack_partial(
             translated.into()
         }
     };
+    let images = load_cached_web(&ctx, &lang, &cache).await?;
     let pack_images = pack.clone().create_item_groups();
 
     let website_options = WebsiteOptions::new()
@@ -231,7 +228,7 @@ pub async fn show_pack_partial(
         .language(&lang)
         .set_user(user)
         .pack(pack)
-        .pack_images(pack_images)
+        .web_gallery(&pack_images)
         .web_images(&images)
         .is_pack_partial()
         .build();

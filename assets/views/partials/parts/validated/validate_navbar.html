@@ -1,7 +1,7 @@
 {% set timestamp = now() | date(format="%s%.f") %}
 
 <div id="validate-login-btn" class="flex flex-row items-center gap-2">
-  {% if user or is_ott %}
+  {% if options.user or options.is_ott %}
   <div>
     <a
       hx-get="{{ logout_api_link | safe }}"

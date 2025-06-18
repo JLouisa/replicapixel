@@ -3,12 +3,13 @@
 {% set stripe_link = options.link | lower | safe %}
 
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
-      {% block title %}{{ website.name | default(value= "ReplicaPixel App") }}{% endblock title %}
+      {% block title %}{{ website.name | default(value= "ReplicaPixel") }} | Payment{% endblock
+      title %}
     </title>
     <link rel="preconnect" href="https://js.stripe.com" />
     <link rel="icon" type="image/x-icon" href="/static/favicon.ico" />

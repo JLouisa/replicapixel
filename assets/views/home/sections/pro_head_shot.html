@@ -1,6 +1,6 @@
 <!-- prettier-ignore -->
-{% set image_before_link = web_images.before_after.before | safe %}
-{% set image_after_link = web_images.before_after.after | safe  %}
+{% set image_before_link = options.web_images.before_after.before | safe %}
+{% set image_after_link = options.web_images.before_after.after | safe  %}
 {% set studio_model_link = website.website_routes.dashboard_routes.sidebar.training_models %}
 {% set studio_model_partial_link = website.website_routes.home.dashboard_extend %}
 
