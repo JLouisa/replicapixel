@@ -1,4 +1,4 @@
-{% if options.stripe_options.status == "Processing" %}
+{% set lang = options.language %} {% if options.stripe_options.status == "Processing" %}
 <div
   id="stripestatus"
   hx-get="{{ options.website.website_routes.payment.stripe_payment_status_route | safe }}/{{options.stripe_options.session_id}}"
