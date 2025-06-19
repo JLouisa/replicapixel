@@ -304,6 +304,7 @@ impl Model {
         lang: &Language,
     ) -> ModelResult<PackTranslatedList> {
         if *lang == Language::English {
+            tracing::info!("English packs requested, loading from DB.");
             return Ok(PackModelList::new(Model::find_all_packs(db).await?).into());
         }
         let packs_translated = load_pack_and_all_translated(db, lang).await?;

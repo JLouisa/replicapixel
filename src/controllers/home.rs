@@ -91,6 +91,7 @@ pub async fn load_packs_translated(
     let packs = match cache.get::<PackViewList>(&key).await {
         Ok(Some(packs)) => packs,
         Ok(None) => {
+            tracing::info!("Packs not found in cache, loading from DB.");
             let list = PackModel::find_all_translated(db, lang).await?.into();
             let _ = cache.set::<PackViewList>(&key, &list, None).await;
             list
