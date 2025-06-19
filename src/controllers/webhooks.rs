@@ -165,6 +165,7 @@ pub async fn fal_ai_training(
             if let Some(ref _payload) = response.payload {
                 // let tensor_path_lora = response.successful_training().lora();
                 let tensor_path_lora = response.successful_training_opt();
+                tracing::info!("tensor_path_lora: {:?}", tensor_path_lora);
                 tensor_path_lora
             } else {
                 // If there's no payload, get payload directly
@@ -172,6 +173,7 @@ pub async fn fal_ai_training(
                     .request_result_training(&response.request_id)
                     .await?
                     .lora();
+                tracing::warn!("tensor_path_lora: {:?}", result);
                 Some(result)
             }
         }
@@ -179,6 +181,7 @@ pub async fn fal_ai_training(
             // If the status is Error, return the error payload
             // let error_payload = response.error();
 
+            tracing::error!("Status Error");
             let db_txn = ctx.db.begin().await?;
             let train = train.update_failed_fal_ai_training_webhook(&db_txn).await?;
             let (_, user_credits) =

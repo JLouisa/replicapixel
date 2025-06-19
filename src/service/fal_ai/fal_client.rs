@@ -440,7 +440,7 @@ impl Default for FluxStatus {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct FileInfo {
     pub url: String,
-    pub content_type: String,
+    pub content_type: Option<String>,
     pub file_name: Option<String>,
     pub file_size: Option<u64>,
     pub file_data: Option<String>,
@@ -463,7 +463,7 @@ pub struct Image {
     pub url: String,
     pub width: u32,
     pub height: u32,
-    pub content_type: String,
+    pub content_type: Option<String>,
 }
 
 /// Represents a successful response payload containing images and a seed.
