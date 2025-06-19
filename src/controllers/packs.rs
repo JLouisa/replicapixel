@@ -165,15 +165,25 @@ pub async fn show_pack(
         }
         Err(_) => None,
     };
+
     let images = load_cached_web(&ctx, &lang, &cache).await?;
-    let pack = images
+    let pack: Option<&PackView> = images
         .packs
         .as_ref()
         .iter()
         .find(|p| p.title_url == title_url)
-        .unwrap()
-        .clone();
-    let pack_images = pack.clone().create_item_groups();
+        .or_else(|| None);
+
+    let pack = match pack {
+        Some(p) => p.clone(),
+        None => match lang {
+            Language::English => load_pack_by_title_url(&ctx.db, &title_url).await?.into(),
+            _ => load_pack_and_translation(&ctx.db, &title_url, &lang)
+                .await?
+                .into(),
+        },
+    };
+    let pack_images = pack.create_item_groups();
 
     let website_options = WebsiteOptions::new()
         .website(&website)
@@ -210,18 +220,25 @@ pub async fn show_pack_partial(
         }
         Err(_) => None,
     };
-    let pack: PackView = match lang {
-        Language::English => {
-            let pack = load_pack_by_title_url(&ctx.db, &title_url).await?;
-            pack.into()
-        }
-        _ => {
-            let translated = load_pack_and_translation(&ctx.db, &title_url, &lang).await?;
-            translated.into()
-        }
-    };
+
     let images = load_cached_web(&ctx, &lang, &cache).await?;
-    let pack_images = pack.clone().create_item_groups();
+    let pack: Option<&PackView> = images
+        .packs
+        .as_ref()
+        .iter()
+        .find(|p| p.title_url == title_url)
+        .or_else(|| None);
+
+    let pack = match pack {
+        Some(p) => p.clone(),
+        None => match lang {
+            Language::English => load_pack_by_title_url(&ctx.db, &title_url).await?.into(),
+            _ => load_pack_and_translation(&ctx.db, &title_url, &lang)
+                .await?
+                .into(),
+        },
+    };
+    let pack_images = pack.create_item_groups();
 
     let website_options = WebsiteOptions::new()
         .website(&website)

@@ -547,6 +547,9 @@ impl<'a> WebsiteOptions<'a> {
             ..self
         }
     }
+    pub fn set_pack(self, pack: Option<PackView>) -> Self {
+        Self { pack, ..self }
+    }
     // Sets the packs.
     pub fn packs(self, packs: &'a PackViewList) -> Self {
         Self {
