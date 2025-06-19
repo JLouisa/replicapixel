@@ -4,6 +4,7 @@ pub mod domain_services;
 pub mod error;
 pub mod features;
 pub mod image;
+pub mod mailer_options;
 pub mod packs;
 pub mod response;
 pub mod settings;

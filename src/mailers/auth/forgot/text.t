@@ -1,3 +1,3 @@
 Reset your password with this link:
 
-http://localhost/reset#{{resetToken}}
+{{options.website.website_basic_info.site}}/reset#{{options.token}}

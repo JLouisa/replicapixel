@@ -11,8 +11,8 @@ use crate::models::feature_request::FeatureRequestModelList;
 use crate::models::feature_vote::FeatureVoteModelList;
 use crate::models::images::ImagesModelList;
 use crate::models::join::user_credits_models::{
-    load_user_and_credits, load_user_and_settings, load_user_and_training,
-    load_user_credit_training, load_user_credits_settings,
+    load_user_and_credits, load_user_and_settings, load_user_credit_training,
+    load_user_credits_settings,
 };
 use crate::models::packs::PackTranslatedList;
 use crate::models::training_models::TrainingModelList;

@@ -5,12 +5,10 @@ use crate::{
     controllers::dashboard::CurrentPage,
     domain::{
         cookie::{AppCookie, CookieTrait, UserCookieTrait},
+        mailer_options::MailerOptions,
         website::{Website, WebsiteOptions},
     },
-    mailers::{
-        auth::AuthMailer,
-        transaction::{CheckoutCompletedEmailData, CheckoutMailer},
-    },
+    mailers::{auth::AuthMailer, transaction::CheckoutMailer},
     middleware::{cookie::ExtractConsentState, i18nv2::LangEngine},
     models::{
         _entities::{
@@ -144,11 +142,11 @@ pub fn routes() -> Routes {
         .add(routes::Auth::API_MAGIC_LINK_TOKEN, post(set_password))
         .add(routes::Auth::API_PASSWORD_CHANGE_ID, post(change_password))
         .add(routes::Auth::API_SET_LANGUAGE, post(set_language))
-    // .add(routes::Auth::API_CHECK_USER, get(check_user))
-    // .add("/api/auth/test/welcome", get(test_welcome_mail))
-    // .add("/api/auth/test/forgot_password", get(test_forgot_password))
-    // .add("/api/auth/test/magic_link", get(test_magic_link))
-    // .add("/api/auth/test/transaction", get(test_transaction))
+        // .add(routes::Auth::API_CHECK_USER, get(check_user))
+        .add("/api/auth/test/welcome", get(test_welcome_mail))
+        .add("/api/auth/test/forgot_password", get(test_forgot_password))
+        .add("/api/auth/test/magic_link", get(test_magic_link))
+        .add("/api/auth/test/transaction", get(test_transaction))
 }
 
 pub struct HxRedirect(String);
@@ -329,21 +327,20 @@ pub async fn test_transaction(
     State(ctx): State<AppContext>,
     Extension(website): Extension<Website>,
 ) -> Result<impl IntoResponse> {
-    let user_pid = UserPid::new("ab5e796c-a2cd-458e-ad6b-c3a898f44bd1");
-    let transaction_pid: Uuid = "c8b9233b-e18d-482d-9307-ed0c1b694cd7".parse().unwrap();
-    let plan_name_str = "Premium".to_string();
+    let user_pid = UserPid::new("0aec7a76-c58d-40ba-af47-5c876e310899");
+    let transaction_pid: Uuid = "5cab4986-e126-4747-be50-fd4a210eb535".parse().unwrap();
+    let plan_name_str = "Basic".to_string();
     let user = load_user(&ctx.db, &user_pid).await?;
     let plan = load_plan(&ctx.db, &plan_name_str).await?;
     let transaction = load_transaction(&ctx.db, &transaction_pid).await?;
 
-    let collection = CheckoutCompletedEmailData {
-        user,
-        transaction,
-        plan,
-        stripe_receipt_url: None,
-    };
+    let mailer_options = MailerOptions::new()
+        .website(&website)
+        .user(&user.into())
+        .transaction(&transaction.into())
+        .plan(&plan.into());
 
-    CheckoutMailer::send_checkout_completed(&ctx, &website, &collection).await?;
+    CheckoutMailer::send_checkout_completed(&ctx, &mailer_options).await?;
     Ok((StatusCode::OK).into_response())
 }
 #[debug_handler]
@@ -351,9 +348,10 @@ pub async fn test_welcome_mail(
     State(ctx): State<AppContext>,
     Extension(website): Extension<Website>,
 ) -> Result<impl IntoResponse> {
-    let user_pid = UserPid::new("ab5e796c-a2cd-458e-ad6b-c3a898f44bd1");
+    let user_pid = UserPid::new("0aec7a76-c58d-40ba-af47-5c876e310899");
     let user = load_user(&ctx.db, &user_pid).await?;
-    AuthMailer::send_welcome(&ctx, &user, &website).await?;
+    let mailer_options = MailerOptions::new().website(&website).into_user(&user);
+    AuthMailer::send_welcome(&ctx, &mailer_options).await?;
     Ok((StatusCode::OK).into_response())
 }
 #[debug_handler]
@@ -361,9 +359,10 @@ pub async fn test_forgot_password(
     State(ctx): State<AppContext>,
     Extension(website): Extension<Website>,
 ) -> Result<impl IntoResponse> {
-    let user_pid = UserPid::new("ab5e796c-a2cd-458e-ad6b-c3a898f44bd1");
+    let user_pid = UserPid::new("0aec7a76-c58d-40ba-af47-5c876e310899");
     let user = load_user(&ctx.db, &user_pid).await?;
-    AuthMailer::forgot_password(&ctx, &user, &website).await?;
+    let mailer_options = MailerOptions::new().website(&website).into_user(&user);
+    AuthMailer::forgot_password(&ctx, &mailer_options).await?;
     Ok((StatusCode::OK).into_response())
 }
 #[debug_handler]
@@ -371,9 +370,10 @@ pub async fn test_magic_link(
     State(ctx): State<AppContext>,
     Extension(website): Extension<Website>,
 ) -> Result<impl IntoResponse> {
-    let user_pid = UserPid::new("ab5e796c-a2cd-458e-ad6b-c3a898f44bd1");
+    let user_pid = UserPid::new("0aec7a76-c58d-40ba-af47-5c876e310899");
     let user = load_user(&ctx.db, &user_pid).await?;
-    AuthMailer::send_magic_link(&ctx, &user, &website).await?;
+    let mailer_options = MailerOptions::new().website(&website).into_user(&user);
+    AuthMailer::send_magic_link(&ctx, &mailer_options).await?;
     Ok((StatusCode::OK).into_response())
 }
 
@@ -520,7 +520,8 @@ async fn register(
         .set_email_verification_sent(&ctx.db)
         .await?;
 
-    AuthMailer::send_welcome(&ctx, &user, &website).await?;
+    let mailer_options = MailerOptions::new().website(&website).into_user(&user);
+    AuthMailer::send_welcome(&ctx, &mailer_options).await?;
 
     // Ok(HxRedirect(routes::Auth::LOGIN_PARTIAL.to_string()).into_response())
 
@@ -602,7 +603,8 @@ async fn resent_verification_token(
         .set_email_verification_sent(&ctx.db)
         .await?;
 
-    AuthMailer::send_verification_link(&ctx, &user, &website).await?;
+    let mailer_options = MailerOptions::new().website(&website).into_user(&user);
+    AuthMailer::send_verification_link(&ctx, &mailer_options).await?;
 
     let website_options = WebsiteOptions::new().website(&website).language(&lang);
     format::render().view(
@@ -999,14 +1001,15 @@ async fn api_forgot(
         return views::auth::forgot(&v, &website_options);
     };
 
-    let is_oauth = is_oauth(&ctx.db, user.id).await?;
+    let is_oauth = user.account != Account::Website;
     if is_oauth {
         return views::auth::forgot(&v, &website_options);
     }
 
     let user = user.into_active_model().create_magic_link(&ctx.db).await?;
 
-    AuthMailer::forgot_password(&ctx, &user, &website).await?;
+    let mailer_options = MailerOptions::new().website(&website).into_user(&user);
+    AuthMailer::forgot_password(&ctx, &mailer_options).await?;
 
     views::auth::forgot(&v, &website_options)
 }

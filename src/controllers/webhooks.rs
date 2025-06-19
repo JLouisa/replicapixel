@@ -1,6 +1,7 @@
 #![allow(clippy::missing_errors_doc)]
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
+use crate::domain::mailer_options::MailerOptions;
 use crate::domain::website::Website;
 use crate::mailers::transaction::CheckoutMailer;
 use crate::models::_entities::sea_orm_active_enums::Status;
@@ -68,16 +69,19 @@ pub async fn stripe(
     .map_err(|e| StripeServiceError::SignatureVerifyError(e.to_string()))?;
 
     // 3. Handle the webhook event
-    // if let Some(email_data) = StripeWebhookService::handle_webhook(event, &ctx).await? {
-    //     CheckoutMailer::send_checkout_completed(&ctx, &website.website_basic_info, &email_data)
-    //         .await?;
-    // }
     let email_data = match StripeWebhookService::handle_webhook(event, &ctx).await? {
         Some(email_data) => email_data,
         None => return Ok((StatusCode::OK).into_response()),
     };
 
-    CheckoutMailer::send_checkout_completed(&ctx, &website, &email_data).await?;
+    let mailer_options = MailerOptions::new()
+        .website(&website)
+        .user(&email_data.user.clone().into())
+        .transaction(&email_data.transaction.clone().into())
+        .plan(&email_data.plan.clone().into())
+        .set_stripe_receipt_url(email_data.stripe_receipt_url);
+
+    CheckoutMailer::send_checkout_completed(&ctx, &mailer_options).await?;
 
     // 4. Acknowledge receipt to Stripe
     Ok((StatusCode::OK).into_response())

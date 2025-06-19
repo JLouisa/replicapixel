@@ -1,1 +1,1 @@
-Your {{company_name}} Purchase Confirmation
+Your {{options.website.website_basic_info.name}} Purchase Confirmation

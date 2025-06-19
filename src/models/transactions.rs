@@ -6,20 +6,38 @@ use super::{
 use derive_more::{AsRef, Constructor};
 use loco_rs::prelude::*;
 use sea_orm::{entity::prelude::*, ActiveValue, Condition, QueryOrder};
+use serde::Serialize;
 use stripe::Currency;
 pub type Transactions = Entity;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Serialize, Clone)]
 pub struct TransactionDomain {
     pub pid: Uuid,
     pub user_id: i32,
     pub plan_id: i32,
     pub credit_amount: i32,
     pub model_amount: i32,
-    pub payment_amount: i64,
+    pub payment_amount: f64,
     pub currency: String,
     pub payment_id: String,
     pub status: Status,
+    pub created_at: String,
+}
+impl From<Model> for TransactionDomain {
+    fn from(value: Model) -> Self {
+        Self {
+            pid: value.pid,
+            user_id: value.user_id,
+            plan_id: value.plan_id,
+            credit_amount: value.credit_amount,
+            model_amount: value.model_amount,
+            payment_amount: value.payment_amount as f64 / 100.0,
+            currency: value.currency,
+            payment_id: value.payment_id,
+            status: value.status,
+            created_at: value.created_at.format("%B %d, %Y at %H:%M %Z").to_string(),
+        }
+    }
 }
 impl TransactionDomain {
     pub fn new(
@@ -36,13 +54,16 @@ impl TransactionDomain {
             plan_id: plan.id,
             credit_amount: plan.credit_amount,
             model_amount: plan.model_amount,
-            payment_amount: payment_amount,
+            payment_amount: payment_amount as f64 / 100.0,
             currency: match currency {
                 Some(info) => info.to_string(),
                 None => Currency::USD.to_string(),
             },
             payment_id,
             status: status.unwrap_or_default(),
+            created_at: chrono::Utc::now()
+                .format("%B %d, %Y at %H:%M %Z")
+                .to_string(),
         }
     }
     pub fn update(&self, item: &mut TransactionActiveModel) {
@@ -77,13 +98,14 @@ impl ActiveModelBehavior for ActiveModel {
 // implement your write-oriented logic here
 impl ActiveModel {
     pub async fn save(db: &impl ConnectionTrait, item: &TransactionDomain) -> ModelResult<Model> {
+        let payment_amount = (item.payment_amount.clone() * 100.0) as i64;
         let transaction = ActiveModel {
             pid: ActiveValue::set(item.pid.clone()),
             user_id: ActiveValue::set(item.user_id.clone()),
             plan_id: ActiveValue::set(item.plan_id.clone()),
             credit_amount: ActiveValue::set(item.credit_amount.clone()),
             model_amount: ActiveValue::set(item.model_amount.clone()),
-            payment_amount: ActiveValue::set(item.payment_amount.clone()),
+            payment_amount: ActiveValue::set(payment_amount),
             currency: ActiveValue::set(item.currency.clone()),
             payment_id: ActiveValue::set(item.payment_id.clone()),
             status: ActiveValue::set(item.status),

@@ -47,6 +47,23 @@ pub struct PlanDomain {
     pub features: Option<Vec<String>>,
     pub cta: String,
 }
+impl From<Model> for PlanDomain {
+    fn from(packs: Model) -> Self {
+        Self {
+            id: packs.id,
+            pid: packs.pid,
+            plan_name: packs.plan_name,
+            credit_amount: packs.credit_amount,
+            model_amount: packs.model_amount,
+            price_cents: packs.price_cents,
+            is_popular: packs.is_popular,
+            name: packs.name,
+            subtitle: packs.subtitle,
+            features: packs.features,
+            cta: packs.cta,
+        }
+    }
+}
 impl PlanDomain {
     pub fn from_model(packs: Model) -> Self {
         Self {

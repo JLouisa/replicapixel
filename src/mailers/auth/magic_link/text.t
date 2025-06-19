@@ -1,2 +1,2 @@
 Magic link with this link: 
-{{host}}/api/auth/magic-link/{{token}}
+{{options.website.website_basic_info.site}}/api/auth/magic-link/{{options.token}}

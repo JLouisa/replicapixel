@@ -150,8 +150,8 @@
 
             <tr>
                 <td class="header">
-                    <a href="{{ website_link }}" target="_blank">
-                        <img src="{{ logo_url }}" alt="{{ company_name }} Logo" width="100">
+                    <a href="{{ options.website.website_basic_info.site | safe }}" target="_blank">
+                        <img src="{{ options.logo_url | safe }}" alt="{{ options.website.website_basic_info.name }} Logo" width="100">
                     </a>
                 </td>
             </tr>
@@ -159,44 +159,42 @@
                 <td class="content">
                     <h1>Payment Successful!</h1>
 
-                    <p>Hi {{ customer_name }},</p>
+                    <p>Hi {{ options.user.name }},</p>
 
-                    <p>Thank you for your purchase! We've successfully processed your payment for your {{ company_name }} {{ plan_name }} plan.</p>
+                    <p>Thank you for your purchase! We've successfully processed your payment for your {{ options.website.website_basic_info.name }} {{ options.plan.plan_name }} plan.</p>
 
                     <p>Here's a summary of your transaction:</p>
-
 
                 <table role="presentation" class="order-summary" border="0" cellpadding="0" cellspacing="0">
                         <tr>
                             <td class="label">Item:</td>
-                            <td>{{ plan_name }}</td>
+                            <td>{{ options.plan.plan_name | capitalize }}</td>
                         </tr>
                          <!-- NEW: Display plan details -->
                          <tr>
                             <td class="label">Models Included:</td>
-                            <td>{{ plan_model_amount }}</td>
+                            <td>{{ options.plan.model_amount }}</td>
                         </tr>
                          <tr>
                             <td class="label">Credits Included:</td>
-                            <td>{{ plan_credit_amount }}</td>
+                            <td>{{ options.plan.credit_amount }}</td>
                         </tr>
                          <!-- End of NEW -->
                          <tr>
                             <td class="label">Transaction Date:</td>
-                            <td>{{ transaction_date }}</td> <!-- Includes time now -->
+                            <td>{{ options.transaction.created_at }}</td>
                         </tr>
                          <tr>
                             <td class="label">Transaction ID:</td>
-                            <td>{{ transaction_id }}</td>
+                            <td>{{ options.transaction.pid }}</td>
                         </tr>
                          <tr>
                             <td class="label total">Amount Paid:</td>
-                            <td class="total">{{ amount_paid }}</td> <!-- Uses new format -->
+                            <td class="total">{{ options.currency }}{{ options.transaction.payment_amount }}</td>
                         </tr>
                     </table>
 
-                    <p>Your {{ plan_name }} plan has been applied to your account. Head over to your dashboard and start generating amazing images:</p>
-
+                    <p>Your {{ options.plan.plan_name }} plan has been applied to your account. Head over to your dashboard and start generating amazing images:</p>
 
                     <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
                          <tr>
@@ -204,7 +202,7 @@
                                 <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                                     <tr>
                                         <td class="button-td">
-                                            <a href="{{ dashboard_link }}" class="button-a" target="_blank">Go to Your Dashboard</a>
+                                            <a href="{{ options.website.website_basic_info.site | safe }}{{ options.website.website_routes.dashboard_routes.base | safe }}" class="button-a" target="_blank">Go to Your Dashboard</a>
                                         </td>
                                      </tr>
                                 </table>
@@ -212,9 +210,9 @@
                         </tr>
                     </table>
 
-                    <p>Thanks again for choosing {{ company_name }}!</p>
+                    <p>Thanks again for choosing {{ options.website.website_basic_info.name }}!</p>
 
-                    <p>Sincerely,<br>The {{ company_name }} Team</p>
+                    <p>Sincerely,<br>The {{ options.website.website_basic_info.name }} Team</p>
                 </td>
             </tr>
 
@@ -232,14 +230,14 @@
              <table width="100%" style="border-collapse: collapse;">
                 <tr>
                     <td class="aligncenter content-block">
-                        Questions? Visit our <a href="{{ help_center_link }}">Documentations</a>.
+                        Questions? Visit our <a href="{{ options.website.website_basic_info.site | safe }}/{{ options.website.website_routes.other_routes.documentation | safe }}">Documentations</a>.
                     </td>
                 </tr>
                  <tr>
                     <td class="aligncenter content-block" style="padding-top: 10px;">
-                        {{ company_name }}<br>
-                        {{ company_address_line1 }} {{ company_address_line2 }}<br>
-                        © {{ current_year }} {{ company_name }}. All rights reserved.
+                        {{ options.website.website_basic_info.name }}<br>
+                        {{ options.company_address_line1 }} {{ options.company_address_line2 }}<br>
+                        © {{ options.current_year }} {{ options.website.website_basic_info.name }}. All rights reserved.
                     </td>
                 </tr>
             </table>

@@ -1,1 +1,1 @@
-Welcome {{name}}
+Welcome {{options.user.name}}

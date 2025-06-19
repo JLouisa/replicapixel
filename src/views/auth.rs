@@ -75,7 +75,7 @@ pub fn forgot(
 }
 
 // ============== View Models for the View Templates ==============
-#[derive(Serialize)]
+#[derive(Serialize, Clone)]
 pub struct UserView {
     pub id: i32,
     pub pid: String,

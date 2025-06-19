@@ -1,2 +1,2 @@
 Magic link with this link: 
-{{host}}/api/auth/verify/{{verify_token}}
+{{ options.website.website_basic_info.site | safe }}/api/auth/verify/{{options.token}}
