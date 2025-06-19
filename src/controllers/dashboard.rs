@@ -651,7 +651,7 @@ pub async fn packs_partial_dashboard(
             return Ok(HxRedirect::login().into_response());
         }
     };
-    let (_, training_models) = load_user_and_training(&ctx.db, &user_pid).await?;
+    let (_, user_credits, training_models) = load_user_credit_training(&ctx.db, &user_pid).await?;
     let packs = match load_cached_web(&ctx, &lang, &cache).await {
         Ok(images) => images.packs().clone(),
         Err(_) => load_packs_translated(&ctx.db, &lang).await?.into(),
@@ -661,6 +661,7 @@ pub async fn packs_partial_dashboard(
         .website(&website)
         .language(&lang)
         .training_models(training_models.into())
+        .user_credits(user_credits.into())
         .packs(&packs)
         .current_page(CurrentPage::Packs)
         .build();

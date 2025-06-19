@@ -148,6 +148,8 @@
                 class="mt-6 space-y-4"
                 x-data="{ modelSelected: '', sizeSelected: '' }"
               >
+                {% if options.user_credits.credit_amount >= pack.credits %}
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div class="form-control w-full">
                     <label for="model_pid-{{ pack.pid }}" class="label"> </label>
@@ -191,7 +193,7 @@
                     <div class="absolute left-0 inset-y-0 flex items-center"></div>
                   </div>
                 </div>
-                <div class="modal-action mt-6">
+                <div class="modal-action mt-6 flex items-center justify-center">
                   <button
                     id="submit-btn-{{ pack.pid }}"
                     type="submit"
@@ -204,6 +206,20 @@
                     {{ t(key="packs-modal-button-generate", lang=lang) }}
                   </button>
                 </div>
+                {% else %} {% set timestamp = now() | date(format="%s%.f") %}
+                <div class="flex items-center justify-center">
+                  <button
+                    id="shiningButton-{{ timestamp }}"
+                    type="button"
+                    class="relative flex flex-row gap-1 overflow-hidden px-2 sm:px-4 py-1 sm:py-2 font-semibold text-white bg-gradient-to-r from-violet-500 to-pink-500 rounded-lg shadow-md transition-all duration-150 hover:shadow-lg hover:brightness-110 active:scale-95 active:brightness-90 cursor-pointer"
+                  >
+                    Buy Credits
+                    <script>
+                      shiningBtn("shiningButton-{{ timestamp }}");
+                    </script>
+                  </button>
+                </div>
+                {% endif %}
               </form>
             </div>
           </div>
