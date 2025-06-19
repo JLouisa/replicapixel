@@ -42,7 +42,6 @@ use serde::{Deserialize, Serialize};
 use std::{borrow::Cow, collections::HashMap, sync::OnceLock};
 use validator::ValidationErrorsKind;
 
-use super::dashboard::is_oauth;
 use crate::controllers::auth::routes as AuthRoutes;
 
 pub static EMAIL_DOMAIN_RE: OnceLock<Regex> = OnceLock::new();
@@ -142,11 +141,11 @@ pub fn routes() -> Routes {
         .add(routes::Auth::API_MAGIC_LINK_TOKEN, post(set_password))
         .add(routes::Auth::API_PASSWORD_CHANGE_ID, post(change_password))
         .add(routes::Auth::API_SET_LANGUAGE, post(set_language))
-        // .add(routes::Auth::API_CHECK_USER, get(check_user))
-        .add("/api/auth/test/welcome", get(test_welcome_mail))
-        .add("/api/auth/test/forgot_password", get(test_forgot_password))
-        .add("/api/auth/test/magic_link", get(test_magic_link))
-        .add("/api/auth/test/transaction", get(test_transaction))
+    // // .add(routes::Auth::API_CHECK_USER, get(check_user))
+    //// .add("/api/auth/test/welcome", get(test_welcome_mail))
+    //// .add("/api/auth/test/forgot_password", get(test_forgot_password))
+    //// .add("/api/auth/test/magic_link", get(test_magic_link))
+    //// .add("/api/auth/test/transaction", get(test_transaction))
 }
 
 pub struct HxRedirect(String);

@@ -133,3 +133,7 @@ Generics and Traits:
 | `F` | **Function** — usually a closure or function pointer |
 | `I` | **Iterator** or **Input** |
 | `B` | Often used for **buffer** or **body** (like in your case — valid and clear) |
+
+pub fn new<K: Into<String>>(key: K) -> Self {
+key.into()
+}

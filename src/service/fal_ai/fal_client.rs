@@ -58,7 +58,7 @@ pub enum FalAiTrainingModel {
 }
 impl Default for FalAiTrainingModel {
     fn default() -> Self {
-        Self::FluxLoraPortraitTrainer
+        Self::FluxLoraFastTraining
     }
 }
 
