@@ -45,10 +45,11 @@ impl ImageGenerationService {
         let txn = ctx.db.begin().await?;
 
         // Load user credits
-        let mut user_credits = UserCreditModel::find_by_user_id(&txn, user.id).await?;
+        let user_credits = UserCreditModel::find_by_user_id(&txn, user.id).await?;
 
         // Cost and image amount from request
         let mut credits_needed = request.cost();
+        tracing::info!("Credits needed: {}", credits_needed);
         let expected_image_amount = request.num_images();
 
         // Check if user has enough credits
@@ -77,11 +78,11 @@ impl ImageGenerationService {
         }
 
         // Deduct final credit cost
-        user_credits.credit_amount -= credits_needed;
+        // user_credits.credit_amount -= credits_needed;
 
         // Update user's credits in DB
         let updated_credits_model = user_credits
-            .update_credits_with_image_list(&fal_response, &txn)
+            .update_new_credits(credits_needed, &txn)
             .await?;
 
         // Commit the transaction

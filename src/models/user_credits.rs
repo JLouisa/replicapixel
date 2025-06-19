@@ -219,6 +219,26 @@ impl Model {
         let credit = new.update(db).await?;
         Ok(credit)
     }
+    pub async fn update_credits(self, db: &impl ConnectionTrait) -> ModelResult<Model> {
+        tracing::info!("Updating credits: {:?}", self.credit_amount);
+        let new = ActiveModel::from(self);
+        tracing::info!("Updating credits after from: {:?}", new.credit_amount);
+        let credit = new.update(db).await?;
+        Ok(credit)
+    }
+    pub async fn update_new_credits(
+        self,
+        credits_needed: i32,
+        db: &impl ConnectionTrait,
+    ) -> ModelResult<Model> {
+        let new_credit_amount = self.credit_amount.clone() - credits_needed;
+        tracing::info!("Updating credits: {:?}", self.credit_amount);
+        let mut new = ActiveModel::from(self);
+        new.credit_amount = ActiveValue::set(new_credit_amount);
+        tracing::info!("Updating credits after from: {:?}", new.credit_amount);
+        let credit = new.update(db).await?;
+        Ok(credit)
+    }
 }
 
 // implement your custom finders, selectors oriented logic here
