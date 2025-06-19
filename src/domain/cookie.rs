@@ -43,6 +43,7 @@ pub trait UserCookieTrait<T>: OAuth2UserTrait<T> + ModelTrait {
     ) -> CookieResult<AxumCookie<'static>>;
     fn create_cookie(&self, ctx: &AppContext) -> CookieResult<AxumCookie<'static>>;
     fn create_cookie_strict(&self, ctx: &AppContext) -> CookieResult<AxumCookie<'static>>;
+    fn user_id(&self) -> i32;
 }
 
 impl UserCookieTrait<OAuth2UserProfile> for UserModel {
@@ -60,7 +61,6 @@ impl UserCookieTrait<OAuth2UserProfile> for UserModel {
 
         let expiration_time =
             time::OffsetDateTime::now_utc() + time::Duration::seconds(jwt_ttl_secs as i64);
-
         let token = self
             .generate_jwt(&jwt_secret.secret, jwt_ttl_secs as u64)
             .or_else(|e| {
@@ -86,6 +86,9 @@ impl UserCookieTrait<OAuth2UserProfile> for UserModel {
     // Public method for Strict cookie (e.g., for standard login)
     fn create_cookie_strict(&self, ctx: &AppContext) -> CookieResult<AxumCookie<'static>> {
         self.create_cookie_base(ctx, SameSite::Strict)
+    }
+    fn user_id(&self) -> i32 {
+        self.id
     }
 }
 

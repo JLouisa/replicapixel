@@ -4,6 +4,7 @@ use derive_more::{AsRef, Constructor, From};
 use google_oauth::GooglePayload;
 use loco_rs::{auth::jwt, controller::ErrorDetail, hash, prelude::*};
 use passwords::PasswordGenerator;
+use sea_orm::Condition;
 use serde::{Deserialize, Serialize};
 use serde_json::Map;
 use unicode_segmentation::UnicodeSegmentation;
@@ -400,7 +401,7 @@ impl OAuth2UserTrait<OAuth2UserProfile> for Model {
                 let password_hash =
                     hash::hash_password(&password).map_err(|e| ModelError::Any(e.into()))?;
                 // Create the user into the database
-                users::ActiveModel {
+                let user = users::ActiveModel {
                     email: ActiveValue::set(profile.email.to_string()),
                     name: ActiveValue::set(profile.name.to_string()),
                     email_verified_at: ActiveValue::set(Some(Local::now().into())),
@@ -413,7 +414,11 @@ impl OAuth2UserTrait<OAuth2UserProfile> for Model {
                 .map_err(|e| {
                     tracing::error!("Error while trying to create user: {e}");
                     ModelError::Any(e.into())
-                })?
+                })?;
+
+                Model::create_credit_settings_oauth(&txn, user.id, &Language::default()).await?;
+
+                user
             }
             // Do nothing if user exists
             Some(user) => user,
@@ -610,6 +615,36 @@ impl Model {
         hash::verify_password(password, &self.password)
     }
 
+    pub async fn create_credit_settings_oauth(
+        txn: &impl ConnectionTrait,
+        user_id: i32,
+        lang: &Language,
+    ) -> ModelResult<()> {
+        let user_credits_init = UserCreditsInit::default();
+        UserCreditActiveModel {
+            pid: ActiveValue::set(user_credits_init.pid),
+            user_id: ActiveValue::set(user_id),
+            model_amount: ActiveValue::set(user_credits_init.model_amount),
+            credit_amount: ActiveValue::set(user_credits_init.credit_amount),
+            ..Default::default()
+        }
+        .insert(txn)
+        .await?;
+
+        UserSettingsActiveModel {
+            user_id: ActiveValue::set(user_id),
+            enable_notification_email: ActiveValue::set(true),
+            enable_marketing_email: ActiveValue::set(true),
+            theme: ActiveValue::set(ThemePreference::default()),
+            language: ActiveValue::set(lang.to_owned()),
+            ..Default::default()
+        }
+        .insert(txn)
+        .await?;
+
+        Ok(())
+    }
+
     /// Asynchronously creates a user with a password and saves it to the
     /// database.
     ///
@@ -623,14 +658,8 @@ impl Model {
     ) -> ModelResult<Self> {
         let txn = db.begin().await?;
 
-        let user_find = users::Entity::find()
-            .filter(
-                model::query::condition()
-                    .eq(users::Column::Email, &params.email)
-                    .build(),
-            )
-            .one(&txn)
-            .await?;
+        let condition = Condition::all().add(users::Column::Email.eq(&params.email));
+        let user_find = users::Entity::find().filter(condition).one(&txn).await?;
 
         if user_find.is_some() {
             txn.commit().await?;
