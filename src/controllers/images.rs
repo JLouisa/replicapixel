@@ -27,7 +27,7 @@ use crate::service::redis::redis::RedisCacheDriver;
 use crate::views::images::{ImageView, ImageViewList};
 use crate::{models::_entities::images::Entity, service::fal_ai::fal_client::FalAiClient, views};
 
-const IMAGE_COST: i32 = 1;
+pub const IMAGE_COST: i32 = 1;
 
 pub mod routes {
     use serde::{Deserialize, Serialize};
@@ -225,7 +225,7 @@ impl ImageGenerationTrait for ImageGenRequestParams {
         self.image_size
     }
     fn cost(&self) -> i32 {
-        self.num_images as i32
+        self.num_images as i32 * IMAGE_COST
     }
     fn quality_model(&self) -> WebhookPayload {
         self.model.clone()
