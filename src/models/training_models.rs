@@ -95,7 +95,7 @@ impl TrainingForm {
             },
             ethnicity: self.ethnicity,
             trigger_word: tw,
-            steps: 2000,
+            steps: 1000,
             ..Default::default()
         }
     }
