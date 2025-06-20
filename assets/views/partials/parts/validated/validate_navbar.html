@@ -30,7 +30,9 @@
     <a
       hx-get="{{ login_partial_link | safe }}"
       hx-swap="innerHTML"
+      {#
       hx-push-url="{{ login_link | safe }}"
+      #}
       hx-target="#app"
       class="relative flex flex-row items-center lg:gap-4 p-2 lg:p-3 lg:px-6 my-[-0.5rem] lg:my-[-1rem] overflow-hidden rounded-l-full font-semibold text-white shadow-md transition-all duration-150 bg-grn-from hover:shadow-lg hover:brightness-110 active:scale-95 active:brightness-90 cursor-pointer"
     >

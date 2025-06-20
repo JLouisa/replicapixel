@@ -2,6 +2,10 @@ function updatePageTitle(title) {
   document.title = title;
 }
 
+function replaceUrl(newUrl) {
+  history.replaceState(null, "", newUrl);
+}
+
 function showError(message) {
   console.error(message);
   if (window.Alpine) {
