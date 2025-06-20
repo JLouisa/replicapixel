@@ -26,7 +26,6 @@ use crate::{
     views::{self, auth::CurrentResponse},
 };
 use axum::{
-    body::Body,
     debug_handler,
     extract::{Json, State},
     http::{header, HeaderMap, HeaderValue, StatusCode},
@@ -884,11 +883,23 @@ pub async fn partial_login(
     Extension(website): Extension<Website>,
     State(ctx): State<AppContext>,
     LangEngine(lang): LangEngine,
-) -> Result<Response> {
+) -> Result<impl IntoResponse> {
     let view_response = if auth.is_ok() {
         let user_pid = UserPid::new(&auth.unwrap().claims.pid);
         let (user, user_credits, training_models) =
-            load_user_credit_training(&ctx.db, &user_pid).await?;
+            match load_user_credit_training(&ctx.db, &user_pid).await {
+                Ok((user, user_credits, training_models)) => (user, user_credits, training_models),
+                Err(_) => {
+                    let view = format::render().view(
+                        &v,
+                        "auth/login/login_partial.html",
+                        data!({"options": WebsiteOptions::new().website(&website).language(&lang)}),
+                    )?;
+                    let cookie = AppCookie::logout_cookie();
+                    let cookie_jar = CookieJar::new().add(cookie);
+                    return Ok((cookie_jar, view));
+                }
+            };
         let website_options = WebsiteOptions::new()
             .website(&website)
             .language(&lang)
@@ -909,7 +920,7 @@ pub async fn partial_login(
         )?
     };
 
-    Ok(view_response)
+    Ok((CookieJar::new(), view_response))
 }
 
 #[debug_handler]
