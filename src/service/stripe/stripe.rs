@@ -196,7 +196,7 @@ impl StripeClient {
         let mut meta = HashMap::new();
         match entity {
             MetaEntity::UserModel(user) => {
-                meta.insert("user_id".to_string(), user.id.to_string());
+                meta.insert("user_pid".to_string(), user.id.to_string());
                 meta.insert("email".to_string(), user.email.to_owned());
             }
         }
@@ -210,7 +210,7 @@ impl StripeClient {
         pid: &Uuid,
     ) -> Result<Customer, StripeClientError> {
         let mut meta = HashMap::new();
-        meta.insert("user_id".to_string(), pid.to_string());
+        meta.insert("user_pid".to_string(), pid.to_string());
         meta.insert("email".to_string(), email.to_owned());
 
         let customer = Customer::create(

@@ -147,6 +147,7 @@ pub async fn google_callback_jwt<
     State(ctx): State<AppContext>,
     session: Session<W>,
     Query(params): Query<AuthParams>,
+    Extension(stripe_client): Extension<StripeClient>,
     Extension(oauth2_store): Extension<OAuth2ClientStore>,
 ) -> Result<impl IntoResponse> {
     let mut client = oauth2_store
@@ -157,6 +158,10 @@ pub async fn google_callback_jwt<
             Error::InternalServerError
         })?;
     let user = callback_jwt_google::<T, U, V, W>(&ctx, session, params, &mut client).await?;
+    let user = user
+        .user()
+        .create_stripe_customer(&ctx.db, &stripe_client)
+        .await?;
     drop(client);
 
     let cookie = user.create_cookie(&ctx)?;

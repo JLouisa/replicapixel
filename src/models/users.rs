@@ -684,6 +684,7 @@ impl Model {
             password: ActiveValue::set(password_hash),
             name: ActiveValue::set(params.name.to_string()),
             stripe_customer_id: ActiveValue::set(stripe_customer),
+            email_verified_at: ActiveValue::set(Some(Local::now().into())),
             account: ActiveValue::set(Account::Google),
             ..Default::default()
         }
@@ -794,6 +795,24 @@ impl Model {
     /// when could not convert user claims to jwt token
     pub fn generate_jwt(&self, secret: &str, expiration: u64) -> ModelResult<String> {
         Ok(jwt::JWT::new(secret).generate_token(expiration, self.pid.to_string(), Map::new())?)
+    }
+
+    pub async fn create_stripe_customer(
+        self,
+        db: &impl ConnectionTrait,
+        stripe_client: &StripeClient,
+    ) -> ModelResult<Model> {
+        let stripe_customer_id = match stripe_client
+            .create_customer(&self.name, &self.email, &self.pid)
+            .await
+        {
+            Ok(stripe_customer) => Some(stripe_customer.id.to_string()),
+            Err(_) => None,
+        };
+        let mut user = self.into_active_model();
+        user.stripe_customer_id = ActiveValue::set(stripe_customer_id);
+
+        Ok(user.update(db).await?)
     }
 }
 

@@ -43,7 +43,7 @@ pub trait UserCookieTrait<T>: OAuth2UserTrait<T> + ModelTrait {
     ) -> CookieResult<AxumCookie<'static>>;
     fn create_cookie(&self, ctx: &AppContext) -> CookieResult<AxumCookie<'static>>;
     fn create_cookie_strict(&self, ctx: &AppContext) -> CookieResult<AxumCookie<'static>>;
-    fn user_id(&self) -> i32;
+    fn user(&self) -> UserModel;
 }
 
 impl UserCookieTrait<OAuth2UserProfile> for UserModel {
@@ -87,8 +87,8 @@ impl UserCookieTrait<OAuth2UserProfile> for UserModel {
     fn create_cookie_strict(&self, ctx: &AppContext) -> CookieResult<AxumCookie<'static>> {
         self.create_cookie_base(ctx, SameSite::Strict)
     }
-    fn user_id(&self) -> i32 {
-        self.id
+    fn user(&self) -> UserModel {
+        self.clone()
     }
 }
 
