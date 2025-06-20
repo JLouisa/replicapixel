@@ -835,10 +835,22 @@ pub async fn get_login(
     State(ctx): State<AppContext>,
     LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
-    let view_response = if auth.is_ok() {
-        let user_pid = UserPid::new(&auth.unwrap().claims.pid);
+    let view_response = if let Ok(auth) = auth {
+        let user_pid = UserPid::new(&auth.claims.pid);
         let (user, user_credits, training_models) =
-            load_user_credit_training(&ctx.db, &user_pid).await?;
+            match load_user_credit_training(&ctx.db, &user_pid).await {
+                Ok((user, user_credits, training_models)) => (user, user_credits, training_models),
+                Err(_) => {
+                    let view = format::render().view(
+                        &v,
+                        "auth/login/login_form.html",
+                        data!({"options": WebsiteOptions::new().website(&website).language(&lang)}),
+                    )?;
+                    let cookie = AppCookie::logout_cookie();
+                    let cookie_jar = CookieJar::new().add(cookie);
+                    return Ok((cookie_jar, view));
+                }
+            };
         let website_options = WebsiteOptions::new()
             .website(&website)
             .language(&lang)
@@ -862,17 +874,7 @@ pub async fn get_login(
         )?
     };
 
-    let final_response = Response::builder()
-        .status(StatusCode::OK)
-        .body(Body::from(view_response.into_response().into_body()))
-        .map_err(|e| {
-            Error::CustomError(
-                StatusCode::INTERNAL_SERVER_ERROR,
-                ErrorDetail::new("RESPONSE_BUILD_FAILED", &e.to_string()),
-            )
-        })?;
-
-    Ok(final_response)
+    Ok((CookieJar::new(), view_response))
 }
 
 #[debug_handler]
