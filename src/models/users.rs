@@ -28,15 +28,18 @@ use axum::http::StatusCode;
 pub const MAGIC_LINK_LENGTH: i8 = 32;
 pub const MAGIC_LINK_EXPIRATION_MIN: i8 = 5;
 
-#[derive(Debug, Serialize, Deserialize, Validate)]
+#[derive(Debug, Serialize, Deserialize, Validate, Default)]
 pub struct LoginParams {
     #[validate(email)]
     pub email: String,
     pub password: String,
+    #[serde(default)]
     pub remember: bool,
+    #[serde(default)]
+    pub plan_id: Option<Uuid>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Validate)]
+#[derive(Debug, Serialize, Deserialize, Validate, Default)]
 pub struct RegisterParams {
     #[validate(length(min = 2, message = "Name must be at least 2 characters long."))]
     pub name: String,
@@ -55,6 +58,8 @@ pub struct RegisterParams {
     pub theme_preference: ThemePreference,
     #[serde(skip_deserializing, default)]
     pub picture: Option<String>,
+    #[serde(default)]
+    pub plan_id: Option<Uuid>,
 }
 impl RegisterParams {
     pub fn validate_email(&self) -> Vec<String> {
@@ -218,9 +223,8 @@ impl RegisterParams {
             confirm_password: pg,
             email_notifications: true,
             marketing: true,
-            theme_preference: Default::default(),
-            language: Default::default(),
             picture: google_user_data.picture,
+            ..RegisterParams::default()
         };
 
         Ok(register)

@@ -3,7 +3,6 @@
 #![allow(clippy::unused_async)]
 use crate::controllers::auth::HxRedirect;
 use crate::controllers::dashboard::CurrentPage;
-use crate::controllers::payment::PricingViewList;
 use crate::domain::website::{Website, WebsiteOptions};
 use crate::middleware::cookie::ExtractConsentState;
 use crate::middleware::i18nv2::LangEngine;
@@ -18,6 +17,7 @@ use crate::service::redis::redis::{
 use crate::views;
 use crate::views::auth::UserView;
 use crate::views::packs::PackViewList;
+use crate::views::payment::PricingViewList;
 use axum::{debug_handler, Extension};
 use loco_rs::prelude::*;
 

@@ -205,7 +205,7 @@ impl Model {
         let user = Entity::find()
             .filter(
                 model::query::condition()
-                    .eq(plans::Column::Name, name.to_string())
+                    .eq(plans::Column::Name, name.to_owned())
                     .build(),
             )
             .one(db)

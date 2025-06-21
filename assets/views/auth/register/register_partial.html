@@ -143,6 +143,12 @@
             class="checkbox checkbox-primary"
             id="email_notifications"
             name="email_notifications"
+            {%
+            if
+            options.register.email_notifications
+            %}checked{%
+            endif
+            %}
           />
           <span class="text-sm text-black"
             >{{ t(key="auth-register-checkbox-updates", lang=lang) }}</span
@@ -154,6 +160,12 @@
             class="checkbox checkbox-primary"
             id="marketing"
             name="marketing"
+            {%
+            if
+            options.register.marketing
+            %}checked{%
+            endif
+            %}
           />
           <span class="text-sm text-black"
             >{{ t(key="auth-register-checkbox-offers", lang=lang) }}</span

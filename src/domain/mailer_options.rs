@@ -2,9 +2,9 @@ use chrono::Datelike;
 use chrono::Local;
 use serde::Serialize;
 
-use crate::controllers::payment::PricingView;
 use crate::models::UserModel;
 use crate::models::_entities::sea_orm_active_enums::Currency;
+use crate::views::payment::PricingView;
 use crate::{
     domain::website::Website,
     models::{_entities::sea_orm_active_enums::Language, transactions::TransactionDomain},

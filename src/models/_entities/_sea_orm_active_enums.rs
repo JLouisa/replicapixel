@@ -47,10 +47,13 @@ impl Default for Sex {
 #[serde(rename_all = "lowercase")]
 pub enum PlanNames {
     #[sea_orm(string_value = "Basic")]
+    #[strum(to_string = "basic")]
     Basic,
     #[sea_orm(string_value = "Premium")]
+    #[strum(to_string = "premium")]
     Premium,
     #[sea_orm(string_value = "Max")]
+    #[strum(to_string = "max")]
     Max,
 }
 

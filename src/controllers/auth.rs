@@ -23,7 +23,7 @@ use crate::{
         redis::redis::{RedisCacheDriver, RedisKey},
         stripe::stripe::StripeClient,
     },
-    views::{self, auth::CurrentResponse},
+    views::{self, auth::CurrentResponse, payment::PricingView},
 };
 use axum::{
     debug_handler,
@@ -42,6 +42,7 @@ use std::{borrow::Cow, collections::HashMap, sync::OnceLock};
 use validator::ValidationErrorsKind;
 
 use crate::controllers::auth::routes as AuthRoutes;
+use crate::controllers::payment::routes::Payment as PaymentRoutes;
 
 pub static EMAIL_DOMAIN_RE: OnceLock<Regex> = OnceLock::new();
 
@@ -64,6 +65,7 @@ pub mod routes {
         pub change_password: String,
         pub api_check_user: String,
         pub api_password_reset: String,
+        pub api_auth_register_stripe: String,
     }
     impl AuthRoutes {
         pub fn init() -> Self {
@@ -82,6 +84,7 @@ pub mod routes {
                 change_password: String::from(Auth::API_PASSWORD_CHANGE),
                 api_check_user: String::from(Auth::API_CHECK_USER),
                 api_password_reset: String::from(Auth::API_MAGIC_LINK),
+                api_auth_register_stripe: String::from(Auth::API_AUTH_REGISTER_STRIPE),
             }
         }
     }
@@ -113,6 +116,7 @@ pub mod routes {
         pub const API_PASSWORD_CHANGE: &'static str = "/api/auth/password-change";
         pub const API_CHECK_USER: &'static str = "/api/auth/check-user";
         pub const API_SET_LANGUAGE: &'static str = "/api/auth/language";
+        pub const API_AUTH_REGISTER_STRIPE: &'static str = "/api/auth/register/prepare";
     }
 }
 
@@ -140,6 +144,10 @@ pub fn routes() -> Routes {
         .add(routes::Auth::API_MAGIC_LINK_TOKEN, post(set_password))
         .add(routes::Auth::API_PASSWORD_CHANGE_ID, post(change_password))
         .add(routes::Auth::API_SET_LANGUAGE, post(set_language))
+        .add(
+            routes::Auth::API_AUTH_REGISTER_STRIPE,
+            post(auth_stripe_register_handler),
+        )
     // // .add(routes::Auth::API_CHECK_USER, get(check_user))
     //// .add("/api/auth/test/welcome", get(test_welcome_mail))
     //// .add("/api/auth/test/forgot_password", get(test_forgot_password))
@@ -154,6 +162,16 @@ impl HxRedirect {
     }
     pub fn login() -> Self {
         Self(String::from(routes::Auth::LOGIN))
+    }
+    pub fn payment(user: &UserModel, plan: &PricingView) -> Self {
+        let link = format!(
+            "{}{}/{}/{}",
+            PaymentRoutes::BASE,
+            PaymentRoutes::API_STRIPE_PREPARE,
+            user.pid,
+            plan.plan_name.to_string()
+        );
+        Self(String::from(link))
     }
 }
 impl IntoResponse for HxRedirect {
@@ -237,7 +255,7 @@ impl AuthError {
     }
     pub fn verify_error(&self) -> Self {
         Self {
-            general: Some(String::from("Email is not verified")),
+            general: Some(String::from("Email is not verified. Check your inbox")),
             ..Default::default()
         }
     }
@@ -245,6 +263,10 @@ impl AuthError {
 
 async fn load_plan(db: &impl ConnectionTrait, name: &String) -> Result<PlanModel> {
     let item = PlanModel::find_by_name_string(db, &name).await?;
+    Ok(item)
+}
+async fn load_plan_pid(db: &DatabaseConnection, pid: &Uuid) -> Result<PlanModel> {
+    let item = PlanModel::find_by_pid(db, &pid).await?;
     Ok(item)
 }
 async fn load_transaction(db: &impl ConnectionTrait, name: &Uuid) -> Result<TransactionModel> {
@@ -375,6 +397,7 @@ pub async fn test_magic_link(
     Ok((StatusCode::OK).into_response())
 }
 
+#[debug_handler]
 async fn set_language(
     auth: Result<auth::JWT>, // Use the lightweight extractor
     jar: CookieJar,
@@ -397,6 +420,93 @@ async fn set_language(
     let cookie = AppCookie::create_language_cookie(lang_code);
 
     Ok((jar.add(cookie), StatusCode::NO_CONTENT).into_response())
+}
+
+#[debug_handler]
+pub async fn auth_stripe_register_handler(
+    Extension(stripe_client): Extension<StripeClient>,
+    ViewEngine(v): ViewEngine<TeraView>,
+    Extension(website): Extension<Website>,
+    State(ctx): State<AppContext>,
+    LangEngine(lang): LangEngine,
+    Json(params): Json<RegisterParams>,
+) -> Result<impl IntoResponse> {
+    let plan: PricingView = match params.plan_id {
+        Some(pid) => load_plan_pid(&ctx.db, &pid).await?.into(),
+        None => {
+            return Ok((StatusCode::BAD_REQUEST).into_response());
+        }
+    };
+
+    if let Err(err) = params.validate() {
+        let error_msg = AuthError::default().register_error(err.errors());
+        let website_options = WebsiteOptions::new()
+            .website(&website)
+            .language(&lang)
+            .register(&params)
+            .auth_error(&error_msg);
+        return format::render().view(
+            &v,
+            "home/sections/partials/pricing_auth_signup_partial.html",
+            data!({"options": website_options, "pricing": plan}),
+        );
+    }
+
+    let user = match users::Model::create_with_password(&ctx.db, &params, &stripe_client).await {
+        Ok(user) => user,
+        Err(err) => {
+            tracing::info!(
+                message = err.to_string(),
+                user_email = &params.email,
+                "could not register user",
+            );
+            let error_msg = AuthError::default();
+
+            match err {
+                ModelError::EntityAlreadyExists { .. } => {
+                    let error_msg=  error_msg.register_email(
+                        "This email address is already associated with an account. Please use a different email or log in to your existing account.")
+                    ;
+                    let website_options = WebsiteOptions::new()
+                        .website(&website)
+                        .language(&lang)
+                        .register(&params)
+                        .auth_error(&error_msg);
+                    return format::render().view(
+                        &v,
+                        "home/sections/partials/pricing_auth_signup_partial.html",
+                        data!({"options": website_options, "pricing": plan}),
+                    );
+                }
+                _ => {
+                    let error_msg =
+                        error_msg.register_msg("Something went wrong. Please try again.");
+                    let website_options = WebsiteOptions::new()
+                        .website(&website)
+                        .language(&lang)
+                        .register(&params)
+                        .auth_error(&error_msg);
+                    return format::render().view(
+                        &v,
+                        "home/sections/partials/pricing_auth_signup_partial.html",
+                        data!({"options": website_options, "pricing": plan}),
+                    );
+                }
+            }
+        }
+    };
+
+    let user = user
+        .into_active_model()
+        .set_email_verification_sent(&ctx.db)
+        .await?;
+
+    let mailer_options = MailerOptions::new().website(&website).into_user(&user);
+    AuthMailer::send_welcome(&ctx, &mailer_options).await?;
+
+    let redirect = HxRedirect::payment(&user, &plan);
+
+    Ok(redirect.into_response())
 }
 
 #[debug_handler]

@@ -107,6 +107,10 @@ website.website_routes.payment.payment_prepare_route %}
           pricing.plan_name == "max" %} {% include "partials/parts/validated/pricing_max_btn.html"
           %} {% endif %} {% else %}
           <div id="pricing-{{pricing.plan_name}}-btn" class="w-full flex flex-col items-start">
+            {% include "home/sections/partials/pricing_auth_modal.html" %}
+          </div>
+          {#
+          <div id="pricing-{{pricing.plan_name}}-btn" class="w-full flex flex-col items-start">
             <a
               href="{{ login_link | safe }}"
               hx-get="{{ login_link | safe }}"
@@ -124,7 +128,7 @@ website.website_routes.payment.payment_prepare_route %}
               </div>
             </a>
           </div>
-          {% endif %}
+          #} {% endif %}
         </div>
       </div>
       {% endfor %}

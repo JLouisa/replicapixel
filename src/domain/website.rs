@@ -12,7 +12,7 @@ use crate::controllers::dashboard::CurrentPage;
 use crate::controllers::home::{load_packs_translated, load_pricing_translated};
 use crate::controllers::other::routes::OtherRoutes;
 use crate::controllers::packs::routes::PackRoutes;
-use crate::controllers::payment::{PricingViewList, StripeWebOptions};
+use crate::controllers::payment::StripeWebOptions;
 use crate::controllers::settings::routes::SettingRoutes;
 use crate::controllers::starter::routes::StarterRoutes;
 use crate::controllers::{
@@ -34,6 +34,7 @@ use crate::views::auth::{UserCreditsView, UserView};
 use crate::views::dashboard::TransactionViewList;
 use crate::views::images::{ImageView, ImageViewList};
 use crate::views::packs::{PackView, PackViewList};
+use crate::views::payment::{PricingView, PricingViewList};
 use crate::views::settings::UserSettingsView;
 use crate::views::training_models::{TrainingModelView, TrainingModelViewList};
 
@@ -411,6 +412,7 @@ pub struct WebsiteOptions<'a> {
     pub user: Option<UserView>,
     pub user_credits: Option<UserCreditsView>,
     pub orders: Option<&'a TransactionViewList>,
+    pub plan: Option<&'a PricingView>,
     pub plans: Option<HashMap<i32, PlanModel>>,
     pub feature: Option<&'a FeatureView>,
     pub features: Option<&'a FeatureViewList>,
@@ -561,6 +563,13 @@ impl<'a> WebsiteOptions<'a> {
     pub fn pack_images(self, packs: WebGallery) -> Self {
         Self {
             pack_images: Some(packs),
+            ..self
+        }
+    }
+    // Sets the plan.
+    pub fn plan(self, plan: &'a PricingView) -> Self {
+        Self {
+            plan: Some(plan),
             ..self
         }
     }
