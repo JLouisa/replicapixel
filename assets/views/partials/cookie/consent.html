@@ -1,10 +1,11 @@
 {% set lang = options.language %}
 <!-- Cookie Consent -->
-{% if cc_cookie.cookie_exists %}
+{% if options.cc_cookie.cookie_exists %}
 <!-- Meta Pixel -->
-{% if cc_cookie.marketing %} {% include "partials/cookie/marketing.html" %} {% endif %}
+{% if options.cc_cookie.marketing %} {% include "partials/cookie/marketing.html" %} {% endif %}
 <!-- Google Analytics -->
-{% if cc_cookie.analytics %} {% include "partials/cookie/analytics.html" %} {% endif %} {% else %}
+{% if options.cc_cookie.analytics %} {% include "partials/cookie/analytics.html" %} {% endif %} {%
+else %}
 <link href="/static/js/cookie-consent.css" rel="stylesheet" type="text/css" />
 <script type="module" src="/static/js/cookie-consent.js" defer></script>
 {% endif %}
