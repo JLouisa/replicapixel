@@ -40,6 +40,7 @@
     <!-- Javascript -->
     {% block js %} {% endblock js %}
     <script>
+      console.log("Prod: {{ options.is_production }}");
       // Apply theme on page load
       const userTheme = localStorage.getItem("theme");
       if (userTheme) {
