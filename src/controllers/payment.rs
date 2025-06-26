@@ -14,7 +14,7 @@ pub struct PaymentController;
 use crate::{
     controllers::auth::HxRedirect,
     domain::website::{Website, WebsiteOptions},
-    middleware::i18nv2::LangEngine,
+    middleware::{cookie::ExtractConsentState, i18nv2::LangEngine},
     models::{
         users::UserPid,
         PlanModel,
@@ -246,6 +246,7 @@ pub async fn prepare_handler(
     // _auth: auth::JWT,
     Path((pid, plan)): Path<(Uuid, PlanNames)>,
     State(_ctx): State<AppContext>,
+    ExtractConsentState(cc_cookie): ExtractConsentState,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
     LangEngine(lang): LangEngine,
@@ -259,6 +260,8 @@ pub async fn prepare_handler(
     );
     let website_options = WebsiteOptions::new()
         .website(&website)
+        .cc_cookie(&cc_cookie)
+        .is_marketing_initiate_checkout()
         .language(&lang)
         .link(&link)
         .build();
@@ -304,6 +307,7 @@ async fn success_handler(
     params: Query<PaymentRedirectParams>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
+    ExtractConsentState(cc_cookie): ExtractConsentState,
     LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
     tracing::info!(
@@ -315,6 +319,7 @@ async fn success_handler(
         .status(CheckOutStatus::Processing);
     let website_options = WebsiteOptions::new()
         .website(&website)
+        .cc_cookie(&cc_cookie)
         .language(&lang)
         .stripe_options(&stripe_options)
         .build();
@@ -324,12 +329,14 @@ async fn success_handler(
 async fn cancel_handler(
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
+    ExtractConsentState(cc_cookie): ExtractConsentState,
     LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
     tracing::info!("User cancelled payment process.");
     let stripe_options = StripeWebOptions::new().status(CheckOutStatus::Cancelled);
     let website_options = WebsiteOptions::new()
         .website(&website)
+        .cc_cookie(&cc_cookie)
         .language(&lang)
         .stripe_options(&stripe_options)
         .build();
@@ -341,6 +348,7 @@ async fn status_handler(
     Extension(stripe_client): Extension<StripeClient>,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
+    ExtractConsentState(cc_cookie): ExtractConsentState,
     LangEngine(lang): LangEngine,
 ) -> Result<impl IntoResponse> {
     dbg!(&session_id_str);
@@ -363,11 +371,18 @@ async fn status_handler(
     // 4. Redirect Appropriately
     if is_successful {
         tracing::info!(session_id = %session_id_str, "Checkout session verified successfully via redirect.");
+        let amount = match session.amount_total {
+            Some(amount) => amount as f64 / 100.0,
+            None => 9.99,
+        };
         let stripe_options = StripeWebOptions::new().status(CheckOutStatus::Succeeded);
         let website_options = WebsiteOptions::new()
             .website(&website)
+            .cc_cookie(&cc_cookie)
             .language(&lang)
             .stripe_options(&stripe_options)
+            .is_marketing_purchase()
+            .marketing_purchase(amount)
             .build();
         views::payment::stripe_status_partials(v, &website_options)
     } else {
@@ -383,6 +398,7 @@ async fn status_handler(
 pub async fn payment_home(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
+    ExtractConsentState(cc_cookie): ExtractConsentState,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
     LangEngine(lang): LangEngine,
@@ -391,7 +407,9 @@ pub async fn payment_home(
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     let website_options = WebsiteOptions::new()
         .website(&website)
+        .cc_cookie(&cc_cookie)
         .language(&lang)
+        .is_marketing_initiate_checkout()
         .user(user.into())
         .user_credits(user_credits.into())
         .build();
@@ -401,6 +419,7 @@ pub async fn payment_home(
 pub async fn payment_home_partial(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
+    ExtractConsentState(cc_cookie): ExtractConsentState,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
     LangEngine(lang): LangEngine,
@@ -409,7 +428,9 @@ pub async fn payment_home_partial(
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     let website_options = WebsiteOptions::new()
         .website(&website)
+        .cc_cookie(&cc_cookie)
         .language(&lang)
+        .is_marketing_initiate_checkout()
         .user(user.into())
         .user_credits(user_credits.into())
         .build();

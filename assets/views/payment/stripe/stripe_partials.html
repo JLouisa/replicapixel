@@ -43,9 +43,15 @@
   </div>
 
   <script>
-    setTimeout(() => {
-      window.location.href = "{{ options.website.website_routes.dashboard_routes.base | safe }}";
-    }, 3000);
+    {% if options.is_production and options.cc_cookie.marketing and options.is_marketing_purchase %}
+       fbq("track", "Purchase", {
+         value: {{ options.marketing_purchase.value | default(value=0.0) }},
+         currency: "{{ options.marketing_purchase.currency | default(value='USD') }}"
+       });
+    {% endif %}
+          setTimeout(() => {
+           window.location.href = "{{ options.website.website_routes.dashboard_routes.base | safe }}";
+         }, 3000);
   </script>
 </div>
 

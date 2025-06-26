@@ -6,8 +6,9 @@ use crate::{
 use async_trait::async_trait;
 use loco_rs::cache;
 
-use crate::middleware::i18n::I18n;
-use axum::Router as AxumRouter;
+// use crate::middleware::i18n::I18n;
+// use axum::Router as AxumRouter;
+
 // use loco_rs::controller::middleware::{self, MiddlewareLayer};
 
 use loco_rs::{
@@ -84,10 +85,10 @@ impl Hooks for App {
         ])
     }
 
-    async fn before_routes(_ctx: &AppContext) -> Result<AxumRouter<AppContext>> {
-        let router = AxumRouter::new().layer(I18n::new());
-        Ok(router)
-    }
+    // async fn before_routes(_ctx: &AppContext) -> Result<AxumRouter<AppContext>> {
+    //     let router = AxumRouter::new().layer(I18n::new());
+    //     Ok(router)
+    // }
 
     // fn middlewares(ctx: &AppContext) -> Vec<Box<dyn MiddlewareLayer>> {
     //     let mut default_stack = middleware::default_middleware_stack(ctx);
@@ -104,7 +105,7 @@ impl Hooks for App {
             .add_route(controllers::settings::routes())
             .add_route(controllers::features::routes())
             .add_route(controllers::oauth2::routes())
-            .add_route(controllers::payment::routes())
+            .add_route(controllers::payment::routes().layer(CookieConsentLayer::new()))
             .add_route(controllers::images::routes())
             .add_route(controllers::home::routes().layer(CookieConsentLayer::new()))
             .add_route(controllers::dashboard::routes().layer(CookieConsentLayer::new()))
@@ -114,6 +115,11 @@ impl Hooks for App {
             .add_route(controllers::auth::routes().layer(CookieConsentLayer::new()))
     }
     async fn connect_workers(ctx: &AppContext, queue: &Queue) -> Result<()> {
+        queue
+            .register(crate::workers::meta_worker::MetaConversionApiWorker::build(
+                ctx,
+            ))
+            .await?;
         queue.register(DownloadWorker::build(ctx)).await?;
         Ok(())
     }

@@ -403,6 +403,12 @@ impl HomeReview {
 }
 
 #[derive(Serialize, Default)]
+pub struct MarketingPurchase {
+    pub value: String,
+    pub currency: String,
+}
+
+#[derive(Serialize, Default)]
 #[must_use]
 pub struct WebsiteOptions<'a> {
     pub website: Option<&'a Website>,
@@ -432,6 +438,9 @@ pub struct WebsiteOptions<'a> {
     pub login: Option<&'a LoginParams>,
     pub auth_error: Option<&'a AuthError>,
     pub stripe_options: Option<&'a StripeWebOptions>,
+    pub marketing_purchase: Option<MarketingPurchase>,
+    pub is_marketing_initiate_checkout: bool,
+    pub is_marketing_purchase: bool,
     pub is_logged_in: bool,
     pub is_ott: bool,
     pub is_home: bool,
@@ -608,6 +617,15 @@ impl<'a> WebsiteOptions<'a> {
             ..self
         }
     }
+    pub fn marketing_purchase(self, value: f64) -> Self {
+        Self {
+            marketing_purchase: Some(MarketingPurchase {
+                value: value.to_string(),
+                currency: "USD".to_string(),
+            }),
+            ..self
+        }
+    }
     // Sets the message.
     pub fn message(self, message: &'a str) -> Self {
         Self {
@@ -717,6 +735,20 @@ impl<'a> WebsiteOptions<'a> {
     pub fn is_production(self) -> Self {
         Self {
             is_production: !cfg!(debug_assertions),
+            ..self
+        }
+    }
+    // Sets the bool for is_logged_in.
+    pub fn is_marketing_initiate_checkout(self) -> Self {
+        Self {
+            is_marketing_initiate_checkout: true,
+            ..self
+        }
+    }
+    // Sets the bool for is_logged_in.
+    pub fn is_marketing_purchase(self) -> Self {
+        Self {
+            is_marketing_purchase: true,
             ..self
         }
     }

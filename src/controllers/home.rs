@@ -4,13 +4,15 @@
 use crate::controllers::auth::HxRedirect;
 use crate::controllers::dashboard::CurrentPage;
 use crate::domain::website::{Website, WebsiteOptions};
+use crate::middleware::client_ip::ClientIp;
 use crate::middleware::cookie::ExtractConsentState;
 use crate::middleware::i18nv2::LangEngine;
 use crate::models::_entities::sea_orm_active_enums::Language;
 use crate::models::join::user_credits_models::load_user_credit_training;
 use crate::models::packs::PackModelList;
 use crate::models::users::UserPid;
-use crate::models::{PackModel, PlanModel, UserModel};
+use crate::models::{PackModel, PlanModel, TransactionModel, UserModel};
+use crate::service::meta::meta::{EventData, UserData};
 use crate::service::redis::redis::{
     load_cached_web, load_from_file_and_cache, RedisCacheDriver, RedisKey,
 };
@@ -18,12 +20,16 @@ use crate::views;
 use crate::views::auth::UserView;
 use crate::views::packs::PackViewList;
 use crate::views::payment::PricingViewList;
+use crate::workers::meta_worker::MetaConversionApiWorker;
+use crate::workers::meta_worker::MetaConversionApiWorkerArgs;
 use axum::{debug_handler, Extension};
 use loco_rs::prelude::*;
 
 // use crate::controllers::auth::routes as AuthRoutes;
 use axum::{http::StatusCode, response::IntoResponse};
 use std::path::Path;
+
+use axum_extra::{headers::UserAgent, TypedHeader};
 
 pub mod routes {
     use serde::{Deserialize, Serialize};
@@ -55,6 +61,9 @@ pub mod routes {
         pub const HOME_PARTIAL: &'static str = "/partial/home";
         pub const DASHBOARD_EXTEND: &'static str = "/partial/dashboard";
         pub const DASHBOARD_PACKS_EXTEND: &'static str = "/partial/dashboard/packs";
+        pub const TEST_META_PAGEVIEW: &'static str = "/test/meta/pageview";
+        pub const TEST_META_CHECKOUT: &'static str = "/test/meta/checkout";
+        pub const TEST_META_PURCHASE: &'static str = "/test/meta/purchase";
     }
 }
 
@@ -72,6 +81,9 @@ pub fn routes() -> Routes {
             routes::Home::DASHBOARD_PACKS_EXTEND,
             get(render_dashboard_extend_packs_partial),
         )
+        .add(routes::Home::TEST_META_PAGEVIEW, get(test_meta_page_view))
+        .add(routes::Home::TEST_META_CHECKOUT, get(test_meta_checkout))
+        .add(routes::Home::TEST_META_PURCHASE, get(test_meta_purchase))
 }
 
 pub async fn load_user(db: &DatabaseConnection, user_pid: &UserPid) -> Result<UserModel> {
@@ -126,6 +138,73 @@ pub async fn load_pricing_translated(
         }
     };
     Ok(pricing)
+}
+
+#[debug_handler]
+pub async fn test_meta_page_view(
+    ClientIp(client_ip): ClientIp,
+    TypedHeader(user_agent): TypedHeader<UserAgent>,
+    State(ctx): State<AppContext>,
+    Extension(website): Extension<Website>,
+) -> Result<impl IntoResponse> {
+    let user_pid = UserPid::new("0aec7a76-c58d-40ba-af47-5c876e310899");
+    let user = load_user(&ctx.db, &user_pid).await?;
+
+    let user_data = UserData::new(&user)
+        .client_user_agent(&user_agent)
+        .client_ip_address(&client_ip);
+
+    // Send to queue for processing for Meta
+    let meta = EventData::page_view().set_user_data(&user_data);
+    let worker_arg = MetaConversionApiWorkerArgs::new(meta, website.website_basic_info.meta_pixel);
+    MetaConversionApiWorker::perform_later(&ctx, worker_arg).await?;
+
+    Ok((StatusCode::OK, "OK").into_response())
+}
+#[debug_handler]
+pub async fn test_meta_checkout(
+    ClientIp(client_ip): ClientIp,
+    TypedHeader(user_agent): TypedHeader<UserAgent>,
+    State(ctx): State<AppContext>,
+    Extension(website): Extension<Website>,
+) -> Result<impl IntoResponse> {
+    let user_pid = UserPid::new("0aec7a76-c58d-40ba-af47-5c876e310899");
+    let user = load_user(&ctx.db, &user_pid).await?;
+    let user_data = UserData::new(&user)
+        .client_user_agent(&user_agent)
+        .client_ip_address(&client_ip);
+    let plan_uuid = Uuid::parse_str("cd08b105-5880-4fd1-872a-acf711a5b8ef").unwrap();
+    let plan = PlanModel::find_by_pid(&ctx.db, &plan_uuid).await?;
+
+    // Send to queue for processing for Meta
+    let meta = EventData::initiate_checkout(&user, &plan).set_user_data(&user_data);
+    let worker_arg = MetaConversionApiWorkerArgs::new(meta, website.website_basic_info.meta_pixel);
+    MetaConversionApiWorker::perform_later(&ctx, worker_arg).await?;
+
+    Ok((StatusCode::OK, "OK").into_response())
+}
+#[debug_handler]
+pub async fn test_meta_purchase(
+    ClientIp(client_ip): ClientIp,
+    TypedHeader(user_agent): TypedHeader<UserAgent>,
+    State(ctx): State<AppContext>,
+    Extension(website): Extension<Website>,
+) -> Result<impl IntoResponse> {
+    let user_pid = UserPid::new("0aec7a76-c58d-40ba-af47-5c876e310899");
+    let user = load_user(&ctx.db, &user_pid).await?;
+    let user_data = UserData::new(&user)
+        .client_user_agent(&user_agent)
+        .client_ip_address(&client_ip);
+
+    let txn_uuid = Uuid::parse_str("5cab4986-e126-4747-be50-fd4a210eb535").unwrap();
+    let txn = TransactionModel::find_by_pid(&txn_uuid, &ctx.db).await?;
+
+    // Send to queue for processing for Meta
+    let meta = EventData::purchase(&user, &txn).set_user_data(&user_data);
+    let worker_arg = MetaConversionApiWorkerArgs::new(meta, website.website_basic_info.meta_pixel);
+    MetaConversionApiWorker::perform_later(&ctx, worker_arg).await?;
+
+    Ok((StatusCode::OK, "OK").into_response())
 }
 
 #[debug_handler]

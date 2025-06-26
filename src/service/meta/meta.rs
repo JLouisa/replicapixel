@@ -1,3 +1,4 @@
+use axum_extra::headers::UserAgent;
 use chrono::Utc;
 use reqwest::Client as ReqwestClient;
 use reqwest::Error as ReqwestError;
@@ -25,7 +26,7 @@ impl MetaConversionApiClient {
         let meta_pixel_id = meta.meta_pixel_id.expect("Meta Pixel ID is not set");
 
         let url = format!(
-            "https://graph.facebook.com/v19.0/{}/events?access_token={}",
+            "https://graph.facebook.com/v23.0/{}/events?access_token={}",
             &meta_pixel_id, &meta_access_token
         );
 
@@ -35,12 +36,51 @@ impl MetaConversionApiClient {
         }
     }
 
-    pub async fn meta_conversion_api(
+    pub async fn page_view(&self, user_data: &UserData) -> Result<(), MetaConversionApiError> {
+        let event_data = EventData::page_view().set_user_data(&user_data);
+        self.base(&event_data).await
+    }
+
+    pub async fn purchase(
         &self,
         user: &UserModel,
         txn: &TransactionModel,
     ) -> Result<(), MetaConversionApiError> {
-        let event = ConversionPayload::purchase(user, txn);
+        let event_data = EventData::purchase(user, txn);
+        self.base(&event_data).await
+    }
+
+    pub async fn initiate_checkout(
+        &self,
+        user: &UserModel,
+        plan: &PlanModel,
+    ) -> Result<(), MetaConversionApiError> {
+        let event_data = EventData::initiate_checkout(user, plan);
+        self.base(&event_data).await
+    }
+
+    async fn base(&self, data: &EventData) -> Result<(), MetaConversionApiError> {
+        let event = ConversionPayload::default().set_data(data);
+
+        let res = self.client.post(&self.meta_url).json(&event).send().await?;
+
+        let status = res.status();
+        let body = res.text().await?;
+
+        if status.is_success() {
+            tracing::debug!("✅ Meta Pixel Success: {}", body);
+            return Ok(());
+        }
+
+        tracing::error!("❌ Meta Pixel Error ({}): {}", status, body);
+        Ok(())
+    }
+
+    pub async fn meta_conversion_api(
+        &self,
+        event_data: &EventData,
+    ) -> Result<(), MetaConversionApiError> {
+        let event = ConversionPayload::default().set_data(event_data);
 
         let res = self.client.post(&self.meta_url).json(&event).send().await?;
 
@@ -57,10 +97,11 @@ impl MetaConversionApiClient {
     }
     pub async fn meta_conversion_api_test(
         &self,
-        user: &UserModel,
-        plan: &PlanModel,
+        data: &EventData,
     ) -> Result<(), MetaConversionApiError> {
-        let event = ConversionPayload::initiate_checkout(user, plan).test_code("");
+        let event = ConversionPayload::default()
+            .set_data(data)
+            .test_code("TEST9030");
 
         let res = self.client.post(&self.meta_url).json(&event).send().await?;
 
@@ -101,16 +142,10 @@ pub struct ConversionPayload {
     pub test_event_code: Option<String>,
 }
 impl ConversionPayload {
-    fn purchase(user: &UserModel, txn: &TransactionModel) -> Self {
+    fn set_data(self, data: &EventData) -> Self {
         Self {
-            data: vec![EventData::purchase(user, txn)],
-            test_event_code: None,
-        }
-    }
-    fn initiate_checkout(user: &UserModel, plan: &PlanModel) -> Self {
-        Self {
-            data: vec![EventData::initiate_checkout(user, plan)],
-            test_event_code: None,
+            data: vec![data.clone()],
+            ..self
         }
     }
     fn test_code(self, code: &str) -> Self {
@@ -121,7 +156,7 @@ impl ConversionPayload {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct EventData {
     event_name: Option<String>,
     event_time: i64,
@@ -133,13 +168,33 @@ pub struct EventData {
     original_event_data: OriginalEventData,
 }
 impl EventData {
-    fn purchase(user: &UserModel, txn: &TransactionModel) -> Self {
-        let user_data = Some(UserData::new(user));
-        let custom_data = Some(CustomData::purchase(txn));
+    pub fn page_view() -> Self {
+        Self {
+            event_name: Some("PageView".to_string()),
+            original_event_data: OriginalEventData {
+                event_name: Some("PageView".to_string()),
+                event_time: Utc::now().timestamp(),
+            },
+            ..Self::default()
+        }
+    }
+    pub fn initiate_checkout(user: &UserModel, plan: &PlanModel) -> Self {
+        Self {
+            event_name: Some("InitiateCheckout".to_string()),
+            user_data: Some(UserData::new(user)),
+            custom_data: Some(CustomData::initiate_checkout(plan)),
+            original_event_data: OriginalEventData {
+                event_name: Some("InitiateCheckout".to_string()),
+                event_time: Utc::now().timestamp(),
+            },
+            ..Self::default()
+        }
+    }
+    pub fn purchase(user: &UserModel, txn: &TransactionModel) -> Self {
         Self {
             event_name: Some("Purchase".to_string()),
-            user_data,
-            custom_data,
+            user_data: Some(UserData::new(user)),
+            custom_data: Some(CustomData::purchase(txn)),
             original_event_data: OriginalEventData {
                 event_name: Some("Purchase".to_string()),
                 event_time: Utc::now().timestamp(),
@@ -147,18 +202,10 @@ impl EventData {
             ..Self::default()
         }
     }
-    fn initiate_checkout(user: &UserModel, plan: &PlanModel) -> Self {
-        let user_data = Some(UserData::new(user));
-        let custom_data = Some(CustomData::initiate_checkout(plan));
+    pub fn set_user_data(self, user_data: &UserData) -> Self {
         Self {
-            event_name: Some("InitiateCheckout".to_string()),
-            user_data,
-            custom_data,
-            original_event_data: OriginalEventData {
-                event_name: Some("InitiateCheckout".to_string()),
-                event_time: Utc::now().timestamp(),
-            },
-            ..Self::default()
+            user_data: Some(user_data.clone()),
+            ..self
         }
     }
 }
@@ -183,30 +230,47 @@ impl Default for EventData {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, Default)]
+#[derive(Debug, Serialize, Deserialize, Default, Clone)]
 pub struct UserData {
     pub em: Vec<Option<String>>,
     #[serde(rename = "fn")]
     pub r#fn: Vec<Option<String>>,
     pub ln: Vec<Option<String>>,
+    pub client_user_agent: Option<String>,
+    pub client_ip_address: Option<String>,
+    pub external_id: Vec<Option<String>>,
 }
 impl UserData {
-    fn new(user: &UserModel) -> Self {
+    pub fn new(user: &UserModel) -> Self {
         let (first_name, last_name) = split_full_name(user);
         Self {
             em: vec![sha256_hash(&user.email)],
-            r#fn: vec![first_name],
-            ln: vec![last_name],
+            r#fn: vec![sha256_hash_opt(first_name)],
+            ln: vec![sha256_hash_opt(last_name)],
+            external_id: vec![sha256_hash(&user.pid.to_string())],
+            ..Self::default()
+        }
+    }
+    pub fn client_user_agent(self, agent: &UserAgent) -> Self {
+        Self {
+            client_user_agent: Some(agent.to_string()),
+            ..self
+        }
+    }
+    pub fn client_ip_address(self, ip: &Option<String>) -> Self {
+        Self {
+            client_ip_address: ip.clone(),
+            ..self
         }
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct AttributionData {
     pub attribution_share: String,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct CustomData {
     pub currency: String,
     pub value: String,
@@ -227,7 +291,7 @@ impl CustomData {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct OriginalEventData {
     pub event_name: Option<String>,
     pub event_time: i64,
@@ -235,6 +299,16 @@ pub struct OriginalEventData {
 
 fn sha256_hash(value: &str) -> Option<String> {
     let trimmed = value.trim().to_lowercase();
+    if trimmed.is_empty() {
+        return None;
+    }
+    let mut hasher = Sha256::new();
+    hasher.update(trimmed);
+    Some(hex::encode(hasher.finalize()))
+}
+
+pub fn sha256_hash_opt(value: Option<String>) -> Option<String> {
+    let trimmed = value?.trim().to_lowercase();
     if trimmed.is_empty() {
         return None;
     }

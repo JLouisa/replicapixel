@@ -1,10 +1,16 @@
 <!-- prettier-ignore -->
 {% set website = options.website %}
 {% set stripe_link = options.link | lower | safe %}
+{% set website_site = website.website_basic_info.site | safe %}
+{% set google_ott_link = website.website_routes.oauth2.google_ott | safe %}
+{% set google_analytics_id = website.website_basic_info.google.google_analytics_id | safe %}
+{% set google_client_id = website.website_basic_info.google.google_client_id | safe %}
+{% set api_check_user_link = website.website_routes.auth_routes.api_check_user %}
 
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
   <head>
+    {% if options.is_production %} {% include "partials/cookie/consent.html" %} {% endif %}
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
@@ -20,7 +26,6 @@
     <link rel="stylesheet" href="style.css" />
     <script src="https://js.stripe.com/v3/" defer></script>
     {% endblock stripe %}
-
     <script>
       // Apply theme on page load
       const userTheme = localStorage.getItem("theme");

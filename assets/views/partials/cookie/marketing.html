@@ -1,3 +1,5 @@
+{% set meta_pixel_id = options.website.website_basic_info.meta_pixel.meta_pixel_id | safe %}
+
 <script>
   !(function (f, b, e, v, n, t, s) {
     if (f.fbq) return;
@@ -15,13 +17,25 @@
     s = b.getElementsByTagName(e)[0];
     s.parentNode.insertBefore(t, s);
   })(window, document, "script", "https://connect.facebook.net/en_US/fbevents.js");
-  fbq("init", "{{meta_pixel_id}}");
+
+  fbq("init", "{{ meta_pixel_id }}");
   fbq("track", "PageView");
+  {% if options.is_marketing_initiate_checkout %}
+  fbq("track", "InitiateCheckout");
+  {% endif %}
+  {% if options.is_marketing_purchase %}
+  fbq("track", "Purchase", {
+    value: {{ options.marketing_purchase.value | default(value=0.0) }},
+    currency: "{{ options.marketing_purchase.currency | default(value='USD') }}"
+  });
+  {% endif %}
 </script>
-<noscript
-  ><img
+<noscript>
+  <img
     height="1"
     width="1"
     style="display: none"
     src="https://www.facebook.com/tr?id={{meta_pixel_id}}&ev=PageView&noscript=1"
-/></noscript>
+  />
+</noscript>
+<!-- End Meta Pixel Code -->

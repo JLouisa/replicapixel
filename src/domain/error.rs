@@ -5,6 +5,7 @@ use crate::{
     service::{
         aws::s3::AwsError,
         fal_ai::fal_client::FalAiClientError,
+        meta::meta::MetaConversionApiError,
         stripe::{
             stripe::StripeClientError, stripe_builder::StripeCheckoutBuilderErr,
             stripe_service::StripeServiceError,
@@ -223,6 +224,37 @@ impl From<FalAiClientError> for loco_rs::Error {
                 ErrorDetail::new("Error", &err_str),
             ),
             FalAiClientError::SerdeErr(err) => loco_rs::Error::CustomError(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                ErrorDetail::new("Serde Error", &err.to_string()),
+            ),
+        }
+    }
+}
+
+impl From<MetaConversionApiError> for loco_rs::Error {
+    fn from(err: MetaConversionApiError) -> Self {
+        match err {
+            MetaConversionApiError::JsonParse(err_str) => loco_rs::Error::CustomError(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                ErrorDetail::new("Error", &err_str),
+            ),
+            MetaConversionApiError::LocoError(err) => loco_rs::Error::CustomError(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                ErrorDetail::new("Error", &err.to_string()),
+            ),
+            MetaConversionApiError::ReqwestErr(e) => loco_rs::Error::CustomError(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                ErrorDetail::new("Error", &e.to_string()),
+            ),
+            MetaConversionApiError::RequestFailed(err_str) => loco_rs::Error::CustomError(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                ErrorDetail::new("Request Failed", &err_str),
+            ),
+            MetaConversionApiError::Other(err_str) => loco_rs::Error::CustomError(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                ErrorDetail::new("Error", &err_str),
+            ),
+            MetaConversionApiError::SerdeErr(err) => loco_rs::Error::CustomError(
                 StatusCode::INTERNAL_SERVER_ERROR,
                 ErrorDetail::new("Serde Error", &err.to_string()),
             ),
