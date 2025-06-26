@@ -1,6 +1,7 @@
 use crate::service::{
     aws::s3::{AwsS3, AwsSettings},
     fal_ai::fal_client::{FalAiClient, FalAiSettings},
+    meta::meta::MetaConversionApiClient,
     redis::redis::{RedisCacheDriver, RedisSettings},
     stripe::stripe::{StripeClient, StripeSettings},
 };
@@ -48,6 +49,9 @@ impl Settings {
     }
     pub fn fal_ai(&self) -> FalAiClient {
         FalAiClient::new(&self.fal_ai, &self.website)
+    }
+    pub fn meta_conversion_api(&self) -> MetaConversionApiClient {
+        MetaConversionApiClient::new(&self.website.meta_pixel)
     }
     pub async fn website(&self, ctx: &AppContext) -> Website {
         Website::init(&self, &ctx).await

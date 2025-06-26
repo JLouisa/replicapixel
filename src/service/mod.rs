@@ -7,3 +7,5 @@ pub mod fal_ai;
 pub mod stripe;
 
 pub mod redis;
+
+pub mod meta;

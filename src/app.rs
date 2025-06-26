@@ -1,5 +1,4 @@
 use crate::middleware::cookie::CookieConsentLayer;
-// use crate::middleware::i18n::I18n;
 #[allow(unused_imports)]
 use crate::{
     controllers, initializers, models::_entities::users, tasks, workers::downloader::DownloadWorker,
@@ -7,7 +6,8 @@ use crate::{
 use async_trait::async_trait;
 use loco_rs::cache;
 
-// use axum::Router as AxumRouter;
+use crate::middleware::i18n::I18n;
+use axum::Router as AxumRouter;
 // use loco_rs::controller::middleware::{self, MiddlewareLayer};
 
 use loco_rs::{
@@ -76,6 +76,7 @@ impl Hooks for App {
             Box::new(initializers::website::Website),
             Box::new(initializers::s3::S3),
             Box::new(initializers::fal_client::FalAi),
+            Box::new(initializers::meta_client::MetaConversionApi),
             Box::new(initializers::stripe::Stripe),
             Box::new(initializers::redis::RedisClient),
             Box::new(initializers::axum_session::AxumSessionInitializer),
@@ -83,10 +84,10 @@ impl Hooks for App {
         ])
     }
 
-    // async fn before_routes(_ctx: &AppContext) -> Result<AxumRouter<AppContext>> {
-    //     let router = AxumRouter::new().layer(I18n::new());
-    //     Ok(router)
-    // }
+    async fn before_routes(_ctx: &AppContext) -> Result<AxumRouter<AppContext>> {
+        let router = AxumRouter::new().layer(I18n::new());
+        Ok(router)
+    }
 
     // fn middlewares(ctx: &AppContext) -> Vec<Box<dyn MiddlewareLayer>> {
     //     let mut default_stack = middleware::default_middleware_stack(ctx);

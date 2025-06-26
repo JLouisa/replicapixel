@@ -1,6 +1,6 @@
 pub mod cookie;
 
-// pub mod i18n;
+pub mod i18n;
 
 pub mod i18nv2;
 

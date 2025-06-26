@@ -89,6 +89,9 @@ google-oauth = "1.11.3"
 sitemap = "0.4.1"
 accept-language = "3.1.0"
 
+hex = "0.4.3"
+sha2 = "0.10.9"
+
 [dependencies.async-stripe]
 version = "0.40.2" # Use the version you need
 default-features = false # VERY IMPORTANT: Start fresh
