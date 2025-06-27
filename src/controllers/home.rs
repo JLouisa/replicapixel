@@ -150,14 +150,15 @@ pub async fn test_meta_page_view(
     let user_pid = UserPid::new("0aec7a76-c58d-40ba-af47-5c876e310899");
     let user = load_user(&ctx.db, &user_pid).await?;
 
+    // Send to queue for processing for Meta
     let user_data = UserData::new(&user)
         .client_user_agent(&user_agent)
         .client_ip_address(&client_ip);
-
-    // Send to queue for processing for Meta
     let meta = EventData::page_view().set_user_data(&user_data);
     let worker_arg = MetaConversionApiWorkerArgs::new(meta, website.website_basic_info.meta_pixel);
-    MetaConversionApiWorker::perform_later(&ctx, worker_arg).await?;
+    if let Err(e) = MetaConversionApiWorker::perform_later(&ctx, worker_arg).await {
+        tracing::warn!("⚠️ Failed to queue MetaConversionApiWorker: {e}");
+    }
 
     Ok((StatusCode::OK, "OK").into_response())
 }
@@ -170,16 +171,18 @@ pub async fn test_meta_checkout(
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new("0aec7a76-c58d-40ba-af47-5c876e310899");
     let user = load_user(&ctx.db, &user_pid).await?;
-    let user_data = UserData::new(&user)
-        .client_user_agent(&user_agent)
-        .client_ip_address(&client_ip);
     let plan_uuid = Uuid::parse_str("cd08b105-5880-4fd1-872a-acf711a5b8ef").unwrap();
     let plan = PlanModel::find_by_pid(&ctx.db, &plan_uuid).await?;
 
     // Send to queue for processing for Meta
+    let user_data = UserData::new(&user)
+        .client_user_agent(&user_agent)
+        .client_ip_address(&client_ip);
     let meta = EventData::initiate_checkout(&user, &plan).set_user_data(&user_data);
     let worker_arg = MetaConversionApiWorkerArgs::new(meta, website.website_basic_info.meta_pixel);
-    MetaConversionApiWorker::perform_later(&ctx, worker_arg).await?;
+    if let Err(e) = MetaConversionApiWorker::perform_later(&ctx, worker_arg).await {
+        tracing::warn!("⚠️ Failed to queue MetaConversionApiWorker: {e}");
+    }
 
     Ok((StatusCode::OK, "OK").into_response())
 }
@@ -192,17 +195,18 @@ pub async fn test_meta_purchase(
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new("0aec7a76-c58d-40ba-af47-5c876e310899");
     let user = load_user(&ctx.db, &user_pid).await?;
-    let user_data = UserData::new(&user)
-        .client_user_agent(&user_agent)
-        .client_ip_address(&client_ip);
-
     let txn_uuid = Uuid::parse_str("5cab4986-e126-4747-be50-fd4a210eb535").unwrap();
     let txn = TransactionModel::find_by_pid(&txn_uuid, &ctx.db).await?;
 
     // Send to queue for processing for Meta
+    let user_data = UserData::new(&user)
+        .client_user_agent(&user_agent)
+        .client_ip_address(&client_ip);
     let meta = EventData::purchase(&user, &txn).set_user_data(&user_data);
     let worker_arg = MetaConversionApiWorkerArgs::new(meta, website.website_basic_info.meta_pixel);
-    MetaConversionApiWorker::perform_later(&ctx, worker_arg).await?;
+    if let Err(e) = MetaConversionApiWorker::perform_later(&ctx, worker_arg).await {
+        tracing::warn!("⚠️ Failed to queue MetaConversionApiWorker: {e}");
+    }
 
     Ok((StatusCode::OK, "OK").into_response())
 }
@@ -277,6 +281,8 @@ pub async fn sitemap_xml(State(ctx): State<AppContext>) -> impl IntoResponse {
 #[debug_handler]
 pub async fn render_home(
     auth: Result<auth::JWT>,
+    ClientIp(client_ip): ClientIp,
+    TypedHeader(user_agent): TypedHeader<UserAgent>,
     ExtractConsentState(cc_cookie): ExtractConsentState,
     Extension(website): Extension<Website>,
     Extension(cache): Extension<RedisCacheDriver>,
@@ -288,7 +294,21 @@ pub async fn render_home(
         Ok(auth) => {
             let user_pid = UserPid::new(&auth.claims.pid);
             let user = match load_user(&ctx.db, &user_pid).await {
-                Ok(user) => Some(user.into()),
+                Ok(user) => {
+                    // Send to queue for processing for Meta
+                    let user_data = UserData::new(&user)
+                        .client_user_agent(&user_agent)
+                        .client_ip_address(&client_ip);
+                    let meta = EventData::page_view().set_user_data(&user_data);
+                    let worker_arg = MetaConversionApiWorkerArgs::new(
+                        meta,
+                        website.website_basic_info.meta_pixel.clone(),
+                    );
+                    if let Err(e) = MetaConversionApiWorker::perform_later(&ctx, worker_arg).await {
+                        tracing::warn!("⚠️ Failed to queue MetaConversionApiWorker: {e}");
+                    }
+                    Some(user.into())
+                }
                 Err(_) => None,
             };
             user
@@ -314,6 +334,8 @@ pub async fn render_home(
 #[debug_handler]
 pub async fn render_home_partial(
     auth: Result<auth::JWT>,
+    ClientIp(client_ip): ClientIp,
+    TypedHeader(user_agent): TypedHeader<UserAgent>,
     ExtractConsentState(cc_cookie): ExtractConsentState,
     Extension(website): Extension<Website>,
     Extension(cache): Extension<RedisCacheDriver>,
@@ -325,7 +347,22 @@ pub async fn render_home_partial(
         Ok(auth) => {
             let user_pid = UserPid::new(&auth.claims.pid);
             let user = match load_user(&ctx.db, &user_pid).await {
-                Ok(user) => Some(user.into()),
+                Ok(user) => {
+                    // Send to queue for processing for Meta
+                    let user_data = UserData::new(&user)
+                        .client_user_agent(&user_agent)
+                        .client_ip_address(&client_ip);
+                    let meta = EventData::page_view().set_user_data(&user_data);
+                    let worker_arg = MetaConversionApiWorkerArgs::new(
+                        meta,
+                        website.website_basic_info.meta_pixel.clone(),
+                    );
+                    if let Err(e) = MetaConversionApiWorker::perform_later(&ctx, worker_arg).await {
+                        tracing::warn!("⚠️ Failed to queue MetaConversionApiWorker: {e}");
+                    }
+
+                    Some(user.into())
+                }
                 Err(_) => None,
             };
             user

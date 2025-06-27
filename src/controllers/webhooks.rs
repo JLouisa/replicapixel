@@ -9,6 +9,8 @@ use crate::models::join::user_credits_models::load_user_and_credits_with_user_id
 use crate::models::{ImageModel, TrainingModelActiveModel, TrainingModelModel};
 use crate::service::aws::s3::{AwsS3, S3Key};
 use crate::service::fal_ai::fal_client::{FalAiClient, FluxApiWebhookResponse, StatusResponse};
+use crate::service::meta::meta::{EventData, UserData};
+use crate::workers::meta_worker::{MetaConversionApiWorker, MetaConversionApiWorkerArgs};
 use crate::{
     service::stripe::stripe::StripeClient,
     service::stripe::stripe_service::{StripeServiceError, StripeWebhookService},
@@ -74,16 +76,24 @@ pub async fn stripe(
         None => return Ok((StatusCode::OK).into_response()),
     };
 
+    //4. Send to Email
     let mailer_options = MailerOptions::new()
         .website(&website)
         .user(&email_data.user.clone().into())
         .transaction(&email_data.transaction.clone().into())
         .plan(&email_data.plan.clone().into())
         .set_stripe_receipt_url(email_data.stripe_receipt_url);
-
     CheckoutMailer::send_checkout_completed(&ctx, &mailer_options).await?;
 
-    // 4. Acknowledge receipt to Stripe
+    //5. Send to queue for processing for Meta
+    let user_data = UserData::new(&email_data.user);
+    let meta =
+        EventData::purchase(&email_data.user, &email_data.transaction).set_user_data(&user_data);
+    let worker_arg = MetaConversionApiWorkerArgs::new(meta, website.website_basic_info.meta_pixel);
+    if let Err(e) = MetaConversionApiWorker::perform_later(&ctx, worker_arg).await {
+        tracing::warn!("⚠️ Failed to queue MetaConversionApiWorker: {e}");
+    }
+
     Ok((StatusCode::OK).into_response())
 }
 

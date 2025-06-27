@@ -202,6 +202,18 @@ impl EventData {
             ..Self::default()
         }
     }
+    pub fn stripe(user: &UserModel, txn: &TransactionModel) -> Self {
+        Self {
+            event_name: Some("Purchase".to_string()),
+            user_data: Some(UserData::new(user)),
+            custom_data: Some(CustomData::purchase(txn)),
+            original_event_data: OriginalEventData {
+                event_name: Some("Purchase".to_string()),
+                event_time: Utc::now().timestamp(),
+            },
+            ..Self::default()
+        }
+    }
     pub fn set_user_data(self, user_data: &UserData) -> Self {
         Self {
             user_data: Some(user_data.clone()),

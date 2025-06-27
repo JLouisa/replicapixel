@@ -2,6 +2,7 @@
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
 use axum::{debug_handler, extract::Query, Extension};
+use axum_extra::{headers::UserAgent, TypedHeader};
 use derive_more::Constructor;
 use loco_rs::{controller::ErrorDetail, prelude::*};
 use serde::{Deserialize, Serialize};
@@ -14,7 +15,7 @@ pub struct PaymentController;
 use crate::{
     controllers::auth::HxRedirect,
     domain::website::{Website, WebsiteOptions},
-    middleware::{cookie::ExtractConsentState, i18nv2::LangEngine},
+    middleware::{client_ip::ClientIp, cookie::ExtractConsentState, i18nv2::LangEngine},
     models::{
         users::UserPid,
         PlanModel,
@@ -22,11 +23,15 @@ use crate::{
         join::{user_credits_models::load_user_and_credits, user_order::load_user_and_order},
         UserModel,
     },
-    service::stripe::{
-        stripe::{StripeClient, StripeClientError},
-        stripe_builder::CheckoutSessionBuilder,
+    service::{
+        meta::meta::{EventData, UserData},
+        stripe::{
+            stripe::{StripeClient, StripeClientError},
+            stripe_builder::CheckoutSessionBuilder,
+        },
     },
     views,
+    workers::meta_worker::{MetaConversionApiWorker, MetaConversionApiWorkerArgs},
 };
 use axum::{http::StatusCode, response::IntoResponse};
 
@@ -243,9 +248,8 @@ async fn get_receipt_url_for_order(
 
 #[debug_handler]
 pub async fn prepare_handler(
-    // _auth: auth::JWT,
     Path((pid, plan)): Path<(Uuid, PlanNames)>,
-    State(_ctx): State<AppContext>,
+    // State(ctx): State<AppContext>,
     ExtractConsentState(cc_cookie): ExtractConsentState,
     Extension(website): Extension<Website>,
     ViewEngine(v): ViewEngine<TeraView>,
@@ -258,6 +262,7 @@ pub async fn prepare_handler(
         pid,
         plan
     );
+
     let website_options = WebsiteOptions::new()
         .website(&website)
         .cc_cookie(&cc_cookie)
@@ -270,10 +275,12 @@ pub async fn prepare_handler(
 
 #[debug_handler]
 pub async fn create_checkout_session(
-    // auth: auth::JWT,
+    ClientIp(client_ip): ClientIp,
+    TypedHeader(user_agent): TypedHeader<UserAgent>,
     Path((pid, plan)): Path<(Uuid, PlanNames)>,
     Extension(stripe_client): Extension<StripeClient>,
     State(ctx): State<AppContext>,
+    Extension(website): Extension<Website>,
 ) -> Result<impl IntoResponse> {
     let user_pid = UserPid::new(&pid.to_string());
     let user = load_user(&ctx.db, &user_pid).await?;
@@ -298,6 +305,16 @@ pub async fn create_checkout_session(
     let session = stripe_checkout.url.ok_or_else(|| {
         loco_rs::Error::Message("Stripe Checkout Session created without a URL".to_string())
     })?;
+
+    // Send to queue for processing for Meta
+    let user_data = UserData::new(&user)
+        .client_user_agent(&user_agent)
+        .client_ip_address(&client_ip);
+    let meta = EventData::initiate_checkout(&user, &plan).set_user_data(&user_data);
+    let worker_arg = MetaConversionApiWorkerArgs::new(meta, website.website_basic_info.meta_pixel);
+    if let Err(e) = MetaConversionApiWorker::perform_later(&ctx, worker_arg).await {
+        tracing::warn!("⚠️ Failed to queue MetaConversionApiWorker: {e}");
+    }
 
     Ok(HxRedirect::new(&session).into_response())
 }
