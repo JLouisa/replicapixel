@@ -78,8 +78,13 @@ async fn create_hse(id: &str, db: &impl ConnectionTrait) -> Result<StripeEventAc
     let item = StripeEventActiveModel::save(id, db).await?;
     Ok(item)
 }
-async fn load_plan(db: &impl ConnectionTrait, pid: &Uuid) -> Result<PlanModel> {
+async fn load_plan_pid(db: &impl ConnectionTrait, pid: &Uuid) -> Result<PlanModel> {
     let item = PlanModel::find_by_pid(db, &pid).await?;
+    Ok(item)
+}
+async fn load_plan_name(db: &impl ConnectionTrait, name: &String) -> Result<PlanModel> {
+    let cap_name = capitalize_first_letter(name);
+    let item = PlanModel::find_by_name_string(db, &cap_name).await?;
     Ok(item)
 }
 async fn save_txn(
@@ -110,14 +115,32 @@ async fn extract_and_process_metadata(
         tracing::error!("Webhook {}: Missing metadata", &session.id);
         loco_rs::Error::BadRequest("Missing metadata".into())
     })?;
-    let plan_pid_str = metadata.get("plan_pid").ok_or_else(|| {
-        tracing::error!("Webhook {}: Missing plan_pid in metadata", &session.id);
-        loco_rs::Error::BadRequest("Missing plan_pid".into())
-    })?;
 
-    let plan_pid_uuid = Uuid::parse_str(&plan_pid_str)?;
+    // let plan_pid_str = metadata.get("plan_pid").ok_or_else(|| {
+    //     tracing::error!("Webhook {}: Missing plan_pid in metadata", &session.id);
+    //     loco_rs::Error::BadRequest("Missing plan_pid".into())
+    // })?;
+    // let plan_pid_uuid = Uuid::parse_str(&plan_pid_str)?;
+    // let plan = load_plan_pid(db_txn, &plan_pid_uuid).await?;
+
+    //Todo - replace later with ^^
+    let plan = if let Some(plan_pid_str) = metadata.get("plan_pid") {
+        let plan_pid_uuid = Uuid::parse_str(plan_pid_str)?;
+        load_plan_pid(db_txn, &plan_pid_uuid).await?
+    } else if let Some(plan_name_str) = metadata.get("plan") {
+        load_plan_name(db_txn, &plan_name_str).await?
+    } else {
+        tracing::error!(
+            "Webhook {}: Missing both plan_pid and plan in metadata",
+            &session.id
+        );
+        return Err(StripeServiceError::MissingMetadataField(
+            "Missing plan metadata".into(),
+        ));
+    };
+    //Todo
+
     let (user, user_credits) = load_user_and_credits(db_txn, &user_pid).await?;
-    let plan = load_plan(db_txn, &plan_pid_uuid).await?;
     Ok((user, user_credits, plan))
 }
 
@@ -237,10 +260,10 @@ impl StripeWebhookService {
     }
 }
 
-// fn capitalize_first_letter(s: &str) -> String {
-//     let mut c = s.chars();
-//     match c.next() {
-//         None => String::new(),
-//         Some(first) => first.to_uppercase().collect::<String>() + c.as_str(),
-//     }
-// }
+fn capitalize_first_letter(s: &str) -> String {
+    let mut c = s.chars();
+    match c.next() {
+        None => String::new(),
+        Some(first) => first.to_uppercase().collect::<String>() + c.as_str(),
+    }
+}
