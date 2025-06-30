@@ -116,7 +116,12 @@ async fn extract_and_process_metadata(
     })?;
 
     let (user, user_credits) = load_user_and_credits(db_txn, &user_pid).await?;
+
+    dbg!(&plan_name_str);
+    let plan_name_str = capitalize_first_letter(plan_name_str);
+    dbg!(&plan_name_str);
     let plan = load_plan(db_txn, &plan_name_str).await?;
+    dbg!(&plan);
 
     Ok((user, user_credits, plan))
 }
@@ -234,5 +239,13 @@ impl StripeWebhookService {
         }
 
         return Ok(None);
+    }
+}
+
+fn capitalize_first_letter(s: &str) -> String {
+    let mut c = s.chars();
+    match c.next() {
+        None => String::new(),
+        Some(first) => first.to_uppercase().collect::<String>() + c.as_str(),
     }
 }

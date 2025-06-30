@@ -90,8 +90,11 @@ pub async fn stripe(
     let meta =
         EventData::purchase(&email_data.user, &email_data.transaction).set_user_data(&user_data);
     let worker_arg = MetaConversionApiWorkerArgs::new(meta, website.website_basic_info.meta_pixel);
-    if let Err(e) = MetaConversionApiWorker::perform_later(&ctx, worker_arg).await {
-        tracing::warn!("⚠️ Failed to queue MetaConversionApiWorker: {e}");
+
+    if !cfg!(debug_assertions) {
+        if let Err(e) = MetaConversionApiWorker::perform_later(&ctx, worker_arg).await {
+            tracing::warn!("⚠️ Failed to queue MetaConversionApiWorker: {e}");
+        }
     }
 
     Ok((StatusCode::OK).into_response())

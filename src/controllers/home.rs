@@ -81,9 +81,9 @@ pub fn routes() -> Routes {
             routes::Home::DASHBOARD_PACKS_EXTEND,
             get(render_dashboard_extend_packs_partial),
         )
-        .add(routes::Home::TEST_META_PAGEVIEW, get(test_meta_page_view))
-        .add(routes::Home::TEST_META_CHECKOUT, get(test_meta_checkout))
-        .add(routes::Home::TEST_META_PURCHASE, get(test_meta_purchase))
+    //// .add(routes::Home::TEST_META_PAGEVIEW, get(test_meta_page_view))
+    //// .add(routes::Home::TEST_META_CHECKOUT, get(test_meta_checkout))
+    //// .add(routes::Home::TEST_META_PURCHASE, get(test_meta_purchase))
 }
 
 pub async fn load_user(db: &DatabaseConnection, user_pid: &UserPid) -> Result<UserModel> {
