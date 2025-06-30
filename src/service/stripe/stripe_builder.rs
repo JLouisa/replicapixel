@@ -1,5 +1,5 @@
 use super::stripe::{StripeClient, StripeClientError};
-use crate::models::{UserModel, _entities::sea_orm_active_enums::PlanNames};
+use crate::models::{PlanModel, UserModel};
 use sea_orm::DatabaseConnection;
 
 use stripe::{
@@ -27,7 +27,7 @@ pub struct CheckoutSessionBuilder<'a> {
     client: &'a StripeClient,
     db: &'a DatabaseConnection,
     user: Option<&'a UserModel>,
-    plan: Option<&'a PlanNames>,
+    plan: Option<&'a PlanModel>,
     ui_mode: CheckoutSessionUiMode,
     mode: CheckoutSessionMode,
     currency: Currency,
@@ -48,7 +48,7 @@ impl<'a> CheckoutSessionBuilder<'a> {
         }
     }
 
-    pub fn plan(&mut self, plan: &'a PlanNames) -> &mut Self {
+    pub fn plan(&mut self, plan: &'a PlanModel) -> &mut Self {
         self.plan = Some(plan);
         self
     }
@@ -82,16 +82,16 @@ impl<'a> CheckoutSessionBuilder<'a> {
         self
     }
 
-    fn process_metadata(&self, plan: &PlanNames) -> Metadata {
+    fn process_metadata(&self, plan: &PlanModel) -> Metadata {
         let mut session_metadata = Metadata::new();
-        session_metadata.insert("plan".to_string(), plan.to_string());
+        session_metadata.insert("plan_pid".to_string(), plan.pid.to_string());
         session_metadata
     }
 
     pub async fn build(&self) -> Result<CheckoutSession, StripeCheckoutBuilderErr> {
         let plan = self
             .plan
-            .ok_or(StripeCheckoutBuilderErr::MissingField("plan"))?;
+            .ok_or(StripeCheckoutBuilderErr::MissingField("plan_pid"))?;
         let user = self
             .user
             .ok_or(StripeCheckoutBuilderErr::MissingField("user"))?;
@@ -104,7 +104,7 @@ impl<'a> CheckoutSessionBuilder<'a> {
             .client
             .create_checkout(
                 user,
-                plan,
+                &plan.plan_name,
                 &self.mode,
                 &self.ui_mode,
                 &self.currency,

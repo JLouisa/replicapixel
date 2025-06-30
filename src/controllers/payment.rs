@@ -297,7 +297,7 @@ pub async fn create_checkout_session(
 
     let stripe_checkout = CheckoutSessionBuilder::new(&stripe_client, &ctx.db)
         .user(&user)
-        .plan(&plan.plan_name)
+        .plan(&plan)
         .metadata()
         .build()
         .await?;

@@ -78,8 +78,8 @@ async fn create_hse(id: &str, db: &impl ConnectionTrait) -> Result<StripeEventAc
     let item = StripeEventActiveModel::save(id, db).await?;
     Ok(item)
 }
-async fn load_plan(db: &impl ConnectionTrait, name: &String) -> Result<PlanModel> {
-    let item = PlanModel::find_by_name_string(db, &name).await?;
+async fn load_plan(db: &impl ConnectionTrait, pid: &Uuid) -> Result<PlanModel> {
+    let item = PlanModel::find_by_pid(db, &pid).await?;
     Ok(item)
 }
 async fn save_txn(
@@ -110,19 +110,14 @@ async fn extract_and_process_metadata(
         tracing::error!("Webhook {}: Missing metadata", &session.id);
         loco_rs::Error::BadRequest("Missing metadata".into())
     })?;
-    let plan_name_str = metadata.get("plan").ok_or_else(|| {
-        tracing::error!("Webhook {}: Missing plan in metadata", &session.id);
-        loco_rs::Error::BadRequest("Missing plan".into())
+    let plan_pid_str = metadata.get("plan_pid").ok_or_else(|| {
+        tracing::error!("Webhook {}: Missing plan_pid in metadata", &session.id);
+        loco_rs::Error::BadRequest("Missing plan_pid".into())
     })?;
 
+    let plan_pid_uuid = Uuid::parse_str(&plan_pid_str)?;
     let (user, user_credits) = load_user_and_credits(db_txn, &user_pid).await?;
-
-    dbg!(&plan_name_str);
-    let plan_name_str = capitalize_first_letter(plan_name_str);
-    dbg!(&plan_name_str);
-    let plan = load_plan(db_txn, &plan_name_str).await?;
-    dbg!(&plan);
-
+    let plan = load_plan(db_txn, &plan_pid_uuid).await?;
     Ok((user, user_credits, plan))
 }
 
@@ -242,10 +237,10 @@ impl StripeWebhookService {
     }
 }
 
-fn capitalize_first_letter(s: &str) -> String {
-    let mut c = s.chars();
-    match c.next() {
-        None => String::new(),
-        Some(first) => first.to_uppercase().collect::<String>() + c.as_str(),
-    }
-}
+// fn capitalize_first_letter(s: &str) -> String {
+//     let mut c = s.chars();
+//     match c.next() {
+//         None => String::new(),
+//         Some(first) => first.to_uppercase().collect::<String>() + c.as_str(),
+//     }
+// }

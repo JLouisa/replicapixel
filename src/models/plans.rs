@@ -183,7 +183,7 @@ impl Model {
         }
         Ok(Model::load_plan_and_all_translated(db, lang).await?.into())
     }
-    pub async fn find_by_pid(db: &DatabaseConnection, pid: &Uuid) -> ModelResult<Self> {
+    pub async fn find_by_pid(db: &impl ConnectionTrait, pid: &Uuid) -> ModelResult<Self> {
         let user = Entity::find()
             .filter(
                 model::query::condition()
