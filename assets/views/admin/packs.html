@@ -15,6 +15,7 @@
     />
     <script src="/static/js/htmx/htmx.min.js" defer></script>
     <script src="/static/js/htmx/extensions/htmx-ext-form-json.js" defer></script>
+    <script src="/static/js/index.js" defer></script>
     <style>
       /* Optional: Custom scrollbar for the pack list if it gets long */
       .pack-list-container::-webkit-scrollbar {
@@ -47,8 +48,8 @@
             <li
               hx-get="{{ admin_edit_link | safe }}/{{ pack_one.pid }}"
               hx-ext="form-json"
-              hx-target="#pack-form"
-              hx-swap="outerHTML"
+              hx-target="#pack-forms"
+              hx-swap="innerHTML"
               hx-disabled-elt="#add-pack-btn"
               class="p-2 hover:bg-base-200 rounded text-sm break-all cursor-pointer"
             >
@@ -70,14 +71,34 @@
                 <span class="text-primary">{{ editing_pack.title }}</span>
                 {% else %} Create New Pack {% endif %}
               </h2>
-              {# Assuming your partials handle whether it's a create or edit form. You might pass
-              the `editing_pack` object to these partials. #} {% if is_img %} {% include
-              "admin/pack_form_img_partial.html" %} {% else %} {% include
-              "admin/pack_form_partial.html" %} {% endif %}
+              <!-- Include Alpine.js in your <head> -->
+              <script
+                defer
+                src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+              ></script>
+              <div id="pack-forms" class="p-8 rounded-lg">
+                {% include "admin/pack_forms.html" %}
+              </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
+    <!-- Toast Notifications -->
+    <div
+      x-data
+      x-show="$store.toast.isVisible"
+      x-transition:enter="transition transform ease-out duration-300"
+      x-transition:enter-start="translate-y-full"
+      x-transition:enter-end="translate-y-0"
+      x-transition:leave="transition transform ease-in duration-300"
+      x-transition:leave-start="translate-y-0"
+      x-transition:leave-end="translate-y-full"
+      x-cloak
+      class="fixed bottom-5 right-5 px-4 py-2 rounded shadow-lg text-white z-30"
+      :class="$store.toast.isError ? 'bg-red-500' : $store.toast.isWarn ? 'bg-orange-500' : 'bg-green-700'"
+    >
+      <span x-text="$store.toast.message"></span>
     </div>
   </body>
 </html>

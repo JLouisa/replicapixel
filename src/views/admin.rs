@@ -1,7 +1,14 @@
 use loco_rs::prelude::*;
 use serde::Serialize;
 
-use crate::{controllers::admin::routes::AdminRoutes, models::PackModel};
+use crate::{
+    controllers::admin::routes::AdminRoutes,
+    models::{
+        packs_translations::{PackTranslatedView, TranslateGroupView},
+        PackModel,
+        _entities::sea_orm_active_enums::Language,
+    },
+};
 
 use super::{auth::UserView, packs::PackViewList};
 
@@ -11,6 +18,7 @@ pub fn packs(
     user: &UserView,
     is_img: bool,
     admin_routes: &AdminRoutes,
+    pack_translates: &TranslateGroupView,
 ) -> Result<impl IntoResponse> {
     let mut list_packs = packs.clone().into_inner();
     list_packs.reverse();
@@ -20,7 +28,7 @@ pub fn packs(
         data!(
             {
                 "user": user, "packs": list_packs, "is_img": is_img,
-                "admin_routes": admin_routes
+                "admin_routes": admin_routes, "pack_translates": pack_translates
             }
         ),
     )
@@ -51,19 +59,41 @@ pub fn packs_form_partial(
     )
 }
 
+pub fn packs_form_edit_partial_translated(
+    v: impl ViewRenderer,
+    translated_info: &PackTranslatedView,
+    user: &UserView,
+    admin_routes: &AdminRoutes,
+    language: &Language,
+    pack: &PackAdmin,
+    is_successfully_updated: bool,
+) -> Result<impl IntoResponse> {
+    format::render().view(
+        &v,
+        "admin/pack_translate_form_partial.html",
+        data!(
+            {
+                "user": user, "translated_info": translated_info, "edit_link": admin_routes.admin_packs_edit,
+                "admin_routes": admin_routes, "translated_language": language, "pack": pack, "is_successfully_updated": is_successfully_updated
+            }
+        ),
+    )
+}
+
 pub fn packs_form_edit_partial(
     v: impl ViewRenderer,
     pack: &PackAdmin,
     user: &UserView,
     admin_routes: &AdminRoutes,
+    pack_translates: &TranslateGroupView,
 ) -> Result<impl IntoResponse> {
     format::render().view(
         &v,
-        "admin/pack_form_partial.html",
+        "admin/pack_forms.html",
         data!(
             {
                 "user": user, "pack": pack, "edit_link": admin_routes.admin_packs_edit,
-                "admin_routes": admin_routes
+                "admin_routes": admin_routes, "pack_translates": pack_translates
             }
         ),
     )
@@ -71,6 +101,7 @@ pub fn packs_form_edit_partial(
 
 #[derive(Debug, Clone, Serialize)]
 pub struct PackAdmin {
+    pub id: i32,
     pub pid: Uuid,
     pub title: String,
     pub title_url: String,
@@ -89,6 +120,7 @@ pub struct PackAdmin {
 impl From<PackModel> for PackAdmin {
     fn from(packs: PackModel) -> Self {
         Self {
+            id: packs.id,
             pid: packs.pid,
             title: packs.title,
             title_url: packs.title_url,
@@ -107,7 +139,7 @@ impl From<PackModel> for PackAdmin {
     }
 }
 impl PackAdmin {
-    fn convert_vec_to_str(list: &Option<Vec<String>>) -> String {
+    pub fn convert_vec_to_str(list: &Option<Vec<String>>) -> String {
         match list {
             Some(vec) => vec.join(","),
             None => String::new(),

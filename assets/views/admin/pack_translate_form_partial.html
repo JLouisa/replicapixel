@@ -1,0 +1,89 @@
+<!-- prettier-ignore -->
+{% set admin_add_link = admin_routes.admin_packs_add %}
+{% set language = translated_language %}
+{% set info = translated_info %}
+
+<form
+  id="pack-form-{{language}}"
+  hx-post="{% if edit_link %}{{ edit_link | safe }}{% else %}{{ admin_add_link | safe }}{% endif %}/translate"
+  hx-ext="form-json"
+  hx-swap="outerHTML"
+  hx-disabled-elt="#add-pack-btn-{{language}}"
+  class="space-y-4"
+>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <input type="number" id="pack_id" name="pack_id" value="{{ pack.id | default (value="" )}}"
+    class="input input-bordered w-full" hidden />
+
+    <input
+      type="hidden"
+      id="language"
+      name="language"
+      value="{{ language }}"
+      class="input input-bordered w-full"
+      required
+    />
+    <div class="form-control">
+      <label class="label" for="title">
+        <span class="label-text">Title</span>
+      </label>
+      <input type="text" id="title" name="title" placeholder="e.g., Awesome AI Pack" value="{{
+      info.title | default (value="")}}" class="input input-bordered w-full" required />
+    </div>
+  </div>
+  <div class="form-control">
+    <label class="label" for="short_description">
+      <span class="label-text">Short Description (max 255 chars)</span>
+    </label>
+    <input type="text" id="short_description" name="short_description" maxlength="255"
+    placeholder="A brief summary of the pack" value="{{ info.short_description | default
+    (value="")}}" class="input input-bordered w-full" required />
+  </div>
+
+  <div class="form-control">
+    <label class="label" for="full_description">
+      <span class="label-text">Full Description</span>
+    </label>
+    <textarea
+      id="full_description"
+      name="full_description"
+      rows="5"
+      class="textarea textarea-bordered w-full"
+      placeholder="Detailed information about the pack..."
+      required
+    >
+{{ info.full_description | default (value="")}}</textarea
+    >
+  </div>
+
+  <div class="form-control">
+    <label class="label" for="features">
+      <span class="label-text">Features (comma-separated)</span>
+    </label>
+    <textarea
+      id="features"
+      name="features"
+      rows="3"
+      class="textarea textarea-bordered w-full"
+      placeholder="Feature 1, Another Feature, Cool Trait"
+    >
+{{ info.features | default (value="")}}</textarea
+    >
+    <label class="label">
+      <span class="label-text-alt">Enter multiple features separated by a comma.</span>
+    </label>
+  </div>
+
+  <div class="form-control mt-8">
+    <button id="add-pack-btn-{{language}}" type="submit" class="btn btn-primary w-full">
+      {% if edit_link %} Edit Pack {% else %} Create Pack {% endif %}
+    </button>
+  </div>
+  {% if is_successfully_updated %}
+  <script>
+    if (window.Alpine) {
+      Alpine.store("toast").success("You updated the pack translation successfully!");
+    }
+  </script>
+  {% endif %}
+</form>

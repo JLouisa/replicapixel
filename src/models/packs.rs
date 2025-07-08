@@ -280,7 +280,7 @@ fn default_num_inference_steps() -> i32 {
 fn default_stars() -> i32 {
     5
 }
-fn deserialize_comma_separated_string_array<'de, D>(
+pub fn deserialize_comma_separated_string_array<'de, D>(
     deserializer: D,
 ) -> Result<Vec<String>, D::Error>
 where

@@ -1,0 +1,74 @@
+<!-- THEME-AWARE TAB COMPONENT START -->
+<div x-data="{ tab: 'Original' }" class="w-full">
+  <!-- Tab Nav -->
+  <div class="border-b border-current/10">
+    <ul class="flex -mb-px">
+      <li class="mr-2">
+        <a
+          href="#"
+          class="inline-block p-4 text-sm font-medium text-center rounded-t-lg border-b-2 transition"
+          :class="tab === 'Original' ? 'border-current' : 'border-transparent opacity-60 hover:opacity-100'"
+          @click.prevent="tab = 'Original'"
+        >
+          Original
+        </a>
+      </li>
+      <li class="mr-2">
+        <a
+          href="#"
+          class="inline-block p-4 text-sm font-medium text-center rounded-t-lg border-b-2 transition"
+          :class="tab === 'Spanish' ? 'border-current' : 'border-transparent opacity-60 hover:opacity-100'"
+          @click.prevent="tab = 'Spanish'"
+        >
+          Spanish
+        </a>
+      </li>
+      <li>
+        <a
+          href="#"
+          class="inline-block p-4 text-sm font-medium text-center rounded-t-lg border-b-2 transition"
+          :class="tab === 'German' ? 'border-current' : 'border-transparent opacity-60 hover:opacity-100'"
+          @click.prevent="tab = 'German'"
+        >
+          German
+        </a>
+      </li>
+      <li>
+        <a
+          href="#"
+          class="inline-block p-4 text-sm font-medium text-center rounded-t-lg border-b-2 transition"
+          :class="tab === 'Italian' ? 'border-current' : 'border-transparent opacity-60 hover:opacity-100'"
+          @click.prevent="tab = 'Italian'"
+        >
+          Italian
+        </a>
+      </li>
+      <li>
+        <a
+          href="#"
+          class="inline-block p-4 text-sm font-medium text-center rounded-t-lg border-b-2 transition"
+          :class="tab === 'Dutch' ? 'border-current' : 'border-transparent opacity-60 hover:opacity-100'"
+          @click.prevent="tab = 'Dutch'"
+        >
+          Dutch
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="py-4">
+    <div x-show="tab === 'Original'">
+      {# Assuming your partials handle whether it's a create or edit form. You might pass the
+      `editing_pack` object to these partials. #} {% if is_img %} {% include
+      "admin/pack_form_img_partial.html" %} {% else %} {% include "admin/pack_form_partial.html" %}
+      {% endif %}
+    </div>
+    {% set translated_language = "es-ES" %} {% set translated_info = pack_translates.spanish %}
+    <div x-show="tab === 'Spanish'">{% include "admin/pack_translate_form_partial.html" %}</div>
+    {% set translated_language = "de-DE" %} {% set translated_info = pack_translates.german %}
+    <div x-show="tab === 'German'">{% include "admin/pack_translate_form_partial.html" %}</div>
+    {% set translated_language = "it-IT" %} {% set translated_info = pack_translates.italian %}
+    <div x-show="tab === 'Italian'">{% include "admin/pack_translate_form_partial.html" %}</div>
+    {% set translated_language = "nl-NL" %} {% set translated_info = pack_translates.dutch %}
+    <div x-show="tab === 'Dutch'">{% include "admin/pack_translate_form_partial.html" %}</div>
+  </div>
+</div>

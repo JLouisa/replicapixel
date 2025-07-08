@@ -1,6 +1,5 @@
 <!-- prettier-ignore -->
 {% set admin_add_link = admin_routes.admin_packs_add %}
-{% set admin_add_link = admin_routes.admin_packs_add %}
 <form
   id="pack-form"
   hx-post="{% if edit_link %}{{ edit_link | safe }}/{{pack.pid }}{% else %}{{ admin_add_link | safe }}{% endif %}"

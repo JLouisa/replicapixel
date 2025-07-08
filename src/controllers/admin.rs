@@ -3,8 +3,13 @@
 #![allow(clippy::unused_async)]
 use crate::{
     models::{
-        _entities::sea_orm_active_enums::Role, join::user_pack::load_user_and_one_pack,
+        _entities::sea_orm_active_enums::Role,
+        join::user_pack::load_user_and_one_pack,
         packs::CreatePackPayload,
+        packs_translations::{
+            AdminPackTranslatedPayload, PackTranslationModelList, TranslateGroupView,
+        },
+        PackTranslationModel,
     },
     views::{self},
 };
@@ -46,7 +51,9 @@ pub mod routes {
         pub const ADMIN_PACKS: &'static str = "/packs";
         pub const ADMIN_PACKS_IMG: &'static str = "/packs/img";
         pub const ADMIN_PACK_ADD: &'static str = "/pack/add";
+        pub const ADMIN_PACK_ADD_TRANSLATE: &'static str = "/pack/add/translate";
         pub const ADMIN_PACK_EDIT_ID: &'static str = "/pack/edit/{pid}";
+        pub const ADMIN_PACK_EDIT_ID_TRANSLATE: &'static str = "/pack/edit/translate";
         pub const ADMIN_PACK_EDIT: &'static str = "/pack/edit";
         pub const ADMIN_PACK_ADD_IMG: &'static str = "/pack/add/img";
     }
@@ -58,7 +65,15 @@ pub fn routes() -> Routes {
         .add(routes::Admin::ADMIN_PACKS, get(admin_packs))
         .add(routes::Admin::ADMIN_PACKS_IMG, get(admin_packs_img))
         .add(routes::Admin::ADMIN_PACK_ADD, post(add_pack))
+        .add(
+            routes::Admin::ADMIN_PACK_ADD_TRANSLATE,
+            post(add_pack_translate),
+        )
         .add(routes::Admin::ADMIN_PACK_EDIT_ID, get(edit_pack_view))
+        .add(
+            routes::Admin::ADMIN_PACK_EDIT_ID_TRANSLATE,
+            post(edit_pack_translate),
+        )
         .add(routes::Admin::ADMIN_PACK_EDIT_ID, post(edit_pack))
         .add(routes::Admin::ADMIN_PACK_ADD_IMG, post(admin_packs_img))
 }
@@ -74,6 +89,47 @@ async fn load_packs(db: &DatabaseConnection) -> Result<PackModelList> {
 async fn load_pack_one(db: &DatabaseConnection, pid: &Uuid) -> Result<PackModel> {
     let pack: crate::models::packs::Model = PackModel::find_by_pid(db, pid).await?;
     Ok(pack)
+}
+async fn load_pack_one_by_id(db: &DatabaseConnection, id: &i32) -> Result<PackModel> {
+    let pack: crate::models::packs::Model = PackModel::find_by_id(db, id).await?;
+    Ok(pack)
+}
+async fn load_pack_translated_by_pack_id(
+    db: &DatabaseConnection,
+    id: &i32,
+) -> Result<PackTranslationModelList> {
+    let pack = PackTranslationModel::find_by_all_pack_id(db, id).await?;
+    Ok(pack)
+}
+
+#[debug_handler]
+pub async fn edit_pack_translate(
+    auth: auth::JWT,
+    State(ctx): State<AppContext>,
+    ViewEngine(v): ViewEngine<TeraView>,
+    Json(form): Json<AdminPackTranslatedPayload>,
+) -> Result<impl IntoResponse> {
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let user = load_user(&ctx.db, &user_pid).await?;
+    if user.role != Role::Admin {
+        return Ok(Redirect::to("/login").into_response());
+    }
+    dbg!(&form);
+    let language = form.language.clone();
+    form.update(&ctx.db).await?;
+    let pack = load_pack_one_by_id(&ctx.db, &form.pack_id).await?;
+    let admin_routes = AdminRoutes::init();
+    let is_successfully_updated = true;
+    let view_output = views::admin::packs_form_edit_partial_translated(
+        v,
+        &form.into(),
+        &user.into(),
+        &admin_routes,
+        &language,
+        &pack.into(),
+        is_successfully_updated,
+    )?;
+    Ok(view_output.into_response())
 }
 
 #[debug_handler]
@@ -113,9 +169,17 @@ pub async fn edit_pack_view(
         return Ok(Redirect::to("/login").into_response());
     }
     let pack = load_pack_one(&ctx.db, &pid).await?;
+    let pack_translates = load_pack_translated_by_pack_id(&ctx.db, &pack.id)
+        .await?
+        .group();
     let admin_routes = AdminRoutes::init();
-    let view_output =
-        views::admin::packs_form_edit_partial(v, &pack.into(), &user.into(), &admin_routes)?;
+    let view_output = views::admin::packs_form_edit_partial(
+        v,
+        &pack.into(),
+        &user.into(),
+        &admin_routes,
+        &pack_translates,
+    )?;
     Ok(view_output.into_response())
 }
 
@@ -132,7 +196,15 @@ pub async fn admin_packs(
     }
     let packs = load_packs(&ctx.db).await?;
     let admin_routes = AdminRoutes::init();
-    let view_output = views::admin::packs(v, &packs.into(), &user.into(), false, &admin_routes)?;
+    let pack_translates = TranslateGroupView::default();
+    let view_output = views::admin::packs(
+        v,
+        &packs.into(),
+        &user.into(),
+        false,
+        &admin_routes,
+        &pack_translates,
+    )?;
     Ok(view_output.into_response())
 }
 #[debug_handler]
@@ -148,7 +220,46 @@ pub async fn admin_packs_img(
     }
     let packs = load_packs(&ctx.db).await?;
     let admin_routes = AdminRoutes::init();
-    let view_output = views::admin::packs(v, &packs.into(), &user.into(), true, &admin_routes)?;
+    let pack_translates = TranslateGroupView::default();
+    let view_output = views::admin::packs(
+        v,
+        &packs.into(),
+        &user.into(),
+        true,
+        &admin_routes,
+        &pack_translates,
+    )?;
+    Ok(view_output.into_response())
+}
+
+#[debug_handler]
+pub async fn add_pack_translate(
+    auth: auth::JWT,
+    State(ctx): State<AppContext>,
+    ViewEngine(v): ViewEngine<TeraView>,
+    Json(form): Json<AdminPackTranslatedPayload>,
+) -> Result<impl IntoResponse> {
+    let user_pid = UserPid::new(&auth.claims.pid);
+    let user = load_user(&ctx.db, &user_pid).await?;
+    if user.role != Role::Admin {
+        return Ok(Redirect::to("/login").into_response());
+    }
+
+    dbg!(&form);
+    let language = form.language.clone();
+    // let form = form.save(&ctx.db).await?;
+    let pack: crate::models::packs::Model = load_pack_one_by_id(&ctx.db, &form.pack_id).await?;
+    let admin_routes = AdminRoutes::init();
+    let is_successfully_updated = false;
+    let view_output = views::admin::packs_form_edit_partial_translated(
+        v,
+        &form.into(),
+        &user.into(),
+        &admin_routes,
+        &language,
+        &pack.into(),
+        is_successfully_updated,
+    )?;
     Ok(view_output.into_response())
 }
 

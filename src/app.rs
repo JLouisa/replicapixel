@@ -97,9 +97,8 @@ impl Hooks for App {
     // }
 
     fn routes(_ctx: &AppContext) -> AppRoutes {
-        AppRoutes::with_default_routes()
+        let mut routes = AppRoutes::with_default_routes()
             .add_route(controllers::other::routes())
-            .add_route(controllers::admin::routes())
             .add_route(controllers::starter::routes())
             .add_route(controllers::packs::routes())
             .add_route(controllers::settings::routes())
@@ -112,8 +111,14 @@ impl Hooks for App {
             .add_route(controllers::training_models::routes())
             .add_route(controllers::webhooks::routes())
             .add_route(controllers::policy::routes())
-            .add_route(controllers::auth::routes().layer(CookieConsentLayer::new()))
+            .add_route(controllers::auth::routes().layer(CookieConsentLayer::new()));
+
+        if cfg!(debug_assertions) {
+            routes = routes.add_route(controllers::admin::routes());
+        }
+        routes
     }
+
     async fn connect_workers(ctx: &AppContext, queue: &Queue) -> Result<()> {
         queue
             .register(crate::workers::meta_worker::MetaConversionApiWorker::build(
