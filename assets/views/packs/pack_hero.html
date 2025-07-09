@@ -77,6 +77,8 @@ website.website_routes.dashboard_routes.sidebar.packs %} {% set pack = options.p
             />
           </div>
           <p class="text-base-700 mb-6 text-start">{{pack.full_description}}</p>
+
+          {% if options.user %}
           <div class="w-full flex items-center justify-start gap-7 text-sm mb-6">
             <div class="flex items-center justify-center gap-2">
               {% include "partials/svg/credit_svg.html" %}
@@ -87,6 +89,8 @@ website.website_routes.dashboard_routes.sidebar.packs %} {% set pack = options.p
               <span class="font-medium text-lg">{{ pack.num_images }}</span>
             </div>
           </div>
+          {% endif %}
+
           <div class="flex-start">
             <h3 class="text-lg font-semibold mb-2">
               {{ t(key="pack-features-title", lang=lang) }}

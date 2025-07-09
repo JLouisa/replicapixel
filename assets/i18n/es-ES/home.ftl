@@ -49,7 +49,7 @@ testimonials-tagline = Fotos con IA de calidad de estudio con un parecido perfec
 ## Packs Section
 ## =================================
 packs-section-badge = Paquetes de IA
-packs-section-title = Montones de paquetes de IA para elegir
+packs-section-title = Montones de paquetes de IA para elegir para tu réplica
 packs-section-tagline-prefix = Con solo un clic,
 packs-section-tagline-suffix = nuestra IA se encarga del resto
 packs-section-see-more = Ver más

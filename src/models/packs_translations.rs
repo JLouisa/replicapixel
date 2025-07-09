@@ -54,6 +54,14 @@ impl AdminPackTranslatedPayload {
         let value = item.update(db).await?;
         Ok(value)
     }
+    pub async fn upsert(&self, db: &DatabaseConnection) -> ModelResult<Model> {
+        let item = match Model::find_by_pack_id_lang(db, &self.pack_id, &self.language).await {
+            Ok(_) => self.update(db).await,
+            Err(ModelError::EntityNotFound) => self.save(db).await,
+            Err(err) => Err(err),
+        };
+        item
+    }
 }
 
 #[derive(Debug, Deserialize, Serialize, Default)]

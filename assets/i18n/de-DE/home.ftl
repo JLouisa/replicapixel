@@ -49,7 +49,7 @@ testimonials-tagline = KI-Fotos in Studioqualität mit perfekter Ähnlichkeit, j
 ## Packs Section
 ## =================================
 packs-section-badge = KI-Pakete
-packs-section-title = Unzählige KI-Pakete zur Auswahl
+packs-section-title = Jede Menge KI-Pakete zur Auswahl für deine Replik
 packs-section-tagline-prefix = Mit nur einem Klick,
 packs-section-tagline-suffix = erledigt unsere KI den Rest.
 packs-section-see-more = Mehr sehen

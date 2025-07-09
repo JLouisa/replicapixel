@@ -49,7 +49,7 @@ testimonials-tagline = AI-foto's van studiokwaliteit met perfecte gelijkenis, el
 ## Packs Section
 ## =================================
 packs-section-badge = AI-Pakketten
-packs-section-title = Talloze AI-pakketten om uit te kiezen
+packs-section-title = Talloze AI-pakketten om uit te kiezen voor je replica
 packs-section-tagline-prefix = Met slechts één klik,
 packs-section-tagline-suffix = zorgt onze AI voor de rest
 packs-section-see-more = Bekijk meer
@@ -120,7 +120,7 @@ features-table-video-midjourney = Geen video
 ## Pricing Section
 ## =================================
 pricing-section-badge = Prijzen
-pricing-section-title = Kies je abonnement
+pricing-section-title = Kies je plan
 pricing-section-subtitle = Selecteer het perfecte abonnement voor jouw behoeften
 # Pricing Card
 pricing-popular-badge = Populairst

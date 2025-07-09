@@ -51,7 +51,7 @@ testimonials-tagline = Studio-quality AI photos with perfect likeness every time
 ## Packs Section
 ## =================================
 packs-section-badge = Ai Packs
-packs-section-title = Tons of AI Packs to choose from
+packs-section-title = Tons of AI Packs to choose from for your replica
 packs-section-tagline-prefix = With just one click,
 packs-section-tagline-suffix = will takes care of the rest
 packs-section-see-more = See more
