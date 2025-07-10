@@ -80,18 +80,31 @@ website.website_routes.payment.payment_prepare_route %}
           </div>
         </div>
         <div class="border-solid border-white/10 border-t w-[20.5rem] h-0 mt-[-0.0625rem]"></div>
-        <div class="py-8 px-6 flex flex-col gap-8 items-center self-stretch">
+        <div
+          x-data="{ isPlus: true }"
+          class="py-8 px-6 flex flex-col gap-8 items-center self-stretch"
+        >
           <div class="flex flex-col gap-4 items-start self-stretch">
             <div class="flex flex-row gap-2 items-center self-stretch">
               {% include "partials/svg/check2.html" %}
               <div class="text-left font-inter text-lg font-medium">
-                {{ pricing.credit_amount }} AI Photo Credits
+                <span
+                  x-text="isPlus ? {{ pricing.credit_amount_plus }} : {{ pricing.credit_amount }}"
+                >
+                  {{ pricing.credit_amount }}
+                </span>
+                AI Photo Credits
               </div>
             </div>
             <div class="flex flex-row gap-2 items-center self-stretch">
               {% include "partials/svg/check2.html" %}
               <div class="text-left font-inter text-lg font-medium">
-                {{ pricing.model_amount }} AI Model
+                <span
+                  x-text="isPlus ? {{ pricing.model_amount_plus }} : {{ pricing.model_amount }}"
+                >
+                  {{ pricing.model_amount }}
+                </span>
+                AI Replica
               </div>
             </div>
             {% for feature in pricing.features %}
@@ -101,15 +114,25 @@ website.website_routes.payment.payment_prepare_route %}
             </div>
             {% endfor %}
           </div>
-          {% if user %} {% if pricing.plan_name == "basic" %} {% include
-          "partials/parts/validated/pricing_basic_btn.html" %} {% elif pricing.plan_name ==
-          "premium" %} {% include "partials/parts/validated/pricing_premium_btn.html" %} {% elif
-          pricing.plan_name == "max" %} {% include "partials/parts/validated/pricing_max_btn.html"
-          %} {% endif %} {% else %}
-          <div id="pricing-{{pricing.plan_name}}-btn" class="w-full flex flex-col items-start">
-            {% include "home/sections/partials/pricing_auth_modal.html" %}
+          <div class="w-full max-w-sm space-y-4">
+            <div class="flex items-center justify-center gap-2">
+              <input
+                type="checkbox"
+                class="toggle {% if pricing.plan_name == 'basic' or pricing.plan_name == 'max' %}toggle-primary{% else %}toggle-secondary{% endif %} toggle-lg"
+                x-model="isPlus"
+              />
+              <span class="font-medium">AI Photo Credits Preference</span>
+            </div>
+            {% if user %} {% if pricing.plan_name == "basic" %} {% include
+            "partials/parts/validated/pricing_basic_btn.html" %} {% elif pricing.plan_name ==
+            "premium" %} {% include "partials/parts/validated/pricing_premium_btn.html" %} {% elif
+            pricing.plan_name == "max" %} {% include "partials/parts/validated/pricing_max_btn.html"
+            %} {% endif %} {% else %}
+            <div id="pricing-{{pricing.plan_name}}-btn" class="w-full flex flex-col items-start">
+              {% include "home/sections/partials/pricing_auth_modal.html" %}
+            </div>
+            {% endif %}
           </div>
-          {% endif %}
         </div>
       </div>
       {% endfor %}

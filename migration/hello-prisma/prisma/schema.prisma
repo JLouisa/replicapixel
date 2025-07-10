@@ -15,8 +15,8 @@ generator client {
 datasource db {
   provider = "postgresql"
   // url      = env("DATABASE_URL_LOCAL")
-  url      = env("DATABASE_URL")
-  // url      = env("DATABASE_URL_PROD")
+  // url      = env("DATABASE_URL")
+  url      = env("DATABASE_URL_PROD")
 }
 
 model Users {
@@ -157,6 +157,8 @@ model Plans {
   plan_name                       PlanNames             @unique
   credit_amount                   Int             
   model_amount                    Int             
+  credit_amount_plus              Int?             
+  model_amount_plus               Int?
   price_cents                     BigInt              
   stripe_price_id                 String                @unique
   is_popular                      Boolean               @default(false)

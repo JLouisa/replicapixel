@@ -9309,6 +9309,8 @@ export namespace Prisma {
     id: number | null
     credit_amount: number | null
     model_amount: number | null
+    credit_amount_plus: number | null
+    model_amount_plus: number | null
     price_cents: number | null
   }
 
@@ -9316,6 +9318,8 @@ export namespace Prisma {
     id: number | null
     credit_amount: number | null
     model_amount: number | null
+    credit_amount_plus: number | null
+    model_amount_plus: number | null
     price_cents: bigint | null
   }
 
@@ -9325,6 +9329,8 @@ export namespace Prisma {
     plan_name: $Enums.PlanNames | null
     credit_amount: number | null
     model_amount: number | null
+    credit_amount_plus: number | null
+    model_amount_plus: number | null
     price_cents: bigint | null
     stripe_price_id: string | null
     is_popular: boolean | null
@@ -9342,6 +9348,8 @@ export namespace Prisma {
     plan_name: $Enums.PlanNames | null
     credit_amount: number | null
     model_amount: number | null
+    credit_amount_plus: number | null
+    model_amount_plus: number | null
     price_cents: bigint | null
     stripe_price_id: string | null
     is_popular: boolean | null
@@ -9359,6 +9367,8 @@ export namespace Prisma {
     plan_name: number
     credit_amount: number
     model_amount: number
+    credit_amount_plus: number
+    model_amount_plus: number
     price_cents: number
     stripe_price_id: number
     is_popular: number
@@ -9377,6 +9387,8 @@ export namespace Prisma {
     id?: true
     credit_amount?: true
     model_amount?: true
+    credit_amount_plus?: true
+    model_amount_plus?: true
     price_cents?: true
   }
 
@@ -9384,6 +9396,8 @@ export namespace Prisma {
     id?: true
     credit_amount?: true
     model_amount?: true
+    credit_amount_plus?: true
+    model_amount_plus?: true
     price_cents?: true
   }
 
@@ -9393,6 +9407,8 @@ export namespace Prisma {
     plan_name?: true
     credit_amount?: true
     model_amount?: true
+    credit_amount_plus?: true
+    model_amount_plus?: true
     price_cents?: true
     stripe_price_id?: true
     is_popular?: true
@@ -9410,6 +9426,8 @@ export namespace Prisma {
     plan_name?: true
     credit_amount?: true
     model_amount?: true
+    credit_amount_plus?: true
+    model_amount_plus?: true
     price_cents?: true
     stripe_price_id?: true
     is_popular?: true
@@ -9427,6 +9445,8 @@ export namespace Prisma {
     plan_name?: true
     credit_amount?: true
     model_amount?: true
+    credit_amount_plus?: true
+    model_amount_plus?: true
     price_cents?: true
     stripe_price_id?: true
     is_popular?: true
@@ -9532,6 +9552,8 @@ export namespace Prisma {
     plan_name: $Enums.PlanNames
     credit_amount: number
     model_amount: number
+    credit_amount_plus: number | null
+    model_amount_plus: number | null
     price_cents: bigint
     stripe_price_id: string
     is_popular: boolean
@@ -9569,6 +9591,8 @@ export namespace Prisma {
     plan_name?: boolean
     credit_amount?: boolean
     model_amount?: boolean
+    credit_amount_plus?: boolean
+    model_amount_plus?: boolean
     price_cents?: boolean
     stripe_price_id?: boolean
     is_popular?: boolean
@@ -9590,6 +9614,8 @@ export namespace Prisma {
     plan_name?: boolean
     credit_amount?: boolean
     model_amount?: boolean
+    credit_amount_plus?: boolean
+    model_amount_plus?: boolean
     price_cents?: boolean
     stripe_price_id?: boolean
     is_popular?: boolean
@@ -9608,6 +9634,8 @@ export namespace Prisma {
     plan_name?: boolean
     credit_amount?: boolean
     model_amount?: boolean
+    credit_amount_plus?: boolean
+    model_amount_plus?: boolean
     price_cents?: boolean
     stripe_price_id?: boolean
     is_popular?: boolean
@@ -9626,6 +9654,8 @@ export namespace Prisma {
     plan_name?: boolean
     credit_amount?: boolean
     model_amount?: boolean
+    credit_amount_plus?: boolean
+    model_amount_plus?: boolean
     price_cents?: boolean
     stripe_price_id?: boolean
     is_popular?: boolean
@@ -9638,7 +9668,7 @@ export namespace Prisma {
     category?: boolean
   }
 
-  export type PlansOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pid" | "plan_name" | "credit_amount" | "model_amount" | "price_cents" | "stripe_price_id" | "is_popular" | "created_at" | "updated_at" | "name" | "subtitle" | "features" | "cta" | "category", ExtArgs["result"]["plans"]>
+  export type PlansOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pid" | "plan_name" | "credit_amount" | "model_amount" | "credit_amount_plus" | "model_amount_plus" | "price_cents" | "stripe_price_id" | "is_popular" | "created_at" | "updated_at" | "name" | "subtitle" | "features" | "cta" | "category", ExtArgs["result"]["plans"]>
   export type PlansInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     translations?: boolean | Plans$translationsArgs<ExtArgs>
     transactions?: boolean | Plans$transactionsArgs<ExtArgs>
@@ -9659,6 +9689,8 @@ export namespace Prisma {
       plan_name: $Enums.PlanNames
       credit_amount: number
       model_amount: number
+      credit_amount_plus: number | null
+      model_amount_plus: number | null
       price_cents: bigint
       stripe_price_id: string
       is_popular: boolean
@@ -10099,6 +10131,8 @@ export namespace Prisma {
     readonly plan_name: FieldRef<"Plans", 'PlanNames'>
     readonly credit_amount: FieldRef<"Plans", 'Int'>
     readonly model_amount: FieldRef<"Plans", 'Int'>
+    readonly credit_amount_plus: FieldRef<"Plans", 'Int'>
+    readonly model_amount_plus: FieldRef<"Plans", 'Int'>
     readonly price_cents: FieldRef<"Plans", 'BigInt'>
     readonly stripe_price_id: FieldRef<"Plans", 'String'>
     readonly is_popular: FieldRef<"Plans", 'Boolean'>
@@ -22964,6 +22998,8 @@ export namespace Prisma {
     plan_name: 'plan_name',
     credit_amount: 'credit_amount',
     model_amount: 'model_amount',
+    credit_amount_plus: 'credit_amount_plus',
+    model_amount_plus: 'model_amount_plus',
     price_cents: 'price_cents',
     stripe_price_id: 'stripe_price_id',
     is_popular: 'is_popular',
@@ -24066,6 +24102,8 @@ export namespace Prisma {
     plan_name?: EnumPlanNamesFilter<"Plans"> | $Enums.PlanNames
     credit_amount?: IntFilter<"Plans"> | number
     model_amount?: IntFilter<"Plans"> | number
+    credit_amount_plus?: IntNullableFilter<"Plans"> | number | null
+    model_amount_plus?: IntNullableFilter<"Plans"> | number | null
     price_cents?: BigIntFilter<"Plans"> | bigint | number
     stripe_price_id?: StringFilter<"Plans"> | string
     is_popular?: BoolFilter<"Plans"> | boolean
@@ -24086,6 +24124,8 @@ export namespace Prisma {
     plan_name?: SortOrder
     credit_amount?: SortOrder
     model_amount?: SortOrder
+    credit_amount_plus?: SortOrderInput | SortOrder
+    model_amount_plus?: SortOrderInput | SortOrder
     price_cents?: SortOrder
     stripe_price_id?: SortOrder
     is_popular?: SortOrder
@@ -24111,6 +24151,8 @@ export namespace Prisma {
     NOT?: PlansWhereInput | PlansWhereInput[]
     credit_amount?: IntFilter<"Plans"> | number
     model_amount?: IntFilter<"Plans"> | number
+    credit_amount_plus?: IntNullableFilter<"Plans"> | number | null
+    model_amount_plus?: IntNullableFilter<"Plans"> | number | null
     price_cents?: BigIntFilter<"Plans"> | bigint | number
     is_popular?: BoolFilter<"Plans"> | boolean
     created_at?: DateTimeFilter<"Plans"> | Date | string
@@ -24129,6 +24171,8 @@ export namespace Prisma {
     plan_name?: SortOrder
     credit_amount?: SortOrder
     model_amount?: SortOrder
+    credit_amount_plus?: SortOrderInput | SortOrder
+    model_amount_plus?: SortOrderInput | SortOrder
     price_cents?: SortOrder
     stripe_price_id?: SortOrder
     is_popular?: SortOrder
@@ -24155,6 +24199,8 @@ export namespace Prisma {
     plan_name?: EnumPlanNamesWithAggregatesFilter<"Plans"> | $Enums.PlanNames
     credit_amount?: IntWithAggregatesFilter<"Plans"> | number
     model_amount?: IntWithAggregatesFilter<"Plans"> | number
+    credit_amount_plus?: IntNullableWithAggregatesFilter<"Plans"> | number | null
+    model_amount_plus?: IntNullableWithAggregatesFilter<"Plans"> | number | null
     price_cents?: BigIntWithAggregatesFilter<"Plans"> | bigint | number
     stripe_price_id?: StringWithAggregatesFilter<"Plans"> | string
     is_popular?: BoolWithAggregatesFilter<"Plans"> | boolean
@@ -25609,6 +25655,8 @@ export namespace Prisma {
     plan_name: $Enums.PlanNames
     credit_amount: number
     model_amount: number
+    credit_amount_plus?: number | null
+    model_amount_plus?: number | null
     price_cents: bigint | number
     stripe_price_id: string
     is_popular?: boolean
@@ -25629,6 +25677,8 @@ export namespace Prisma {
     plan_name: $Enums.PlanNames
     credit_amount: number
     model_amount: number
+    credit_amount_plus?: number | null
+    model_amount_plus?: number | null
     price_cents: bigint | number
     stripe_price_id: string
     is_popular?: boolean
@@ -25648,6 +25698,8 @@ export namespace Prisma {
     plan_name?: EnumPlanNamesFieldUpdateOperationsInput | $Enums.PlanNames
     credit_amount?: IntFieldUpdateOperationsInput | number
     model_amount?: IntFieldUpdateOperationsInput | number
+    credit_amount_plus?: NullableIntFieldUpdateOperationsInput | number | null
+    model_amount_plus?: NullableIntFieldUpdateOperationsInput | number | null
     price_cents?: BigIntFieldUpdateOperationsInput | bigint | number
     stripe_price_id?: StringFieldUpdateOperationsInput | string
     is_popular?: BoolFieldUpdateOperationsInput | boolean
@@ -25668,6 +25720,8 @@ export namespace Prisma {
     plan_name?: EnumPlanNamesFieldUpdateOperationsInput | $Enums.PlanNames
     credit_amount?: IntFieldUpdateOperationsInput | number
     model_amount?: IntFieldUpdateOperationsInput | number
+    credit_amount_plus?: NullableIntFieldUpdateOperationsInput | number | null
+    model_amount_plus?: NullableIntFieldUpdateOperationsInput | number | null
     price_cents?: BigIntFieldUpdateOperationsInput | bigint | number
     stripe_price_id?: StringFieldUpdateOperationsInput | string
     is_popular?: BoolFieldUpdateOperationsInput | boolean
@@ -25688,6 +25742,8 @@ export namespace Prisma {
     plan_name: $Enums.PlanNames
     credit_amount: number
     model_amount: number
+    credit_amount_plus?: number | null
+    model_amount_plus?: number | null
     price_cents: bigint | number
     stripe_price_id: string
     is_popular?: boolean
@@ -25705,6 +25761,8 @@ export namespace Prisma {
     plan_name?: EnumPlanNamesFieldUpdateOperationsInput | $Enums.PlanNames
     credit_amount?: IntFieldUpdateOperationsInput | number
     model_amount?: IntFieldUpdateOperationsInput | number
+    credit_amount_plus?: NullableIntFieldUpdateOperationsInput | number | null
+    model_amount_plus?: NullableIntFieldUpdateOperationsInput | number | null
     price_cents?: BigIntFieldUpdateOperationsInput | bigint | number
     stripe_price_id?: StringFieldUpdateOperationsInput | string
     is_popular?: BoolFieldUpdateOperationsInput | boolean
@@ -25723,6 +25781,8 @@ export namespace Prisma {
     plan_name?: EnumPlanNamesFieldUpdateOperationsInput | $Enums.PlanNames
     credit_amount?: IntFieldUpdateOperationsInput | number
     model_amount?: IntFieldUpdateOperationsInput | number
+    credit_amount_plus?: NullableIntFieldUpdateOperationsInput | number | null
+    model_amount_plus?: NullableIntFieldUpdateOperationsInput | number | null
     price_cents?: BigIntFieldUpdateOperationsInput | bigint | number
     stripe_price_id?: StringFieldUpdateOperationsInput | string
     is_popular?: BoolFieldUpdateOperationsInput | boolean
@@ -27439,6 +27499,8 @@ export namespace Prisma {
     plan_name?: SortOrder
     credit_amount?: SortOrder
     model_amount?: SortOrder
+    credit_amount_plus?: SortOrder
+    model_amount_plus?: SortOrder
     price_cents?: SortOrder
     stripe_price_id?: SortOrder
     is_popular?: SortOrder
@@ -27455,6 +27517,8 @@ export namespace Prisma {
     id?: SortOrder
     credit_amount?: SortOrder
     model_amount?: SortOrder
+    credit_amount_plus?: SortOrder
+    model_amount_plus?: SortOrder
     price_cents?: SortOrder
   }
 
@@ -27464,6 +27528,8 @@ export namespace Prisma {
     plan_name?: SortOrder
     credit_amount?: SortOrder
     model_amount?: SortOrder
+    credit_amount_plus?: SortOrder
+    model_amount_plus?: SortOrder
     price_cents?: SortOrder
     stripe_price_id?: SortOrder
     is_popular?: SortOrder
@@ -27481,6 +27547,8 @@ export namespace Prisma {
     plan_name?: SortOrder
     credit_amount?: SortOrder
     model_amount?: SortOrder
+    credit_amount_plus?: SortOrder
+    model_amount_plus?: SortOrder
     price_cents?: SortOrder
     stripe_price_id?: SortOrder
     is_popular?: SortOrder
@@ -27496,6 +27564,8 @@ export namespace Prisma {
     id?: SortOrder
     credit_amount?: SortOrder
     model_amount?: SortOrder
+    credit_amount_plus?: SortOrder
+    model_amount_plus?: SortOrder
     price_cents?: SortOrder
   }
 
@@ -31153,6 +31223,8 @@ export namespace Prisma {
     plan_name: $Enums.PlanNames
     credit_amount: number
     model_amount: number
+    credit_amount_plus?: number | null
+    model_amount_plus?: number | null
     price_cents: bigint | number
     stripe_price_id: string
     is_popular?: boolean
@@ -31172,6 +31244,8 @@ export namespace Prisma {
     plan_name: $Enums.PlanNames
     credit_amount: number
     model_amount: number
+    credit_amount_plus?: number | null
+    model_amount_plus?: number | null
     price_cents: bigint | number
     stripe_price_id: string
     is_popular?: boolean
@@ -31206,6 +31280,8 @@ export namespace Prisma {
     plan_name?: EnumPlanNamesFieldUpdateOperationsInput | $Enums.PlanNames
     credit_amount?: IntFieldUpdateOperationsInput | number
     model_amount?: IntFieldUpdateOperationsInput | number
+    credit_amount_plus?: NullableIntFieldUpdateOperationsInput | number | null
+    model_amount_plus?: NullableIntFieldUpdateOperationsInput | number | null
     price_cents?: BigIntFieldUpdateOperationsInput | bigint | number
     stripe_price_id?: StringFieldUpdateOperationsInput | string
     is_popular?: BoolFieldUpdateOperationsInput | boolean
@@ -31225,6 +31301,8 @@ export namespace Prisma {
     plan_name?: EnumPlanNamesFieldUpdateOperationsInput | $Enums.PlanNames
     credit_amount?: IntFieldUpdateOperationsInput | number
     model_amount?: IntFieldUpdateOperationsInput | number
+    credit_amount_plus?: NullableIntFieldUpdateOperationsInput | number | null
+    model_amount_plus?: NullableIntFieldUpdateOperationsInput | number | null
     price_cents?: BigIntFieldUpdateOperationsInput | bigint | number
     stripe_price_id?: StringFieldUpdateOperationsInput | string
     is_popular?: BoolFieldUpdateOperationsInput | boolean
@@ -31480,6 +31558,8 @@ export namespace Prisma {
     plan_name: $Enums.PlanNames
     credit_amount: number
     model_amount: number
+    credit_amount_plus?: number | null
+    model_amount_plus?: number | null
     price_cents: bigint | number
     stripe_price_id: string
     is_popular?: boolean
@@ -31499,6 +31579,8 @@ export namespace Prisma {
     plan_name: $Enums.PlanNames
     credit_amount: number
     model_amount: number
+    credit_amount_plus?: number | null
+    model_amount_plus?: number | null
     price_cents: bigint | number
     stripe_price_id: string
     is_popular?: boolean
@@ -31593,6 +31675,8 @@ export namespace Prisma {
     plan_name?: EnumPlanNamesFieldUpdateOperationsInput | $Enums.PlanNames
     credit_amount?: IntFieldUpdateOperationsInput | number
     model_amount?: IntFieldUpdateOperationsInput | number
+    credit_amount_plus?: NullableIntFieldUpdateOperationsInput | number | null
+    model_amount_plus?: NullableIntFieldUpdateOperationsInput | number | null
     price_cents?: BigIntFieldUpdateOperationsInput | bigint | number
     stripe_price_id?: StringFieldUpdateOperationsInput | string
     is_popular?: BoolFieldUpdateOperationsInput | boolean
@@ -31612,6 +31696,8 @@ export namespace Prisma {
     plan_name?: EnumPlanNamesFieldUpdateOperationsInput | $Enums.PlanNames
     credit_amount?: IntFieldUpdateOperationsInput | number
     model_amount?: IntFieldUpdateOperationsInput | number
+    credit_amount_plus?: NullableIntFieldUpdateOperationsInput | number | null
+    model_amount_plus?: NullableIntFieldUpdateOperationsInput | number | null
     price_cents?: BigIntFieldUpdateOperationsInput | bigint | number
     stripe_price_id?: StringFieldUpdateOperationsInput | string
     is_popular?: BoolFieldUpdateOperationsInput | boolean

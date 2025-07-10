@@ -150,21 +150,23 @@ model Images {
 }
 
 model Plans {
-  id              Int          @id @default(autoincrement())
-  pid             String       @unique @db.Uuid
-  plan_name       PlanNames    @unique
-  credit_amount   Int
-  model_amount    Int
-  price_cents     BigInt
-  stripe_price_id String       @unique
-  is_popular      Boolean      @default(false)
-  created_at      DateTime     @default(now()) @db.Timestamptz
-  updated_at      DateTime     @default(now()) @db.Timestamptz
-  name            String       @unique
-  subtitle        String       @db.VarChar(255)
-  features        String[]     @default([]) @db.Text
-  cta             String       @db.VarChar(255)
-  category        PlanCategory @default(Sub)
+  id                 Int          @id @default(autoincrement())
+  pid                String       @unique @db.Uuid
+  plan_name          PlanNames    @unique
+  credit_amount      Int
+  model_amount       Int
+  credit_amount_plus Int?
+  model_amount_plus  Int?
+  price_cents        BigInt
+  stripe_price_id    String       @unique
+  is_popular         Boolean      @default(false)
+  created_at         DateTime     @default(now()) @db.Timestamptz
+  updated_at         DateTime     @default(now()) @db.Timestamptz
+  name               String       @unique
+  subtitle           String       @db.VarChar(255)
+  features           String[]     @default([]) @db.Text
+  cta                String       @db.VarChar(255)
+  category           PlanCategory @default(Sub)
 
   translations Plans_translations[] @relation("PlanToTranslations")
   transactions Transactions[]       @relation("PlanToTransactions")

@@ -441,6 +441,16 @@ fn get_image_url(rng: &mut ThreadRng, packs: PackView) -> String {
 }
 
 fn get_web_img_urls(rng: &mut ThreadRng, packs: &mut Vec<PackView>) -> Vec<String> {
+    if packs.is_empty() {
+        return vec![
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/nature2.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/packs/cosplay/f193a28b-83e3-4a1c-b13e-3637acb85c84.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/packs/sexy+halloween/e5557da7-416a-466c-a5a7-bf7232232ee3.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/cosplay1-small.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/machina2.webp"),
+            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/cosplay2-small.webp"),
+        ];
+    }
     let mut images = Vec::new();
     for _ in 0..=5 {
         let pack = pop_random_item(rng, packs);

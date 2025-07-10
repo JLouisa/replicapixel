@@ -1,7 +1,7 @@
 use crate::{
     controllers::payment::routes,
     domain::url::Url,
-    models::{UserActiveModel, UserModel, _entities::sea_orm_active_enums::PlanNames},
+    models::{UserActiveModel, UserModel},
     service::stripe::stripe_builder::StripeOptions,
 };
 use derive_more::{AsRef, Constructor, From};
@@ -12,7 +12,7 @@ use std::collections::HashMap;
 use std::str::FromStr;
 use stripe::{
     CheckoutSession, CheckoutSessionUiMode, Client, CreateCheckoutSession,
-    CreateCheckoutSessionLineItems, CreateCustomer, Customer, CustomerId, ParseIdError, PriceId,
+    CreateCheckoutSessionLineItems, CreateCustomer, Customer, CustomerId, ParseIdError,
     StripeError,
 };
 use thiserror::Error;

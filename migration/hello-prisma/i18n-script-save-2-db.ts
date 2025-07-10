@@ -44,24 +44,24 @@ async function importTranslationsFromJSON() {
   // console.log("Import finished.");
 
   // Upsert Plans
-  for (const plan of plans_json) {
-    await prisma.plans.upsert({
-      where: { pid: plan.pid },
-      update: { ...plan },
-      create: { ...plan },
-    });
-  }
-  console.log("Plans successfully upserted.");
+  // for (const plan of plans_json) {
+  //   await prisma.plans.upsert({
+  //     where: { pid: plan.pid },
+  //     update: { ...plan },
+  //     create: { ...plan },
+  //   });
+  // }
+  // console.log("Plans successfully upserted.");
 
-  // Upsert Plan Translations
-  for (const planTranslation of plansTranslations) {
-    await prisma.plans_translations.upsert({
-      where: { id: planTranslation.id },
-      update: { ...planTranslation },
-      create: { ...planTranslation },
-    });
-  }
-  console.log("Plans translations successfully upserted.");
+  // // Upsert Plan Translations
+  // for (const planTranslation of plansTranslations) {
+  //   await prisma.plans_translations.upsert({
+  //     where: { id: planTranslation.id },
+  //     update: { ...planTranslation },
+  //     create: { ...planTranslation },
+  //   });
+  // }
+  // console.log("Plans translations successfully upserted.");
 
   // Upsert Packs
   for (const pack of packs_json) {

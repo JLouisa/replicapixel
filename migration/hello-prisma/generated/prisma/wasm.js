@@ -215,6 +215,8 @@ exports.Prisma.PlansScalarFieldEnum = {
   plan_name: 'plan_name',
   credit_amount: 'credit_amount',
   model_amount: 'model_amount',
+  credit_amount_plus: 'credit_amount_plus',
+  model_amount_plus: 'model_amount_plus',
   price_cents: 'price_cents',
   stripe_price_id: 'stripe_price_id',
   is_popular: 'is_popular',

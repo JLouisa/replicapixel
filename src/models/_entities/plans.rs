@@ -28,6 +28,8 @@ pub struct Model {
     pub updated_at: DateTimeWithTimeZone,
     pub is_popular: bool,
     pub category: PlanCategory,
+    pub credit_amount_plus: Option<i32>,
+    pub model_amount_plus: Option<i32>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

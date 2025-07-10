@@ -42,6 +42,8 @@ pub struct PlanDomain {
     pub plan_name: PlanNames,
     pub credit_amount: i32,
     pub model_amount: i32,
+    pub credit_amount_plus: Option<i32>,
+    pub model_amount_plus: Option<i32>,
     pub price_cents: i64,
     pub is_popular: bool,
     pub name: String,
@@ -50,36 +52,40 @@ pub struct PlanDomain {
     pub cta: String,
 }
 impl From<Model> for PlanDomain {
-    fn from(packs: Model) -> Self {
+    fn from(plan: Model) -> Self {
         Self {
-            id: packs.id,
-            pid: packs.pid,
-            plan_name: packs.plan_name,
-            credit_amount: packs.credit_amount,
-            model_amount: packs.model_amount,
-            price_cents: packs.price_cents,
-            is_popular: packs.is_popular,
-            name: packs.name,
-            subtitle: packs.subtitle,
-            features: packs.features,
-            cta: packs.cta,
+            id: plan.id,
+            pid: plan.pid,
+            plan_name: plan.plan_name,
+            credit_amount: plan.credit_amount,
+            model_amount: plan.model_amount,
+            credit_amount_plus: plan.credit_amount_plus,
+            model_amount_plus: plan.model_amount_plus,
+            price_cents: plan.price_cents,
+            is_popular: plan.is_popular,
+            name: plan.name,
+            subtitle: plan.subtitle,
+            features: plan.features,
+            cta: plan.cta,
         }
     }
 }
 impl PlanDomain {
-    pub fn from_model(packs: Model) -> Self {
+    pub fn from_model(plan: Model) -> Self {
         Self {
-            id: packs.id,
-            pid: packs.pid,
-            plan_name: packs.plan_name,
-            credit_amount: packs.credit_amount,
-            model_amount: packs.model_amount,
-            price_cents: packs.price_cents,
-            is_popular: packs.is_popular,
-            name: packs.name,
-            subtitle: packs.subtitle,
-            features: packs.features,
-            cta: packs.cta,
+            id: plan.id,
+            pid: plan.pid,
+            plan_name: plan.plan_name,
+            credit_amount: plan.credit_amount,
+            model_amount: plan.model_amount,
+            credit_amount_plus: plan.credit_amount_plus,
+            model_amount_plus: plan.model_amount_plus,
+            price_cents: plan.price_cents,
+            is_popular: plan.is_popular,
+            name: plan.name,
+            subtitle: plan.subtitle,
+            features: plan.features,
+            cta: plan.cta,
         }
     }
     pub fn translate(plan: Model, translation: PlanTranslationModel) -> Self {
@@ -89,6 +95,8 @@ impl PlanDomain {
             plan_name: plan.plan_name,
             credit_amount: plan.credit_amount,
             model_amount: plan.model_amount,
+            credit_amount_plus: plan.credit_amount_plus,
+            model_amount_plus: plan.model_amount_plus,
             price_cents: plan.price_cents,
             is_popular: plan.is_popular,
             name: plan.name,
