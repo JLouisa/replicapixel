@@ -121,7 +121,7 @@ website.website_routes.payment.payment_prepare_route %}
                 class="toggle {% if pricing.plan_name == 'basic' or pricing.plan_name == 'max' %}toggle-primary{% else %}toggle-secondary{% endif %} toggle-lg"
                 x-model="isPlus"
               />
-              <span class="font-medium">AI Photo Credits Preference</span>
+              <span class="font-medium">{{ t(key="pricing-preference", lang=lang) }}</span>
             </div>
             {% if user %} {% if pricing.plan_name == "basic" %} {% include
             "partials/parts/validated/pricing_basic_btn.html" %} {% elif pricing.plan_name ==

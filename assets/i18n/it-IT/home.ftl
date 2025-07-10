@@ -124,6 +124,7 @@ pricing-section-title = Scegli il tuo piano
 pricing-section-subtitle = Seleziona il piano perfetto per le tue esigenze
 # Pricing Card
 pricing-popular-badge = Più popolare
+pricing-preference = Preferenza Crediti Foto (IA)
 
 ## =================================
 ## Footer Section

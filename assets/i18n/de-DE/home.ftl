@@ -124,6 +124,7 @@ pricing-section-title = Wähle deinen Plan
 pricing-section-subtitle = Wähle den perfekten Plan für deine Bedürfnisse
 # Pricing Card
 pricing-popular-badge = Am beliebtesten
+pricing-preference = KI-Fotoguthaben-Präferenz
 
 ## =================================
 ## Footer Section

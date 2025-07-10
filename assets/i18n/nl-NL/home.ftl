@@ -124,6 +124,7 @@ pricing-section-title = Kies je plan
 pricing-section-subtitle = Selecteer het perfecte abonnement voor jouw behoeften
 # Pricing Card
 pricing-popular-badge = Populairst
+pricing-preference = Voorkeur voor AI-fototegoed
 
 ## =================================
 ## Footer Section

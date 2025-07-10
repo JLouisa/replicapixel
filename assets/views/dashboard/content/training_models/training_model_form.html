@@ -38,6 +38,7 @@
       <div class="space-y-1">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="form-control w-full">
+            <span class="label-text">Choose Replica Name</span>
             <label for="name" class="label"> </label>
             <input
               id="name"
@@ -54,6 +55,7 @@
           </div>
 
           <div class="form-control w-full">
+            <span class="label-text">Choose Your Age</span>
             <label for="age" class="label"> </label>
             <input
               id="age"
@@ -71,6 +73,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="form-control w-full">
+            <span class="label-text">Choose Your Sex</span>
             <label for="sex" class="label"> </label>
             <select
               id="sex"
@@ -89,6 +92,7 @@
           </div>
 
           <div class="form-control w-full">
+            <span class="label-text">Choose The Eye Color</span>
             <label for="eyeColor" class="label"> </label>
             <select
               id="eyeColor"
@@ -109,6 +113,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="form-control w-full">
+            <span class="label-text">Choose The Ethnicity</span>
             <label for="ethnicity" class="label"> </label>
             <select
               id="ethnicity"
@@ -127,7 +132,8 @@
           </div>
 
           <div class="form-control w-full">
-            <label for="bald" class="label"> </label>
+            <span class="label-text">Choose If Your Replica Is Bald</span>
+            <label for="bald" class="label"></label>
             <select
               id="bald"
               class="appearance-none border cursor-pointer pl-12 border-gray-100 shadow-sm focus:shadow-md focus:placeholder-gray-600 transition rounded-md w-full py-3 text-gray-600 leading-tight focus:outline-none focus:ring-gray-600 focus:shadow-outline"
@@ -145,6 +151,14 @@
         </div>
 
         <div class="w-full my-8">
+          <div class="space-y-2 text-base">
+            <p class="font-medium">For The Best Quality Replica:</p>
+            <ul class="list-disc list-inside space-y-1">
+              <li>Add <strong>5 smiling photos</strong></li>
+              <li>Add <strong>5 serious / unsmiling photos</strong></li>
+              <li>Add <strong>5 different facial expressions or emotions</strong></li>
+            </ul>
+          </div>
           {% include "dashboard/content/training_models/dropzone.html" %}
         </div>
 

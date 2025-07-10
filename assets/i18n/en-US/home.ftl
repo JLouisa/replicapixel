@@ -55,6 +55,7 @@ packs-section-title = Tons of AI Packs to choose from for your replica
 packs-section-tagline-prefix = With just one click,
 packs-section-tagline-suffix = will takes care of the rest
 packs-section-see-more = See more
+pricing-preference = AI Photo Credits Preference 
 
 ## =================================
 ## Comparison Section
