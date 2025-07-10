@@ -44,17 +44,40 @@ impl Default for Sex {
     Ord,
 )]
 #[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "plan_names")]
-#[serde(rename_all = "lowercase")]
 pub enum PlanNames {
     #[sea_orm(string_value = "Basic")]
     #[strum(to_string = "basic")]
+    #[serde(rename = "basic")]
     Basic,
     #[sea_orm(string_value = "Premium")]
     #[strum(to_string = "premium")]
+    #[serde(rename = "premium")]
     Premium,
     #[sea_orm(string_value = "Max")]
     #[strum(to_string = "max")]
+    #[serde(rename = "max")]
     Max,
+    #[sea_orm(string_value = "BasicPlus")]
+    #[strum(to_string = "basicplus")]
+    #[serde(rename = "basicplus")]
+    BasicPlus,
+    #[sea_orm(string_value = "PremiumPlus")]
+    #[strum(to_string = "premiumplus")]
+    #[serde(rename = "premiumplus")]
+    PremiumPlus,
+    #[sea_orm(string_value = "MaxPlus")]
+    #[strum(to_string = "maxplus")]
+    #[serde(rename = "maxplus")]
+    MaxPlus,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, EnumIter, DeriveActiveEnum, Serialize, Deserialize)]
+#[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "plan_category")]
+pub enum PlanCategory {
+    #[sea_orm(string_value = "Main")]
+    Main,
+    #[sea_orm(string_value = "Sub")]
+    Sub,
 }
 
 #[derive(

@@ -6,7 +6,7 @@
     "credit_amount": 50,
     "model_amount": 1,
     "price_cents": "999",
-    "stripe_price_id": "price_1RUFy3HsQkT5gWXDmkiKx6bn",
+    "stripe_price_id": "price_1RAyvzHsQkT5gWXDZVsbR8VM",
     "is_popular": false,
     "created_at": "2025-04-27T10:53:16.250Z",
     "updated_at": "2025-04-27T10:53:16.250Z",
@@ -18,7 +18,8 @@
       "No Watermarks",
       "24/7 Support"
     ],
-    "cta": "Choose Basic"
+    "cta": "Choose Basic",
+    "category": "Main"
   },
   {
     "id": 2,
@@ -27,7 +28,7 @@
     "credit_amount": 250,
     "model_amount": 7,
     "price_cents": "3999",
-    "stripe_price_id": "price_1RUFy1HsQkT5gWXDS4kTna59",
+    "stripe_price_id": "price_1RAywNHsQkT5gWXDGEb6Pmoi",
     "is_popular": true,
     "created_at": "2025-04-27T10:53:16.535Z",
     "updated_at": "2025-04-27T10:53:16.535Z",
@@ -40,7 +41,8 @@
       "No Watermarks",
       "24/7 Support"
     ],
-    "cta": "Choose Premium"
+    "cta": "Choose Premium",
+    "category": "Main"
   },
   {
     "id": 3,
@@ -49,7 +51,7 @@
     "credit_amount": 1100,
     "model_amount": 16,
     "price_cents": "9999",
-    "stripe_price_id": "price_1RUFxxHsQkT5gWXDEML3s9fP",
+    "stripe_price_id": "price_1RAyxOHsQkT5gWXDxQklgtPM",
     "is_popular": false,
     "created_at": "2025-04-27T10:53:16.767Z",
     "updated_at": "2025-04-27T10:53:16.767Z",
@@ -61,6 +63,74 @@
       "No Watermarks",
       "24/7 Support"
     ],
-    "cta": "Choose Max"
+    "cta": "Choose Max",
+    "category": "Main"
+  },
+  {
+    "id": 4,
+    "pid": "018f6a5a-1dd2-7f3b-9000-7c8d1e2f4a6b",
+    "plan_name": "PremiumPlus",
+    "credit_amount": 500,
+    "model_amount": 1,
+    "price_cents": "3999",
+    "stripe_price_id": "price_1RjG5WHsQkT5gWXDW2olbRq5",
+    "is_popular": true,
+    "created_at": "2025-04-27T10:53:16.535Z",
+    "updated_at": "2025-04-27T10:53:16.535Z",
+    "name": "PremiumPlus",
+    "subtitle": "For creators & small teams",
+    "features": [
+      "No Monthly Subscription",
+      "Use Any Photo Pack",
+      "Priority Processing",
+      "No Watermarks",
+      "24/7 Support"
+    ],
+    "cta": "Choose Premium",
+    "category": "Sub"
+  },
+  {
+    "id": 5,
+    "pid": "018f6a5a-1dd2-7f3c-a000-5d4c3b2a1e9f",
+    "plan_name": "MaxPlus",
+    "credit_amount": 1650,
+    "model_amount": 1,
+    "price_cents": "9999",
+    "stripe_price_id": "price_1RjG63HsQkT5gWXDVE7V1Hjw",
+    "is_popular": false,
+    "created_at": "2025-04-27T10:53:16.767Z",
+    "updated_at": "2025-04-27T10:53:16.767Z",
+    "name": "MaxPlus",
+    "subtitle": "For agencies & heavy users",
+    "features": [
+      "No Monthly Subscription",
+      "Use Any Photo Pack",
+      "No Watermarks",
+      "24/7 Support"
+    ],
+    "cta": "Choose Max",
+    "category": "Sub"
+  },
+  {
+    "id": 6,
+    "pid": "018f6a5a-1dd2-7f3a-8000-3a5e2f3b1a7d",
+    "plan_name": "BasicPlus",
+    "credit_amount": 50,
+    "model_amount": 1,
+    "price_cents": "999",
+    "stripe_price_id": "price_1RjG53HsQkT5gWXDWeG4uBFz",
+    "is_popular": false,
+    "created_at": "2025-04-27T10:53:16.250Z",
+    "updated_at": "2025-04-27T10:53:16.250Z",
+    "name": "BasicPlus",
+    "subtitle": "For individuals & testing",
+    "features": [
+      "No Monthly Subscription",
+      "Use Any Photo Pack",
+      "No Watermarks",
+      "24/7 Support"
+    ],
+    "cta": "Choose Basic",
+    "category": "Sub"
   }
 ]

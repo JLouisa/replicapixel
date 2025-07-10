@@ -27,7 +27,7 @@ use crate::{
         meta::meta::{EventData, UserData},
         stripe::{
             stripe::{StripeClient, StripeClientError},
-            stripe_builder::CheckoutSessionBuilder,
+            stripe_builder::StripeOptionsBuilder,
         },
     },
     views,
@@ -295,11 +295,14 @@ pub async fn create_checkout_session(
         loco_rs::Error::BadRequest("Invalid plan selected.".into())
     })?;
 
-    let stripe_checkout = CheckoutSessionBuilder::new(&stripe_client, &ctx.db)
+    let stripe_options = StripeOptionsBuilder::new()
         .user(&user)
         .plan(&plan)
         .metadata()
-        .build()
+        .build();
+
+    let stripe_checkout = stripe_client
+        .create_checkout(&stripe_options, &ctx.db)
         .await?;
 
     let session = stripe_checkout.url.ok_or_else(|| {

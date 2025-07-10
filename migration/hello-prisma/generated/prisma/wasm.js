@@ -223,7 +223,8 @@ exports.Prisma.PlansScalarFieldEnum = {
   name: 'name',
   subtitle: 'subtitle',
   features: 'features',
-  cta: 'cta'
+  cta: 'cta',
+  category: 'category'
 };
 
 exports.Prisma.Plans_translationsScalarFieldEnum = {
@@ -435,8 +436,16 @@ exports.ImageSize = exports.$Enums.ImageSize = {
 
 exports.PlanNames = exports.$Enums.PlanNames = {
   Basic: 'Basic',
+  BasicPlus: 'BasicPlus',
   Premium: 'Premium',
-  Max: 'Max'
+  PremiumPlus: 'PremiumPlus',
+  Max: 'Max',
+  MaxPlus: 'MaxPlus'
+};
+
+exports.PlanCategory = exports.$Enums.PlanCategory = {
+  Main: 'Main',
+  Sub: 'Sub'
 };
 
 exports.Language = exports.$Enums.Language = {

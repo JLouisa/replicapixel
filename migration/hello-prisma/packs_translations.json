@@ -1224,6 +1224,23 @@
     "updated_at": "2025-06-14T15:02:30.001Z"
   },
   {
+    "id": 104,
+    "pack_id": 35,
+    "language": "Italian",
+    "title": "Ritratti per Infermieri",
+    "short_description": "Genera ritratti professionali di infermieri per profili e piattaforme sanitarie",
+    "full_description": "Crea ritratti realistici e professionali di infermieri per siti web di ospedali, candidature di lavoro, profili sui social media e materiali di marketing medico, personalizza uniformi, sfondi ed espressioni per abbinarli al tuo stile e marchio desiderati",
+    "features": [
+      "Illuminazione Professionale",
+      "Uniformi Mediche",
+      "Dettagli Facciali Realistici",
+      "Sfondi Neutri",
+      "Immagini di Qualità da Studio"
+    ],
+    "created_at": "2025-07-08T23:05:01.926Z",
+    "updated_at": "2025-07-08T23:05:01.926Z"
+  },
+  {
     "id": 73,
     "pack_id": 8,
     "language": "Spanish",
@@ -1375,6 +1392,23 @@
     ],
     "created_at": "2025-06-14T21:54:11.317Z",
     "updated_at": "2025-06-14T21:54:11.317Z"
+  },
+  {
+    "id": 105,
+    "pack_id": 35,
+    "language": "Dutch",
+    "title": "Portretten voor Verpleegkundigen",
+    "short_description": "Genereer professionele portretten van verpleegkundigen voor profielen en zorgplatforms",
+    "full_description": "Creëer realistische en professionele portretten van verpleegkundigen voor ziekenhuiswebsites, sollicitaties, socialemediaprofielen en medisch marketingmateriaal, pas uniformen, achtergronden en uitdrukkingen aan om aan te sluiten bij uw gewenste stijl en merk",
+    "features": [
+      "Professionele Belichting",
+      "Medische Uniformen",
+      "Realistische Gezichtsdetails",
+      "Neutrale Achtergronden",
+      "Afbeeldingen van Studiokwaliteit"
+    ],
+    "created_at": "2025-07-08T23:05:30.823Z",
+    "updated_at": "2025-07-08T23:05:30.823Z"
   },
   {
     "id": 82,
@@ -1530,6 +1564,23 @@
     "updated_at": "2025-06-14T21:54:11.317Z"
   },
   {
+    "id": 106,
+    "pack_id": 36,
+    "language": "Spanish",
+    "title": "Enfermera Sexy",
+    "short_description": "Crea imágenes de enfermeras seductoras y juguetonas para sorpresas románticas y momentos de coqueteo",
+    "full_description": "Genera imágenes de enfermeras coquetas y tentadoras diseñadas para momentos privados, sorpresas románticas o juegos de rol, perfectas para captar la atención con una sonrisa sensual, poses seductoras y un look de enfermera clásico pero irresistible, personaliza atuendos, poses y fondos para crear el ambiente perfecto",
+    "features": [
+      "Disfraces Reveladores",
+      "Sonrisas Coquetas",
+      "Poses Juguetonas",
+      "Iluminación Romántica",
+      "Fondos Interiores Acogedores"
+    ],
+    "created_at": "2025-07-08T23:33:44.777Z",
+    "updated_at": "2025-07-08T23:33:44.777Z"
+  },
+  {
     "id": 91,
     "pack_id": 28,
     "language": "Spanish",
@@ -1615,6 +1666,23 @@
     "updated_at": "2025-06-14T21:54:11.317Z"
   },
   {
+    "id": 103,
+    "pack_id": 35,
+    "language": "German",
+    "title": "Porträts für Pflegekräfte",
+    "short_description": "Erstellen Sie professionelle Porträts von Pflegekräften für Profile und Gesundheitsplattformen",
+    "full_description": "Erstellen Sie realistische und professionelle Porträts von Pflegekräften für Krankenhaus-Websites, Bewerbungen, Social-Media-Profile und medizinisches Marketingmaterial, passen Sie Uniformen, Hintergründe und Gesichtsausdrücke an Ihren gewünschten Stil und Ihre Marke an",
+    "features": [
+      "Professionelle Beleuchtung",
+      "Medizinische Uniformen",
+      "Realistische Gesichtsdetails",
+      "Neutrale Hintergründe",
+      "Bilder in Studioqualität"
+    ],
+    "created_at": "2025-07-08T23:04:24.573Z",
+    "updated_at": "2025-07-08T23:04:24.573Z"
+  },
+  {
     "id": 96,
     "pack_id": 33,
     "language": "Spanish",
@@ -1629,6 +1697,1842 @@
       "Estética editorial"
     ],
     "created_at": "2025-06-14T21:54:11.317Z",
-    "updated_at": "2025-06-14T21:54:11.317Z"
+    "updated_at": "2025-07-08T20:56:33.515Z"
+  },
+  {
+    "id": 100,
+    "pack_id": 34,
+    "language": "Dutch",
+    "title": "doktersportretten",
+    "short_description": "Genereer professionele doktersportretten voor profielen, cv's en medische websites",
+    "full_description": "Creëer hoogwaardige, realistische portretten van artsen voor gebruik op ziekenhuiswebsites, LinkedIn-profielen, gezondheidszorgmarketing en medische publicaties. Pas het uiterlijk, de houding en de achtergrond aan uw professionele merkbehoeften aan",
+    "features": [
+      "Professionele Belichting",
+      "Medische Kleding",
+      "Realistische Gezichtsdetails",
+      "Neutrale Achtergronden",
+      "Afbeeldingen van Studiokwaliteit"
+    ],
+    "created_at": "2025-07-08T22:21:37.507Z",
+    "updated_at": "2025-07-08T22:23:51.662Z"
+  },
+  {
+    "id": 101,
+    "pack_id": 34,
+    "language": "Italian",
+    "title": "Ritratti per Medici",
+    "short_description": "Genera ritratti professionali di medici per profili, curriculum e siti web medici",
+    "full_description": "Crea ritratti realistici e di alta qualità di medici da utilizzare su siti web di ospedali, profili LinkedIn, marketing sanitario e pubblicazioni mediche. Personalizza l'aspetto, la posa e lo sfondo per adattarli alle tue esigenze di branding professionale",
+    "features": [
+      "Illuminazione Professionale",
+      "Abbigliamento Medico",
+      "Dettagli Facciali Realistici",
+      "Sfondi Neutri",
+      "Immagini di Qualità da Studio"
+    ],
+    "created_at": "2025-07-08T22:22:22.282Z",
+    "updated_at": "2025-07-08T22:25:19.411Z"
+  },
+  {
+    "id": 98,
+    "pack_id": 34,
+    "language": "Spanish",
+    "title": "Retratos para Médicos",
+    "short_description": "Genera retratos profesionales de médicos para perfiles, currículums y sitios web médicos",
+    "full_description": "Crea retratos realistas y de alta calidad de médicos para su uso en sitios web de hospitales, perfiles de LinkedIn, marketing de atención médica y publicaciones médicas. Personaliza la apariencia, la pose y el fondo para adaptarse a tus necesidades de marca profesional",
+    "features": [
+      "Iluminación Profesional",
+      "Atuendo Médico",
+      "Detalles Faciales Realistas",
+      "Fondos Neutros",
+      "Imágenes con Calidad de Estudio"
+    ],
+    "created_at": "2025-07-08T22:17:48.695Z",
+    "updated_at": "2025-07-08T22:25:40.437Z"
+  },
+  {
+    "id": 99,
+    "pack_id": 34,
+    "language": "German",
+    "title": "Ärzte-Porträt",
+    "short_description": "Erstellen Sie professionelle Ärzteporträts für Profile, Lebensläufe und medizinische Websites",
+    "full_description": "Erstellen Sie hochwertige, realistische Porträts von Ärzten zur Verwendung auf Krankenhaus-Websites, LinkedIn-Profilen, im Gesundheitsmarketing und in medizinischen Veröffentlichungen. Passen Sie das Aussehen, die Pose und den Hintergrund an Ihre professionellen Markenanforderungen an",
+    "features": [
+      "Professionelle Beleuchtung",
+      "Medizinische Kleidung",
+      "Realistische Gesichtsdetails",
+      "Neutrale Hintergründe",
+      "Bilder in Studioqualität"
+    ],
+    "created_at": "2025-07-08T22:20:59.974Z",
+    "updated_at": "2025-07-08T22:25:46.511Z"
+  },
+  {
+    "id": 102,
+    "pack_id": 35,
+    "language": "Spanish",
+    "title": "Retratos para Enfermeros",
+    "short_description": "Genera retratos profesionales de enfermeros para perfiles y plataformas de atención médica",
+    "full_description": "Crea retratos realistas y profesionales de enfermeros para sitios web de hospitales, solicitudes de empleo, perfiles de redes sociales y materiales de marketing médico, personaliza uniformes, fondos y expresiones para que coincidan con el estilo y la marca que deseas",
+    "features": [
+      "Iluminación Profesional",
+      "Uniformes Médicos",
+      "Detalles Faciales Realistas",
+      "Fondos Neutros",
+      "Imágenes con Calidad de Estudio"
+    ],
+    "created_at": "2025-07-08T23:03:54.358Z",
+    "updated_at": "2025-07-08T23:03:54.358Z"
+  },
+  {
+    "id": 107,
+    "pack_id": 36,
+    "language": "German",
+    "title": "Sexy Krankenschwester",
+    "short_description": "Erstelle verführerische und verspielte Krankenschwester-Bilder für romantische Überraschungen und neckische Momente",
+    "full_description": "Generiere kokette und verführerische Krankenschwester-Bilder für private Momente, romantische Überraschungen oder spielerische Rollenspiele, perfekt, um die Aufmerksamkeit mit einem sinnlichen Lächeln, verführerischen Posen und einem klassischen, aber unwiderstehlichen Krankenschwester-Look zu fesseln, passe Outfits, Posen und Hintergründe an, um die perfekte Stimmung zu schaffen",
+    "features": [
+      "Freizügige Kostüme",
+      "Kokettes Lächeln",
+      "Verspielte Posen",
+      "Romantische Beleuchtung",
+      "Gemütliche Innenhintergründe"
+    ],
+    "created_at": "2025-07-08T23:34:08.659Z",
+    "updated_at": "2025-07-08T23:34:08.659Z"
+  },
+  {
+    "id": 108,
+    "pack_id": 36,
+    "language": "Italian",
+    "title": "Infermiera Sexy",
+    "short_description": "Crea immagini di infermiere seducenti e maliziose per sorprese romantiche e momenti stuzzicanti",
+    "full_description": "Genera immagini di infermiere provocanti e tentatrici pensate per momenti privati, sorprese romantiche o giochi di ruolo, perfette per catturare l'attenzione con un sorriso sensuale, pose seducenti e un look da infermiera classico ma irresistibile, personalizza abiti, pose e sfondi per creare l'atmosfera perfetta",
+    "features": [
+      "Costumi Audaci",
+      "Sorrisi Maliziosi",
+      "Pose Giocose",
+      "Illuminazione Romantica",
+      "Sfondi Interni Accoglienti"
+    ],
+    "created_at": "2025-07-08T23:34:35.302Z",
+    "updated_at": "2025-07-08T23:34:35.302Z"
+  },
+  {
+    "id": 109,
+    "pack_id": 36,
+    "language": "Dutch",
+    "title": "Sexy Verpleegster",
+    "short_description": "Creëer verleidelijke en speelse verpleegster-afbeeldingen voor romantische verrassingen en plagende momenten",
+    "full_description": "Genereer flirterige en verleidelijke verpleegster-afbeeldingen ontworpen voor privémomenten, romantische verrassingen of speels rollenspel, perfect om de aandacht te trekken met een zwoele glimlach, verleidelijke poses en een klassieke maar onweerstaanbare verpleegster-look, pas outfits, poses en achtergronden aan om de perfecte sfeer te creëren",
+    "features": [
+      "Onthullende Kostuums",
+      "Flirterige Glimlachen",
+      "Speelse Poses",
+      "Romantische Verlichting",
+      "Gezellige Binnenachtergronden"
+    ],
+    "created_at": "2025-07-08T23:35:04.107Z",
+    "updated_at": "2025-07-08T23:35:04.107Z"
+  },
+  {
+    "id": 110,
+    "pack_id": 37,
+    "language": "Spanish",
+    "title": "Boda",
+    "short_description": "Crea elegantes retratos de boda para novias y novios capturando estilo y emoción",
+    "full_description": "Genera hermosos retratos de boda con novias en vestidos deslumbrantes y novios en trajes sofisticados, perfecto para mostrar estilo, elegancia y alegría, personaliza el atuendo, el peinado, la pose y el fondo para reflejar estilos de boda clásicos, modernos o inspirados en cuentos de hadas",
+    "features": [
+      "Atuendo Elegante de Boda",
+      "Poses Románticas",
+      "Iluminación Suave",
+      "Expresiones Emotivas",
+      "Fondos Hermosos"
+    ],
+    "created_at": "2025-07-08T23:58:18.033Z",
+    "updated_at": "2025-07-08T23:58:18.033Z"
+  },
+  {
+    "id": 111,
+    "pack_id": 37,
+    "language": "German",
+    "title": "Hochzeit",
+    "short_description": "Erstelle elegante Hochzeitsporträts für Bräute und Bräutigame, die Stil und Emotionen einfangen",
+    "full_description": "Generiere wunderschöne Hochzeitsporträts von Bräuten in atemberaubenden Kleidern und Bräutigamen in eleganten Anzügen, perfekt, um Stil, Eleganz und Freude zu zeigen, passe Outfit, Frisur, Pose und Hintergrund an, um klassische, moderne oder märchenhaft inspirierte Hochzeitsstile widerzuspiegeln",
+    "features": [
+      "Elegante Hochzeitskleidung",
+      "Romantische Posen",
+      "Weiche Beleuchtung",
+      "Emotionale Ausdrücke",
+      "Wunderschöne Hintergründe"
+    ],
+    "created_at": "2025-07-08T23:58:40.114Z",
+    "updated_at": "2025-07-08T23:58:40.114Z"
+  },
+  {
+    "id": 112,
+    "pack_id": 37,
+    "language": "Dutch",
+    "title": "Bruiloft",
+    "short_description": "Creëer elegante huwelijksportretten voor bruiden en bruidegoms die stijl en emotie vastleggen",
+    "full_description": "Genereer prachtige huwelijksportretten met bruiden in schitterende jurken en bruidegoms in verfijnde pakken, perfect om stijl, elegantie en vreugde te tonen, pas de outfit, het kapsel, de pose en de achtergrond aan om klassieke, moderne of sprookjesachtige trouwstijlen te weerspiegelen",
+    "features": [
+      "Elegante Trouwkleding",
+      "Romantische Poses",
+      "Zachte Verlichting",
+      "Emotionele Uitdrukkingen",
+      "Prachtige Achtergronden"
+    ],
+    "created_at": "2025-07-08T23:59:02.108Z",
+    "updated_at": "2025-07-08T23:59:02.108Z"
+  },
+  {
+    "id": 113,
+    "pack_id": 37,
+    "language": "Italian",
+    "title": "Matrimonio",
+    "short_description": "Crea eleganti ritratti di matrimonio per spose e sposi catturando stile ed emozione",
+    "full_description": "Genera bellissimi ritratti di matrimonio con spose in abiti mozzafiato e sposi in abiti sofisticati, perfetti per mostrare stile, eleganza e gioia, personalizza l'abito, l'acconciatura, la posa e lo sfondo per riflettere stili di matrimonio classici, moderni o ispirati alle fiabe",
+    "features": [
+      "Abiti da Sposa Eleganti",
+      "Pose Romantiche",
+      "Illuminazione Soffusa",
+      "Espressioni Emotive",
+      "Sfondi Bellissimi"
+    ],
+    "created_at": "2025-07-08T23:59:31.483Z",
+    "updated_at": "2025-07-08T23:59:31.483Z"
+  },
+  {
+    "id": 114,
+    "pack_id": 38,
+    "language": "Spanish",
+    "title": "Auxiliar de Vuelo",
+    "short_description": "Crea retratos de auxiliares de vuelo elegantes y profesionales con uniformes de aerolínea",
+    "full_description": "Genera imágenes elegantes y profesionales de un auxiliar de vuelo mostrando uniformes clásicos de aerolínea, expresiones amigables y un estilo pulido, perfecto para temas de aviación, imagen corporativa o retratos de personajes, personaliza el atuendo, los accesorios, el fondo y las poses para reflejar diferentes aerolíneas y estilos de servicio",
+    "features": [
+      "Uniformes Profesionales",
+      "Expresiones Amigables",
+      "Cabello Estilizado",
+      "Fondos Modernos",
+      "Apariencia Pulida"
+    ],
+    "created_at": "2025-07-09T07:53:50.994Z",
+    "updated_at": "2025-07-09T07:53:50.994Z"
+  },
+  {
+    "id": 115,
+    "pack_id": 38,
+    "language": "German",
+    "title": "Flugbegleiter",
+    "short_description": "Erstelle stilvolle und professionelle Porträts von Flugbegleitern in Airline-Uniformen",
+    "full_description": "Generiere elegante und professionelle Bilder eines Flugbegleiters, die klassische Airline-Uniformen, freundliche Gesichtsausdrücke und einen gepflegten Stil zeigen, perfekt für Luftfahrtthemen, Corporate Branding oder Charakterporträts, passe Outfit, Accessoires, Hintergrund und Posen an, um verschiedene Fluggesellschaften und Servicestile widerzuspiegeln",
+    "features": [
+      "Professionelle Uniformen",
+      "Freundliche Gesichtsausdrücke",
+      "Gestyltes Haar",
+      "Moderne Hintergründe",
+      "Gepflegtes Erscheinungsbild"
+    ],
+    "created_at": "2025-07-09T07:54:14.634Z",
+    "updated_at": "2025-07-09T07:54:14.634Z"
+  },
+  {
+    "id": 116,
+    "pack_id": 38,
+    "language": "Italian",
+    "title": "Assistente di Volo",
+    "short_description": "Crea ritratti eleganti e professionali di assistenti di volo in uniformi di compagnie aeree",
+    "full_description": "Genera immagini eleganti e professionali di un assistente di volo che mostra uniformi classiche di compagnie aeree, espressioni amichevoli e uno stile curato, perfetto per temi aeronautici, branding aziendale o ritratti di personaggi, personalizza l'outfit, gli accessori, lo sfondo e le pose per riflettere diverse compagnie aeree e stili di servizio",
+    "features": [
+      "Uniformi Professionali",
+      "Espressioni Amichevoli",
+      "Capelli Acconciati",
+      "Sfondi Moderni",
+      "Aspetto Curato"
+    ],
+    "created_at": "2025-07-09T07:54:39.265Z",
+    "updated_at": "2025-07-09T07:54:39.265Z"
+  },
+  {
+    "id": 117,
+    "pack_id": 38,
+    "language": "Dutch",
+    "title": "Vluchtbegeleider",
+    "short_description": "Creëer stijlvolle en professionele portretten van vluchtbegeleiders in luchtvaartuniformen",
+    "full_description": "Genereer elegante en professionele afbeeldingen van een vluchtbegeleider met klassieke luchtvaartuniformen, vriendelijke uitdrukkingen en een verzorgde stijl, perfect voor luchtvaartthema's, corporate branding of karakterportretten, pas de outfit, accessoires, achtergrond en poses aan om verschillende luchtvaartmaatschappijen en servicestijlen te weerspiegelen",
+    "features": [
+      "Professionele Uniformen",
+      "Vriendelijke Uitdrukkingen",
+      "Gestyld Haar",
+      "Moderne Achtergronden",
+      "Verzorgde Uitstraling"
+    ],
+    "created_at": "2025-07-09T07:54:59.991Z",
+    "updated_at": "2025-07-09T07:54:59.991Z"
+  },
+  {
+    "id": 118,
+    "pack_id": 39,
+    "language": "Spanish",
+    "title": "Selfie",
+    "short_description": "Crea retratos de selfies naturales y divertidos con expresiones auténticas",
+    "full_description": "Genera imágenes de selfies realistas y espontáneas capturando a una persona sosteniendo una cámara o teléfono con una sonrisa natural o una expresión juguetona, personaliza la iluminación, las poses y los fondos para reflejar diferentes entornos como dormitorios, salas de estar, exteriores o lugares de viaje, perfecto para perfiles personales, redes sociales o sesiones de estilo de vida",
+    "features": [
+      "Expresiones Naturales",
+      "Atuendos Casuales",
+      "Cabello Peinado",
+      "Fondos Realistas",
+      "Poses Auténticas"
+    ],
+    "created_at": "2025-07-09T08:17:50.609Z",
+    "updated_at": "2025-07-09T08:17:50.609Z"
+  },
+  {
+    "id": 119,
+    "pack_id": 39,
+    "language": "German",
+    "title": "Selfie",
+    "short_description": "Erstelle natürliche und unterhaltsame Selfie-Porträts mit authentischen Ausdrücken",
+    "full_description": "Generiere realistische und spontane Selfie-Bilder, die eine Person mit einer Kamera oder einem Telefon in der Hand mit einem natürlichen Lächeln oder einem verspielten Ausdruck zeigen, passe Beleuchtung, Posen und Hintergründe an, um verschiedene Umgebungen wie Schlafzimmer, Wohnzimmer, Außenbereiche oder Reiseorte widerzuspiegeln, perfekt für persönliche Profile, soziale Medien oder Lifestyle-Aufnahmen",
+    "features": [
+      "Natürliche Ausdrücke",
+      "Lässige Outfits",
+      "Gestyltes Haar",
+      "Realistische Hintergründe",
+      "Authentische Posen"
+    ],
+    "created_at": "2025-07-09T08:18:15.373Z",
+    "updated_at": "2025-07-09T08:18:15.373Z"
+  },
+  {
+    "id": 121,
+    "pack_id": 39,
+    "language": "Dutch",
+    "title": "Selfie",
+    "short_description": "Creëer natuurlijke en leuke selfieportretten met authentieke uitdrukkingen",
+    "full_description": "Genereer realistische en spontane selfie-afbeeldingen waarop een persoon een camera of telefoon vasthoudt met een natuurlijke glimlach of een speelse uitdrukking, pas de belichting, poses en achtergronden aan om verschillende omgevingen weer te geven, zoals slaapkamers, woonkamers, buiten of reislocaties, perfect voor persoonlijke profielen, sociale media of lifestyle-shoots",
+    "features": [
+      "Natuurlijke Uitdrukkingen",
+      "Casual Outfits",
+      "Gestyld Haar",
+      "Realistische Achtergronden",
+      "Authentieke Poses"
+    ],
+    "created_at": "2025-07-09T08:18:49.024Z",
+    "updated_at": "2025-07-09T08:18:49.024Z"
+  },
+  {
+    "id": 120,
+    "pack_id": 39,
+    "language": "Italian",
+    "title": "Selfie",
+    "short_description": "Crea ritratti selfie naturali e divertenti con espressioni autentiche",
+    "full_description": "Genera immagini di selfie realistici e spontanei che ritraggono una persona che tiene in mano una fotocamera o un telefono con un sorriso naturale o un'espressione giocosa, personalizza l'illuminazione, le pose e gli sfondi per riflettere ambienti diversi come camere da letto, soggiorni, esterni o luoghi di viaggio, perfetto per profili personali, social media o servizi fotografici di lifestyle",
+    "features": [
+      "Espressioni Naturali",
+      "Abiti Casual",
+      "Capelli Acconciati",
+      "Sfondi Realistici",
+      "Pose Autentiche"
+    ],
+    "created_at": "2025-07-09T08:18:34.919Z",
+    "updated_at": "2025-07-09T08:19:11.520Z"
+  },
+  {
+    "id": 122,
+    "pack_id": 40,
+    "language": "Spanish",
+    "title": "Bombero en Acción",
+    "short_description": "Crea intensos retratos de acción de bomberos en dinámicas escenas de rescate",
+    "full_description": "Genera imágenes potentes y dramáticas de un bombero en plena acción mostrando coraje y fuerza, captura escenas de rescate, extinción de incendios o respuesta a emergencias con equipo auténtico, expresiones decididas y poses enérgicas, rodeado de humo, fuego o equipo de rescate, perfecto para pósteres de acción, narraciones y diseños de personajes heroicos",
+    "features": [
+      "Equipo de Protección",
+      "Poses de Acción Intensas",
+      "Iluminación Dramática",
+      "Efectos de Humo y Fuego",
+      "Expresiones Heroicas"
+    ],
+    "created_at": "2025-07-09T08:36:01.737Z",
+    "updated_at": "2025-07-09T08:36:01.737Z"
+  },
+  {
+    "id": 123,
+    "pack_id": 40,
+    "language": "German",
+    "title": "Feuerwehrmann im Einsatz",
+    "short_description": "Erstelle intensive Action-Porträts von Feuerwehrleuten in dynamischen Rettungsszenen",
+    "full_description": "Generiere kraftvolle und dramatische Bilder eines Feuerwehrmanns mitten im Einsatz, die Mut und Stärke zeigen, erfasse Rettungs-, Brandbekämpfungs- oder Notfalleinsatzszenen mit authentischer Ausrüstung, entschlossenen Gesichtsausdrücken und energiegeladenen Posen, umgeben von Rauch, Feuer oder Rettungsgeräten, perfekt für Action-Poster, Storytelling und heroische Charakterdesigns",
+    "features": [
+      "Schutzausrüstung",
+      "Intensive Action-Posen",
+      "Dramatische Beleuchtung",
+      "Rauch- und Feuereffekte",
+      "Heroische Gesichtsausdrücke"
+    ],
+    "created_at": "2025-07-09T08:36:22.646Z",
+    "updated_at": "2025-07-09T08:36:22.646Z"
+  },
+  {
+    "id": 124,
+    "pack_id": 40,
+    "language": "Italian",
+    "title": "Vigile del Fuoco in Azione",
+    "short_description": "Crea intensi ritratti d'azione di vigili del fuoco in scene di salvataggio dinamiche",
+    "full_description": "Genera immagini potenti e drammatiche di un vigile del fuoco nel pieno dell'azione che mostrano coraggio e forza, cattura scene di salvataggio, lotta contro gli incendi o risposta alle emergenze con equipaggiamento autentico, espressioni determinate e pose energiche, circondato da fumo, fuoco o attrezzature di soccorso, perfetto per poster d'azione, storytelling e design di personaggi eroici",
+    "features": [
+      "Equipaggiamento Protettivo",
+      "Pose d'Azione Intense",
+      "Illuminazione Drammatica",
+      "Effetti di Fumo e Fuoco",
+      "Espressioni Eroiche"
+    ],
+    "created_at": "2025-07-09T08:36:46.466Z",
+    "updated_at": "2025-07-09T08:36:46.466Z"
+  },
+  {
+    "id": 125,
+    "pack_id": 40,
+    "language": "Dutch",
+    "title": "Brandweerman in Actie",
+    "short_description": "Creëer intense actieportretten van brandweerlieden in dynamische reddingsscènes",
+    "full_description": "Genereer krachtige en dramatische afbeeldingen van een brandweerman te midden van de actie die moed en kracht tonen, leg scènes vast van redding, brandbestrijding of noodhulp met authentieke uitrusting, vastberaden uitdrukkingen en energieke poses, omringd door rook, vuur of reddingsmateriaal, perfect voor actieposters, storytelling en heroïsche personageontwerpen",
+    "features": [
+      "Beschermende Uitrusting",
+      "Intense Actieposes",
+      "Dramatische Belichting",
+      "Rook- en Vuureffecten",
+      "Heroïsche Uitdrukkingen"
+    ],
+    "created_at": "2025-07-09T08:37:08.427Z",
+    "updated_at": "2025-07-09T08:37:08.427Z"
+  },
+  {
+    "id": 126,
+    "pack_id": 41,
+    "language": "Spanish",
+    "title": "Mercenario Ciberpunk",
+    "short_description": "Crea audaces retratos de mercenarios ciberpunk con rostro visible y equipo futurista",
+    "full_description": "Genera retratos ciberpunk estilizados de un personaje mercenario con armadura futurista, implantes cibernéticos y acentos de neón, manteniendo el rostro claramente visible, enfatiza entornos urbanos crudos, luces holográficas y accesorios de alta tecnología sin cubrir la cabeza con cascos o máscaras, perfecto para avatares de personajes y arte conceptual en mundos futuristas",
+    "features": [
+      "Rostro Visible",
+      "Armadura Futurista",
+      "Mejoras Cibernéticas",
+      "Fondo Urbano de Neón",
+      "Equipo de Alta Tecnología"
+    ],
+    "created_at": "2025-07-09T09:22:36.449Z",
+    "updated_at": "2025-07-09T09:22:36.449Z"
+  },
+  {
+    "id": 127,
+    "pack_id": 41,
+    "language": "German",
+    "title": "Cyberpunk-Söldner",
+    "short_description": "Erstelle markante Cyberpunk-Söldner-Porträts mit sichtbarem Gesicht und futuristischer Ausrüstung",
+    "full_description": "Generiere stilisierte Cyberpunk-Porträts eines Söldnercharakters mit futuristischer Rüstung, kybernetischen Implantaten und Neon-Akzenten, während das Gesicht klar sichtbar bleibt, betone düstere städtische Umgebungen, holografische Lichter und High-Tech-Zubehör, ohne den Kopf mit Helmen oder Masken zu bedecken, perfekt für Charakter-Avatare und Konzeptkunst in futuristischen Welten",
+    "features": [
+      "Sichtbares Gesicht",
+      "Futuristische Rüstung",
+      "Kybernetische Verbesserungen",
+      "Städtischer Neon-Hintergrund",
+      "High-Tech-Ausrüstung"
+    ],
+    "created_at": "2025-07-09T09:22:56.598Z",
+    "updated_at": "2025-07-09T09:22:56.598Z"
+  },
+  {
+    "id": 128,
+    "pack_id": 41,
+    "language": "Dutch",
+    "title": "Cyberpunk Huurling",
+    "short_description": "Creëer gedurfde cyberpunk huurlingportretten met zichtbaar gezicht en futuristische uitrusting",
+    "full_description": "Genereer gestileerde cyberpunkportretten van een huurlingpersonage met futuristisch pantser, cybernetische implantaten en neonaccenten, terwijl het gezicht duidelijk zichtbaar blijft, benadruk grimmige stedelijke omgevingen, holografische lichten en hightech accessoires zonder het hoofd te bedekken met helmen of maskers, perfect voor personage-avatars en concept art in futuristische werelden",
+    "features": [
+      "Zichtbaar Gezicht",
+      "Futuristisch Pantser",
+      "Cybernetische Verbeteringen",
+      "Stedelijke Neonachtergrond",
+      "Hightech Uitrusting"
+    ],
+    "created_at": "2025-07-09T09:23:19.816Z",
+    "updated_at": "2025-07-09T09:23:19.816Z"
+  },
+  {
+    "id": 129,
+    "pack_id": 41,
+    "language": "Italian",
+    "title": "Mercenario Cyberpunk",
+    "short_description": "Crea audaci ritratti di mercenari cyberpunk con volto visibile ed equipaggiamento futuristico",
+    "full_description": "Genera ritratti cyberpunk stilizzati di un personaggio mercenario con armatura futuristica, impianti cibernetici e accenti al neon, mantenendo il volto chiaramente visibile, enfatizza crudi ambienti urbani, luci olografiche e accessori high-tech senza coprire la testa con elmetti o maschere, perfetto per avatar di personaggi e concept art in mondi futuristici",
+    "features": [
+      "Volto Visibile",
+      "Armatura Futuristica",
+      "Miglioramenti Cibernetici",
+      "Sfondo Urbano al Neon",
+      "Equipaggiamento High-Tech"
+    ],
+    "created_at": "2025-07-09T09:23:40.822Z",
+    "updated_at": "2025-07-09T09:23:40.822Z"
+  },
+  {
+    "id": 130,
+    "pack_id": 42,
+    "language": "Spanish",
+    "title": "Chef Gourmet",
+    "short_description": "Crea elegantes retratos de un chef gourmet profesional en una cocina moderna",
+    "full_description": "Genera retratos de alta calidad de un chef gourmet de pie con confianza en una elegante cocina moderna, rodeado de utensilios culinarios y platos gourmet, enfatiza un delantal elegante, chaqueta de chef y una expresión acogedora, captura la pasión y precisión de la alta cocina con una iluminación natural brillante y una atmósfera limpia y profesional, perfecto para perfiles culinarios y branding de la industria alimentaria",
+    "features": [
+      "Chaqueta de Chef Elegante",
+      "Entorno de Cocina Moderna",
+      "Platos Gourmet",
+      "Iluminación Natural Brillante",
+      "Ambiente Culinario Profesional"
+    ],
+    "created_at": "2025-07-09T09:59:29.343Z",
+    "updated_at": "2025-07-09T09:59:29.343Z"
+  },
+  {
+    "id": 131,
+    "pack_id": 42,
+    "language": "German",
+    "title": "Gourmetkoch",
+    "short_description": "Erstelle stilvolle Porträts eines professionellen Gourmetkochs in einer modernen Küche",
+    "full_description": "Generiere hochwertige Porträts eines Gourmetkochs, der selbstbewusst in einer eleganten, modernen Küche steht, umgeben von kulinarischen Werkzeugen und Gourmetgerichten, betone eine stilvolle Schürze, eine Kochjacke und einen einladenden Ausdruck, fange die Leidenschaft und Präzision der gehobenen Küche mit hellem, natürlichem Licht und einer sauberen, professionellen Atmosphäre ein, perfekt für kulinarische Profile und das Branding der Lebensmittelindustrie",
+    "features": [
+      "Stilvolle Kochjacke",
+      "Moderne Küchenumgebung",
+      "Gourmetgerichte",
+      "Helles natürliches Licht",
+      "Professionelle kulinarische Atmosphäre"
+    ],
+    "created_at": "2025-07-09T09:59:58.499Z",
+    "updated_at": "2025-07-09T09:59:58.499Z"
+  },
+  {
+    "id": 132,
+    "pack_id": 42,
+    "language": "Dutch",
+    "title": "Fijnproever Chef",
+    "short_description": "Creëer stijlvolle portretten van een professionele fijnproever chef in een moderne keuken",
+    "full_description": "Genereer hoogwaardige portretten van een fijnproever chef die zelfverzekerd in een strakke, moderne keuken staat, omringd door culinaire hulpmiddelen en gastronomische gerechten, benadruk een stijlvol schort, koksbuis en een gastvrije uitdrukking, leg de passie en precisie van de haute cuisine vast met helder, natuurlijk licht en een schone, professionele sfeer, perfect voor culinaire profielen en branding in de voedingsindustrie",
+    "features": [
+      "Stijlvolle Koksbuis",
+      "Moderne Keukenomgeving",
+      "Gastronomische Gerechten",
+      "Helder Natuurlijk Licht",
+      "Professionele Culinaire Sfeer"
+    ],
+    "created_at": "2025-07-09T10:00:18.718Z",
+    "updated_at": "2025-07-09T10:00:18.718Z"
+  },
+  {
+    "id": 133,
+    "pack_id": 42,
+    "language": "Italian",
+    "title": "Chef Gourmet",
+    "short_description": "Crea ritratti eleganti di uno chef gourmet professionista in una cucina moderna",
+    "full_description": "Genera ritratti di alta qualità di uno chef gourmet in piedi con sicurezza in una cucina moderna ed elegante, circondato da utensili culinari e piatti gourmet, enfatizza un grembiule elegante, una giacca da chef e un'espressione accogliente, cattura la passione e la precisione della cucina raffinata con una luminosa illuminazione naturale e un'atmosfera pulita e professionale, perfetto per profili culinari e branding nel settore alimentare",
+    "features": [
+      "Giacca da Chef Elegante",
+      "Ambiente Cucina Moderna",
+      "Piatti Gourmet",
+      "Illuminazione Naturale Intensa",
+      "Atmosfera Culinaria Professionale"
+    ],
+    "created_at": "2025-07-09T10:00:38.633Z",
+    "updated_at": "2025-07-09T10:00:38.633Z"
+  },
+  {
+    "id": 134,
+    "pack_id": 43,
+    "language": "Spanish",
+    "title": "Sobreviviente del Páramo",
+    "short_description": "Crea retratos rudos de un sobreviviente solitario en un duro mundo postapocalíptico",
+    "full_description": "Genera retratos crudos y atmosféricos de un sobreviviente del páramo vestido con ropa andrajosa y armadura improvisada, curtido y cubierto de polvo con cicatrices visibles y equipo de supervivencia, el fondo muestra paisajes desolados, maquinaria rota y cielos polvorientos, capturando la dureza y el aislamiento de un mundo postapocalíptico, perfecto para historias de supervivencia, personajes distópicos y arte conceptual",
+    "features": [
+      "Ropa Andrajosa",
+      "Piel Cubierta de Polvo",
+      "Armadura Improvisada",
+      "Paisaje Desolado",
+      "Equipo de Supervivencia"
+    ],
+    "created_at": "2025-07-09T10:18:42.400Z",
+    "updated_at": "2025-07-09T10:18:42.400Z"
+  },
+  {
+    "id": 135,
+    "pack_id": 43,
+    "language": "German",
+    "title": "Überlebender des Ödlands",
+    "short_description": "Erstelle raue Porträts eines einsamen Überlebenden in einer rauen postapokalyptischen Welt",
+    "full_description": "Generiere düstere und atmosphärische Porträts eines Ödland-Überlebenden in zerrissener Kleidung und behelfsmäßiger Rüstung, verwittert und staubbedeckt mit sichtbaren Narben und Überlebensausrüstung, der Hintergrund zeigt trostlose Landschaften, kaputte Maschinen und staubige Himmel, die die Härte und Isolation einer postapokalyptischen Welt einfangen, perfekt für Überlebensgeschichten, dystopische Charaktere und Konzeptkunst",
+    "features": [
+      "Zerrissene Kleidung",
+      "Staubbedeckte Haut",
+      "Behelfsmäßige Rüstung",
+      "Trostlose Landschaft",
+      "Überlebensausrüstung"
+    ],
+    "created_at": "2025-07-09T10:19:00.330Z",
+    "updated_at": "2025-07-09T10:19:00.330Z"
+  },
+  {
+    "id": 136,
+    "pack_id": 43,
+    "language": "Dutch",
+    "title": "Overlevende van de Woestenij",
+    "short_description": "Creëer ruige portretten van een eenzame overlevende in een harde post-apocalyptische wereld",
+    "full_description": "Genereer grimmige en sfeervolle portretten van een overlevende van de woestenij, gekleed in gescheurde kleding en een geïmproviseerd harnas, verweerd en bedekt met stof, met zichtbare littekens en overlevingsuitrusting, de achtergrond toont desolate landschappen, kapotte machines en stoffige luchten, die de hardheid en het isolement van een post-apocalyptische wereld vastleggen, perfect voor overlevingsverhalen, dystopische personages en concept art",
+    "features": [
+      "Gescheurde Kleding",
+      "Met Stof Bedekte Huid",
+      "Geïmproviseerd Harnas",
+      "Desolaat Landschap",
+      "Overlevingsuitrusting"
+    ],
+    "created_at": "2025-07-09T10:19:23.129Z",
+    "updated_at": "2025-07-09T10:19:23.129Z"
+  },
+  {
+    "id": 137,
+    "pack_id": 43,
+    "language": "Italian",
+    "title": "Sopravvissuto della Landa Desolata",
+    "short_description": "Crea ritratti crudi di un sopravvissuto solitario in un aspro mondo post-apocalittico",
+    "full_description": "Genera ritratti crudi e suggestivi di un sopravvissuto della landa desolata vestito con abiti logori e un'armatura improvvisata, segnato dalle intemperie e coperto di polvere con cicatrici visibili ed equipaggiamento di sopravvivenza, lo sfondo presenta paesaggi desolati, macchinari rotti e cieli polverosi, catturando la durezza e l'isolamento di un mondo post-apocalittico, perfetto per storie di sopravvivenza, personaggi distopici e concept art",
+    "features": [
+      "Abiti Logori",
+      "Pelle Coperta di Polvere",
+      "Armatura Improvvisata",
+      "Paesaggio Desolato",
+      "Equipaggiamento di Sopravvivenza"
+    ],
+    "created_at": "2025-07-09T10:19:44.033Z",
+    "updated_at": "2025-07-09T10:19:44.033Z"
+  },
+  {
+    "id": 138,
+    "pack_id": 44,
+    "language": "Spanish",
+    "title": "Sígueme a",
+    "short_description": "Retratos románticos y aventureros que muestran a una persona extendiendo la mano hacia atrás, tomando la mano del espectador",
+    "full_description": "Genera impresionantes retratos que capturan a una persona guiando al espectador hacia adelante con una mano extendida en el icónico estilo \"Sígueme a\", con hermosos paisajes, calles de ciudades o destinos exóticos como telón de fondo, enfatiza la iluminación natural, la ropa fluida y una sensación de movimiento e intimidad, céntrate en una mirada hacia atrás y una atmósfera cálida y acogedora, perfecto para fotografía de viajes, retratos de pareja y visuales narrativos",
+    "features": [
+      "Pose de Mano Extendida",
+      "Ropa Fluida",
+      "Fondos Escénicos",
+      "Iluminación Natural",
+      "Atmósfera Romántica"
+    ],
+    "created_at": "2025-07-09T10:36:45.368Z",
+    "updated_at": "2025-07-09T10:36:45.368Z"
+  },
+  {
+    "id": 139,
+    "pack_id": 44,
+    "language": "German",
+    "title": "Folg mir nach",
+    "short_description": "Romantische und abenteuerliche Porträts, die eine Person zeigen, die nach hinten greift und die Hand des Betrachters hält",
+    "full_description": "Generiere atemberaubende Porträts, die eine Person festhalten, die den Betrachter mit ausgestreckter Hand im ikonischen \"Folg mir nach\"-Stil vorwärts führt, vor wunderschönen Landschaften, städtischen Straßen oder exotischen Zielen, betone natürliches Licht, fließende Kleidung und ein Gefühl von Bewegung und Intimität, konzentriere dich auf einen Blick zurück und eine warme, einladende Atmosphäre, perfekt für Reisefotografie, Paarporträts und erzählerische Bilder",
+    "features": [
+      "Pose mit ausgestreckter Hand",
+      "Fließende Kleidung",
+      "Malerische Hintergründe",
+      "Natürliche Beleuchtung",
+      "Romantische Atmosphäre"
+    ],
+    "created_at": "2025-07-09T10:37:03.543Z",
+    "updated_at": "2025-07-09T10:37:03.543Z"
+  },
+  {
+    "id": 140,
+    "pack_id": 44,
+    "language": "Dutch",
+    "title": "Volg Mij Naar",
+    "short_description": "Romantische en avontuurlijke portretten van een persoon die achterom reikt en de hand van de kijker vasthoudt",
+    "full_description": "Genereer verbluffende portretten die een persoon vastleggen die de kijker vooruit leidt met een uitgestoken hand in de iconische \"Volg Mij Naar\"-stijl, tegen een achtergrond van prachtige landschappen, stadsstraten of exotische bestemmingen, benadruk natuurlijke verlichting, wapperende kleding en een gevoel van beweging en intimiteit, focus op een blik achterom en een warme, uitnodigende sfeer, perfect voor reisfotografie, koppelportretten en verhalende beelden",
+    "features": [
+      "Pose met Uitgestoken Hand",
+      "Wapperende Kleding",
+      "Schilderachtige Achtergronden",
+      "Natuurlijke Verlichting",
+      "Romantische Sfeer"
+    ],
+    "created_at": "2025-07-09T10:37:24.859Z",
+    "updated_at": "2025-07-09T10:37:24.859Z"
+  },
+  {
+    "id": 141,
+    "pack_id": 44,
+    "language": "Italian",
+    "title": "Seguimi a",
+    "short_description": "Ritratti romantici e avventurosi che mostrano una persona che tende la mano all'indietro tenendo quella dello spettatore",
+    "full_description": "Genera splendidi ritratti che catturano una persona che guida lo spettatore in avanti con la mano tesa nell'iconico stile \"Seguimi a\", ambientati su sfondi di splendidi paesaggi, strade cittadine o destinazioni esotiche, enfatizza l'illuminazione naturale, gli abiti fluenti e un senso di movimento e intimità, concentrati su uno sguardo all'indietro e un'atmosfera calda e accogliente, perfetto per fotografie di viaggio, ritratti di coppia e immagini narrative",
+    "features": [
+      "Posa con Mano Tesa",
+      "Abiti Fluenti",
+      "Sfondi Panoramici",
+      "Illuminazione Naturale",
+      "Atmosfera Romantica"
+    ],
+    "created_at": "2025-07-09T10:37:44.281Z",
+    "updated_at": "2025-07-09T10:37:44.281Z"
+  },
+  {
+    "id": 142,
+    "pack_id": 45,
+    "language": "Spanish",
+    "title": "Trotamundos",
+    "short_description": "Retratos elegantes de una persona explorando destinos icónicos alrededor del mundo",
+    "full_description": "Genera retratos dinámicos de una persona inmersa en el espíritu de la exploración global, con fondos escénicos de lugares emblemáticos famosos, calles bulliciosas y paisajes remotos, enfatiza la moda de viaje casual, poses naturales y un sentido de curiosidad y aventura, céntrate en una iluminación vibrante, expresiones auténticas y entornos hermosos, perfecto para blogs de viajes, redes sociales y marca personal",
+    "features": [
+      "Lugares Emblemáticos Icónicos",
+      "Moda de Viaje Casual",
+      "Fondos Vibrantes",
+      "Poses Naturales",
+      "Atmósfera de Aventura"
+    ],
+    "created_at": "2025-07-09T10:47:18.548Z",
+    "updated_at": "2025-07-09T10:47:18.548Z"
+  },
+  {
+    "id": 143,
+    "pack_id": 45,
+    "language": "German",
+    "title": "Weltreisender",
+    "short_description": "Stilvolle Porträts einer Person, die ikonische Reiseziele auf der ganzen Welt erkundet",
+    "full_description": "Generiere dynamische Porträts einer Person, die in den Geist der globalen Erkundung eingetaucht ist, mit malerischen Kulissen von berühmten Sehenswürdigkeiten, belebten Straßen und entlegenen Landschaften, betone lässige Reisemode, natürliche Posen und ein Gefühl von Neugier und Abenteuer, konzentriere dich auf lebendige Beleuchtung, authentische Ausdrücke und wunderschöne Umgebungen, perfekt für Reiseblogs, soziale Medien und persönliches Branding",
+    "features": [
+      "Ikonische Sehenswürdigkeiten",
+      "Lässige Reisemode",
+      "Lebendige Hintergründe",
+      "Natürliche Posen",
+      "Abenteuerliche Atmosphäre"
+    ],
+    "created_at": "2025-07-09T10:47:37.429Z",
+    "updated_at": "2025-07-09T10:47:37.429Z"
+  },
+  {
+    "id": 144,
+    "pack_id": 45,
+    "language": "Dutch",
+    "title": "Wereldreiziger",
+    "short_description": "Stijlvolle portretten van een persoon die iconische bestemmingen over de hele wereld verkent",
+    "full_description": "Genereer dynamische portretten van een persoon ondergedompeld in de geest van wereldwijde verkenning, met schilderachtige achtergronden van beroemde bezienswaardigheden, drukke straten en afgelegen landschappen, benadruk casual reismode, natuurlijke poses en een gevoel van nieuwsgierigheid en avontuur, focus op levendige verlichting, authentieke uitdrukkingen en prachtige omgevingen, perfect voor reisblogs, sociale media en personal branding",
+    "features": [
+      "Iconische Bezienswaardigheden",
+      "Casual Reismode",
+      "Levendige Achtergronden",
+      "Natuurlijke Poses",
+      "Avontuurlijke Sfeer"
+    ],
+    "created_at": "2025-07-09T10:47:55.786Z",
+    "updated_at": "2025-07-09T10:47:55.786Z"
+  },
+  {
+    "id": 145,
+    "pack_id": 45,
+    "language": "Italian",
+    "title": "Giramondo",
+    "short_description": "Ritratti eleganti di una persona che esplora destinazioni iconiche in tutto il mondo",
+    "full_description": "Genera ritratti dinamici di una persona immersa nello spirito dell'esplorazione globale, con sfondi panoramici di famosi monumenti, strade affollate e paesaggi remoti, enfatizza la moda da viaggio casual, pose naturali e un senso di curiosità e avventura, concentrati su un'illuminazione vibrante, espressioni autentiche e ambienti bellissimi, perfetto per blog di viaggio, social media e personal branding",
+    "features": [
+      "Monumenti Iconici",
+      "Moda da Viaggio Casual",
+      "Sfondi Vivaci",
+      "Pose Naturali",
+      "Atmosfera Avventurosa"
+    ],
+    "created_at": "2025-07-09T10:48:18.328Z",
+    "updated_at": "2025-07-09T10:48:18.328Z"
+  },
+  {
+    "id": 146,
+    "pack_id": 46,
+    "language": "Spanish",
+    "title": "Caballero Real",
+    "short_description": "Retratos épicos de un noble guerrero vestido con armadura real, de pie con fuerza y honor",
+    "full_description": "Genera majestuosos retratos de un caballero real vistiendo una armadura ornamentada y pulida, adornada con escudos y detalles intrincados, posando con confianza frente a castillos medievales, campos de batalla o bosques neblinosos, captura un sentido de nobleza, valor y presencia heroica con iluminación dramática y tonos de color ricos, perfecto para arte de fantasía, retratos de personajes e ilustraciones narrativas",
+    "features": [
+      "Armadura Real Ornamentada",
+      "Fondos Medievales",
+      "Poses Heroicas",
+      "Iluminación Dramática",
+      "Expresión Noble"
+    ],
+    "created_at": "2025-07-09T13:01:21.809Z",
+    "updated_at": "2025-07-09T13:01:21.809Z"
+  },
+  {
+    "id": 147,
+    "pack_id": 46,
+    "language": "German",
+    "title": "Königlicher Ritter",
+    "short_description": "Epische Porträts eines edlen Kriegers in königlicher Rüstung, der mit Stärke und Ehre dasteht",
+    "full_description": "Generiere majestätische Porträts eines königlichen Ritters in kunstvoller und polierter Rüstung, verziert mit Wappen und aufwendigen Details, der selbstbewusst vor mittelalterlichen Burgen, Schlachtfeldern oder nebligen Wäldern posiert, fange ein Gefühl von Adel, Tapferkeit und heroischer Präsenz mit dramatischer Beleuchtung und satten Farbtönen ein, perfekt für Fantasy-Kunst, Charakterporträts und erzählerische Illustrationen",
+    "features": [
+      "Kunstvolle Königliche Rüstung",
+      "Mittelalterliche Hintergründe",
+      "Heroische Posen",
+      "Dramatische Beleuchtung",
+      "Edler Ausdruck"
+    ],
+    "created_at": "2025-07-09T13:01:50.453Z",
+    "updated_at": "2025-07-09T13:01:50.453Z"
+  },
+  {
+    "id": 148,
+    "pack_id": 46,
+    "language": "Dutch",
+    "title": "Koninklijke Ridder",
+    "short_description": "Epische portretten van een nobele krijger gekleed in koninklijk harnas, staand met kracht en eer",
+    "full_description": "Genereer majestueuze portretten van een koninklijke ridder die een sierlijk en gepolijst harnas draagt, versierd met wapenschilden en ingewikkelde details, zelfverzekerd poserend tegen middeleeuwse kastelen, slagvelden of mistige bossen, leg een gevoel van adel, moed en heroïsche aanwezigheid vast met dramatische verlichting en rijke kleurtinten, perfect voor fantasy art, karakterportretten en verhalende illustraties",
+    "features": [
+      "Sierlijk Koninklijk Harnas",
+      "Middeleeuwse Achtergronden",
+      "Heroïsche Poses",
+      "Dramatische Verlichting",
+      "Edele Uitdrukking"
+    ],
+    "created_at": "2025-07-09T13:02:11.383Z",
+    "updated_at": "2025-07-09T13:02:11.383Z"
+  },
+  {
+    "id": 149,
+    "pack_id": 46,
+    "language": "Italian",
+    "title": "Cavaliere Reale",
+    "short_description": "Ritratti epici di un nobile guerriero vestito con un'armatura regale, in piedi con forza e onore",
+    "full_description": "Genera maestosi ritratti di un cavaliere reale che indossa un'armatura ornata e lucida, decorata con stemmi e dettagli intricati, in posa sicura contro castelli medievali, campi di battaglia o foreste nebbiose, cattura un senso di nobiltà, valore e presenza eroica con un'illuminazione drammatica e ricche tonalità di colore, perfetto per l'arte fantasy, i ritratti di personaggi e le illustrazioni narrative",
+    "features": [
+      "Armatura Regale Ornata",
+      "Sfondi Medievali",
+      "Pose Eroiche",
+      "Illuminazione Drammatica",
+      "Espressione Nobile"
+    ],
+    "created_at": "2025-07-09T13:02:32.850Z",
+    "updated_at": "2025-07-09T13:02:32.850Z"
+  },
+  {
+    "id": 150,
+    "pack_id": 47,
+    "language": "Spanish",
+    "title": "Fiesta en Casa",
+    "short_description": "Retratos vibrantes de una persona disfrutando de una animada fiesta en casa rodeada de luces de colores y un ambiente feliz",
+    "full_description": "Genera retratos divertidos y enérgicos de una persona captada en el momento en una fiesta en casa, rodeada de luces de colores, atuendos casuales y una atmósfera juguetona, captura sonrisas, poses de baile y la energía alegre de las reuniones sociales, perfecto para fotografía de estilo de vida, redes sociales y capturar escenas de celebración juvenil",
+    "features": [
+      "Luces de Fiesta Coloridas",
+      "Atuendos Casuales",
+      "Expresiones Sonrientes",
+      "Poses Divertidas y Energéticas",
+      "Ambiente de Fiesta Interior"
+    ],
+    "created_at": "2025-07-09T13:18:08.705Z",
+    "updated_at": "2025-07-09T13:18:08.705Z"
+  },
+  {
+    "id": 151,
+    "pack_id": 47,
+    "language": "German",
+    "title": "Hausparty",
+    "short_description": "Lebendige Porträts einer Person, die eine lebhafte Hausparty genießt, umgeben von bunten Lichtern und fröhlicher Stimmung",
+    "full_description": "Generiere lustige und energiegeladene Porträts einer Person, die im Moment auf einer Hausparty eingefangen wird, umgeben von bunten Lichtern, lässigen Outfits und einer spielerischen Atmosphäre, fange lachende Gesichter, Tanzposen und die freudige Energie von geselligen Zusammenkünften ein, perfekt für Lifestyle-Fotografie, soziale Medien und das Festhalten jugendlicher Feierszenen",
+    "features": [
+      "Bunte Partylichter",
+      "Lässige Outfits",
+      "Lächelnde Gesichtsausdrücke",
+      "Lustige und energiegeladene Posen",
+      "Partyatmosphäre im Innenbereich"
+    ],
+    "created_at": "2025-07-09T13:18:46.819Z",
+    "updated_at": "2025-07-09T13:18:46.819Z"
+  },
+  {
+    "id": 152,
+    "pack_id": 47,
+    "language": "Italian",
+    "title": "Festa in Casa",
+    "short_description": "Ritratti vivaci di una persona che si gode una festa in casa animata, circondata da luci colorate e un'atmosfera felice",
+    "full_description": "Genera ritratti divertenti ed energici di una persona colta sul momento a una festa in casa, circondata da luci colorate, abiti casual e un'atmosfera giocosa, cattura sorrisi, pose di ballo e l'energia gioiosa degli incontri sociali, perfetto per la fotografia di lifestyle, i social media e per catturare scene di celebrazioni giovanili",
+    "features": [
+      "Luci Colorate da Festa",
+      "Abiti Casual",
+      "Espressioni Sorridenti",
+      "Pose Divertenti ed Energetiche",
+      "Atmosfera di Festa al Chiuso"
+    ],
+    "created_at": "2025-07-09T13:19:24.641Z",
+    "updated_at": "2025-07-09T13:19:24.641Z"
+  },
+  {
+    "id": 153,
+    "pack_id": 47,
+    "language": "Dutch",
+    "title": "Huisfeest",
+    "short_description": "Levendige portretten van een persoon die geniet van een levendig huisfeest omringd door kleurrijke lichten en een vrolijke sfeer",
+    "full_description": "Genereer leuke en energieke portretten van een persoon die op het moment zelf wordt vastgelegd op een huisfeest, omringd door kleurrijke lichten, casual outfits en een speelse sfeer, leg lachende gezichten, dansposes en de vreugdevolle energie van sociale bijeenkomsten vast, perfect voor lifestylefotografie, sociale media en het vastleggen van jeugdige feestscènes",
+    "features": [
+      "Kleurrijke Feestverlichting",
+      "Casual Outfits",
+      "Lachende Uitdrukkingen",
+      "Leuke en Energieke Poses",
+      "Binnenfeestsfeer"
+    ],
+    "created_at": "2025-07-09T13:19:49.015Z",
+    "updated_at": "2025-07-09T13:19:49.015Z"
+  },
+  {
+    "id": 154,
+    "pack_id": 48,
+    "language": "Spanish",
+    "title": "Retrato de Piloto",
+    "short_description": "Retratos profesionales de un piloto vistiendo equipo de aviación y una expresión de confianza",
+    "full_description": "Genera retratos profesionales de un piloto vistiendo un traje de vuelo o uniforme con accesorios de aviación como auriculares o gafas de sol contra fondos neutros o de cabina, enfatiza la confianza, la precisión y una presencia tranquila y autoritaria, perfecto para portafolios de aviación, perfiles profesionales y materiales promocionales",
+    "features": [
+      "Uniforme de Aviación",
+      "Expresión de Confianza",
+      "Auriculares o Gafas de Sol",
+      "Fondo Neutro o de Cabina",
+      "Iluminación Profesional"
+    ],
+    "created_at": "2025-07-09T13:32:41.466Z",
+    "updated_at": "2025-07-09T13:32:41.466Z"
+  },
+  {
+    "id": 155,
+    "pack_id": 48,
+    "language": "German",
+    "title": "Pilotenporträt",
+    "short_description": "Professionelle Porträts eines Piloten in Luftfahrtausrüstung und mit selbstbewusstem Ausdruck",
+    "full_description": "Erstelle professionelle Porträts eines Piloten in einem Fluganzug oder einer Uniform mit Luftfahrtzubehör wie Headsets oder Sonnenbrillen vor neutralen oder Cockpit-Hintergründen, betone Selbstvertrauen, Präzision und eine ruhige, souveräne Präsenz, perfekt für Luftfahrt-Portfolios, berufliche Profile und Werbematerialien",
+    "features": [
+      "Fliegeruniform",
+      "Selbstbewusster Ausdruck",
+      "Headset oder Sonnenbrille",
+      "Neutraler oder Cockpit-Hintergrund",
+      "Professionelle Beleuchtung"
+    ],
+    "created_at": "2025-07-09T13:33:06.010Z",
+    "updated_at": "2025-07-09T13:33:06.010Z"
+  },
+  {
+    "id": 156,
+    "pack_id": 48,
+    "language": "Dutch",
+    "title": "Pilotenportret",
+    "short_description": "Professionele portretten van een piloot die luchtvaartuitrusting draagt en een zelfverzekerde uitdrukking heeft",
+    "full_description": "Genereer professionele portretten van een piloot in een vliegpak of uniform met luchtvaartaccessoires zoals headsets of zonnebrillen tegen neutrale of cockpitachtergronden, benadruk zelfvertrouwen, precisie en een kalme, gezaghebbende aanwezigheid, perfect voor luchtvaartportfolio's, professionele profielen en promotiemateriaal",
+    "features": [
+      "Luchtvaartuniform",
+      "Zelfverzekerde Uitdrukking",
+      "Headset of Zonnebril",
+      "Neutrale of Cockpitachtergrond",
+      "Professionele Belichting"
+    ],
+    "created_at": "2025-07-09T13:33:27.281Z",
+    "updated_at": "2025-07-09T13:33:27.281Z"
+  },
+  {
+    "id": 157,
+    "pack_id": 48,
+    "language": "Italian",
+    "title": "Ritratto di Pilota",
+    "short_description": "Ritratti professionali di un pilota che indossa equipaggiamento aeronautico e con un'espressione sicura",
+    "full_description": "Genera ritratti professionali di un pilota che indossa una tuta di volo o un'uniforme con accessori aeronautici come cuffie o occhiali da sole su sfondi neutri o di cabina di pilotaggio, enfatizza sicurezza, precisione e una presenza calma e autorevole, perfetto per portfolio aeronautici, profili professionali e materiali promozionali",
+    "features": [
+      "Uniforme Aeronautica",
+      "Espressione Sicura",
+      "Cuffie o Occhiali da Sole",
+      "Sfondo Neutro o di Cabina di Pilotaggio",
+      "Illuminazione Professionale"
+    ],
+    "created_at": "2025-07-09T13:33:48.715Z",
+    "updated_at": "2025-07-09T13:33:48.715Z"
+  },
+  {
+    "id": 158,
+    "pack_id": 49,
+    "language": "Spanish",
+    "title": "Guerrero Vikingo",
+    "short_description": "Audaces retratos de un feroz guerrero vikingo vestido con una armadura rústica y confianza forjada en la batalla",
+    "full_description": "Genera potentes retratos de un guerrero vikingo vistiendo una rústica armadura de cuero y piel con accesorios y tatuajes de inspiración nórdica, ambientado en salvajes paisajes nórdicos o campos de batalla neblinosos, captura una feroz determinación y una fuerza heroica con iluminación dramática y texturas crudas, perfecto para arte de fantasía, escenas históricas y retratos de personajes",
+    "features": [
+      "Armadura Rústica",
+      "Tatuajes Nórdicos",
+      "Expresión Feroz",
+      "Paisajes Nórdicos",
+      "Iluminación Dramática"
+    ],
+    "created_at": "2025-07-09T13:45:50.059Z",
+    "updated_at": "2025-07-09T13:45:50.059Z"
+  },
+  {
+    "id": 159,
+    "pack_id": 49,
+    "language": "German",
+    "title": "Wikingerkrieger",
+    "short_description": "Markante Porträts eines wilden Wikingerkriegers in robuster Rüstung und kampferprobtem Selbstbewusstsein",
+    "full_description": "Erzeuge kraftvolle Porträts eines Wikingerkriegers in robuster Leder- und Pelzrüstung mit nordisch inspirierten Accessoires und Tattoos vor wilden nordischen Landschaften oder nebligen Schlachtfeldern, fange eine wilde Entschlossenheit und heroische Stärke mit dramatischer Beleuchtung und rauen Texturen ein, perfekt für Fantasy-Kunst, historische Szenen und Charakterporträts",
+    "features": [
+      "Robuste Rüstung",
+      "Nordische Tattoos",
+      "Wilder Ausdruck",
+      "Nordische Landschaften",
+      "Dramatische Beleuchtung"
+    ],
+    "created_at": "2025-07-09T13:46:15.741Z",
+    "updated_at": "2025-07-09T13:46:15.741Z"
+  },
+  {
+    "id": 160,
+    "pack_id": 49,
+    "language": "Italian",
+    "title": "Guerriero Vichingo",
+    "short_description": "Audaci ritratti di un feroce guerriero vichingo vestito con un'armatura rozza e una sicurezza forgiata in battaglia",
+    "full_description": "Genera potenti ritratti di un guerriero vichingo che indossa una rozza armatura di cuoio e pelliccia con accessori e tatuaggi di ispirazione norrena, ambientato su sfondi di selvaggi paesaggi nordici o campi di battaglia nebbiosi, cattura una feroce determinazione e una forza eroica con illuminazione drammatica e texture grezze, perfetto per l'arte fantasy, scene storiche e ritratti di personaggi",
+    "features": [
+      "Armatura Rozza",
+      "Tatuaggi Norreni",
+      "Espressione Feroce",
+      "Paesaggi Nordici",
+      "Illuminazione Drammatica"
+    ],
+    "created_at": "2025-07-09T13:46:37.277Z",
+    "updated_at": "2025-07-09T13:46:37.277Z"
+  },
+  {
+    "id": 161,
+    "pack_id": 49,
+    "language": "Dutch",
+    "title": "Viking Krijger",
+    "short_description": "Stoere portretten van een woeste Viking krijger gekleed in ruig harnas en strijdgehard zelfvertrouwen",
+    "full_description": "Genereer krachtige portretten van een Viking krijger die ruig leer en bonten harnas draagt met op de Noorse mythologie geïnspireerde accessoires en tatoeages, tegen een achtergrond van wilde Noordse landschappen of mistige slagvelden, leg een felle vastberadenheid en heroïsche kracht vast met dramatische verlichting en ruwe texturen, perfect voor fantasy art, historische scènes en karakterportretten",
+    "features": [
+      "Ruig Harnas",
+      "Noorse Tatoeages",
+      "Woeste Uitdrukking",
+      "Noordse Landschappen",
+      "Dramatische Verlichting"
+    ],
+    "created_at": "2025-07-09T13:46:56.400Z",
+    "updated_at": "2025-07-09T13:47:02.873Z"
+  },
+  {
+    "id": 162,
+    "pack_id": 50,
+    "language": "Spanish",
+    "title": "Guerrera del Escudo",
+    "short_description": "Fieros retratos de una guerrera del escudo vestida con armadura desgastada por la batalla con una fuerza inquebrantable",
+    "full_description": "Genera audaces y poderosos retratos de una guerrera del escudo vistiendo una armadura rústica con capas de cuero y piel, con joyas nórdicas y cicatrices de batalla, de pie frente a duros paisajes nórdicos o campos de batalla envueltos en niebla, captura la fuerza, el coraje y un espíritu inquebrantable con iluminación dramática y texturas crudas, perfecto para arte de fantasía, retratos históricos e ilustraciones de personajes heroicos",
+    "features": [
+      "Armadura Rústica",
+      "Joyería Nórdica",
+      "Expresión Feroz",
+      "Paisajes Nórdicos",
+      "Iluminación Dramática"
+    ],
+    "created_at": "2025-07-09T13:56:43.252Z",
+    "updated_at": "2025-07-09T13:56:43.252Z"
+  },
+  {
+    "id": 163,
+    "pack_id": 50,
+    "language": "German",
+    "title": "Schildmaid",
+    "short_description": "Wilde Porträts einer Schildmaid-Kriegerin in kampferprobter Rüstung mit unnachgiebiger Stärke",
+    "full_description": "Generiere markante und kraftvolle Porträts einer Schildmaid-Kriegerin in robuster, mit Leder und Fell geschichteter Rüstung, mit nordischem Schmuck und Kampfnarben, die vor rauen nordischen Landschaften oder nebelverhangenen Schlachtfeldern steht, fange Stärke, Mut und einen unzerbrechlichen Geist mit dramatischer Beleuchtung und rauen Texturen ein, perfekt für Fantasy-Kunst, historische Porträts und heroische Charakterillustrationen",
+    "features": [
+      "Robuste Rüstung",
+      "Nordischer Schmuck",
+      "Wilder Ausdruck",
+      "Nordische Landschaften",
+      "Dramatische Beleuchtung"
+    ],
+    "created_at": "2025-07-09T13:57:05.404Z",
+    "updated_at": "2025-07-09T13:57:05.404Z"
+  },
+  {
+    "id": 164,
+    "pack_id": 50,
+    "language": "Dutch",
+    "title": "Schildmaagd",
+    "short_description": "Woeste portretten van een schildmaagd-krijgster gekleed in strijdversleten harnas met onverzettelijke kracht",
+    "full_description": "Genereer stoere en krachtige portretten van een schildmaagd-krijgster die een ruig harnas draagt, gelaagd met leer en bont, met Noorse sieraden en littekens van de strijd, staand tegen ruige Noordse landschappen of in mist gehulde slagvelden, leg kracht, moed en een onbreekbare geest vast met dramatische verlichting en ruwe texturen, perfect voor fantasy art, historische portretten en heroïsche karakterillustraties",
+    "features": [
+      "Ruig Harnas",
+      "Noorse Sieraden",
+      "Woeste Uitdrukking",
+      "Noordse Landschappen",
+      "Dramatische Verlichting"
+    ],
+    "created_at": "2025-07-09T13:57:24.141Z",
+    "updated_at": "2025-07-09T13:57:24.141Z"
+  },
+  {
+    "id": 165,
+    "pack_id": 50,
+    "language": "Italian",
+    "title": "Guerriera dello Scudo",
+    "short_description": "Fieri ritratti di una guerriera dello scudo vestita con un'armatura logorata dalla battaglia e una forza inflessibile",
+    "full_description": "Genera ritratti audaci e potenti di una guerriera dello scudo che indossa un'armatura rozza a strati di cuoio e pelliccia, con gioielli norreni e cicatrici di battaglia, in piedi contro aspri paesaggi nordici o campi di battaglia avvolti nella nebbia, cattura forza, coraggio e uno spirito indomito con un'illuminazione drammatica e texture grezze, perfetto per l'arte fantasy, i ritratti storici e le illustrazioni di personaggi eroici",
+    "features": [
+      "Armatura Rozza",
+      "Gioielli Norreni",
+      "Espressione Feroce",
+      "Paesaggi Nordici",
+      "Illuminazione Drammatica"
+    ],
+    "created_at": "2025-07-09T13:57:48.335Z",
+    "updated_at": "2025-07-09T13:57:48.335Z"
+  },
+  {
+    "id": 166,
+    "pack_id": 51,
+    "language": "Spanish",
+    "title": "Capitán Pirata",
+    "short_description": "Audaces retratos de un capitán pirata con ropa rústica y una mirada intrépida en el mar",
+    "full_description": "Genera impresionantes retratos de un capitán pirata vistiendo abrigos desgastados, sombreros tricornios y accesorios náuticos, de pie en la cubierta de un barco o contra mares tormentosos, captura un espíritu intrépido y aventurero con cabello al viento, rostros curtidos e iluminación dramática, perfecto para arte de fantasía, retratos de personajes y proyectos de temática de aventura",
+    "features": [
+      "Ropa de Pirata Desgastada",
+      "Sombrero Tricornio",
+      "Expresión Intrépida",
+      "Fondos de Océano Tormentoso",
+      "Accesorios Náuticos"
+    ],
+    "created_at": "2025-07-09T14:34:33.744Z",
+    "updated_at": "2025-07-09T14:34:33.744Z"
+  },
+  {
+    "id": 167,
+    "pack_id": 51,
+    "language": "German",
+    "title": "Piratenkapitän",
+    "short_description": "Markante Porträts eines Piratenkapitäns in rauer Kleidung und mit furchtlosem Blick auf See",
+    "full_description": "Erzeuge eindrucksvolle Porträts eines Piratenkapitäns in verwitterten Mänteln, Dreispitzen und nautischen Accessoires, der an Deck eines Schiffes oder vor stürmischer See steht, fange einen furchtlosen, abenteuerlustigen Geist mit windzerzaustem Haar, verwitterten Gesichtern und dramatischer Beleuchtung ein, perfekt für Fantasy-Kunst, Charakterporträts und abenteuerthematische Projekte",
+    "features": [
+      "Verwitterte Piratenkleidung",
+      "Dreispitz",
+      "Furchtloser Ausdruck",
+      "Stürmische Meereshintergründe",
+      "Nautische Accessoires"
+    ],
+    "created_at": "2025-07-09T14:34:50.794Z",
+    "updated_at": "2025-07-09T14:34:50.794Z"
+  },
+  {
+    "id": 168,
+    "pack_id": 51,
+    "language": "Dutch",
+    "title": "Piratenkapitein",
+    "short_description": "Stoere portretten van een piratenkapitein met ruige kleding en een onbevreesde blik op zee",
+    "full_description": "Genereer opvallende portretten van een piratenkapitein die verweerde jassen, driekanten en nautische accessoires draagt, staand op het dek van een schip of tegen een stormachtige zee, leg een onbevreesde, avontuurlijke geest vast met wapperend haar, verweerde gezichten en dramatische verlichting, perfect voor fantasy art, karakterportretten en projecten met een avontuurlijk thema",
+    "features": [
+      "Verweerde Piratenkleding",
+      "Driekant",
+      "Onbevreesde Uitdrukking",
+      "Stormachtige Oceaanachtergronden",
+      "Nautische Accessoires"
+    ],
+    "created_at": "2025-07-09T14:35:23.092Z",
+    "updated_at": "2025-07-09T14:35:23.092Z"
+  },
+  {
+    "id": 169,
+    "pack_id": 51,
+    "language": "Italian",
+    "title": "Capitano Pirata",
+    "short_description": "Audaci ritratti di un capitano pirata con abiti rozzi e uno sguardo impavido in mare",
+    "full_description": "Genera ritratti suggestivi di un capitano pirata che indossa cappotti logori, cappelli a tricorno e accessori nautici, in piedi sul ponte di una nave o contro mari in tempesta, cattura uno spirito impavido e avventuroso con capelli scompigliati dal vento, volti segnati dalle intemperie e un'illuminazione drammatica, perfetto per l'arte fantasy, i ritratti di personaggi e i progetti a tema avventura",
+    "features": [
+      "Abbigliamento da Pirata Logoro",
+      "Cappello a Tricorno",
+      "Espressione Impavida",
+      "Sfondi di Oceano in Tempesta",
+      "Accessori Nautici"
+    ],
+    "created_at": "2025-07-09T14:35:46.876Z",
+    "updated_at": "2025-07-09T14:35:46.876Z"
+  },
+  {
+    "id": 170,
+    "pack_id": 52,
+    "language": "Spanish",
+    "title": "Bibliotecaria Sexy",
+    "short_description": "Retratos seductores de una bibliotecaria con confianza coqueta y un encanto elegante",
+    "full_description": "Genera retratos cautivadores de una bibliotecaria vistiendo blusas ajustadas parcialmente desabrochadas, gafas y faldas ceñidas, rodeada de pilas de libros y rincones de biblioteca con poca luz, captura una energía coqueta pero sofisticada con sonrisas sutiles, miradas provocadoras y poses relajadas y seguras, perfecto para retratos de personajes seductores, fotografía temática y arte de fantasía con estilo",
+    "features": [
+      "Blusa Ajustada",
+      "Accesorio de Gafas",
+      "Expresiones Coquetas",
+      "Fondo de Biblioteca Acogedor",
+      "Iluminación Suave y Cálida"
+    ],
+    "created_at": "2025-07-09T15:39:20.515Z",
+    "updated_at": "2025-07-09T15:39:20.515Z"
+  },
+  {
+    "id": 171,
+    "pack_id": 52,
+    "language": "German",
+    "title": "Sexy Bibliothekarin",
+    "short_description": "Verführerische Porträts einer Bibliothekarin mit kokettem Selbstbewusstsein und eleganter Ausstrahlung",
+    "full_description": "Generiere fesselnde Porträts einer Bibliothekarin in eng anliegenden, teilweise aufgeknöpften Blusen, mit Brille und figurbetonten Röcken, umgeben von Bücherstapeln und schwach beleuchteten Bibliotheksecken, fange eine kokette, aber dennoch anspruchsvolle Energie mit subtilem Lächeln, neckischen Blicken und entspannten, selbstbewussten Posen ein, perfekt für verführerische Charakterporträts, thematische Fotografie und stilvolle Fantasy-Kunst",
+    "features": [
+      "Eng anliegende Bluse",
+      "Brillen-Accessoire",
+      "Kokette Gesichtsausdrücke",
+      "Gemütlicher Bibliothekshintergrund",
+      "Weiches warmes Licht"
+    ],
+    "created_at": "2025-07-09T15:39:43.532Z",
+    "updated_at": "2025-07-09T15:39:43.532Z"
+  },
+  {
+    "id": 172,
+    "pack_id": 52,
+    "language": "Dutch",
+    "title": "Sexy Bibliothecaresse",
+    "short_description": "Verleidelijke portretten van een bibliothecaresse met flirterig zelfvertrouwen en elegante allure",
+    "full_description": "Genereer boeiende portretten van een bibliothecaresse die een aansluitende, deels ongeknoopte blouse, een bril en een nauwsluitende rok draagt, omringd door stapels boeken en schemerig verlichte bibliotheekhoekjes, leg een flirterige maar toch verfijnde energie vast met subtiele glimlachjes, plagende blikken en ontspannen, zelfverzekerde poses, perfect voor verleidelijke karakterportretten, themafotografie en stijlvolle fantasy art",
+    "features": [
+      "Aansluitende Blouse",
+      "Bril als Accessoire",
+      "Flirterige Uitdrukkingen",
+      "Gezellige Bibliotheekachtergrond",
+      "Zachte Warme Verlichting"
+    ],
+    "created_at": "2025-07-09T15:40:06.776Z",
+    "updated_at": "2025-07-09T15:40:06.776Z"
+  },
+  {
+    "id": 173,
+    "pack_id": 52,
+    "language": "Italian",
+    "title": "Bibliotecaria Sexy",
+    "short_description": "Ritratti seducenti di una bibliotecaria con una sicurezza civettuola e un fascino elegante",
+    "full_description": "Genera ritratti accattivanti di una bibliotecaria che indossa camicette aderenti parzialmente sbottonate, occhiali e gonne attillate, circondata da pile di libri e angoli di biblioteca scarsamente illuminati, cattura un'energia civettuola ma sofisticata con sorrisi appena accennati, sguardi provocanti e pose rilassate e sicure, perfetto per ritratti di personaggi seducenti, fotografia a tema e arte fantasy di stile",
+    "features": [
+      "Camicetta Aderente",
+      "Accessorio Occhiali",
+      "Espressioni Civettuole",
+      "Sfondo Biblioteca Accogliente",
+      "Illuminazione Morbida e Calda"
+    ],
+    "created_at": "2025-07-09T15:40:29.921Z",
+    "updated_at": "2025-07-09T15:40:29.921Z"
+  },
+  {
+    "id": 174,
+    "pack_id": 53,
+    "language": "Spanish",
+    "title": "Salvavidas de Guardia",
+    "short_description": "Audaces retratos de un salvavidas de guardia con piel bronceada y equipo de playa",
+    "full_description": "Genera retratos seguros de un salvavidas vistiendo traje de baño brillante, gafas de sol y equipo de rescate, de pie frente a playas soleadas, torres de salvavidas o fondos oceánicos, captura una presencia heroica y lista para actuar con cabello al viento, piel iluminada por el sol y poses atléticas relajadas, perfecto para retratos de temática veraniega, arte de personajes y fotografía de acción",
+    "features": [
+      "Traje de Baño Brillante",
+      "Equipo de Rescate",
+      "Fondo de Playa Soleada",
+      "Expresión de Confianza",
+      "Cabello al Viento"
+    ],
+    "created_at": "2025-07-09T15:54:50.733Z",
+    "updated_at": "2025-07-09T15:54:50.733Z"
+  },
+  {
+    "id": 175,
+    "pack_id": 53,
+    "language": "German",
+    "title": "Rettungsschwimmer im Dienst",
+    "short_description": "Markante Porträts eines Rettungsschwimmers auf Wache mit sonnengebräunter Haut und Strandausrüstung",
+    "full_description": "Erzeuge selbstbewusste Porträts eines Rettungsschwimmers in heller Badebekleidung, mit Sonnenbrille und Rettungsausrüstung, der vor sonnigen Stränden, Rettungstürmen oder Meereskulissen steht, fange eine heldenhafte und einsatzbereite Präsenz mit windzerzaustem Haar, sonnenbeleuchteter Haut und entspannten athletischen Posen ein, perfekt für sommerliche Porträts, Charakterkunst und actioninspirierte Fotografie",
+    "features": [
+      "Helle Badebekleidung",
+      "Rettungsausrüstung",
+      "Sonniger Strandhintergrund",
+      "Selbstbewusster Ausdruck",
+      "Windzerzaustes Haar"
+    ],
+    "created_at": "2025-07-09T15:55:08.486Z",
+    "updated_at": "2025-07-09T15:55:08.486Z"
+  },
+  {
+    "id": 176,
+    "pack_id": 53,
+    "language": "Italian",
+    "title": "Bagnino in Servizio",
+    "short_description": "Audaci ritratti di un bagnino di guardia con pelle baciata dal sole e attrezzatura da spiaggia",
+    "full_description": "Genera ritratti sicuri di un bagnino che indossa un costume da bagno vivace, occhiali da sole e attrezzatura di salvataggio, in piedi contro spiagge assolate, torrette di salvataggio o sfondi oceanici, cattura una presenza eroica e pronta ad agire con capelli mossi dal vento, pelle illuminata dal sole e pose atletiche e rilassate, perfetto per ritratti a tema estivo, character art e fotografia ispirata all'azione",
+    "features": [
+      "Costume da Bagno Vivace",
+      "Attrezzatura di Salvataggio",
+      "Sfondo Spiaggia Assolata",
+      "Espressione Sicura",
+      "Capelli Mossi dal Vento"
+    ],
+    "created_at": "2025-07-09T15:55:31.187Z",
+    "updated_at": "2025-07-09T15:55:31.187Z"
+  },
+  {
+    "id": 177,
+    "pack_id": 53,
+    "language": "Dutch",
+    "title": "Strandwacht Dienst",
+    "short_description": "Stoere portretten van een strandwacht op wacht met een zongebruinde huid en stranduitrusting",
+    "full_description": "Genereer zelfverzekerde portretten van een strandwacht die felle zwemkleding, een zonnebril en reddingsuitrusting draagt, staand tegen zonnige stranden, strandwachttorens of oceaandecors, leg een heroïsche en actiebereide aanwezigheid vast met wapperend haar, door de zon verlichte huid en ontspannen atletische poses, perfect voor portretten met een zomerthema, karakterkunst en op actie geïnspireerde fotografie",
+    "features": [
+      "Felle Zwemkleding",
+      "Reddingsuitrusting",
+      "Zonnige Strandachtergrond",
+      "Zelfverzekerde Uitdrukking",
+      "Wapperend Haar"
+    ],
+    "created_at": "2025-07-09T15:55:48.032Z",
+    "updated_at": "2025-07-09T15:55:48.032Z"
+  },
+  {
+    "id": 178,
+    "pack_id": 54,
+    "language": "Spanish",
+    "title": "Fiesta Universitaria en Casa",
+    "short_description": "Retratos vibrantes en una fiesta universitaria en casa con estilo casual y energía juguetona",
+    "full_description": "Genera retratos animados de una persona disfrutando de una fiesta universitaria en casa rodeada de luces de colores, vasos rojos y amigos relajados, captura una energía divertida y juvenil con atuendos casuales, expresiones espontáneas y una iluminación de fiesta tenue, perfecto para retratos estilo redes sociales, fotografía de estilo de vida y temas de cultura juvenil",
+    "features": [
+      "Atuendos Casuales",
+      "Iluminación de Fiesta Colorida",
+      "Vasos Rojos",
+      "Expresiones Juguetonas",
+      "Energía Juvenil"
+    ],
+    "created_at": "2025-07-09T16:16:05.215Z",
+    "updated_at": "2025-07-09T16:16:05.215Z"
+  },
+  {
+    "id": 179,
+    "pack_id": 54,
+    "language": "German",
+    "title": "College-Hausparty",
+    "short_description": "Lebendige Porträts auf einer College-Hausparty mit lässigem Stil und verspielter Energie",
+    "full_description": "Erstelle lebhafte Porträts einer Person, die eine College-Hausparty genießt, umgeben von bunten Lichtern, roten Bechern und entspannten Freunden, fange eine lustige, jugendliche Energie mit lässigen Outfits, spontanen Ausdrücken und gedämpfter Partybeleuchtung ein, perfekt für Porträts im Social-Media-Stil, Lifestyle-Fotografie und Themen der Jugendkultur",
+    "features": [
+      "Lässige Outfits",
+      "Bunte Partybeleuchtung",
+      "Rote Becher",
+      "Verspielte Gesichtsausdrücke",
+      "Jugendliche Energie"
+    ],
+    "created_at": "2025-07-09T16:16:28.212Z",
+    "updated_at": "2025-07-09T16:16:28.212Z"
+  },
+  {
+    "id": 180,
+    "pack_id": 54,
+    "language": "Dutch",
+    "title": "Studentenfeest",
+    "short_description": "Levendige portretten op een studentenfeest met een casual stijl en speelse energie",
+    "full_description": "Genereer levendige portretten van een persoon die geniet van een studentenfeest, omringd door kleurrijke lichten, rode bekers en relaxte vrienden, leg een leuke, jeugdige energie vast met casual outfits, spontane uitdrukkingen en gedimde feestverlichting, perfect voor portretten in socialemediastijl, lifestylefotografie en thema's over jeugdcultuur",
+    "features": [
+      "Casual Outfits",
+      "Kleurrijke Feestverlichting",
+      "Rode Bekers",
+      "Speelse Uitdrukkingen",
+      "Jeugdige Energie"
+    ],
+    "created_at": "2025-07-09T16:16:45.571Z",
+    "updated_at": "2025-07-09T16:16:45.571Z"
+  },
+  {
+    "id": 181,
+    "pack_id": 54,
+    "language": "Italian",
+    "title": "Festa Universitaria",
+    "short_description": "Ritratti vivaci a una festa universitaria con stile casual ed energia giocosa",
+    "full_description": "Genera ritratti vivaci di una persona che si gode una festa universitaria, circondata da luci colorate, bicchieri rossi e amici rilassati, cattura un'energia divertente e giovanile con abiti casual, espressioni spontanee e una debole illuminazione da festa, perfetto per ritratti in stile social media, fotografia di lifestyle e temi sulla cultura giovanile",
+    "features": [
+      "Abiti Casual",
+      "Illuminazione Colorata da Festa",
+      "Bicchieri Rossi",
+      "Espressioni Giocose",
+      "Energia Giovanile"
+    ],
+    "created_at": "2025-07-09T16:17:04.985Z",
+    "updated_at": "2025-07-09T16:17:04.985Z"
+  },
+  {
+    "id": 182,
+    "pack_id": 55,
+    "language": "Spanish",
+    "title": "Estilo Tatuado",
+    "short_description": "Retratos audaces de una persona tatuada con actitud segura y estilo alternativo",
+    "full_description": "Genera retratos impactantes de una persona tatuada mostrando tatuajes en manga completa, espalda, pecho o cuello con una presencia segura y audaz, con ropa mínima, chaquetas de cuero o ropa de calle, captura la belleza artística de los tatuajes combinada con una actitud fuerte, los fondos urbanos y la iluminación de ambiente realzan la estética alternativa y expresiva, perfecto para retratos de estilo de vida, arte de subculturas y sesiones inspiradas en la moda",
+    "features": [
+      "Tatuajes Visibles",
+      "Ropa de Calle Alternativa",
+      "Expresiones Seguras",
+      "Fondo Urbano o de Estudio",
+      "Iluminación de Ambiente"
+    ],
+    "created_at": "2025-07-09T16:40:54.677Z",
+    "updated_at": "2025-07-09T16:40:54.677Z"
+  },
+  {
+    "id": 183,
+    "pack_id": 55,
+    "language": "German",
+    "title": "Tätowierter Stil",
+    "short_description": "Markante Porträts einer tätowierten Person mit selbstbewusster Haltung und kantigem Stil",
+    "full_description": "Erzeuge eindrucksvolle Porträts einer tätowierten Person, die Ganzarm-, Rücken-, Brust- oder Halstattoos mit einer selbstbewussten und kühnen Präsenz zeigt, gestylt in minimalistischer Kleidung, Lederjacken oder Streetwear, fange die künstlerische Schönheit von Tattoos in Kombination mit einer starken Haltung ein, städtische Hintergründe und stimmungsvolle Beleuchtung verstärken die kantige und ausdrucksstarke Ästhetik, perfekt für Lifestyle-Porträts, Subkultur-Kunst und modeinspirierte Shootings",
+    "features": [
+      "Sichtbare Tattoos",
+      "Kantige Streetwear",
+      "Selbstbewusste Gesichtsausdrücke",
+      "Städtischer oder Studio-Hintergrund",
+      "Stimmungsvolle Beleuchtung"
+    ],
+    "created_at": "2025-07-09T16:41:15.085Z",
+    "updated_at": "2025-07-09T16:41:15.085Z"
+  },
+  {
+    "id": 184,
+    "pack_id": 55,
+    "language": "Dutch",
+    "title": "Getatoeëerde Stijl",
+    "short_description": "Stoere portretten van een getatoeëerd persoon met een zelfverzekerde houding en een edgy stijl",
+    "full_description": "Genereer opvallende portretten van een getatoeëerd persoon die volledige sleeve-, rug-, borst- of nektatoeages toont met een zelfverzekerde en gedurfde aanwezigheid, gestyled in minimale kleding, leren jassen of streetwear, leg de artistieke schoonheid van tatoeages vast in combinatie met een sterke houding, stedelijke achtergronden en sfeervolle verlichting versterken de edgy en expressieve esthetiek, perfect voor lifestyleportretten, subcultuurkunst en op mode geïnspireerde fotoshoots",
+    "features": [
+      "Zichtbare Tatoeages",
+      "Edgy Streetwear",
+      "Zelfverzekerde Uitdrukkingen",
+      "Stedelijke of Studio-achtergrond",
+      "Sfeervolle Verlichting"
+    ],
+    "created_at": "2025-07-09T16:41:33.548Z",
+    "updated_at": "2025-07-09T16:41:33.548Z"
+  },
+  {
+    "id": 185,
+    "pack_id": 55,
+    "language": "Italian",
+    "title": "Stile Tatuato",
+    "short_description": "Ritratti audaci di una persona tatuata con un atteggiamento sicuro e uno stile alternativo",
+    "full_description": "Genera ritratti suggestivi di una persona tatuata che mostra tatuaggi su manica intera, schiena, petto o collo con una presenza sicura e audace, con abbigliamento minimal, giacche di pelle o streetwear, cattura la bellezza artistica dei tatuaggi combinata con un atteggiamento forte, sfondi urbani e illuminazione d'atmosfera esaltano l'estetica alternativa ed espressiva, perfetto per ritratti di lifestyle, arte di sottoculture e servizi fotografici ispirati alla moda",
+    "features": [
+      "Tatuaggi Visibili",
+      "Streetwear Alternativo",
+      "Espressioni Sicure",
+      "Sfondo Urbano o da Studio",
+      "Illuminazione d'Atmosfera"
+    ],
+    "created_at": "2025-07-09T16:42:04.318Z",
+    "updated_at": "2025-07-09T16:42:04.318Z"
+  },
+  {
+    "id": 186,
+    "pack_id": 56,
+    "language": "Spanish",
+    "title": "Mago y Hechicera",
+    "short_description": "Retratos realistas de un mago o hechicera lanzando hechizos elementales con concentración y poder",
+    "full_description": "Genera retratos realistas de un mago o hechicera lanzando hechizos como bola de fuego, hielo o electricidad, visten túnicas vaporosas y sostienen un báculo o libro de hechizos, captura el momento del lanzamiento del hechizo con iluminación natural y sutiles efectos mágicos, el estilo es detallado y realista, perfecto para retratos de temática fantástica con un toque realista",
+    "features": [
+      "Estilo Realista",
+      "Hechizos Elementales",
+      "Túnicas Vaporosas",
+      "Báculo o Libro de Hechizos",
+      "Efectos Mágicos Sutiles"
+    ],
+    "created_at": "2025-07-09T17:10:23.027Z",
+    "updated_at": "2025-07-09T17:10:23.027Z"
+  },
+  {
+    "id": 187,
+    "pack_id": 56,
+    "language": "German",
+    "title": "Zauberer & Zauberin",
+    "short_description": "Realistische Porträts eines Zauberers oder einer Zauberin, die Elementarzauber mit Konzentration und Macht wirken",
+    "full_description": "Generiere realistische Porträts eines Zauberers oder einer Zauberin, die Zauber wie Feuerball, Eis oder Elektrizität wirken, sie tragen fließende Roben und halten einen Stab oder ein Zauberbuch, fange den Moment des Zauberwirkens mit natürlicher Beleuchtung und dezenten magischen Effekten ein, der Stil ist detailliert und lebensecht, perfekt für Porträts im Fantasy-Stil mit einem realistischen Touch",
+    "features": [
+      "Realistischer Stil",
+      "Elementarzauber",
+      "Fließende Roben",
+      "Stab oder Zauberbuch",
+      "Dezente magische Effekte"
+    ],
+    "created_at": "2025-07-09T17:10:41.932Z",
+    "updated_at": "2025-07-09T17:10:41.932Z"
+  },
+  {
+    "id": 188,
+    "pack_id": 56,
+    "language": "Italian",
+    "title": "Mago e Strega",
+    "short_description": "Ritratti realistici di un mago o una strega che lanciano incantesimi elementali con concentrazione e potere",
+    "full_description": "Genera ritratti realistici di un mago o una strega che lanciano incantesimi come palla di fuoco, ghiaccio o elettricità, indossano vesti fluenti e tengono un bastone o un libro di incantesimi, cattura il momento del lancio dell'incantesimo con illuminazione naturale e sottili effetti magici, lo stile è dettagliato e realistico, perfetto per ritratti a tema fantasy con un tocco realistico",
+    "features": [
+      "Stile Realistico",
+      "Incantesimi Elementali",
+      "Vesti Fluide",
+      "Bastone o Libro di Incantesimi",
+      "Sottili Effetti Magici"
+    ],
+    "created_at": "2025-07-09T17:11:04.457Z",
+    "updated_at": "2025-07-09T17:11:04.457Z"
+  },
+  {
+    "id": 189,
+    "pack_id": 56,
+    "language": "Dutch",
+    "title": "Tovenaar & Heks",
+    "short_description": "Realistische portretten van een tovenaar of heks die elementaire spreuken uitspreekt met focus en kracht",
+    "full_description": "Genereer realistische portretten van een tovenaar of heks die spreuken uitspreekt zoals vuurbal, ijs of elektriciteit, ze dragen wapperende gewaden en houden een staf of spreukenboek vast, leg het moment van het spreukgebruik vast met natuurlijke verlichting en subtiele magische effecten, de stijl is gedetailleerd en levensecht, perfect voor portretten met een fantasiethema en een realistische inslag",
+    "features": [
+      "Realistische Stijl",
+      "Elementaire Spreuken",
+      "Wapperende Gewaden",
+      "Staf of Spreukenboek",
+      "Subtiele Magische Effecten"
+    ],
+    "created_at": "2025-07-09T17:11:28.177Z",
+    "updated_at": "2025-07-09T17:11:28.177Z"
+  },
+  {
+    "id": 190,
+    "pack_id": 57,
+    "language": "Spanish",
+    "title": "Gala de Alfombra Roja",
+    "short_description": "Retratos sofisticados de una persona vestida para un glamuroso evento de alfombra roja",
+    "full_description": "Genera retratos realistas de una persona vistiendo un elegante atuendo de noche adecuado para una gala de alfombra roja, captura vestidos de lujo, esmóquines impecables y accesorios pulidos con un fondo glamuroso con luces brillantes y una atmósfera sofisticada, céntrate en poses seguras, expresiones radiantes y detalles de alta costura, perfecto para retratos de moda, celebridades o temáticos de eventos",
+    "features": [
+      "Atuendo de Noche Elegante",
+      "Fondo Glamuroso",
+      "Poses Seguras",
+      "Expresiones Radiantes",
+      "Detalles de Alta Costura"
+    ],
+    "created_at": "2025-07-09T17:25:17.374Z",
+    "updated_at": "2025-07-09T17:25:17.374Z"
+  },
+  {
+    "id": 191,
+    "pack_id": 57,
+    "language": "German",
+    "title": "Roter-Teppich-Gala",
+    "short_description": "Anspruchsvolle Porträts einer Person, die für eine glamouröse Veranstaltung auf dem roten Teppich gekleidet ist",
+    "full_description": "Erstelle realistische Porträts einer Person in eleganter Abendgarderobe, die für eine Gala auf dem roten Teppich geeignet ist, fange luxuriöse Kleider, scharfe Smokings und polierte Accessoires vor einem glamourösen Hintergrund mit hellen Lichtern und einer anspruchsvollen Atmosphäre ein, konzentriere dich auf selbstbewusste Posen, strahlende Gesichtsausdrücke und hochwertige Modedetails, perfekt für Mode-, Prominenten- oder Event-Porträts",
+    "features": [
+      "Elegante Abendgarderobe",
+      "Glamouröser Hintergrund",
+      "Selbstbewusste Posen",
+      "Strahlende Gesichtsausdrücke",
+      "Hochwertige Modedetails"
+    ],
+    "created_at": "2025-07-09T17:25:42.767Z",
+    "updated_at": "2025-07-09T17:25:42.767Z"
+  },
+  {
+    "id": 192,
+    "pack_id": 57,
+    "language": "Dutch",
+    "title": "Rode Loper Gala",
+    "short_description": "Verfijnde portretten van een persoon gekleed voor een glamoureus rode loper-evenement",
+    "full_description": "Genereer realistische portretten van een persoon die elegante avondkleding draagt, geschikt voor een rode loper-gala, leg luxueuze jurken, strakke smokings en gepolijste accessoires vast met een glamoureuze achtergrond met felle lichten en een verfijnde sfeer, focus op zelfverzekerde poses, stralende uitdrukkingen en hoogwaardige modedetails, perfect voor mode-, beroemdheids- of evenementgerelateerde portretten",
+    "features": [
+      "Elegante Avondkleding",
+      "Glamoureuze Achtergrond",
+      "Zelfverzekerde Poses",
+      "Stralende Uitdrukkingen",
+      "Hoogwaardige Modedetails"
+    ],
+    "created_at": "2025-07-09T17:26:04.618Z",
+    "updated_at": "2025-07-09T17:26:04.618Z"
+  },
+  {
+    "id": 193,
+    "pack_id": 57,
+    "language": "Italian",
+    "title": "Gala sul Tappeto Rosso",
+    "short_description": "Ritratti sofisticati di una persona vestita per un evento glamour sul tappeto rosso",
+    "full_description": "Genera ritratti realistici di una persona che indossa un elegante abito da sera adatto per un gala sul tappeto rosso, cattura abiti lussuosi, smoking impeccabili e accessori raffinati con uno sfondo glamour caratterizzato da luci brillanti e un'atmosfera sofisticata, concentrati su pose sicure, espressioni radiose e dettagli di alta moda, perfetto per ritratti di moda, di celebrità o a tema evento",
+    "features": [
+      "Abito da Sera Elegante",
+      "Sfondo Glamour",
+      "Pose Sicure",
+      "Espressioni Radiose",
+      "Dettagli di Alta Moda"
+    ],
+    "created_at": "2025-07-09T17:26:44.854Z",
+    "updated_at": "2025-07-09T17:26:44.854Z"
+  },
+  {
+    "id": 194,
+    "pack_id": 58,
+    "language": "Spanish",
+    "title": "Inventor Steampunk",
+    "short_description": "Retratos de un inventor creativo vistiendo moda steampunk rodeado de artilugios mecánicos",
+    "full_description": "Genera retratos realistas de una persona vestida con un detallado atuendo steampunk con chaquetas de cuero, gafas de latón y accesorios intrincados, rodeada de engranajes, tuberías y artilugios mecánicos, encarnan el espíritu de innovación y aventura, captura una iluminación cálida, fondos industriales y poses expresivas que resaltan tanto el intelecto como el estilo, perfecto para retratos de personajes de fantasía, retrofuturistas y creativos",
+    "features": [
+      "Moda Steampunk",
+      "Gafas de Latón",
+      "Accesorios Mecánicos",
+      "Fondo Industrial",
+      "Iluminación Cálida"
+    ],
+    "created_at": "2025-07-09T18:10:02.765Z",
+    "updated_at": "2025-07-09T18:10:02.765Z"
+  },
+  {
+    "id": 195,
+    "pack_id": 58,
+    "language": "German",
+    "title": "Steampunk-Erfinder",
+    "short_description": "Porträts eines kreativen Erfinders in Steampunk-Mode, umgeben von mechanischen Geräten",
+    "full_description": "Erstelle realistische Porträts einer Person in detaillierter Steampunk-Kleidung mit Lederjacken, Messingbrillen und aufwendigen Accessoires, umgeben von Zahnrädern, Rohren und mechanischen Vorrichtungen verkörpern sie den Geist von Innovation und Abenteuer, fange warmes Licht, industrielle Hintergründe und ausdrucksstarke Posen ein, die sowohl Intellekt als auch Stil hervorheben, perfekt für Fantasy-, retro-futuristische und kreative Charakterporträts",
+    "features": [
+      "Steampunk-Mode",
+      "Messingbrillen",
+      "Mechanische Accessoires",
+      "Industrieller Hintergrund",
+      "Warmes Licht"
+    ],
+    "created_at": "2025-07-09T18:10:26.573Z",
+    "updated_at": "2025-07-09T18:10:26.573Z"
+  },
+  {
+    "id": 196,
+    "pack_id": 58,
+    "language": "Dutch",
+    "title": "Steampunk Uitvinder",
+    "short_description": "Portretten van een creatieve uitvinder in steampunk-mode, omringd door mechanische gadgets",
+    "full_description": "Genereer realistische portretten van een persoon gekleed in gedetailleerde steampunk-kleding met leren jassen, koperen brillen en ingewikkelde accessoires, omringd door tandwielen, leidingen en mechanische apparaten, belichamen zij de geest van innovatie en avontuur, leg warme verlichting, industriële achtergronden en expressieve poses vast die zowel intellect als stijl benadrukken, perfect voor fantasy-, retro-futuristische en creatieve karakterportretten",
+    "features": [
+      "Steampunk-mode",
+      "Koperen Bril",
+      "Mechanische Accessoires",
+      "Industriële Achtergrond",
+      "Warme Verlichting"
+    ],
+    "created_at": "2025-07-09T18:10:59.882Z",
+    "updated_at": "2025-07-09T18:10:59.882Z"
+  },
+  {
+    "id": 197,
+    "pack_id": 58,
+    "language": "Italian",
+    "title": "Inventore Steampunk",
+    "short_description": "Ritratti di un inventore creativo che indossa abiti steampunk circondato da gadget meccanici",
+    "full_description": "Genera ritratti realistici di una persona vestita con un dettagliato abbigliamento steampunk con giacche di pelle, occhiali d'ottone e accessori intricati, circondati da ingranaggi, tubi e congegni meccanici, incarnano lo spirito di innovazione e avventura, cattura un'illuminazione calda, sfondi industriali e pose espressive che mettono in risalto sia l'intelletto che lo stile, perfetto per ritratti di personaggi fantasy, retro-futuristici e creativi",
+    "features": [
+      "Moda Steampunk",
+      "Occhiali d'Ottone",
+      "Accessori Meccanici",
+      "Sfondo Industriale",
+      "Illuminazione Calda"
+    ],
+    "created_at": "2025-07-09T18:11:20.755Z",
+    "updated_at": "2025-07-09T18:11:20.755Z"
+  },
+  {
+    "id": 198,
+    "pack_id": 59,
+    "language": "Spanish",
+    "title": "Holi",
+    "short_description": "Retratos vibrantes de una persona cubierta de polvos de colores durante las celebraciones de Holi",
+    "full_description": "Genera retratos realistas de una persona celebrando Holi, cubierta de vibrantes polvos de colores y sonriendo con alegría, el fondo es brillante y festivo, capturando la atmósfera enérgica del festival, la iluminación natural, las poses dinámicas y los efectos coloridos dan vida a la escena, haciéndola perfecta para estilos de retrato culturales, alegres y enérgicos",
+    "features": [
+      "Polvos de Colores",
+      "Expresiones Alegres",
+      "Fondo Festivo",
+      "Iluminación Natural",
+      "Poses Dinámicas"
+    ],
+    "created_at": "2025-07-09T18:30:17.904Z",
+    "updated_at": "2025-07-09T18:30:17.904Z"
+  },
+  {
+    "id": 199,
+    "pack_id": 59,
+    "language": "German",
+    "title": "Holi",
+    "short_description": "Lebendige Porträts einer Person, die während der Holi-Feierlichkeiten mit buntem Pulver bedeckt ist",
+    "full_description": "Erstelle realistische Porträts einer Person, die Holi feiert, bedeckt mit leuchtendem Farbpulver und freudig lächelnd, der Hintergrund ist hell und festlich und fängt die energiegeladene Atmosphäre des Festivals ein, natürliche Beleuchtung, dynamische Posen und farbenfrohe Effekte erwecken die Szene zum Leben und machen sie perfekt für kulturelle, fröhliche und energiegeladene Porträtstile",
+    "features": [
+      "Buntes Pulver",
+      "Freudige Gesichtsausdrücke",
+      "Festlicher Hintergrund",
+      "Natürliche Beleuchtung",
+      "Dynamische Posen"
+    ],
+    "created_at": "2025-07-09T18:31:02.859Z",
+    "updated_at": "2025-07-09T18:31:02.859Z"
+  },
+  {
+    "id": 200,
+    "pack_id": 59,
+    "language": "Dutch",
+    "title": "Holi",
+    "short_description": "Levendige portretten van een persoon bedekt met kleurrijk poeder tijdens Holi-vieringen",
+    "full_description": "Genereer realistische portretten van een persoon die Holi viert, bedekt met levendig gekleurd poeder en vrolijk lachend, de achtergrond is helder en feestelijk en legt de energieke sfeer van het festival vast, natuurlijke verlichting, dynamische poses en kleurrijke effecten brengen de scène tot leven, waardoor het perfect is voor culturele, vrolijke en energieke portretstijlen",
+    "features": [
+      "Kleurrijk Poeder",
+      "Vrolijke Uitdrukkingen",
+      "Feestelijke Achtergrond",
+      "Natuurlijke Verlichting",
+      "Dynamische Poses"
+    ],
+    "created_at": "2025-07-09T18:31:20.390Z",
+    "updated_at": "2025-07-09T18:31:20.390Z"
+  },
+  {
+    "id": 201,
+    "pack_id": 59,
+    "language": "Italian",
+    "title": "Holi",
+    "short_description": "Ritratti vibranti di una persona coperta di polvere colorata durante le celebrazioni di Holi",
+    "full_description": "Genera ritratti realistici di una persona che celebra l'Holi, coperta di vibrante polvere colorata e sorridente gioiosamente, lo sfondo è luminoso e festoso, catturando l'atmosfera energetica del festival, l'illuminazione naturale, le pose dinamiche e gli effetti colorati danno vita alla scena, rendendola perfetta per stili di ritratto culturali, gioiosi ed energetici",
+    "features": [
+      "Polvere Colorata",
+      "Espressioni Gioiose",
+      "Sfondo Festivo",
+      "Illuminazione Naturale",
+      "Pose Dinamiche"
+    ],
+    "created_at": "2025-07-09T18:31:39.259Z",
+    "updated_at": "2025-07-09T18:31:39.259Z"
+  },
+  {
+    "id": 202,
+    "pack_id": 60,
+    "language": "Spanish",
+    "title": "Reportero en Vivo",
+    "short_description": "Retratos dinámicos de una persona informando en vivo ante la cámara con un micrófono y fondo urbano",
+    "full_description": "Genera retratos realistas de una persona informando en vivo desde la escena, sosteniendo un micrófono y hablando con concentración y confianza, el fondo presenta un entorno urbano, escenas de noticias de última hora o fondos de eventos, captura iluminación natural, atuendo profesional y gestos expresivos para crear una sensación de urgencia y presencia en el momento",
+    "features": [
+      "Micrófono en Mano",
+      "Fondo Urbano o de Evento",
+      "Expresión Concentrada",
+      "Atuendo Profesional",
+      "Iluminación Natural"
+    ],
+    "created_at": "2025-07-09T18:47:17.605Z",
+    "updated_at": "2025-07-09T18:47:17.605Z"
+  },
+  {
+    "id": 203,
+    "pack_id": 60,
+    "language": "German",
+    "title": "Live-Reporter",
+    "short_description": "Dynamische Porträts einer Person, die live vor der Kamera mit einem Mikrofon und städtischem Hintergrund berichtet",
+    "full_description": "Erstelle realistische Porträts einer Person, die live vom Ort des Geschehens berichtet, ein Mikrofon hält und mit Konzentration und Selbstvertrauen spricht, der Hintergrund zeigt eine städtische Umgebung, aktuelle Nachrichtenszenen oder Veranstaltungsorte, fange natürliches Licht, professionelle Kleidung und ausdrucksstarke Gesten ein, um ein Gefühl von Dringlichkeit und Präsenz im Moment zu schaffen",
+    "features": [
+      "Mikrofon in der Hand",
+      "Städtischer oder Veranstaltungs-Hintergrund",
+      "Konzentrierter Gesichtsausdruck",
+      "Professionelle Kleidung",
+      "Natürliche Beleuchtung"
+    ],
+    "created_at": "2025-07-09T18:47:39.507Z",
+    "updated_at": "2025-07-09T18:47:39.507Z"
+  },
+  {
+    "id": 204,
+    "pack_id": 60,
+    "language": "Dutch",
+    "title": "Live Verslaggever",
+    "short_description": "Dynamische portretten van een persoon die live verslag doet voor de camera met een microfoon en een stedelijke achtergrond",
+    "full_description": "Genereer realistische portretten van een persoon die live verslag doet vanaf de locatie, een microfoon vasthoudt en met focus en zelfvertrouwen spreekt, de achtergrond toont een stedelijke omgeving, scènes van het laatste nieuws of evenementenachtergronden, leg natuurlijke verlichting, professionele kleding en expressieve gebaren vast om een gevoel van urgentie en aanwezigheid in het moment te creëren",
+    "features": [
+      "Microfoon in de Hand",
+      "Stedelijke of Evenementenachtergrond",
+      "Geconcentreerde Uitdrukking",
+      "Professionele Kleding",
+      "Natuurlijke Verlichting"
+    ],
+    "created_at": "2025-07-09T18:48:09.937Z",
+    "updated_at": "2025-07-09T18:48:09.937Z"
+  },
+  {
+    "id": 205,
+    "pack_id": 60,
+    "language": "Italian",
+    "title": "Reporter in Diretta",
+    "short_description": "Ritratti dinamici di una persona che fa un servizio in diretta davanti alla telecamera con un microfono e uno sfondo urbano",
+    "full_description": "Genera ritratti realistici di una persona che fa un servizio in diretta dalla scena, tenendo un microfono e parlando con concentrazione e sicurezza, lo sfondo presenta un ambiente urbano, scene di ultime notizie o sfondi di eventi, cattura l'illuminazione naturale, l'abbigliamento professionale e i gesti espressivi per creare un senso di urgenza e presenza nel momento",
+    "features": [
+      "Microfono in Mano",
+      "Sfondo Urbano o di Evento",
+      "Espressione Concentrata",
+      "Abbigliamento Professionale",
+      "Illuminazione Naturale"
+    ],
+    "created_at": "2025-07-09T18:48:41.899Z",
+    "updated_at": "2025-07-09T18:48:41.899Z"
+  },
+  {
+    "id": 206,
+    "pack_id": 61,
+    "language": "Spanish",
+    "title": "Estilo Gótico",
+    "short_description": "Retratos melancólicos de una persona vistiendo moda gótica oscura con iluminación dramática",
+    "full_description": "Genera retratos realistas de una persona vestida con moda gótica, con ropa oscura, accesorios en capas y maquillaje audaz, captura la esencia de la subcultura gótica con iluminación melancólica, fondos sombríos y expresiones intensas, la escena puede incluir paisajes nocturnos urbanos o arquitectura gótica clásica para realzar la atmósfera de misterio e individualidad",
+    "features": [
+      "Ropa Oscura en Capas",
+      "Maquillaje Audaz",
+      "Accesorios Góticos",
+      "Iluminación Melancólica",
+      "Fondo Sombrío"
+    ],
+    "created_at": "2025-07-09T19:06:45.283Z",
+    "updated_at": "2025-07-09T19:06:45.283Z"
+  },
+  {
+    "id": 207,
+    "pack_id": 61,
+    "language": "German",
+    "title": "Gothic-Stil",
+    "short_description": "Stimmungsvolle Porträts einer Person in dunkler Gothic-Mode mit dramatischer Beleuchtung",
+    "full_description": "Erstelle realistische Porträts einer Person in Gothic-Mode mit dunkler Kleidung, vielschichtigen Accessoires und auffälligem Make-up, fange die Essenz der Gothic-Subkultur mit stimmungsvoller Beleuchtung, schattigen Hintergründen und intensiven Gesichtsausdrücken ein, die Szene kann nächtliche Stadtlandschaften oder klassische gotische Architektur beinhalten, um die Atmosphäre von Geheimnis und Individualität zu verstärken",
+    "features": [
+      "Dunkle Vielschichtige Kleidung",
+      "Auffälliges Make-up",
+      "Gotische Accessoires",
+      "Stimmungsvolle Beleuchtung",
+      "Schattiger Hintergrund"
+    ],
+    "created_at": "2025-07-09T19:07:07.504Z",
+    "updated_at": "2025-07-09T19:07:07.504Z"
+  },
+  {
+    "id": 208,
+    "pack_id": 61,
+    "language": "Dutch",
+    "title": "Gotische Stijl",
+    "short_description": "Sfeervolle portretten van een persoon gekleed in donkere gothic mode met dramatische verlichting",
+    "full_description": "Genereer realistische portretten van een persoon gekleed in gothic mode, met donkere kleding, gelaagde accessoires en opvallende make-up, leg de essentie van de gothic subcultuur vast met sfeervolle verlichting, schaduwrijke achtergronden en intense uitdrukkingen, de scène kan stedelijke nachtgezichten of klassieke gotische architectuur bevatten om de sfeer van mysterie en individualiteit te versterken",
+    "features": [
+      "Donkere Gelaagde Kleding",
+      "Opvallende Make-up",
+      "Gotische Accessoires",
+      "Sfeervolle Verlichting",
+      "Schaduwrijke Achtergrond"
+    ],
+    "created_at": "2025-07-09T19:07:31.846Z",
+    "updated_at": "2025-07-09T19:07:31.846Z"
+  },
+  {
+    "id": 209,
+    "pack_id": 61,
+    "language": "Italian",
+    "title": "Stile Gotico",
+    "short_description": "Ritratti suggestivi di una persona che indossa moda gotica scura con illuminazione drammatica",
+    "full_description": "Genera ritratti realistici di una persona vestita in stile gotico, con abiti scuri, accessori a strati e trucco audace, cattura l'essenza della sottocultura gotica con illuminazione suggestiva, sfondi ombrosi ed espressioni intense, la scena può includere paesaggi notturni urbani o architettura gotica classica per esaltare l'atmosfera di mistero e individualità",
+    "features": [
+      "Abiti Scuri a Strati",
+      "Trucco Audace",
+      "Accessori Gotici",
+      "Illuminazione Suggestiva",
+      "Sfondo Ombroso"
+    ],
+    "created_at": "2025-07-09T19:07:50.557Z",
+    "updated_at": "2025-07-09T19:07:50.557Z"
   }
 ]

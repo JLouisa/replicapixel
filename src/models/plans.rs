@@ -5,9 +5,11 @@ pub use super::_entities::plans::{ActiveModel, Entity, Model};
 use derive_more::{AsRef, Constructor};
 use loco_rs::prelude::*;
 use sea_orm::entity::prelude::*;
+use sea_orm::Condition;
 use serde::Serialize;
 pub type Plans = Entity;
 use crate::models::_entities::plans_translations as plans_translations_entity;
+use crate::models::_entities::sea_orm_active_enums::PlanCategory;
 use crate::models::{
     PlanTranslationModel,
     _entities::sea_orm_active_enums::{Language, PlanNames},
@@ -169,6 +171,11 @@ impl Model {
         lang: &Language,
     ) -> ModelResult<PlanDomainList> {
         let plans_with_translations = Entity::find()
+            .filter(
+                model::query::condition()
+                    .eq(plans::Column::Category, PlanCategory::Main)
+                    .build(),
+            )
             .find_with_related(plans_translations_entity::Entity)
             .all(db)
             .await?;
@@ -179,7 +186,7 @@ impl Model {
         lang: &Language,
     ) -> ModelResult<PlanDomainList> {
         if *lang == Language::English {
-            return Ok(Model::find_all(db).await?.into());
+            return Ok(Model::find_all_main(db).await?.into());
         }
         Ok(Model::load_plan_and_all_translated(db, lang).await?.into())
     }
@@ -228,6 +235,12 @@ impl Model {
     }
     pub async fn find_all(db: &impl ConnectionTrait) -> ModelResult<PlanModelList> {
         let plans = Entity::find().all(db).await?;
+        let plans = PlanModelList(plans);
+        Ok(plans)
+    }
+    pub async fn find_all_main(db: &impl ConnectionTrait) -> ModelResult<PlanModelList> {
+        let condition = Condition::all().add(plans::Column::Category.eq(PlanCategory::Main));
+        let plans = Entity::find().filter(condition).all(db).await?;
         let plans = PlanModelList(plans);
         Ok(plans)
     }

@@ -2,6 +2,7 @@ use crate::{
     controllers::payment::routes,
     domain::url::Url,
     models::{UserActiveModel, UserModel, _entities::sea_orm_active_enums::PlanNames},
+    service::stripe::stripe_builder::StripeOptions,
 };
 use derive_more::{AsRef, Constructor, From};
 use loco_rs::model::ModelError;
@@ -10,9 +11,9 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::str::FromStr;
 use stripe::{
-    CheckoutSession, CheckoutSessionMode, CheckoutSessionUiMode, Client, CreateCheckoutSession,
-    CreateCheckoutSessionLineItems, CreateCustomer, Currency, Customer, CustomerId, Metadata,
-    ParseIdError, PriceId, StripeError,
+    CheckoutSession, CheckoutSessionUiMode, Client, CreateCheckoutSession,
+    CreateCheckoutSessionLineItems, CreateCustomer, Customer, CustomerId, ParseIdError, PriceId,
+    StripeError,
 };
 use thiserror::Error;
 
@@ -50,7 +51,7 @@ pub struct StripeSettings {
     pub stripe_secret_key: String,
     pub stripe_publishable_key: String,
     pub stripe_webhook_secret: String,
-    pub stripe_products: StripeProductsId,
+    // pub stripe_products: StripeProductsId,
 }
 
 #[derive(Deserialize, Debug, Clone)]
@@ -60,28 +61,31 @@ pub struct StripeUrls {
     pub stripe_return_url: Url,
 }
 
-#[derive(Deserialize, Debug, Clone)]
-pub struct StripeProductsId {
-    basic: String,
-    premium: String,
-    max: String,
-}
+// #[derive(Deserialize, Debug, Clone)]
+// pub struct StripeProductsId {
+//     basic: String,
+//     premium: String,
+//     max: String,
+// }
 
-#[derive(Deserialize, Debug, Constructor, Clone)]
-pub struct StripeProducts {
-    basic: PriceId,
-    premium: PriceId,
-    max: PriceId,
-}
-impl StripeProducts {
-    pub fn get_price_id(&self, plan: &PlanNames) -> PriceId {
-        match plan {
-            PlanNames::Basic => self.basic.clone(),
-            PlanNames::Premium => self.premium.clone(),
-            PlanNames::Max => self.max.clone(),
-        }
-    }
-}
+// #[derive(Deserialize, Debug, Constructor, Clone)]
+// pub struct StripeProducts {
+//     basic: PriceId,
+//     premium: PriceId,
+//     max: PriceId,
+// }
+// impl StripeProducts {
+//     fn get_price_id(&self, plan: &PlanNames) -> PriceId {
+//         match plan {
+//             PlanNames::Basic => self.basic.clone(),
+//             PlanNames::Premium => self.premium.clone(),
+//             PlanNames::Max => self.max.clone(),
+//             PlanNames::BasicPlus => self.basic.clone(),
+//             PlanNames::PremiumPlus => self.premium.clone(),
+//             PlanNames::MaxPlus => self.max.clone(),
+//         }
+//     }
+// }
 
 #[derive(Debug, Serialize, Clone, Constructor, AsRef, From)]
 pub struct StripePublishableKey(String);
@@ -91,7 +95,7 @@ pub struct StripeClient {
     pub client: Client,
     pub settings: StripeSettings,
     pub stripe_publishable_key: StripePublishableKey,
-    pub stripe_products: StripeProducts,
+    // pub stripe_products: StripeProducts,
     pub stripe_url: StripeUrls,
 }
 
@@ -100,13 +104,13 @@ impl StripeClient {
         let client = stripe::Client::new(&settings.stripe_secret_key);
         let stripe_publishable_key: StripePublishableKey =
             StripePublishableKey(String::from(&settings.stripe_publishable_key));
-        let stripe_products = StripeProducts {
-            basic: PriceId::from_str(&settings.stripe_products.basic)
-                .expect("Invalid Price ID Basic"),
-            premium: PriceId::from_str(&settings.stripe_products.premium)
-                .expect("Invalid Price ID Premium"),
-            max: PriceId::from_str(&settings.stripe_products.max).expect("Invalid Price ID Max"),
-        };
+        // let stripe_products = StripeProducts {
+        //     basic: PriceId::from_str(&settings.stripe_products.basic)
+        //         .expect("Invalid Price ID Basic"),
+        //     premium: PriceId::from_str(&settings.stripe_products.premium)
+        //         .expect("Invalid Price ID Premium"),
+        //     max: PriceId::from_str(&settings.stripe_products.max).expect("Invalid Price ID Max"),
+        // };
         let stripe_url = StripeUrls {
             stripe_success_url: Url::new(format!(
                 "{}{}{}?session_id={{CHECKOUT_SESSION_ID}}",
@@ -131,56 +135,55 @@ impl StripeClient {
             client,
             settings: settings.clone(),
             stripe_publishable_key,
-            stripe_products,
+            // stripe_products,
             stripe_url,
         }
     }
 
-    pub async fn create_checkout(
+    pub async fn create_checkout<'a>(
         &self,
-        user: &UserModel,
-        plan: &PlanNames,
-        mode: &CheckoutSessionMode,
-        ui_mode: &CheckoutSessionUiMode,
-        currency: &Currency,
-        metadata: Metadata,
+        options: &'a StripeOptions<'a>,
         txn: &impl ConnectionTrait,
     ) -> Result<CheckoutSession, StripeClientError> {
-        let user_pid_str = user.pid.to_string();
-        let customer_id: CustomerId = match user.stripe_customer_id.to_owned() {
+        let user_pid_str = options.user.pid.to_string();
+        let customer_id: CustomerId = match options.user.stripe_customer_id.to_owned() {
             Some(existing_stripe_id_str) => CustomerId::from_str(&existing_stripe_id_str)?,
             None => {
                 let stripe_customer = self
-                    .create_customer(&user.name, &user.email, &user.pid)
+                    .create_customer(&options.user.name, &options.user.email, &options.user.pid)
                     .await?;
-                Self::save_stripe_customer_id_to_db(&user, stripe_customer.id.as_str(), txn)
-                    .await?;
+                Self::save_stripe_customer_id_to_db(
+                    &options.user,
+                    stripe_customer.id.as_str(),
+                    txn,
+                )
+                .await?;
                 stripe_customer.id
             }
         };
 
         let checkout_params = CreateCheckoutSession {
-            success_url: match ui_mode == &CheckoutSessionUiMode::Embedded {
+            success_url: match options.ui_mode == CheckoutSessionUiMode::Embedded {
                 true => None,
                 false => Some(self.stripe_url.stripe_success_url.as_ref()),
             },
-            cancel_url: match ui_mode == &CheckoutSessionUiMode::Hosted {
+            cancel_url: match options.ui_mode == CheckoutSessionUiMode::Hosted {
                 true => Some(self.stripe_url.stripe_cancel_url.as_ref()),
                 false => None,
             },
-            return_url: match ui_mode == &CheckoutSessionUiMode::Embedded {
+            return_url: match options.ui_mode == CheckoutSessionUiMode::Embedded {
                 // true => Some(self.stripe_url.stripe_return_url.as_ref()),
                 true => Some(self.stripe_url.stripe_success_url.as_ref()),
                 false => None,
             },
             client_reference_id: Some(&user_pid_str),
-            mode: Some(*mode),
-            ui_mode: Some(*ui_mode),
-            currency: Some(*currency),
+            mode: Some(options.mode),
+            ui_mode: Some(options.ui_mode),
+            currency: Some(options.currency),
             customer: Some(customer_id),
-            metadata: Some(metadata),
+            metadata: Some(options.metadata.clone()),
             line_items: Some(vec![CreateCheckoutSessionLineItems {
-                price: Some(self.stripe_products.get_price_id(&plan).to_string()),
+                price: Some(options.plan.stripe_price_id.to_string()),
                 quantity: Some(1),
                 ..Default::default()
             }]),

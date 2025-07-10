@@ -137,3 +137,7 @@ Generics and Traits:
 pub fn new<K: Into<String>>(key: K) -> Self {
 key.into()
 }
+
+Stripe:
+stripe login
+stripe listen --forward-to localhost:5150/api/webhooks/stripe

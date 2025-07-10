@@ -1,5 +1,7 @@
 use derive_more::Constructor;
 use loco_rs::app::AppContext;
+use rand::rngs::ThreadRng;
+use rand::{rng, Rng};
 use sea_orm::DatabaseConnection;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -204,6 +206,77 @@ impl WebImages {
         lang: &Language,
         cache: &RedisCacheDriver,
     ) -> WebImages {
+        // Loading functions concurrently.
+        let (packs_result, plans_result) = join!(
+            load_packs_translated(db, lang, cache),
+            load_pricing_translated(db, lang, cache)
+        );
+
+        let packs: PackViewList = match packs_result {
+            Ok(packs) => packs,
+            Err(e) => {
+                tracing::error!("Failed to load packs: {}", e);
+                PackViewList::default()
+            }
+        }
+        .into();
+        let plans = match plans_result {
+            Ok(plans) => plans,
+            Err(e) => {
+                tracing::error!("Failed to load plans: {}", e);
+                PricingViewList::default()
+            }
+        };
+
+        // Randomize gallary images
+        let mut packs_cloned = packs.clone().into_inner();
+        let mut rng = rng();
+        let web_images0 = get_web_img_urls(&mut rng, &mut packs_cloned);
+        let web_images1 = get_web_img_urls(&mut rng, &mut packs_cloned);
+        let web_images2 = get_web_img_urls(&mut rng, &mut packs_cloned);
+        let web_images3 = get_web_img_urls(&mut rng, &mut packs_cloned);
+        let web_images4 = get_web_img_urls(&mut rng, &mut packs_cloned);
+
+        //     String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/nature-hero.webp"),
+        //     String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/corporate-headshot.webp"),
+        //     String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/mma-fe.webp"),
+        //     String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/wife1.webp"),
+        //     String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/street-fighter.webp"),
+        //     String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/nature3.webp"),
+        // ];
+        // let web_images1 = vec![
+        //     String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/nature2.webp"),
+        //     String::from("https://d2npyy9ae7osp9.cloudfront.net/packs/cosplay/f193a28b-83e3-4a1c-b13e-3637acb85c84.webp"),
+        //     String::from("https://d2npyy9ae7osp9.cloudfront.net/packs/sexy+halloween/e5557da7-416a-466c-a5a7-bf7232232ee3.webp"),
+        //     String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/cosplay1-small.webp"),
+        //     String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/machina2.webp"),
+        //     String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/cosplay2-small.webp"),
+        // ];
+        // let web_images2 = vec![
+        //     String::from("https://d2npyy9ae7osp9.cloudfront.net/packs/cosplay/a97bb59a-be4f-4b3f-92b5-e8c25a03e361.webp"),
+        //     String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/machina1.webp"),
+        //     String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/angel.webp"),
+        //     String::from("https://d2npyy9ae7osp9.cloudfront.net/packs/cosplay/f193a28b-83e3-4a1c-b13e-3637acb85c84.webp"),
+        //     String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/emo-girl.webp"),
+        //     String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/blackwidow.webp"),
+        // ];
+        // let web_images3 = vec![
+        //     String::from("https://d2npyy9ae7osp9.cloudfront.net/packs/sexy+halloween/a22ec84c-dcd7-4cbd-b872-1963aa140355.webp"),
+        //     String::from("https://d2npyy9ae7osp9.cloudfront.net/packs/cosplay/53d42133-d8be-47a8-863b-1a489b2a736e.webp"),
+        //     String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/nature1.webp"),
+        //     String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/dracula-wife.webp"),
+        //     String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/cosplay3.webp"),
+        //     String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/model-show.webp"),
+        // ];
+        // let web_images4 = vec![
+        //     String::from("https://d2npyy9ae7osp9.cloudfront.net/packs/spiritual/e1ee3b51-53a0-4254-9a09-8d734ea7195a.webp"),
+        //     String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/easter1.webp"),
+        //     String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/model-makeup.webp"),
+        //     String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/white-dress.webp"),
+        //     String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/model-closeup.webp"),
+        //     String::from("https://d2npyy9ae7osp9.cloudfront.net/packs/sexy+halloween/f861732f-79ed-4c0d-904d-c43b714807c8.webp"),
+        // ];
+
         let hero_panel = vec![
             String::from("https://d2npyy9ae7osp9.cloudfront.net/packs/sexy+halloween/a22ec84c-dcd7-4cbd-b872-1963aa140355.webp"),
             String::from("https://d2npyy9ae7osp9.cloudfront.net/packs/nature/f40a699f-8064-4015-80d2-ffb68228ac2e.webp"),
@@ -213,46 +286,8 @@ impl WebImages {
             String::from("https://d2npyy9ae7osp9.cloudfront.net/packs/sexy-valentine/fcf51df7-27d6-48ad-a34e-a96a78ddeb02.webp"),
             String::from("https://d2npyy9ae7osp9.cloudfront.net/packs/spiritual/3b7e781a-6b40-4ef8-8d58-b52bcabddc87.webp"),
         ];
-        let web_images0 = vec![
-            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/nature-hero.webp"),
-            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/corporate-headshot.webp"),
-            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/mma-fe.webp"),
-            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/wife1.webp"),
-            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/street-fighter.webp"),
-            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/nature3.webp"),
-        ];
-        let web_images1 = vec![
-            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/nature2.webp"),
-            String::from("https://d2npyy9ae7osp9.cloudfront.net/packs/cosplay/f193a28b-83e3-4a1c-b13e-3637acb85c84.webp"),
-            String::from("https://d2npyy9ae7osp9.cloudfront.net/packs/sexy+halloween/e5557da7-416a-466c-a5a7-bf7232232ee3.webp"),
-            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/cosplay1-small.webp"),
-            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/machina2.webp"),
-            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/cosplay2-small.webp"),
-        ];
-        let web_images2 = vec![
-            String::from("https://d2npyy9ae7osp9.cloudfront.net/packs/cosplay/a97bb59a-be4f-4b3f-92b5-e8c25a03e361.webp"),
-            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/machina1.webp"),
-            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/angel.webp"),
-            String::from("https://d2npyy9ae7osp9.cloudfront.net/packs/cosplay/f193a28b-83e3-4a1c-b13e-3637acb85c84.webp"),
-            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/emo-girl.webp"),
-            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/blackwidow.webp"),
-        ];
-        let web_images3 = vec![
-            String::from("https://d2npyy9ae7osp9.cloudfront.net/packs/sexy+halloween/a22ec84c-dcd7-4cbd-b872-1963aa140355.webp"),
-            String::from("https://d2npyy9ae7osp9.cloudfront.net/packs/cosplay/53d42133-d8be-47a8-863b-1a489b2a736e.webp"),
-            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/nature1.webp"),
-            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/dracula-wife.webp"),
-            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/cosplay3.webp"),
-            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/model-show.webp"),
-        ];
-        let web_images4 = vec![
-            String::from("https://d2npyy9ae7osp9.cloudfront.net/packs/spiritual/e1ee3b51-53a0-4254-9a09-8d734ea7195a.webp"),
-            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/easter1.webp"),
-            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/model-makeup.webp"),
-            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/white-dress.webp"),
-            String::from("https://d2npyy9ae7osp9.cloudfront.net/gallery/model-closeup.webp"),
-            String::from("https://d2npyy9ae7osp9.cloudfront.net/packs/sexy+halloween/f861732f-79ed-4c0d-904d-c43b714807c8.webp"),
-        ];
+        // let web_images0 = vec![
+
         let gallery = WebGallery::new(
             web_images0,
             web_images1,
@@ -275,28 +310,6 @@ impl WebImages {
             String::from("https://d2npyy9ae7osp9.cloudfront.net/others/dynasty2.webp"),
             String::from("https://d2npyy9ae7osp9.cloudfront.net/others/cosplay-lara.webp"),
         ];
-
-        // Loading functions concurrently.
-        let (packs_result, plans_result) = join!(
-            load_packs_translated(db, lang, cache),
-            load_pricing_translated(db, lang, cache)
-        );
-
-        let packs = match packs_result {
-            Ok(packs) => packs,
-            Err(e) => {
-                tracing::error!("Failed to load packs: {}", e);
-                PackViewList::default()
-            }
-        }
-        .into();
-        let plans = match plans_result {
-            Ok(plans) => plans,
-            Err(e) => {
-                tracing::error!("Failed to load plans: {}", e);
-                PricingViewList::default()
-            }
-        };
 
         let web_images = WebImages::new(
             hero_panel,
@@ -400,6 +413,41 @@ impl HomeReview {
 ];
         list
     }
+}
+
+/// Removes and returns a random item from the vector.
+/// Returns `None` if the vector is empty.
+// pub fn pop_random_item<T>(vec: &mut Vec<T>) -> Option<T> {
+//     if vec.is_empty() {
+//         return None;
+//     }
+//     let mut rng = rng();
+//     let idx = rng.random_range(0..vec.len());
+//     Some(vec.remove(idx))
+// }
+
+fn pop_random_item<T>(rng: &mut ThreadRng, vec: &mut Vec<T>) -> T {
+    let idx = rng.random_range(0..vec.len());
+    vec.remove(idx)
+}
+
+fn get_image_url(rng: &mut ThreadRng, packs: PackView) -> String {
+    let mut images = match packs.images {
+        Some(list) => list,
+        None => unreachable!("All Packs should have images"),
+    };
+    let image_url = pop_random_item(rng, &mut images);
+    image_url
+}
+
+fn get_web_img_urls(rng: &mut ThreadRng, packs: &mut Vec<PackView>) -> Vec<String> {
+    let mut images = Vec::new();
+    for _ in 0..=5 {
+        let pack = pop_random_item(rng, packs);
+        let image_url = get_image_url(rng, pack);
+        images.push(image_url);
+    }
+    images
 }
 
 #[derive(Serialize, Default)]

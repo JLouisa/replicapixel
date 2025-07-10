@@ -172,10 +172,21 @@ export const Status: {
 export type Status = (typeof Status)[keyof typeof Status]
 
 
+export const PlanCategory: {
+  Main: 'Main',
+  Sub: 'Sub'
+};
+
+export type PlanCategory = (typeof PlanCategory)[keyof typeof PlanCategory]
+
+
 export const PlanNames: {
   Basic: 'Basic',
+  BasicPlus: 'BasicPlus',
   Premium: 'Premium',
-  Max: 'Max'
+  PremiumPlus: 'PremiumPlus',
+  Max: 'Max',
+  MaxPlus: 'MaxPlus'
 };
 
 export type PlanNames = (typeof PlanNames)[keyof typeof PlanNames]
@@ -285,6 +296,10 @@ export const ThemePreference: typeof $Enums.ThemePreference
 export type Status = $Enums.Status
 
 export const Status: typeof $Enums.Status
+
+export type PlanCategory = $Enums.PlanCategory
+
+export const PlanCategory: typeof $Enums.PlanCategory
 
 export type PlanNames = $Enums.PlanNames
 
@@ -9318,6 +9333,7 @@ export namespace Prisma {
     name: string | null
     subtitle: string | null
     cta: string | null
+    category: $Enums.PlanCategory | null
   }
 
   export type PlansMaxAggregateOutputType = {
@@ -9334,6 +9350,7 @@ export namespace Prisma {
     name: string | null
     subtitle: string | null
     cta: string | null
+    category: $Enums.PlanCategory | null
   }
 
   export type PlansCountAggregateOutputType = {
@@ -9351,6 +9368,7 @@ export namespace Prisma {
     subtitle: number
     features: number
     cta: number
+    category: number
     _all: number
   }
 
@@ -9383,6 +9401,7 @@ export namespace Prisma {
     name?: true
     subtitle?: true
     cta?: true
+    category?: true
   }
 
   export type PlansMaxAggregateInputType = {
@@ -9399,6 +9418,7 @@ export namespace Prisma {
     name?: true
     subtitle?: true
     cta?: true
+    category?: true
   }
 
   export type PlansCountAggregateInputType = {
@@ -9416,6 +9436,7 @@ export namespace Prisma {
     subtitle?: true
     features?: true
     cta?: true
+    category?: true
     _all?: true
   }
 
@@ -9520,6 +9541,7 @@ export namespace Prisma {
     subtitle: string
     features: string[]
     cta: string
+    category: $Enums.PlanCategory
     _count: PlansCountAggregateOutputType | null
     _avg: PlansAvgAggregateOutputType | null
     _sum: PlansSumAggregateOutputType | null
@@ -9556,6 +9578,7 @@ export namespace Prisma {
     subtitle?: boolean
     features?: boolean
     cta?: boolean
+    category?: boolean
     translations?: boolean | Plans$translationsArgs<ExtArgs>
     transactions?: boolean | Plans$transactionsArgs<ExtArgs>
     _count?: boolean | PlansCountOutputTypeDefaultArgs<ExtArgs>
@@ -9576,6 +9599,7 @@ export namespace Prisma {
     subtitle?: boolean
     features?: boolean
     cta?: boolean
+    category?: boolean
   }, ExtArgs["result"]["plans"]>
 
   export type PlansSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -9593,6 +9617,7 @@ export namespace Prisma {
     subtitle?: boolean
     features?: boolean
     cta?: boolean
+    category?: boolean
   }, ExtArgs["result"]["plans"]>
 
   export type PlansSelectScalar = {
@@ -9610,9 +9635,10 @@ export namespace Prisma {
     subtitle?: boolean
     features?: boolean
     cta?: boolean
+    category?: boolean
   }
 
-  export type PlansOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pid" | "plan_name" | "credit_amount" | "model_amount" | "price_cents" | "stripe_price_id" | "is_popular" | "created_at" | "updated_at" | "name" | "subtitle" | "features" | "cta", ExtArgs["result"]["plans"]>
+  export type PlansOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pid" | "plan_name" | "credit_amount" | "model_amount" | "price_cents" | "stripe_price_id" | "is_popular" | "created_at" | "updated_at" | "name" | "subtitle" | "features" | "cta" | "category", ExtArgs["result"]["plans"]>
   export type PlansInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     translations?: boolean | Plans$translationsArgs<ExtArgs>
     transactions?: boolean | Plans$transactionsArgs<ExtArgs>
@@ -9642,6 +9668,7 @@ export namespace Prisma {
       subtitle: string
       features: string[]
       cta: string
+      category: $Enums.PlanCategory
     }, ExtArgs["result"]["plans"]>
     composites: {}
   }
@@ -10081,6 +10108,7 @@ export namespace Prisma {
     readonly subtitle: FieldRef<"Plans", 'String'>
     readonly features: FieldRef<"Plans", 'String[]'>
     readonly cta: FieldRef<"Plans", 'String'>
+    readonly category: FieldRef<"Plans", 'PlanCategory'>
   }
     
 
@@ -22944,7 +22972,8 @@ export namespace Prisma {
     name: 'name',
     subtitle: 'subtitle',
     features: 'features',
-    cta: 'cta'
+    cta: 'cta',
+    category: 'category'
   };
 
   export type PlansScalarFieldEnum = (typeof PlansScalarFieldEnum)[keyof typeof PlansScalarFieldEnum]
@@ -23360,6 +23389,20 @@ export namespace Prisma {
    * Reference to a field of type 'BigInt[]'
    */
   export type ListBigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'PlanCategory'
+   */
+  export type EnumPlanCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PlanCategory'>
+    
+
+
+  /**
+   * Reference to a field of type 'PlanCategory[]'
+   */
+  export type ListEnumPlanCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PlanCategory[]'>
     
 
 
@@ -24032,6 +24075,7 @@ export namespace Prisma {
     subtitle?: StringFilter<"Plans"> | string
     features?: StringNullableListFilter<"Plans">
     cta?: StringFilter<"Plans"> | string
+    category?: EnumPlanCategoryFilter<"Plans"> | $Enums.PlanCategory
     translations?: Plans_translationsListRelationFilter
     transactions?: TransactionsListRelationFilter
   }
@@ -24051,6 +24095,7 @@ export namespace Prisma {
     subtitle?: SortOrder
     features?: SortOrder
     cta?: SortOrder
+    category?: SortOrder
     translations?: Plans_translationsOrderByRelationAggregateInput
     transactions?: TransactionsOrderByRelationAggregateInput
   }
@@ -24073,6 +24118,7 @@ export namespace Prisma {
     subtitle?: StringFilter<"Plans"> | string
     features?: StringNullableListFilter<"Plans">
     cta?: StringFilter<"Plans"> | string
+    category?: EnumPlanCategoryFilter<"Plans"> | $Enums.PlanCategory
     translations?: Plans_translationsListRelationFilter
     transactions?: TransactionsListRelationFilter
   }, "id" | "pid" | "plan_name" | "stripe_price_id" | "name">
@@ -24092,6 +24138,7 @@ export namespace Prisma {
     subtitle?: SortOrder
     features?: SortOrder
     cta?: SortOrder
+    category?: SortOrder
     _count?: PlansCountOrderByAggregateInput
     _avg?: PlansAvgOrderByAggregateInput
     _max?: PlansMaxOrderByAggregateInput
@@ -24117,6 +24164,7 @@ export namespace Prisma {
     subtitle?: StringWithAggregatesFilter<"Plans"> | string
     features?: StringNullableListFilter<"Plans">
     cta?: StringWithAggregatesFilter<"Plans"> | string
+    category?: EnumPlanCategoryWithAggregatesFilter<"Plans"> | $Enums.PlanCategory
   }
 
   export type Plans_translationsWhereInput = {
@@ -25570,6 +25618,7 @@ export namespace Prisma {
     subtitle: string
     features?: PlansCreatefeaturesInput | string[]
     cta: string
+    category?: $Enums.PlanCategory
     translations?: Plans_translationsCreateNestedManyWithoutPlanInput
     transactions?: TransactionsCreateNestedManyWithoutPlanInput
   }
@@ -25589,6 +25638,7 @@ export namespace Prisma {
     subtitle: string
     features?: PlansCreatefeaturesInput | string[]
     cta: string
+    category?: $Enums.PlanCategory
     translations?: Plans_translationsUncheckedCreateNestedManyWithoutPlanInput
     transactions?: TransactionsUncheckedCreateNestedManyWithoutPlanInput
   }
@@ -25607,6 +25657,7 @@ export namespace Prisma {
     subtitle?: StringFieldUpdateOperationsInput | string
     features?: PlansUpdatefeaturesInput | string[]
     cta?: StringFieldUpdateOperationsInput | string
+    category?: EnumPlanCategoryFieldUpdateOperationsInput | $Enums.PlanCategory
     translations?: Plans_translationsUpdateManyWithoutPlanNestedInput
     transactions?: TransactionsUpdateManyWithoutPlanNestedInput
   }
@@ -25626,6 +25677,7 @@ export namespace Prisma {
     subtitle?: StringFieldUpdateOperationsInput | string
     features?: PlansUpdatefeaturesInput | string[]
     cta?: StringFieldUpdateOperationsInput | string
+    category?: EnumPlanCategoryFieldUpdateOperationsInput | $Enums.PlanCategory
     translations?: Plans_translationsUncheckedUpdateManyWithoutPlanNestedInput
     transactions?: TransactionsUncheckedUpdateManyWithoutPlanNestedInput
   }
@@ -25645,6 +25697,7 @@ export namespace Prisma {
     subtitle: string
     features?: PlansCreatefeaturesInput | string[]
     cta: string
+    category?: $Enums.PlanCategory
   }
 
   export type PlansUpdateManyMutationInput = {
@@ -25661,6 +25714,7 @@ export namespace Prisma {
     subtitle?: StringFieldUpdateOperationsInput | string
     features?: PlansUpdatefeaturesInput | string[]
     cta?: StringFieldUpdateOperationsInput | string
+    category?: EnumPlanCategoryFieldUpdateOperationsInput | $Enums.PlanCategory
   }
 
   export type PlansUncheckedUpdateManyInput = {
@@ -25678,6 +25732,7 @@ export namespace Prisma {
     subtitle?: StringFieldUpdateOperationsInput | string
     features?: PlansUpdatefeaturesInput | string[]
     cta?: StringFieldUpdateOperationsInput | string
+    category?: EnumPlanCategoryFieldUpdateOperationsInput | $Enums.PlanCategory
   }
 
   export type Plans_translationsCreateInput = {
@@ -27361,6 +27416,13 @@ export namespace Prisma {
     isEmpty?: boolean
   }
 
+  export type EnumPlanCategoryFilter<$PrismaModel = never> = {
+    equals?: $Enums.PlanCategory | EnumPlanCategoryFieldRefInput<$PrismaModel>
+    in?: $Enums.PlanCategory[] | ListEnumPlanCategoryFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PlanCategory[] | ListEnumPlanCategoryFieldRefInput<$PrismaModel>
+    not?: NestedEnumPlanCategoryFilter<$PrismaModel> | $Enums.PlanCategory
+  }
+
   export type Plans_translationsListRelationFilter = {
     every?: Plans_translationsWhereInput
     some?: Plans_translationsWhereInput
@@ -27386,6 +27448,7 @@ export namespace Prisma {
     subtitle?: SortOrder
     features?: SortOrder
     cta?: SortOrder
+    category?: SortOrder
   }
 
   export type PlansAvgOrderByAggregateInput = {
@@ -27409,6 +27472,7 @@ export namespace Prisma {
     name?: SortOrder
     subtitle?: SortOrder
     cta?: SortOrder
+    category?: SortOrder
   }
 
   export type PlansMinOrderByAggregateInput = {
@@ -27425,6 +27489,7 @@ export namespace Prisma {
     name?: SortOrder
     subtitle?: SortOrder
     cta?: SortOrder
+    category?: SortOrder
   }
 
   export type PlansSumOrderByAggregateInput = {
@@ -27458,6 +27523,16 @@ export namespace Prisma {
     _sum?: NestedBigIntFilter<$PrismaModel>
     _min?: NestedBigIntFilter<$PrismaModel>
     _max?: NestedBigIntFilter<$PrismaModel>
+  }
+
+  export type EnumPlanCategoryWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PlanCategory | EnumPlanCategoryFieldRefInput<$PrismaModel>
+    in?: $Enums.PlanCategory[] | ListEnumPlanCategoryFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PlanCategory[] | ListEnumPlanCategoryFieldRefInput<$PrismaModel>
+    not?: NestedEnumPlanCategoryWithAggregatesFilter<$PrismaModel> | $Enums.PlanCategory
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPlanCategoryFilter<$PrismaModel>
+    _max?: NestedEnumPlanCategoryFilter<$PrismaModel>
   }
 
   export type EnumLanguageFilter<$PrismaModel = never> = {
@@ -28638,6 +28713,10 @@ export namespace Prisma {
     push?: string | string[]
   }
 
+  export type EnumPlanCategoryFieldUpdateOperationsInput = {
+    set?: $Enums.PlanCategory
+  }
+
   export type Plans_translationsUpdateManyWithoutPlanNestedInput = {
     create?: XOR<Plans_translationsCreateWithoutPlanInput, Plans_translationsUncheckedCreateWithoutPlanInput> | Plans_translationsCreateWithoutPlanInput[] | Plans_translationsUncheckedCreateWithoutPlanInput[]
     connectOrCreate?: Plans_translationsCreateOrConnectWithoutPlanInput | Plans_translationsCreateOrConnectWithoutPlanInput[]
@@ -29418,6 +29497,13 @@ export namespace Prisma {
     not?: NestedBigIntFilter<$PrismaModel> | bigint | number
   }
 
+  export type NestedEnumPlanCategoryFilter<$PrismaModel = never> = {
+    equals?: $Enums.PlanCategory | EnumPlanCategoryFieldRefInput<$PrismaModel>
+    in?: $Enums.PlanCategory[] | ListEnumPlanCategoryFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PlanCategory[] | ListEnumPlanCategoryFieldRefInput<$PrismaModel>
+    not?: NestedEnumPlanCategoryFilter<$PrismaModel> | $Enums.PlanCategory
+  }
+
   export type NestedEnumPlanNamesWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.PlanNames | EnumPlanNamesFieldRefInput<$PrismaModel>
     in?: $Enums.PlanNames[] | ListEnumPlanNamesFieldRefInput<$PrismaModel>
@@ -29442,6 +29528,16 @@ export namespace Prisma {
     _sum?: NestedBigIntFilter<$PrismaModel>
     _min?: NestedBigIntFilter<$PrismaModel>
     _max?: NestedBigIntFilter<$PrismaModel>
+  }
+
+  export type NestedEnumPlanCategoryWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PlanCategory | EnumPlanCategoryFieldRefInput<$PrismaModel>
+    in?: $Enums.PlanCategory[] | ListEnumPlanCategoryFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PlanCategory[] | ListEnumPlanCategoryFieldRefInput<$PrismaModel>
+    not?: NestedEnumPlanCategoryWithAggregatesFilter<$PrismaModel> | $Enums.PlanCategory
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPlanCategoryFilter<$PrismaModel>
+    _max?: NestedEnumPlanCategoryFilter<$PrismaModel>
   }
 
   export type NestedEnumLanguageFilter<$PrismaModel = never> = {
@@ -31066,6 +31162,7 @@ export namespace Prisma {
     subtitle: string
     features?: PlansCreatefeaturesInput | string[]
     cta: string
+    category?: $Enums.PlanCategory
     transactions?: TransactionsCreateNestedManyWithoutPlanInput
   }
 
@@ -31084,6 +31181,7 @@ export namespace Prisma {
     subtitle: string
     features?: PlansCreatefeaturesInput | string[]
     cta: string
+    category?: $Enums.PlanCategory
     transactions?: TransactionsUncheckedCreateNestedManyWithoutPlanInput
   }
 
@@ -31117,6 +31215,7 @@ export namespace Prisma {
     subtitle?: StringFieldUpdateOperationsInput | string
     features?: PlansUpdatefeaturesInput | string[]
     cta?: StringFieldUpdateOperationsInput | string
+    category?: EnumPlanCategoryFieldUpdateOperationsInput | $Enums.PlanCategory
     transactions?: TransactionsUpdateManyWithoutPlanNestedInput
   }
 
@@ -31135,6 +31234,7 @@ export namespace Prisma {
     subtitle?: StringFieldUpdateOperationsInput | string
     features?: PlansUpdatefeaturesInput | string[]
     cta?: StringFieldUpdateOperationsInput | string
+    category?: EnumPlanCategoryFieldUpdateOperationsInput | $Enums.PlanCategory
     transactions?: TransactionsUncheckedUpdateManyWithoutPlanNestedInput
   }
 
@@ -31389,6 +31489,7 @@ export namespace Prisma {
     subtitle: string
     features?: PlansCreatefeaturesInput | string[]
     cta: string
+    category?: $Enums.PlanCategory
     translations?: Plans_translationsCreateNestedManyWithoutPlanInput
   }
 
@@ -31407,6 +31508,7 @@ export namespace Prisma {
     subtitle: string
     features?: PlansCreatefeaturesInput | string[]
     cta: string
+    category?: $Enums.PlanCategory
     translations?: Plans_translationsUncheckedCreateNestedManyWithoutPlanInput
   }
 
@@ -31500,6 +31602,7 @@ export namespace Prisma {
     subtitle?: StringFieldUpdateOperationsInput | string
     features?: PlansUpdatefeaturesInput | string[]
     cta?: StringFieldUpdateOperationsInput | string
+    category?: EnumPlanCategoryFieldUpdateOperationsInput | $Enums.PlanCategory
     translations?: Plans_translationsUpdateManyWithoutPlanNestedInput
   }
 
@@ -31518,6 +31621,7 @@ export namespace Prisma {
     subtitle?: StringFieldUpdateOperationsInput | string
     features?: PlansUpdatefeaturesInput | string[]
     cta?: StringFieldUpdateOperationsInput | string
+    category?: EnumPlanCategoryFieldUpdateOperationsInput | $Enums.PlanCategory
     translations?: Plans_translationsUncheckedUpdateManyWithoutPlanNestedInput
   }
 

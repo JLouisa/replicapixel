@@ -15,8 +15,8 @@ generator client {
 datasource db {
   provider = "postgresql"
   // url      = env("DATABASE_URL_LOCAL")
-  // url      = env("DATABASE_URL")
-  url      = env("DATABASE_URL_PROD")
+  url      = env("DATABASE_URL")
+  // url      = env("DATABASE_URL_PROD")
 }
 
 model Users {
@@ -166,6 +166,7 @@ model Plans {
   subtitle                        String                @db.VarChar(255)
   features                        String[]              @db.Text @default([])
   cta                             String                @db.VarChar(255)
+  category                        PlanCategory          @default(Sub)
 
   translations                    Plans_translations[]  @relation("PlanToTranslations")
   transactions                    Transactions[]        @relation("PlanToTransactions")
@@ -403,10 +404,20 @@ enum Status {
     @@map("status")
 }
 
+enum PlanCategory {
+    Main
+    Sub
+
+    @@map("plan_category")
+}
+
 enum PlanNames {
     Basic
+    BasicPlus
     Premium
+    PremiumPlus
     Max
+    MaxPlus
 
     @@map("plan_names")
 }

@@ -109,26 +109,7 @@ website.website_routes.payment.payment_prepare_route %}
           <div id="pricing-{{pricing.plan_name}}-btn" class="w-full flex flex-col items-start">
             {% include "home/sections/partials/pricing_auth_modal.html" %}
           </div>
-          {#
-          <div id="pricing-{{pricing.plan_name}}-btn" class="w-full flex flex-col items-start">
-            <a
-              href="{{ login_link | safe }}"
-              hx-get="{{ login_link | safe }}"
-              hx-swap="innerHTML"
-              hx-push-url="{{ login_link | safe }}"
-              hx-target="#app"
-              class="w-full"
-            >
-              <div
-                class="w-full {% if pricing.is_popular %}bg-grn-to{% else %}bg-grn-from{% endif %} rounded-xl px-8 py-4 flex items-center justify-center gap-3 shadow-sm hover:shadow-md transition-shadow"
-              >
-                <span class="text-white text-center font-inter text-base font-medium leading-none">
-                  {{pricing.cta}}
-                </span>
-              </div>
-            </a>
-          </div>
-          #} {% endif %}
+          {% endif %}
         </div>
       </div>
       {% endfor %}
