@@ -16,7 +16,8 @@ use super::{
     _entities::sea_orm_active_enums::{Language, ThemePreference},
 };
 use crate::{
-    models::_entities::sea_orm_active_enums::Account, service::stripe::stripe::StripeClient,
+    models::_entities::sea_orm_active_enums::{Account, PlanNames},
+    service::stripe::stripe::StripeClient,
 };
 use loco_oauth2::models::users::OAuth2UserTrait;
 
@@ -54,12 +55,12 @@ pub struct RegisterParams {
     pub marketing: bool,
     #[serde(default)]
     pub language: Language,
-    #[serde(skip_deserializing, default)]
+    #[serde(default)]
     pub theme_preference: ThemePreference,
     #[serde(skip_deserializing, default)]
     pub picture: Option<String>,
     #[serde(default)]
-    pub plan_id: Option<Uuid>,
+    pub plan_name: Option<PlanNames>,
 }
 impl RegisterParams {
     pub fn validate_email(&self) -> Vec<String> {

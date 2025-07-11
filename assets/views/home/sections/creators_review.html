@@ -1,7 +1,7 @@
 {% set home_reviews = website.website_home.reviews %}
 
-<div class="flex flex-col items-center gap-4 max-w-7xl my-28 mb-16 mx-auto p-2 md:p-0">
-  <div class="text-w flex items-center justify-center gap-4 font-sans">
+<div class="flex flex-col items-center gap-4 max-w-7xl my-28 mb-16 mx-auto p-2 md:p-0 text-w">
+  <div class="flex items-center justify-center gap-4 font-sans">
     {% include "partials/svg/triple_stars.html" %} {{ t(key="testimonials-badge", lang=lang) }}
   </div>
   <div class="flex flex-col items-center gap-4 w-full relative">
@@ -17,12 +17,10 @@
         filter: blur(300px);
       "
     ></div>
-    <div class="text-w text-5xl font-medium text-center font-brico w-full">
+    <div class="text-5xl font-medium text-center font-brico w-full">
       {{ t(key="testimonials-title", lang=lang) }}
     </div>
-    <div class="text-w text-lg text-center font-sans">
-      {{ t(key="testimonials-tagline", lang=lang) }}
-    </div>
+    <div class="text-lg text-center font-sans">{{ t(key="testimonials-tagline", lang=lang) }}</div>
   </div>
 
   <div class="w-full">
@@ -39,7 +37,7 @@
             </div>
 
             <div class="flex flex-col gap-8 items-start w-full">
-              <p class="text-background-disabled-0 text-left font-medium text-base leading-relaxed">
+              <p class="text-background-disabled-0 text-left font-medium leading-relaxed">
                 {{review.text}}
               </p>
 
@@ -52,7 +50,7 @@
                   </div>
                 </div>
                 <div class="flex flex-col gap-1">
-                  <div class="text-w font-medium text-xl text-left">{{review.name}}</div>
+                  <div class="font-medium text-xl text-left">{{review.name}}</div>
                   <div class="text-gray-black-50 text-left text-lg font-medium">
                     {{review.job_title}}
                   </div>
@@ -78,14 +76,14 @@
             </div>
 
             <div class="flex flex-col gap-8 items-start w-full">
-              <p class="text-background-disabled-0 text-left font-medium text-base leading-relaxed">
+              <p class="text-background-disabled-0 text-left font-medium leading-relaxed">
                 {{review.text}}
               </p>
 
               <div class="w-full flex flex-row items-center gap-3">
                 <div class="avatar">
                   <div
-                    class="w-16 rounded-full ring-2 ring-primary ring-offset-2 ring-offset-base-100"
+                    class="w-16 rounded-full ring-2 ring-primary ring-offset-2 ring-offset-primary-100"
                   >
                     <img
                       src="https://img.daisyui.com/images/profile/demo/spiderperson@192.webp"
@@ -95,8 +93,8 @@
                   </div>
                 </div>
                 <div class="flex flex-col gap-1">
-                  <div class="text-w font-medium text-xl">{{review.name}}</div>
-                  <div class="text-gray-black-50 text-base font-normal">{{review.job_title}}</div>
+                  <div class="font-medium text-xl">{{review.name}}</div>
+                  <div class="text-gray-black-50 font-normal">{{review.job_title}}</div>
                 </div>
               </div>
 

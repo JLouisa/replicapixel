@@ -2,7 +2,7 @@
 set lang = options.language %} {% set error_msg = options.auth_error %} {% set login_partial_link =
 options.website.website_routes.auth_routes.login_partial %}
 
-<div id="register-modal-{{pricing.plan_name}}-box" class="modal-box max-w-md">
+<div id="register-modal-{{pricing.plan_name}}-box" class="modal-box max-w-md bg-dark-base">
   <!-- Close Button -->
   <form method="dialog">
     <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
@@ -36,7 +36,7 @@ options.website.website_routes.auth_routes.login_partial %}
   <!-- Form -->
   <form
     id="signup-form-{{pricing.plan_name}}"
-    class="space-y-4 mt-6"
+    class="space-y-4 mt-6 bg-dark-base"
     hx-post="{{ payment_auth_link  | safe }}"
     hx-ext="form-json"
     hx-target="#register-modal-{{pricing.plan_name}}-box"
@@ -44,29 +44,29 @@ options.website.website_routes.auth_routes.login_partial %}
     hx-disabled-elt="#create-account-btn-{{pricing.plan_name}}"
   >
     <!-- Full Name -->
-    <label class="input input-bordered flex items-center gap-2">
+    <label class="input input-bordered flex items-center gap-2 bg-w">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 16 16"
         fill="currentColor"
-        class="w-4 h-4 opacity-70"
+        class="w-4 h-4 opacity-70 text-black"
       >
         <path
           d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z"
         />
       </svg>
-      <input type="text" class="grow" placeholder="Full Name" name="name" value="{{
+      <input type="text" class="grow text-black" placeholder="Full Name" name="name" value="{{
       options.register.name | default (value="")}}" required />
     </label>
     <p class="text-red-600 mt-2">{{ error_msg.register_name | default (value="")}}</p>
 
     <!-- Email -->
-    <label class="input input-bordered flex items-center gap-2">
+    <label class="input input-bordered flex items-center gap-2 bg-w">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 16 16"
         fill="currentColor"
-        class="w-4 h-4 opacity-70"
+        class="w-4 h-4 opacity-70 text-black"
       >
         <path
           d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z"
@@ -75,35 +75,18 @@ options.website.website_routes.auth_routes.login_partial %}
           d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z"
         />
       </svg>
-      <input type="email" class="grow" placeholder="Email" name="email" value="{{
+      <input type="email" class="grow text-black " placeholder="Email" name="email" value="{{
       options.register.email | default (value="")}}" required />
     </label>
     <p class="text-red-600 mt-2">{{ error_msg.register_email | default (value="")}}</p>
 
     <!-- Password -->
-    <label class="input input-bordered flex items-center gap-2">
+    <label class="input input-bordered flex items-center gap-2 bg-w">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 16 16"
         fill="currentColor"
-        class="w-4 h-4 opacity-70"
-      >
-        <path
-          fill-rule="evenodd"
-          d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
-          clip-rule="evenodd"
-        />
-      </svg>
-      <input type="password" class="grow" placeholder="Password" name="password" required />
-    </label>
-
-    <!-- Confirm Password -->
-    <label class="input input-bordered flex items-center gap-2">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 16 16"
-        fill="currentColor"
-        class="w-4 h-4 opacity-70"
+        class="w-4 h-4 opacity-70 text-black"
       >
         <path
           fill-rule="evenodd"
@@ -113,7 +96,30 @@ options.website.website_routes.auth_routes.login_partial %}
       </svg>
       <input
         type="password"
-        class="grow"
+        class="grow text-black"
+        placeholder="Password"
+        name="password"
+        required
+      />
+    </label>
+
+    <!-- Confirm Password -->
+    <label class="input input-bordered flex items-center gap-2 bg-w">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 16 16"
+        fill="currentColor"
+        class="w-4 h-4 opacity-70 text-black"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
+          clip-rule="evenodd"
+        />
+      </svg>
+      <input
+        type="password"
+        class="grow text-black"
         placeholder="Confirm Password"
         name="confirm_password"
         required
@@ -150,9 +156,22 @@ options.website.website_routes.auth_routes.login_partial %}
       <span class="text-sm">{{ t(key="auth-register-checkbox-offers", lang=lang) }}</span>
     </label>
 
-    <input type="hidden" name="theme_preference" i />
-    <input type="hidden" value="en-US" name="language" />
-    <input type="text" class="hidden" name="plan_id" value="{{pricing.pid}}" required />
+    <!-- Theme preference -->
+    <div x-data="{ theme: localStorage.getItem('theme') || 'dark' }">
+      <input type="hidden" name="theme_preference" :value="theme" />
+    </div>
+    <!-- Language -->
+    <input type="hidden" name="language" value="{{ lang | default(value='en-US') }}" />
+    <!-- Plan name -->
+    <input
+      type="hidden"
+      name="plan_name"
+      {#
+      value="{{ pricing.plan_name }}"
+      #}
+      :value="'{{ pricing.plan_name }}' + (isPlus ? 'plus' : '')"
+      required
+    />
 
     <div class="mt-4 flex items-center justify-between">
       <p class="mt-4 text-sm">

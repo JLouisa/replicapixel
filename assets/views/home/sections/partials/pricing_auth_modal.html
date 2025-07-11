@@ -3,13 +3,11 @@
   class="w-full {% if pricing.is_popular %}bg-grn-to{% else %}bg-grn-from{% endif %} rounded-xl px-8 py-4 flex items-center justify-center gap-3 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
   onclick="document.getElementById('register-modal-{{pricing.plan_name}}').showModal()"
 >
-  <span class="text-white text-center font-inter text-base font-medium leading-none">
-    {{pricing.cta}}
-  </span>
+  <span class="text-white text-center font-inter font-medium leading-none"> {{pricing.cta}} </span>
 </div>
 
 <!-- Modal Dialog -->
-<dialog id="register-modal-{{pricing.plan_name}}" class="modal">
+<dialog id="register-modal-{{pricing.plan_name}}" class="modal bg-dark-base">
   {% include "home/sections/partials/pricing_auth_signup_partial.html" %}
   <!-- Closes the modal when clicking on the backdrop -->
   <form method="dialog" class="modal-backdrop">

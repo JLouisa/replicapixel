@@ -1,8 +1,22 @@
-<label class="swap swap-rotate">
-  <label for="theme-controller-in"></label>
-  <input id="theme-controller-in" type="checkbox" class="theme-controller" value="dark" />
-  <!-- sun icon -->
-  {% include "partials/svg/sun.html" %}
-  <!-- moon icon -->
-  {% include "partials/svg/moon.html" %}
-</label>
+<div
+  x-data="{ theme: localStorage.getItem('theme') || 'dark' }"
+  x-init="
+    document.documentElement.setAttribute('data-theme', theme);
+    $watch('theme', (val) => {
+      localStorage.setItem('theme', val);
+      document.documentElement.setAttribute('data-theme', val);
+    })
+  "
+>
+  <label class="swap swap-rotate">
+    <input
+      type="checkbox"
+      @click="theme = (theme === 'light' ? 'dark' : 'light')"
+      :checked="theme === 'light'"
+    />
+    <!-- sun icon -->
+    {% include "partials/svg/sun.html" %}
+    <!-- moon icon -->
+    {% include "partials/svg/moon.html" %}
+  </label>
+</div>

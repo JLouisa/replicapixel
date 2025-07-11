@@ -40,11 +40,6 @@
     {% block js %} {% endblock js %}
     <script>
       console.log("Prod: {{ options.is_production }}");
-      // Apply theme on page load
-      const userTheme = localStorage.getItem("theme");
-      if (userTheme) {
-        document.documentElement.setAttribute("data-theme", userTheme);
-      }
 
       window.__APP_ENV__ = {
         hostname: location.hostname,
@@ -52,29 +47,9 @@
         isLocal: location.hostname === "localhost" || location.hostname === "127.0.0.1",
       };
 
-      // Theme toggle logic
-      const themeToggle = document.querySelector(".theme-controller");
-
-      if (themeToggle) {
-        const currentTheme =
-          localStorage.getItem("theme") || document.documentElement.getAttribute("data-theme");
-        themeToggle.checked = currentTheme === "dark";
-        document.documentElement.setAttribute("data-theme", currentTheme); // Ensure it's applied
-
-        themeToggle.addEventListener("change", function () {
-          const newTheme = this.checked ? "dark" : "light";
-          document.documentElement.setAttribute("data-theme", newTheme);
-          localStorage.setItem("theme", newTheme);
-        });
-      }
+      // Apply theme on page load
+      document.documentElement.setAttribute("data-theme", localStorage.getItem("theme") || "dark");
     </script>
-    {#
-    <style>
-      body {
-        font-family: "Inter", sans-serif;
-      }
-    </style>
-    #}
   </head>
   <body>
     <!-- App -->
@@ -82,7 +57,6 @@
       {% block home %} {% block navbar %} {% endblock navbar %} {% block content %}{% endblock
       content %} {% endblock home %}
     </div>
-
     <!-- Toast Notifications -->
     <div
       x-data

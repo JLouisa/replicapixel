@@ -80,6 +80,8 @@
   --color-grn-from: #605DFF;
   --color-grn-to: #F43098;
 
+  --color-dark-base: #1D232A;
+
   --brand-gradient: linear-gradient(90deg, rgba(96, 93, 255, 1) 0%, rgba(244, 48, 152, 1) 100%);
   }
 

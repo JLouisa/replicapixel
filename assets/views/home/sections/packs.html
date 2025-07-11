@@ -1,7 +1,7 @@
 <!-- prettier-ignore -->
 {% set packs_all_link = options.website.website_routes.packs_routes.api_packs_all %}
 
-<section id="home-packs" class="flex flex-col gap-8 my-28 mx-auto max-w-7xl z-8">
+<section id="home-packs" class="flex flex-col gap-8 my-28 mx-auto max-w-7xl z-8 text-w">
   <style>
     :target {
       scroll-margin-top: 20vh;
@@ -11,15 +11,15 @@
   <div class="flex flex-col gap-4 items-center justify-center">
     <div class="p-2 flex flex-row gap-2 items-center justify-center">
       {% include "partials/svg/triple_stars.html" %}
-      <div class="text-w text-center text-sm flex items-center justify-center">
+      <div class="text-center text-sm flex items-center justify-center">
         {{ t(key="packs-section-badge", lang=lang) }}
       </div>
     </div>
     <div class="flex flex-col gap-4 items-center justify-center">
-      <div class="text-w text-center font-bricon text-5xl font-medium">
+      <div class="text-center font-bricon text-5xl font-medium">
         {{ t(key="packs-section-title", lang=lang) }}
       </div>
-      <div class="text-w text-center text-lg">
+      <div class="text-center text-lg">
         {{ t(key="packs-section-tagline-prefix", lang=lang) }}
         <br class="sm:hidden" />
         {{website_name}} {{ t(key="packs-section-tagline-suffix", lang=lang) }}

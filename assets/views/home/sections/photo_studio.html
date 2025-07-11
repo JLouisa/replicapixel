@@ -1,18 +1,18 @@
 {% set web_studio_link = options.web_images.studio %}
 
-<section class="flex flex-col gap-8 my-28 max-w-7xl mx-auto z-8">
+<section class="flex flex-col gap-8 my-28 max-w-7xl mx-auto z-8 text-w">
   <div class="flex flex-col gap-4 items-center justify-center">
     <div class="p-2 flex flex-row gap-2 items-center justify-center">
       {% include "partials/svg/triple_stars.html" %}
-      <div class="text-w text-center text-sm flex items-center justify-center">
+      <div class="text-center text-sm flex items-center justify-center">
         {{ t(key="feature-studio-badge", lang=lang) }}
       </div>
     </div>
     <div class="flex flex-col gap-4 items-center justify-center">
-      <div class="text-w text-center font-bricon text-5xl font-medium">
+      <div class="text-center font-bricon text-5xl font-medium">
         {{ t(key="feature-studio-title", lang=lang) }}
       </div>
-      <div class="text-w text-center text-lg">
+      <div class="text-center text-lg">
         {{ t(key="feature-studio-tagline-1", lang=lang) }}
         <br class="sm:hidden" />
         {{ t(key="feature-studio-tagline-2", lang=lang) }}
@@ -35,7 +35,7 @@
         >
       </div>
       <div
-        class="relative rounded-b-2xl z-12 bg-base-300 border-solid border-white/13 border flex flex-col items-start justify-center flex-1 w-full"
+        class="relative rounded-b-2xl z-12 bg-dark-base border-solid border-white/13 border flex flex-col items-start justify-center flex-1 w-full"
       >
         <img
           src="{{web_studio_link | safe}}"

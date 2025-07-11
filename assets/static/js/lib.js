@@ -200,3 +200,14 @@ async function fetchAndOpenReceipt(link, orderPid) {
     }
   }
 }
+
+function handleThemeToggle(checkbox) {
+  // Determine the new theme based on whether the checkbox is checked
+  const newTheme = checkbox.checked ? "light" : "dark";
+
+  // Apply the new theme to the <html> element
+  document.documentElement.setAttribute("data-theme", newTheme);
+
+  // Save the user's choice to localStorage
+  localStorage.setItem("theme", newTheme);
+}

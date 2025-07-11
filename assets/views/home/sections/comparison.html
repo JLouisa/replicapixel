@@ -1,16 +1,16 @@
-<section id="features" class="flex flex-col gap-8 my-28 max-w-7xl mx-auto z-8">
+<section id="features" class="flex flex-col gap-8 my-28 max-w-7xl mx-auto z-8 text-w">
   <div class="flex flex-col gap-4 items-center justify-center">
     <div class="p-2 flex flex-row gap-2 items-center justify-center">
       {% include "partials/svg/triple_stars.html" %}
-      <div class="text-w text-center text-sm flex items-center justify-center">
+      <div class="text-center text-sm flex items-center justify-center">
         {{ t(key="features-ai-comparison-badge", lang=lang) }}
       </div>
     </div>
     <div class="flex flex-col gap-4 items-center justify-center">
-      <div class="text-w text-center font-bricon text-5xl font-medium">
+      <div class="text-center font-bricon text-5xl font-medium">
         Why {{website_name}} Outperforms
       </div>
-      <div class="text-w text-center text-lg">
+      <div class="text-center text-lg">
         {{ t(key="features-subtitle-line-1", lang=lang) }}
         <br class="sm:hidden" />
         {{ t(key="features-subtitle-line-2", lang=lang) }}
@@ -87,7 +87,7 @@
         </div>
       </div>
     </div>
-    <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100 w-full">
+    <div class="overflow-x-auto rounded-box border border-base-content/5 bg-dark-base w-full">
       <table class="table w-full">
         <!-- head -->
         <thead class="bg-white/5">
@@ -107,95 +107,77 @@
         <tbody>
           <tr>
             <td class="p-6 text-lg">{{ t(key="features-table-use-case-label", lang=lang) }}</td>
-            <td class="p-6 text-lg text-w">
-              {{ t(key="features-table-use-case-dalle", lang=lang) }}
-            </td>
+            <td class="p-6 text-lg">{{ t(key="features-table-use-case-dalle", lang=lang) }}</td>
             <td class="text-success p-6 text-lg">
               {{ t(key="features-table-use-case-own", lang=lang) }}
             </td>
-            <td class="p-6 text-lg text-w">
+            <td class="p-6 text-lg">
               {{ t(key="features-table-use-case-midjourney", lang=lang) }}
             </td>
           </tr>
           <tr>
             <td class="p-6 text-lg">{{ t(key="features-table-consistency-label", lang=lang) }}</td>
-            <td class="p-6 text-lg text-w">
-              {{ t(key="features-table-consistency-dalle", lang=lang) }}
-            </td>
+            <td class="p-6 text-lg">{{ t(key="features-table-consistency-dalle", lang=lang) }}</td>
             <td class="text-success p-6 text-lg">
               {{ t(key="features-table-consistency-own", lang=lang) }}
             </td>
-            <td class="p-6 text-lg text-w">
+            <td class="p-6 text-lg">
               {{ t(key="features-table-consistency-midjourney", lang=lang) }}
             </td>
           </tr>
           <tr>
             <td class="p-6 text-lg">{{ t(key="features-table-photorealism-label", lang=lang) }}</td>
-            <td class="p-6 text-lg text-w">
-              {{ t(key="features-table-photorealism-dalle", lang=lang) }}
-            </td>
+            <td class="p-6 text-lg">{{ t(key="features-table-photorealism-dalle", lang=lang) }}</td>
             <td class="text-success p-6 text-lg">
               {{ t(key="features-table-photorealism-own", lang=lang) }}
             </td>
-            <td class="p-6 text-lg text-w">
+            <td class="p-6 text-lg">
               {{ t(key="features-table-photorealism-midjourney", lang=lang) }}
             </td>
           </tr>
           <tr>
             <td class="p-6 text-lg">{{ t(key="features-table-likeness-label", lang=lang) }}</td>
-            <td class="p-6 text-lg text-w">
-              {{ t(key="features-table-likeness-dalle", lang=lang) }}
-            </td>
+            <td class="p-6 text-lg">{{ t(key="features-table-likeness-dalle", lang=lang) }}</td>
             <td class="text-success p-6 text-lg">
               {{ t(key="features-table-likeness-own", lang=lang) }}
             </td>
-            <td class="p-6 text-lg text-w">
+            <td class="p-6 text-lg">
               {{ t(key="features-table-likeness-midjourney", lang=lang) }}
             </td>
           </tr>
           <tr>
             <td class="p-6 text-lg">{{ t(key="features-table-clarity-label", lang=lang) }}</td>
-            <td class="p-6 text-lg text-w">
-              {{ t(key="features-table-clarity-dalle", lang=lang) }}
-            </td>
+            <td class="p-6 text-lg">{{ t(key="features-table-clarity-dalle", lang=lang) }}</td>
             <td class="text-success p-6 text-lg">
               {{ t(key="features-table-clarity-own", lang=lang) }}
             </td>
-            <td class="p-6 text-lg text-w">
-              {{ t(key="features-table-clarity-midjourney", lang=lang) }}
-            </td>
+            <td class="p-6 text-lg">{{ t(key="features-table-clarity-midjourney", lang=lang) }}</td>
           </tr>
           <tr>
             <td class="p-6 text-lg">{{ t(key="features-table-training-label", lang=lang) }}</td>
-            <td class="p-6 text-lg text-w">
-              {{ t(key="features-table-training-dalle", lang=lang) }}
-            </td>
+            <td class="p-6 text-lg">{{ t(key="features-table-training-dalle", lang=lang) }}</td>
             <td class="text-success p-6 text-lg">
               {{ t(key="features-table-training-own", lang=lang) }}
             </td>
-            <td class="p-6 text-lg text-w">
+            <td class="p-6 text-lg">
               {{ t(key="features-table-training-midjourney", lang=lang) }}
             </td>
           </tr>
           <tr>
             <td class="p-6 text-lg">{{ t(key="features-table-ease-label", lang=lang) }}</td>
-            <td class="p-6 text-lg text-w">{{ t(key="features-table-ease-dalle", lang=lang) }}</td>
+            <td class="p-6 text-lg">{{ t(key="features-table-ease-dalle", lang=lang) }}</td>
             <td class="text-success p-6 text-lg">
               {{ t(key="features-table-ease-own", lang=lang) }}
             </td>
-            <td class="p-6 text-lg text-w">
-              {{ t(key="features-table-ease-midjourney", lang=lang) }}
-            </td>
+            <td class="p-6 text-lg">{{ t(key="features-table-ease-midjourney", lang=lang) }}</td>
           </tr>
           <tr>
             <td class="p-6 text-lg">{{ t(key="features-table-video-label", lang=lang) }}</td>
-            <td class="p-6 text-lg text-w">{{ t(key="features-table-video-dalle", lang=lang) }}</td>
+            <td class="p-6 text-lg">{{ t(key="features-table-video-dalle", lang=lang) }}</td>
             <td class="text-success p-6 text-lg">
               {{ t(key="features-table-video-own", lang=lang) }}
             </td>
-            <td class="p-6 text-lg text-w">
-              {{ t(key="features-table-video-midjourney", lang=lang) }}
-            </td>
+            <td class="p-6 text-lg">{{ t(key="features-table-video-midjourney", lang=lang) }}</td>
           </tr>
         </tbody>
       </table>

@@ -12,7 +12,7 @@ use crate::{
     middleware::{cookie::ExtractConsentState, i18nv2::LangEngine},
     models::{
         _entities::{
-            sea_orm_active_enums::{Account, Language},
+            sea_orm_active_enums::{Account, Language, PlanNames},
             users,
         },
         join::user_credits_models::{load_user_and_settings, load_user_credit_training},
@@ -265,10 +265,14 @@ async fn load_plan(db: &impl ConnectionTrait, name: &String) -> Result<PlanModel
     let item = PlanModel::find_by_name_string(db, &name).await?;
     Ok(item)
 }
-async fn load_plan_pid(db: &DatabaseConnection, pid: &Uuid) -> Result<PlanModel> {
-    let item = PlanModel::find_by_pid(db, &pid).await?;
+async fn load_plan_by_plan_name(db: &DatabaseConnection, name: &PlanNames) -> Result<PlanModel> {
+    let item = PlanModel::find_by_name(db, &name).await?;
     Ok(item)
 }
+// async fn load_plan_pid(db: &DatabaseConnection, pid: &Uuid) -> Result<PlanModel> {
+//     let item = PlanModel::find_by_pid(db, &pid).await?;
+//     Ok(item)
+// }
 async fn load_transaction(db: &impl ConnectionTrait, name: &Uuid) -> Result<TransactionModel> {
     let item = TransactionModel::find_by_pid(name, db).await?;
     Ok(item)
@@ -431,8 +435,8 @@ pub async fn auth_stripe_register_handler(
     LangEngine(lang): LangEngine,
     Json(params): Json<RegisterParams>,
 ) -> Result<impl IntoResponse> {
-    let plan: PricingView = match params.plan_id {
-        Some(pid) => load_plan_pid(&ctx.db, &pid).await?.into(),
+    let plan: PricingView = match params.plan_name.clone() {
+        Some(name) => load_plan_by_plan_name(&ctx.db, &name).await?.into(),
         None => {
             return Ok((StatusCode::BAD_REQUEST).into_response());
         }
