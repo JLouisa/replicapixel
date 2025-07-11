@@ -28,7 +28,8 @@ options.website.website_routes.auth_routes.login_partial %}
         ></path>
       </svg>
       <span class="text-sm font-medium"
-        >Selected: {{pricing.plan_name | capitalize}} Plan (${{pricing.price}})</span
+        >Selected: {{pricing.plan_name | capitalize}}<span x-show="isPlus"> Plus</span> Plan
+        (${{pricing.price}})</span
       >
     </div>
   </div>
