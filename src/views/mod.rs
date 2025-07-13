@@ -11,3 +11,4 @@ pub mod policy;
 pub mod settings;
 pub mod starter;
 pub mod training_models;
+pub mod videos;

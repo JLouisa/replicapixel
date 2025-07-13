@@ -14,9 +14,11 @@ use thiserror::Error;
 use uuid::Uuid;
 
 use crate::domain::url::Url;
+use crate::models::VideoModel;
 use crate::models::_entities::sea_orm_active_enums::ImageFormat;
 use crate::models::training_models::TrainingForm;
 use crate::views::images::ImageView;
+use crate::views::videos::VideoView;
 
 #[derive(Error, Debug)]
 pub enum AwsError {
@@ -157,6 +159,8 @@ impl AwsS3 {
 #[serde(rename_all = "lowercase")]
 pub enum S3Folders {
     Images,
+    Video,
+    Thumbnails,
     Zip,
     Website,
     Documents,
@@ -165,9 +169,21 @@ impl S3Folders {
     pub fn get_folder_str(&self) -> String {
         match self {
             S3Folders::Images => "images".to_string(),
+            S3Folders::Video => "video".to_string(),
+            S3Folders::Thumbnails => "thumbnails".to_string(),
             S3Folders::Zip => "zip".to_string(),
             S3Folders::Website => "website".to_string(),
             S3Folders::Documents => "documents".to_string(),
+        }
+    }
+    pub fn get_file_type(&self) -> String {
+        match self {
+            S3Folders::Images => ".jpeg".to_string(),
+            S3Folders::Video => ".mp4".to_string(),
+            S3Folders::Thumbnails => ".jpeg".to_string(),
+            S3Folders::Zip => ".zip".to_string(),
+            S3Folders::Website => ".html".to_string(),
+            S3Folders::Documents => ".pdf".to_string(),
         }
     }
 }
@@ -210,8 +226,32 @@ impl AwsS3 {
         let pre_url = self.generate_save_presigned_url(&key, time).await?;
         Ok(pre_url)
     }
+    pub async fn auto_upload_presigned_url(&self, key: &S3Key) -> Result<Url, AwsError> {
+        let time = Some(300);
+        let pre_url = self.generate_save_presigned_url(&key, time).await?;
+        Ok(pre_url)
+    }
+    pub async fn video_save_pre_url(&self, video: VideoModel) -> VideoView {
+        let video_key = S3Key::new(&video.video_s3_key);
+        let thumbnail_key = S3Key::new(&video.thumbnail_s3_key);
 
-    //Todo HERE Generate a presigned URL
+        let url = match self.auto_upload_presigned_url(&video_key).await {
+            Ok(url) => Some(url.to_string()),
+            Err(_) => None,
+        };
+        let url2 = match self.auto_upload_presigned_url(&thumbnail_key).await {
+            Ok(url) => Some(url.to_string()),
+            Err(_) => None,
+        };
+
+        let video: VideoView = VideoView::from(&video)
+            .set_video_pre_url(url)
+            .set_thumbnail_url(url2);
+
+        video
+    }
+
+    // //Todo HERE Generate a presigned URL
     pub async fn presigned_save_url(
         &self,
         user_id: &Uuid,
@@ -295,12 +335,48 @@ impl AwsS3 {
     }
 
     // Get a presigned URL for an object
-    pub async fn get_object_pre(&self, key: &S3Key, time: Option<u64>) -> Result<Url, AwsError> {
+    pub async fn get_object_pre(&self, s3_key: &S3Key, time: Option<u64>) -> Result<Url, AwsError> {
+        self.get_object_pre_base(s3_key, None, time).await
+    }
+
+    // Get a presigned URL for an object
+    pub async fn get_object_named_pre(
+        &self,
+        s3_key: &S3Key,
+        suggested_filename: String,
+        time: Option<u64>,
+    ) -> Result<Url, AwsError> {
+        self.get_object_pre_base(s3_key, Some(suggested_filename), time)
+            .await
+    }
+    // Get a presigned URL for an object
+    pub async fn get_video_pre(&self, video: &VideoModel) -> Result<Url, AwsError> {
+        let suggested_filename = Some(video.title.to_string());
+        let s3_key = S3Key::new(&video.video_s3_key);
+        self.get_object_pre_base(&s3_key, suggested_filename, None)
+            .await
+    }
+
+    // Get a presigned URL for an object
+    pub async fn get_thumbnail_pre(&self, video: &VideoModel) -> Result<Url, AwsError> {
+        let suggested_filename = Some(video.title.to_string());
+        let s3_key = S3Key::new(&video.thumbnail_s3_key);
+        self.get_object_pre_base(&s3_key, suggested_filename, None)
+            .await
+    }
+
+    // Get a presigned URL for an object
+    pub async fn get_object_pre_base(
+        &self,
+        key: &S3Key,
+        suggested_filename: Option<String>,
+        time: Option<u64>,
+    ) -> Result<Url, AwsError> {
         let expires_in = match time {
             Some(t) => t,
             None => self.settings.s3.access_time * 24, // 1 hour * 24 | 1 day
         };
-        let suggested_filename = "image.jpg"; // key.as_ref().split('/').last().unwrap_or("image.jpg");
+        let suggested_filename = suggested_filename.unwrap_or("image.jpeg".to_string());
         let content_disposition = format!("attachment; filename=\"{}\"", suggested_filename);
         let presigned_request = self
             .client
@@ -392,24 +468,25 @@ impl AwsS3 {
         S3Key::new(key)
     }
 
-    pub fn init_img_s3_key(user_id: &Uuid, img_id: &Uuid) -> S3Key {
-        let key = format!(
-            "{}/{}/{}.{}",
-            user_id,
-            S3Folders::Images.get_folder_str(),
-            img_id,
-            ImageFormat::Jpeg.to_string()
-        );
-        S3Key::new(key)
+    pub fn init_img_s3_key(user_pid: &Uuid, file_pid: &Uuid) -> S3Key {
+        let folder = S3Folders::Images;
+        Self::create_s3_key_base(user_pid, file_pid, &folder)
     }
-
-    pub fn create_s3_key_img(&self, id: &Uuid, image_name: &Uuid) -> S3Key {
+    pub fn init_video_s3_key(user_pid: &Uuid, video_pid: &Uuid) -> S3Key {
+        let folder = S3Folders::Video;
+        Self::create_s3_key_base(user_pid, video_pid, &folder)
+    }
+    pub fn init_thumbnail_s3_key(user_pid: &Uuid, video_pid: &Uuid) -> S3Key {
+        let folder = S3Folders::Thumbnails;
+        Self::create_s3_key_base(user_pid, video_pid, &folder)
+    }
+    pub fn create_s3_key_base(id: &Uuid, image_name: &Uuid, folder: &S3Folders) -> S3Key {
         let key = format!(
-            "{}/{}/{}.{}",
+            "{}/{}/{}{}",
             id.to_string(),
-            S3Folders::Images.get_folder_str(),
+            folder.get_folder_str(),
             image_name.to_string(),
-            ImageFormat::Jpeg,
+            folder.get_file_type(),
         );
         S3Key::new(key)
     }

@@ -1,8 +1,9 @@
 import Alpine from "alpinejs";
 import { TrainingModelFormClass } from "./lib/type/trainingModelForm";
 import { DAL } from "./lib/api";
-import { createBatches, createZip, ensureBoolean, replaceDivIfFound } from "./lib/utils";
+import { createBatches, createZip, ensureBoolean, parse_num, replaceDivIfFound } from "./lib/utils";
 import { ImageGenFormClass } from "./lib/type/ImageGenForm";
+import { VideoGenFormClass } from "./lib/type/videoGenForm";
 
 declare global {
   interface Window {
@@ -19,6 +20,7 @@ enum Stores {
   Toast = "toast",
   LangSelector = "langSelector",
   ImageGenForm = "imageGenForm",
+  VideoGenForm = "videoGenForm",
   Uploader = "uploader",
   CreateModelForm = "createModelForm",
 }
@@ -504,12 +506,105 @@ Alpine.store(Stores.ImageGenForm, {
   },
 });
 
+interface VideoGenFormStore {
+  name: string;
+  prompt: string;
+  negative_prompt: string | null;
+  aspect_ratio: string;
+  duration: number;
+  enhance_prompt: Boolean;
+  generate_audio: Boolean;
+  advancedOptionsOpen: Boolean;
+  isLoading: boolean;
+
+  init(): void;
+  reset(): void;
+  decrementDurations(duration?: number): void;
+  incrementDurations(duration?: number): void;
+  handleCreateRequest(event: SubmitEvent): Promise<void>;
+  toggleAdvancedOptions(): void;
+}
+
+Alpine.store(Stores.VideoGenForm, {
+  name: "",
+  prompt: "",
+  negative_prompt: null,
+  aspect_ratio: "",
+  duration: 8,
+  enhance_prompt: false,
+  generate_audio: true,
+  advancedOptionsOpen: false,
+  isLoading: false,
+
+  init() {},
+  reset(this: VideoGenFormStore): void {
+    (this.advancedOptionsOpen = false), (this.isLoading = false);
+  },
+  decrementDurations(this: VideoGenFormStore, minDurations: number = 1) {
+    this.duration = Math.max(minDurations, this.duration - 1);
+  },
+  incrementDurations(this: VideoGenFormStore, maxDurations: number = 20) {
+    this.duration = Math.min(maxDurations, this.duration + 1);
+  },
+  toggleAdvancedOptions(this: VideoGenFormStore) {
+    this.advancedOptionsOpen = !this.advancedOptionsOpen;
+  },
+  async handleCreateRequest(this: VideoGenFormStore, event: SubmitEvent): Promise<void> {
+    if (this.isLoading) return; // Prevent multiple submissions
+
+    this.isLoading = true;
+    this.advancedOptionsOpen = false;
+
+    const form = event.target as HTMLFormElement;
+    if (!form) {
+      console.error("Form element not found in event");
+      return;
+    }
+
+    const formData = new FormData(form);
+    const payload = {
+      name: (formData.get("name") as string) || "",
+      prompt: (formData.get("prompt") as string)?.trim() || "",
+      negative_prompt: (formData.get("negative_prompt") as string)?.trim() || null,
+      aspect_ratio: (formData.get("aspect_ratio") as string) || "widescreen",
+      duration: parse_num(parseInt(formData.get("duration") as string, 10)),
+      enhance_prompt: formData.has("enhance_prompt"),
+      generate_audio: formData.has("generate_audio"),
+    };
+
+    // Validation
+    if (!payload.prompt) {
+      Alpine.store(Stores.Toast).error("Please enter a prompt description.");
+      return; // Return here to stop further execution
+    }
+
+    const modelData = VideoGenFormClass.create(payload);
+    console.log("Submitting payload:", modelData);
+
+    Alpine.store(Stores.Toast).success("Video generation started!");
+
+    // Replace empty div if needed
+    replaceDivIfFound();
+
+    try {
+      await DAL.Backend.htmx.VideoGeneration.generateVideo(modelData);
+      this.reset();
+    } catch (error) {
+      console.error(error);
+      Alpine.store(Stores.Toast).error("An unexpected error occurred. Please try again.");
+    } finally {
+      this.isLoading = false; // Ensure loading state is reset
+    }
+  },
+});
+
 // You might need to explicitly tell TypeScript about the store on the Alpine object
 // if you haven't extended the Alpine interface globally.
 declare module "alpinejs" {
   interface Stores {
     toast: ToastStore;
     imageGenForm: ImageGenFormStore;
+    videoGenForm: VideoGenFormStore;
     // uploader: UploaderStore;
   }
 }

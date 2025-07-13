@@ -2,8 +2,9 @@ use crate::{
     controllers::webhooks::routes::Webhooks,
     domain::{url::Url, website::WebsiteBasicInfo},
     models::{
-        _entities::sea_orm_active_enums::{ImageFormat, ImageSize},
+        _entities::sea_orm_active_enums::{AspectRatio, ImageFormat, ImageSize},
         images::{ImageNew, ImageNewList},
+        videos::VideoNew,
         TrainingModelModel,
     },
 };
@@ -11,11 +12,16 @@ use futures::future::join_all;
 use reqwest::Client as ReqwestClient;
 use serde::{de::DeserializeOwned, Deserialize, Deserializer, Serialize};
 use std::{collections::HashMap, fmt::Debug};
+use strum::EnumString;
 use strum_macros::Display;
 
+use rand::Rng;
 use reqwest::Error as ReqwestError;
 use serde_json::Error as SerdeError;
+use std::time::Duration;
 use thiserror::Error;
+use tokio_retry::strategy::ExponentialBackoff;
+use tokio_retry::Retry;
 
 #[derive(Debug, Error)]
 pub enum FalAiClientError {
@@ -31,6 +37,8 @@ pub enum FalAiClientError {
     LocoError(#[from] loco_rs::Error),
     #[error("Unexpected error: {0}")]
     ReqwestErr(#[from] ReqwestError),
+    #[error("Fal AI error: {0}")]
+    FalApiError(String),
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize, Default)]
@@ -47,6 +55,17 @@ pub struct FalAiSettings {
 enum WebhookType {
     Training,
     Image,
+}
+
+#[derive(Debug, Clone, Serialize, PartialEq, Deserialize, strum::EnumString, strum::Display)]
+pub enum FalAiVideoModel {
+    #[strum(to_string = "fal-ai/veo3/fast")]
+    Veo3,
+}
+impl Default for FalAiVideoModel {
+    fn default() -> Self {
+        Self::Veo3
+    }
 }
 
 #[derive(Debug, Clone, Serialize, PartialEq, Deserialize, strum::EnumString, strum::Display)]
@@ -93,6 +112,7 @@ impl FalAiImageModel {
 pub enum WebhookPayload {
     Image(FalAiImageModel),
     Training(FalAiTrainingModel),
+    Video(FalAiVideoModel),
 }
 impl Default for WebhookPayload {
     fn default() -> Self {
@@ -138,6 +158,7 @@ impl WebhookPayload {
             Self::Image(FalAiImageModel::FluxLoraInPainting) => {
                 &client.photo_flux_inpainting_webhook
             }
+            Self::Video(FalAiVideoModel::Veo3) => &client.veo3_webhook,
         }
     }
 }
@@ -162,12 +183,14 @@ pub struct FalAiClient {
     pub photo_flux_webhook: String,
     pub photo_flux_inpainting: String,
     pub photo_flux_inpainting_webhook: String,
+    pub veo3: String,
+    pub veo3_webhook: String,
 }
 
 impl FalAiClient {
     pub fn new(settings: &FalAiSettings, website: &WebsiteBasicInfo) -> Self {
         let _site = website.site.to_owned();
-        let site = String::from("https://replicapixel.com");
+        let site = String::from("https://replicapixel.com"); // Because of local dev
         let fal_site = settings.fal_queue_url.to_owned();
         let webhook_image_webhook = format!(
             "{}{}{}{}",
@@ -182,6 +205,13 @@ impl FalAiClient {
             &site,
             Webhooks::BASE,
             Webhooks::API_FAL_AI_TRAINING
+        );
+        let webhook_video_webhook = format!(
+            "{}{}{}{}",
+            &settings.webhook_url,
+            &site,
+            Webhooks::BASE,
+            Webhooks::API_FAL_AI_VIDEO
         );
         Self {
             client: ReqwestClient::new(),
@@ -248,7 +278,48 @@ impl FalAiClient {
                 FalAiImageModel::FluxLoraInPainting.to_string(),
                 &webhook_image_webhook
             ),
+            veo3: format!("{}/{}", &fal_site, FalAiVideoModel::Veo3.to_string(),),
+            veo3_webhook: format!(
+                "{}/{}{}",
+                &fal_site,
+                FalAiVideoModel::Veo3.to_string(),
+                &webhook_video_webhook
+            ),
         }
+    }
+
+    pub async fn send_queue_webhook_with_retries<V, R>(
+        &self,
+        body: &V,
+        retries: usize,
+    ) -> Result<R, FalAiClientError>
+    where
+        V: FluxExt + Serialize + Debug,
+        R: DeserializeOwned,
+    {
+        let base_strategy = ExponentialBackoff::from_millis(300)
+            .factor(2)
+            .max_delay(Duration::from_secs(3))
+            .take(retries);
+
+        // Apply jitter to each delay in the strategy
+        let jittered_strategy = base_strategy.map(|delay| {
+            let jitter_factor = rand::rng().random_range(0.8..1.2); // ±20% jitter
+            let jittered_millis = (delay.as_millis() as f64 * jitter_factor) as u64;
+            Duration::from_millis(jittered_millis)
+        });
+
+        let fal_response = Retry::spawn(jittered_strategy, || async {
+            self.send_queue_webhook_all::<V, R>(&body)
+                .await
+                .map_err(|err| {
+                    tracing::warn!(error = ?err, "Fal AI request failed, retrying...");
+                    err
+                })
+        })
+        .await?;
+
+        Ok(fal_response)
     }
 
     /// Sends an image generation request via a webhook to the Flux Lora API.
@@ -530,6 +601,11 @@ impl FluxApiWebhookResponse {
         let payload: SuccessfulPayloadTraining = serde_json::from_value(value).ok()?;
         Some(payload.lora())
     }
+    pub fn successful_video_opt(&self) -> Option<String> {
+        let value = self.payload.clone()?;
+        let payload: SuccessFalVideoPayload = serde_json::from_value(value).ok()?;
+        Some(payload.video_url())
+    }
     /// Extracts an error payload from the response.
     pub fn error(&self) -> ErrorPayload {
         let payload: ErrorPayload = serde_json::from_value(self.payload.clone().unwrap()).unwrap();
@@ -562,6 +638,15 @@ pub struct QueueResponse {
     pub logs: Option<String>,
     pub metrics: HashMap<String, serde_json::Value>,
     pub queue_position: usize,
+}
+impl QueueResponse {
+    pub fn test() -> QueueResponse {
+        Self {
+            request_id: "test-1e2f3a4b5c6d".to_string(),
+            response_url: "/static/video/WhatsApp-Video-2025-04-17.mp4".to_string(),
+            ..Default::default()
+        }
+    }
 }
 
 #[derive(Clone, Debug, Serialize, PartialEq)]
@@ -673,5 +758,130 @@ impl FluxExt for FluxLoraImageGenerate {
 impl FluxExt for FluxLoraTrainingSchema {
     fn model(&self) -> WebhookPayload {
         self.model.clone()
+    }
+}
+impl FluxExt for FalVideoSend {
+    fn model(&self) -> WebhookPayload {
+        self.model.clone()
+    }
+}
+
+// ==================================================
+
+#[derive(Serialize, Debug)]
+pub struct FalVideoSend {
+    pub prompt: String,
+    pub negative_prompt: Option<String>,
+    pub aspect_ratio: AspectRatio,
+    pub duration: DurationSeconds,
+    pub enhance_prompt: bool,
+    pub seed: Option<i32>,
+    pub generate_audio: bool,
+    pub model: WebhookPayload,
+}
+impl From<VideoNew> for FalVideoSend {
+    fn from(value: VideoNew) -> Self {
+        Self {
+            prompt: value.sys_prompt.into_inner(),
+            negative_prompt: value.negative_prompt.into_inner(),
+            aspect_ratio: value.aspect_ratio,
+            duration: value.duration,
+            enhance_prompt: value.enhance_prompt,
+            seed: value.seed,
+            generate_audio: value.generate_audio,
+            model: value.model,
+        }
+    }
+}
+
+#[derive(Deserialize, Debug)]
+pub struct SuccessFalVideoPayload {
+    pub video: VideoUrl,
+}
+impl SuccessFalVideoPayload {
+    pub fn video_url(&self) -> String {
+        self.video.url.to_owned()
+    }
+}
+
+#[derive(Deserialize, Debug)]
+pub struct VideoUrl {
+    pub url: String,
+}
+
+#[derive(Serialize, Debug, Clone, Deserialize, EnumString)]
+pub enum DurationSeconds {
+    #[serde(rename = "01s")]
+    #[strum(to_string = "01")]
+    One,
+    #[serde(rename = "02s")]
+    #[strum(to_string = "02")]
+    Two,
+    #[serde(rename = "03s")]
+    #[strum(to_string = "03")]
+    Three,
+    #[serde(rename = "04s")]
+    #[strum(to_string = "04")]
+    Four,
+    #[serde(rename = "05s")]
+    #[strum(to_string = "05")]
+    Five,
+    #[serde(rename = "06s")]
+    #[strum(to_string = "06")]
+    Six,
+    #[serde(rename = "07s")]
+    #[strum(to_string = "07")]
+    Seven,
+    #[serde(rename = "08s")]
+    #[strum(to_string = "08")]
+    Eight,
+    #[serde(rename = "09s")]
+    #[strum(to_string = "09")]
+    Nine,
+    #[serde(rename = "10s")]
+    #[strum(to_string = "10")]
+    Ten,
+    #[serde(rename = "11s")]
+    #[strum(to_string = "11")]
+    Eleven,
+    #[serde(rename = "12s")]
+    #[strum(to_string = "12")]
+    Twelve,
+    #[serde(rename = "13s")]
+    #[strum(to_string = "13")]
+    Thirteen,
+    #[serde(rename = "14s")]
+    #[strum(to_string = "14")]
+    Fourteen,
+    #[serde(rename = "15s")]
+    #[strum(to_string = "15")]
+    Fifteen,
+}
+
+impl DurationSeconds {
+    pub fn to_int(&self) -> i32 {
+        match self {
+            DurationSeconds::One => 1,
+            DurationSeconds::Two => 2,
+            DurationSeconds::Three => 3,
+            DurationSeconds::Four => 4,
+            DurationSeconds::Five => 5,
+            DurationSeconds::Six => 6,
+            DurationSeconds::Seven => 7,
+            DurationSeconds::Eight => 8,
+            DurationSeconds::Nine => 9,
+            DurationSeconds::Ten => 10,
+            DurationSeconds::Eleven => 11,
+            DurationSeconds::Twelve => 12,
+            DurationSeconds::Thirteen => 13,
+            DurationSeconds::Fourteen => 14,
+            DurationSeconds::Fifteen => 15,
+        }
+    }
+}
+
+impl Default for DurationSeconds {
+    fn default() -> Self {
+        Self::Eight
     }
 }

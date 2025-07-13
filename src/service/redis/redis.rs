@@ -17,8 +17,8 @@ use uuid::Uuid;
 
 use crate::{
     domain::website::WebImages,
-    models::{users::UserPid, UserModel, _entities::sea_orm_active_enums::Language},
-    views::images::ImageView,
+    models::{users::UserPid, UserModel, VideoModel, _entities::sea_orm_active_enums::Language},
+    views::{images::ImageView, videos::VideoView},
 };
 use serde::de::DeserializeOwned;
 use std::path::Path;
@@ -67,6 +67,7 @@ pub enum RedisKey {
     User(UserPid),
     UserSetting(UserPid),
     S3PreUrl(Uuid),
+    VideoPreUrl(String),
     Website(Language),
     Packs(Language),
     Pricing(Language),
@@ -75,6 +76,22 @@ pub enum RedisKey {
 impl ImageView {
     pub fn redis_key(&self) -> RedisKey {
         RedisKey::S3PreUrl(self.pid.clone())
+    }
+}
+impl VideoView {
+    pub fn redis_key(&self) -> RedisKey {
+        RedisKey::VideoPreUrl(self.uuid().to_string())
+    }
+}
+impl VideoModel {
+    pub fn redis_key(&self) -> RedisKey {
+        RedisKey::VideoPreUrl(format!("video:{}", self.pid))
+    }
+    pub fn redis_thumbnail_key(&self) -> RedisKey {
+        RedisKey::VideoPreUrl(format!("thumbnail:{}", self.pid))
+    }
+    pub fn redis_key_all(&self) -> Vec<RedisKey> {
+        vec![self.redis_key(), self.redis_thumbnail_key()]
     }
 }
 impl UserModel {
@@ -93,6 +110,7 @@ impl RedisKey {
             Self::User(uuid) => format!("user:{}", uuid.as_ref()),
             Self::UserSetting(uuid) => format!("user:setting:{}", uuid.as_ref()),
             Self::S3PreUrl(uuid) => format!("s3:preurl:{}", uuid),
+            Self::VideoPreUrl(str) => format!("video:preurl:{}", str),
             Self::Website(lang) => format!("website:{}", lang),
             Self::Packs(lang) => format!("packs:{}", lang),
             Self::Pricing(lang) => format!("pricing:{}", lang),
@@ -243,12 +261,40 @@ impl RedisCacheDriver {
             None => Ok(None),
         }
     }
+    // pub async fn mget(&self, redis_keys: &Vec<RedisKey>) -> RedisDbResult<Vec<Option<String>>> {
+    //     let keys: Vec<String> = redis_keys.iter().map(|k| k.to_key()).collect();
+    //     let mut conn = self.client.clone();
+    //     let raw_values: Vec<Option<String>> = conn.mget(keys).await?;
+    //     Ok(raw_values)
+    // }
+    pub async fn mget(&self, redis_keys: &Vec<RedisKey>) -> RedisDbResult<Vec<Option<String>>> {
+        let keys: Vec<String> = redis_keys.iter().map(|k| k.to_key()).collect();
+        let mut conn = self.client.clone();
+
+        // Try decoding into a Value first
+        let raw: redis::Value = redis::cmd("MGET").arg(keys).query_async(&mut conn).await?;
+
+        // Now convert safely to Vec<Option<String>>
+        let result: Vec<Option<String>> = redis::from_redis_value(&raw)?;
+        Ok(result)
+    }
+
     pub async fn set_s3_pre_url(&self, key: &ImageView) -> RedisDbResult<()> {
         let mut conn = self.client.clone();
         let time = 60 * 60 * 23;
         let _: () = conn
             .set_ex(key.pid.to_string(), key.s3_pre_url.to_owned(), time)
             .await?;
+        Ok(())
+    }
+    pub async fn set_s3_video_pre_url(
+        &self,
+        redis_keys: &RedisKey,
+        s3_pre_url: &str,
+    ) -> RedisDbResult<()> {
+        let mut conn = self.client.clone();
+        let time = 60 * 60 * 23;
+        let _: () = conn.set_ex(redis_keys.to_key(), s3_pre_url, time).await?;
         Ok(())
     }
     pub async fn get_s3_pre_url(&self, key: &ImageView) -> RedisDbResult<String> {
@@ -286,6 +332,33 @@ impl RedisCacheDriver {
         Ok(())
     }
 }
+
+// async fn fetch_and_cache_video(
+//     ctx: &AppContext,
+//     cache: &RedisCacheDriver,
+
+// ) -> CacheResult<WebImages> {
+//     let video = Webvideo::web_video(&ctx.db, lang, &cache).await;
+//     match serde_json::to_string(&video) {
+//         Ok(serialized) => {
+//             if let Err(e) = ctx
+//                 .cache
+//                 .insert_with_expiry(
+//                     &key.to_key(),
+//                     &serialized,
+//                     Duration::from_secs(WEB_video_TTL_SECONDS),
+//                 )
+//                 .await
+//             {
+//                 tracing::error!("Failed to write web video to cache: {}", e);
+//             }
+//         }
+//         Err(e) => {
+//             tracing::error!("Failed to serialize web video: {}", e);
+//         }
+//     }
+//     Ok(video)
+// }
 
 async fn fetch_and_cache_web_images(
     ctx: &AppContext,

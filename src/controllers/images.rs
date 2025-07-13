@@ -12,7 +12,7 @@ use crate::domain::domain_services::image_generation::ImageGenerationService;
 use crate::domain::url::Url;
 use crate::domain::website::{Website, WebsiteOptions};
 use crate::middleware::i18nv2::LangEngine;
-use crate::models::_entities::sea_orm_active_enums::{ImageFormat, ImageSize, Status};
+use crate::models::_entities::sea_orm_active_enums::{ImageSize, Status};
 use crate::models::images::{
     AltText, ImageNew, ImageNewList, ImagesModelList, SysPrompt, UserPrompt,
 };
@@ -21,7 +21,7 @@ use crate::models::join::user_image::load_user_and_image;
 use crate::models::packs::PackDomain;
 use crate::models::users::UserPid;
 use crate::models::{ImageActiveModel, ImageModel, TrainingModelModel, UserCreditModel, UserModel};
-use crate::service::aws::s3::{AwsS3, S3Folders, S3Key};
+use crate::service::aws::s3::{AwsS3, S3Key};
 use crate::service::fal_ai::fal_client::{Lora, WebhookPayload};
 use crate::service::redis::redis::RedisCacheDriver;
 use crate::views::images::{ImageView, ImageViewList};
@@ -382,7 +382,6 @@ pub async fn generate(
 ) -> Result<Response> {
     // 0. Validate request payload format
     request.validate()?;
-    dbg!(&request);
 
     // 1. Load User and Training Model
     let user_pid = UserPid::new(&auth.claims.pid);
@@ -414,12 +413,7 @@ pub async fn img_s3_upload_completed(
     State(ctx): State<AppContext>,
 ) -> Result<Response> {
     let (user, image) = load_user_and_image(&ctx.db, &auth.claims.pid, &img_pid).await?;
-    let s3_key = s3_client.create_s3_key(
-        &user.pid,
-        &S3Folders::Images,
-        &image.pid.to_string(),
-        &ImageFormat::Jpeg,
-    );
+    let s3_key = AwsS3::init_img_s3_key(&user.pid, &image.pid);
 
     let exists = s3_client
         .check_object_exists(&s3_key)

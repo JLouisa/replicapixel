@@ -6,7 +6,7 @@ use crate::domain::website::Website;
 use crate::mailers::transaction::CheckoutMailer;
 use crate::models::_entities::sea_orm_active_enums::Status;
 use crate::models::join::user_credits_models::load_user_and_credits_with_user_id;
-use crate::models::{ImageModel, TrainingModelActiveModel, TrainingModelModel};
+use crate::models::{ImageModel, TrainingModelActiveModel, TrainingModelModel, VideoModel};
 use crate::service::aws::s3::{AwsS3, S3Key};
 use crate::service::fal_ai::fal_client::{FalAiClient, FluxApiWebhookResponse, StatusResponse};
 use crate::service::meta::meta::{EventData, UserData};
@@ -31,6 +31,7 @@ pub mod routes {
         pub const BASE: &'static str = "/api/webhooks";
         pub const API_FAL_AI_TRAINING: &'static str = "/fal-ai/training";
         pub const API_FAL_AI_IMAGE: &'static str = "/fal-ai/image";
+        pub const API_FAL_AI_VIDEO: &'static str = "/fal-ai/video";
         pub const API_STRIPE: &'static str = "/stripe";
     }
 }
@@ -40,11 +41,16 @@ pub fn routes() -> Routes {
         .prefix(routes::Webhooks::BASE)
         .add(routes::Webhooks::API_FAL_AI_TRAINING, post(fal_ai_training))
         .add(routes::Webhooks::API_FAL_AI_IMAGE, post(fal_ai_image))
+        .add(routes::Webhooks::API_FAL_AI_VIDEO, post(fal_ai_video))
         .add(routes::Webhooks::API_STRIPE, post(stripe))
 }
 
 async fn load_image_by_request_id(ctx: &AppContext, id: &str) -> Result<ImageModel> {
     let item = ImageModel::find_by_request_id(&ctx.db, id).await?;
+    Ok(item)
+}
+async fn load_video_by_request_id(ctx: &AppContext, id: &str) -> Result<VideoModel> {
+    let item = VideoModel::find_by_request_id(&ctx.db, id).await?;
     Ok(item)
 }
 
@@ -101,6 +107,105 @@ pub async fn stripe(
 }
 
 #[debug_handler]
+pub async fn fal_ai_video_test(
+    Extension(fal_ai_client): Extension<FalAiClient>,
+    Json(response): Json<FluxApiWebhookResponse>,
+) -> Result<Response> {
+    // Check the status of the response
+    let video_url = match response.status {
+        StatusResponse::Ok => {
+            // If the status is OK, check if there's a payload
+            if let Some(ref _payload) = response.payload {
+                let video_url = response.successful_video_opt();
+                video_url
+            } else {
+                // If there's no payload, get payload directly
+                let result = fal_ai_client
+                    .request_result_image(&response.request_id)
+                    .await
+                    .map_err(|_| {
+                        loco_rs::Error::Message("Error processing Result Request: 103".to_string())
+                    })?
+                    .image_url();
+                result
+            }
+        }
+        StatusResponse::Error => {
+            // If the status is Error, return the error payload
+            // let error_payload = response.error();
+
+            dbg!(&response.error());
+
+            return Ok((StatusCode::BAD_GATEWAY).into_response());
+        }
+    };
+
+    dbg!(&video_url);
+
+    Ok((StatusCode::OK, video_url.unwrap()).into_response())
+}
+
+#[debug_handler]
+pub async fn fal_ai_video(
+    State(ctx): State<AppContext>,
+    Extension(fal_ai_client): Extension<FalAiClient>,
+    Json(response): Json<FluxApiWebhookResponse>,
+) -> Result<Response> {
+    let video = match load_video_by_request_id(&ctx, &response.request_id).await {
+        Ok(model) => model,
+        Err(_) => {
+            return Ok((StatusCode::OK, "Model not found".to_string()).into_response());
+        }
+    };
+    // Check the status of the response
+    let video_url = match response.status {
+        StatusResponse::Ok => {
+            // If the status is OK, check if there's a payload
+            if let Some(ref _payload) = response.payload {
+                let video_url = response.successful_video_opt();
+                video_url
+            } else {
+                // If there's no payload, get payload directly
+                let result = fal_ai_client
+                    .request_result_image(&response.request_id)
+                    .await
+                    .map_err(|_| {
+                        loco_rs::Error::Message("Error processing Result Request: 103".to_string())
+                    })?
+                    .image_url();
+                result
+            }
+        }
+        StatusResponse::Error => {
+            // If the status is Error, return the error payload
+            // let error_payload = response.error();
+
+            let db_txn = ctx.db.begin().await?;
+
+            // Get User and Image
+            let (_, user_credits) =
+                load_user_and_credits_with_user_id(&db_txn, &None, &Some(video.user_id)).await?;
+
+            // --- Update User Credits/Entitlements ---
+            user_credits.failed_update_credits(&db_txn, &video).await?;
+
+            video.update_fal_video_url_failed(&db_txn).await?;
+
+            db_txn.commit().await?;
+
+            return Ok((StatusCode::OK).into_response());
+        }
+    };
+
+    // Update the video
+    video
+        .update_fal_video_url_processing(&ctx.db, video_url)
+        .await?;
+
+    Ok((StatusCode::OK, "Payload successfully processed").into_response())
+}
+
+#[debug_handler]
 pub async fn fal_ai_image(
     State(ctx): State<AppContext>,
     Extension(fal_ai_client): Extension<FalAiClient>,
@@ -142,9 +247,7 @@ pub async fn fal_ai_image(
                 load_user_and_credits_with_user_id(&db_txn, &None, &Some(image.user_id)).await?;
 
             // --- Update User Credits/Entitlements ---
-            user_credits
-                .failed_update_credits_image(&db_txn, &image)
-                .await?;
+            user_credits.failed_update_credits(&db_txn, &image).await?;
 
             image
                 .update_fal_image_url(&db_txn, None, Status::Failed)

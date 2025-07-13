@@ -78,4 +78,9 @@ pub type OAuth2SessionActiveModel = o_auth2_sessions::ActiveModel;
 pub type OAuth2SessionModel = o_auth2_sessions::Model;
 pub type OAuth2SessionEntity = o_auth2_sessions::Entity;
 
+pub mod videos;
+pub type VideoActiveModel = videos::ActiveModel;
+pub type VideoModel = videos::Model;
+pub type VideoEntity = videos::Entity;
+
 pub mod join;

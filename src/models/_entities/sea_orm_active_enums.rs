@@ -452,3 +452,20 @@ impl Default for Role {
         Role::User
     }
 }
+
+#[derive(Debug, Clone, PartialEq, Eq, EnumIter, DeriveActiveEnum, Serialize, Deserialize)]
+#[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "aspect_ratio")]
+pub enum AspectRatio {
+    #[sea_orm(string_value = "Widescreen")]
+    #[strum(to_string = "16:9 (widescreen)")]
+    #[serde(rename = "widescreen")]
+    Widescreen,
+    #[sea_orm(string_value = "Portrait")]
+    #[strum(to_string = "9:16 (portrait)")]
+    #[serde(rename = "portrait")]
+    Portrait,
+    #[sea_orm(string_value = "Square")]
+    #[strum(to_string = "1:1 (Square)")]
+    #[serde(rename = "square")]
+    Square,
+}

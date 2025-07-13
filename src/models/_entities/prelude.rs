@@ -16,3 +16,4 @@ pub use super::transactions::Entity as Transactions;
 pub use super::user_credits::Entity as UserCredits;
 pub use super::user_settings::Entity as UserSettings;
 pub use super::users::Entity as Users;
+pub use super::videos::Entity as Videos;

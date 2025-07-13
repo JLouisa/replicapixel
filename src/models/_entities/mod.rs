@@ -19,3 +19,4 @@ pub mod transactions;
 pub mod user_credits;
 pub mod user_settings;
 pub mod users;
+pub mod videos;

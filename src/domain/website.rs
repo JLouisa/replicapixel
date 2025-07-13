@@ -17,6 +17,7 @@ use crate::controllers::packs::routes::PackRoutes;
 use crate::controllers::payment::StripeWebOptions;
 use crate::controllers::settings::routes::SettingRoutes;
 use crate::controllers::starter::routes::StarterRoutes;
+use crate::controllers::video::routes::VideoRoutes;
 use crate::controllers::{
     auth::routes::AuthRoutes, features::routes::FeatureRoutes, home::routes::HomeRoutes,
     images::routes::ImageRoutes, oauth2::routes::OAuth2Routes, payment::routes::PaymentRoutes,
@@ -39,6 +40,7 @@ use crate::views::packs::{PackView, PackViewList};
 use crate::views::payment::{PricingView, PricingViewList};
 use crate::views::settings::UserSettingsView;
 use crate::views::training_models::{TrainingModelView, TrainingModelViewList};
+use crate::views::videos::{VideoView, VideoViewList};
 
 #[derive(Debug, Serialize, Deserialize, Constructor, Clone)]
 pub struct WebsiteRoutes {
@@ -55,6 +57,7 @@ pub struct WebsiteRoutes {
     pub packs_routes: PackRoutes,
     pub starter_routes: StarterRoutes,
     pub other_routes: OtherRoutes,
+    pub video: VideoRoutes,
 }
 impl WebsiteRoutes {
     pub fn init() -> Self {
@@ -72,6 +75,7 @@ impl WebsiteRoutes {
             packs_routes: PackRoutes::init(),
             starter_routes: StarterRoutes::init(),
             other_routes: OtherRoutes::init(),
+            video: VideoRoutes::init(),
         }
     }
 }
@@ -488,6 +492,8 @@ pub struct WebsiteOptions<'a> {
     pub pack_images: Option<WebGallery>,
     pub image: Option<&'a ImageView>,
     pub images: Option<&'a ImageViewList>,
+    pub video: Option<&'a VideoView>,
+    pub videos: Option<&'a VideoViewList>,
     pub web_gallery: Option<&'a WebGallery>,
     pub web_images: Option<&'a WebImages>,
     pub link: Option<&'a str>,
@@ -651,6 +657,20 @@ impl<'a> WebsiteOptions<'a> {
     pub fn images(self, images: &'a ImageViewList) -> Self {
         Self {
             images: Some(images),
+            ..self
+        }
+    }
+    // Sets the images.
+    pub fn video(self, video: &'a VideoView) -> Self {
+        Self {
+            video: Some(video),
+            ..self
+        }
+    }
+    // Sets the images.
+    pub fn videos(self, video_list: &'a VideoViewList) -> Self {
+        Self {
+            videos: Some(video_list),
             ..self
         }
     }

@@ -211,3 +211,95 @@ function handleThemeToggle(checkbox) {
   // Save the user's choice to localStorage
   localStorage.setItem("theme", newTheme);
 }
+
+function testConsole(foo) {
+  console.log(foo);
+}
+
+async function extractThumbnailFileFromVideo(videoBlob, uuid, seekTime = 1) {
+  // 1. Fetch video as Blob
+  const objectUrl = URL.createObjectURL(videoBlob);
+
+  // 2. Create a video element
+  const video = document.createElement("video");
+  video.id = `video-${uuid}`;
+  video.src = objectUrl;
+  video.crossOrigin = "anonymous";
+  video.muted = true;
+  video.preload = "auto";
+
+  // 3. Return a File (JPEG thumbnail)
+  return new Promise((resolve, reject) => {
+    video.onloadedmetadata = () => {
+      video.currentTime = seekTime;
+    };
+
+    video.onseeked = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return reject("Failed to get canvas context");
+
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      canvas.toBlob(
+        (blob) => {
+          if (!blob) return reject("Canvas toBlob failed");
+
+          const file = new File([blob], `thumbnail-${uuid}.jpeg`, { type: "image/jpeg" });
+          resolve(file);
+        },
+        "image/jpeg",
+        0.9
+      );
+    };
+
+    video.onerror = (e) => {
+      reject("Error loading video");
+    };
+  });
+}
+
+async function uploadMediaToS3(media, presignedUrl) {
+  try {
+    const s3Upload = await fetch(presignedUrl, {
+      method: "PUT",
+      body: media,
+      headers: {
+        "Content-Type": media.type,
+      },
+    });
+    if (!s3Upload.ok) throw new Error("Failed to upload to S3");
+    console.log("✅ Upload and notification successful");
+  } catch (err) {
+    console.error("❌ Upload failed", err);
+  }
+}
+
+async function videoProcessing(videoUrl, video_pre_url, thumbnail_pre_url, uuid, target) {
+  console.log("Processing video...");
+  try {
+    const response_video = await fetch(videoUrl);
+    if (!response_video.ok) throw new Error("Video fetch failed");
+
+    const video = await response_video.blob();
+    const thumbnail = await extractThumbnailFileFromVideo(video, uuid);
+
+    await uploadMediaToS3(video, video_pre_url);
+    await uploadMediaToS3(thumbnail, thumbnail_pre_url);
+  } catch (err) {
+    console.error("❌ Media download or upload failed", err);
+    return;
+  }
+
+  try {
+    let swap = "innerHTML";
+    const notifyBackendUrl = "/api/videos/completed/test/" + uuid;
+    console.log(notifyBackendUrl);
+    await window.htmx.ajax("GET", notifyBackendUrl, { target, swap });
+  } catch (err) {
+    console.error("❌ Backend notify or DOM update failed", err);
+  }
+}

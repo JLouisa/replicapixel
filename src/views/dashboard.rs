@@ -175,6 +175,26 @@ pub fn photo_partial_dashboard(
         data!({ "options": website_options }),
     )
 }
+pub fn video_dashboard(
+    v: impl ViewRenderer,
+    website_options: &WebsiteOptions,
+) -> Result<impl IntoResponse> {
+    format::render().view(
+        &v,
+        "dashboard/content/video/video.html",
+        data!({ "options": website_options }),
+    )
+}
+pub fn video_partial_dashboard(
+    v: impl ViewRenderer,
+    website_options: &WebsiteOptions,
+) -> Result<impl IntoResponse> {
+    format::render().view(
+        &v,
+        "dashboard/content/video/video_partial.html",
+        data!({ "options": website_options }),
+    )
+}
 
 #[derive(Clone, Debug, Serialize, Constructor)]
 pub struct TransactionView {

@@ -8,7 +8,7 @@ use sea_orm::{DbErr, TransactionTrait};
 use thiserror::Error;
 
 #[derive(Debug, Error)]
-pub enum ImageGenerationError {
+pub enum MediaGenerationError {
     #[error("Unauthorized access to training model")]
     Unauthorized,
     #[error("Not enough credits")]
@@ -40,22 +40,15 @@ impl ImageGenerationService {
         request: impl ImageGenerationTrait,
         user: &UserModel,
         training_model: &Option<TrainingModelModel>,
-    ) -> Result<(UserCreditModel, ImageNewList), ImageGenerationError> {
-        // Start a DB transaction
+    ) -> Result<(UserCreditModel, ImageNewList), MediaGenerationError> {
+        // Cost and image amount from request and user has enough credits
         let txn = ctx.db.begin().await?;
-
-        // Load user credits
         let user_credits = UserCreditModel::find_by_user_id(&txn, user.id).await?;
-
-        // Cost and image amount from request
         let mut credits_needed = request.cost();
-        tracing::info!("Credits needed: {}", credits_needed);
         let expected_image_amount = request.num_images();
-
-        // Check if user has enough credits
         if user_credits.credit_amount < credits_needed {
             txn.rollback().await?;
-            return Err(ImageGenerationError::InsufficientCredits);
+            return Err(MediaGenerationError::InsufficientCredits);
         }
 
         // Prepare image list
@@ -77,9 +70,6 @@ impl ImageGenerationService {
             credits_needed -= refund_amount;
         }
 
-        // Deduct final credit cost
-        // user_credits.credit_amount -= credits_needed;
-
         // Update user's credits in DB
         let updated_credits_model = user_credits
             .update_new_credits(credits_needed, &txn)
@@ -91,55 +81,3 @@ impl ImageGenerationService {
         Ok((updated_credits_model, fal_response))
     }
 }
-
-// pub struct ImageGenerationService;
-
-// impl ImageGenerationService {
-//     pub async fn generate(
-//         ctx: &AppContext,
-//         fal_ai_client: &FalAiClient,
-//         request: impl ImageGenerationTrait,
-//         user: &UserModel,
-//         training_model: &Option<TrainingModelModel>,
-//     ) -> Result<(UserCreditModel, ImageNewList), ImageGenerationError> {
-//         let txn = ctx.db.begin().await?;
-
-//         let mut user_credits = UserCreditModel::find_by_user_id(&txn, user.id).await?;
-
-//         let mut credits_needed = request.cost();
-//         let image_amount = request.num_images();
-
-//         if user_credits.credit_amount < credits_needed {
-//             txn.rollback().await?;
-//             return Err(ImageGenerationError::InsufficientCredits);
-//         }
-
-//         let image_list = request.process(&training_model, &user);
-
-//         // External API Interaction
-//         let fal_response = fal_ai_client
-//             .send_image_queue_many_async(&image_list)
-//             .await?;
-//         let fal_response = fal_ai_client.retry(fal_response, &image_list).await?;
-
-//         // Persist Results
-//         fal_response.save_all(&txn).await?;
-
-//         if image_amount != fal_response.amount() {
-//             let refund_amount = (image_amount - fal_response.amount()) * IMAGE_COST;
-//             credits_needed -= refund_amount;
-//         }
-
-//         // Business Logic: Update Credits
-//         user_credits.credit_amount -= credits_needed;
-
-//         // Update credits using an active model
-//         let updated_credits_model = user_credits
-//             .update_credits_with_image_list(&fal_response, &txn)
-//             .await?;
-
-//         txn.commit().await?;
-
-//         Ok((updated_credits_model, fal_response))
-//     }
-// }

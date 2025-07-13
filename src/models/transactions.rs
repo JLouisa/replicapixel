@@ -1,3 +1,5 @@
+use crate::models::user_credits::AddCreditsTrait;
+
 pub use super::_entities::transactions::{ActiveModel, Entity, Model};
 use super::{
     PlanModel, TransactionActiveModel, UserModel,
@@ -9,6 +11,31 @@ use sea_orm::{entity::prelude::*, ActiveValue, Condition, QueryOrder};
 use serde::Serialize;
 use stripe::Currency;
 pub type Transactions = Entity;
+
+#[async_trait::async_trait]
+impl ActiveModelBehavior for ActiveModel {
+    async fn before_save<C>(self, _db: &C, insert: bool) -> std::result::Result<Self, DbErr>
+    where
+        C: ConnectionTrait,
+    {
+        if !insert && self.updated_at.is_unchanged() {
+            let mut this = self;
+            this.updated_at = sea_orm::ActiveValue::Set(chrono::Utc::now().into());
+            Ok(this)
+        } else {
+            Ok(self)
+        }
+    }
+}
+
+impl AddCreditsTrait for Model {
+    fn credits(&self) -> i32 {
+        self.credit_amount
+    }
+    fn model(&self) -> i32 {
+        self.model_amount
+    }
+}
 
 #[derive(Debug, Serialize, Clone)]
 pub struct TransactionDomain {
@@ -78,22 +105,6 @@ impl TransactionDomain {
 
 #[derive(Debug, Clone, Constructor, AsRef)]
 pub struct TransactionModelList(Vec<Model>);
-
-#[async_trait::async_trait]
-impl ActiveModelBehavior for ActiveModel {
-    async fn before_save<C>(self, _db: &C, insert: bool) -> std::result::Result<Self, DbErr>
-    where
-        C: ConnectionTrait,
-    {
-        if !insert && self.updated_at.is_unchanged() {
-            let mut this = self;
-            this.updated_at = sea_orm::ActiveValue::Set(chrono::Utc::now().into());
-            Ok(this)
-        } else {
-            Ok(self)
-        }
-    }
-}
 
 // implement your write-oriented logic here
 impl ActiveModel {

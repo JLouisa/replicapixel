@@ -209,6 +209,32 @@ exports.Prisma.ImagesScalarFieldEnum = {
   updated_at: 'updated_at'
 };
 
+exports.Prisma.VideosScalarFieldEnum = {
+  id: 'id',
+  pid: 'pid',
+  user_id: 'user_id',
+  title: 'title',
+  user_prompt: 'user_prompt',
+  sys_prompt: 'sys_prompt',
+  negative_prompt: 'negative_prompt',
+  alt: 'alt',
+  duration: 'duration',
+  enhance_prompt: 'enhance_prompt',
+  generate_audio: 'generate_audio',
+  seed: 'seed',
+  status: 'status',
+  aspect_ratio: 'aspect_ratio',
+  video_cost: 'video_cost',
+  fal_ai_request_id: 'fal_ai_request_id',
+  video_s3_key: 'video_s3_key',
+  thumbnail_s3_key: 'thumbnail_s3_key',
+  video_url_fal: 'video_url_fal',
+  is_favorite: 'is_favorite',
+  deleted_at: 'deleted_at',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
 exports.Prisma.PlansScalarFieldEnum = {
   id: 'id',
   pid: 'pid',
@@ -436,6 +462,12 @@ exports.ImageSize = exports.$Enums.ImageSize = {
   Landscape169: 'Landscape169'
 };
 
+exports.AspectRatio = exports.$Enums.AspectRatio = {
+  Widescreen: 'Widescreen',
+  Portrait: 'Portrait',
+  Square: 'Square'
+};
+
 exports.PlanNames = exports.$Enums.PlanNames = {
   Basic: 'Basic',
   BasicPlus: 'BasicPlus',
@@ -484,6 +516,7 @@ exports.Prisma.ModelName = {
   TrainingModels: 'TrainingModels',
   UserCredits: 'UserCredits',
   Images: 'Images',
+  Videos: 'Videos',
   Plans: 'Plans',
   Plans_translations: 'Plans_translations',
   Packs: 'Packs',

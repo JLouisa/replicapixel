@@ -98,6 +98,7 @@ impl Hooks for App {
 
     fn routes(_ctx: &AppContext) -> AppRoutes {
         let mut routes = AppRoutes::with_default_routes()
+            .add_route(controllers::video::routes())
             .add_route(controllers::other::routes())
             .add_route(controllers::starter::routes())
             .add_route(controllers::packs::routes())

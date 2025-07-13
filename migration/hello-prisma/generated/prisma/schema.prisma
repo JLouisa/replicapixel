@@ -15,8 +15,8 @@ generator client {
 datasource db {
   provider = "postgresql"
   // url      = env("DATABASE_URL_LOCAL")
-  // url      = env("DATABASE_URL")
-  url      = env("DATABASE_URL_PROD")
+  url      = env("DATABASE_URL")
+  // url      = env("DATABASE_URL_PROD")
 }
 
 model Users {
@@ -41,6 +41,7 @@ model Users {
   TrainingModels  TrainingModels[]
   UserCredits     UserCredits[]
   Images          Images[]
+  Videos          Videos[]
   Transactions    Transactions[]
   oAuth2Sessions  OAuth2Session[]
   notifications   Notification[]
@@ -132,7 +133,7 @@ model Images {
   height              Int?
   image_s3_key        String      @db.VarChar(255)
   image_url_fal       String?
-  is_favorite         Boolean     @default(true)
+  is_favorite         Boolean     @default(false)
   deleted_at          DateTime?   @db.Timestamptz
   created_at          DateTime    @default(now()) @db.Timestamptz
   updated_at          DateTime    @default(now()) @db.Timestamptz
@@ -147,6 +148,38 @@ model Images {
   @@index([training_model_id], name: "idx-images-training_model_id")
   @@index([created_at], name: "idx-images-created_at")
   @@index([updated_at], name: "idx-images-updated_at")
+}
+
+model Videos {
+  id                Int         @id @default(autoincrement())
+  pid               String      @unique @db.Uuid
+  user_id           Int
+  title             String
+  user_prompt       String
+  sys_prompt        String
+  negative_prompt   String?
+  alt               String
+  duration          Int         @default(8)
+  enhance_prompt    Boolean     @default(false)
+  generate_audio    Boolean     @default(true)
+  seed              Int?
+  status            Status
+  aspect_ratio      AspectRatio
+  video_cost        Int         @default(80)
+  fal_ai_request_id String?     @db.VarChar(255)
+  video_s3_key      String      @db.VarChar(255)
+  thumbnail_s3_key  String      @db.VarChar(255)
+  video_url_fal     String?
+  is_favorite       Boolean     @default(false)
+  deleted_at        DateTime?   @db.Timestamptz
+  created_at        DateTime    @default(now()) @db.Timestamptz
+  updated_at        DateTime    @default(now()) @db.Timestamptz
+
+  user Users @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([pid], name: "idx-video-pid")
+  @@index([user_id], name: "idx-video-user_id")
+  @@index([fal_ai_request_id], name: "idx-fal_ai_request_id-video")
 }
 
 model Plans {
@@ -479,6 +512,14 @@ enum ImageSize {
   Landscape169
 
   @@map("image_size")
+}
+
+enum AspectRatio {
+  Widescreen
+  Portrait
+  Square
+
+  @@map("aspect_ratio")
 }
 
 enum ImageFormat {

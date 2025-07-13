@@ -1,0 +1,230 @@
+{% set image_sizes = options.website.website_fields.image_sizes %} {% set quality_models =
+options.website.website_fields.quality_model %} {% set training_models = options.training_models %}
+{% set lang = options.language %}
+
+<form
+  x-data="{ selectedModelName: '' }"
+  x-init="
+    $store.videoGenForm.init();
+    $nextTick(() => {
+        if ($refs.modelSelect) {
+            $store.videoGenForm.selectedModelId = $refs.modelSelect.value || '';
+            selectedModelName = $refs.modelSelect.options[$refs.modelSelect.selectedIndex]?.text;
+        } else {
+            selectedModelName = '';
+        }
+    });
+  "
+  @submit.prevent="$store.videoGenForm.handleCreateRequest($event)"
+  class="fixed bottom-4 left-1/2 -translate-x-1/2 w-full max-w-[calc(100%-2rem)] sm:w-[32rem] md:w-[40rem] lg:w-[48rem] z-10"
+>
+  <div class="rounded-lg border border-base-300 bg-base-100 shadow-lg flex flex-col">
+    <div class="w-full max-w-full px-4 rounded-t-lg">
+      <label for="name" class="sr-only"></label>
+      <input
+        type="text"
+        id="name"
+        name="name"
+        class="block w-full resize-none min-h-[50px] max-h-[200px] px-0 text-sm bg-transparent border-0 focus:ring-0 focus:outline-none text-base-content placeholder-base-content/60 overflow-auto"
+        :disabled="$store.videoGenForm.isLoading"
+        placeholder="Video Title"
+      />
+    </div>
+    <div class="border-b border-gray-200"></div>
+    <div class="w-full max-w-full px-4 py-2 rounded-t-lg">
+      <label for="prompt" class="sr-only"
+        >{{ t(key="create-image-form-prompt-label", lang=lang) }}</label
+      >
+      <textarea
+        id="prompt"
+        name="prompt"
+        rows="1"
+        class="block w-full resize-none min-h-[50px] max-h-[200px] px-0 text-sm bg-transparent border-0 focus:ring-0 focus:outline-none text-base-content placeholder-base-content/60 overflow-auto"
+        placeholder="Describe the video you want to create..."
+        required
+        :disabled="$store.videoGenForm.isLoading"
+        oninput="autoResize(this)"
+      ></textarea>
+      <script>
+        function autoResize(textarea) {
+          textarea.style.height = "auto";
+          textarea.style.height = Math.min(textarea.scrollHeight, 200) + "px";
+        }
+
+        // Optional: trigger resize on page load if value is prefilled
+        document.addEventListener("DOMContentLoaded", () => {
+          const textarea = document.getElementById("prompt");
+          if (textarea && textarea.value.trim() !== "") {
+            autoResize(textarea);
+          }
+        });
+      </script>
+    </div>
+
+    <!-- Inner Form -->
+    <div
+      id="advanced-options"
+      x-show="$store.videoGenForm.advancedOptionsOpen"
+      x-transition
+      class="px-4 pt-3 pb-2 border-t border-base-300"
+    >
+      <h3 class="text-xs text-center font-semibold text-base-content/80 md:col-span-2">
+        {{ t(key="create-image-form-advanced-options-title", lang=lang) }}
+      </h3>
+
+      <div class="w-full max-w-full px-4 rounded-t-lg">
+        <label for="negative_prompt" class="sr-only"
+          >{{ t(key="create-image-form-prompt-label", lang=lang) }}</label
+        >
+        <textarea
+          id="negative_prompt"
+          name="negative_prompt"
+          rows="1"
+          class="block w-full resize-none min-h-[50px] max-h-[200px] px-0 text-sm bg-transparent border-0 focus:ring-0 focus:outline-none text-base-content placeholder-base-content/60 overflow-auto"
+          placeholder="Describe what you don't want in the video..."
+          :disabled="$store.videoGenForm.isLoading"
+          oninput="autoResize(this)"
+        ></textarea>
+        <script>
+          function autoResize(textarea) {
+            textarea.style.height = "auto";
+            textarea.style.height = Math.min(textarea.scrollHeight, 100) + "px";
+          }
+
+          // Optional: trigger resize on page load if value is prefilled
+          document.addEventListener("DOMContentLoaded", () => {
+            const textarea = document.getElementById("negative_prompt");
+            if (textarea && textarea.value.trim() !== "") {
+              autoResize(textarea);
+            }
+          });
+        </script>
+      </div>
+
+      <div
+        id="advanced-options"
+        x-show="$store.videoGenForm.advancedOptionsOpen"
+        x-transition
+        class="px-4 pt-3 pb-2 border-t border-base-300 grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-4"
+      >
+        <div>
+          <label for="aspect_ratio" class="block text-xs mb-1 text-base-content/70"
+            >Aspect Ratio</label
+          >
+          <select
+            id="aspect_ratio"
+            name="aspect_ratio"
+            class="select select-bordered select-sm w-full bg-base-100"
+            :disabled="$store.videoGenForm.isLoading"
+          >
+            <option value="widescreen" selected>Widescreen</option>
+            <option value="portrait">Portrait</option>
+            <option value="square">Square</option>
+          </select>
+        </div>
+
+        <div class="flex flex-col items-center">
+          <label class="block text-xs mb-1 text-base-content/70 text-center">
+            Video length in Seconds
+          </label>
+          <input type="hidden" name="duration" x-model="$store.videoGenForm.duration" />
+          <div class="flex items-center space-x-2">
+            <!-- Decrease Button -->
+            <button
+              type="button"
+              class="btn btn-sm btn-outline join-item"
+              aria-label="{{ t(key='create-image-form-aria-decrease-images', lang=lang) }}"
+              :disabled="$store.videoGenForm.duration <= 1 || $store.videoGenForm.isLoading"
+              x-on:click="$store.videoGenForm.decrementDurations()"
+            >
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                viewBox="0 0 24 24"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15" />
+              </svg>
+            </button>
+
+            <!-- Value Display -->
+            <span
+              class="input input-sm input-bordered w-12 text-center tabular-nums bg-base-100 join-item"
+              x-text="$store.videoGenForm.duration"
+            ></span>
+
+            <!-- Increase Button -->
+            <button
+              type="button"
+              class="btn btn-sm btn-outline join-item"
+              aria-label="{{ t(key='create-image-form-aria-increase-images', lang=lang) }}"
+              :disabled="$store.videoGenForm.numImages >= 15 || $store.videoGenForm.isLoading"
+              x-on:click="$store.videoGenForm.incrementDurations()"
+            >
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                viewBox="0 0 24 24"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Inner Form -->
+
+    <div class="flex items-center justify-between px-3 py-2">
+      <button
+        type="button"
+        id="toggle-advanced-options"
+        class="btn btn-ghost btn-square btn-sm"
+        aria-label="{{ t(key='create-image-form-aria-toggle-advanced', lang=lang) }}"
+        aria-controls="advanced-options"
+        x-on:click="$store.videoGenForm.toggleAdvancedOptions()"
+        :aria-expanded="$store.videoGenForm.advancedOptionsOpen.toString()"
+        :disabled="$store.videoGenForm.isLoading"
+      >
+        <svg
+          class="w-5 h-5"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"
+          />
+        </svg>
+      </button>
+
+      <div class="mt-4 flex items-center justify-between text-gray-500">
+        <label class="cursor-pointer flex items-center gap-2" for="generate_audio">
+          <input
+            type="checkbox"
+            class="checkbox checkbox-accent checkbox-sm"
+            checked
+            id="generate_audio"
+            name="generate_audio"
+          />
+          <span class="text-sm">Generate with Audio</span>
+        </label>
+      </div>
+
+      <button type="submit" class="btn btn-accent btn-sm" :disabled="$store.videoGenForm.isLoading">
+        <span
+          x-show="$store.videoGenForm.isLoading"
+          class="loading loading-spinner loading-xs"
+        ></span>
+        <span x-show="!$store.videoGenForm.isLoading">Create Video</span>
+      </button>
+    </div>
+  </div>
+</form>

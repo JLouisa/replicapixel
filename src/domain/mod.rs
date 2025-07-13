@@ -1,4 +1,5 @@
 pub mod cookie;
+pub mod dal;
 pub mod dashboard_sidebar;
 pub mod domain_services;
 pub mod error;

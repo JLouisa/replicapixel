@@ -1,11 +1,18 @@
 pub use super::_entities::user_credits::{ActiveModel, Entity, Model};
 use sea_orm::entity::prelude::*;
 pub type UserCredits = Entity;
-use super::{
-    TransactionModel, UserModel, _entities::user_credits, images::ImageNewList, ImageModel,
-};
+use super::{TransactionModel, UserModel, _entities::user_credits, images::ImageNewList};
 use loco_rs::prelude::*;
 use serde::Serialize;
+
+pub trait CostCreditsTrait {
+    fn cost(&self) -> i32;
+}
+
+pub trait AddCreditsTrait {
+    fn credits(&self) -> i32;
+    fn model(&self) -> i32;
+}
 
 pub struct UserCreditsInit {
     pub pid: Uuid,
@@ -187,12 +194,36 @@ impl Model {
         let credit = new.update(db).await?;
         Ok(credit)
     }
-    pub async fn failed_update_credits_image(
+    pub async fn add_credits(
         self,
         db: &impl ConnectionTrait,
-        image: &ImageModel,
+        plan: &impl AddCreditsTrait,
     ) -> ModelResult<Model> {
-        let new_credit_amount = self.credit_amount.clone() + image.image_cost;
+        let new_credit_amount = self.credit_amount.clone() + plan.credits();
+        let new_model_amount = self.model_amount.clone() + plan.model();
+        let mut new = ActiveModel::from(self);
+        new.credit_amount = ActiveValue::set(new_credit_amount);
+        new.model_amount = ActiveValue::set(new_model_amount);
+        let credit = new.update(db).await?;
+        Ok(credit)
+    }
+    pub async fn deduct_credits(
+        self,
+        db: &impl ConnectionTrait,
+        item: &impl CostCreditsTrait,
+    ) -> ModelResult<Model> {
+        let new_credit_amount = self.credit_amount.clone() - item.cost();
+        let mut new = ActiveModel::from(self);
+        new.credit_amount = ActiveValue::set(new_credit_amount);
+        let credit = new.update(db).await?;
+        Ok(credit)
+    }
+    pub async fn failed_update_credits(
+        self,
+        db: &impl ConnectionTrait,
+        item: &impl CostCreditsTrait,
+    ) -> ModelResult<Model> {
+        let new_credit_amount = self.credit_amount.clone() + item.cost();
         let mut new = ActiveModel::from(self);
         new.credit_amount = ActiveValue::set(new_credit_amount);
         let credit = new.update(db).await?;

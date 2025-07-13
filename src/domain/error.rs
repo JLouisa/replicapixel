@@ -1,4 +1,4 @@
-use super::domain_services::image_generation::ImageGenerationError;
+use super::domain_services::image_generation::MediaGenerationError;
 use crate::{
     domain::cookie::CookieError,
     models::join::user_credits_models::JoinError,
@@ -152,6 +152,10 @@ impl From<JoinError> for LocoError {
                 StatusCode::NOT_FOUND,
                 ErrorDetail::new("ImageNotFound", "Image Not Found"),
             ),
+            JoinError::VideoNotFound(_) => LocoError::CustomError(
+                StatusCode::NOT_FOUND,
+                ErrorDetail::new("VideoNotFound", "Video Not Found"),
+            ),
             JoinError::TrainingModelNotFound(_) => LocoError::CustomError(
                 StatusCode::NOT_FOUND,
                 ErrorDetail::new("TrainingNotFound", "Model Not Found"),
@@ -173,28 +177,28 @@ impl From<JoinError> for LocoError {
 }
 
 // Implement conversion from our Domain Error to Loco's Error
-impl From<ImageGenerationError> for loco_rs::Error {
-    fn from(err: ImageGenerationError) -> Self {
+impl From<MediaGenerationError> for loco_rs::Error {
+    fn from(err: MediaGenerationError) -> Self {
         match err {
-            ImageGenerationError::Unauthorized => loco_rs::Error::Unauthorized(err.to_string()),
-            ImageGenerationError::InsufficientCredits => {
+            MediaGenerationError::Unauthorized => loco_rs::Error::Unauthorized(err.to_string()),
+            MediaGenerationError::InsufficientCredits => {
                 loco_rs::Error::BadRequest(err.to_string())
             }
-            ImageGenerationError::ModelNotFound | ImageGenerationError::UserNotFound => {
+            MediaGenerationError::ModelNotFound | MediaGenerationError::UserNotFound => {
                 loco_rs::Error::NotFound
             }
-            ImageGenerationError::UserCreditsNotFound => loco_rs::Error::NotFound,
-            ImageGenerationError::FalAiClientErr(e) => loco_rs::Error::CustomError(
+            MediaGenerationError::UserCreditsNotFound => loco_rs::Error::NotFound,
+            MediaGenerationError::FalAiClientErr(e) => loco_rs::Error::CustomError(
                 StatusCode::INTERNAL_SERVER_ERROR,
                 ErrorDetail::new("Error", &e.to_string()),
             ),
-            ImageGenerationError::DatabaseError(db_err) => loco_rs::Error::DB(db_err),
-            ImageGenerationError::ConfigError(msg) => loco_rs::Error::CustomError(
+            MediaGenerationError::DatabaseError(db_err) => loco_rs::Error::DB(db_err),
+            MediaGenerationError::ConfigError(msg) => loco_rs::Error::CustomError(
                 StatusCode::PAYMENT_REQUIRED,
                 ErrorDetail::new("".to_string(), msg.into()),
             ),
-            ImageGenerationError::CreditUpdateError(_) => loco_rs::Error::InternalServerError,
-            ImageGenerationError::ModelError(model_err) => model_err.into(),
+            MediaGenerationError::CreditUpdateError(_) => loco_rs::Error::InternalServerError,
+            MediaGenerationError::ModelError(model_err) => model_err.into(),
         }
     }
 }
@@ -226,6 +230,10 @@ impl From<FalAiClientError> for loco_rs::Error {
             FalAiClientError::SerdeErr(err) => loco_rs::Error::CustomError(
                 StatusCode::INTERNAL_SERVER_ERROR,
                 ErrorDetail::new("Serde Error", &err.to_string()),
+            ),
+            FalAiClientError::FalApiError(err) => loco_rs::Error::CustomError(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                ErrorDetail::new("Error", &err.to_string()),
             ),
         }
     }

@@ -88,7 +88,8 @@ loco-oauth2 = "0.4.1"
 google-oauth = "1.11.3"
 sitemap = "0.4.1"
 accept-language = "3.1.0"
-
+tokio-retry = "0.3.0"
+itertools = "0.14.0"
 hex = "0.4.3"
 sha2 = "0.10.9"
 

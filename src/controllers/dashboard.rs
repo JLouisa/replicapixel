@@ -2,6 +2,7 @@
 #![allow(clippy::unnecessary_struct_initialization)]
 #![allow(clippy::unused_async)]
 use crate::controllers::auth::HxRedirect;
+use crate::domain::dal::load_first_videos;
 use crate::domain::features::FeatureViewList;
 use crate::domain::website::{Website, WebsiteOptions};
 use crate::middleware::cookie::ExtractConsentState;
@@ -37,6 +38,7 @@ use serde::{Deserialize, Serialize};
 use crate::controllers::auth::routes as AuthRoutes;
 
 use std::collections::HashMap;
+use tokio::join;
 
 pub mod routes {
     use serde::{Deserialize, Serialize};
@@ -78,6 +80,8 @@ pub mod routes {
         pub training_models_partial: String,
         pub packs: String,
         pub packs_partial: String,
+        pub video: String,
+        pub video_partial: String,
         pub photo: String,
         pub photo_partial: String,
         pub album_favorite: String,
@@ -102,6 +106,8 @@ pub mod routes {
                 ),
                 packs: format!("{}{}", Dashboard::BASE, Dashboard::PACKS),
                 packs_partial: format!("{}{}", Dashboard::BASE, Dashboard::PACKS_PARTIAL),
+                video: format!("{}{}", Dashboard::BASE, Dashboard::VIDEO),
+                video_partial: format!("{}{}", Dashboard::BASE, Dashboard::VIDEO_PARTIAL),
                 photo: format!("{}{}", Dashboard::BASE, Dashboard::PHOTO),
                 photo_partial: format!("{}{}", Dashboard::BASE, Dashboard::PHOTO_PARTIAL),
                 album_favorite: format!("{}{}", Dashboard::BASE, Dashboard::ALBUM_FAVORITE),
@@ -152,6 +158,8 @@ pub mod routes {
         pub const BILLING: &'static str = "/billing";
         pub const BILLING_PARTIAL: &'static str = "/partial/billing";
         pub const BILLING_NEW: &'static str = "/billing?partial={enum_htmx}";
+        pub const VIDEO: &'static str = "/video";
+        pub const VIDEO_PARTIAL: &'static str = "/partial/video";
 
         pub const DASHBOARD_TEST_SET: &'static str = "/test/set";
         pub const DASHBOARD_TEST_GET: &'static str = "/test/get";
@@ -210,6 +218,11 @@ pub fn routes() -> Routes {
             get(billing_partial_dashboard_new),
         )
         .add(routes::Dashboard::BILLING, get(billing_dashboard_new))
+        .add(routes::Dashboard::VIDEO, get(video_dashboard))
+        .add(
+            routes::Dashboard::VIDEO_PARTIAL,
+            get(video_partial_dashboard),
+        )
         .add(routes::Dashboard::DASHBOARD_TEST, post(dashboard_test))
         .add(
             routes::Dashboard::CREATE_TRAINING_MODELS,
@@ -307,6 +320,89 @@ pub enum CurrentPage {
     Deleted,
     Favorite,
     Album,
+    Video,
+}
+
+#[debug_handler]
+pub async fn video_dashboard(
+    auth: Result<auth::JWT>,
+    ExtractConsentState(cc_cookie): ExtractConsentState,
+    State(ctx): State<AppContext>,
+    Extension(s3_client): Extension<AwsS3>,
+    Extension(cache): Extension<RedisCacheDriver>,
+    Extension(website): Extension<Website>,
+    ViewEngine(view_engine): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
+) -> Result<impl IntoResponse> {
+    let user_pid = match auth {
+        Ok(auth) => UserPid::new(&auth.claims.pid),
+        Err(_) => {
+            return Ok(Redirect::to(AuthRoutes::Auth::LOGIN).into_response());
+        }
+    };
+    let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
+    let (training_models_result, videos_result) = join!(
+        load_item_all_completed(&ctx, user.id),
+        load_first_videos(&ctx.db, user.id, false, false)
+    );
+    let training_models = training_models_result?;
+    let videos_raw = videos_result?;
+    let videos = videos_raw.into_view(&cache, &s3_client).await;
+
+    dbg!(&videos);
+
+    let website_options: WebsiteOptions = WebsiteOptions::new()
+        .website(&website)
+        .language(&lang)
+        .cc_cookie(&cc_cookie)
+        .user(user.into())
+        .user_credits(user_credits.into())
+        .training_models(training_models.into())
+        .videos(&videos)
+        .current_page(CurrentPage::Video)
+        .is_initial_load()
+        .build();
+
+    Ok(views::dashboard::video_dashboard(view_engine, &website_options).into_response())
+}
+
+#[debug_handler]
+pub async fn video_partial_dashboard(
+    auth: Result<auth::JWT>,
+    State(ctx): State<AppContext>,
+    Extension(s3_client): Extension<AwsS3>,
+    Extension(cache): Extension<RedisCacheDriver>,
+    Extension(website): Extension<Website>,
+    ViewEngine(view_engine): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
+) -> Result<impl IntoResponse> {
+    let user_pid = match auth {
+        Ok(auth) => UserPid::new(&auth.claims.pid),
+        Err(_) => {
+            return Ok(HxRedirect::login().into_response());
+        }
+    };
+    let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
+    let (training_models_result, videos_result) = join!(
+        load_item_all_completed(&ctx, user.id),
+        load_first_videos(&ctx.db, user.id, false, false)
+    );
+    let training_models = training_models_result?;
+    let videos_raw = videos_result?;
+    let videos = videos_raw.into_view(&cache, &s3_client).await;
+
+    let website_options: WebsiteOptions = WebsiteOptions::new()
+        .website(&website)
+        .language(&lang)
+        .user(user.into())
+        .user_credits(user_credits.into())
+        .training_models(training_models.into())
+        .videos(&videos)
+        .current_page(CurrentPage::Video)
+        .is_initial_load()
+        .build();
+
+    Ok(views::dashboard::video_partial_dashboard(view_engine, &website_options).into_response())
 }
 
 #[debug_handler]

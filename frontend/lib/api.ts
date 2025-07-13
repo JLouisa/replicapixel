@@ -7,6 +7,7 @@ import type { TrainingModelFormClass } from "./type/trainingModelForm";
 import type { ImageGenForm } from "./type/ImageGenForm";
 import Alpine from "alpinejs";
 import { getBaseUrl } from "./utils";
+import type { VideoGenFormClass } from "./type/videoGenForm";
 
 const DEFAULT_BASE_URL = getBaseUrl();
 console.log("Base Url", DEFAULT_BASE_URL);
@@ -14,6 +15,7 @@ console.log("Base Url", DEFAULT_BASE_URL);
 enum Api {
   Upload = "/api/models",
   Image = "/api/images",
+  Video = "/api/videos",
   Dashboard = "/studio",
 }
 
@@ -36,10 +38,15 @@ const BackendUrl = {
     Base: Api.Image,
     GenerateImage: Api.Image + "/generate",
   },
+  Video: {
+    Base: Api.Video,
+    GenerateVideo: Api.Video + "/generate/test",
+  },
   Dashboard: {
     Base: Api.Dashboard,
     trainingModelPartial: Api.Dashboard + "/partial/models",
     trainingModel: Api.Dashboard + "/models",
+    video: Api.Dashboard + "/video",
   },
 };
 
@@ -376,6 +383,47 @@ export const DAL = {
               target,
               swapStyle
             );
+          } catch (error) {
+            return DAL.handleError(
+              "Something went wrong generating image. Code: 1000",
+              error,
+              false
+            );
+          }
+        },
+      },
+      VideoGeneration: {
+        async generateVideo(payload: VideoGenFormClass) {
+          const url = BackendUrl.Video.GenerateVideo;
+          const target = "drive-gallery";
+          const swap = "afterbegin";
+
+          try {
+            const response = await fetch(url, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(payload),
+            });
+
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            // Get the HTML response as text
+            const html = await response.text();
+
+            // Main Swap
+            const mainTargetElement = document.getElementById(target);
+            if (!mainTargetElement) {
+              console.error(`Target element ${target} not found!`);
+              DAL.Toast.error("An unexpected error occurred (gallery missing). Refresh the page.");
+              return;
+            }
+
+            // Perform the main swap with the remaining content
+            window.htmx.swap(mainTargetElement, html, { swap });
           } catch (error) {
             return DAL.handleError(
               "Something went wrong generating image. Code: 1000",

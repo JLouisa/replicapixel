@@ -31,6 +31,8 @@ pub enum JoinError {
     ParseIdError(#[from] uuid::Error),
     #[error("User not found for PID: {0}")]
     ImageNotFound(String),
+    #[error("User not found for PID: {0}")]
+    VideoNotFound(String),
     #[error("Training not found for ID: {0}")]
     TrainingModelNotFound(Uuid),
     #[error("Training not found for PID: {0}")]

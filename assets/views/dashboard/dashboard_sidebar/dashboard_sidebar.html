@@ -18,6 +18,8 @@
 {% set settings_link = options.website.website_routes.dashboard_routes.sidebar.settings %}
 {% set logout_partial_link = options.website.website_routes.auth_routes.logout_partial %}
 {% set login_link = options.website.website_routes.auth_routes.login %}
+{% set video_link = options.website.website_routes.dashboard_routes.sidebar.video %}
+{% set video_link_partial = options.website.website_routes.dashboard_routes.sidebar.video_partial %}
 
 <aside
   class="hidden sm:flex flex-col items-center text-gray-700 shadow h-full mt-8"
@@ -122,6 +124,24 @@
         {% include "partials/svg/trash.html" %}
       </a>
     </li>
+    <!-- Video Section -->
+    <li
+      class="text-base-content tooltip tooltip-right"
+      data-tip='{{ t(key="sidebar-tooltip-video-soon", lang=lang) }}'
+      :class="active === 'videos' ? 'bg-base-300' : 'hover:bg-base-300'"
+    >
+      <a
+        hx-get="{{ video_link_partial | safe }}"
+        hx-target="#dashboard_content"
+        hx-push-url="{{ video_link | safe }}"
+        hx-swap="innerHTML"
+        preload="mouseover"
+        class="h-16 px-6 flex justify-center items-center w-full cursor-pointer"
+        @click="active = 'videos'"
+      >
+        {% include "partials/svg/video.html" %}
+      </a>
+    </li>
     <!-- Features Section -->
     <li
       class="text-base-content tooltip tooltip-right"
@@ -140,18 +160,8 @@
         {% include "partials/svg/feedback.html" %}
       </a>
     </li>
+
     {#
-    <!-- Todo Video Section -->
-    <li
-      class="relative text-base-content tooltip tooltip-right bg-gray-700 cursor-not-allowed opacity-50 z-10"
-      data-tip='{{ t(key="sidebar-tooltip-video-soon", lang=lang) }}'
-      aria-label='{{ t(key="sidebar-tooltip-video-soon", lang=lang) }}'
-    >
-      <div class="h-16 px-6 flex justify-center items-center w-full">
-        {% include "partials/svg/video.html" %}
-      </div>
-      <span class="absolute top-3 right-3 h-2.5 w-2.5 rounded-full bg-gray-200"></span>
-    </li>
     <!-- Todo Influencer Section -->
     <li
       class="relative text-base-content tooltip tooltip-right bg-gray-700 cursor-not-allowed opacity-50 z-10"

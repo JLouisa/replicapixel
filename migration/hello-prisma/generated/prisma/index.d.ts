@@ -39,6 +39,11 @@ export type UserCredits = $Result.DefaultSelection<Prisma.$UserCreditsPayload>
  */
 export type Images = $Result.DefaultSelection<Prisma.$ImagesPayload>
 /**
+ * Model Videos
+ * 
+ */
+export type Videos = $Result.DefaultSelection<Prisma.$VideosPayload>
+/**
  * Model Plans
  * 
  */
@@ -259,6 +264,15 @@ export const ImageSize: {
 export type ImageSize = (typeof ImageSize)[keyof typeof ImageSize]
 
 
+export const AspectRatio: {
+  Widescreen: 'Widescreen',
+  Portrait: 'Portrait',
+  Square: 'Square'
+};
+
+export type AspectRatio = (typeof AspectRatio)[keyof typeof AspectRatio]
+
+
 export const ImageFormat: {
   png: 'png',
   jpg: 'jpg',
@@ -328,6 +342,10 @@ export const Emotion: typeof $Enums.Emotion
 export type ImageSize = $Enums.ImageSize
 
 export const ImageSize: typeof $Enums.ImageSize
+
+export type AspectRatio = $Enums.AspectRatio
+
+export const AspectRatio: typeof $Enums.AspectRatio
 
 export type ImageFormat = $Enums.ImageFormat
 
@@ -507,6 +525,16 @@ export class PrismaClient<
     * ```
     */
   get images(): Prisma.ImagesDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.videos`: Exposes CRUD operations for the **Videos** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Videos
+    * const videos = await prisma.videos.findMany()
+    * ```
+    */
+  get videos(): Prisma.VideosDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.plans`: Exposes CRUD operations for the **Plans** model.
@@ -1072,6 +1100,7 @@ export namespace Prisma {
     TrainingModels: 'TrainingModels',
     UserCredits: 'UserCredits',
     Images: 'Images',
+    Videos: 'Videos',
     Plans: 'Plans',
     Plans_translations: 'Plans_translations',
     Packs: 'Packs',
@@ -1102,7 +1131,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "users" | "oAuth2Session" | "trainingModels" | "userCredits" | "images" | "plans" | "plans_translations" | "packs" | "packs_translations" | "transactions" | "handledStripeEvent" | "handledFalEvent" | "seaql_migrations" | "notification" | "userSettings" | "featureRequest" | "featureVote"
+      modelProps: "users" | "oAuth2Session" | "trainingModels" | "userCredits" | "images" | "videos" | "plans" | "plans_translations" | "packs" | "packs_translations" | "transactions" | "handledStripeEvent" | "handledFalEvent" | "seaql_migrations" | "notification" | "userSettings" | "featureRequest" | "featureVote"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1473,6 +1502,80 @@ export namespace Prisma {
           count: {
             args: Prisma.ImagesCountArgs<ExtArgs>
             result: $Utils.Optional<ImagesCountAggregateOutputType> | number
+          }
+        }
+      }
+      Videos: {
+        payload: Prisma.$VideosPayload<ExtArgs>
+        fields: Prisma.VideosFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.VideosFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VideosPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.VideosFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VideosPayload>
+          }
+          findFirst: {
+            args: Prisma.VideosFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VideosPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.VideosFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VideosPayload>
+          }
+          findMany: {
+            args: Prisma.VideosFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VideosPayload>[]
+          }
+          create: {
+            args: Prisma.VideosCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VideosPayload>
+          }
+          createMany: {
+            args: Prisma.VideosCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.VideosCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VideosPayload>[]
+          }
+          delete: {
+            args: Prisma.VideosDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VideosPayload>
+          }
+          update: {
+            args: Prisma.VideosUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VideosPayload>
+          }
+          deleteMany: {
+            args: Prisma.VideosDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.VideosUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.VideosUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VideosPayload>[]
+          }
+          upsert: {
+            args: Prisma.VideosUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VideosPayload>
+          }
+          aggregate: {
+            args: Prisma.VideosAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateVideos>
+          }
+          groupBy: {
+            args: Prisma.VideosGroupByArgs<ExtArgs>
+            result: $Utils.Optional<VideosGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.VideosCountArgs<ExtArgs>
+            result: $Utils.Optional<VideosCountAggregateOutputType> | number
           }
         }
       }
@@ -2453,6 +2556,7 @@ export namespace Prisma {
     trainingModels?: TrainingModelsOmit
     userCredits?: UserCreditsOmit
     images?: ImagesOmit
+    videos?: VideosOmit
     plans?: PlansOmit
     plans_translations?: Plans_translationsOmit
     packs?: PacksOmit
@@ -2562,6 +2666,7 @@ export namespace Prisma {
     TrainingModels: number
     UserCredits: number
     Images: number
+    Videos: number
     Transactions: number
     oAuth2Sessions: number
     notifications: number
@@ -2573,6 +2678,7 @@ export namespace Prisma {
     TrainingModels?: boolean | UsersCountOutputTypeCountTrainingModelsArgs
     UserCredits?: boolean | UsersCountOutputTypeCountUserCreditsArgs
     Images?: boolean | UsersCountOutputTypeCountImagesArgs
+    Videos?: boolean | UsersCountOutputTypeCountVideosArgs
     Transactions?: boolean | UsersCountOutputTypeCountTransactionsArgs
     oAuth2Sessions?: boolean | UsersCountOutputTypeCountOAuth2SessionsArgs
     notifications?: boolean | UsersCountOutputTypeCountNotificationsArgs
@@ -2610,6 +2716,13 @@ export namespace Prisma {
    */
   export type UsersCountOutputTypeCountImagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ImagesWhereInput
+  }
+
+  /**
+   * UsersCountOutputType without action
+   */
+  export type UsersCountOutputTypeCountVideosArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: VideosWhereInput
   }
 
   /**
@@ -3091,6 +3204,7 @@ export namespace Prisma {
     TrainingModels?: boolean | Users$TrainingModelsArgs<ExtArgs>
     UserCredits?: boolean | Users$UserCreditsArgs<ExtArgs>
     Images?: boolean | Users$ImagesArgs<ExtArgs>
+    Videos?: boolean | Users$VideosArgs<ExtArgs>
     Transactions?: boolean | Users$TransactionsArgs<ExtArgs>
     oAuth2Sessions?: boolean | Users$oAuth2SessionsArgs<ExtArgs>
     notifications?: boolean | Users$notificationsArgs<ExtArgs>
@@ -3165,6 +3279,7 @@ export namespace Prisma {
     TrainingModels?: boolean | Users$TrainingModelsArgs<ExtArgs>
     UserCredits?: boolean | Users$UserCreditsArgs<ExtArgs>
     Images?: boolean | Users$ImagesArgs<ExtArgs>
+    Videos?: boolean | Users$VideosArgs<ExtArgs>
     Transactions?: boolean | Users$TransactionsArgs<ExtArgs>
     oAuth2Sessions?: boolean | Users$oAuth2SessionsArgs<ExtArgs>
     notifications?: boolean | Users$notificationsArgs<ExtArgs>
@@ -3182,6 +3297,7 @@ export namespace Prisma {
       TrainingModels: Prisma.$TrainingModelsPayload<ExtArgs>[]
       UserCredits: Prisma.$UserCreditsPayload<ExtArgs>[]
       Images: Prisma.$ImagesPayload<ExtArgs>[]
+      Videos: Prisma.$VideosPayload<ExtArgs>[]
       Transactions: Prisma.$TransactionsPayload<ExtArgs>[]
       oAuth2Sessions: Prisma.$OAuth2SessionPayload<ExtArgs>[]
       notifications: Prisma.$NotificationPayload<ExtArgs>[]
@@ -3604,6 +3720,7 @@ export namespace Prisma {
     TrainingModels<T extends Users$TrainingModelsArgs<ExtArgs> = {}>(args?: Subset<T, Users$TrainingModelsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TrainingModelsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     UserCredits<T extends Users$UserCreditsArgs<ExtArgs> = {}>(args?: Subset<T, Users$UserCreditsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserCreditsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     Images<T extends Users$ImagesArgs<ExtArgs> = {}>(args?: Subset<T, Users$ImagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ImagesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    Videos<T extends Users$VideosArgs<ExtArgs> = {}>(args?: Subset<T, Users$VideosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VideosPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     Transactions<T extends Users$TransactionsArgs<ExtArgs> = {}>(args?: Subset<T, Users$TransactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     oAuth2Sessions<T extends Users$oAuth2SessionsArgs<ExtArgs> = {}>(args?: Subset<T, Users$oAuth2SessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OAuth2SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     notifications<T extends Users$notificationsArgs<ExtArgs> = {}>(args?: Subset<T, Users$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -4113,6 +4230,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ImagesScalarFieldEnum | ImagesScalarFieldEnum[]
+  }
+
+  /**
+   * Users.Videos
+   */
+  export type Users$VideosArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Videos
+     */
+    select?: VideosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Videos
+     */
+    omit?: VideosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VideosInclude<ExtArgs> | null
+    where?: VideosWhereInput
+    orderBy?: VideosOrderByWithRelationInput | VideosOrderByWithRelationInput[]
+    cursor?: VideosWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: VideosScalarFieldEnum | VideosScalarFieldEnum[]
   }
 
   /**
@@ -9290,6 +9431,1348 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: ImagesInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Videos
+   */
+
+  export type AggregateVideos = {
+    _count: VideosCountAggregateOutputType | null
+    _avg: VideosAvgAggregateOutputType | null
+    _sum: VideosSumAggregateOutputType | null
+    _min: VideosMinAggregateOutputType | null
+    _max: VideosMaxAggregateOutputType | null
+  }
+
+  export type VideosAvgAggregateOutputType = {
+    id: number | null
+    user_id: number | null
+    duration: number | null
+    seed: number | null
+    video_cost: number | null
+  }
+
+  export type VideosSumAggregateOutputType = {
+    id: number | null
+    user_id: number | null
+    duration: number | null
+    seed: number | null
+    video_cost: number | null
+  }
+
+  export type VideosMinAggregateOutputType = {
+    id: number | null
+    pid: string | null
+    user_id: number | null
+    title: string | null
+    user_prompt: string | null
+    sys_prompt: string | null
+    negative_prompt: string | null
+    alt: string | null
+    duration: number | null
+    enhance_prompt: boolean | null
+    generate_audio: boolean | null
+    seed: number | null
+    status: $Enums.Status | null
+    aspect_ratio: $Enums.AspectRatio | null
+    video_cost: number | null
+    fal_ai_request_id: string | null
+    video_s3_key: string | null
+    thumbnail_s3_key: string | null
+    video_url_fal: string | null
+    is_favorite: boolean | null
+    deleted_at: Date | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type VideosMaxAggregateOutputType = {
+    id: number | null
+    pid: string | null
+    user_id: number | null
+    title: string | null
+    user_prompt: string | null
+    sys_prompt: string | null
+    negative_prompt: string | null
+    alt: string | null
+    duration: number | null
+    enhance_prompt: boolean | null
+    generate_audio: boolean | null
+    seed: number | null
+    status: $Enums.Status | null
+    aspect_ratio: $Enums.AspectRatio | null
+    video_cost: number | null
+    fal_ai_request_id: string | null
+    video_s3_key: string | null
+    thumbnail_s3_key: string | null
+    video_url_fal: string | null
+    is_favorite: boolean | null
+    deleted_at: Date | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type VideosCountAggregateOutputType = {
+    id: number
+    pid: number
+    user_id: number
+    title: number
+    user_prompt: number
+    sys_prompt: number
+    negative_prompt: number
+    alt: number
+    duration: number
+    enhance_prompt: number
+    generate_audio: number
+    seed: number
+    status: number
+    aspect_ratio: number
+    video_cost: number
+    fal_ai_request_id: number
+    video_s3_key: number
+    thumbnail_s3_key: number
+    video_url_fal: number
+    is_favorite: number
+    deleted_at: number
+    created_at: number
+    updated_at: number
+    _all: number
+  }
+
+
+  export type VideosAvgAggregateInputType = {
+    id?: true
+    user_id?: true
+    duration?: true
+    seed?: true
+    video_cost?: true
+  }
+
+  export type VideosSumAggregateInputType = {
+    id?: true
+    user_id?: true
+    duration?: true
+    seed?: true
+    video_cost?: true
+  }
+
+  export type VideosMinAggregateInputType = {
+    id?: true
+    pid?: true
+    user_id?: true
+    title?: true
+    user_prompt?: true
+    sys_prompt?: true
+    negative_prompt?: true
+    alt?: true
+    duration?: true
+    enhance_prompt?: true
+    generate_audio?: true
+    seed?: true
+    status?: true
+    aspect_ratio?: true
+    video_cost?: true
+    fal_ai_request_id?: true
+    video_s3_key?: true
+    thumbnail_s3_key?: true
+    video_url_fal?: true
+    is_favorite?: true
+    deleted_at?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type VideosMaxAggregateInputType = {
+    id?: true
+    pid?: true
+    user_id?: true
+    title?: true
+    user_prompt?: true
+    sys_prompt?: true
+    negative_prompt?: true
+    alt?: true
+    duration?: true
+    enhance_prompt?: true
+    generate_audio?: true
+    seed?: true
+    status?: true
+    aspect_ratio?: true
+    video_cost?: true
+    fal_ai_request_id?: true
+    video_s3_key?: true
+    thumbnail_s3_key?: true
+    video_url_fal?: true
+    is_favorite?: true
+    deleted_at?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type VideosCountAggregateInputType = {
+    id?: true
+    pid?: true
+    user_id?: true
+    title?: true
+    user_prompt?: true
+    sys_prompt?: true
+    negative_prompt?: true
+    alt?: true
+    duration?: true
+    enhance_prompt?: true
+    generate_audio?: true
+    seed?: true
+    status?: true
+    aspect_ratio?: true
+    video_cost?: true
+    fal_ai_request_id?: true
+    video_s3_key?: true
+    thumbnail_s3_key?: true
+    video_url_fal?: true
+    is_favorite?: true
+    deleted_at?: true
+    created_at?: true
+    updated_at?: true
+    _all?: true
+  }
+
+  export type VideosAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Videos to aggregate.
+     */
+    where?: VideosWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Videos to fetch.
+     */
+    orderBy?: VideosOrderByWithRelationInput | VideosOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: VideosWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Videos from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Videos.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Videos
+    **/
+    _count?: true | VideosCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: VideosAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: VideosSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: VideosMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: VideosMaxAggregateInputType
+  }
+
+  export type GetVideosAggregateType<T extends VideosAggregateArgs> = {
+        [P in keyof T & keyof AggregateVideos]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateVideos[P]>
+      : GetScalarType<T[P], AggregateVideos[P]>
+  }
+
+
+
+
+  export type VideosGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: VideosWhereInput
+    orderBy?: VideosOrderByWithAggregationInput | VideosOrderByWithAggregationInput[]
+    by: VideosScalarFieldEnum[] | VideosScalarFieldEnum
+    having?: VideosScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: VideosCountAggregateInputType | true
+    _avg?: VideosAvgAggregateInputType
+    _sum?: VideosSumAggregateInputType
+    _min?: VideosMinAggregateInputType
+    _max?: VideosMaxAggregateInputType
+  }
+
+  export type VideosGroupByOutputType = {
+    id: number
+    pid: string
+    user_id: number
+    title: string
+    user_prompt: string
+    sys_prompt: string
+    negative_prompt: string | null
+    alt: string
+    duration: number
+    enhance_prompt: boolean
+    generate_audio: boolean
+    seed: number | null
+    status: $Enums.Status
+    aspect_ratio: $Enums.AspectRatio
+    video_cost: number
+    fal_ai_request_id: string | null
+    video_s3_key: string
+    thumbnail_s3_key: string
+    video_url_fal: string | null
+    is_favorite: boolean
+    deleted_at: Date | null
+    created_at: Date
+    updated_at: Date
+    _count: VideosCountAggregateOutputType | null
+    _avg: VideosAvgAggregateOutputType | null
+    _sum: VideosSumAggregateOutputType | null
+    _min: VideosMinAggregateOutputType | null
+    _max: VideosMaxAggregateOutputType | null
+  }
+
+  type GetVideosGroupByPayload<T extends VideosGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<VideosGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof VideosGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], VideosGroupByOutputType[P]>
+            : GetScalarType<T[P], VideosGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type VideosSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    pid?: boolean
+    user_id?: boolean
+    title?: boolean
+    user_prompt?: boolean
+    sys_prompt?: boolean
+    negative_prompt?: boolean
+    alt?: boolean
+    duration?: boolean
+    enhance_prompt?: boolean
+    generate_audio?: boolean
+    seed?: boolean
+    status?: boolean
+    aspect_ratio?: boolean
+    video_cost?: boolean
+    fal_ai_request_id?: boolean
+    video_s3_key?: boolean
+    thumbnail_s3_key?: boolean
+    video_url_fal?: boolean
+    is_favorite?: boolean
+    deleted_at?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["videos"]>
+
+  export type VideosSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    pid?: boolean
+    user_id?: boolean
+    title?: boolean
+    user_prompt?: boolean
+    sys_prompt?: boolean
+    negative_prompt?: boolean
+    alt?: boolean
+    duration?: boolean
+    enhance_prompt?: boolean
+    generate_audio?: boolean
+    seed?: boolean
+    status?: boolean
+    aspect_ratio?: boolean
+    video_cost?: boolean
+    fal_ai_request_id?: boolean
+    video_s3_key?: boolean
+    thumbnail_s3_key?: boolean
+    video_url_fal?: boolean
+    is_favorite?: boolean
+    deleted_at?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["videos"]>
+
+  export type VideosSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    pid?: boolean
+    user_id?: boolean
+    title?: boolean
+    user_prompt?: boolean
+    sys_prompt?: boolean
+    negative_prompt?: boolean
+    alt?: boolean
+    duration?: boolean
+    enhance_prompt?: boolean
+    generate_audio?: boolean
+    seed?: boolean
+    status?: boolean
+    aspect_ratio?: boolean
+    video_cost?: boolean
+    fal_ai_request_id?: boolean
+    video_s3_key?: boolean
+    thumbnail_s3_key?: boolean
+    video_url_fal?: boolean
+    is_favorite?: boolean
+    deleted_at?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["videos"]>
+
+  export type VideosSelectScalar = {
+    id?: boolean
+    pid?: boolean
+    user_id?: boolean
+    title?: boolean
+    user_prompt?: boolean
+    sys_prompt?: boolean
+    negative_prompt?: boolean
+    alt?: boolean
+    duration?: boolean
+    enhance_prompt?: boolean
+    generate_audio?: boolean
+    seed?: boolean
+    status?: boolean
+    aspect_ratio?: boolean
+    video_cost?: boolean
+    fal_ai_request_id?: boolean
+    video_s3_key?: boolean
+    thumbnail_s3_key?: boolean
+    video_url_fal?: boolean
+    is_favorite?: boolean
+    deleted_at?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }
+
+  export type VideosOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pid" | "user_id" | "title" | "user_prompt" | "sys_prompt" | "negative_prompt" | "alt" | "duration" | "enhance_prompt" | "generate_audio" | "seed" | "status" | "aspect_ratio" | "video_cost" | "fal_ai_request_id" | "video_s3_key" | "thumbnail_s3_key" | "video_url_fal" | "is_favorite" | "deleted_at" | "created_at" | "updated_at", ExtArgs["result"]["videos"]>
+  export type VideosInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }
+  export type VideosIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }
+  export type VideosIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UsersDefaultArgs<ExtArgs>
+  }
+
+  export type $VideosPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Videos"
+    objects: {
+      user: Prisma.$UsersPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      pid: string
+      user_id: number
+      title: string
+      user_prompt: string
+      sys_prompt: string
+      negative_prompt: string | null
+      alt: string
+      duration: number
+      enhance_prompt: boolean
+      generate_audio: boolean
+      seed: number | null
+      status: $Enums.Status
+      aspect_ratio: $Enums.AspectRatio
+      video_cost: number
+      fal_ai_request_id: string | null
+      video_s3_key: string
+      thumbnail_s3_key: string
+      video_url_fal: string | null
+      is_favorite: boolean
+      deleted_at: Date | null
+      created_at: Date
+      updated_at: Date
+    }, ExtArgs["result"]["videos"]>
+    composites: {}
+  }
+
+  type VideosGetPayload<S extends boolean | null | undefined | VideosDefaultArgs> = $Result.GetResult<Prisma.$VideosPayload, S>
+
+  type VideosCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<VideosFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: VideosCountAggregateInputType | true
+    }
+
+  export interface VideosDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Videos'], meta: { name: 'Videos' } }
+    /**
+     * Find zero or one Videos that matches the filter.
+     * @param {VideosFindUniqueArgs} args - Arguments to find a Videos
+     * @example
+     * // Get one Videos
+     * const videos = await prisma.videos.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends VideosFindUniqueArgs>(args: SelectSubset<T, VideosFindUniqueArgs<ExtArgs>>): Prisma__VideosClient<$Result.GetResult<Prisma.$VideosPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Videos that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {VideosFindUniqueOrThrowArgs} args - Arguments to find a Videos
+     * @example
+     * // Get one Videos
+     * const videos = await prisma.videos.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends VideosFindUniqueOrThrowArgs>(args: SelectSubset<T, VideosFindUniqueOrThrowArgs<ExtArgs>>): Prisma__VideosClient<$Result.GetResult<Prisma.$VideosPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Videos that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VideosFindFirstArgs} args - Arguments to find a Videos
+     * @example
+     * // Get one Videos
+     * const videos = await prisma.videos.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends VideosFindFirstArgs>(args?: SelectSubset<T, VideosFindFirstArgs<ExtArgs>>): Prisma__VideosClient<$Result.GetResult<Prisma.$VideosPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Videos that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VideosFindFirstOrThrowArgs} args - Arguments to find a Videos
+     * @example
+     * // Get one Videos
+     * const videos = await prisma.videos.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends VideosFindFirstOrThrowArgs>(args?: SelectSubset<T, VideosFindFirstOrThrowArgs<ExtArgs>>): Prisma__VideosClient<$Result.GetResult<Prisma.$VideosPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Videos that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VideosFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Videos
+     * const videos = await prisma.videos.findMany()
+     * 
+     * // Get first 10 Videos
+     * const videos = await prisma.videos.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const videosWithIdOnly = await prisma.videos.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends VideosFindManyArgs>(args?: SelectSubset<T, VideosFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VideosPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Videos.
+     * @param {VideosCreateArgs} args - Arguments to create a Videos.
+     * @example
+     * // Create one Videos
+     * const Videos = await prisma.videos.create({
+     *   data: {
+     *     // ... data to create a Videos
+     *   }
+     * })
+     * 
+     */
+    create<T extends VideosCreateArgs>(args: SelectSubset<T, VideosCreateArgs<ExtArgs>>): Prisma__VideosClient<$Result.GetResult<Prisma.$VideosPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Videos.
+     * @param {VideosCreateManyArgs} args - Arguments to create many Videos.
+     * @example
+     * // Create many Videos
+     * const videos = await prisma.videos.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends VideosCreateManyArgs>(args?: SelectSubset<T, VideosCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Videos and returns the data saved in the database.
+     * @param {VideosCreateManyAndReturnArgs} args - Arguments to create many Videos.
+     * @example
+     * // Create many Videos
+     * const videos = await prisma.videos.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Videos and only return the `id`
+     * const videosWithIdOnly = await prisma.videos.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends VideosCreateManyAndReturnArgs>(args?: SelectSubset<T, VideosCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VideosPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Videos.
+     * @param {VideosDeleteArgs} args - Arguments to delete one Videos.
+     * @example
+     * // Delete one Videos
+     * const Videos = await prisma.videos.delete({
+     *   where: {
+     *     // ... filter to delete one Videos
+     *   }
+     * })
+     * 
+     */
+    delete<T extends VideosDeleteArgs>(args: SelectSubset<T, VideosDeleteArgs<ExtArgs>>): Prisma__VideosClient<$Result.GetResult<Prisma.$VideosPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Videos.
+     * @param {VideosUpdateArgs} args - Arguments to update one Videos.
+     * @example
+     * // Update one Videos
+     * const videos = await prisma.videos.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends VideosUpdateArgs>(args: SelectSubset<T, VideosUpdateArgs<ExtArgs>>): Prisma__VideosClient<$Result.GetResult<Prisma.$VideosPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Videos.
+     * @param {VideosDeleteManyArgs} args - Arguments to filter Videos to delete.
+     * @example
+     * // Delete a few Videos
+     * const { count } = await prisma.videos.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends VideosDeleteManyArgs>(args?: SelectSubset<T, VideosDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Videos.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VideosUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Videos
+     * const videos = await prisma.videos.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends VideosUpdateManyArgs>(args: SelectSubset<T, VideosUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Videos and returns the data updated in the database.
+     * @param {VideosUpdateManyAndReturnArgs} args - Arguments to update many Videos.
+     * @example
+     * // Update many Videos
+     * const videos = await prisma.videos.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Videos and only return the `id`
+     * const videosWithIdOnly = await prisma.videos.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends VideosUpdateManyAndReturnArgs>(args: SelectSubset<T, VideosUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VideosPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Videos.
+     * @param {VideosUpsertArgs} args - Arguments to update or create a Videos.
+     * @example
+     * // Update or create a Videos
+     * const videos = await prisma.videos.upsert({
+     *   create: {
+     *     // ... data to create a Videos
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Videos we want to update
+     *   }
+     * })
+     */
+    upsert<T extends VideosUpsertArgs>(args: SelectSubset<T, VideosUpsertArgs<ExtArgs>>): Prisma__VideosClient<$Result.GetResult<Prisma.$VideosPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Videos.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VideosCountArgs} args - Arguments to filter Videos to count.
+     * @example
+     * // Count the number of Videos
+     * const count = await prisma.videos.count({
+     *   where: {
+     *     // ... the filter for the Videos we want to count
+     *   }
+     * })
+    **/
+    count<T extends VideosCountArgs>(
+      args?: Subset<T, VideosCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], VideosCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Videos.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VideosAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends VideosAggregateArgs>(args: Subset<T, VideosAggregateArgs>): Prisma.PrismaPromise<GetVideosAggregateType<T>>
+
+    /**
+     * Group by Videos.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VideosGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends VideosGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: VideosGroupByArgs['orderBy'] }
+        : { orderBy?: VideosGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, VideosGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetVideosGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Videos model
+   */
+  readonly fields: VideosFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Videos.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__VideosClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UsersDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UsersDefaultArgs<ExtArgs>>): Prisma__UsersClient<$Result.GetResult<Prisma.$UsersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Videos model
+   */ 
+  interface VideosFieldRefs {
+    readonly id: FieldRef<"Videos", 'Int'>
+    readonly pid: FieldRef<"Videos", 'String'>
+    readonly user_id: FieldRef<"Videos", 'Int'>
+    readonly title: FieldRef<"Videos", 'String'>
+    readonly user_prompt: FieldRef<"Videos", 'String'>
+    readonly sys_prompt: FieldRef<"Videos", 'String'>
+    readonly negative_prompt: FieldRef<"Videos", 'String'>
+    readonly alt: FieldRef<"Videos", 'String'>
+    readonly duration: FieldRef<"Videos", 'Int'>
+    readonly enhance_prompt: FieldRef<"Videos", 'Boolean'>
+    readonly generate_audio: FieldRef<"Videos", 'Boolean'>
+    readonly seed: FieldRef<"Videos", 'Int'>
+    readonly status: FieldRef<"Videos", 'Status'>
+    readonly aspect_ratio: FieldRef<"Videos", 'AspectRatio'>
+    readonly video_cost: FieldRef<"Videos", 'Int'>
+    readonly fal_ai_request_id: FieldRef<"Videos", 'String'>
+    readonly video_s3_key: FieldRef<"Videos", 'String'>
+    readonly thumbnail_s3_key: FieldRef<"Videos", 'String'>
+    readonly video_url_fal: FieldRef<"Videos", 'String'>
+    readonly is_favorite: FieldRef<"Videos", 'Boolean'>
+    readonly deleted_at: FieldRef<"Videos", 'DateTime'>
+    readonly created_at: FieldRef<"Videos", 'DateTime'>
+    readonly updated_at: FieldRef<"Videos", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Videos findUnique
+   */
+  export type VideosFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Videos
+     */
+    select?: VideosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Videos
+     */
+    omit?: VideosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VideosInclude<ExtArgs> | null
+    /**
+     * Filter, which Videos to fetch.
+     */
+    where: VideosWhereUniqueInput
+  }
+
+  /**
+   * Videos findUniqueOrThrow
+   */
+  export type VideosFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Videos
+     */
+    select?: VideosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Videos
+     */
+    omit?: VideosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VideosInclude<ExtArgs> | null
+    /**
+     * Filter, which Videos to fetch.
+     */
+    where: VideosWhereUniqueInput
+  }
+
+  /**
+   * Videos findFirst
+   */
+  export type VideosFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Videos
+     */
+    select?: VideosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Videos
+     */
+    omit?: VideosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VideosInclude<ExtArgs> | null
+    /**
+     * Filter, which Videos to fetch.
+     */
+    where?: VideosWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Videos to fetch.
+     */
+    orderBy?: VideosOrderByWithRelationInput | VideosOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Videos.
+     */
+    cursor?: VideosWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Videos from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Videos.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Videos.
+     */
+    distinct?: VideosScalarFieldEnum | VideosScalarFieldEnum[]
+  }
+
+  /**
+   * Videos findFirstOrThrow
+   */
+  export type VideosFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Videos
+     */
+    select?: VideosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Videos
+     */
+    omit?: VideosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VideosInclude<ExtArgs> | null
+    /**
+     * Filter, which Videos to fetch.
+     */
+    where?: VideosWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Videos to fetch.
+     */
+    orderBy?: VideosOrderByWithRelationInput | VideosOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Videos.
+     */
+    cursor?: VideosWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Videos from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Videos.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Videos.
+     */
+    distinct?: VideosScalarFieldEnum | VideosScalarFieldEnum[]
+  }
+
+  /**
+   * Videos findMany
+   */
+  export type VideosFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Videos
+     */
+    select?: VideosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Videos
+     */
+    omit?: VideosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VideosInclude<ExtArgs> | null
+    /**
+     * Filter, which Videos to fetch.
+     */
+    where?: VideosWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Videos to fetch.
+     */
+    orderBy?: VideosOrderByWithRelationInput | VideosOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Videos.
+     */
+    cursor?: VideosWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Videos from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Videos.
+     */
+    skip?: number
+    distinct?: VideosScalarFieldEnum | VideosScalarFieldEnum[]
+  }
+
+  /**
+   * Videos create
+   */
+  export type VideosCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Videos
+     */
+    select?: VideosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Videos
+     */
+    omit?: VideosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VideosInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Videos.
+     */
+    data: XOR<VideosCreateInput, VideosUncheckedCreateInput>
+  }
+
+  /**
+   * Videos createMany
+   */
+  export type VideosCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Videos.
+     */
+    data: VideosCreateManyInput | VideosCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Videos createManyAndReturn
+   */
+  export type VideosCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Videos
+     */
+    select?: VideosSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Videos
+     */
+    omit?: VideosOmit<ExtArgs> | null
+    /**
+     * The data used to create many Videos.
+     */
+    data: VideosCreateManyInput | VideosCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VideosIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Videos update
+   */
+  export type VideosUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Videos
+     */
+    select?: VideosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Videos
+     */
+    omit?: VideosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VideosInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Videos.
+     */
+    data: XOR<VideosUpdateInput, VideosUncheckedUpdateInput>
+    /**
+     * Choose, which Videos to update.
+     */
+    where: VideosWhereUniqueInput
+  }
+
+  /**
+   * Videos updateMany
+   */
+  export type VideosUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Videos.
+     */
+    data: XOR<VideosUpdateManyMutationInput, VideosUncheckedUpdateManyInput>
+    /**
+     * Filter which Videos to update
+     */
+    where?: VideosWhereInput
+    /**
+     * Limit how many Videos to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Videos updateManyAndReturn
+   */
+  export type VideosUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Videos
+     */
+    select?: VideosSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Videos
+     */
+    omit?: VideosOmit<ExtArgs> | null
+    /**
+     * The data used to update Videos.
+     */
+    data: XOR<VideosUpdateManyMutationInput, VideosUncheckedUpdateManyInput>
+    /**
+     * Filter which Videos to update
+     */
+    where?: VideosWhereInput
+    /**
+     * Limit how many Videos to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VideosIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Videos upsert
+   */
+  export type VideosUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Videos
+     */
+    select?: VideosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Videos
+     */
+    omit?: VideosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VideosInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Videos to update in case it exists.
+     */
+    where: VideosWhereUniqueInput
+    /**
+     * In case the Videos found by the `where` argument doesn't exist, create a new Videos with this data.
+     */
+    create: XOR<VideosCreateInput, VideosUncheckedCreateInput>
+    /**
+     * In case the Videos was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<VideosUpdateInput, VideosUncheckedUpdateInput>
+  }
+
+  /**
+   * Videos delete
+   */
+  export type VideosDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Videos
+     */
+    select?: VideosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Videos
+     */
+    omit?: VideosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VideosInclude<ExtArgs> | null
+    /**
+     * Filter which Videos to delete.
+     */
+    where: VideosWhereUniqueInput
+  }
+
+  /**
+   * Videos deleteMany
+   */
+  export type VideosDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Videos to delete
+     */
+    where?: VideosWhereInput
+    /**
+     * Limit how many Videos to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Videos without action
+   */
+  export type VideosDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Videos
+     */
+    select?: VideosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Videos
+     */
+    omit?: VideosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VideosInclude<ExtArgs> | null
   }
 
 
@@ -22992,6 +24475,35 @@ export namespace Prisma {
   export type ImagesScalarFieldEnum = (typeof ImagesScalarFieldEnum)[keyof typeof ImagesScalarFieldEnum]
 
 
+  export const VideosScalarFieldEnum: {
+    id: 'id',
+    pid: 'pid',
+    user_id: 'user_id',
+    title: 'title',
+    user_prompt: 'user_prompt',
+    sys_prompt: 'sys_prompt',
+    negative_prompt: 'negative_prompt',
+    alt: 'alt',
+    duration: 'duration',
+    enhance_prompt: 'enhance_prompt',
+    generate_audio: 'generate_audio',
+    seed: 'seed',
+    status: 'status',
+    aspect_ratio: 'aspect_ratio',
+    video_cost: 'video_cost',
+    fal_ai_request_id: 'fal_ai_request_id',
+    video_s3_key: 'video_s3_key',
+    thumbnail_s3_key: 'thumbnail_s3_key',
+    video_url_fal: 'video_url_fal',
+    is_favorite: 'is_favorite',
+    deleted_at: 'deleted_at',
+    created_at: 'created_at',
+    updated_at: 'updated_at'
+  };
+
+  export type VideosScalarFieldEnum = (typeof VideosScalarFieldEnum)[keyof typeof VideosScalarFieldEnum]
+
+
   export const PlansScalarFieldEnum: {
     id: 'id',
     pid: 'pid',
@@ -23401,6 +24913,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'AspectRatio'
+   */
+  export type EnumAspectRatioFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AspectRatio'>
+    
+
+
+  /**
+   * Reference to a field of type 'AspectRatio[]'
+   */
+  export type ListEnumAspectRatioFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AspectRatio[]'>
+    
+
+
+  /**
    * Reference to a field of type 'PlanNames'
    */
   export type EnumPlanNamesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PlanNames'>
@@ -23539,6 +25065,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsListRelationFilter
     UserCredits?: UserCreditsListRelationFilter
     Images?: ImagesListRelationFilter
+    Videos?: VideosListRelationFilter
     Transactions?: TransactionsListRelationFilter
     oAuth2Sessions?: OAuth2SessionListRelationFilter
     notifications?: NotificationListRelationFilter
@@ -23568,6 +25095,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsOrderByRelationAggregateInput
     UserCredits?: UserCreditsOrderByRelationAggregateInput
     Images?: ImagesOrderByRelationAggregateInput
+    Videos?: VideosOrderByRelationAggregateInput
     Transactions?: TransactionsOrderByRelationAggregateInput
     oAuth2Sessions?: OAuth2SessionOrderByRelationAggregateInput
     notifications?: NotificationOrderByRelationAggregateInput
@@ -23600,6 +25128,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsListRelationFilter
     UserCredits?: UserCreditsListRelationFilter
     Images?: ImagesListRelationFilter
+    Videos?: VideosListRelationFilter
     Transactions?: TransactionsListRelationFilter
     oAuth2Sessions?: OAuth2SessionListRelationFilter
     notifications?: NotificationListRelationFilter
@@ -24091,6 +25620,153 @@ export namespace Prisma {
     deleted_at?: DateTimeNullableWithAggregatesFilter<"Images"> | Date | string | null
     created_at?: DateTimeWithAggregatesFilter<"Images"> | Date | string
     updated_at?: DateTimeWithAggregatesFilter<"Images"> | Date | string
+  }
+
+  export type VideosWhereInput = {
+    AND?: VideosWhereInput | VideosWhereInput[]
+    OR?: VideosWhereInput[]
+    NOT?: VideosWhereInput | VideosWhereInput[]
+    id?: IntFilter<"Videos"> | number
+    pid?: UuidFilter<"Videos"> | string
+    user_id?: IntFilter<"Videos"> | number
+    title?: StringFilter<"Videos"> | string
+    user_prompt?: StringFilter<"Videos"> | string
+    sys_prompt?: StringFilter<"Videos"> | string
+    negative_prompt?: StringNullableFilter<"Videos"> | string | null
+    alt?: StringFilter<"Videos"> | string
+    duration?: IntFilter<"Videos"> | number
+    enhance_prompt?: BoolFilter<"Videos"> | boolean
+    generate_audio?: BoolFilter<"Videos"> | boolean
+    seed?: IntNullableFilter<"Videos"> | number | null
+    status?: EnumStatusFilter<"Videos"> | $Enums.Status
+    aspect_ratio?: EnumAspectRatioFilter<"Videos"> | $Enums.AspectRatio
+    video_cost?: IntFilter<"Videos"> | number
+    fal_ai_request_id?: StringNullableFilter<"Videos"> | string | null
+    video_s3_key?: StringFilter<"Videos"> | string
+    thumbnail_s3_key?: StringFilter<"Videos"> | string
+    video_url_fal?: StringNullableFilter<"Videos"> | string | null
+    is_favorite?: BoolFilter<"Videos"> | boolean
+    deleted_at?: DateTimeNullableFilter<"Videos"> | Date | string | null
+    created_at?: DateTimeFilter<"Videos"> | Date | string
+    updated_at?: DateTimeFilter<"Videos"> | Date | string
+    user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
+  }
+
+  export type VideosOrderByWithRelationInput = {
+    id?: SortOrder
+    pid?: SortOrder
+    user_id?: SortOrder
+    title?: SortOrder
+    user_prompt?: SortOrder
+    sys_prompt?: SortOrder
+    negative_prompt?: SortOrderInput | SortOrder
+    alt?: SortOrder
+    duration?: SortOrder
+    enhance_prompt?: SortOrder
+    generate_audio?: SortOrder
+    seed?: SortOrderInput | SortOrder
+    status?: SortOrder
+    aspect_ratio?: SortOrder
+    video_cost?: SortOrder
+    fal_ai_request_id?: SortOrderInput | SortOrder
+    video_s3_key?: SortOrder
+    thumbnail_s3_key?: SortOrder
+    video_url_fal?: SortOrderInput | SortOrder
+    is_favorite?: SortOrder
+    deleted_at?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    user?: UsersOrderByWithRelationInput
+  }
+
+  export type VideosWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    pid?: string
+    AND?: VideosWhereInput | VideosWhereInput[]
+    OR?: VideosWhereInput[]
+    NOT?: VideosWhereInput | VideosWhereInput[]
+    user_id?: IntFilter<"Videos"> | number
+    title?: StringFilter<"Videos"> | string
+    user_prompt?: StringFilter<"Videos"> | string
+    sys_prompt?: StringFilter<"Videos"> | string
+    negative_prompt?: StringNullableFilter<"Videos"> | string | null
+    alt?: StringFilter<"Videos"> | string
+    duration?: IntFilter<"Videos"> | number
+    enhance_prompt?: BoolFilter<"Videos"> | boolean
+    generate_audio?: BoolFilter<"Videos"> | boolean
+    seed?: IntNullableFilter<"Videos"> | number | null
+    status?: EnumStatusFilter<"Videos"> | $Enums.Status
+    aspect_ratio?: EnumAspectRatioFilter<"Videos"> | $Enums.AspectRatio
+    video_cost?: IntFilter<"Videos"> | number
+    fal_ai_request_id?: StringNullableFilter<"Videos"> | string | null
+    video_s3_key?: StringFilter<"Videos"> | string
+    thumbnail_s3_key?: StringFilter<"Videos"> | string
+    video_url_fal?: StringNullableFilter<"Videos"> | string | null
+    is_favorite?: BoolFilter<"Videos"> | boolean
+    deleted_at?: DateTimeNullableFilter<"Videos"> | Date | string | null
+    created_at?: DateTimeFilter<"Videos"> | Date | string
+    updated_at?: DateTimeFilter<"Videos"> | Date | string
+    user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
+  }, "id" | "pid">
+
+  export type VideosOrderByWithAggregationInput = {
+    id?: SortOrder
+    pid?: SortOrder
+    user_id?: SortOrder
+    title?: SortOrder
+    user_prompt?: SortOrder
+    sys_prompt?: SortOrder
+    negative_prompt?: SortOrderInput | SortOrder
+    alt?: SortOrder
+    duration?: SortOrder
+    enhance_prompt?: SortOrder
+    generate_audio?: SortOrder
+    seed?: SortOrderInput | SortOrder
+    status?: SortOrder
+    aspect_ratio?: SortOrder
+    video_cost?: SortOrder
+    fal_ai_request_id?: SortOrderInput | SortOrder
+    video_s3_key?: SortOrder
+    thumbnail_s3_key?: SortOrder
+    video_url_fal?: SortOrderInput | SortOrder
+    is_favorite?: SortOrder
+    deleted_at?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    _count?: VideosCountOrderByAggregateInput
+    _avg?: VideosAvgOrderByAggregateInput
+    _max?: VideosMaxOrderByAggregateInput
+    _min?: VideosMinOrderByAggregateInput
+    _sum?: VideosSumOrderByAggregateInput
+  }
+
+  export type VideosScalarWhereWithAggregatesInput = {
+    AND?: VideosScalarWhereWithAggregatesInput | VideosScalarWhereWithAggregatesInput[]
+    OR?: VideosScalarWhereWithAggregatesInput[]
+    NOT?: VideosScalarWhereWithAggregatesInput | VideosScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"Videos"> | number
+    pid?: UuidWithAggregatesFilter<"Videos"> | string
+    user_id?: IntWithAggregatesFilter<"Videos"> | number
+    title?: StringWithAggregatesFilter<"Videos"> | string
+    user_prompt?: StringWithAggregatesFilter<"Videos"> | string
+    sys_prompt?: StringWithAggregatesFilter<"Videos"> | string
+    negative_prompt?: StringNullableWithAggregatesFilter<"Videos"> | string | null
+    alt?: StringWithAggregatesFilter<"Videos"> | string
+    duration?: IntWithAggregatesFilter<"Videos"> | number
+    enhance_prompt?: BoolWithAggregatesFilter<"Videos"> | boolean
+    generate_audio?: BoolWithAggregatesFilter<"Videos"> | boolean
+    seed?: IntNullableWithAggregatesFilter<"Videos"> | number | null
+    status?: EnumStatusWithAggregatesFilter<"Videos"> | $Enums.Status
+    aspect_ratio?: EnumAspectRatioWithAggregatesFilter<"Videos"> | $Enums.AspectRatio
+    video_cost?: IntWithAggregatesFilter<"Videos"> | number
+    fal_ai_request_id?: StringNullableWithAggregatesFilter<"Videos"> | string | null
+    video_s3_key?: StringWithAggregatesFilter<"Videos"> | string
+    thumbnail_s3_key?: StringWithAggregatesFilter<"Videos"> | string
+    video_url_fal?: StringNullableWithAggregatesFilter<"Videos"> | string | null
+    is_favorite?: BoolWithAggregatesFilter<"Videos"> | boolean
+    deleted_at?: DateTimeNullableWithAggregatesFilter<"Videos"> | Date | string | null
+    created_at?: DateTimeWithAggregatesFilter<"Videos"> | Date | string
+    updated_at?: DateTimeWithAggregatesFilter<"Videos"> | Date | string
   }
 
   export type PlansWhereInput = {
@@ -25007,6 +26683,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsCreateNestedManyWithoutUserInput
     UserCredits?: UserCreditsCreateNestedManyWithoutUserInput
     Images?: ImagesCreateNestedManyWithoutUserInput
+    Videos?: VideosCreateNestedManyWithoutUserInput
     Transactions?: TransactionsCreateNestedManyWithoutUserInput
     oAuth2Sessions?: OAuth2SessionCreateNestedManyWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
@@ -25036,6 +26713,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsUncheckedCreateNestedManyWithoutUserInput
     UserCredits?: UserCreditsUncheckedCreateNestedManyWithoutUserInput
     Images?: ImagesUncheckedCreateNestedManyWithoutUserInput
+    Videos?: VideosUncheckedCreateNestedManyWithoutUserInput
     Transactions?: TransactionsUncheckedCreateNestedManyWithoutUserInput
     oAuth2Sessions?: OAuth2SessionUncheckedCreateNestedManyWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -25064,6 +26742,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsUpdateManyWithoutUserNestedInput
     UserCredits?: UserCreditsUpdateManyWithoutUserNestedInput
     Images?: ImagesUpdateManyWithoutUserNestedInput
+    Videos?: VideosUpdateManyWithoutUserNestedInput
     Transactions?: TransactionsUpdateManyWithoutUserNestedInput
     oAuth2Sessions?: OAuth2SessionUpdateManyWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
@@ -25093,6 +26772,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsUncheckedUpdateManyWithoutUserNestedInput
     UserCredits?: UserCreditsUncheckedUpdateManyWithoutUserNestedInput
     Images?: ImagesUncheckedUpdateManyWithoutUserNestedInput
+    Videos?: VideosUncheckedUpdateManyWithoutUserNestedInput
     Transactions?: TransactionsUncheckedUpdateManyWithoutUserNestedInput
     oAuth2Sessions?: OAuth2SessionUncheckedUpdateManyWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -25644,6 +27324,184 @@ export namespace Prisma {
     height?: NullableIntFieldUpdateOperationsInput | number | null
     image_s3_key?: StringFieldUpdateOperationsInput | string
     image_url_fal?: NullableStringFieldUpdateOperationsInput | string | null
+    is_favorite?: BoolFieldUpdateOperationsInput | boolean
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type VideosCreateInput = {
+    pid: string
+    title: string
+    user_prompt: string
+    sys_prompt: string
+    negative_prompt?: string | null
+    alt: string
+    duration?: number
+    enhance_prompt?: boolean
+    generate_audio?: boolean
+    seed?: number | null
+    status: $Enums.Status
+    aspect_ratio: $Enums.AspectRatio
+    video_cost?: number
+    fal_ai_request_id?: string | null
+    video_s3_key: string
+    thumbnail_s3_key: string
+    video_url_fal?: string | null
+    is_favorite?: boolean
+    deleted_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    user: UsersCreateNestedOneWithoutVideosInput
+  }
+
+  export type VideosUncheckedCreateInput = {
+    id?: number
+    pid: string
+    user_id: number
+    title: string
+    user_prompt: string
+    sys_prompt: string
+    negative_prompt?: string | null
+    alt: string
+    duration?: number
+    enhance_prompt?: boolean
+    generate_audio?: boolean
+    seed?: number | null
+    status: $Enums.Status
+    aspect_ratio: $Enums.AspectRatio
+    video_cost?: number
+    fal_ai_request_id?: string | null
+    video_s3_key: string
+    thumbnail_s3_key: string
+    video_url_fal?: string | null
+    is_favorite?: boolean
+    deleted_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type VideosUpdateInput = {
+    pid?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    user_prompt?: StringFieldUpdateOperationsInput | string
+    sys_prompt?: StringFieldUpdateOperationsInput | string
+    negative_prompt?: NullableStringFieldUpdateOperationsInput | string | null
+    alt?: StringFieldUpdateOperationsInput | string
+    duration?: IntFieldUpdateOperationsInput | number
+    enhance_prompt?: BoolFieldUpdateOperationsInput | boolean
+    generate_audio?: BoolFieldUpdateOperationsInput | boolean
+    seed?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
+    aspect_ratio?: EnumAspectRatioFieldUpdateOperationsInput | $Enums.AspectRatio
+    video_cost?: IntFieldUpdateOperationsInput | number
+    fal_ai_request_id?: NullableStringFieldUpdateOperationsInput | string | null
+    video_s3_key?: StringFieldUpdateOperationsInput | string
+    thumbnail_s3_key?: StringFieldUpdateOperationsInput | string
+    video_url_fal?: NullableStringFieldUpdateOperationsInput | string | null
+    is_favorite?: BoolFieldUpdateOperationsInput | boolean
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UsersUpdateOneRequiredWithoutVideosNestedInput
+  }
+
+  export type VideosUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    pid?: StringFieldUpdateOperationsInput | string
+    user_id?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    user_prompt?: StringFieldUpdateOperationsInput | string
+    sys_prompt?: StringFieldUpdateOperationsInput | string
+    negative_prompt?: NullableStringFieldUpdateOperationsInput | string | null
+    alt?: StringFieldUpdateOperationsInput | string
+    duration?: IntFieldUpdateOperationsInput | number
+    enhance_prompt?: BoolFieldUpdateOperationsInput | boolean
+    generate_audio?: BoolFieldUpdateOperationsInput | boolean
+    seed?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
+    aspect_ratio?: EnumAspectRatioFieldUpdateOperationsInput | $Enums.AspectRatio
+    video_cost?: IntFieldUpdateOperationsInput | number
+    fal_ai_request_id?: NullableStringFieldUpdateOperationsInput | string | null
+    video_s3_key?: StringFieldUpdateOperationsInput | string
+    thumbnail_s3_key?: StringFieldUpdateOperationsInput | string
+    video_url_fal?: NullableStringFieldUpdateOperationsInput | string | null
+    is_favorite?: BoolFieldUpdateOperationsInput | boolean
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type VideosCreateManyInput = {
+    id?: number
+    pid: string
+    user_id: number
+    title: string
+    user_prompt: string
+    sys_prompt: string
+    negative_prompt?: string | null
+    alt: string
+    duration?: number
+    enhance_prompt?: boolean
+    generate_audio?: boolean
+    seed?: number | null
+    status: $Enums.Status
+    aspect_ratio: $Enums.AspectRatio
+    video_cost?: number
+    fal_ai_request_id?: string | null
+    video_s3_key: string
+    thumbnail_s3_key: string
+    video_url_fal?: string | null
+    is_favorite?: boolean
+    deleted_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type VideosUpdateManyMutationInput = {
+    pid?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    user_prompt?: StringFieldUpdateOperationsInput | string
+    sys_prompt?: StringFieldUpdateOperationsInput | string
+    negative_prompt?: NullableStringFieldUpdateOperationsInput | string | null
+    alt?: StringFieldUpdateOperationsInput | string
+    duration?: IntFieldUpdateOperationsInput | number
+    enhance_prompt?: BoolFieldUpdateOperationsInput | boolean
+    generate_audio?: BoolFieldUpdateOperationsInput | boolean
+    seed?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
+    aspect_ratio?: EnumAspectRatioFieldUpdateOperationsInput | $Enums.AspectRatio
+    video_cost?: IntFieldUpdateOperationsInput | number
+    fal_ai_request_id?: NullableStringFieldUpdateOperationsInput | string | null
+    video_s3_key?: StringFieldUpdateOperationsInput | string
+    thumbnail_s3_key?: StringFieldUpdateOperationsInput | string
+    video_url_fal?: NullableStringFieldUpdateOperationsInput | string | null
+    is_favorite?: BoolFieldUpdateOperationsInput | boolean
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type VideosUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    pid?: StringFieldUpdateOperationsInput | string
+    user_id?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    user_prompt?: StringFieldUpdateOperationsInput | string
+    sys_prompt?: StringFieldUpdateOperationsInput | string
+    negative_prompt?: NullableStringFieldUpdateOperationsInput | string | null
+    alt?: StringFieldUpdateOperationsInput | string
+    duration?: IntFieldUpdateOperationsInput | number
+    enhance_prompt?: BoolFieldUpdateOperationsInput | boolean
+    generate_audio?: BoolFieldUpdateOperationsInput | boolean
+    seed?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
+    aspect_ratio?: EnumAspectRatioFieldUpdateOperationsInput | $Enums.AspectRatio
+    video_cost?: IntFieldUpdateOperationsInput | number
+    fal_ai_request_id?: NullableStringFieldUpdateOperationsInput | string | null
+    video_s3_key?: StringFieldUpdateOperationsInput | string
+    thumbnail_s3_key?: StringFieldUpdateOperationsInput | string
+    video_url_fal?: NullableStringFieldUpdateOperationsInput | string | null
     is_favorite?: BoolFieldUpdateOperationsInput | boolean
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26689,6 +28547,12 @@ export namespace Prisma {
     none?: ImagesWhereInput
   }
 
+  export type VideosListRelationFilter = {
+    every?: VideosWhereInput
+    some?: VideosWhereInput
+    none?: VideosWhereInput
+  }
+
   export type TransactionsListRelationFilter = {
     every?: TransactionsWhereInput
     some?: TransactionsWhereInput
@@ -26738,6 +28602,10 @@ export namespace Prisma {
   }
 
   export type ImagesOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type VideosOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -27448,6 +29316,117 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumImageSizeFilter<$PrismaModel>
     _max?: NestedEnumImageSizeFilter<$PrismaModel>
+  }
+
+  export type EnumAspectRatioFilter<$PrismaModel = never> = {
+    equals?: $Enums.AspectRatio | EnumAspectRatioFieldRefInput<$PrismaModel>
+    in?: $Enums.AspectRatio[] | ListEnumAspectRatioFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AspectRatio[] | ListEnumAspectRatioFieldRefInput<$PrismaModel>
+    not?: NestedEnumAspectRatioFilter<$PrismaModel> | $Enums.AspectRatio
+  }
+
+  export type VideosCountOrderByAggregateInput = {
+    id?: SortOrder
+    pid?: SortOrder
+    user_id?: SortOrder
+    title?: SortOrder
+    user_prompt?: SortOrder
+    sys_prompt?: SortOrder
+    negative_prompt?: SortOrder
+    alt?: SortOrder
+    duration?: SortOrder
+    enhance_prompt?: SortOrder
+    generate_audio?: SortOrder
+    seed?: SortOrder
+    status?: SortOrder
+    aspect_ratio?: SortOrder
+    video_cost?: SortOrder
+    fal_ai_request_id?: SortOrder
+    video_s3_key?: SortOrder
+    thumbnail_s3_key?: SortOrder
+    video_url_fal?: SortOrder
+    is_favorite?: SortOrder
+    deleted_at?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type VideosAvgOrderByAggregateInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    duration?: SortOrder
+    seed?: SortOrder
+    video_cost?: SortOrder
+  }
+
+  export type VideosMaxOrderByAggregateInput = {
+    id?: SortOrder
+    pid?: SortOrder
+    user_id?: SortOrder
+    title?: SortOrder
+    user_prompt?: SortOrder
+    sys_prompt?: SortOrder
+    negative_prompt?: SortOrder
+    alt?: SortOrder
+    duration?: SortOrder
+    enhance_prompt?: SortOrder
+    generate_audio?: SortOrder
+    seed?: SortOrder
+    status?: SortOrder
+    aspect_ratio?: SortOrder
+    video_cost?: SortOrder
+    fal_ai_request_id?: SortOrder
+    video_s3_key?: SortOrder
+    thumbnail_s3_key?: SortOrder
+    video_url_fal?: SortOrder
+    is_favorite?: SortOrder
+    deleted_at?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type VideosMinOrderByAggregateInput = {
+    id?: SortOrder
+    pid?: SortOrder
+    user_id?: SortOrder
+    title?: SortOrder
+    user_prompt?: SortOrder
+    sys_prompt?: SortOrder
+    negative_prompt?: SortOrder
+    alt?: SortOrder
+    duration?: SortOrder
+    enhance_prompt?: SortOrder
+    generate_audio?: SortOrder
+    seed?: SortOrder
+    status?: SortOrder
+    aspect_ratio?: SortOrder
+    video_cost?: SortOrder
+    fal_ai_request_id?: SortOrder
+    video_s3_key?: SortOrder
+    thumbnail_s3_key?: SortOrder
+    video_url_fal?: SortOrder
+    is_favorite?: SortOrder
+    deleted_at?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type VideosSumOrderByAggregateInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    duration?: SortOrder
+    seed?: SortOrder
+    video_cost?: SortOrder
+  }
+
+  export type EnumAspectRatioWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AspectRatio | EnumAspectRatioFieldRefInput<$PrismaModel>
+    in?: $Enums.AspectRatio[] | ListEnumAspectRatioFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AspectRatio[] | ListEnumAspectRatioFieldRefInput<$PrismaModel>
+    not?: NestedEnumAspectRatioWithAggregatesFilter<$PrismaModel> | $Enums.AspectRatio
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAspectRatioFilter<$PrismaModel>
+    _max?: NestedEnumAspectRatioFilter<$PrismaModel>
   }
 
   export type EnumPlanNamesFilter<$PrismaModel = never> = {
@@ -28185,6 +30164,13 @@ export namespace Prisma {
     connect?: ImagesWhereUniqueInput | ImagesWhereUniqueInput[]
   }
 
+  export type VideosCreateNestedManyWithoutUserInput = {
+    create?: XOR<VideosCreateWithoutUserInput, VideosUncheckedCreateWithoutUserInput> | VideosCreateWithoutUserInput[] | VideosUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: VideosCreateOrConnectWithoutUserInput | VideosCreateOrConnectWithoutUserInput[]
+    createMany?: VideosCreateManyUserInputEnvelope
+    connect?: VideosWhereUniqueInput | VideosWhereUniqueInput[]
+  }
+
   export type TransactionsCreateNestedManyWithoutUserInput = {
     create?: XOR<TransactionsCreateWithoutUserInput, TransactionsUncheckedCreateWithoutUserInput> | TransactionsCreateWithoutUserInput[] | TransactionsUncheckedCreateWithoutUserInput[]
     connectOrCreate?: TransactionsCreateOrConnectWithoutUserInput | TransactionsCreateOrConnectWithoutUserInput[]
@@ -28245,6 +30231,13 @@ export namespace Prisma {
     connectOrCreate?: ImagesCreateOrConnectWithoutUserInput | ImagesCreateOrConnectWithoutUserInput[]
     createMany?: ImagesCreateManyUserInputEnvelope
     connect?: ImagesWhereUniqueInput | ImagesWhereUniqueInput[]
+  }
+
+  export type VideosUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<VideosCreateWithoutUserInput, VideosUncheckedCreateWithoutUserInput> | VideosCreateWithoutUserInput[] | VideosUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: VideosCreateOrConnectWithoutUserInput | VideosCreateOrConnectWithoutUserInput[]
+    createMany?: VideosCreateManyUserInputEnvelope
+    connect?: VideosWhereUniqueInput | VideosWhereUniqueInput[]
   }
 
   export type TransactionsUncheckedCreateNestedManyWithoutUserInput = {
@@ -28348,6 +30341,20 @@ export namespace Prisma {
     update?: ImagesUpdateWithWhereUniqueWithoutUserInput | ImagesUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: ImagesUpdateManyWithWhereWithoutUserInput | ImagesUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: ImagesScalarWhereInput | ImagesScalarWhereInput[]
+  }
+
+  export type VideosUpdateManyWithoutUserNestedInput = {
+    create?: XOR<VideosCreateWithoutUserInput, VideosUncheckedCreateWithoutUserInput> | VideosCreateWithoutUserInput[] | VideosUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: VideosCreateOrConnectWithoutUserInput | VideosCreateOrConnectWithoutUserInput[]
+    upsert?: VideosUpsertWithWhereUniqueWithoutUserInput | VideosUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: VideosCreateManyUserInputEnvelope
+    set?: VideosWhereUniqueInput | VideosWhereUniqueInput[]
+    disconnect?: VideosWhereUniqueInput | VideosWhereUniqueInput[]
+    delete?: VideosWhereUniqueInput | VideosWhereUniqueInput[]
+    connect?: VideosWhereUniqueInput | VideosWhereUniqueInput[]
+    update?: VideosUpdateWithWhereUniqueWithoutUserInput | VideosUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: VideosUpdateManyWithWhereWithoutUserInput | VideosUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: VideosScalarWhereInput | VideosScalarWhereInput[]
   }
 
   export type TransactionsUpdateManyWithoutUserNestedInput = {
@@ -28478,6 +30485,20 @@ export namespace Prisma {
     update?: ImagesUpdateWithWhereUniqueWithoutUserInput | ImagesUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: ImagesUpdateManyWithWhereWithoutUserInput | ImagesUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: ImagesScalarWhereInput | ImagesScalarWhereInput[]
+  }
+
+  export type VideosUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<VideosCreateWithoutUserInput, VideosUncheckedCreateWithoutUserInput> | VideosCreateWithoutUserInput[] | VideosUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: VideosCreateOrConnectWithoutUserInput | VideosCreateOrConnectWithoutUserInput[]
+    upsert?: VideosUpsertWithWhereUniqueWithoutUserInput | VideosUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: VideosCreateManyUserInputEnvelope
+    set?: VideosWhereUniqueInput | VideosWhereUniqueInput[]
+    disconnect?: VideosWhereUniqueInput | VideosWhereUniqueInput[]
+    delete?: VideosWhereUniqueInput | VideosWhereUniqueInput[]
+    connect?: VideosWhereUniqueInput | VideosWhereUniqueInput[]
+    update?: VideosUpdateWithWhereUniqueWithoutUserInput | VideosUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: VideosUpdateManyWithWhereWithoutUserInput | VideosUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: VideosScalarWhereInput | VideosScalarWhereInput[]
   }
 
   export type TransactionsUncheckedUpdateManyWithoutUserNestedInput = {
@@ -28732,6 +30753,24 @@ export namespace Prisma {
     delete?: PacksWhereInput | boolean
     connect?: PacksWhereUniqueInput
     update?: XOR<XOR<PacksUpdateToOneWithWhereWithoutImagesInput, PacksUpdateWithoutImagesInput>, PacksUncheckedUpdateWithoutImagesInput>
+  }
+
+  export type UsersCreateNestedOneWithoutVideosInput = {
+    create?: XOR<UsersCreateWithoutVideosInput, UsersUncheckedCreateWithoutVideosInput>
+    connectOrCreate?: UsersCreateOrConnectWithoutVideosInput
+    connect?: UsersWhereUniqueInput
+  }
+
+  export type EnumAspectRatioFieldUpdateOperationsInput = {
+    set?: $Enums.AspectRatio
+  }
+
+  export type UsersUpdateOneRequiredWithoutVideosNestedInput = {
+    create?: XOR<UsersCreateWithoutVideosInput, UsersUncheckedCreateWithoutVideosInput>
+    connectOrCreate?: UsersCreateOrConnectWithoutVideosInput
+    upsert?: UsersUpsertWithoutVideosInput
+    connect?: UsersWhereUniqueInput
+    update?: XOR<XOR<UsersUpdateToOneWithWhereWithoutVideosInput, UsersUpdateWithoutVideosInput>, UsersUncheckedUpdateWithoutVideosInput>
   }
 
   export type PlansCreatefeaturesInput = {
@@ -29549,6 +31588,23 @@ export namespace Prisma {
     _max?: NestedEnumImageSizeFilter<$PrismaModel>
   }
 
+  export type NestedEnumAspectRatioFilter<$PrismaModel = never> = {
+    equals?: $Enums.AspectRatio | EnumAspectRatioFieldRefInput<$PrismaModel>
+    in?: $Enums.AspectRatio[] | ListEnumAspectRatioFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AspectRatio[] | ListEnumAspectRatioFieldRefInput<$PrismaModel>
+    not?: NestedEnumAspectRatioFilter<$PrismaModel> | $Enums.AspectRatio
+  }
+
+  export type NestedEnumAspectRatioWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AspectRatio | EnumAspectRatioFieldRefInput<$PrismaModel>
+    in?: $Enums.AspectRatio[] | ListEnumAspectRatioFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AspectRatio[] | ListEnumAspectRatioFieldRefInput<$PrismaModel>
+    not?: NestedEnumAspectRatioWithAggregatesFilter<$PrismaModel> | $Enums.AspectRatio
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAspectRatioFilter<$PrismaModel>
+    _max?: NestedEnumAspectRatioFilter<$PrismaModel>
+  }
+
   export type NestedEnumPlanNamesFilter<$PrismaModel = never> = {
     equals?: $Enums.PlanNames | EnumPlanNamesFieldRefInput<$PrismaModel>
     in?: $Enums.PlanNames[] | ListEnumPlanNamesFieldRefInput<$PrismaModel>
@@ -29824,6 +31880,65 @@ export namespace Prisma {
 
   export type ImagesCreateManyUserInputEnvelope = {
     data: ImagesCreateManyUserInput | ImagesCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type VideosCreateWithoutUserInput = {
+    pid: string
+    title: string
+    user_prompt: string
+    sys_prompt: string
+    negative_prompt?: string | null
+    alt: string
+    duration?: number
+    enhance_prompt?: boolean
+    generate_audio?: boolean
+    seed?: number | null
+    status: $Enums.Status
+    aspect_ratio: $Enums.AspectRatio
+    video_cost?: number
+    fal_ai_request_id?: string | null
+    video_s3_key: string
+    thumbnail_s3_key: string
+    video_url_fal?: string | null
+    is_favorite?: boolean
+    deleted_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type VideosUncheckedCreateWithoutUserInput = {
+    id?: number
+    pid: string
+    title: string
+    user_prompt: string
+    sys_prompt: string
+    negative_prompt?: string | null
+    alt: string
+    duration?: number
+    enhance_prompt?: boolean
+    generate_audio?: boolean
+    seed?: number | null
+    status: $Enums.Status
+    aspect_ratio: $Enums.AspectRatio
+    video_cost?: number
+    fal_ai_request_id?: string | null
+    video_s3_key: string
+    thumbnail_s3_key: string
+    video_url_fal?: string | null
+    is_favorite?: boolean
+    deleted_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type VideosCreateOrConnectWithoutUserInput = {
+    where: VideosWhereUniqueInput
+    create: XOR<VideosCreateWithoutUserInput, VideosUncheckedCreateWithoutUserInput>
+  }
+
+  export type VideosCreateManyUserInputEnvelope = {
+    data: VideosCreateManyUserInput | VideosCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -30118,6 +32233,51 @@ export namespace Prisma {
     updated_at?: DateTimeFilter<"Images"> | Date | string
   }
 
+  export type VideosUpsertWithWhereUniqueWithoutUserInput = {
+    where: VideosWhereUniqueInput
+    update: XOR<VideosUpdateWithoutUserInput, VideosUncheckedUpdateWithoutUserInput>
+    create: XOR<VideosCreateWithoutUserInput, VideosUncheckedCreateWithoutUserInput>
+  }
+
+  export type VideosUpdateWithWhereUniqueWithoutUserInput = {
+    where: VideosWhereUniqueInput
+    data: XOR<VideosUpdateWithoutUserInput, VideosUncheckedUpdateWithoutUserInput>
+  }
+
+  export type VideosUpdateManyWithWhereWithoutUserInput = {
+    where: VideosScalarWhereInput
+    data: XOR<VideosUpdateManyMutationInput, VideosUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type VideosScalarWhereInput = {
+    AND?: VideosScalarWhereInput | VideosScalarWhereInput[]
+    OR?: VideosScalarWhereInput[]
+    NOT?: VideosScalarWhereInput | VideosScalarWhereInput[]
+    id?: IntFilter<"Videos"> | number
+    pid?: UuidFilter<"Videos"> | string
+    user_id?: IntFilter<"Videos"> | number
+    title?: StringFilter<"Videos"> | string
+    user_prompt?: StringFilter<"Videos"> | string
+    sys_prompt?: StringFilter<"Videos"> | string
+    negative_prompt?: StringNullableFilter<"Videos"> | string | null
+    alt?: StringFilter<"Videos"> | string
+    duration?: IntFilter<"Videos"> | number
+    enhance_prompt?: BoolFilter<"Videos"> | boolean
+    generate_audio?: BoolFilter<"Videos"> | boolean
+    seed?: IntNullableFilter<"Videos"> | number | null
+    status?: EnumStatusFilter<"Videos"> | $Enums.Status
+    aspect_ratio?: EnumAspectRatioFilter<"Videos"> | $Enums.AspectRatio
+    video_cost?: IntFilter<"Videos"> | number
+    fal_ai_request_id?: StringNullableFilter<"Videos"> | string | null
+    video_s3_key?: StringFilter<"Videos"> | string
+    thumbnail_s3_key?: StringFilter<"Videos"> | string
+    video_url_fal?: StringNullableFilter<"Videos"> | string | null
+    is_favorite?: BoolFilter<"Videos"> | boolean
+    deleted_at?: DateTimeNullableFilter<"Videos"> | Date | string | null
+    created_at?: DateTimeFilter<"Videos"> | Date | string
+    updated_at?: DateTimeFilter<"Videos"> | Date | string
+  }
+
   export type TransactionsUpsertWithWhereUniqueWithoutUserInput = {
     where: TransactionsWhereUniqueInput
     update: XOR<TransactionsUpdateWithoutUserInput, TransactionsUncheckedUpdateWithoutUserInput>
@@ -30318,6 +32478,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsCreateNestedManyWithoutUserInput
     UserCredits?: UserCreditsCreateNestedManyWithoutUserInput
     Images?: ImagesCreateNestedManyWithoutUserInput
+    Videos?: VideosCreateNestedManyWithoutUserInput
     Transactions?: TransactionsCreateNestedManyWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     settings?: UserSettingsCreateNestedOneWithoutUserInput
@@ -30346,6 +32507,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsUncheckedCreateNestedManyWithoutUserInput
     UserCredits?: UserCreditsUncheckedCreateNestedManyWithoutUserInput
     Images?: ImagesUncheckedCreateNestedManyWithoutUserInput
+    Videos?: VideosUncheckedCreateNestedManyWithoutUserInput
     Transactions?: TransactionsUncheckedCreateNestedManyWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     settings?: UserSettingsUncheckedCreateNestedOneWithoutUserInput
@@ -30389,6 +32551,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsUpdateManyWithoutUserNestedInput
     UserCredits?: UserCreditsUpdateManyWithoutUserNestedInput
     Images?: ImagesUpdateManyWithoutUserNestedInput
+    Videos?: VideosUpdateManyWithoutUserNestedInput
     Transactions?: TransactionsUpdateManyWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     settings?: UserSettingsUpdateOneWithoutUserNestedInput
@@ -30417,6 +32580,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsUncheckedUpdateManyWithoutUserNestedInput
     UserCredits?: UserCreditsUncheckedUpdateManyWithoutUserNestedInput
     Images?: ImagesUncheckedUpdateManyWithoutUserNestedInput
+    Videos?: VideosUncheckedUpdateManyWithoutUserNestedInput
     Transactions?: TransactionsUncheckedUpdateManyWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     settings?: UserSettingsUncheckedUpdateOneWithoutUserNestedInput
@@ -30443,6 +32607,7 @@ export namespace Prisma {
     role?: $Enums.Role
     UserCredits?: UserCreditsCreateNestedManyWithoutUserInput
     Images?: ImagesCreateNestedManyWithoutUserInput
+    Videos?: VideosCreateNestedManyWithoutUserInput
     Transactions?: TransactionsCreateNestedManyWithoutUserInput
     oAuth2Sessions?: OAuth2SessionCreateNestedManyWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
@@ -30471,6 +32636,7 @@ export namespace Prisma {
     role?: $Enums.Role
     UserCredits?: UserCreditsUncheckedCreateNestedManyWithoutUserInput
     Images?: ImagesUncheckedCreateNestedManyWithoutUserInput
+    Videos?: VideosUncheckedCreateNestedManyWithoutUserInput
     Transactions?: TransactionsUncheckedCreateNestedManyWithoutUserInput
     oAuth2Sessions?: OAuth2SessionUncheckedCreateNestedManyWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -30571,6 +32737,7 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     UserCredits?: UserCreditsUpdateManyWithoutUserNestedInput
     Images?: ImagesUpdateManyWithoutUserNestedInput
+    Videos?: VideosUpdateManyWithoutUserNestedInput
     Transactions?: TransactionsUpdateManyWithoutUserNestedInput
     oAuth2Sessions?: OAuth2SessionUpdateManyWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
@@ -30599,6 +32766,7 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     UserCredits?: UserCreditsUncheckedUpdateManyWithoutUserNestedInput
     Images?: ImagesUncheckedUpdateManyWithoutUserNestedInput
+    Videos?: VideosUncheckedUpdateManyWithoutUserNestedInput
     Transactions?: TransactionsUncheckedUpdateManyWithoutUserNestedInput
     oAuth2Sessions?: OAuth2SessionUncheckedUpdateManyWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -30642,6 +32810,7 @@ export namespace Prisma {
     role?: $Enums.Role
     TrainingModels?: TrainingModelsCreateNestedManyWithoutUserInput
     Images?: ImagesCreateNestedManyWithoutUserInput
+    Videos?: VideosCreateNestedManyWithoutUserInput
     Transactions?: TransactionsCreateNestedManyWithoutUserInput
     oAuth2Sessions?: OAuth2SessionCreateNestedManyWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
@@ -30670,6 +32839,7 @@ export namespace Prisma {
     role?: $Enums.Role
     TrainingModels?: TrainingModelsUncheckedCreateNestedManyWithoutUserInput
     Images?: ImagesUncheckedCreateNestedManyWithoutUserInput
+    Videos?: VideosUncheckedCreateNestedManyWithoutUserInput
     Transactions?: TransactionsUncheckedCreateNestedManyWithoutUserInput
     oAuth2Sessions?: OAuth2SessionUncheckedCreateNestedManyWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -30713,6 +32883,7 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     TrainingModels?: TrainingModelsUpdateManyWithoutUserNestedInput
     Images?: ImagesUpdateManyWithoutUserNestedInput
+    Videos?: VideosUpdateManyWithoutUserNestedInput
     Transactions?: TransactionsUpdateManyWithoutUserNestedInput
     oAuth2Sessions?: OAuth2SessionUpdateManyWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
@@ -30741,6 +32912,7 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     TrainingModels?: TrainingModelsUncheckedUpdateManyWithoutUserNestedInput
     Images?: ImagesUncheckedUpdateManyWithoutUserNestedInput
+    Videos?: VideosUncheckedUpdateManyWithoutUserNestedInput
     Transactions?: TransactionsUncheckedUpdateManyWithoutUserNestedInput
     oAuth2Sessions?: OAuth2SessionUncheckedUpdateManyWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -30768,6 +32940,7 @@ export namespace Prisma {
     role?: $Enums.Role
     TrainingModels?: TrainingModelsCreateNestedManyWithoutUserInput
     UserCredits?: UserCreditsCreateNestedManyWithoutUserInput
+    Videos?: VideosCreateNestedManyWithoutUserInput
     Transactions?: TransactionsCreateNestedManyWithoutUserInput
     oAuth2Sessions?: OAuth2SessionCreateNestedManyWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
@@ -30796,6 +32969,7 @@ export namespace Prisma {
     role?: $Enums.Role
     TrainingModels?: TrainingModelsUncheckedCreateNestedManyWithoutUserInput
     UserCredits?: UserCreditsUncheckedCreateNestedManyWithoutUserInput
+    Videos?: VideosUncheckedCreateNestedManyWithoutUserInput
     Transactions?: TransactionsUncheckedCreateNestedManyWithoutUserInput
     oAuth2Sessions?: OAuth2SessionUncheckedCreateNestedManyWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -30947,6 +33121,7 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     TrainingModels?: TrainingModelsUpdateManyWithoutUserNestedInput
     UserCredits?: UserCreditsUpdateManyWithoutUserNestedInput
+    Videos?: VideosUpdateManyWithoutUserNestedInput
     Transactions?: TransactionsUpdateManyWithoutUserNestedInput
     oAuth2Sessions?: OAuth2SessionUpdateManyWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
@@ -30975,6 +33150,7 @@ export namespace Prisma {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     TrainingModels?: TrainingModelsUncheckedUpdateManyWithoutUserNestedInput
     UserCredits?: UserCreditsUncheckedUpdateManyWithoutUserNestedInput
+    Videos?: VideosUncheckedUpdateManyWithoutUserNestedInput
     Transactions?: TransactionsUncheckedUpdateManyWithoutUserNestedInput
     oAuth2Sessions?: OAuth2SessionUncheckedUpdateManyWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -31101,6 +33277,136 @@ export namespace Prisma {
     full_description?: StringFieldUpdateOperationsInput | string
     features?: PacksUpdatefeaturesInput | string[]
     translations?: Packs_translationsUncheckedUpdateManyWithoutPackNestedInput
+  }
+
+  export type UsersCreateWithoutVideosInput = {
+    pid: string
+    email: string
+    password: string
+    api_key: string
+    name: string
+    stripe_customer_id?: string | null
+    picture?: string | null
+    reset_token?: string | null
+    reset_sent_at?: Date | string | null
+    email_verification_token?: string | null
+    email_verification_sent_at?: Date | string | null
+    email_verified_at?: Date | string | null
+    magicLink_token?: string | null
+    magicLink_expiration?: Date | string | null
+    account?: $Enums.Account
+    role?: $Enums.Role
+    TrainingModels?: TrainingModelsCreateNestedManyWithoutUserInput
+    UserCredits?: UserCreditsCreateNestedManyWithoutUserInput
+    Images?: ImagesCreateNestedManyWithoutUserInput
+    Transactions?: TransactionsCreateNestedManyWithoutUserInput
+    oAuth2Sessions?: OAuth2SessionCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    settings?: UserSettingsCreateNestedOneWithoutUserInput
+    featureRequests?: FeatureRequestCreateNestedManyWithoutUserInput
+    featureVote?: FeatureVoteCreateNestedManyWithoutUserInput
+  }
+
+  export type UsersUncheckedCreateWithoutVideosInput = {
+    id?: number
+    pid: string
+    email: string
+    password: string
+    api_key: string
+    name: string
+    stripe_customer_id?: string | null
+    picture?: string | null
+    reset_token?: string | null
+    reset_sent_at?: Date | string | null
+    email_verification_token?: string | null
+    email_verification_sent_at?: Date | string | null
+    email_verified_at?: Date | string | null
+    magicLink_token?: string | null
+    magicLink_expiration?: Date | string | null
+    account?: $Enums.Account
+    role?: $Enums.Role
+    TrainingModels?: TrainingModelsUncheckedCreateNestedManyWithoutUserInput
+    UserCredits?: UserCreditsUncheckedCreateNestedManyWithoutUserInput
+    Images?: ImagesUncheckedCreateNestedManyWithoutUserInput
+    Transactions?: TransactionsUncheckedCreateNestedManyWithoutUserInput
+    oAuth2Sessions?: OAuth2SessionUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    settings?: UserSettingsUncheckedCreateNestedOneWithoutUserInput
+    featureRequests?: FeatureRequestUncheckedCreateNestedManyWithoutUserInput
+    featureVote?: FeatureVoteUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UsersCreateOrConnectWithoutVideosInput = {
+    where: UsersWhereUniqueInput
+    create: XOR<UsersCreateWithoutVideosInput, UsersUncheckedCreateWithoutVideosInput>
+  }
+
+  export type UsersUpsertWithoutVideosInput = {
+    update: XOR<UsersUpdateWithoutVideosInput, UsersUncheckedUpdateWithoutVideosInput>
+    create: XOR<UsersCreateWithoutVideosInput, UsersUncheckedCreateWithoutVideosInput>
+    where?: UsersWhereInput
+  }
+
+  export type UsersUpdateToOneWithWhereWithoutVideosInput = {
+    where?: UsersWhereInput
+    data: XOR<UsersUpdateWithoutVideosInput, UsersUncheckedUpdateWithoutVideosInput>
+  }
+
+  export type UsersUpdateWithoutVideosInput = {
+    pid?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    api_key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_token?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null
+    email_verification_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    email_verified_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    magicLink_token?: NullableStringFieldUpdateOperationsInput | string | null
+    magicLink_expiration?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    account?: EnumAccountFieldUpdateOperationsInput | $Enums.Account
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    TrainingModels?: TrainingModelsUpdateManyWithoutUserNestedInput
+    UserCredits?: UserCreditsUpdateManyWithoutUserNestedInput
+    Images?: ImagesUpdateManyWithoutUserNestedInput
+    Transactions?: TransactionsUpdateManyWithoutUserNestedInput
+    oAuth2Sessions?: OAuth2SessionUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    settings?: UserSettingsUpdateOneWithoutUserNestedInput
+    featureRequests?: FeatureRequestUpdateManyWithoutUserNestedInput
+    featureVote?: FeatureVoteUpdateManyWithoutUserNestedInput
+  }
+
+  export type UsersUncheckedUpdateWithoutVideosInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    pid?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    api_key?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    picture?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_token?: NullableStringFieldUpdateOperationsInput | string | null
+    reset_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    email_verification_token?: NullableStringFieldUpdateOperationsInput | string | null
+    email_verification_sent_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    email_verified_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    magicLink_token?: NullableStringFieldUpdateOperationsInput | string | null
+    magicLink_expiration?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    account?: EnumAccountFieldUpdateOperationsInput | $Enums.Account
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    TrainingModels?: TrainingModelsUncheckedUpdateManyWithoutUserNestedInput
+    UserCredits?: UserCreditsUncheckedUpdateManyWithoutUserNestedInput
+    Images?: ImagesUncheckedUpdateManyWithoutUserNestedInput
+    Transactions?: TransactionsUncheckedUpdateManyWithoutUserNestedInput
+    oAuth2Sessions?: OAuth2SessionUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    settings?: UserSettingsUncheckedUpdateOneWithoutUserNestedInput
+    featureRequests?: FeatureRequestUncheckedUpdateManyWithoutUserNestedInput
+    featureVote?: FeatureVoteUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type Plans_translationsCreateWithoutPlanInput = {
@@ -31619,6 +33925,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsCreateNestedManyWithoutUserInput
     UserCredits?: UserCreditsCreateNestedManyWithoutUserInput
     Images?: ImagesCreateNestedManyWithoutUserInput
+    Videos?: VideosCreateNestedManyWithoutUserInput
     oAuth2Sessions?: OAuth2SessionCreateNestedManyWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     settings?: UserSettingsCreateNestedOneWithoutUserInput
@@ -31647,6 +33954,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsUncheckedCreateNestedManyWithoutUserInput
     UserCredits?: UserCreditsUncheckedCreateNestedManyWithoutUserInput
     Images?: ImagesUncheckedCreateNestedManyWithoutUserInput
+    Videos?: VideosUncheckedCreateNestedManyWithoutUserInput
     oAuth2Sessions?: OAuth2SessionUncheckedCreateNestedManyWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     settings?: UserSettingsUncheckedCreateNestedOneWithoutUserInput
@@ -31742,6 +34050,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsUpdateManyWithoutUserNestedInput
     UserCredits?: UserCreditsUpdateManyWithoutUserNestedInput
     Images?: ImagesUpdateManyWithoutUserNestedInput
+    Videos?: VideosUpdateManyWithoutUserNestedInput
     oAuth2Sessions?: OAuth2SessionUpdateManyWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     settings?: UserSettingsUpdateOneWithoutUserNestedInput
@@ -31770,6 +34079,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsUncheckedUpdateManyWithoutUserNestedInput
     UserCredits?: UserCreditsUncheckedUpdateManyWithoutUserNestedInput
     Images?: ImagesUncheckedUpdateManyWithoutUserNestedInput
+    Videos?: VideosUncheckedUpdateManyWithoutUserNestedInput
     oAuth2Sessions?: OAuth2SessionUncheckedUpdateManyWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     settings?: UserSettingsUncheckedUpdateOneWithoutUserNestedInput
@@ -31797,6 +34107,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsCreateNestedManyWithoutUserInput
     UserCredits?: UserCreditsCreateNestedManyWithoutUserInput
     Images?: ImagesCreateNestedManyWithoutUserInput
+    Videos?: VideosCreateNestedManyWithoutUserInput
     Transactions?: TransactionsCreateNestedManyWithoutUserInput
     oAuth2Sessions?: OAuth2SessionCreateNestedManyWithoutUserInput
     settings?: UserSettingsCreateNestedOneWithoutUserInput
@@ -31825,6 +34136,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsUncheckedCreateNestedManyWithoutUserInput
     UserCredits?: UserCreditsUncheckedCreateNestedManyWithoutUserInput
     Images?: ImagesUncheckedCreateNestedManyWithoutUserInput
+    Videos?: VideosUncheckedCreateNestedManyWithoutUserInput
     Transactions?: TransactionsUncheckedCreateNestedManyWithoutUserInput
     oAuth2Sessions?: OAuth2SessionUncheckedCreateNestedManyWithoutUserInput
     settings?: UserSettingsUncheckedCreateNestedOneWithoutUserInput
@@ -31868,6 +34180,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsUpdateManyWithoutUserNestedInput
     UserCredits?: UserCreditsUpdateManyWithoutUserNestedInput
     Images?: ImagesUpdateManyWithoutUserNestedInput
+    Videos?: VideosUpdateManyWithoutUserNestedInput
     Transactions?: TransactionsUpdateManyWithoutUserNestedInput
     oAuth2Sessions?: OAuth2SessionUpdateManyWithoutUserNestedInput
     settings?: UserSettingsUpdateOneWithoutUserNestedInput
@@ -31896,6 +34209,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsUncheckedUpdateManyWithoutUserNestedInput
     UserCredits?: UserCreditsUncheckedUpdateManyWithoutUserNestedInput
     Images?: ImagesUncheckedUpdateManyWithoutUserNestedInput
+    Videos?: VideosUncheckedUpdateManyWithoutUserNestedInput
     Transactions?: TransactionsUncheckedUpdateManyWithoutUserNestedInput
     oAuth2Sessions?: OAuth2SessionUncheckedUpdateManyWithoutUserNestedInput
     settings?: UserSettingsUncheckedUpdateOneWithoutUserNestedInput
@@ -31923,6 +34237,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsCreateNestedManyWithoutUserInput
     UserCredits?: UserCreditsCreateNestedManyWithoutUserInput
     Images?: ImagesCreateNestedManyWithoutUserInput
+    Videos?: VideosCreateNestedManyWithoutUserInput
     Transactions?: TransactionsCreateNestedManyWithoutUserInput
     oAuth2Sessions?: OAuth2SessionCreateNestedManyWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
@@ -31951,6 +34266,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsUncheckedCreateNestedManyWithoutUserInput
     UserCredits?: UserCreditsUncheckedCreateNestedManyWithoutUserInput
     Images?: ImagesUncheckedCreateNestedManyWithoutUserInput
+    Videos?: VideosUncheckedCreateNestedManyWithoutUserInput
     Transactions?: TransactionsUncheckedCreateNestedManyWithoutUserInput
     oAuth2Sessions?: OAuth2SessionUncheckedCreateNestedManyWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -31994,6 +34310,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsUpdateManyWithoutUserNestedInput
     UserCredits?: UserCreditsUpdateManyWithoutUserNestedInput
     Images?: ImagesUpdateManyWithoutUserNestedInput
+    Videos?: VideosUpdateManyWithoutUserNestedInput
     Transactions?: TransactionsUpdateManyWithoutUserNestedInput
     oAuth2Sessions?: OAuth2SessionUpdateManyWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
@@ -32022,6 +34339,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsUncheckedUpdateManyWithoutUserNestedInput
     UserCredits?: UserCreditsUncheckedUpdateManyWithoutUserNestedInput
     Images?: ImagesUncheckedUpdateManyWithoutUserNestedInput
+    Videos?: VideosUncheckedUpdateManyWithoutUserNestedInput
     Transactions?: TransactionsUncheckedUpdateManyWithoutUserNestedInput
     oAuth2Sessions?: OAuth2SessionUncheckedUpdateManyWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -32049,6 +34367,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsCreateNestedManyWithoutUserInput
     UserCredits?: UserCreditsCreateNestedManyWithoutUserInput
     Images?: ImagesCreateNestedManyWithoutUserInput
+    Videos?: VideosCreateNestedManyWithoutUserInput
     Transactions?: TransactionsCreateNestedManyWithoutUserInput
     oAuth2Sessions?: OAuth2SessionCreateNestedManyWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
@@ -32077,6 +34396,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsUncheckedCreateNestedManyWithoutUserInput
     UserCredits?: UserCreditsUncheckedCreateNestedManyWithoutUserInput
     Images?: ImagesUncheckedCreateNestedManyWithoutUserInput
+    Videos?: VideosUncheckedCreateNestedManyWithoutUserInput
     Transactions?: TransactionsUncheckedCreateNestedManyWithoutUserInput
     oAuth2Sessions?: OAuth2SessionUncheckedCreateNestedManyWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -32143,6 +34463,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsUpdateManyWithoutUserNestedInput
     UserCredits?: UserCreditsUpdateManyWithoutUserNestedInput
     Images?: ImagesUpdateManyWithoutUserNestedInput
+    Videos?: VideosUpdateManyWithoutUserNestedInput
     Transactions?: TransactionsUpdateManyWithoutUserNestedInput
     oAuth2Sessions?: OAuth2SessionUpdateManyWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
@@ -32171,6 +34492,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsUncheckedUpdateManyWithoutUserNestedInput
     UserCredits?: UserCreditsUncheckedUpdateManyWithoutUserNestedInput
     Images?: ImagesUncheckedUpdateManyWithoutUserNestedInput
+    Videos?: VideosUncheckedUpdateManyWithoutUserNestedInput
     Transactions?: TransactionsUncheckedUpdateManyWithoutUserNestedInput
     oAuth2Sessions?: OAuth2SessionUncheckedUpdateManyWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -32214,6 +34536,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsCreateNestedManyWithoutUserInput
     UserCredits?: UserCreditsCreateNestedManyWithoutUserInput
     Images?: ImagesCreateNestedManyWithoutUserInput
+    Videos?: VideosCreateNestedManyWithoutUserInput
     Transactions?: TransactionsCreateNestedManyWithoutUserInput
     oAuth2Sessions?: OAuth2SessionCreateNestedManyWithoutUserInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
@@ -32242,6 +34565,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsUncheckedCreateNestedManyWithoutUserInput
     UserCredits?: UserCreditsUncheckedCreateNestedManyWithoutUserInput
     Images?: ImagesUncheckedCreateNestedManyWithoutUserInput
+    Videos?: VideosUncheckedCreateNestedManyWithoutUserInput
     Transactions?: TransactionsUncheckedCreateNestedManyWithoutUserInput
     oAuth2Sessions?: OAuth2SessionUncheckedCreateNestedManyWithoutUserInput
     notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
@@ -32311,6 +34635,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsUpdateManyWithoutUserNestedInput
     UserCredits?: UserCreditsUpdateManyWithoutUserNestedInput
     Images?: ImagesUpdateManyWithoutUserNestedInput
+    Videos?: VideosUpdateManyWithoutUserNestedInput
     Transactions?: TransactionsUpdateManyWithoutUserNestedInput
     oAuth2Sessions?: OAuth2SessionUpdateManyWithoutUserNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
@@ -32339,6 +34664,7 @@ export namespace Prisma {
     TrainingModels?: TrainingModelsUncheckedUpdateManyWithoutUserNestedInput
     UserCredits?: UserCreditsUncheckedUpdateManyWithoutUserNestedInput
     Images?: ImagesUncheckedUpdateManyWithoutUserNestedInput
+    Videos?: VideosUncheckedUpdateManyWithoutUserNestedInput
     Transactions?: TransactionsUncheckedUpdateManyWithoutUserNestedInput
     oAuth2Sessions?: OAuth2SessionUncheckedUpdateManyWithoutUserNestedInput
     notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
@@ -32432,6 +34758,31 @@ export namespace Prisma {
     height?: number | null
     image_s3_key: string
     image_url_fal?: string | null
+    is_favorite?: boolean
+    deleted_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type VideosCreateManyUserInput = {
+    id?: number
+    pid: string
+    title: string
+    user_prompt: string
+    sys_prompt: string
+    negative_prompt?: string | null
+    alt: string
+    duration?: number
+    enhance_prompt?: boolean
+    generate_audio?: boolean
+    seed?: number | null
+    status: $Enums.Status
+    aspect_ratio: $Enums.AspectRatio
+    video_cost?: number
+    fal_ai_request_id?: string | null
+    video_s3_key: string
+    thumbnail_s3_key: string
+    video_url_fal?: string | null
     is_favorite?: boolean
     deleted_at?: Date | string | null
     created_at?: Date | string
@@ -32661,6 +35012,80 @@ export namespace Prisma {
     height?: NullableIntFieldUpdateOperationsInput | number | null
     image_s3_key?: StringFieldUpdateOperationsInput | string
     image_url_fal?: NullableStringFieldUpdateOperationsInput | string | null
+    is_favorite?: BoolFieldUpdateOperationsInput | boolean
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type VideosUpdateWithoutUserInput = {
+    pid?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    user_prompt?: StringFieldUpdateOperationsInput | string
+    sys_prompt?: StringFieldUpdateOperationsInput | string
+    negative_prompt?: NullableStringFieldUpdateOperationsInput | string | null
+    alt?: StringFieldUpdateOperationsInput | string
+    duration?: IntFieldUpdateOperationsInput | number
+    enhance_prompt?: BoolFieldUpdateOperationsInput | boolean
+    generate_audio?: BoolFieldUpdateOperationsInput | boolean
+    seed?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
+    aspect_ratio?: EnumAspectRatioFieldUpdateOperationsInput | $Enums.AspectRatio
+    video_cost?: IntFieldUpdateOperationsInput | number
+    fal_ai_request_id?: NullableStringFieldUpdateOperationsInput | string | null
+    video_s3_key?: StringFieldUpdateOperationsInput | string
+    thumbnail_s3_key?: StringFieldUpdateOperationsInput | string
+    video_url_fal?: NullableStringFieldUpdateOperationsInput | string | null
+    is_favorite?: BoolFieldUpdateOperationsInput | boolean
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type VideosUncheckedUpdateWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    pid?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    user_prompt?: StringFieldUpdateOperationsInput | string
+    sys_prompt?: StringFieldUpdateOperationsInput | string
+    negative_prompt?: NullableStringFieldUpdateOperationsInput | string | null
+    alt?: StringFieldUpdateOperationsInput | string
+    duration?: IntFieldUpdateOperationsInput | number
+    enhance_prompt?: BoolFieldUpdateOperationsInput | boolean
+    generate_audio?: BoolFieldUpdateOperationsInput | boolean
+    seed?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
+    aspect_ratio?: EnumAspectRatioFieldUpdateOperationsInput | $Enums.AspectRatio
+    video_cost?: IntFieldUpdateOperationsInput | number
+    fal_ai_request_id?: NullableStringFieldUpdateOperationsInput | string | null
+    video_s3_key?: StringFieldUpdateOperationsInput | string
+    thumbnail_s3_key?: StringFieldUpdateOperationsInput | string
+    video_url_fal?: NullableStringFieldUpdateOperationsInput | string | null
+    is_favorite?: BoolFieldUpdateOperationsInput | boolean
+    deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type VideosUncheckedUpdateManyWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    pid?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    user_prompt?: StringFieldUpdateOperationsInput | string
+    sys_prompt?: StringFieldUpdateOperationsInput | string
+    negative_prompt?: NullableStringFieldUpdateOperationsInput | string | null
+    alt?: StringFieldUpdateOperationsInput | string
+    duration?: IntFieldUpdateOperationsInput | number
+    enhance_prompt?: BoolFieldUpdateOperationsInput | boolean
+    generate_audio?: BoolFieldUpdateOperationsInput | boolean
+    seed?: NullableIntFieldUpdateOperationsInput | number | null
+    status?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
+    aspect_ratio?: EnumAspectRatioFieldUpdateOperationsInput | $Enums.AspectRatio
+    video_cost?: IntFieldUpdateOperationsInput | number
+    fal_ai_request_id?: NullableStringFieldUpdateOperationsInput | string | null
+    video_s3_key?: StringFieldUpdateOperationsInput | string
+    thumbnail_s3_key?: StringFieldUpdateOperationsInput | string
+    video_url_fal?: NullableStringFieldUpdateOperationsInput | string | null
     is_favorite?: BoolFieldUpdateOperationsInput | boolean
     deleted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
