@@ -13,7 +13,6 @@ use crate::models::videos::VideoGenRequestParams;
 use crate::service::aws::s3::{AwsS3, S3Key};
 use crate::service::redis::redis::RedisCacheDriver;
 use crate::views;
-use crate::views::videos::VideoView;
 use crate::{
     domain::{
         domain_services::video_generation::VideoGenerationService,

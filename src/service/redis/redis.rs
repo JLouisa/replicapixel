@@ -261,23 +261,23 @@ impl RedisCacheDriver {
             None => Ok(None),
         }
     }
-    // pub async fn mget(&self, redis_keys: &Vec<RedisKey>) -> RedisDbResult<Vec<Option<String>>> {
-    //     let keys: Vec<String> = redis_keys.iter().map(|k| k.to_key()).collect();
-    //     let mut conn = self.client.clone();
-    //     let raw_values: Vec<Option<String>> = conn.mget(keys).await?;
-    //     Ok(raw_values)
-    // }
     pub async fn mget(&self, redis_keys: &Vec<RedisKey>) -> RedisDbResult<Vec<Option<String>>> {
         let keys: Vec<String> = redis_keys.iter().map(|k| k.to_key()).collect();
         let mut conn = self.client.clone();
-
-        // Try decoding into a Value first
-        let raw: redis::Value = redis::cmd("MGET").arg(keys).query_async(&mut conn).await?;
-
-        // Now convert safely to Vec<Option<String>>
-        let result: Vec<Option<String>> = redis::from_redis_value(&raw)?;
-        Ok(result)
+        let raw_values: Vec<Option<String>> = conn.mget(keys).await?;
+        Ok(raw_values)
     }
+    // pub async fn mget(&self, redis_keys: &Vec<RedisKey>) -> RedisDbResult<Vec<Option<String>>> {
+    //     let keys: Vec<String> = redis_keys.iter().map(|k| k.to_key()).collect();
+    //     let mut conn = self.client.clone();
+
+    //     // Try decoding into a Value first
+    //     let raw: redis::Value = redis::cmd("MGET").arg(keys).query_async(&mut conn).await?;
+
+    //     // Now convert safely to Vec<Option<String>>
+    //     let result: Vec<Option<String>> = redis::from_redis_value(&raw)?;
+    //     Ok(result)
+    // }
 
     pub async fn set_s3_pre_url(&self, key: &ImageView) -> RedisDbResult<()> {
         let mut conn = self.client.clone();

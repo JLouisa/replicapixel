@@ -642,8 +642,7 @@ pub struct QueueResponse {
 impl QueueResponse {
     pub fn test() -> QueueResponse {
         Self {
-            request_id: "test-1e2f3a4b5c6d".to_string(),
-            response_url: "/static/video/WhatsApp-Video-2025-04-17.mp4".to_string(),
+            request_id: uuid::Uuid::new_v4().to_string(),
             ..Default::default()
         }
     }

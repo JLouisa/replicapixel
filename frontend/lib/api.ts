@@ -412,7 +412,7 @@ export const DAL = {
             }
 
             // Get the HTML response as text
-            const html = await response.text();
+            const videoCardHtml = await response.text();
 
             // Main Swap
             const mainTargetElement = document.getElementById(target);
@@ -423,7 +423,7 @@ export const DAL = {
             }
 
             // Perform the main swap with the remaining content
-            window.htmx.swap(mainTargetElement, html, { swap });
+            window.htmx.swap(mainTargetElement, videoCardHtml, { swap });
           } catch (error) {
             return DAL.handleError(
               "Something went wrong generating image. Code: 1000",
