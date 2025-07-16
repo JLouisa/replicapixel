@@ -199,6 +199,10 @@ impl From<MediaGenerationError> for loco_rs::Error {
             ),
             MediaGenerationError::CreditUpdateError(_) => loco_rs::Error::InternalServerError,
             MediaGenerationError::ModelError(model_err) => model_err.into(),
+            MediaGenerationError::VideoProcessingError(video_err) => loco_rs::Error::CustomError(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                ErrorDetail::new("VideoProcessingError".to_string(), video_err.to_string()),
+            ),
         }
     }
 }
@@ -232,6 +236,10 @@ impl From<FalAiClientError> for loco_rs::Error {
                 ErrorDetail::new("Serde Error", &err.to_string()),
             ),
             FalAiClientError::FalApiError(err) => loco_rs::Error::CustomError(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                ErrorDetail::new("Error", &err.to_string()),
+            ),
+            FalAiClientError::StorageError(err) => loco_rs::Error::CustomError(
                 StatusCode::INTERNAL_SERVER_ERROR,
                 ErrorDetail::new("Error", &err.to_string()),
             ),

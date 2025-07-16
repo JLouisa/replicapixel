@@ -587,13 +587,13 @@ Alpine.store(Stores.VideoGenForm, {
     replaceDivIfFound();
 
     try {
-      await DAL.Backend.htmx.VideoGeneration.generateVideo(modelData);
+      await DAL.Backend.htmx.VideoGeneration.generateVideoV2(modelData);
       this.reset();
     } catch (error) {
       console.error(error);
-      Alpine.store(Stores.Toast).error("An unexpected error occurred. Please try again.");
+      Alpine.store(Stores.Toast).error(`${error}`);
     } finally {
-      this.isLoading = false; // Ensure loading state is reset
+      this.isLoading = false;
     }
   },
 });

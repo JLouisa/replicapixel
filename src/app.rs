@@ -1,16 +1,10 @@
+use crate::domain::settings::Settings;
 use crate::middleware::cookie::CookieConsentLayer;
 #[allow(unused_imports)]
 use crate::{
     controllers, initializers, models::_entities::users, tasks, workers::downloader::DownloadWorker,
 };
 use async_trait::async_trait;
-use loco_rs::cache;
-
-// use crate::middleware::i18n::I18n;
-// use axum::Router as AxumRouter;
-
-// use loco_rs::controller::middleware::{self, MiddlewareLayer};
-
 use loco_rs::{
     app::{AppContext, Hooks, Initializer},
     bgworker::{BackgroundWorker, Queue},
@@ -24,6 +18,11 @@ use loco_rs::{
 };
 use migration::Migrator;
 use std::path::Path;
+
+// use crate::middleware::i18n::I18n;
+// use axum::Router as AxumRouter;
+
+// use loco_rs::controller::middleware::{self, MiddlewareLayer};
 
 // #[derive(Clone)]
 // pub struct I18nMiddlewareLayer;
@@ -148,9 +147,50 @@ impl Hooks for App {
             .await?;
         Ok(())
     }
+
+    // async fn after_context(ctx: AppContext) -> Result<AppContext> {
+    //     Ok(AppContext {
+    //         cache: cache::Cache::new(cache::drivers::inmem::new()).into(),
+    //         storage: Storage::single(storage::drivers::local::new_with_prefix("storage")?).into(),
+    //         ..ctx
+    //     })
+    // }
     async fn after_context(ctx: AppContext) -> Result<AppContext> {
+        use loco_rs::cache;
+        use loco_rs::storage;
+        use loco_rs::storage::drivers::aws;
+        use loco_rs::storage::{
+            drivers::StoreDriver, strategies, strategies::StorageStrategy, Storage,
+        };
+        use std::collections::BTreeMap;
+
+        let aws_settings = Settings::init(&ctx).aws;
+        let credential = aws::Credential {
+            key_id: aws_settings.access_key_id.to_string(),
+            secret_key: aws_settings.secret_access_key.to_string(),
+            token: None,
+        };
+        let aws_driver = aws::with_credentials(
+            &aws_settings.s3.bucket_name,
+            &aws_settings.s3.region,
+            credential,
+        )?;
+        // let aws_store: Box<dyn storage::drivers::StoreDriver> = Box::new(aws_init);
+
+        let local_driver = storage::drivers::local::new_with_prefix("storage").unwrap();
+
+        let mut backends: BTreeMap<String, Box<dyn StoreDriver>> = BTreeMap::new();
+        backends.insert("default".to_string(), local_driver);
+        backends.insert("aws".to_string(), aws_driver);
+
+        let strategy: Box<dyn StorageStrategy> =
+            Box::new(strategies::single::SingleStrategy::new("default"));
+
+        let storage = Storage::new(backends, strategy);
+
         Ok(AppContext {
             cache: cache::Cache::new(cache::drivers::inmem::new()).into(),
+            storage: storage.into(),
             ..ctx
         })
     }

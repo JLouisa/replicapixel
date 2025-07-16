@@ -1,10 +1,7 @@
 {% set video_check_link = options.website.website_routes.video.check %} {% set video_completed_link
-= options.website.website_routes.video.completed %}
-
-<!-- Video Partial -->
-{% if video.status == "Completed" %}
+= options.website.website_routes.video.completed %} {% if video.status == "Completed" %}
 <div
-  id="video-card-{{video.pid}}"
+  id="video-card--completed-{{video.pid}}"
   class="w-full max-w-sm rounded-xl overflow-hidden shadow-md bg-base-100 border border-base-300 hover:shadow-xl transition-shadow duration-200"
   onclick="openVideoDialog('{{video.video_url | safe}}', '{{video.title}}', '{{video.user_prompt}}', '{{video.duration}}', '{{video.status}}')"
 >
@@ -34,7 +31,10 @@
 </div>
 {% elif video.status == "Processing" %}
 <div
-  id="video-card-{{video.pid}}"
+  id="video-card-processing-{{video.pid}}"
+  hx-get="/api/videos/check/test/{{video.pid}}/{{video.status}}"
+  hx-trigger="load, every 5s"
+  hx-swap="outerHTML"
   class="w-full max-w-sm rounded-xl overflow-hidden shadow-md bg-base-100 border border-base-300 hover:shadow-xl transition-shadow duration-200"
 >
   <!-- Thumbnail -->
@@ -60,24 +60,25 @@
       </div>
     </div>
   </div>
+  {#
   <script>
-    testConsole("Processing");
     videoProcessing(
       "{{ video.video_url | safe }}",
       "{{ video.video_pre_url | safe }}",
       "{{ video.thumbnail_url | safe }}",
-      "{{ video.pid }}",
-      "#video-card-{{video.pid}}"
+      "/api/videos/completed/test/{{ video.pid }}",
+      "video-card-processing-{{video.pid}}"
     );
   </script>
+  #}
 </div>
 {% elif video.status == "Pending" %}
 <div
-  id="video-card-{{ video.pid }}"
-  class="w-full max-w-sm rounded-xl overflow-hidden shadow-md bg-base-100 border border-base-300 hover:shadow-xl transition-shadow duration-200"
-  hx-get="/api/videos/check/test/{{ video.pid }}"
+  id="video-card-pending-{{ video.pid }}"
+  hx-get="/api/videos/check/test/{{video.pid}}/{{video.status}}"
   hx-trigger="load, every 5s"
   hx-swap="outerHTML"
+  class="w-full max-w-sm rounded-xl overflow-hidden shadow-md bg-base-100 border border-base-300 hover:shadow-xl transition-shadow duration-200"
 >
   <!-- Thumbnail -->
   <div class="relative pb-[56.25%] bg-base-200">
@@ -105,7 +106,7 @@
 </div>
 {% elif video.status == "Failed" %}
 <div
-  id="video-card-{{video.pid}}"
+  id="video-card-failed-{{video.pid}}"
   class="w-full max-w-sm rounded-xl overflow-hidden shadow-md bg-base-100 border border-base-300 hover:shadow-xl transition-shadow duration-200"
 >
   <!-- Thumbnail -->

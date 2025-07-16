@@ -9,9 +9,9 @@ export const VideoGenFormSchema = object({
   enhance_prompt: boolean(),
   generate_audio: boolean(),
 });
-export type VideoGenFormData = InferOutput<typeof VideoGenFormSchema>;
+export type VideoGenForm = InferOutput<typeof VideoGenFormSchema>;
 
-export class VideoGenFormClass implements VideoGenFormData {
+export class VideoGenFormClass implements VideoGenForm {
   constructor(
     public name: string,
     public prompt: string,

@@ -133,12 +133,12 @@ impl From<VideoModel> for VideoView {
 impl From<&VideoModel> for VideoView {
     fn from(item: &VideoModel) -> Self {
         Self {
+            duration: item.parse_duration(),
             pid: item.pid,
             title: item.title.clone(),
             user_prompt: UserPrompt::new(item.user_prompt.clone()),
             negative_prompt: NegativePrompt::new(item.negative_prompt.clone()),
             alt: AltText::new(item.alt.clone()),
-            duration: item.parse_duration(),
             generate_audio: item.generate_audio,
             status: item.status,
             aspect_ratio: item.aspect_ratio.clone(),

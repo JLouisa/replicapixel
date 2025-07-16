@@ -345,11 +345,8 @@ pub async fn video_dashboard(
         load_item_all_completed(&ctx, user.id),
         load_first_videos(&ctx.db, user.id, false, false)
     );
-    let training_models = training_models_result?;
-    let videos_raw = videos_result?;
-    let videos = videos_raw.into_view(&cache, &s3_client).await;
-
-    dbg!(&videos);
+    let training_models = training_models_result?.into();
+    let videos = videos_result?.into_view(&cache, &s3_client).await;
 
     let website_options: WebsiteOptions = WebsiteOptions::new()
         .website(&website)
@@ -357,7 +354,7 @@ pub async fn video_dashboard(
         .cc_cookie(&cc_cookie)
         .user(user.into())
         .user_credits(user_credits.into())
-        .training_models(training_models.into())
+        .training_models(training_models)
         .videos(&videos)
         .current_page(CurrentPage::Video)
         .is_initial_load()

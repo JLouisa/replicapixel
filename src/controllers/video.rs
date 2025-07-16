@@ -10,9 +10,10 @@ use crate::middleware::i18nv2::LangEngine;
 use crate::models::_entities::sea_orm_active_enums::Status;
 use crate::models::join::user_video::load_user_and_video;
 use crate::models::videos::VideoGenRequestParams;
-use crate::service::aws::s3::{AwsS3, S3Key};
+use crate::service::aws::s3::AwsS3;
 use crate::service::redis::redis::RedisCacheDriver;
 use crate::views;
+use crate::views::videos::VideoView;
 use crate::{
     domain::{
         domain_services::video_generation::VideoGenerationService,
@@ -65,62 +66,69 @@ pub fn routes() -> Routes {
 
     if cfg!(debug_assertions) {
         pub const VIDEO_GENERATE_TEST: &'static str = "/generate/test";
-        pub const VIDEO_CHECK_TEST_ID: &'static str = "/check/test/{id}";
-        pub const VIDEO_COMPLETED_TEST_ID: &'static str = "/completed/test/{id}";
+        pub const VIDEO_CHECK_TEST_ID: &'static str = "/check/test/{id}/{status}";
+        // pub const VIDEO_COMPLETED_TEST_ID: &'static str = "/completed/test/{id}";
 
         routes = routes
             .add(VIDEO_GENERATE_TEST, post(generate_test))
             .add(VIDEO_CHECK_TEST_ID, get(check_test))
-            .add(VIDEO_COMPLETED_TEST_ID, get(upload_completed_test))
+        // .add(VIDEO_COMPLETED_TEST_ID, get(upload_completed_test))
     }
     routes
 }
 
-#[debug_handler]
-pub async fn upload_completed_test(
-    auth: auth::JWT,
-    Path(video_pid): Path<Uuid>,
-    State(ctx): State<AppContext>,
-    Extension(website): Extension<Website>,
-    Extension(s3_client): Extension<AwsS3>,
-    Extension(cache): Extension<RedisCacheDriver>,
-    LangEngine(lang): LangEngine,
-    ViewEngine(view_engine): ViewEngine<TeraView>,
-) -> Result<Response> {
-    let (_, video) = load_user_and_video(&ctx.db, &auth.claims.pid, &video_pid).await?;
+// #[debug_handler]
+// pub async fn upload_completed_test(
+//     auth: auth::JWT,
+//     Path(video_pid): Path<Uuid>,
+//     State(ctx): State<AppContext>,
+//     Extension(website): Extension<Website>,
+//     Extension(cache): Extension<RedisCacheDriver>,
+//     Extension(s3_client): Extension<AwsS3>,
+//     LangEngine(lang): LangEngine,
+//     ViewEngine(view_engine): ViewEngine<TeraView>,
+// ) -> Result<Response> {
+//     let (user, video) = load_user_and_video(&ctx.db, &auth.claims.pid, &video_pid).await?;
 
-    let s3_key = S3Key::new(&video.video_s3_key);
-    let exists = s3_client
-        .check_object_exists(&s3_key)
-        .await
-        .map_err(|_| loco_rs::Error::Message(String::from("Error checking storage: 101")))?;
+//     let s3_key = S3Key::new(&video.video_s3_key);
+//     let exists = s3_client
+//         .check_object_exists(&s3_key)
+//         .await
+//         .map_err(|_| loco_rs::Error::Message(String::from("Error checking storage: 101")))?;
 
-    if !exists {
-        return Ok((StatusCode::NO_CONTENT).into_response().into_response());
-    }
+//     if !exists {
+//         return Ok((StatusCode::NO_CONTENT).into_response().into_response());
+//     }
 
-    let video = video
-        .upload_s3_completed(&ctx.db)
-        .await?
-        .into_view(&cache, &s3_client)
-        .await;
+//     // let video_view = video
+//     //     .upload_s3_completed(&ctx.db)
+//     //     .await?
+//     //     .into_view(&cache, &s3_client)
+//     //     .await;
 
-    let website_options = WebsiteOptions::new()
-        .website(&website)
-        .language(&lang)
-        .video(&video)
-        .build();
+//     // let user_credits = load_user_credit(&ctx.db, user.id).await?;
+//     // let website_options = WebsiteOptions::new()
+//     //     .website(&website)
+//     //     .language(&lang)
+//     //     .video(&video_view)
+//     //     .user_credits(user_credits.into())
+//     //     .build();
 
-    views::videos::one(&view_engine, &website_options)
-}
+//     // views::videos::one(&view_engine, &website_options)
+
+//     let _ = video.upload_s3_completed(&ctx.db).await?;
+
+//     Ok((StatusCode::OK).into_response())
+// }
 
 // Process or Failed Status
 #[debug_handler]
 pub async fn check_test(
     auth: auth::JWT,
-    Path(video_pid): Path<Uuid>,
+    Path((video_pid, status)): Path<(Uuid, Status)>,
     State(ctx): State<AppContext>,
     Extension(website): Extension<Website>,
+    Extension(cache): Extension<RedisCacheDriver>,
     Extension(s3_client): Extension<AwsS3>,
     ViewEngine(view_engine): ViewEngine<TeraView>,
     LangEngine(lang): LangEngine,
@@ -130,10 +138,12 @@ pub async fn check_test(
     if video.user_id != user.id {
         return Err(Error::Unauthorized("Unauthorized".to_string()));
     }
+    if video.status == status {
+        return Ok((StatusCode::NO_CONTENT).into_response());
+    }
 
-    if video.status == Status::Processing {
-        let video_view = s3_client.video_save_pre_url(video).await;
-
+    if video.status == Status::Completed {
+        let video_view = video.into_view(&cache, &s3_client).await;
         let user_credits = load_user_credit(&ctx.db, user.id).await?;
 
         let website_options = WebsiteOptions::new()
@@ -145,13 +155,27 @@ pub async fn check_test(
 
         return views::videos::one(&view_engine, &website_options);
     }
-
-    if video.status == Status::Failed {
+    if video.status == Status::Processing {
+        let video_view = s3_client.video_save_pre_url(video).await;
         let user_credits = load_user_credit(&ctx.db, user.id).await?;
 
         let website_options = WebsiteOptions::new()
             .website(&website)
             .language(&lang)
+            .video(&video_view)
+            .user_credits(user_credits.into())
+            .build();
+
+        return views::videos::one(&view_engine, &website_options);
+    }
+    if video.status == Status::Failed {
+        let video_view = video.into();
+        let user_credits = load_user_credit(&ctx.db, user.id).await?;
+
+        let website_options = WebsiteOptions::new()
+            .website(&website)
+            .language(&lang)
+            .video(&video_view)
             .user_credits(user_credits.into())
             .build();
 
@@ -183,7 +207,7 @@ pub async fn generate_test(
     let (user_credits, video) = VideoGenerationService::test(&ctx, request, &user).await?;
 
     // 3. Render the view using the View Models
-    let video_view = video.into();
+    let video_view = VideoView::from(video);
     let website_options = WebsiteOptions::new()
         .website(&website)
         .language(&lang)
@@ -207,7 +231,6 @@ pub async fn generate(
 ) -> Result<impl IntoResponse> {
     // 0. Validate request payload format
     request.validate()?;
-    dbg!(&request);
 
     // 1. Load User and Training Model
     let user_pid = UserPid::new(&auth.claims.pid);
@@ -218,7 +241,6 @@ pub async fn generate(
         VideoGenerationService::generate(&ctx, &fal_ai_client, request, &user).await?;
 
     let video_view = video.into_view(&cache, &s3_client).await;
-
     let website_options = WebsiteOptions::new()
         .website(&website)
         .language(&lang)

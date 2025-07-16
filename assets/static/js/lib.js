@@ -222,11 +222,19 @@ async function extractThumbnailFileFromVideo(videoBlob, uuid, seekTime = 1) {
 
   // 2. Create a video element
   const video = document.createElement("video");
-  video.id = `video-${uuid}`;
+  video.id = `canvas-${uuid}`;
   video.src = objectUrl;
   video.crossOrigin = "anonymous";
   video.muted = true;
   video.preload = "auto";
+
+  // Error handling cleanup
+  const cleanup = () => URL.revokeObjectURL(objectUrl);
+
+  video.onerror = () => {
+    cleanup();
+    // reject(new Error("Video loading failed"));
+  };
 
   // 3. Return a File (JPEG thumbnail)
   return new Promise((resolve, reject) => {
@@ -271,35 +279,89 @@ async function uploadMediaToS3(media, presignedUrl) {
         "Content-Type": media.type,
       },
     });
-    if (!s3Upload.ok) throw new Error("Failed to upload to S3");
+    if (!s3Upload?.ok) throw new Error("Failed to upload to S3");
     console.log("✅ Upload and notification successful");
   } catch (err) {
     console.error("❌ Upload failed", err);
   }
 }
 
-async function videoProcessing(videoUrl, video_pre_url, thumbnail_pre_url, uuid, target) {
-  console.log("Processing video...");
-  try {
-    const response_video = await fetch(videoUrl);
-    if (!response_video.ok) throw new Error("Video fetch failed");
+function updateVideoCard(htmlString, video_id) {
+  // 1. Parse the new card HTML
+  const template = document.createElement("template");
+  template.innerHTML = htmlString.trim();
+  const newCard = template.content.firstElementChild;
 
-    const video = await response_video.blob();
-    const thumbnail = await extractThumbnailFileFromVideo(video, uuid);
-
-    await uploadMediaToS3(video, video_pre_url);
-    await uploadMediaToS3(thumbnail, thumbnail_pre_url);
-  } catch (err) {
-    console.error("❌ Media download or upload failed", err);
-    return;
+  // 2. Find the existing card
+  const oldCard = document.getElementById(video_id);
+  if (!oldCard) {
+    console.error(`Card with ID ${video_id} not found`);
+    return null;
   }
 
+  // 3. Preserve important attributes from old card
+  // (e.g., HTMX attributes if they exist)
+  const hxAttributes = ["hx-get", "hx-trigger", "hx-swap"];
+  hxAttributes.forEach((attr) => {
+    if (oldCard.hasAttribute(attr)) {
+      newCard.setAttribute(attr, oldCard.getAttribute(attr));
+    }
+  });
+
+  // 4. Replace the card
+  oldCard.replaceWith(newCard);
+
+  // 5. Reinitialize any scripts in the new content
+  const scripts = newCard.querySelectorAll("script");
+  scripts.forEach((script) => {
+    const newScript = document.createElement("script");
+    newScript.textContent = script.textContent;
+    script.replaceWith(newScript);
+  });
+
+  return newCard;
+}
+
+async function videoProcessing(
+  videoUrl,
+  video_pre_url,
+  thumbnail_pre_url,
+  notifyBackendUrl,
+  video_pid
+) {
   try {
-    let swap = "innerHTML";
-    const notifyBackendUrl = "/api/videos/completed/test/" + uuid;
-    console.log(notifyBackendUrl);
-    await window.htmx.ajax("GET", notifyBackendUrl, { target, swap });
-  } catch (err) {
-    console.error("❌ Backend notify or DOM update failed", err);
+    console.log("⏳ Processing video...");
+
+    // 1. Fetch video
+    const videoResponse = await fetch(videoUrl);
+    if (!videoResponse.ok) throw new Error(`Video fetch failed: ${videoResponse.status}`);
+    const videoBlob = await videoResponse.blob();
+
+    // // 2. Generate thumbnail
+    // const thumbnail = await extractThumbnailFileFromVideo(videoBlob, video_pid);
+
+    // // 3. Parallel uploads
+    // await Promise.all([
+    //   uploadMediaToS3(videoBlob, video_pre_url),
+    //   uploadMediaToS3(thumbnail, thumbnail_pre_url),
+    // ]);
+
+    // 4. Notify backend
+    const completionResponse = await fetch(notifyBackendUrl);
+    if (!completionResponse.ok) throw new Error("Completion notification failed");
+
+    // // 5. Update UI
+    // const html = await completionResponse.text();
+    // const updatedCard = updateVideoCard(html, video_pid);
+
+    // if (!updatedCard) {
+    //   console.warn("Card update failed - falling back to HTMX");
+    //   // Implement HTMX fallback here if needed
+    // }
+
+    console.log("✅ Processing completed successfully");
+  } catch (error) {
+    console.error("❌ Processing failed:", error);
+    // Implement retry logic or error UI update here
   }
 }

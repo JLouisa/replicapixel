@@ -10,6 +10,8 @@ use crate::models::{ImageModel, TrainingModelActiveModel, TrainingModelModel, Vi
 use crate::service::aws::s3::{AwsS3, S3Key};
 use crate::service::fal_ai::fal_client::{FalAiClient, FluxApiWebhookResponse, StatusResponse};
 use crate::service::meta::meta::{EventData, UserData};
+use crate::workers::downloader::DownloadWorker;
+use crate::workers::downloader::DownloadWorkerArgs;
 use crate::workers::meta_worker::{MetaConversionApiWorker, MetaConversionApiWorkerArgs};
 use crate::{
     service::stripe::stripe::StripeClient,
@@ -197,10 +199,13 @@ pub async fn fal_ai_video(
         }
     };
 
-    // Update the video
-    video
+    // Update the video to processing
+    let video_model = video
         .update_fal_video_url_processing(&ctx.db, video_url)
         .await?;
+
+    let worker_arg = DownloadWorkerArgs::new(video_model.pid);
+    DownloadWorker::perform_later(&ctx, worker_arg).await?;
 
     Ok((StatusCode::OK, "Payload successfully processed").into_response())
 }

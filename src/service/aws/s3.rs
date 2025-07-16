@@ -1,18 +1,27 @@
+use async_trait::async_trait;
 use aws_sdk_s3 as s3;
 use aws_sdk_s3::config::BehaviorVersion;
 use aws_sdk_s3::operation::delete_object::DeleteObjectError;
 use aws_sdk_s3::operation::head_object::HeadObjectError;
+use aws_sdk_s3::primitives::ByteStream;
+use bytes::Bytes;
 use cuid2;
+use derive_more::Constructor;
+use loco_rs::storage::drivers::{GetResponse, StoreDriver, UploadResponse};
+use loco_rs::storage::{StorageError, StorageResult};
 use s3::config::{Credentials, Region};
 use s3::error::SdkError;
 use s3::operation::put_object::PutObjectError;
 use s3::presigning::{PresigningConfig, PresigningConfigError};
 use s3::Client;
 use serde::{Deserialize, Serialize};
+use std::path::Path;
 use std::time::Duration;
 use thiserror::Error;
+use tokio::join;
 use uuid::Uuid;
 
+use crate::domain::domain_services::video_generation::VideoAndImageBytes;
 use crate::domain::url::Url;
 use crate::models::VideoModel;
 use crate::models::_entities::sea_orm_active_enums::ImageFormat;
@@ -34,6 +43,61 @@ pub enum AwsError {
     S3DeletionError(#[from] SdkError<DeleteObjectError>),
     #[error("Other error: {0}")]
     Other(String),
+}
+
+#[derive(Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum S3Folders {
+    Images,
+    Video,
+    Thumbnails,
+    Zip,
+    Website,
+    Documents,
+}
+impl S3Folders {
+    pub fn get_folder_str(&self) -> String {
+        match self {
+            S3Folders::Images => "images".to_string(),
+            S3Folders::Video => "video".to_string(),
+            S3Folders::Thumbnails => "thumbnails".to_string(),
+            S3Folders::Zip => "zip".to_string(),
+            S3Folders::Website => "website".to_string(),
+            S3Folders::Documents => "documents".to_string(),
+        }
+    }
+    pub fn get_file_type(&self) -> String {
+        match self {
+            S3Folders::Images => ".jpeg".to_string(),
+            S3Folders::Video => ".mp4".to_string(),
+            S3Folders::Thumbnails => ".jpeg".to_string(),
+            S3Folders::Zip => ".zip".to_string(),
+            S3Folders::Website => ".html".to_string(),
+            S3Folders::Documents => ".pdf".to_string(),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Constructor)]
+pub struct AwsS3Response {
+    pub e_tag: Option<String>,
+    pub version: Option<String>,
+}
+impl From<AwsS3Response> for UploadResponse {
+    fn from(value: AwsS3Response) -> UploadResponse {
+        Self {
+            e_tag: value.e_tag,
+            version: value.version,
+        }
+    }
+}
+impl From<&AwsS3Response> for UploadResponse {
+    fn from(value: &AwsS3Response) -> UploadResponse {
+        Self {
+            e_tag: value.e_tag.clone(),
+            version: value.version.clone(),
+        }
+    }
 }
 
 #[derive(Error, Debug)]
@@ -114,17 +178,6 @@ impl From<PresignedUrlRequestForm> for PresignedUrlRequest {
     }
 }
 
-//Todo Re-enable
-// impl From<TrainingForm> for PresignedUrlRequest {
-//     fn from(value: TrainingForm) -> Self {
-//         Self {
-//             id: value.pid,
-//             name: format!("{}-{}", value.name, value.slug),
-//             file_type: value.file_type,
-//         }
-//     }
-// }
-
 #[derive(Serialize, Deserialize)]
 pub struct PresignedUrlSafe {
     pub id: Uuid,
@@ -149,45 +202,6 @@ pub struct AwsS3 {
     pub client: Client,
     pub settings: AwsSettings,
 }
-impl AwsS3 {
-    pub fn bucket_name(&self) -> &String {
-        &self.settings.s3.bucket_name
-    }
-}
-
-#[derive(Serialize, Deserialize)]
-#[serde(rename_all = "lowercase")]
-pub enum S3Folders {
-    Images,
-    Video,
-    Thumbnails,
-    Zip,
-    Website,
-    Documents,
-}
-impl S3Folders {
-    pub fn get_folder_str(&self) -> String {
-        match self {
-            S3Folders::Images => "images".to_string(),
-            S3Folders::Video => "video".to_string(),
-            S3Folders::Thumbnails => "thumbnails".to_string(),
-            S3Folders::Zip => "zip".to_string(),
-            S3Folders::Website => "website".to_string(),
-            S3Folders::Documents => "documents".to_string(),
-        }
-    }
-    pub fn get_file_type(&self) -> String {
-        match self {
-            S3Folders::Images => ".jpeg".to_string(),
-            S3Folders::Video => ".mp4".to_string(),
-            S3Folders::Thumbnails => ".jpeg".to_string(),
-            S3Folders::Zip => ".zip".to_string(),
-            S3Folders::Website => ".html".to_string(),
-            S3Folders::Documents => ".pdf".to_string(),
-        }
-    }
-}
-
 impl AwsS3 {
     pub async fn new(settings: &AwsSettings) -> Self {
         let credentials = Credentials::new(
@@ -214,11 +228,63 @@ impl AwsS3 {
             settings: settings.clone(),
         }
     }
-
-    pub fn create_byte_data(&self, data: &str) -> Vec<u8> {
-        data.as_bytes().to_vec()
+    pub fn bucket_name(&self) -> &String {
+        &self.settings.s3.bucket_name
     }
-
+    pub fn region(&self) -> &String {
+        &self.settings.s3.region
+    }
+    pub async fn direct_upload_all(
+        &self,
+        video_model: &VideoModel,
+        vid_and_img: VideoAndImageBytes,
+    ) -> Result<(), AwsError> {
+        self.direct_upload_video(&video_model, vid_and_img.video_bytes)
+            .await?;
+        self.direct_upload_image(&video_model, vid_and_img.image_bytes)
+            .await?;
+        Ok(())
+    }
+    pub async fn direct_upload_video(
+        &self,
+        video_model: &VideoModel,
+        video_bytes: Bytes,
+    ) -> Result<(), AwsError> {
+        let key = &video_model.video_s3_key;
+        let content_type = "video/mp4";
+        self.direct_upload_base(&key, video_bytes.into(), content_type)
+            .await?;
+        Ok(())
+    }
+    pub async fn direct_upload_image(
+        &self,
+        video_model: &VideoModel,
+        image_bytes: Vec<u8>,
+    ) -> Result<(), AwsError> {
+        let key = &video_model.thumbnail_s3_key;
+        let content_type = "image/jpeg";
+        self.direct_upload_base(&key, image_bytes.into(), content_type)
+            .await?;
+        Ok(())
+    }
+    async fn direct_upload_base(
+        &self,
+        key: &str,
+        bytes: ByteStream,
+        _content_type: &str,
+    ) -> Result<AwsS3Response, AwsError> {
+        let response = self
+            .client
+            .put_object()
+            .bucket(&self.settings.s3.bucket_name)
+            .key(key)
+            .body(bytes)
+            // .content_type(content_type)
+            .send()
+            .await?;
+        let response = AwsS3Response::new(response.e_tag, response.version_id);
+        Ok(response)
+    }
     // Generate a presigned URL
     pub async fn auto_upload_img_presigned_url(&self, image: &ImageView) -> Result<Url, AwsError> {
         let key = S3Key::new(image.image_s3_key.to_owned());
@@ -235,11 +301,16 @@ impl AwsS3 {
         let video_key = S3Key::new(&video.video_s3_key);
         let thumbnail_key = S3Key::new(&video.thumbnail_s3_key);
 
-        let url = match self.auto_upload_presigned_url(&video_key).await {
+        let (url, url2) = join!(
+            self.auto_upload_presigned_url(&video_key),
+            self.auto_upload_presigned_url(&thumbnail_key)
+        );
+
+        let url = match url {
             Ok(url) => Some(url.to_string()),
             Err(_) => None,
         };
-        let url2 = match self.auto_upload_presigned_url(&thumbnail_key).await {
+        let url2 = match url2 {
             Ok(url) => Some(url.to_string()),
             Err(_) => None,
         };
@@ -489,5 +560,89 @@ impl AwsS3 {
             folder.get_file_type(),
         );
         S3Key::new(key)
+    }
+}
+
+#[async_trait]
+impl StoreDriver for AwsS3 {
+    async fn upload(&self, path: &Path, content: &Bytes) -> StorageResult<UploadResponse> {
+        let path = path.to_string_lossy().to_string();
+        let aws = self
+            .direct_upload_base(&path, content.clone().into(), "image/jpeg")
+            .await
+            .map_err(|e| StorageError::StoreNotFound(e.to_string()))?;
+        Ok(aws.into())
+    }
+    async fn get(&self, path: &Path) -> StorageResult<GetResponse> {
+        let path = path.to_string_lossy().to_string();
+        tracing::warn!(
+            "S3 get() not implemented — this driver only supports upload: {}",
+            path
+        );
+        Err(StorageError::Any(
+            "get() is not implemented for this storage driver".into(),
+        ))
+        //     let output = self
+        //         .client
+        //         .get_object()
+        //         .bucket(&self.settings.s3.bucket_name)
+        //         .key(&key)
+        //         .send()
+        //         .await
+        //         .map_err(|err| StorageError::StoreNotFound(format!("S3 get_object error: {}", err)))?;
+
+        //     let stream = output.body; // ByteStream from AWS SDK
+        //     let reader = stream.into_async_read(); // Convert to AsyncRead
+
+        //     // Convert into `opendal::Reader`-like type using a wrapper if needed
+        //     // But since Loco's `GetResponse` expects `opendal::Reader`, you need to adapt or reimplement
+        //     // For now, wrap in your custom reader type (simplified version):
+
+        //     let reader = GetResponse::new(reader); // pseudo, adjust if needed
+        //     Ok(GetResponse::new(reader))
+    }
+    async fn delete(&self, path: &Path) -> StorageResult<()> {
+        let path = path.to_string_lossy().to_string();
+        let removed = self
+            .remove_object_s3_key(&S3Key::new(path))
+            .await
+            .map_err(|e| StorageError::StoreNotFound(e.to_string()));
+        removed
+    }
+    async fn rename(&self, from: &Path, to: &Path) -> StorageResult<()> {
+        self.copy(from, to).await?;
+        self.delete(from).await?;
+        Ok(())
+    }
+    async fn copy(&self, from: &Path, to: &Path) -> StorageResult<()> {
+        let source_key = from.to_string_lossy();
+        let destination_key = to.to_string_lossy();
+
+        let copy_source = format!("{}/{}", self.settings.s3.bucket_name, source_key);
+
+        self.client
+            .copy_object()
+            .bucket(&self.settings.s3.bucket_name)
+            .copy_source(copy_source)
+            .key(destination_key.to_string())
+            .send()
+            .await
+            .map_err(|e| {
+                StorageError::StoreNotFound(format!(
+                    "Failed to copy object from '{}' to '{}': {}",
+                    source_key, destination_key, e
+                ))
+            })?;
+
+        Ok(())
+    }
+    async fn exists(&self, path: &Path) -> StorageResult<bool> {
+        let path = path.to_string_lossy().to_string();
+        let key = S3Key::new(path);
+        let boolean = match self.check_object_exists(&key).await {
+            Ok(bool) => bool,
+            Err(e) => return Err(StorageError::StoreNotFound(e.to_string())),
+        };
+        Ok(boolean)
     }
 }

@@ -43,6 +43,8 @@ WORKDIR /usr/src/frontend
 RUN bun install
 # Build assets using the script from package.json
 RUN bun run build
+# Install FFmpeg
+RUN apt update && apt install -y pkg-config libavformat-dev libavcodec-dev libavutil-dev libavfilter-dev ffmpeg
 # Change back to the root WORKDIR for Rust build if necessary
 WORKDIR /usr/src/
 
@@ -61,6 +63,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     wget ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
+# Install FFmpeg
+RUN apt update && apt install -y ffmpeg
 # Create a non-root user
 RUN adduser --disabled-password --gecos "" appuser
 

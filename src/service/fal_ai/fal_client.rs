@@ -5,20 +5,22 @@ use crate::{
         _entities::sea_orm_active_enums::{AspectRatio, ImageFormat, ImageSize},
         images::{ImageNew, ImageNewList},
         videos::VideoNew,
-        TrainingModelModel,
+        TrainingModelModel, VideoModel,
     },
 };
+use bytes::Bytes;
 use futures::future::join_all;
+use loco_rs::app::AppContext;
+use rand::Rng;
 use reqwest::Client as ReqwestClient;
+use reqwest::Error as ReqwestError;
 use serde::{de::DeserializeOwned, Deserialize, Deserializer, Serialize};
+use serde_json::Error as SerdeError;
+use std::path::Path;
+use std::time::Duration;
 use std::{collections::HashMap, fmt::Debug};
 use strum::EnumString;
 use strum_macros::Display;
-
-use rand::Rng;
-use reqwest::Error as ReqwestError;
-use serde_json::Error as SerdeError;
-use std::time::Duration;
 use thiserror::Error;
 use tokio_retry::strategy::ExponentialBackoff;
 use tokio_retry::Retry;
@@ -39,6 +41,8 @@ pub enum FalAiClientError {
     ReqwestErr(#[from] ReqwestError),
     #[error("Fal AI error: {0}")]
     FalApiError(String),
+    #[error("Storage error: {0}")]
+    StorageError(#[from] loco_rs::storage::StorageError),
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize, Default)]
@@ -286,6 +290,73 @@ impl FalAiClient {
                 &webhook_video_webhook
             ),
         }
+    }
+
+    pub async fn download_video(
+        &self,
+        ctx: &AppContext,
+        video_model: &VideoModel,
+    ) -> Result<Bytes, FalAiClientError> {
+        let url = video_model
+            .video_url_fal
+            .clone()
+            .ok_or_else(|| FalAiClientError::RequestFailed("Video url not found".into()))?;
+        let video_bytes = self.client.get(&url).send().await?.bytes().await?;
+        let str = video_model.storage_key();
+        let path = Path::new(&str);
+        ctx.storage.upload(&path, &video_bytes).await?;
+        Ok(video_bytes)
+    }
+
+    pub async fn download_video_mem(
+        &self,
+        video_model: &VideoModel,
+    ) -> Result<Bytes, FalAiClientError> {
+        let url = video_model
+            .video_url_fal
+            .clone()
+            .ok_or_else(|| FalAiClientError::RequestFailed("Video url not found".into()))?;
+        let video_bytes = self.client.get(&url).send().await?.bytes().await?;
+        Ok(video_bytes)
+    }
+
+    pub async fn download_video_chunks(
+        &self,
+        video_model: &VideoModel,
+    ) -> Result<Vec<u8>, FalAiClientError> {
+        use std::fs;
+
+        let url = video_model
+            .video_url_fal
+            .clone()
+            .ok_or_else(|| FalAiClientError::RequestFailed("Video url not found".into()))?;
+
+        let mut response = self.client.get(&url).send().await?;
+
+        // Check if the request was successful
+        if !response.status().is_success() {
+            return Err(FalAiClientError::RequestFailed(format!(
+                "Download failed with status: {}",
+                response.status()
+            )));
+        }
+
+        // Get the expected content length from the headers
+        let content_length = response.content_length().unwrap_or(0);
+
+        // Pre-allocate a buffer for efficiency, if possible
+        let mut received_bytes: Vec<u8> = Vec::with_capacity(content_length as usize);
+
+        // Stream the response body chunk by chunk
+        while let Some(chunk) = response.chunk().await? {
+            received_bytes.extend_from_slice(&chunk);
+        }
+
+        fs::write("storage/videos/webhook_video.mp4", &received_bytes)
+            .expect("Failed to write debug video");
+        tracing::info!("Successfully wrote buffer to /tmp/webhook_video.mp4");
+
+        Ok(received_bytes)
     }
 
     pub async fn send_queue_webhook_with_retries<V, R>(

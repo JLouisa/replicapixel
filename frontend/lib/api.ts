@@ -7,7 +7,7 @@ import type { TrainingModelFormClass } from "./type/trainingModelForm";
 import type { ImageGenForm } from "./type/ImageGenForm";
 import Alpine from "alpinejs";
 import { getBaseUrl } from "./utils";
-import type { VideoGenFormClass } from "./type/videoGenForm";
+import type { VideoGenForm, VideoGenFormClass } from "./type/videoGenForm";
 
 const DEFAULT_BASE_URL = getBaseUrl();
 console.log("Base Url", DEFAULT_BASE_URL);
@@ -280,7 +280,7 @@ const backendApi = {
   },
   async postHTMX(
     url: string,
-    payload: ImageGenForm,
+    payload: ImageGenForm | VideoGenForm,
     target: string,
     swapStyle: string,
     config?: Options
@@ -357,9 +357,8 @@ const backendApi = {
       // Optional: Process scripts if htmx.swap doesn't automatically (it usually does)
       // window.htmx.process(mainTargetElement); // Might be needed if the swapped content has hx-* attributes
     } catch (error) {
-      console.error("Fetch request failed:", error);
-      DAL.Toast.error("An unexpected error occurred. Please try again.");
-      throw error;
+      const description = (error as any)?.data?.description || "Unknown error";
+      throw description;
     }
   },
 };
@@ -393,6 +392,15 @@ export const DAL = {
         },
       },
       VideoGeneration: {
+        async generateVideoV2(payload: VideoGenFormClass) {
+          const target = "drive-gallery";
+          const swap = "afterbegin";
+          try {
+            return await backendApi.postHTMX(BackendUrl.Video.GenerateVideo, payload, target, swap);
+          } catch (error) {
+            return DAL.handleError(`${error}`, error, false);
+          }
+        },
         async generateVideo(payload: VideoGenFormClass) {
           const url = BackendUrl.Video.GenerateVideo;
           const target = "drive-gallery";

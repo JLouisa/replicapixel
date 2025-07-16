@@ -27,7 +27,7 @@ use validator::Validate;
 pub type Videos = Entity;
 use futures::future::join_all;
 use itertools::izip;
-use std::cmp::Reverse;
+use std::{cmp::Reverse, path::PathBuf};
 use tokio::join;
 
 #[async_trait::async_trait]
@@ -97,60 +97,72 @@ impl VideoGenerationTrait for VideoGenRequestParams {
 }
 
 impl Model {
-    // async fn resolve_video_url(&self, driver: &RedisCacheDriver, aws: &AwsS3) -> Option<String> {
-    //     match driver.get::<String>(&self.redis_key()).await {
-    //         Ok(Some(url)) => Some(url),
-    //         Ok(None) => match aws.get_video_pre(&self).await {
-    //             Ok(url) => {
-    //                 let url_str = url.to_string();
-    //                 if let Err(err) = driver
-    //                     .set::<String>(&self.redis_key(), &url_str, None)
-    //                     .await
-    //                 {
-    //                     tracing::warn!(error = ?err, "Failed to cache pre-signed video URL in Redis");
-    //                 }
-    //                 Some(url_str)
-    //             }
-    //             Err(err) => {
-    //                 tracing::error!(error = ?err, "Failed to get S3 pre-signed URL");
-    //                 self.video_url_fal.to_owned()
-    //             }
-    //         },
-    //         Err(err) => {
-    //             tracing::error!(error = ?err, "Failed to read from Redis");
-    //             self.video_url_fal.to_owned()
-    //         }
-    //     }
-    // }
-    // async fn resolve_thumbnail_url(
-    //     &self,
-    //     driver: &RedisCacheDriver,
-    //     aws: &AwsS3,
-    // ) -> Option<String> {
-    //     match driver.get::<String>(&self.redis_key()).await {
-    //         Ok(Some(url)) => Some(url),
-    //         Ok(None) => match aws.get_video_pre(&self).await {
-    //             Ok(url) => {
-    //                 let url_str = url.to_string();
-    //                 if let Err(err) = driver
-    //                     .set::<String>(&self.redis_key(), &url_str, None)
-    //                     .await
-    //                 {
-    //                     tracing::warn!(error = ?err, "Failed to cache pre-signed video URL in Redis");
-    //                 }
-    //                 Some(url_str)
-    //             }
-    //             Err(err) => {
-    //                 tracing::error!(error = ?err, "Failed to get S3 pre-signed URL");
-    //                 self.video_url_fal.to_owned()
-    //             }
-    //         },
-    //         Err(err) => {
-    //             tracing::error!(error = ?err, "Failed to read from Redis");
-    //             self.video_url_fal.to_owned()
-    //         }
-    //     }
-    // }
+    pub fn storage_key(&self) -> String {
+        format!("videos/{}.mp4", self.pid)
+    }
+
+    pub fn storage_key_path(&self) -> PathBuf {
+        let key = format!("videos/{}.mp4", self.pid);
+        PathBuf::from(key)
+    }
+    pub async fn resolve_video_url(
+        &self,
+        driver: &RedisCacheDriver,
+        aws: &AwsS3,
+    ) -> Option<String> {
+        match driver.get::<String>(&self.redis_key()).await {
+            Ok(Some(url)) => Some(url),
+            Ok(None) => match aws.get_video_pre(&self).await {
+                Ok(url) => {
+                    let url_str = url.to_string();
+                    if let Err(err) = driver
+                        .set::<String>(&self.redis_key(), &url_str, None)
+                        .await
+                    {
+                        tracing::warn!(error = ?err, "Failed to cache pre-signed video URL in Redis");
+                    }
+                    Some(url_str)
+                }
+                Err(err) => {
+                    tracing::error!(error = ?err, "Failed to get S3 pre-signed URL");
+                    self.video_url_fal.to_owned()
+                }
+            },
+            Err(err) => {
+                tracing::error!(error = ?err, "Failed to read from Redis");
+                self.video_url_fal.to_owned()
+            }
+        }
+    }
+    pub async fn resolve_thumbnail_url(
+        &self,
+        driver: &RedisCacheDriver,
+        aws: &AwsS3,
+    ) -> Option<String> {
+        match driver.get::<String>(&self.redis_key()).await {
+            Ok(Some(url)) => Some(url),
+            Ok(None) => match aws.get_video_pre(&self).await {
+                Ok(url) => {
+                    let url_str = url.to_string();
+                    if let Err(err) = driver
+                        .set::<String>(&self.redis_key(), &url_str, None)
+                        .await
+                    {
+                        tracing::warn!(error = ?err, "Failed to cache pre-signed video URL in Redis");
+                    }
+                    Some(url_str)
+                }
+                Err(err) => {
+                    tracing::error!(error = ?err, "Failed to get S3 pre-signed URL");
+                    self.video_url_fal.to_owned()
+                }
+            },
+            Err(err) => {
+                tracing::error!(error = ?err, "Failed to read from Redis");
+                self.video_url_fal.to_owned()
+            }
+        }
+    }
     pub fn parse_duration(&self) -> String {
         if self.duration < 10 {
             format!("0:0{}", self.duration)
@@ -166,7 +178,6 @@ impl Model {
                 vec![None; 2]
             }
         };
-
         let mut list: Vec<Option<String>> = Vec::with_capacity(2);
         if redis_result[0].is_none() {
             match aws.get_video_pre(&self).await {
@@ -185,6 +196,8 @@ impl Model {
                     list.push(self.video_url_fal.to_owned());
                 }
             }
+        } else {
+            list.push(redis_result[0].clone());
         }
 
         if redis_result[1].is_none() {
@@ -204,6 +217,8 @@ impl Model {
                     list.push(None);
                 }
             }
+        } else {
+            list.push(redis_result[1].clone());
         }
 
         list
@@ -213,6 +228,7 @@ impl Model {
         let pre = self.resolve_all_url(driver, aws).await;
         let video_url = pre[0].clone();
         let thumbnail_url = pre[1].clone();
+        let duration = self.parse_duration();
 
         VideoView::new(
             self.pid,
@@ -220,7 +236,7 @@ impl Model {
             UserPrompt::new(self.user_prompt),
             NegativePrompt::new(self.negative_prompt),
             AltText::new(self.alt),
-            self.duration.to_string(),
+            duration,
             self.generate_audio,
             self.status,
             self.aspect_ratio,

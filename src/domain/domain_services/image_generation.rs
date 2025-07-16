@@ -1,5 +1,6 @@
 use crate::{
     controllers::images::{ImageGenerationTrait, IMAGE_COST},
+    domain::domain_services::video_generation::VideoProcessingError,
     models::{images::ImageNewList, TrainingModelModel, UserCreditModel, UserModel},
     service::fal_ai::fal_client::{FalAiClient, FalAiClientError},
 };
@@ -29,6 +30,8 @@ pub enum MediaGenerationError {
     CreditUpdateError(String),
     #[error("Fal AI client error: {0}")]
     FalAiClientErr(#[from] FalAiClientError),
+    #[error("Video Processing error: {0}")]
+    VideoProcessingError(#[from] VideoProcessingError),
 }
 
 pub struct ImageGenerationService;
