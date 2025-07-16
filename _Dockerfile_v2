@@ -60,7 +60,7 @@ WORKDIR /usr/src
 
 # Install only what's needed for runtime
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl ca-certificates binutils xz-utils \
+    curl wget ca-certificates binutils xz-utils \
     && rm -rf /var/lib/apt/lists/*
 
 # Install FFmpeg

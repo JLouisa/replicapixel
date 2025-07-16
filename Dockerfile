@@ -35,7 +35,7 @@ RUN curl -L https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-stati
 RUN chmod +x /usr/src/target/x86_64-unknown-linux-musl/release/replicapixel-cli /tmp/ffmpeg
 
 # -------- STAGE 2: Runtime --------
-FROM scratch
+FROM debian:bookworm-slimdebian@sha256:6ac2c08566499cc2415926653cf2ed7c3aedac445675a013cc09469c9e118fdd AS runtime
 
 # Set working directory
 WORKDIR /usr/src
