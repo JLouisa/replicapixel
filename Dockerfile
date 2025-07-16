@@ -48,6 +48,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Create a non-root user
 RUN adduser --disabled-password --gecos "" appuser
 
+# 🔧 Create storage directory and give ownership to `appuser`
+RUN mkdir -p /usr/src/storage && chown -R appuser:appuser /usr/src/storage
+
 # Copy runtime files from builder
 COPY --from=builder /usr/src/assets ./assets
 COPY --from=builder /usr/src/config ./config
@@ -57,7 +60,7 @@ COPY --from=builder /usr/src/target/x86_64-unknown-linux-musl/release/replicapix
 # Expose the Loco app port
 EXPOSE 3000
 
-# Switch to non-root user
+# 🔐 Switch to non-root user (after storage is owned)
 USER appuser
 
 # Entrypoint
