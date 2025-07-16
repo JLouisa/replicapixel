@@ -3,10 +3,10 @@ FROM lukemathwalker/cargo-chef:latest-rust-1.83.0 AS builder
 
 WORKDIR /usr/src
 
-# Install system dependencies
+# Install linker, C compiler, and MUSL tools for static linking
 RUN apt-get update && apt-get install -y --no-install-recommends \
-  lld clang musl-tools curl unzip xz-utils \
-  && rm -rf /var/lib/apt/lists/*
+    lld clang musl-tools ca-certificates curl unzip xz-utils \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install Bun
 RUN curl -fsSL https://bun.sh/install | bash
@@ -40,14 +40,25 @@ FROM debian:bookworm-slimdebian@sha256:6ac2c08566499cc2415926653cf2ed7c3aedac445
 # Set working directory
 WORKDIR /usr/src
 
+# Install only what's needed for runtime
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    wget curl ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create a non-root user
+RUN adduser --disabled-password --gecos "" appuser
+
 # Copy runtime files from builder
-COPY --from=builder /usr/src/target/x86_64-unknown-linux-musl/release/replicapixel-cli /replicapixel
 COPY --from=builder /usr/src/assets ./assets
 COPY --from=builder /usr/src/config ./config
 COPY --from=builder /tmp/ffmpeg /usr/local/bin/ffmpeg
+COPY --from=builder /usr/src/target/x86_64-unknown-linux-musl/release/replicapixel-cli /replicapixel
 
 # Expose the Loco app port
 EXPOSE 3000
+
+# Switch to non-root user
+USER appuser
 
 # Entrypoint
 ENTRYPOINT ["/replicapixel"]

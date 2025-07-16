@@ -38,7 +38,7 @@ RUN rustup target add x86_64-unknown-linux-musl
 RUN cargo build --release --target x86_64-unknown-linux-musl --locked
 
 # Stage 4: Runtime - Create the final minimal image
-FROM debian:bookworm-slim@sha256:b1211f6d19afd012477bd34fdcabb6b663d680e0f4b0537da6e6b0fd057a3ec3 AS runtime
+FROM debian:bookworm-slimdebian@sha256:6ac2c08566499cc2415926653cf2ed7c3aedac445675a013cc09469c9e118fdd AS runtime
 WORKDIR /usr/src
 
 # Install only what's needed for runtime
