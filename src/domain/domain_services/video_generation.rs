@@ -81,6 +81,7 @@ impl VideoGenerationService {
         txn.commit().await?;
         Ok((updated_user_credits, video))
     }
+
     pub async fn test(
         ctx: &AppContext,
         request: impl VideoGenerationTrait,

@@ -2,7 +2,7 @@ use crate::{
     controllers::webhooks::routes::Webhooks,
     domain::{url::Url, website::WebsiteBasicInfo},
     models::{
-        _entities::sea_orm_active_enums::{AspectRatio, ImageFormat, ImageSize},
+        _entities::sea_orm_active_enums::{ImageFormat, ImageSize},
         images::{ImageNew, ImageNewList},
         videos::VideoNew,
         TrainingModelModel, VideoModel,
@@ -842,8 +842,8 @@ impl FluxExt for FalVideoSend {
 pub struct FalVideoSend {
     pub prompt: String,
     pub negative_prompt: Option<String>,
-    pub aspect_ratio: AspectRatio,
-    pub duration: DurationSeconds,
+    pub aspect_ratio: String,
+    pub duration: String,
     pub enhance_prompt: bool,
     pub seed: Option<i32>,
     pub generate_audio: bool,
@@ -854,8 +854,8 @@ impl From<VideoNew> for FalVideoSend {
         Self {
             prompt: value.sys_prompt.into_inner(),
             negative_prompt: value.negative_prompt.into_inner(),
-            aspect_ratio: value.aspect_ratio,
-            duration: value.duration,
+            aspect_ratio: value.aspect_ratio.to_fal_api(),
+            duration: value.duration.to_fal_api(),
             enhance_prompt: value.enhance_prompt,
             seed: value.seed,
             generate_audio: value.generate_audio,
@@ -926,6 +926,27 @@ pub enum DurationSeconds {
     #[serde(rename = "15s")]
     #[strum(to_string = "15")]
     Fifteen,
+}
+impl DurationSeconds {
+    pub fn to_fal_api(&self) -> String {
+        match self {
+            DurationSeconds::One => "1s".to_string(),
+            DurationSeconds::Two => "2s".to_string(),
+            DurationSeconds::Three => "3s".to_string(),
+            DurationSeconds::Four => "4s".to_string(),
+            DurationSeconds::Five => "5s".to_string(),
+            DurationSeconds::Six => "6s".to_string(),
+            DurationSeconds::Seven => "7s".to_string(),
+            DurationSeconds::Eight => "8s".to_string(),
+            DurationSeconds::Nine => "9s".to_string(),
+            DurationSeconds::Ten => "10s".to_string(),
+            DurationSeconds::Eleven => "11s".to_string(),
+            DurationSeconds::Twelve => "12s".to_string(),
+            DurationSeconds::Thirteen => "13s".to_string(),
+            DurationSeconds::Fourteen => "14s".to_string(),
+            DurationSeconds::Fifteen => "15s".to_string(),
+        }
+    }
 }
 
 impl DurationSeconds {

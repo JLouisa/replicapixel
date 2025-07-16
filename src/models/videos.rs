@@ -416,6 +416,7 @@ pub struct VideoGenRequestParams {
     pub prompt: String,
     pub negative_prompt: Option<String>,
     pub aspect_ratio: AspectRatio,
+    #[serde(default, skip_deserializing)]
     pub duration: DurationSeconds,
     pub enhance_prompt: bool,
     pub generate_audio: bool,

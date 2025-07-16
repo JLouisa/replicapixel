@@ -469,3 +469,12 @@ pub enum AspectRatio {
     #[serde(rename = "square")]
     Square,
 }
+impl AspectRatio {
+    pub fn to_fal_api(&self) -> String {
+        match self {
+            AspectRatio::Widescreen => "16:9".to_string(),
+            AspectRatio::Portrait => "9:16".to_string(),
+            AspectRatio::Square => "1:1".to_string(),
+        }
+    }
+}

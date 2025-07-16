@@ -127,8 +127,12 @@ options.website.website_fields.quality_model %} {% set training_models = options
               type="button"
               class="btn btn-sm btn-outline join-item"
               aria-label="{{ t(key='create-image-form-aria-decrease-images', lang=lang) }}"
+              {#
               :disabled="$store.videoGenForm.duration <= 1 || $store.videoGenForm.isLoading"
+              #}
+              :disabled="true"
               x-on:click="$store.videoGenForm.decrementDurations()"
+              disabled
             >
               <svg
                 class="w-4 h-4"
@@ -145,6 +149,7 @@ options.website.website_fields.quality_model %} {% set training_models = options
             <span
               class="input input-sm input-bordered w-12 text-center tabular-nums bg-base-100 join-item"
               x-text="$store.videoGenForm.duration"
+              disabled
             ></span>
 
             <!-- Increase Button -->
@@ -152,8 +157,12 @@ options.website.website_fields.quality_model %} {% set training_models = options
               type="button"
               class="btn btn-sm btn-outline join-item"
               aria-label="{{ t(key='create-image-form-aria-increase-images', lang=lang) }}"
+              :disabled="true"
+              {#
               :disabled="$store.videoGenForm.numImages >= 15 || $store.videoGenForm.isLoading"
+              #}
               x-on:click="$store.videoGenForm.incrementDurations()"
+              disabled
             >
               <svg
                 class="w-4 h-4"
