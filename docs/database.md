@@ -141,3 +141,8 @@ key.into()
 Stripe:
 stripe login
 stripe listen --forward-to localhost:5150/api/webhooks/stripe
+
+Docker:
+sudo docker build -t replicapixel:latest .
+sudo docker images | grep replicapixel
+sudo docker run --env-file .env -p 3000:3000 replicapixel:latest

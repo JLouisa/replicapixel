@@ -78,7 +78,7 @@ pub fn forgot(
 #[derive(Serialize, Clone)]
 pub struct UserView {
     pub id: i32,
-    pub pid: String,
+    pub pid: Uuid,
     pub name: String,
     pub email: String,
     pub account: Account,
@@ -87,7 +87,7 @@ impl From<&UserModel> for UserView {
     fn from(model: &UserModel) -> Self {
         Self {
             id: model.id,
-            pid: model.pid.to_string(),
+            pid: model.pid,
             name: model.name.clone(),
             email: model.email.clone(),
             account: model.account.clone(),
@@ -98,7 +98,7 @@ impl From<UserModel> for UserView {
     fn from(model: UserModel) -> Self {
         Self {
             id: model.id,
-            pid: model.pid.to_string(),
+            pid: model.pid,
             name: model.name,
             email: model.email,
             account: model.account,

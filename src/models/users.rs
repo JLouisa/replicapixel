@@ -593,6 +593,18 @@ impl Model {
         user.ok_or_else(|| ModelError::EntityNotFound)
     }
 
+    pub async fn find_by_pid_uuid(db: &DatabaseConnection, pid: Uuid) -> ModelResult<Self> {
+        let user = users::Entity::find()
+            .filter(
+                model::query::condition()
+                    .eq(users::Column::Pid, pid)
+                    .build(),
+            )
+            .one(db)
+            .await?;
+        user.ok_or_else(|| ModelError::EntityNotFound)
+    }
+
     /// finds a user by the provided api key
     ///
     /// # Errors

@@ -384,7 +384,7 @@ Alpine.store(Stores.CreateModelForm, {
 
 // Define the structure of the store's state and methods
 interface ImageGenFormStore {
-  advancedOptionsOpen: boolean;
+  advancedOptionsOpenImage: boolean;
   inferenceSteps: number;
   numImages: number;
   isLoading: boolean;
@@ -401,7 +401,7 @@ interface ImageGenFormStore {
 }
 
 Alpine.store(Stores.ImageGenForm, {
-  advancedOptionsOpen: false,
+  advancedOptionsOpenImage: false,
   inferenceSteps: 28,
   numImages: 8,
   isLoading: false,
@@ -410,11 +410,11 @@ Alpine.store(Stores.ImageGenForm, {
 
   init() {},
   reset(this: ImageGenFormStore): void {
-    (this.advancedOptionsOpen = false), (this.isLoading = false);
+    (this.advancedOptionsOpenImage = false), (this.isLoading = false);
   },
 
   toggleAdvancedOptions(this: ImageGenFormStore) {
-    this.advancedOptionsOpen = !this.advancedOptionsOpen;
+    this.advancedOptionsOpenImage = !this.advancedOptionsOpenImage;
   },
 
   decrementImages(this: ImageGenFormStore) {
@@ -432,7 +432,7 @@ Alpine.store(Stores.ImageGenForm, {
   async handleCreateRequest(this: ImageGenFormStore, event: SubmitEvent): Promise<void> {
     if (this.isLoading) return; // Prevent multiple submissions
 
-    this.advancedOptionsOpen = false;
+    this.advancedOptionsOpenImage = false;
 
     const form = event.target as HTMLFormElement;
     if (!form) {
@@ -536,7 +536,9 @@ Alpine.store(Stores.VideoGenForm, {
   advancedOptionsOpen: false,
   isLoading: false,
 
-  init() {},
+  init(this: VideoGenFormStore) {
+    this.advancedOptionsOpen = false; // Ensure consistent closed state
+  },
   reset(this: VideoGenFormStore): void {
     (this.advancedOptionsOpen = false), (this.isLoading = false);
   },
@@ -605,9 +607,22 @@ declare module "alpinejs" {
     toast: ToastStore;
     imageGenForm: ImageGenFormStore;
     videoGenForm: VideoGenFormStore;
-    // uploader: UploaderStore;
   }
 }
+
+document.body.addEventListener("htmx:afterSettle", (e) => {
+  const target = e.target as HTMLElement;
+
+  // You may want to use detail.target instead
+  if (target.id === "dashboard_content") {
+    const videoStore = Alpine.store(Stores.VideoGenForm);
+    const imageStore = Alpine.store(Stores.ImageGenForm);
+
+    if (videoStore) videoStore.advancedOptionsOpen = false;
+    if (imageStore) imageStore.advancedOptionsOpenImage = false; // ← fixed typo
+  }
+  console.log("[HTMX Swap]", (e.target as HTMLElement).id, Alpine.store(Stores.VideoGenForm));
+});
 
 // ✅ Make Alpine available globally
 (window as any).Alpine = Alpine;

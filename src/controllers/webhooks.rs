@@ -31,20 +31,20 @@ pub mod routes {
     pub struct Webhooks;
     impl Webhooks {
         pub const BASE: &'static str = "/api/webhooks";
+        pub const API_STRIPE: &'static str = "/stripe";
         pub const API_FAL_AI_TRAINING: &'static str = "/fal-ai/training";
         pub const API_FAL_AI_IMAGE: &'static str = "/fal-ai/image";
         pub const API_FAL_AI_VIDEO: &'static str = "/fal-ai/video";
-        pub const API_STRIPE: &'static str = "/stripe";
     }
 }
 
 pub fn routes() -> Routes {
     Routes::new()
         .prefix(routes::Webhooks::BASE)
+        .add(routes::Webhooks::API_STRIPE, post(stripe))
         .add(routes::Webhooks::API_FAL_AI_TRAINING, post(fal_ai_training))
         .add(routes::Webhooks::API_FAL_AI_IMAGE, post(fal_ai_image))
         .add(routes::Webhooks::API_FAL_AI_VIDEO, post(fal_ai_video))
-        .add(routes::Webhooks::API_STRIPE, post(stripe))
 }
 
 async fn load_image_by_request_id(ctx: &AppContext, id: &str) -> Result<ImageModel> {
@@ -94,57 +94,18 @@ pub async fn stripe(
     CheckoutMailer::send_checkout_completed(&ctx, &mailer_options).await?;
 
     //5. Send to queue for processing for Meta
-    let user_data = UserData::new(&email_data.user);
-    let meta =
-        EventData::purchase(&email_data.user, &email_data.transaction).set_user_data(&user_data);
-    let worker_arg = MetaConversionApiWorkerArgs::new(meta, website.website_basic_info.meta_pixel);
-
     if !cfg!(debug_assertions) {
+        let user_data = UserData::new(&email_data.user);
+        let meta = EventData::purchase(&email_data.user, &email_data.transaction)
+            .set_user_data(&user_data);
+        let worker_arg =
+            MetaConversionApiWorkerArgs::new(meta, website.website_basic_info.meta_pixel);
         if let Err(e) = MetaConversionApiWorker::perform_later(&ctx, worker_arg).await {
             tracing::warn!("⚠️ Failed to queue MetaConversionApiWorker: {e}");
         }
     }
 
     Ok((StatusCode::OK).into_response())
-}
-
-#[debug_handler]
-pub async fn fal_ai_video_test(
-    Extension(fal_ai_client): Extension<FalAiClient>,
-    Json(response): Json<FluxApiWebhookResponse>,
-) -> Result<Response> {
-    // Check the status of the response
-    let video_url = match response.status {
-        StatusResponse::Ok => {
-            // If the status is OK, check if there's a payload
-            if let Some(ref _payload) = response.payload {
-                let video_url = response.successful_video_opt();
-                video_url
-            } else {
-                // If there's no payload, get payload directly
-                let result = fal_ai_client
-                    .request_result_image(&response.request_id)
-                    .await
-                    .map_err(|_| {
-                        loco_rs::Error::Message("Error processing Result Request: 103".to_string())
-                    })?
-                    .image_url();
-                result
-            }
-        }
-        StatusResponse::Error => {
-            // If the status is Error, return the error payload
-            // let error_payload = response.error();
-
-            dbg!(&response.error());
-
-            return Ok((StatusCode::BAD_GATEWAY).into_response());
-        }
-    };
-
-    dbg!(&video_url);
-
-    Ok((StatusCode::OK, video_url.unwrap()).into_response())
 }
 
 #[debug_handler]

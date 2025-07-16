@@ -15,8 +15,8 @@ generator client {
 datasource db {
   provider = "postgresql"
   // url      = env("DATABASE_URL_LOCAL")
-  url      = env("DATABASE_URL")
-  // url      = env("DATABASE_URL_PROD")
+  // url      = env("DATABASE_URL")
+  url      = env("DATABASE_URL_PROD")
 }
 
 model Users {
@@ -128,7 +128,7 @@ model Images {
   content_type        ImageFormat
   status              Status
   image_size          ImageSize
-  fal_ai_request_id   String?     @db.VarChar(255)
+  fal_ai_request_id   String?     @unique @db.VarChar(255)
   width               Int?
   height              Int?
   image_s3_key        String      @db.VarChar(255)
@@ -166,7 +166,7 @@ model Videos {
   status            Status
   aspect_ratio      AspectRatio
   video_cost        Int         @default(80)
-  fal_ai_request_id String?     @db.VarChar(255)
+  fal_ai_request_id String?     @unique @db.VarChar(255)
   video_s3_key      String      @db.VarChar(255)
   thumbnail_s3_key  String      @db.VarChar(255)
   video_url_fal     String?

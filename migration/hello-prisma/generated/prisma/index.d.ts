@@ -25536,6 +25536,7 @@ export namespace Prisma {
   export type ImagesWhereUniqueInput = Prisma.AtLeast<{
     id?: number
     pid?: string
+    fal_ai_request_id?: string
     AND?: ImagesWhereInput | ImagesWhereInput[]
     OR?: ImagesWhereInput[]
     NOT?: ImagesWhereInput | ImagesWhereInput[]
@@ -25550,7 +25551,6 @@ export namespace Prisma {
     content_type?: EnumImageFormatFilter<"Images"> | $Enums.ImageFormat
     status?: EnumStatusFilter<"Images"> | $Enums.Status
     image_size?: EnumImageSizeFilter<"Images"> | $Enums.ImageSize
-    fal_ai_request_id?: StringNullableFilter<"Images"> | string | null
     width?: IntNullableFilter<"Images"> | number | null
     height?: IntNullableFilter<"Images"> | number | null
     image_s3_key?: StringFilter<"Images"> | string
@@ -25562,7 +25562,7 @@ export namespace Prisma {
     user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
     training_model?: XOR<TrainingModelsNullableScalarRelationFilter, TrainingModelsWhereInput> | null
     pack?: XOR<PacksNullableScalarRelationFilter, PacksWhereInput> | null
-  }, "id" | "pid">
+  }, "id" | "pid" | "fal_ai_request_id">
 
   export type ImagesOrderByWithAggregationInput = {
     id?: SortOrder
@@ -25682,6 +25682,7 @@ export namespace Prisma {
   export type VideosWhereUniqueInput = Prisma.AtLeast<{
     id?: number
     pid?: string
+    fal_ai_request_id?: string
     AND?: VideosWhereInput | VideosWhereInput[]
     OR?: VideosWhereInput[]
     NOT?: VideosWhereInput | VideosWhereInput[]
@@ -25698,7 +25699,6 @@ export namespace Prisma {
     status?: EnumStatusFilter<"Videos"> | $Enums.Status
     aspect_ratio?: EnumAspectRatioFilter<"Videos"> | $Enums.AspectRatio
     video_cost?: IntFilter<"Videos"> | number
-    fal_ai_request_id?: StringNullableFilter<"Videos"> | string | null
     video_s3_key?: StringFilter<"Videos"> | string
     thumbnail_s3_key?: StringFilter<"Videos"> | string
     video_url_fal?: StringNullableFilter<"Videos"> | string | null
@@ -25707,7 +25707,7 @@ export namespace Prisma {
     created_at?: DateTimeFilter<"Videos"> | Date | string
     updated_at?: DateTimeFilter<"Videos"> | Date | string
     user?: XOR<UsersScalarRelationFilter, UsersWhereInput>
-  }, "id" | "pid">
+  }, "id" | "pid" | "fal_ai_request_id">
 
   export type VideosOrderByWithAggregationInput = {
     id?: SortOrder

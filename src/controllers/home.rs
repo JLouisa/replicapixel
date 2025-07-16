@@ -22,14 +22,12 @@ use crate::views::packs::PackViewList;
 use crate::views::payment::PricingViewList;
 use crate::workers::meta_worker::MetaConversionApiWorker;
 use crate::workers::meta_worker::MetaConversionApiWorkerArgs;
+
 use axum::{debug_handler, Extension};
-use loco_rs::prelude::*;
-
-// use crate::controllers::auth::routes as AuthRoutes;
 use axum::{http::StatusCode, response::IntoResponse};
-use std::path::Path;
-
 use axum_extra::{headers::UserAgent, TypedHeader};
+use loco_rs::prelude::*;
+use std::path::Path;
 
 pub mod routes {
     use serde::{Deserialize, Serialize};
@@ -61,14 +59,11 @@ pub mod routes {
         pub const HOME_PARTIAL: &'static str = "/partial/home";
         pub const DASHBOARD_EXTEND: &'static str = "/partial/dashboard";
         pub const DASHBOARD_PACKS_EXTEND: &'static str = "/partial/dashboard/packs";
-        pub const TEST_META_PAGEVIEW: &'static str = "/test/meta/pageview";
-        pub const TEST_META_CHECKOUT: &'static str = "/test/meta/checkout";
-        pub const TEST_META_PURCHASE: &'static str = "/test/meta/purchase";
     }
 }
 
 pub fn routes() -> Routes {
-    Routes::new()
+    let mut routes = Routes::new()
         .add(routes::Home::BASE, get(render_home))
         .add(routes::Home::ROBOT_TXT, get(robots_txt))
         .add(routes::Home::SITEMAP_XML, get(sitemap_xml))
@@ -80,10 +75,18 @@ pub fn routes() -> Routes {
         .add(
             routes::Home::DASHBOARD_PACKS_EXTEND,
             get(render_dashboard_extend_packs_partial),
-        )
-    //// .add(routes::Home::TEST_META_PAGEVIEW, get(test_meta_page_view))
-    //// .add(routes::Home::TEST_META_CHECKOUT, get(test_meta_checkout))
-    //// .add(routes::Home::TEST_META_PURCHASE, get(test_meta_purchase))
+        );
+
+    if cfg!(debug_assertions) {
+        pub const TEST_META_PAGEVIEW: &'static str = "/test/meta/pageview";
+        pub const TEST_META_CHECKOUT: &'static str = "/test/meta/checkout";
+        pub const TEST_META_PURCHASE: &'static str = "/test/meta/purchase";
+        routes = routes
+            .add(TEST_META_PAGEVIEW, get(test_meta_page_view))
+            .add(TEST_META_CHECKOUT, get(test_meta_checkout))
+            .add(TEST_META_PURCHASE, get(test_meta_purchase))
+    }
+    routes
 }
 
 pub async fn load_user(db: &DatabaseConnection, user_pid: &UserPid) -> Result<UserModel> {
@@ -294,21 +297,7 @@ pub async fn render_home(
         Ok(auth) => {
             let user_pid = UserPid::new(&auth.claims.pid);
             let user = match load_user(&ctx.db, &user_pid).await {
-                Ok(user) => {
-                    // Send to queue for processing for Meta
-                    let user_data = UserData::new(&user)
-                        .client_user_agent(&user_agent)
-                        .client_ip_address(&client_ip);
-                    let meta = EventData::page_view().set_user_data(&user_data);
-                    let worker_arg = MetaConversionApiWorkerArgs::new(
-                        meta,
-                        website.website_basic_info.meta_pixel.clone(),
-                    );
-                    if let Err(e) = MetaConversionApiWorker::perform_later(&ctx, worker_arg).await {
-                        tracing::warn!("⚠️ Failed to queue MetaConversionApiWorker: {e}");
-                    }
-                    Some(user.into())
-                }
+                Ok(user) => Some(user.into()),
                 Err(_) => None,
             };
             user
@@ -316,6 +305,26 @@ pub async fn render_home(
         Err(_) => None,
     };
     let images = load_cached_web(&ctx, &lang, &cache).await?;
+
+    if !cfg!(debug_assertions) {
+        if let Some(user_view) = &user {
+            if let Ok(user_model) = UserModel::find_by_pid_uuid(&ctx.db, user_view.pid).await {
+                let user_data = UserData::new(&user_model)
+                    .client_user_agent(&user_agent)
+                    .client_ip_address(&client_ip);
+
+                let meta = EventData::page_view().set_user_data(&user_data);
+                let args = MetaConversionApiWorkerArgs::new(
+                    meta,
+                    website.website_basic_info.meta_pixel.clone(),
+                );
+
+                if let Err(e) = MetaConversionApiWorker::perform_later(&ctx, args).await {
+                    tracing::warn!("⚠️ Failed to queue MetaConversionApiWorker: {e}");
+                }
+            }
+        }
+    }
 
     let website_options = WebsiteOptions::new()
         .website(&website)
@@ -347,22 +356,7 @@ pub async fn render_home_partial(
         Ok(auth) => {
             let user_pid = UserPid::new(&auth.claims.pid);
             let user = match load_user(&ctx.db, &user_pid).await {
-                Ok(user) => {
-                    // Send to queue for processing for Meta
-                    let user_data = UserData::new(&user)
-                        .client_user_agent(&user_agent)
-                        .client_ip_address(&client_ip);
-                    let meta = EventData::page_view().set_user_data(&user_data);
-                    let worker_arg = MetaConversionApiWorkerArgs::new(
-                        meta,
-                        website.website_basic_info.meta_pixel.clone(),
-                    );
-                    if let Err(e) = MetaConversionApiWorker::perform_later(&ctx, worker_arg).await {
-                        tracing::warn!("⚠️ Failed to queue MetaConversionApiWorker: {e}");
-                    }
-
-                    Some(user.into())
-                }
+                Ok(user) => Some(user.into()),
                 Err(_) => None,
             };
             user
@@ -370,6 +364,26 @@ pub async fn render_home_partial(
         Err(_) => None,
     };
     let images = load_cached_web(&ctx, &lang, &cache).await?;
+
+    if !cfg!(debug_assertions) {
+        if let Some(user_view) = &user {
+            if let Ok(user_model) = UserModel::find_by_pid_uuid(&ctx.db, user_view.pid).await {
+                let user_data = UserData::new(&user_model)
+                    .client_user_agent(&user_agent)
+                    .client_ip_address(&client_ip);
+
+                let meta = EventData::page_view().set_user_data(&user_data);
+                let args = MetaConversionApiWorkerArgs::new(
+                    meta,
+                    website.website_basic_info.meta_pixel.clone(),
+                );
+
+                if let Err(e) = MetaConversionApiWorker::perform_later(&ctx, args).await {
+                    tracing::warn!("⚠️ Failed to queue MetaConversionApiWorker: {e}");
+                }
+            }
+        }
+    }
 
     let website_options = WebsiteOptions::new()
         .website(&website)

@@ -27,9 +27,11 @@ use crate::{
     service::{
         aws::s3::AwsS3,
         fal_ai::fal_client::FalAiClient,
+        // meta::meta::{EventData, UserData},
         redis::redis::{load_cached_web, RedisCacheDriver},
     },
     views::{self, auth::UserView, images::ImageViewList, packs::PackView},
+    // workers::meta_worker::{MetaConversionApiWorker, MetaConversionApiWorkerArgs},
 };
 
 use super::home::load_user;
@@ -185,6 +187,17 @@ pub async fn show_pack(
     };
     let pack_images = pack.create_item_groups();
 
+    // if !cfg!(debug_assertions) && user.is_some() {
+    //     let user_model = UserModel::find_by_pid_uuid(&ctx.db, user.clone().unwrap().pid).await?;
+    //     let user_data = UserData::new(&user_model);
+    //     let meta = EventData::page_view().set_user_data(&user_data);
+    //     let worker_arg =
+    //         MetaConversionApiWorkerArgs::new(meta, website.website_basic_info.meta_pixel.clone());
+    //     if let Err(e) = MetaConversionApiWorker::perform_later(&ctx, worker_arg).await {
+    //         tracing::warn!("⚠️ Failed to queue MetaConversionApiWorker: {e}");
+    //     }
+    // }
+
     let website_options = WebsiteOptions::new()
         .website(&website)
         .language(&lang)
@@ -239,6 +252,17 @@ pub async fn show_pack_partial(
         },
     };
     let pack_images = pack.create_item_groups();
+
+    // if !cfg!(debug_assertions) && user.is_some() {
+    //     let user_model = UserModel::find_by_pid_uuid(&ctx.db, user.clone().unwrap().pid).await?;
+    //     let user_data = UserData::new(&user_model);
+    //     let meta = EventData::page_view().set_user_data(&user_data);
+    //     let worker_arg =
+    //         MetaConversionApiWorkerArgs::new(meta, website.website_basic_info.meta_pixel.clone());
+    //     if let Err(e) = MetaConversionApiWorker::perform_later(&ctx, worker_arg).await {
+    //         tracing::warn!("⚠️ Failed to queue MetaConversionApiWorker: {e}");
+    //     }
+    // }
 
     let website_options = WebsiteOptions::new()
         .website(&website)

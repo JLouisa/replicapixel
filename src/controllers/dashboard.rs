@@ -160,16 +160,11 @@ pub mod routes {
         pub const BILLING_NEW: &'static str = "/billing?partial={enum_htmx}";
         pub const VIDEO: &'static str = "/video";
         pub const VIDEO_PARTIAL: &'static str = "/partial/video";
-
-        pub const DASHBOARD_TEST_SET: &'static str = "/test/set";
-        pub const DASHBOARD_TEST_GET: &'static str = "/test/get";
-        pub const DASHBOARD_TEST_CLEAR: &'static str = "/test/clear";
-        pub const DASHBOARD_TEST: &'static str = "/test";
     }
 }
 
 pub fn routes() -> Routes {
-    Routes::new()
+    let mut routes = Routes::new()
         .prefix(routes::Dashboard::BASE)
         .add(routes::Dashboard::DASHBOARD, get(photo_dashboard))
         .add(routes::Dashboard::PACKS, get(packs_dashboard))
@@ -223,7 +218,6 @@ pub fn routes() -> Routes {
             routes::Dashboard::VIDEO_PARTIAL,
             get(video_partial_dashboard),
         )
-        .add(routes::Dashboard::DASHBOARD_TEST, post(dashboard_test))
         .add(
             routes::Dashboard::CREATE_TRAINING_MODELS,
             get(new_training_dashboard),
@@ -231,11 +225,16 @@ pub fn routes() -> Routes {
         .add(
             routes::Dashboard::CREATE_TRAINING_MODELS_PARTIAL,
             get(new_training_dashboard_partials),
-        )
-        .add(
-            routes::Dashboard::DASHBOARD_TEST_CLEAR,
-            get(dashboard_test_clear),
-        )
+        );
+
+    if cfg!(debug_assertions) {
+        pub const DASHBOARD_TEST: &'static str = "/test";
+        pub const DASHBOARD_TEST_CLEAR: &'static str = "/test/clear";
+        routes = routes
+            .add(DASHBOARD_TEST, post(dashboard_test))
+            .add(DASHBOARD_TEST_CLEAR, get(dashboard_test_clear));
+    }
+    routes
 }
 
 async fn load_user(db: &DatabaseConnection, pid: &UserPid) -> Result<UserModel> {
@@ -320,7 +319,7 @@ pub enum CurrentPage {
     Deleted,
     Favorite,
     Album,
-    Video,
+    Videos,
 }
 
 #[debug_handler]
@@ -356,7 +355,7 @@ pub async fn video_dashboard(
         .user_credits(user_credits.into())
         .training_models(training_models)
         .videos(&videos)
-        .current_page(CurrentPage::Video)
+        .current_page(CurrentPage::Videos)
         .is_initial_load()
         .build();
 
@@ -395,7 +394,7 @@ pub async fn video_partial_dashboard(
         .user_credits(user_credits.into())
         .training_models(training_models.into())
         .videos(&videos)
-        .current_page(CurrentPage::Video)
+        .current_page(CurrentPage::Videos)
         .is_initial_load()
         .build();
 

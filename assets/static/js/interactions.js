@@ -77,3 +77,14 @@ document.body.addEventListener("htmx:afterSwap", function (evt) {
     console.error("Error in htmx:afterSwap handler:", error);
   }
 });
+
+document.addEventListener("click", function (event) {
+  const toggleBtn = event.target.closest("[data-toggle]");
+  if (!toggleBtn) return;
+
+  const targetSelector = toggleBtn.getAttribute("data-toggle");
+  const panel = document.querySelector(targetSelector);
+  if (panel) {
+    panel.classList.toggle("hidden");
+  }
+});

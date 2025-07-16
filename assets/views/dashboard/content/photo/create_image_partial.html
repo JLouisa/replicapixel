@@ -51,9 +51,7 @@ options.website.website_fields.quality_model %} {% set training_models = options
 
     <div
       id="advanced-options"
-      x-show="$store.imageGenForm.advancedOptionsOpen"
-      x-transition
-      class="px-4 pt-3 pb-2 border-t border-base-300 grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-4"
+      class="px-4 pt-3 pb-2 border-t border-base-300 grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-4 hidden"
     >
       <h3 class="text-xs text-center font-semibold text-base-content/80 md:col-span-2">
         {{ t(key="create-image-form-advanced-options-title", lang=lang) }}
@@ -228,13 +226,12 @@ options.website.website_fields.quality_model %} {% set training_models = options
 
     <div class="flex items-center justify-between px-3 py-2 border-t border-base-300">
       <button
-        type="button"
         id="toggle-advanced-options"
+        type="button"
+        data-toggle="#advanced-options"
         class="btn btn-ghost btn-square btn-sm"
         aria-label="{{ t(key='create-image-form-aria-toggle-advanced', lang=lang) }}"
         aria-controls="advanced-options"
-        x-on:click="$store.imageGenForm.toggleAdvancedOptions()"
-        :aria-expanded="$store.imageGenForm.advancedOptionsOpen.toString()"
         :disabled="$store.imageGenForm.isLoading"
       >
         <svg

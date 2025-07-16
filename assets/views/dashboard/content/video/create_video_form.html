@@ -62,12 +62,7 @@ options.website.website_fields.quality_model %} {% set training_models = options
     </div>
 
     <!-- Inner Form -->
-    <div
-      id="advanced-options"
-      x-show="$store.videoGenForm.advancedOptionsOpen"
-      x-transition
-      class="px-4 pt-3 pb-2 border-t border-base-300"
-    >
+    <div id="advanced-options" class="px-4 pt-3 pb-2 border-t border-base-300 hidden">
       <h3 class="text-xs text-center font-semibold text-base-content/80 md:col-span-2">
         {{ t(key="create-image-form-advanced-options-title", lang=lang) }}
       </h3>
@@ -103,8 +98,6 @@ options.website.website_fields.quality_model %} {% set training_models = options
 
       <div
         id="advanced-options"
-        x-show="$store.videoGenForm.advancedOptionsOpen"
-        x-transition
         class="px-4 pt-3 pb-2 border-t border-base-300 grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-4"
       >
         <div>
@@ -180,14 +173,12 @@ options.website.website_fields.quality_model %} {% set training_models = options
 
     <div class="flex items-center justify-between px-3 py-2">
       <button
-        type="button"
         id="toggle-advanced-options"
-        class="btn btn-ghost btn-square btn-sm"
-        aria-label="{{ t(key='create-image-form-aria-toggle-advanced', lang=lang) }}"
+        type="button"
+        data-toggle="#advanced-options"
         aria-controls="advanced-options"
-        x-on:click="$store.videoGenForm.toggleAdvancedOptions()"
-        :aria-expanded="$store.videoGenForm.advancedOptionsOpen.toString()"
         :disabled="$store.videoGenForm.isLoading"
+        class="btn btn-ghost btn-square btn-sm"
       >
         <svg
           class="w-5 h-5"

@@ -142,14 +142,12 @@ impl ImageView {
         // Try getting from cache
         match cache.get_s3_pre_url(&self).await {
             Ok(pre_url) => {
-                tracing::info!("Using cached pre_url: {}", self.pid);
                 self.s3_pre_url = Some(pre_url);
             }
             Err(_) => {
                 // Fallback: generate new URL and set it in cache
                 match s3_client.get_object_pre(&s3_key, None).await {
                     Ok(url) => {
-                        tracing::info!("Generating new pre_url: {}", self.pid);
                         self.s3_pre_url = Some(url.into_inner());
                         let _ = cache.set_s3_pre_url(&self).await;
                     }
@@ -187,15 +185,10 @@ impl ImageView {
         cache: &RedisCacheDriver,
     ) -> &mut Self {
         if self.image_url_fal.is_none() || self.image_s3_key.is_empty() {
-            tracing::trace!(
-                "Skipping pre_url for {}: missing url_fal or s3_key",
-                self.pid
-            );
             return self;
         }
         // Optional: Add status check if pre-signed URLs only make sense for completed images
         if self.image_status != Status::Completed.to_string() {
-            tracing::trace!("Skipping pre_url for {}: status is not Completed", self.pid);
             return self;
         }
 
@@ -204,24 +197,18 @@ impl ImageView {
         // --- Refined Cache Get Logic ---
         match cache.get_s3_pre_url(&self).await {
             Ok(pre_url) => {
-                tracing::info!("Using cached pre_url for: {}", self.pid);
                 self.s3_pre_url = Some(pre_url);
             }
             Err(RedisDbError::NotFound) => {
-                tracing::info!("Cache miss for pre_url: {}. Generating new one.", self.pid);
-
                 // Proceed to generate a new URL
                 match s3_client.get_object_pre(&s3_key, None).await {
                     Ok(url) => {
-                        tracing::debug!("Successfully generated new pre_url for: {}", self.pid);
                         let url_str = url.into_inner();
                         self.s3_pre_url = Some(url_str.clone());
 
                         // Attempt to cache the newly generated URL
                         match cache.set_s3_pre_url(&self).await {
-                            Ok(()) => {
-                                tracing::debug!("Successfully cached new pre_url for {}", self.pid);
-                            }
+                            Ok(_) => {}
                             Err(cache_set_err) => {
                                 tracing::error!(
                                     "Failed to cache newly generated pre_url for {}: {:?}",
@@ -232,7 +219,11 @@ impl ImageView {
                         }
                     }
                     Err(s3_err) => {
-                        tracing::warn!("Failed to generate pre_url for {}: {:?}", self.pid, s3_err);
+                        tracing::error!(
+                            "Failed to generate pre_url for {}: {:?}",
+                            self.pid,
+                            s3_err
+                        );
                     }
                 }
             }
