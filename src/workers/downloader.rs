@@ -53,7 +53,14 @@ impl BackgroundWorker<DownloadWorkerArgs> for DownloadWorker {
         )?;
 
         // Mark the video model as completed
-        video_model.upload_s3_completed(&self.ctx.db).await?;
+        let str = video_model
+            .upload_s3_completed(&self.ctx.db)
+            .await?
+            .storage_key();
+
+        // Delete the video from local storage
+        let path = std::path::Path::new(&str);
+        self.ctx.storage.delete(&path).await?;
 
         Ok(())
     }
