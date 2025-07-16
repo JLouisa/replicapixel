@@ -40,7 +40,7 @@ const BackendUrl = {
   },
   Video: {
     Base: Api.Video,
-    GenerateVideo: Api.Video + "/generate/test",
+    GenerateVideo: Api.Video + "/generate",
   },
   Dashboard: {
     Base: Api.Dashboard,
