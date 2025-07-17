@@ -1,0 +1,264 @@
+<dialog id="pack-modal" class="modal">
+  <div class="modal-box max-w-7xl relative">
+    <button
+      class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+      onclick="document.getElementById('pack-modal').close()"
+    >
+      {% include "partials/svg/x.html" %}
+    </button>
+    <div class="bg-base-100">
+      <div class="container mx-auto px-2 py-8">
+        <div class="flex mx-4">
+          <!-- Product Images -->
+          <div class="w-full md:w-1/2 px-4 mb-8 hidden md:block">
+            <!-- Main Image -->
+            <img
+              id="pack-main-image"
+              src="https://placehold.co/600x400"
+              alt='{{ t(key="packs-modal-main-image-alt", lang=lang) }}'
+              class="w-full h-auto object-cover rounded-lg shadow-lg mb-4"
+            />
+            <!-- Thumbnails -->
+            <div id="pack-thumbnails" class="flex gap-4 py-4 justify-center overflow-x-auto">
+              <img
+                id="pack-sub-image-1"
+                src="https://placehold.co/600x400"
+                loading="lazy"
+                alt='{{ t(key="packs-modal-thumbnail-alt", lang=lang) }}'
+                class="pack-images w-24 h-24 object-cover rounded-md cursor-pointer duration-300 ease-in-out hover:scale-105 flex-shrink-0"
+                onclick="changeImage('pack-main-image', this.src)"
+              />
+              <img
+                id="pack-sub-image-2"
+                src="https://placehold.co/600x400"
+                loading="lazy"
+                alt='{{ t(key="packs-modal-thumbnail-alt", lang=lang) }}'
+                class="pack-images w-24 h-24 object-cover rounded-md cursor-pointer duration-300 ease-in-out hover:scale-105 flex-shrink-0"
+                onclick="changeImage('pack-main-image', this.src)"
+              />
+              <img
+                id="pack-sub-image-3"
+                src="https://placehold.co/600x400"
+                loading="lazy"
+                alt='{{ t(key="packs-modal-thumbnail-alt", lang=lang) }}'
+                class="pack-images w-24 h-24 object-cover rounded-md cursor-pointer duration-300 ease-in-out hover:scale-105 flex-shrink-0"
+                onclick="changeImage('pack-main-image', this.src)"
+              />
+              <img
+                id="pack-sub-image-4"
+                src="https://placehold.co/600x400"
+                loading="lazy"
+                alt='{{ t(key="packs-modal-thumbnail-alt", lang=lang) }}'
+                class="pack-images w-24 h-24 object-cover rounded-md cursor-pointer duration-300 ease-in-out hover:scale-105 flex-shrink-0"
+                onclick="changeImage('pack-main-image', this.src)"
+              />
+              <img
+                id="pack-sub-image-5"
+                src="https://placehold.co/600x400"
+                loading="lazy"
+                alt='{{ t(key="packs-modal-thumbnail-alt", lang=lang) }}'
+                class="pack-images w-24 h-24 object-cover rounded-md cursor-pointer duration-300 ease-in-out hover:scale-105 flex-shrink-0"
+                onclick="changeImage('pack-main-image', this.src)"
+              />
+            </div>
+          </div>
+          <!-- Product Details -->
+          <div class="w-full md:w-1/2 px-4">
+            <h2 id="pack-title" class="text-5xl font-bold mb-2">Lorem ipsum dolor.</h2>
+            <div class="flex items-center justify-between">
+              {% include "partials/svg/star.html" %} {% include "partials/svg/star.html" %} {%
+              include "partials/svg/star.html" %} {% include "partials/svg/star.html" %} {% include
+              "partials/svg/star.html" %}
+            </div>
+            <div class="mb-4 flex justify-end items-center gap-2">
+              <div id="pack-popular" class="badge badge-dash badge-secondary">
+                {{ t(key="packs-modal-badge-popular", lang=lang) }}
+              </div>
+              <div class="badge badge-dash badge-info">
+                <span id="pack-used">0</span>{{ t(key="packs-modal-badge-used-suffix", lang=lang) }}
+              </div>
+            </div>
+
+            <!-- Mobile Product Images -->
+            <div class="w-full px-2 mb-8 md:hidden">
+              <!-- Main Image -->
+              <img
+                id="pack-main-image-mobile"
+                src="https://placehold.co/600x400"
+                alt='{{ t(key="packs-modal-main-image-alt", lang=lang) }}'
+                class="w-full h-auto object-cover rounded-lg shadow-lg mb-4"
+              />
+              <!-- Thumbnails -->
+              <div class="flex gap-4 py-4 justify-center overflow-x-auto">
+                <img
+                  id="pack-sub-image-mobile-1"
+                  src="https://placehold.co/600x400"
+                  loading="lazy"
+                  alt='{{ t(key="packs-modal-thumbnail-alt", lang=lang) }}'
+                  class="pack-images-mobile w-24 h-24 object-cover rounded-md cursor-pointer duration-300 ease-in-out hover:scale-105 flex-shrink-0"
+                  onclick="changeImage('pack-main-image-mobile',this.src)"
+                />
+                <img
+                  id="pack-sub-image-mobile-2"
+                  src="https://placehold.co/600x400"
+                  loading="lazy"
+                  alt='{{ t(key="packs-modal-thumbnail-alt", lang=lang) }}'
+                  class="pack-images-mobile w-24 h-24 object-cover rounded-md cursor-pointer duration-300 ease-in-out hover:scale-105 flex-shrink-0"
+                  onclick="changeImage('pack-main-image-mobile',this.src)"
+                />
+                <img
+                  id="pack-sub-image-mobile-3"
+                  src="https://placehold.co/600x400"
+                  loading="lazy"
+                  alt='{{ t(key="packs-modal-thumbnail-alt", lang=lang) }}'
+                  class="pack-images-mobile w-24 h-24 object-cover rounded-md cursor-pointer duration-300 ease-in-out hover:scale-105 flex-shrink-0"
+                  onclick="changeImage('pack-main-image-mobile',this.src)"
+                />
+                <img
+                  id="pack-sub-image-mobile-4"
+                  src="https://placehold.co/600x400"
+                  loading="lazy"
+                  alt='{{ t(key="packs-modal-thumbnail-alt", lang=lang) }}'
+                  class="pack-images-mobile w-24 h-24 object-cover rounded-md cursor-pointer duration-300 ease-in-out hover:scale-105 flex-shrink-0"
+                  onclick="changeImage('pack-main-image-mobile',this.src)"
+                />
+                <img
+                  id="pack-sub-image-mobile-5"
+                  src="https://placehold.co/600x400"
+                  loading="lazy"
+                  alt='{{ t(key="packs-modal-thumbnail-alt", lang=lang) }}'
+                  class="pack-images-mobile w-24 h-24 object-cover rounded-md cursor-pointer duration-300 ease-in-out hover:scale-105 flex-shrink-0"
+                  onclick="changeImage('pack-main-image-mobile',this.src)"
+                />
+              </div>
+            </div>
+            <!-- Mobile Product Images End -->
+
+            <p id="pack-description" class="text-base-700 mb-6 text-start">
+              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Molestiae impedit aperiam
+              provident ipsam numquam repellendus obcaecati placeat, ab commodi quod ducimus
+              asperiores, distinctio animi porro similique sequi? Magni, voluptate dignissimos.
+            </p>
+            <div class="w-full flex items-center justify-start gap-7 text-sm mb-6">
+              <div class="flex items-center justify-center gap-2">
+                {% include "partials/svg/credit_svg.html" %}
+                <span id="pack-credits" class="font-medium text-lg">0</span>
+              </div>
+              <div class="flex items-center justify-center gap-2">
+                {% include "partials/svg/image.html" %}
+                <span id="pack-photos" class="font-medium text-lg">0</span>
+              </div>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold mb-2">
+                {{ t(key="packs-modal-features-title", lang=lang) }}
+              </h3>
+              <ul class="list-disc list-inside">
+                <li id="pack-feature-1" class="pack-features">
+                  {{ t(key="packs-modal-feature-default-1", lang=lang) }}
+                </li>
+                <li id="pack-feature-2" class="pack-features">
+                  {{ t(key="packs-modal-feature-default-2", lang=lang) }}
+                </li>
+                <li id="pack-feature-3" class="pack-features">
+                  {{ t(key="packs-modal-feature-default-3", lang=lang) }}
+                </li>
+                <li id="pack-feature-4" class="pack-features">
+                  {{ t(key="packs-modal-feature-default-4", lang=lang) }}
+                </li>
+              </ul>
+            </div>
+            {% if options.user_credits.credit_amount > 6 %}
+            <form
+              id="pack-form-modal"
+              hx-post="{{ pack_link | safe }}"
+              hx-target="#dashboard_content"
+              hx-push-url="{{ studio_link | safe }}"
+              hx-swap="innerHTML"
+              hx-ext="form-json"
+              hx-disabled-elt="#pack-submit-btn, #pack-cancel-btn"
+              class="mt-6 space-y-4"
+              x-data="{ modelSelected: '', sizeSelected: '' }"
+            >
+              <input id="pack-input-id" type="text" name="pack_pid" class="hidden" />
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="form-control w-full">
+                  <label for="model_pid" class="label"> </label>
+                  <select
+                    id="pack-model"
+                    name="model_pid"
+                    class="placeholder-black appearance-none cursor-pointer border pl-12 border-gray-100 shadow-sm focus:shadow-md focus:placeholder-gray-600 transition rounded-md w-full py-3 text-gray-600 leading-tight focus:outline-none focus:ring-gray-600 focus:shadow-outline"
+                    x-model="modelSelected"
+                  >
+                    <option value="" disabled selected>
+                      {{ t(key="packs-modal-select-model-placeholder", lang=lang) }}
+                    </option>
+                    {% for training in models %} {% if training.training_status == "Completed" %}
+                    <option value="{{ training.pid }}">{{ training.name }}</option>
+                    {% endif %} {% endfor %}
+                  </select>
+                  <div class="absolute left-0 inset-y-0 flex items-center"></div>
+                </div>
+
+                <div class="form-control w-full">
+                  <label for="image_size" class="label"> </label>
+                  <select
+                    id="pack-image_size"
+                    name="image_size"
+                    class="appearance-none cursor-pointer border pl-12 border-gray-100 shadow-sm focus:shadow-md focus:placeholder-gray-600 transition rounded-md w-full py-3 text-gray-600 leading-tight focus:outline-none focus:ring-gray-600 focus:shadow-outline"
+                    x-model="sizeSelected"
+                  >
+                    <option value="" disabled selected>
+                      {{ t(key="packs-modal-select-size-placeholder", lang=lang) }}
+                    </option>
+                    {% for image_size in image_sizes %} {% if not loop.last %}
+                    <option value="{{ image_size.0 }}">{{ image_size.1 }}</option>
+                    {% endif %} {% endfor %}
+                  </select>
+                  <div class="absolute left-0 inset-y-0 flex items-center"></div>
+                </div>
+              </div>
+              <div class="modal-action mt-6 flex items-center justify-center">
+                <button
+                  id="pack-submit-btn"
+                  type="submit"
+                  form="pack-form-modal"
+                  class="btn btn-secondary text-black w-full mt-4 sm:mt-2"
+                >
+                  {{ t(key="packs-modal-button-generate", lang=lang) }}
+                </button>
+              </div>
+              {% else %} {% set timestamp = now() | date(format="%s%.f") %}
+              <div class="flex items-center justify-center">
+                <a
+                  href="/"
+                  hx-get="/partial/home"
+                  hx-swap="innerHTML"
+                  hx-push-url="/"
+                  hx-target="#app"
+                  onclick="sessionStorage.setItem('scrollTo', '#pricing')"
+                >
+                  {% set timestamp = now() | date(format="%s%.f") %}
+                  <button
+                    id="shiningButton-{{ timestamp }}"
+                    class="relative flex flex-row gap-1 overflow-hidden px-2 sm:px-4 py-1 sm:py-2 font-semibold text-white bg-gradient-to-r from-violet-500 to-pink-500 rounded-lg shadow-md transition-all duration-150 hover:shadow-lg hover:brightness-110 active:scale-95 active:brightness-90 cursor-pointer"
+                  >
+                    <span class="hidden sm:flex">Buy</span>
+                    Credits
+                    <script>
+                      shiningBtn("shiningButton-{{ timestamp }}");
+                    </script>
+                  </button>
+                </a>
+              </div>
+            </form>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <form method="dialog" class="modal-backdrop">
+    <button>{{ t(key="packs-modal-button-close", lang=lang) }}</button>
+  </form>
+</dialog>

@@ -489,7 +489,12 @@ impl AwsS3 {
         }
     }
 
-    /// Delete an object from a bucket.
+    // Delete an object from a bucket.
+    pub async fn remove_video(&self, video: &VideoModel) -> Result<(), AwsError> {
+        let s3_key = S3Key::new(&video.video_s3_key);
+        self.remove_object_s3_key(&s3_key).await
+    }
+
     pub async fn remove_object_s3_key(&self, key: &S3Key) -> Result<(), AwsError> {
         match self
             .client

@@ -89,6 +89,15 @@ async function downloadImageWithLink(url, filename, pid) {
   }
 }
 
+// function downloadVideo(url) {
+//   const a = document.createElement("a");
+//   a.href = url;
+//   a.download = "";
+//   document.body.appendChild(a);
+//   a.click();
+//   document.body.removeChild(a);
+// }
+
 function copyTextToClipboard(text) {
   const el = document.createElement("textarea");
   el.value = text;

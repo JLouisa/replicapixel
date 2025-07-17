@@ -15,21 +15,22 @@
         <span>Duration: <span id="video-duration">00:30</span>s</span>
       </div>
       <div class="flex justify-end gap-2 pt-2">
+        <a id="video-download">
+          <button
+            class="px-3 py-1 rounded-md text-sm text-white bg-green-600 hover:bg-green-700 cursor-pointer"
+          >
+            Download
+          </button>
+        </a>
         <button
-          class="px-3 py-1 rounded-md text-sm text-white bg-green-600 hover:bg-green-700 cursor-pointer"
-        >
-          Download
-        </button>
-        <button
-          class="px-3 py-1 rounded-md text-sm text-white bg-blue-600 hover:bg-blue-700 cursor-pointer"
-        >
-          Favorite
-        </button>
-        <button
+          id="video-delete-button"
+          type="button"
+          onclick="deleteVideo()"
           class="px-3 py-1 rounded-md text-sm text-white bg-red-600 hover:bg-red-700 cursor-pointer"
         >
           Delete
         </button>
+        {# <a id="video-delete" class="hidden"></a> #}
       </div>
     </div>
   </div>

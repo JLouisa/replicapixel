@@ -1,9 +1,9 @@
-{% set video_check_link = options.website.website_routes.video.check %} {% if video.status ==
-"Completed" %}
+{% set video_check_link = options.website.website_routes.video.check %} {% set video_delete_link =
+options.website.website_routes.video.api_delete %} {% if video.status == "Completed" %}
 <div
-  id="video-card--completed-{{video.pid}}"
-  class="w-full max-w-sm rounded-xl overflow-hidden shadow-md bg-base-100 border border-base-300 hover:shadow-xl transition-shadow duration-200"
-  onclick="openVideoDialog('{{video.video_url | safe}}', '{{video.title}}', '{{video.user_prompt}}', '{{video.duration}}', '{{video.status}}')"
+  id="video-card-completed-{{video.pid}}"
+  class="cursor-pointer w-full max-w-sm rounded-xl overflow-hidden shadow-md bg-base-100 border border-base-300 hover:shadow-xl transition-shadow duration-200"
+  onclick="videoDialog('{{video_delete_link}}','{{video.pid}}', '{{video.video_url | safe}}', '{{video.title}}', '{{video.user_prompt}}', '{{video.duration}}', '{{video.status}}')"
 >
   <!-- Thumbnail -->
   <div class="relative pb-[56.25%] bg-base-200">

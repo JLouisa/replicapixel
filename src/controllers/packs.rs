@@ -79,13 +79,15 @@ pub fn routes() -> Routes {
         .add(routes::Pack::SHOW_PACK_PID, get(show_pack))
         .add(routes::Pack::API_PACKS_ALL, get(get_all_packs))
         .add(routes::Pack::SHOW_PACK_PARTIAL_PID, get(show_pack_partial))
-        .add(routes::Pack::API_GEN_PACK_PID, post(generate_packs_images))
-        .add(routes::Pack::API_PACK_ADD, post(generate_packs_images))
+        .add(routes::Pack::API_GEN_PACK, post(generate_packs_images))
+    // .add(routes::Pack::API_PACK_ADD, post(generate_packs_images))
 }
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct PackParams {
+    pack_pid: Uuid,
     model_pid: Option<Uuid>,
+    #[serde(default)]
     image_size: ImageSize,
 }
 
@@ -106,7 +108,6 @@ async fn load_pack_by_title_url(db: &DatabaseConnection, title_url: &str) -> Res
     let pack = PackModel::find_by_title_url(db, title_url).await?;
     Ok(pack)
 }
-
 async fn load_packs_all(db: &DatabaseConnection) -> Result<PackModelList> {
     let pack = PackModel::find_all_packs(db).await?;
     Ok(PackModelList::new(pack))
@@ -280,7 +281,6 @@ pub async fn show_pack_partial(
 #[debug_handler]
 pub async fn generate_packs_images(
     auth: auth::JWT,
-    Path(pack_pid): Path<Uuid>,
     Extension(fal_ai_client): Extension<FalAiClient>,
     Extension(s3_client): Extension<AwsS3>,
     Extension(cache): Extension<RedisCacheDriver>,
@@ -292,14 +292,14 @@ pub async fn generate_packs_images(
     // 0. Load User, Pack and Training Model
     let user_pid = UserPid::new(&auth.claims.pid);
     let (user, training_model, pack) =
-        load_everything(&ctx.db, &user_pid, &form, &pack_pid).await?;
+        load_everything(&ctx.db, &user_pid, &form, &form.pack_pid).await?;
 
     // 1. Call the Domain Service to perform the core logic
     let pack_domain = PackDomain::from_model(pack, form.image_size);
     let (updated_credits_model, _) =
         ImageGenerationService::generate(&ctx, &fal_ai_client, pack_domain, &user, &training_model)
             .await?;
-    plus_one_used_pack(&ctx.db, &pack_pid).await?;
+    plus_one_used_pack(&ctx.db, &form.pack_pid).await?;
 
     // 2. Render the view using the View Models
     let images: ImageViewList = load_first_images(&ctx.db, user.id, false, false)
@@ -308,6 +308,7 @@ pub async fn generate_packs_images(
     let images = images.populate_s3_pre_urls(&s3_client, &cache).await;
     let training_models = load_models_all(&ctx.db, user.id).await?;
 
+    // 3. Render the view
     let website_options = WebsiteOptions::new()
         .website(&website)
         .user(user.into())
@@ -315,7 +316,5 @@ pub async fn generate_packs_images(
         .training_models(training_models.into())
         .images(&images)
         .build();
-
-    // 3. Render the view
     views::dashboard::photo_partial_dashboard(v, &website_options)
 }

@@ -33,6 +33,7 @@ pub mod routes {
         pub base: String,
         pub generation: String,
         pub check: String,
+        pub api_delete: String,
     }
     impl VideoRoutes {
         pub fn init() -> Self {
@@ -40,6 +41,7 @@ pub mod routes {
                 base: String::from(Videos::BASE),
                 generation: format!("{}{}", Videos::BASE, Videos::VIDEO_GENERATE),
                 check: format!("{}{}", Videos::BASE, Videos::VIDEO_CHECK),
+                api_delete: format!("{}{}", Videos::BASE, Videos::API_DELETE),
             }
         }
     }
@@ -51,6 +53,8 @@ pub mod routes {
         pub const VIDEO_GENERATE: &'static str = "/generate";
         pub const VIDEO_CHECK_ID: &'static str = "/check/{id}/{status}";
         pub const VIDEO_CHECK: &'static str = "/check";
+        pub const API_DELETE_ID: &'static str = "/delete/{pid}";
+        pub const API_DELETE: &'static str = "/delete";
     }
 }
 
@@ -58,7 +62,8 @@ pub fn routes() -> Routes {
     let mut routes = Routes::new()
         .prefix(routes::Videos::BASE)
         .add(routes::Videos::VIDEO_CHECK_ID, get(check_video_status))
-        .add(routes::Videos::VIDEO_GENERATE, post(generate));
+        .add(routes::Videos::VIDEO_GENERATE, post(generate))
+        .add(routes::Videos::API_DELETE_ID, delete(delete_video));
 
     if cfg!(debug_assertions) {
         pub const VIDEO_GENERATE_TEST: &'static str = "/generate/test";
@@ -69,6 +74,26 @@ pub fn routes() -> Routes {
             .add(VIDEO_GENERATE_TEST, post(generate_test))
     }
     routes
+}
+
+#[debug_handler]
+pub async fn delete_video(
+    auth: auth::JWT,
+    Path(video_pid): Path<Uuid>,
+    State(ctx): State<AppContext>,
+    Extension(s3_client): Extension<AwsS3>,
+) -> Result<impl IntoResponse> {
+    // 1. Load User and Video Model
+    let (_, video) = load_user_and_video(&ctx.db, &auth.claims.pid, &video_pid).await?;
+
+    // 2. Call the Domain Service to perform the core logic
+    let txn = ctx.db.begin().await?;
+    s3_client.remove_video(&video).await?;
+    let _ = video.delete(&txn).await?;
+    txn.commit().await?;
+
+    // 3. Return the response
+    Ok((StatusCode::OK).into_response())
 }
 
 #[debug_handler]
