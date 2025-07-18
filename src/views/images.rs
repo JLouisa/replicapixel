@@ -19,7 +19,7 @@ pub fn img_infinite_loading(
 ) -> Result<Response> {
     format::render().view(
         v,
-        "dashboard/content/photo/image_partial.html",
+        "dashboard/content/photo/photo_router.html",
         data!({ "options": website_options }),
     )
 }
@@ -35,7 +35,7 @@ pub fn one(v: &impl ViewRenderer, website_options: &WebsiteOptions) -> Result<Re
 pub fn img_completed(v: &impl ViewRenderer, website_options: &WebsiteOptions) -> Result<Response> {
     format::render().view(
         v,
-        "dashboard/content/photo/image_partial.html",
+        "dashboard/content/photo/photo_router.html",
         data!({ "options": website_options }),
     )
 }
@@ -44,7 +44,7 @@ pub fn img_completed(v: &impl ViewRenderer, website_options: &WebsiteOptions) ->
 pub fn favorite(v: &impl ViewRenderer, website_options: &WebsiteOptions) -> Result<Response> {
     format::render().view(
         v,
-        "dashboard/content/photo/partials/favorite_button.html",
+        "dashboard/content/photo/cards/partials/favorite_button.html",
         data!({ "options": website_options }),
     )
 }

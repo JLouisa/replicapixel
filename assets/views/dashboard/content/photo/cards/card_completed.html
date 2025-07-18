@@ -2,7 +2,6 @@
 <div
   id="container3-{{ image.pid }}"
   class="image-container relative select-none aspect-square rounded-lg shadow-md overflow-hidden bg-base-200"
-  {# The infinite scroll trigger is cleanly attached here #}
   {% if loop.last and not is_image_gen %}
     hx-get="{{ options.website.website_routes.image.api_image_infinite | safe }}/{{ image.pid }}{% if is_deleted %}?deleted=true{% endif %}{% if is_favorite %}?favorite=true{% endif %}"
     hx-trigger="intersect once"
@@ -36,8 +35,8 @@
         >
           Download {% include "partials/svg/download.html" %}
         </button>
-        {% include "dashboard/content/photo/partials/favorite_button.html" %}
-        {% include "dashboard/content/photo/partials/delete_button.html" %}
+        {% include "dashboard/content/photo/cards/partials/favorite_button.html" %}
+        {% include "dashboard/content/photo/cards/partials/delete_button.html" %}
       </div>
     </div>
     <form method="dialog" class="modal-backdrop"><button>close</button></form>

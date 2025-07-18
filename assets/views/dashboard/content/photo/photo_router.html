@@ -4,16 +4,19 @@
 {% set is_deleted = options.is_deleted %}
 {% set is_image_gen = options.is_image_gen %}
 {% set credits = options.user_credits %}
+{% set images = options.images %}
 
+{% for image in images %}
 {% if image.image_status == "Completed" %}
-  {% include "dashboard/content/photo/photo_router/cards/card_completed.html" %}
+  {% include "dashboard/content/photo/cards/card_completed.html" %}
 
 {% elif image.image_status == "Processing" %}
-  {% include "dashboard/content/photo/photo_router/cards/card_processing.html" %}
+  {% include "dashboard/content/photo/cards/card_processing.html" %}
 
 {% elif image.image_status == "Failed" %}
-  {% include "dashboard/content/photo/photo_router/cards/card_failed.html" %}
+  {% include "dashboard/content/photo/cards/card_failed.html" %}
 
 {% else %}
-  {% include "dashboard/content/photo/photo_router/cards/card_loading.html" %}
+  {% include "dashboard/content/photo/cards/card_loading.html" %}
 {% endif %}
+{% endfor %}

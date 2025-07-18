@@ -1,7 +1,6 @@
 <div
   id="container3-{{ image.pid }}"
   class="image-container relative select-none aspect-square rounded-lg shadow-md overflow-hidden bg-base-200"
-  {# Poll the backend to check if the image is 'Completed' #}
   hx-get="{{ options.website.website_routes.image.check | safe }}/{{ image.pid }}"
   hx-trigger="every 3s"
   hx-swap="outerHTML"
@@ -17,15 +16,15 @@
   <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
     <span class="loading loading-spinner loading-lg text-white"></span>
   </div>
-  
-  {# This script runs in the background to upload the image to our own S3 bucket #}
-  {% if image.pre_url %}
-    <script>
-      uploadImageFromUrlToS3(
-        "{{ image.image_url_fal | safe }}",
-        "{{ image.pre_url | safe }}",
-        "{{ options.website.website_routes.image.api_image_s3_complete_upload | safe }}/{{ image.pid }}"
-      );
-    </script>
+
+  {# This script runs in the background to upload the image to our own S3 bucket #} {% if
+  image.pre_url %}
+  <script>
+    uploadImageFromUrlToS3(
+      "{{ image.image_url_fal | safe }}",
+      "{{ image.pre_url | safe }}",
+      "{{ options.website.website_routes.image.api_image_s3_complete_upload | safe }}/{{ image.pid }}"
+    );
+  </script>
   {% endif %}
 </div>
