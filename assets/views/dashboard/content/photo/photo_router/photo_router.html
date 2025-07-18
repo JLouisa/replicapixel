@@ -1,0 +1,19 @@
+<!-- prettier-ignore -->
+{% set lang = options.language %}
+{% set is_favorite = options.is_favorite %}
+{% set is_deleted = options.is_deleted %}
+{% set is_image_gen = options.is_image_gen %}
+{% set credits = options.user_credits %}
+
+{% if image.image_status == "Completed" %}
+  {% include "dashboard/content/photo/photo_router/cards/card_completed.html" %}
+
+{% elif image.image_status == "Processing" %}
+  {% include "dashboard/content/photo/photo_router/cards/card_processing.html" %}
+
+{% elif image.image_status == "Failed" %}
+  {% include "dashboard/content/photo/photo_router/cards/card_failed.html" %}
+
+{% else %}
+  {% include "dashboard/content/photo/photo_router/cards/card_loading.html" %}
+{% endif %}

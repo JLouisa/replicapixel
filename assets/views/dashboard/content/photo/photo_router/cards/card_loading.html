@@ -1,0 +1,10 @@
+<div
+  id="placeholder-{{ image.pid }}"
+  hx-get="{{ options.website.website_routes.image.check | safe }}/{{ image.pid }}"
+  hx-trigger="load, every 2s"
+  hx-swap="outerHTML"
+  class="relative select-none flex items-center justify-center aspect-square rounded-lg shadow-md overflow-hidden bg-neutral animate-pulse"
+>
+  {% include "partials/svg/placeholder_img.html" %}
+  <span class="sr-only">{{ t(key="sr-loading", lang=lang) }}</span>
+</div>
