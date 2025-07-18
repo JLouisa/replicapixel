@@ -19,7 +19,7 @@ pub fn img_infinite_loading(
 ) -> Result<Response> {
     format::render().view(
         v,
-        "dashboard/content/photo/photo_router.html",
+        "dashboard/content/photo/old/image_partial.html",
         data!({ "options": website_options }),
     )
 }
@@ -35,7 +35,7 @@ pub fn one(v: &impl ViewRenderer, website_options: &WebsiteOptions) -> Result<Re
 pub fn img_completed(v: &impl ViewRenderer, website_options: &WebsiteOptions) -> Result<Response> {
     format::render().view(
         v,
-        "dashboard/content/photo/photo_router.html",
+        "dashboard/content/photo/old/image_partial.html",
         data!({ "options": website_options }),
     )
 }
