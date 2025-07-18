@@ -25,7 +25,7 @@ pub fn img_infinite_loading(
 pub fn one(v: &impl ViewRenderer, website_options: &WebsiteOptions) -> Result<Response> {
     format::render().view(
         v,
-        "dashboard/content/video/video_card.html",
+        "dashboard/content/video/video_router.html",
         data!({  "options": website_options, "video": &website_options.video }),
     )
 }

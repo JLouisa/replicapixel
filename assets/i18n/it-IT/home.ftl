@@ -10,9 +10,12 @@ nav-mobile-aria-open-menu = Apri menu
 ## =================================
 ## Hero Section
 ## =================================
-hero-title-line1 = Generazione di Immagini
-hero-title-line2 = con IA in Tempo Reale
-hero-tagline = Trasforma il tuo selfie in infinite creazioni fotografiche di te stesso con IA, di qualità da studio. Senza attese, senza ritocchi.
+## hero-title-line1 = Generazione di Immagini
+## hero-title-line2 = con IA in Tempo Reale
+## hero-tagline = Trasforma il tuo selfie in infinite creazioni fotografiche di te stesso con IA, di qualità da studio. Senza attese, senza ritocchi.
+hero-title-line1 = Crea Foto Mozzafiato con l'IA
+hero-title-line2 = Dai Tuoi Selfie
+hero-tagline = Trasforma i tuoi selfie in infiniti ritratti di qualità da studio con IA, fantasy, primi piani professionali, cosplay e molto altro. Nessuna attesa. Nessun nuovo scatto. Semplicemente tu, reimmaginato/a.
 
 ## =================================
 ## Business Banner Section

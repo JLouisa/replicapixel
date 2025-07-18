@@ -10,9 +10,12 @@ nav-mobile-aria-open-menu = Menu openen
 ## =================================
 ## Hero Section
 ## =================================
-hero-title-line1 = AI-gestuurde Real-Time
-hero-title-line2 = Beeldgeneratie
-hero-tagline = Transformeer je selfie in eindeloze AI-fotocreaties van jezelf in studiokwaliteit. Zonder wachttijd, zonder aanpassingen.
+## hero-title-line1 = AI-gestuurde Real-Time
+## hero-title-line2 = Beeldgeneratie
+## hero-tagline = Transformeer je selfie in eindeloze AI-fotocreaties van jezelf in studiokwaliteit. Zonder wachttijd, zonder aanpassingen.
+hero-title-line1 = Maak Verbluffende AI-Foto's
+hero-title-line2 = Van Jouw Selfies
+hero-tagline = Verander je selfies in eindeloze AI-portretten van studiokwaliteit, fantasie, headshots, cosplay en meer. Geen wachttijden. Geen nieuwe pogingen. Gewoon jij, opnieuw uitgevonden.
 
 ## =================================
 ## Business Banner Section

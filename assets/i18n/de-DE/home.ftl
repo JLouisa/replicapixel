@@ -10,9 +10,12 @@ nav-mobile-aria-open-menu = Menü öffnen
 ## =================================
 ## Hero Section
 ## =================================
-hero-title-line1 = KI-gestützte Echtzeit-
-hero-title-line2 = Bilderzeugung
-hero-tagline = Verwandle dein Selfie in unzählige KI-Fotokreationen von dir in Studioqualität. Ohne Warten, ohne Nachbessern.
+## hero-title-line1 = KI-gestützte Echtzeit-
+## hero-title-line2 = Bilderzeugung
+## hero-tagline = Verwandle dein Selfie in unzählige KI-Fotokreationen von dir in Studioqualität. Ohne Warten, ohne Nachbessern.
+hero-title-line1 = Erstelle Atemberaubende KI-Fotos
+hero-title-line2 = Aus Deinen Selfies
+hero-tagline = Verwandle deine Selfies in endlose KI-Porträts in Studioqualität, Fantasiebilder, Headshots, Cosplay und mehr. Keine Wartezeit. Keine Wiederholungen. Einfach du, neu erfunden.
 
 ## =================================
 ## Business Banner Section

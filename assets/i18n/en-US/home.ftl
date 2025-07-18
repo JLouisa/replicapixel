@@ -12,9 +12,13 @@ nav-button-login = Login
 ## =================================
 ## Hero Section
 ## =================================
-hero-title-line1 = Ai-Powered Real-Time
-hero-title-line2 = Image Generation
-hero-tagline = Transform your selfie into endless studio-quality AI photo creations of yourself. No waiting, no tweaks.
+## hero-title-line1 = Ai-Powered Real-Time
+## hero-title-line2 = Image Generation
+## hero-tagline = Transform your selfie into endless studio-quality AI photo creations of yourself. No waiting, no tweaks.
+
+hero-title-line1 = Create Stunning AI Photos
+hero-title-line2 = From Your Selfies
+hero-tagline = Turn your selfies into endless, studio-quality AI portraits, fantasy, headshots, cosplay, and more. No waiting. No retakes. Just you, reimagined.
 
 ## =================================
 ## Business Banner Section

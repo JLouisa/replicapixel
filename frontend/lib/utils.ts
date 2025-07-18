@@ -262,8 +262,8 @@ export function packDialog(
   used: string,
   popularValue: string,
   description: string,
-  credits: number,
-  numImages: number,
+  creditsRawString: number,
+  numImagesRawString: number,
   featuresRawString: string
 ) {
   // console.log("packPid", packPid);
@@ -276,6 +276,9 @@ export function packDialog(
   // console.log("credits", credits);
   // console.log("numImages", numImages);
   // console.log("features", featuresRawString);
+
+  const credits = Number(creditsRawString);
+  const numImages = Number(numImagesRawString);
 
   const isPopular = popularValue === "true";
   const subImageArray = subImageRawString
@@ -326,7 +329,8 @@ export function packDialog(
   }
 
   if (formSelectionHtml) {
-    formSelectionHtml.classList.toggle("hidden", userCredits > credits);
+    const isShow = userCredits > credits;
+    formSelectionHtml.classList.toggle("hidden", !isShow);
   }
 
   mainImage.src = mainImageUrl;
