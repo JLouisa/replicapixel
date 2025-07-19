@@ -18,6 +18,17 @@ hero-title-line2 = Dai Tuoi Selfie
 hero-tagline = Trasforma i tuoi selfie in infiniti ritratti di qualità da studio con IA, fantasy, primi piani professionali, cosplay e molto altro. Nessuna attesa. Nessun nuovo scatto. Semplicemente tu, reimmaginato/a.
 
 ## =================================
+## Stats Section
+## =================================
+stats-headline-join = Unisciti a oltre
+stats-headline-creators =  Creator
+stats-tagline = Dai neofiti agli artisti professionisti, la nostra comunità ha generato milioni di ritratti straordinari e unici. Scopri cosa è possibile fare quando la tua immaginazione incontra la tua replica IA.
+stats-creators-label = Creator Iscritti
+stats-photos-label = Foto Generate
+stats-packs-label = Pacchetti Foto Utilizzati
+stats-replicas-label = Repliche IA Addestrate
+
+## =================================
 ## Business Banner Section
 ## =================================
 business-banner-tagline = Aiutiamo creator e aziende di tutto il mondo a lavorare più facilmente

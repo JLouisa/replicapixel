@@ -118,4 +118,6 @@ options.website.website_routes.video.api_delete %} {% if video.status == "Comple
     </div>
   </div>
 </div>
+{% endif %} {% if not is_initial_load and options.credits %}
+<span hx-swap-oob="true" id="user_credits" class="ml-1">{{ options.credits.credit_amount }}</span>
 {% endif %}

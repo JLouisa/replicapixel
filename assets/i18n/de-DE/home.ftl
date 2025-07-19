@@ -18,6 +18,17 @@ hero-title-line2 = Aus Deinen Selfies
 hero-tagline = Verwandle deine Selfies in endlose KI-Porträts in Studioqualität, Fantasiebilder, Headshots, Cosplay und mehr. Keine Wartezeit. Keine Wiederholungen. Einfach du, neu erfunden.
 
 ## =================================
+## Stats Section
+## =================================
+stats-headline-join = Schließe dich über
+stats-headline-creators =  Creators an
+stats-tagline = Von Erstanwendern bis hin zu professionellen Künstlern hat unsere Community Millionen von atemberaubenden, einzigartigen Porträts erstellt. Entdecke, was möglich ist, wenn deine Vorstellungskraft auf deine KI-Replik trifft.
+stats-creators-label = Creators beigetreten
+stats-photos-label = Fotos generiert
+stats-packs-label = Fotopakete verwendet
+stats-replicas-label = KI-Repliken trainiert
+
+## =================================
 ## Business Banner Section
 ## =================================
 business-banner-tagline = Wir helfen Kreativen & Unternehmen weltweit, einfacher zu arbeiten.

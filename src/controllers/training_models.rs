@@ -6,14 +6,16 @@ use crate::domain::website::{Website, WebsiteOptions};
 use crate::models::_entities::sea_orm_active_enums::Status;
 use crate::models::_entities::training_models::{ActiveModel, Entity, Model};
 use crate::models::join::user_credits_models::load_user_and_one_training_model;
-use crate::models::training_models::{TrainingForm, TrainingModelParams};
+use crate::models::training_models::{TrainingForm, TrainingFormParam};
 use crate::models::users::UserPid;
-use crate::models::{TrainingModelActiveModel, UserModel};
+use crate::models::UserModel;
 use crate::service::aws::s3::{AwsS3, PresignedUrlRequest, PresignedUrlSafe, S3Key};
 use crate::service::fal_ai::fal_client::{FalAiClient, FluxLoraTrainingSchema, QueueResponse};
 use crate::views;
 use axum::{debug_handler, http::StatusCode, response::IntoResponse, Extension, Json};
 use loco_rs::prelude::*;
+
+const PRE_SIGNED_EXP_TIME: u64 = 60 * 60 * 3; // 3 hours
 
 pub mod routes {
     use serde::{Deserialize, Serialize};
@@ -82,23 +84,20 @@ pub async fn upload_training(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
     Extension(s3_client): Extension<AwsS3>,
-    Json(form): Json<TrainingForm>,
+    Json(form): Json<TrainingFormParam>,
 ) -> Result<impl IntoResponse> {
     let user = UserModel::find_by_pid(&ctx.db, &auth.claims.pid).await?;
 
     //1. Generate Pre-Signed URL
-    let pre_url_request: PresignedUrlRequest = form.clone().into();
+    let pre_url_request = PresignedUrlRequest::from(&form);
     let (pre_url, s3_key) = s3_client
         .presigned_save_url(&user.pid, &pre_url_request, None)
         .await?;
 
     //2. Create and save Training Model in Database
-    let training_params: TrainingModelParams = form.from_form(&user, &s3_key);
+    let _ = form.from_form(&user, &s3_key).save(&ctx.db).await?;
 
-    //3. Save Training Model
-    TrainingModelActiveModel::save(&ctx.db, &training_params).await?;
-
-    //4. Create Pre-Signed URL
+    //3. Create Pre-Signed URL
     let pre_sign_response = PresignedUrlSafe::from_request(pre_url_request, pre_url);
 
     Ok(handle_general_response(
@@ -122,15 +121,18 @@ pub async fn upload_training_completed(
         load_user_and_one_training_model(&ctx.db, &user_pid, training_model_pid).await?;
 
     //1. Check if file exists
-    let s3_key: S3Key = S3Key::new(&train.s3_key);
+    let s3_key = S3Key::new(&train.s3_key);
     let exists = s3_client.check_object_exists(&s3_key).await?;
     if !exists {
         return Ok((StatusCode::NOT_FOUND, "Model not found").into_response());
     }
-    let verified_train = train.upload_completed(&ctx.db).await?;
+
+    //1. Update Training Model
+    let txn = ctx.db.begin().await?;
+    let verified_train = train.upload_completed(&txn).await?;
 
     //2. Generate Pre-Signed URL
-    let exp_time = Some(60 * 60 * 3); // 3 hours
+    let exp_time = Some(PRE_SIGNED_EXP_TIME);
     let pre_url = s3_client.get_object_pre(&s3_key, exp_time).await?;
     let train_schema = FluxLoraTrainingSchema::from_training(&verified_train, pre_url);
 
@@ -140,9 +142,10 @@ pub async fn upload_training_completed(
         .await?;
 
     //4. Save Fal AI response in Database
-    verified_train
-        .update_model_to_training(&ctx.db, &queue)
+    let _ = verified_train
+        .update_model_to_training(&txn, &queue)
         .await?;
+    txn.commit().await?;
 
     //5. Send response back to user
     Ok(
@@ -179,7 +182,7 @@ pub async fn list(State(ctx): State<AppContext>) -> Result<Response> {
 #[debug_handler]
 pub async fn add(
     State(ctx): State<AppContext>,
-    Json(params): Json<TrainingModelParams>,
+    Json(params): Json<TrainingForm>,
 ) -> Result<Response> {
     let mut item = ActiveModel {
         ..Default::default()
@@ -193,7 +196,7 @@ pub async fn add(
 pub async fn update(
     Path(id): Path<i32>,
     State(ctx): State<AppContext>,
-    Json(params): Json<TrainingModelParams>,
+    Json(params): Json<TrainingForm>,
 ) -> Result<Response> {
     let item = load_item(&ctx, id).await?;
     let mut item = item.into_active_model();

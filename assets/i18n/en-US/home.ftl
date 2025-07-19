@@ -21,6 +21,17 @@ hero-title-line2 = From Your Selfies
 hero-tagline = Turn your selfies into endless, studio-quality AI portraits, fantasy, headshots, cosplay, and more. No waiting. No retakes. Just you, reimagined.
 
 ## =================================
+## Stats Section
+## =================================
+stats-headline-join = Join Over 
+stats-headline-creators =  Creators
+stats-tagline = From first-time users to professional artists, our community has generated millions of stunning, one-of-a-kind portraits. See what's possible when your imagination meets your AI replica.
+stats-creators-label = Creators Joined
+stats-photos-label = Photos Generated
+stats-packs-label = Photo Packs Used
+stats-replicas-label = AI Replicas Trained
+
+## =================================
 ## Business Banner Section
 ## =================================
 business-banner-tagline = Helping creators & businesses everywhere work easier

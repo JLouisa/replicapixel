@@ -393,6 +393,7 @@ pub async fn generate(
             .await?;
     let saved_images: ImageViewList = saved_images.into();
 
+    // 3. Render the view using the View Models
     let website_options = WebsiteOptions::new()
         .website(&website)
         .language(&lang)
@@ -400,8 +401,6 @@ pub async fn generate(
         .user_credits(updated_credits.into())
         .is_image_gen()
         .build();
-
-    // 3. Render the view using the View Models
     views::images::img_completed(&v, &website_options)
 }
 
@@ -511,7 +510,6 @@ async fn image_infinite_handler(
         .language(&lang)
         .images(&images)
         .build();
-
     views::images::img_infinite_loading(&v, &website_options)
 }
 
@@ -579,7 +577,7 @@ pub async fn get_one(
     if image.user_id != user.id {
         return Ok((StatusCode::UNAUTHORIZED).into_response());
     }
-    let image_view: ImageView = image.into();
+    let image_view = image.into();
     let website_options = WebsiteOptions::new().image(&image_view).language(&lang);
     views::images::show(&v, &website_options)
 }

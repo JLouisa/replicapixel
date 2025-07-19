@@ -1,6 +1,6 @@
 pub use super::_entities::training_models::{ActiveModel, Entity, Model};
 use super::{
-    TrainingModelActiveModel, TrainingModelModel, UserModel,
+    TrainingModelActiveModel, UserModel,
     _entities::{
         sea_orm_active_enums::{BasedOn, Ethnicity, EyeColor, ImageFormat, Sex, Status},
         training_models,
@@ -22,45 +22,8 @@ fn default_steps() -> i32 {
     2000
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct TrainingModelClient {
-    pub id: i32,
-    pub pid: Uuid,
-    pub user_id: i32,
-    pub name: String,
-    pub sex: Sex,
-    pub age: i32,
-    pub eye_color: EyeColor,
-    pub bald: bool,
-    pub creative: i32,
-    pub based_on: BasedOn,
-    pub ethnicity: Ethnicity,
-    pub trigger_word: String,
-    pub training_status: Status,
-}
-
-impl From<TrainingModelModel> for TrainingModelClient {
-    fn from(model: TrainingModelModel) -> Self {
-        Self {
-            id: model.id,
-            pid: model.pid,
-            user_id: model.user_id,
-            name: model.name,
-            sex: model.sex,
-            age: model.age,
-            eye_color: model.eye_color,
-            bald: model.bald,
-            creative: 2000,
-            based_on: model.based_on,
-            ethnicity: model.ethnicity,
-            training_status: model.training_status,
-            trigger_word: model.trigger_word,
-        }
-    }
-}
-
 #[derive(Clone, Debug, Deserialize)]
-pub struct TrainingForm {
+pub struct TrainingFormParam {
     #[serde(default = "Uuid::new_v4", skip_deserializing)]
     pub pid: Uuid,
     pub name: String,
@@ -77,10 +40,10 @@ pub struct TrainingForm {
     pub consent: bool,
 }
 
-impl TrainingForm {
-    pub fn from_form(&self, user: &UserModel, s3_key: &S3Key) -> TrainingModelParams {
+impl TrainingFormParam {
+    pub fn from_form(&self, user: &UserModel, s3_key: &S3Key) -> TrainingForm {
         let tw = format!("{}-{}", &self.name, &self.slug);
-        TrainingModelParams {
+        TrainingForm {
             pid: self.pid,
             user_id: user.id,
             name: self.name.clone(),
@@ -95,14 +58,13 @@ impl TrainingForm {
             },
             ethnicity: self.ethnicity,
             trigger_word: tw,
-            steps: 1000,
             ..Default::default()
         }
     }
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, Default)]
-pub struct TrainingModelParams {
+pub struct TrainingForm {
     pub pid: Uuid,
     pub user_id: i32,
     pub name: String,
@@ -130,7 +92,7 @@ pub struct TrainingModelParams {
     pub training_images: Option<serde_json::Value>,
 }
 
-impl TrainingModelParams {
+impl TrainingForm {
     pub fn update(&self, item: &mut TrainingModelActiveModel) {
         item.pid = Set(self.pid.clone());
         item.name = Set(self.name.clone());
@@ -151,6 +113,33 @@ impl TrainingModelParams {
         item.tensor_path = Set(self.tensor_path.clone());
         item.thumbnail = Set(self.thumbnail.clone());
         item.training_images = Set(self.training_images.clone());
+    }
+    pub async fn save(self, db: &impl ConnectionTrait) -> ModelResult<Model> {
+        let item = training_models::ActiveModel {
+            pid: ActiveValue::set(self.pid.clone()),
+            name: ActiveValue::set(self.name.clone()),
+            age: ActiveValue::set(self.age.clone() as i32),
+            user_id: ActiveValue::set(self.user_id.clone()),
+            sex: ActiveValue::set(self.sex.clone()),
+            based_on: ActiveValue::set(self.based_on.clone()),
+            ethnicity: ActiveValue::set(self.ethnicity.clone()),
+            eye_color: ActiveValue::set(self.eye_color.clone()),
+            bald: ActiveValue::set(self.bald.clone()),
+            trigger_word: ActiveValue::set(self.trigger_word.clone()),
+            tensor_path: ActiveValue::set(self.tensor_path.clone()),
+            thumbnail: ActiveValue::set(self.thumbnail.clone()),
+            training_status: ActiveValue::set(self.training_status.clone()),
+            training_images: ActiveValue::set(self.training_images.clone()),
+            fal_ai_request_id: ActiveValue::set(self.fal_ai_request_id.clone()),
+            s3_key: ActiveValue::set(self.s3_key.clone()),
+            steps: ActiveValue::set(self.steps.clone()),
+            create_mask: ActiveValue::set(self.create_mask.clone()),
+            is_style: ActiveValue::set(self.is_style.clone()),
+            is_verified: ActiveValue::set(self.is_verified.clone()),
+            ..Default::default()
+        };
+        let item = item.insert(db).await?;
+        Ok(item)
     }
 }
 
@@ -242,7 +231,7 @@ impl Model {
         training.ok_or_else(|| ModelError::EntityNotFound)
     }
 
-    pub async fn upload_completed(self, db: &DatabaseConnection) -> ModelResult<Model> {
+    pub async fn upload_completed(self, db: &impl ConnectionTrait) -> ModelResult<Model> {
         let mut new = ActiveModel::from(self);
         new.updated_at = ActiveValue::Set(chrono::Utc::now().into());
         new.is_verified = ActiveValue::Set(true);
@@ -251,7 +240,7 @@ impl Model {
 
     pub async fn update_model_to_training(
         self,
-        db: &DatabaseConnection,
+        db: &impl ConnectionTrait,
         fal: &QueueResponse,
     ) -> ModelResult<Model> {
         let mut new = ActiveModel::from(self);
@@ -263,7 +252,7 @@ impl Model {
 
 // implement your write-oriented logic here
 impl ActiveModel {
-    pub async fn save(db: &DatabaseConnection, params: &TrainingModelParams) -> ModelResult<Self> {
+    pub async fn save(db: &DatabaseConnection, params: &TrainingForm) -> ModelResult<Self> {
         let item = training_models::ActiveModel {
             pid: ActiveValue::set(params.pid.clone()),
             name: ActiveValue::set(params.name.clone()),

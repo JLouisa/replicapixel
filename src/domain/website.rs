@@ -114,11 +114,72 @@ pub struct WebsiteFormFields {
     pub create_model: CreateModel,
     pub quality_model: Vec<(String, String)>,
 }
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
+pub struct HomeStatsView {
+    pub creators_count: String,
+    pub creators_count_str: String,
+    pub photo_generated_count: String,
+    pub packs_count: String,
+    pub replica_count: String,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct HomeStats {
+    pub creators_count: u64,
+    pub photo_generated_count: f64,
+    pub packs_count: f64,
+    pub replica_count: f64,
+}
+impl HomeStats {
+    pub fn new(_cache: &RedisCacheDriver) -> Self {
+        Self::default()
+    }
+    pub fn web_ready(self) -> HomeStatsView {
+        let creators_count = self.creators_count / 1_000;
+        let photo_generated_count = self.photo_generated_count / 1_000_000.0;
+        let packs_count = self.packs_count / 1_000.0;
+        let replica_count = self.replica_count / 1_000.0;
+        HomeStatsView {
+            creators_count: Self::add_dot_separators(&self.creators_count.to_string()),
+            creators_count_str: format!("{}K+", creators_count),
+            photo_generated_count: format!("{}M+", photo_generated_count),
+            packs_count: format!("{}K+", packs_count),
+            replica_count: format!("{}K+", replica_count),
+        }
+    }
+    fn add_dot_separators(s: &str) -> String {
+        let mut result = String::new();
+        let mut count = 0;
+
+        // Iterate from right to left
+        for c in s.chars().rev() {
+            if count != 0 && count % 3 == 0 {
+                result.push('.');
+            }
+            result.push(c);
+            count += 1;
+        }
+
+        // Reverse back to original order
+        result.chars().rev().collect()
+    }
+}
+impl Default for HomeStats {
+    fn default() -> Self {
+        Self {
+            creators_count: 100_000,
+            photo_generated_count: 2_800_000.0,
+            packs_count: 68_200.0,
+            replica_count: 88_800.0,
+        }
+    }
+}
 
 #[derive(Debug, Clone, Deserialize, Serialize, Constructor, Default)]
 pub struct WebsiteHome {
     pub pricing: PricingViewList,
     pub reviews: Vec<HomeReview>,
+    pub stats: HomeStatsView,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, Default)]
@@ -171,6 +232,7 @@ impl Website {
             website_home: WebsiteHome {
                 pricing,
                 reviews: HomeReview::reviews(),
+                stats: HomeStats::default().web_ready(),
             },
         }
     }
@@ -200,6 +262,7 @@ pub struct WebImages {
     pub packs: PackViewList,
     creators: Vec<String>,
     plans: PricingViewList,
+    web_stats: HomeStatsView,
 }
 impl WebImages {
     pub fn packs(&self) -> &PackViewList {
@@ -231,6 +294,8 @@ impl WebImages {
                 PricingViewList::default()
             }
         };
+
+        let web_stats = HomeStats::default().web_ready();
 
         // Randomize gallary images
         let mut packs_cloned = packs.clone().into_inner();
@@ -290,7 +355,6 @@ impl WebImages {
             String::from("https://d2npyy9ae7osp9.cloudfront.net/packs/sexy-valentine/fcf51df7-27d6-48ad-a34e-a96a78ddeb02.webp"),
             String::from("https://d2npyy9ae7osp9.cloudfront.net/packs/spiritual/3b7e781a-6b40-4ef8-8d58-b52bcabddc87.webp"),
         ];
-        // let web_images0 = vec![
 
         let gallery = WebGallery::new(
             web_images0,
@@ -323,6 +387,7 @@ impl WebImages {
             packs,
             creators,
             plans,
+            web_stats,
         );
         web_images
     }
@@ -474,6 +539,9 @@ pub struct MarketingPurchase {
 #[must_use]
 pub struct WebsiteOptions<'a> {
     pub website: Option<&'a Website>,
+    pub web_gallery: Option<&'a WebGallery>,
+    pub web_images: Option<&'a WebImages>,
+    pub web_stats: Option<&'a HomeStatsView>,
     pub language: Language,
     pub cc_cookie: Option<&'a CookieConsent>,
     pub current_page: Option<CurrentPage>,
@@ -494,8 +562,6 @@ pub struct WebsiteOptions<'a> {
     pub images: Option<&'a ImageViewList>,
     pub video: Option<&'a VideoView>,
     pub videos: Option<&'a VideoViewList>,
-    pub web_gallery: Option<&'a WebGallery>,
-    pub web_images: Option<&'a WebImages>,
     pub link: Option<&'a str>,
     pub message: Option<&'a str>,
     pub register: Option<&'a RegisterParams>,
@@ -531,6 +597,28 @@ impl<'a> WebsiteOptions<'a> {
     pub fn website(self, website: &'a Website) -> Self {
         Self {
             website: Some(website),
+            web_stats: Some(&website.website_home.stats),
+            ..self
+        }
+    }
+    // Sets the web gallery.
+    pub fn web_gallery(self, web_gallery: &'a WebGallery) -> Self {
+        Self {
+            web_gallery: Some(web_gallery),
+            ..self
+        }
+    }
+    // Sets the web images.
+    pub fn web_images(self, web_images: &'a WebImages) -> Self {
+        Self {
+            web_images: Some(web_images),
+            ..self
+        }
+    }
+    // Sets the web stats.
+    pub fn web_stats(self, web_stats: &'a HomeStatsView) -> Self {
+        Self {
+            web_stats: Some(web_stats),
             ..self
         }
     }
@@ -671,20 +759,6 @@ impl<'a> WebsiteOptions<'a> {
     pub fn videos(self, video_list: &'a VideoViewList) -> Self {
         Self {
             videos: Some(video_list),
-            ..self
-        }
-    }
-    // Sets the web gallery.
-    pub fn web_gallery(self, web_gallery: &'a WebGallery) -> Self {
-        Self {
-            web_gallery: Some(web_gallery),
-            ..self
-        }
-    }
-    // Sets the web images.
-    pub fn web_images(self, web_images: &'a WebImages) -> Self {
-        Self {
-            web_images: Some(web_images),
             ..self
         }
     }

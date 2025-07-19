@@ -25,7 +25,7 @@ use crate::domain::domain_services::video_generation::VideoAndImageBytes;
 use crate::domain::url::Url;
 use crate::models::VideoModel;
 use crate::models::_entities::sea_orm_active_enums::ImageFormat;
-use crate::models::training_models::TrainingForm;
+use crate::models::training_models::TrainingFormParam;
 use crate::views::images::ImageView;
 use crate::views::videos::VideoView;
 
@@ -134,8 +134,17 @@ pub struct PresignedUrlRequest {
     pub name: String,
     pub file_type: ImageFormat,
 }
-impl From<TrainingForm> for PresignedUrlRequest {
-    fn from(value: TrainingForm) -> Self {
+impl From<TrainingFormParam> for PresignedUrlRequest {
+    fn from(value: TrainingFormParam) -> Self {
+        Self {
+            id: value.pid,
+            name: format!("{}-{}", value.name, value.slug),
+            file_type: value.file_type,
+        }
+    }
+}
+impl From<&TrainingFormParam> for PresignedUrlRequest {
+    fn from(value: &TrainingFormParam) -> Self {
         Self {
             id: value.pid,
             name: format!("{}-{}", value.name, value.slug),

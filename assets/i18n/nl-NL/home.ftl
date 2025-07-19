@@ -18,6 +18,17 @@ hero-title-line2 = Van Jouw Selfies
 hero-tagline = Verander je selfies in eindeloze AI-portretten van studiokwaliteit, fantasie, headshots, cosplay en meer. Geen wachttijden. Geen nieuwe pogingen. Gewoon jij, opnieuw uitgevonden.
 
 ## =================================
+## Stats Section
+## =================================
+stats-headline-join = Sluit je aan bij meer dan
+stats-headline-creators =  Creators
+stats-tagline = Van beginnende gebruikers tot professionele artiesten, onze community heeft miljoenen verbluffende, unieke portretten gecreëerd. Ontdek wat er mogelijk is als jouw verbeelding je AI-replica ontmoet.
+stats-creators-label = Creators Aangesloten
+stats-photos-label = Foto's Gegenereerd
+stats-packs-label = Fotopakketten Gebruikt
+stats-replicas-label = AI-Replica's Getraind
+
+## =================================
 ## Business Banner Section
 ## =================================
 business-banner-tagline = We helpen makers & bedrijven overal om makkelijker te werken
