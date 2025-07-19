@@ -182,10 +182,6 @@ impl ImageGenerationTrait for PackDomain {
             Some(m) => Some(m.id),
             None => None,
         };
-        let user_prompt = match model {
-            Some(m) => self.formatted_prompt(&m),
-            None => UserPrompt::new(self.pack_prompts.clone()),
-        };
         let loras = match model {
             Some(m) => match m.tensor_path.clone() {
                 Some(p) => vec![Lora {
@@ -196,7 +192,11 @@ impl ImageGenerationTrait for PackDomain {
             },
             None => vec![],
         };
-
+        let user_prompt = match model {
+            Some(m) => self.formatted_prompt(&m),
+            None => UserPrompt::new(self.pack_prompts.clone()),
+        };
+        let sys_prompt = SysPrompt::new(user_prompt.as_ref());
         let alt: AltText = user_prompt.clone().into();
         (0..self.num_images())
             .map(|_| {
@@ -208,8 +208,8 @@ impl ImageGenerationTrait for PackDomain {
                     user_id: user.id,
                     training_model_id: model_id,
                     pack_id: Some(self.id),
-                    sys_prompt: SysPrompt::new(user_prompt.as_ref()),
                     user_prompt: user_prompt.to_owned(),
+                    sys_prompt: sys_prompt.to_owned(),
                     alt: alt.to_owned(),
                     loras: loras.clone(),
                     image_size: self.image_size,

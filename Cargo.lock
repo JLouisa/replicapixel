@@ -5259,6 +5259,7 @@ dependencies = [
  "sitemap",
  "strum",
  "strum_macros",
+ "tera",
  "thiserror 2.0.12",
  "time",
  "tokio",

@@ -8,6 +8,7 @@ use serde::Deserialize;
 use crate::{
     domain::{
         domain_services::image_generation::ImageGenerationService,
+        prompt_renderer::Theme,
         website::{Website, WebsiteOptions},
     },
     middleware::{cookie::ExtractConsentState, i18nv2::LangEngine},
@@ -79,13 +80,18 @@ pub mod routes {
 }
 
 pub fn routes() -> Routes {
-    Routes::new()
+    let mut routes = Routes::new()
         .add(routes::Pack::SHOW_PACK_PID, get(show_pack))
         .add(routes::Pack::API_PACKS_ALL, get(get_all_packs))
         .add(routes::Pack::SHOW_PACK_PARTIAL_PID, get(show_pack_partial))
         .add(routes::Pack::API_GEN_PACK, post(generate_packs_images))
-        .add(routes::Pack::API_INFINITE_ID, get(pack_infinite_handler))
-    // .add(routes::Pack::API_PACK_ADD, post(generate_packs_images))
+        .add(routes::Pack::API_INFINITE_ID, get(pack_infinite_handler));
+
+    if cfg!(debug_assertions) {
+        pub const TEST_NEW_PROMPT: &'static str = "/api/pack/test/new/prompt/{theme}";
+        routes = routes.add(TEST_NEW_PROMPT, get(test_new_prompt));
+    }
+    routes
 }
 
 #[derive(Debug, Deserialize, Clone)]
@@ -117,7 +123,7 @@ async fn load_packs_all(db: &DatabaseConnection) -> Result<PackModelList> {
     let pack = PackModel::find_all_packs(db).await?;
     Ok(PackModelList::new(pack))
 }
-async fn plus_one_used_pack(db: &DatabaseConnection, pid: &Uuid) -> Result<()> {
+async fn increase_used_with_one_pack(db: &DatabaseConnection, pid: &Uuid) -> Result<()> {
     let _ = PackModel::plus_used_one_pack(db, pid).await?;
     Ok(())
 }
@@ -138,6 +144,33 @@ async fn load_everything(
 async fn load_packs_inf(db: &DatabaseConnection, anchor_image_id: &Uuid) -> Result<PackModelList> {
     let list = PackModel::get_next_12_packs_after(db, anchor_image_id, 12).await?;
     Ok(PackModelList::new(list))
+}
+
+pub async fn test_new_prompt(
+    Path(title_url): Path<String>,
+    State(ctx): State<AppContext>,
+) -> Result<impl IntoResponse> {
+    use crate::domain::prompt_renderer::{formatted_prompt, Themes, MODEL_UUID};
+    use axum::http::StatusCode;
+    use loco_rs::controller::ErrorDetail;
+    use loco_rs::prelude::Error as LocoError;
+
+    let uuid = Uuid::parse_str(MODEL_UUID).unwrap();
+    let training = TrainingModelModel::find_by_pid_opt(&ctx.db, &uuid).await?;
+    let themes = Themes::from_title_url(&title_url);
+    let pack_model = load_pack_by_title_url(&ctx.db, &title_url).await?;
+
+    let prompt = match formatted_prompt(&pack_model, themes, training) {
+        Ok(prompt) => prompt,
+        Err(err) => {
+            return Err(LocoError::CustomError(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                ErrorDetail::new("Error in formatted_prompt", &err.to_string()),
+            ));
+        }
+    };
+
+    Ok((StatusCode::OK, Json(prompt)).into_response())
 }
 
 async fn pack_infinite_handler(
@@ -328,7 +361,7 @@ pub async fn generate_packs_images(
     let (updated_credits_model, _) =
         ImageGenerationService::generate(&ctx, &fal_ai_client, pack_domain, &user, &training_model)
             .await?;
-    plus_one_used_pack(&ctx.db, &form.pack_pid).await?;
+    increase_used_with_one_pack(&ctx.db, &form.pack_pid).await?;
 
     // 2. Render the view using the View Models
     let images: ImageViewList = load_first_images(&ctx.db, user.id, false, false)

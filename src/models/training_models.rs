@@ -228,6 +228,17 @@ impl Model {
             .await?;
         training.ok_or_else(|| ModelError::EntityNotFound)
     }
+    pub async fn find_by_pid_opt(db: &DatabaseConnection, pid: &Uuid) -> ModelResult<Option<Self>> {
+        let training = training_models::Entity::find()
+            .filter(
+                model::query::condition()
+                    .eq(training_models::Column::Pid, pid.clone())
+                    .build(),
+            )
+            .one(db)
+            .await?;
+        Ok(training)
+    }
 
     pub async fn find_by_request_id(
         db: &DatabaseConnection,

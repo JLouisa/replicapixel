@@ -15,6 +15,7 @@ use sea_orm::{entity::prelude::*, Condition, QueryOrder, QuerySelect};
 pub type Packs = Entity;
 use loco_rs::prelude::*;
 use serde::{Deserialize, Serialize};
+use uuid::Uuid;
 
 #[async_trait::async_trait]
 impl ActiveModelBehavior for ActiveModel {
