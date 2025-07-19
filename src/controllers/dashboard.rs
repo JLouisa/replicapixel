@@ -241,7 +241,7 @@ async fn load_user(db: &DatabaseConnection, pid: &UserPid) -> Result<UserModel> 
     let item = UserModel::find_by_pid(db, &pid.as_ref().to_string()).await?;
     Ok(item)
 }
-pub async fn load_item_all_completed(ctx: &AppContext, id: i32) -> Result<TrainingModelList> {
+pub async fn load_training_all_completed(ctx: &AppContext, id: i32) -> Result<TrainingModelList> {
     let list = TrainingModelModel::find_all_completed_by_user_id(&ctx.db, id).await?;
     Ok(TrainingModelList::new(list))
 }
@@ -341,7 +341,7 @@ pub async fn video_dashboard(
     };
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     let (training_models_result, videos_result) = join!(
-        load_item_all_completed(&ctx, user.id),
+        load_training_all_completed(&ctx, user.id),
         load_first_videos(&ctx.db, user.id, false, false)
     );
     let training_models = training_models_result?.into();
@@ -379,7 +379,7 @@ pub async fn video_partial_dashboard(
     };
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
     let (training_models_result, videos_result) = join!(
-        load_item_all_completed(&ctx, user.id),
+        load_training_all_completed(&ctx, user.id),
         load_first_videos(&ctx.db, user.id, false, false)
     );
     let training_models = training_models_result?;
@@ -932,7 +932,7 @@ pub async fn photo_dashboard(
         }
     };
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
-    let training_models = load_item_all_completed(&ctx, user.id).await?;
+    let training_models = load_training_all_completed(&ctx, user.id).await?;
     let images: ImageViewList = load_first_images(&ctx.db, user.id, false, false)
         .await?
         .into();
@@ -970,7 +970,7 @@ pub async fn photo_partial_dashboard(
         }
     };
     let (user, user_credits) = load_user_and_credits(&ctx.db, &user_pid).await?;
-    let training_models = load_item_all_completed(&ctx, user.id).await?;
+    let training_models = load_training_all_completed(&ctx, user.id).await?;
     let is_deleted = false;
     let is_favorite = false;
     let images: ImageViewList = load_first_images(&ctx.db, user.id, is_favorite, is_deleted)

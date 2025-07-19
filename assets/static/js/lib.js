@@ -54,7 +54,6 @@ async function uploadImageFromUrlToS3(imageUrl, presignedUrl, notifyBackendUrl) 
       body: JSON.stringify({ uploaded: true, source: imageUrl }),
     });
     if (!backendNotify.ok) throw new Error("Failed to notify backend");
-    console.log("✅ Upload and notification successful");
   } catch (err) {
     console.error("❌ Upload failed", err);
   }
@@ -179,19 +178,6 @@ async function oAuth2(provider_link) {
   }
 }
 
-// async function fetchAndOpenReceipt(link, orderPid) {
-//   try {
-//     console.log(link, orderPid);
-//     const res = await fetch(`${link}/${orderPid}`);
-//     const url = await res.text();
-//     console.log(url);
-//     window.open(url, "_blank");
-//   } catch (err) {
-//     console.error("Failed to fetch receipt link:", err);
-//     window.Alpine.store("toast").error("Failed to fetch stripe receipt link");
-//   }
-// }
-
 async function fetchAndOpenReceipt(link, orderPid) {
   try {
     const res = await fetch(`${link}/${orderPid}`);
@@ -289,7 +275,6 @@ async function uploadMediaToS3(media, presignedUrl) {
       },
     });
     if (!s3Upload?.ok) throw new Error("Failed to upload to S3");
-    console.log("✅ Upload and notification successful");
   } catch (err) {
     console.error("❌ Upload failed", err);
   }
@@ -339,8 +324,6 @@ async function videoProcessing(
   video_pid
 ) {
   try {
-    console.log("⏳ Processing video...");
-
     // 1. Fetch video
     const videoResponse = await fetch(videoUrl);
     if (!videoResponse.ok) throw new Error(`Video fetch failed: ${videoResponse.status}`);
@@ -367,8 +350,6 @@ async function videoProcessing(
     //   console.warn("Card update failed - falling back to HTMX");
     //   // Implement HTMX fallback here if needed
     // }
-
-    console.log("✅ Processing completed successfully");
   } catch (error) {
     console.error("❌ Processing failed:", error);
     // Implement retry logic or error UI update here

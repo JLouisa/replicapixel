@@ -431,7 +431,7 @@ impl AwsS3 {
     }
     // Get a presigned URL for an object
     pub async fn get_video_pre(&self, video: &VideoModel) -> Result<Url, AwsError> {
-        let suggested_filename = Some(video.title.to_string());
+        let suggested_filename = Some(Self::sanitize_filename(&video.title));
         let s3_key = S3Key::new(&video.video_s3_key);
         self.get_object_pre_base(&s3_key, suggested_filename, None)
             .await
@@ -574,6 +574,17 @@ impl AwsS3 {
             folder.get_file_type(),
         );
         S3Key::new(key)
+    }
+
+    fn sanitize_filename(title: &str) -> String {
+        let title_str = title
+            .trim()
+            .to_lowercase()
+            .chars()
+            .filter(|c| c.is_alphanumeric() || *c == ' ' || *c == '-')
+            .collect::<String>()
+            .replace(' ', "-");
+        format!("{}.mp4", title_str)
     }
 }
 

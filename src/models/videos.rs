@@ -421,7 +421,24 @@ pub struct VideoGenRequestParams {
     pub enhance_prompt: bool,
     pub generate_audio: bool,
 }
+impl VideoGenRequestParams {
+    fn normalize(text: &str) -> String {
+        text.replace(['\'', '"'], "’")
+            .chars()
+            .filter(|c| !c.is_control())
+            .collect()
+    }
 
+    pub fn sanitize(&mut self) {
+        self.name = Self::normalize(&self.name);
+        self.prompt = Self::normalize(&self.prompt);
+        if let Some(ref mut neg) = self.negative_prompt {
+            *neg = Self::normalize(neg);
+        }
+    }
+}
+
+//’
 #[derive(Clone, Validate, Serialize, Debug)]
 pub struct VideoNew {
     pub pid: Uuid,
@@ -571,7 +588,9 @@ impl Model {
         is_deleted: bool,
         num: u64,
     ) -> ModelResult<Vec<Self>> {
-        let mut condition = Condition::all().add(videos::Column::UserId.eq(id));
+        let mut condition = Condition::all()
+            .add(videos::Column::UserId.eq(id))
+            .add(videos::Column::Status.eq(Status::Completed));
 
         if is_deleted {
             condition = condition.add(videos::Column::DeletedAt.is_not_null());
@@ -596,6 +615,36 @@ impl Model {
             .await?;
 
         Ok(results)
+    }
+
+    pub async fn get_next_20_images_after(
+        db: &DatabaseConnection,
+        user_id: i32,
+        anchor_item_pid: &Uuid,
+        num: u64,
+        // params: InfiniteLoadingParams,
+    ) -> ModelResult<Vec<Self>> {
+        // Fetch the anchor item first (optional, if needed)
+        let anchor_item = Entity::find()
+            .filter(videos::Column::UserId.eq(user_id))
+            .filter(videos::Column::Pid.eq(anchor_item_pid.clone()))
+            .one(db)
+            .await?;
+
+        if let Some(anchor) = anchor_item {
+            let query = Entity::find()
+                .filter(videos::Column::UserId.eq(user_id))
+                .filter(videos::Column::Id.lt(anchor.id))
+                .filter(videos::Column::Status.eq(Status::Completed))
+                .filter(videos::Column::DeletedAt.is_null())
+                .order_by_desc(videos::Column::Id)
+                .limit(num)
+                .all(db)
+                .await?;
+            Ok(query)
+        } else {
+            Err(ModelError::EntityNotFound)
+        }
     }
 }
 

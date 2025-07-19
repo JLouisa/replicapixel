@@ -367,6 +367,29 @@ impl Model {
         let pack = item.update(db).await?;
         Ok(pack)
     }
+
+    pub async fn get_next_12_packs_after(
+        db: &DatabaseConnection,
+        anchor_item_pid: &Uuid,
+        num: u64,
+    ) -> ModelResult<Vec<Self>> {
+        let anchor_item = Entity::find()
+            .filter(packs::Column::Pid.eq(anchor_item_pid.clone()))
+            .one(db)
+            .await?;
+
+        if let Some(anchor) = anchor_item {
+            let query = Entity::find()
+                .filter(packs::Column::Id.lt(anchor.id))
+                .order_by_asc(packs::Column::Id)
+                .limit(num)
+                .all(db)
+                .await?;
+            Ok(query)
+        } else {
+            Err(ModelError::EntityNotFound)
+        }
+    }
 }
 
 // implement your write-oriented logic here

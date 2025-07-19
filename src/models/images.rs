@@ -1,4 +1,4 @@
-use crate::controllers::images::ImageLoadingParams;
+use crate::controllers::images::InfiniteLoadingParams;
 use crate::models::user_credits::CostCreditsTrait;
 use crate::service::aws::s3::S3Key;
 use crate::service::fal_ai::fal_client::{Lora, WebhookPayload};
@@ -267,7 +267,7 @@ impl Model {
         user_id: i32,
         anchor_image_pid: &Uuid,
         num: u64,
-        params: ImageLoadingParams,
+        params: InfiniteLoadingParams,
     ) -> ModelResult<Vec<Self>> {
         // Fetch the anchor image first (optional, if needed)
         let anchor_image = Entity::find()

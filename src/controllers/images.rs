@@ -98,8 +98,8 @@ pub fn routes() -> Routes {
     Routes::new()
         .prefix(routes::Images::BASE)
         .add(routes::Images::IMAGE, get(list))
-        .add(routes::Images::IMAGE_GENERATE, post(generate))
-        .add(routes::Images::IMAGE_CHECK_ID, get(check_img))
+        .add(routes::Images::IMAGE_GENERATE, post(generate_image))
+        .add(routes::Images::IMAGE_CHECK_ID, get(check_image))
         .add(routes::Images::IMAGE_ID, get(get_one))
         .add(routes::Images::IMAGE_ID, delete(remove))
         .add(routes::Images::IMAGE_RESTORE_ID, delete(restore))
@@ -133,6 +133,18 @@ pub struct ImageGenRequestParams {
     pub num_images: u8,
     #[serde(default)]
     pub model: WebhookPayload,
+}
+impl ImageGenRequestParams {
+    fn normalize(text: &str) -> String {
+        text.replace(['\'', '"'], "’")
+            .chars()
+            .filter(|c| !c.is_control())
+            .collect()
+    }
+    pub fn sanitize(&mut self) {
+        let prompt = Self::normalize(self.prompt.as_ref());
+        self.prompt = UserPrompt::new(prompt);
+    }
 }
 
 pub trait ImageGenerationTrait {
@@ -276,7 +288,7 @@ impl ImageGenerationTrait for ImageGenRequestParams {
 }
 
 #[derive(Deserialize, Debug)]
-pub struct ImageLoadingParams {
+pub struct InfiniteLoadingParams {
     pub deleted: Option<bool>,
     pub favorite: Option<bool>,
 }
@@ -320,7 +332,7 @@ async fn load_images_inf(
     db: &DatabaseConnection,
     user: &UserModel,
     anchor_image_id: &Uuid,
-    params: ImageLoadingParams,
+    params: InfiniteLoadingParams,
 ) -> Result<ImagesModelList> {
     let list =
         ImageModel::get_next_20_images_after(db, user.id, anchor_image_id, 20, params).await?;
@@ -371,37 +383,39 @@ pub async fn img_s3_download_link(
 }
 
 #[debug_handler]
-pub async fn generate(
+pub async fn generate_image(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
     Extension(website): Extension<Website>,
     Extension(fal_ai_client): Extension<FalAiClient>,
     ViewEngine(v): ViewEngine<TeraView>,
     LangEngine(lang): LangEngine,
-    Json(request): Json<ImageGenRequestParams>,
+    Json(mut params): Json<ImageGenRequestParams>,
 ) -> Result<Response> {
     // 0. Validate request payload format
-    request.validate()?;
+    params.validate()?;
+    params.sanitize();
 
     // 1. Load User and Training Model
     let user_pid = UserPid::new(&auth.claims.pid);
-    let (user, training_model) = load_user_opt_training(&ctx, &user_pid, &request).await?;
+    let (user, training_model) = load_user_opt_training(&ctx, &user_pid, &params).await?;
 
     // 2. Call the Domain Service to perform the core logic
     let (updated_credits, saved_images) =
-        ImageGenerationService::generate(&ctx, &fal_ai_client, request, &user, &training_model)
+        ImageGenerationService::generate(&ctx, &fal_ai_client, params, &user, &training_model)
             .await?;
-    let saved_images: ImageViewList = saved_images.into();
 
     // 3. Render the view using the View Models
+    let saved_images: ImageViewList = saved_images.into();
     let website_options = WebsiteOptions::new()
         .website(&website)
         .language(&lang)
         .images(&saved_images)
         .user_credits(updated_credits.into())
         .is_image_gen()
+        .is_oob_credits()
         .build();
-    views::images::img_completed(&v, &website_options)
+    views::images::image_router(&v, &website_options)
 }
 
 #[debug_handler]
@@ -432,7 +446,7 @@ pub async fn img_s3_upload_completed(
 }
 
 #[debug_handler]
-pub async fn check_img(
+pub async fn check_image(
     auth: auth::JWT,
     Path(pid): Path<Uuid>,
     State(ctx): State<AppContext>,
@@ -447,50 +461,33 @@ pub async fn check_img(
         return Err(Error::Unauthorized("Unauthorized".to_string()));
     }
 
-    if image.status == Status::Processing {
-        let user_credits = load_credits(&ctx.db, user.id).await?;
-        // let user_credits_view: CreditsViewModel = user_credits.into();
-        let image: ImageView = image.into();
-        let image: ImageView = image
-            .clone()
-            .set_pre_url(&s3_client)
-            .await
-            .unwrap_or_else(|_| image);
-        // let is_image_gen = Some(true);
-        let image_list = ImageViewList::new(vec![image]);
+    let image_list = match image.status {
+        Status::Processing => {
+            let image_view = ImageView::from(&image);
+            match image_view.set_pre_url(&s3_client).await {
+                Ok(updated) => ImageViewList::one(updated),
+                Err(_) => ImageViewList::one(image.into()),
+            }
+        }
+        Status::Failed => ImageViewList::one(image.into()),
+        _ => return Ok(StatusCode::NO_CONTENT.into_response()),
+    };
 
-        let website_options = WebsiteOptions::new()
-            .website(&website)
-            .language(&lang)
-            .images(&image_list)
-            .user_credits(user_credits.into())
-            .is_image_gen()
-            .build();
+    let user_credits = load_credits(&ctx.db, user.id).await?;
 
-        return views::images::img_completed(&v, &website_options);
-    }
-
-    if image.status == Status::Failed {
-        let user_credits = load_credits(&ctx.db, user.id).await?;
-        // let is_image_gen = Some(true);
-
-        let website_options = WebsiteOptions::new()
-            .website(&website)
-            .language(&lang)
-            .user_credits(user_credits.into())
-            .is_image_gen()
-            .build();
-
-        return views::images::img_completed(&v, &website_options);
-    }
-
-    Ok((StatusCode::NO_CONTENT).into_response())
+    let website_options = WebsiteOptions::new()
+        .website(&website)
+        .language(&lang)
+        .images(&image_list)
+        .user_credits(user_credits.into())
+        .build();
+    views::images::image_router(&v, &website_options)
 }
 
 async fn image_infinite_handler(
     auth: auth::JWT,
     Path(anchor_image_pid): Path<Uuid>,
-    Query(params): Query<ImageLoadingParams>,
+    Query(params): Query<InfiniteLoadingParams>,
     Extension(cache): Extension<RedisCacheDriver>,
     Extension(website): Extension<Website>,
     Extension(s3_client): Extension<AwsS3>,
@@ -509,8 +506,9 @@ async fn image_infinite_handler(
         .website(&website)
         .language(&lang)
         .images(&images)
+        .is_infinite()
         .build();
-    views::images::img_infinite_loading(&v, &website_options)
+    views::images::image_router(&v, &website_options)
 }
 
 #[debug_handler]
@@ -563,7 +561,6 @@ pub async fn restore(
     Ok((StatusCode::OK).into_response())
 }
 
-//=======================
 #[debug_handler]
 pub async fn get_one(
     auth: auth::JWT,

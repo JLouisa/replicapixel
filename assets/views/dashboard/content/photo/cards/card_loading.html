@@ -1,5 +1,6 @@
+<!-- Other -->
 <div
-  id="placeholder-{{ image.pid }}"
+  id="image-container-{{ image.pid }}"
   hx-get="{{ options.website.website_routes.image.check | safe }}/{{ image.pid }}"
   hx-trigger="load, every 2s"
   hx-swap="outerHTML"

@@ -1,0 +1,24 @@
+<dialog id="image-modal-{{ image.pid }}" class="modal">
+  <div class="modal-box w-11/12 max-w-5xl">
+    <img
+      id="modal-img-{{ image.pid }}"
+      class="h-auto max-w-full rounded-lg shadow-md mx-auto"
+      src="{{  image.s3_pre_url | default(value= image.image_url_fal) | safe }}"
+      onerror="this.onerror=null; this.src='{{ image.image_url_fal | safe }}';"
+      alt="{{ image.image_alt }}"
+    />
+    <div class="flex items-center justify-center sm:justify-end gap-3 mt-4">
+      <button
+        onclick="downloadImageWithLink('{{  image.s3_pre_url | default(value= image.image_url_fal) | safe }}', '{{ image.pid }}.{{ image.content_type }}', '{{ image.pid }}')"
+        class="btn btn-primary btn-xs md:btn-md"
+      >
+        Download {% include "partials/svg/download.html" %}
+      </button>
+      {% include "dashboard/content/photo/cards/partials/favorite_button.html" %} {% include
+      "dashboard/content/photo/cards/partials/delete_button.html" %}
+    </div>
+  </div>
+  <form method="dialog" class="modal-backdrop">
+    <button>close</button>
+  </form>
+</dialog>

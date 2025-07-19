@@ -138,6 +138,8 @@ pub fn new<K: Into<String>>(key: K) -> Self {
 key.into()
 }
 
+# pg_dump -h 37.27.212.159 -p 5432 -U postgres -d pictora_dev > backup.sql
+
 Stripe:
 stripe login
 stripe listen --forward-to localhost:5150/api/webhooks/stripe

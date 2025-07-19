@@ -175,6 +175,7 @@ pub fn photo_partial_dashboard(
         data!({ "options": website_options }),
     )
 }
+
 pub fn video_dashboard(
     v: impl ViewRenderer,
     website_options: &WebsiteOptions,

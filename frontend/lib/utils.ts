@@ -154,12 +154,14 @@ function testConsole(foo: string) {
 }
 
 export function videoDialog(
+  videoThumbnail: string,
   videoDeleteLink: string,
   videoPid: string,
   videoUrl: string,
   title: string,
-  prompt: string,
-  duration: string
+  duration: string,
+  videoStatus: string,
+  prompt: string
 ) {
   // console.log("videoDeleteLink:", videoDeleteLink);
   // console.log("videoPid:", videoPid);
@@ -169,7 +171,7 @@ export function videoDialog(
   // console.log("duration:", duration);
 
   const dialogHtml = document.getElementById("video-modal") as HTMLDialogElement | null;
-  const videoPlayerHtml = document.getElementById("video-player") as HTMLIFrameElement | null;
+  const videoPlayerHtml = document.getElementById("video-player") as HTMLVideoElement | null;
   const titleHtml = document.getElementById("video-title") as HTMLHeadingElement | null;
   const promptHtml = document.getElementById("video-prompt") as HTMLHeadingElement | null;
   const durationHtml = document.getElementById("video-duration") as HTMLHeadingElement | null;
@@ -193,8 +195,10 @@ export function videoDialog(
   promptHtml.textContent = prompt;
   durationHtml.textContent = duration;
   videoPlayerHtml.src = videoUrl;
+  videoPlayerHtml.volume = 0.5;
+  videoPlayerHtml.poster = videoThumbnail;
   downloadHtml.href = videoUrl;
-  downloadHtml.download = title;
+  downloadHtml.download = downloadTitleAdjustment(title);
 
   deleteButton.onclick = () => {
     handleVideoDeletion(videoDeleteLink, videoPid);
@@ -208,6 +212,15 @@ export function videoDialog(
     },
     { once: true }
   );
+}
+
+function downloadTitleAdjustment(titleRawStr: string): string {
+  const titleStr = titleRawStr
+    .replace(/[^\w\s-]/g, "")
+    .trim() // Trim whitespace
+    .replace(/\s+/g, "-")
+    .toLowerCase();
+  return `${titleStr}.mp4`;
 }
 
 export async function handleVideoDeletion(deleteLink: string, videoPid: string) {

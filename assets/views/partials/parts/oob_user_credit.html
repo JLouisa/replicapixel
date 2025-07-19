@@ -1,0 +1,5 @@
+{% if options.is_oob_credits and options.user_credits %}
+<span hx-swap-oob="true" id="user_credits" class="ml-1"
+  >{{ options.user_credits.credit_amount }}</span
+>
+{% endif %}

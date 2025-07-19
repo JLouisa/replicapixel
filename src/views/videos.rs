@@ -22,7 +22,7 @@ pub fn img_infinite_loading(
     )
 }
 
-pub fn one(v: &impl ViewRenderer, website_options: &WebsiteOptions) -> Result<Response> {
+pub fn video_router(v: &impl ViewRenderer, website_options: &WebsiteOptions) -> Result<Response> {
     format::render().view(
         v,
         "dashboard/content/video/video_router.html",

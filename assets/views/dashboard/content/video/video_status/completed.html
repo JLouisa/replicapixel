@@ -1,0 +1,29 @@
+<div
+  id="video-card-completed-{{video.pid}}"
+  class="cursor-pointer w-full max-w-sm rounded-xl overflow-hidden shadow-md bg-base-100 border border-base-300 hover:shadow-xl transition-shadow duration-200"
+  onclick="videoDialog('{{video.thumbnail_url | safe}}', '{{video_delete_link}}','{{video.pid}}', '{{video.video_url | safe}}', '{{video.title}}', '{{video.duration}}', '{{video.status}}', '{{video.user_prompt | safe}}')"
+>
+  <!-- Thumbnail -->
+  <div class="relative pb-[56.25%] bg-base-200">
+    <img
+      src="{{video.thumbnail_url | safe | default(value='https://placehold.co/600x338?text=Video')}}"
+      alt="Video Thumbnail"
+      class="absolute top-0 left-0 w-full h-full object-cover"
+    />
+    <span class="absolute bottom-1 right-1 bg-black/70 text-xs text-white px-1.5 py-0.5 rounded">
+      {{video.duration}}
+    </span>
+  </div>
+  <!-- Content -->
+  <div class="p-4 flex gap-3">
+    <!-- Text -->
+    <div class="flex flex-col">
+      <h3 class="text-base font-semibold line-clamp-2">{{ video.title }}</h3>
+      <div class="flex items-center gap-2">
+        Status:
+        <span class="status status-success"></span>
+        <span class="text-sm text-green-600 font-medium"> {{ video.status }} </span>
+      </div>
+    </div>
+  </div>
+</div>

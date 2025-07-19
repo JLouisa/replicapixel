@@ -4,7 +4,7 @@ options.website.website_routes.image.base %} {% if options.is_deleted %} {% set 
 options.language %}
 <button
   hx-delete="{{ website_restore_link | safe }}/{{ image.pid }}"
-  hx-target="#container3-{{ image.pid }}"
+  hx-target="#img-container-{{ image.pid }}"
   hx-confirm="{{ t(key='image-action-confirm-restore', lang=lang) }}"
   hx-swap="outerHTML"
   class="btn btn-info btn-xs md:btn-md"
@@ -15,7 +15,7 @@ options.language %}
 {% else %}
 <button
   hx-delete="{{ website_base_link | safe }}/{{ image.pid }}"
-  hx-target="#container3-{{ image.pid }}"
+  hx-target="#img-container-{{ image.pid }}"
   hx-confirm="{{ t(key='image-action-confirm-delete', lang=lang) }}"
   hx-swap="outerHTML"
   class="btn btn-error btn-xs md:btn-md"

@@ -1,0 +1,49 @@
+<!-- prettier-ignore -->
+{% set packs = options.packs%}
+{% set lang = options.language %}
+{% set pack_infinite_link = options.website.website_routes.packs_routes.api_video_infinite  %}
+
+{% for pack in packs %}
+<!-- prettier-ignore -->
+<div
+    {# {% if loop.last and options.is_infinite and loop.index > 11  %}
+    hx-get="{{ pack_infinite_link | safe }}/{{ pack.pid | safe }}"
+    hx-trigger="intersect once"
+    hx-swap="afterend"
+    {% endif %} #}
+    class="w-72 bg-base-100 shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl cursor-pointer"
+    onclick="packDialog( 
+      '{{ pack.pid }}',
+      '{{ options.user_credits.credit_amount }}',
+      '{{ pack.main_image | safe }}',
+      '{{ pack.images | safe }}',
+      '{{ pack.title }}',
+      '{{ pack.used }}',
+      '{{ pack.is_popular | default(value=false) }}',
+      '{{ pack.full_description }}',
+      '{{ pack.credits }}',
+      '{{ pack.num_images }}',
+      '{{ pack.features }}',
+    )"
+  >
+    <img
+      src="{{ pack.main_image | safe }}"
+      alt='{{ t(key="packs-card-image-alt", lang=lang) }}'
+      class="h-80 w-72 object-cover rounded-t-xl"
+    />
+    <div class="px-4 py-3 w-72">
+      <p class="text-lg text-center font-bold truncate block capitalize">{{ pack.title }}</p>
+      <p>{{ pack.short_description }}</p>
+      <div class="flex items-center justify-between">
+        <span class="text-gray-400 mr-3 uppercase text-xs">
+          {{ pack.num_images }} {{ t(key="packs-card-photos-suffix", lang=lang) }}
+        </span>
+        <div class="flex items-center justify-center">
+          <span> {% include "partials/svg/credit_svg.html" %} </span>
+          <span class="text-gray-700 mr-3 uppercase text-xs"> {{ pack.credits }} </span>
+        </div>
+      </div>
+      <div class="ml-auto"></div>
+    </div>
+  </div>
+{% endfor %}

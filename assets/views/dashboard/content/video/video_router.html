@@ -1,123 +1,36 @@
-{% set video_check_link = options.website.website_routes.video.check %} {% set video_delete_link =
-options.website.website_routes.video.api_delete %} {% if video.status == "Completed" %}
+<!-- prettier-ignore -->
+{% set video_check_link = options.website.website_routes.video.check %}
+{% set video_delete_link = options.website.website_routes.video.api_delete %}
+
+{% for video in options.videos %}
+<!-- prettier-ignore -->
 <div
-  id="video-card-completed-{{video.pid}}"
-  class="cursor-pointer w-full max-w-sm rounded-xl overflow-hidden shadow-md bg-base-100 border border-base-300 hover:shadow-xl transition-shadow duration-200"
-  onclick="videoDialog('{{video_delete_link}}','{{video.pid}}', '{{video.video_url | safe}}', '{{video.title}}', '{{video.user_prompt}}', '{{video.duration}}', '{{video.status}}')"
->
-  <!-- Thumbnail -->
-  <div class="relative pb-[56.25%] bg-base-200">
-    <img
-      src="{{video.thumbnail_url | safe | default(value= 'https://placehold.co/600x338?text=Video')}}"
-      alt="Video Thumbnail"
-      class="absolute top-0 left-0 w-full h-full object-cover"
-    />
-    <span class="absolute bottom-1 right-1 bg-black/70 text-xs text-white px-1.5 py-0.5 rounded">
-      {{video.duration}}
-    </span>
-  </div>
-  <!-- Content -->
-  <div class="p-4 flex gap-3">
-    <!-- Text -->
-    <div class="flex flex-col">
-      <h3 class="text-base font-semibold line-clamp-2">{{video.title}}</h3>
-      <div class="flex items-center gap-2">
-        Status:
-        <span class="status status-success"></span>
-        <span class="text-sm text-green-600 font-medium"> {{ video.status }} </span>
-      </div>
-    </div>
-  </div>
+    id="vid-container-{{ video.pid }}"
+    {% if loop.last and not options.is_image_gen and loop.index > 19  %}
+    hx-get="{{ options.website.website_routes.video.api_video_infinite | safe }}/{{ video.pid | safe }}"
+    hx-trigger="intersect once"
+    hx-swap="afterend"
+    {% endif %}
+  >
+  {% if video.status == "Completed" %}
+  {% include "dashboard/content/video/video_status/completed.html" %}
+
+  {% elif video.status == "Processing" %}
+  {% include "dashboard/content/video/video_status/processed.html" %}
+
+  {% elif video.status == "Pending" %}
+  {% include "dashboard/content/video/video_status/pending.html" %}
+
+  {% elif video.status == "Failed" %}
+  {% include "dashboard/content/video/video_status/failed.html" %}
+
+  {% endif %}
 </div>
-{% elif video.status == "Processing" %}
-<div
-  id="video-card-processing-{{video.pid}}"
-  hx-get="{{ video_check_link | safe }}/{{video.pid}}/{{video.status}}"
-  hx-trigger="load, every 5s"
-  hx-swap="outerHTML"
-  class="w-full max-w-sm rounded-xl overflow-hidden shadow-md bg-base-100 border border-base-300 hover:shadow-xl transition-shadow duration-200"
->
-  <!-- Thumbnail -->
-  <div class="relative pb-[56.25%] bg-base-200">
-    <img
-      src="https://placehold.co/600x338?text=Video"
-      alt="Video Thumbnail"
-      class="absolute top-0 left-0 w-full h-full object-cover"
-    />
-    <span class="absolute bottom-1 right-1 bg-black/70 text-xs text-white px-1.5 py-0.5 rounded">
-      {{video.duration}}
-    </span>
-  </div>
-  <!-- Content -->
-  <div class="p-4 flex gap-3">
-    <!-- Text -->
-    <div class="flex flex-col">
-      <h3 class="text-base font-semibold line-clamp-2">{{video.title}}</h3>
-      <div class="flex items-center gap-2">
-        Status:
-        <span class="status status-warning animate-ping"></span>
-        <span class="text-sm text-yellow-600 font-medium"> {{ video.status }} </span>
-      </div>
-    </div>
-  </div>
-</div>
-{% elif video.status == "Pending" %}
-<div
-  id="video-card-pending-{{ video.pid }}"
-  hx-get="{{ video_check_link | safe }}/{{video.pid}}/{{video.status}}"
-  hx-trigger="load, every 5s"
-  hx-swap="outerHTML"
-  class="w-full max-w-sm rounded-xl overflow-hidden shadow-md bg-base-100 border border-base-300 hover:shadow-xl transition-shadow duration-200"
->
-  <!-- Thumbnail -->
-  <div class="relative pb-[56.25%] bg-base-200">
-    <img
-      src="https://placehold.co/600x338?text=Video"
-      alt="Video Thumbnail"
-      class="absolute top-0 left-0 w-full h-full object-cover"
-    />
-    <span class="absolute bottom-1 right-1 bg-black/70 text-xs text-white px-1.5 py-0.5 rounded">
-      {{video.duration}}
-    </span>
-  </div>
-  <!-- Content -->
-  <div class="p-4 flex gap-3">
-    <!-- Text -->
-    <div class="flex flex-col">
-      <h3 class="text-base font-semibold line-clamp-2">{{video.title}}</h3>
-      <div class="flex items-center gap-2">
-        Status:
-        <span class="status status-info animate-ping"></span>
-        <span class="text-sm text-blue-700 font-medium"> {{ video.status }} </span>
-      </div>
-    </div>
-  </div>
-</div>
-{% elif video.status == "Failed" %}
-<div
-  id="video-card-failed-{{video.pid}}"
-  class="w-full max-w-sm rounded-xl overflow-hidden shadow-md bg-base-100 border border-base-300 hover:shadow-xl transition-shadow duration-200"
->
-  <!-- Thumbnail -->
-  <div class="relative pb-[56.25%] bg-base-200">
-    <img
-      src="https://placehold.co/600x338?text=Video"
-      alt="Video Thumbnail"
-      class="absolute top-0 left-0 w-full h-full object-cover"
-    />
-    <span class="absolute bottom-1 right-1 bg-black/70 text-xs text-white px-1.5 py-0.5 rounded">
-      {{video.duration}}
-    </span>
-  </div>
-  <!-- Content -->
-  <div class="p-4 flex gap-3">
-    <!-- Text -->
-    <div class="flex flex-col">
-      <h3 class="text-base font-semibold line-clamp-2">{{video.title}}</h3>
-      <span>Status: <span class="text-red-600 font-medium">{{video.status}}</span></span>
-    </div>
-  </div>
-</div>
-{% endif %} {% if not is_initial_load and options.credits %}
-<span hx-swap-oob="true" id="user_credits" class="ml-1">{{ options.credits.credit_amount }}</span>
-{% endif %}
+{% endfor %}
+
+<!-- Dialog -->
+{% if not options.is_infinite %} {% include "dashboard/content/video/video_card_dialog.html" %} {%
+endif %}
+
+<!-- Credits OOB Swap -->
+{% include "partials/parts/oob_user_credit.html" %}

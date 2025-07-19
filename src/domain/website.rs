@@ -580,6 +580,8 @@ pub struct WebsiteOptions<'a> {
     pub is_deleted: bool,
     pub is_favorite: bool,
     pub is_image_gen: bool,
+    pub is_infinite: bool,
+    pub is_oob_credits: bool,
     pub is_other: bool,
     pub is_production: bool,
 }
@@ -901,6 +903,20 @@ impl<'a> WebsiteOptions<'a> {
     pub fn is_marketing_purchase(self) -> Self {
         Self {
             is_marketing_purchase: true,
+            ..self
+        }
+    }
+    // Sets the bool for is_logged_in.
+    pub fn is_oob_credits(self) -> Self {
+        Self {
+            is_oob_credits: true,
+            ..self
+        }
+    }
+    // Sets the bool for is_logged_in.
+    pub fn is_infinite(self) -> Self {
+        Self {
+            is_infinite: true,
             ..self
         }
     }

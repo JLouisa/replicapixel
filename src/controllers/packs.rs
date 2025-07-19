@@ -46,6 +46,7 @@ pub mod routes {
         pub show_pack: String,
         pub show_pack_partial: String,
         pub api_packs_all: String,
+        pub api_video_infinite: String,
     }
     impl PackRoutes {
         pub fn init() -> Self {
@@ -55,6 +56,7 @@ pub mod routes {
                 show_pack: String::from(Pack::SHOW_PACK),
                 show_pack_partial: String::from(Pack::SHOW_PACK_PARTIAL),
                 api_packs_all: String::from(Pack::API_PACKS_ALL),
+                api_video_infinite: format!("{}{}", Pack::API_BASE, Pack::API_INFINITE),
             }
         }
     }
@@ -71,6 +73,8 @@ pub mod routes {
         pub const API_GEN_PACK: &'static str = "/api/pack/gen";
         pub const API_PACKS_ALL: &'static str = "/api/packs/all";
         pub const API_PACK_ADD: &'static str = "/api/pack/add";
+        pub const API_INFINITE_ID: &'static str = "/infinite/{id}";
+        pub const API_INFINITE: &'static str = "/infinite";
     }
 }
 
@@ -80,6 +84,7 @@ pub fn routes() -> Routes {
         .add(routes::Pack::API_PACKS_ALL, get(get_all_packs))
         .add(routes::Pack::SHOW_PACK_PARTIAL_PID, get(show_pack_partial))
         .add(routes::Pack::API_GEN_PACK, post(generate_packs_images))
+        .add(routes::Pack::API_INFINITE_ID, get(pack_infinite_handler))
     // .add(routes::Pack::API_PACK_ADD, post(generate_packs_images))
 }
 
@@ -129,6 +134,30 @@ async fn load_everything(
     let (user, model, pack) =
         load_user_one_training_model_one_pack(db, user_pid, &model_pid, pack_pid).await?;
     Ok((user, Some(model), pack))
+}
+async fn load_packs_inf(db: &DatabaseConnection, anchor_image_id: &Uuid) -> Result<PackModelList> {
+    let list = PackModel::get_next_12_packs_after(db, anchor_image_id, 12).await?;
+    Ok(PackModelList::new(list))
+}
+
+async fn pack_infinite_handler(
+    _auth: auth::JWT,
+    Path(anchor_image_pid): Path<Uuid>,
+    // Extension(cache): Extension<RedisCacheDriver>,
+    Extension(website): Extension<Website>,
+    // Extension(s3_client): Extension<AwsS3>,
+    State(ctx): State<AppContext>,
+    ViewEngine(view_engine): ViewEngine<TeraView>,
+    LangEngine(lang): LangEngine,
+) -> Result<impl IntoResponse> {
+    let packs = load_packs_inf(&ctx.db, &anchor_image_pid).await?.into();
+    let website_options = WebsiteOptions::new()
+        .website(&website)
+        .language(&lang)
+        .packs(&packs)
+        .is_infinite()
+        .build();
+    views::packs::pack_infinite_loading(&view_engine, &website_options)
 }
 
 #[debug_handler]
@@ -315,6 +344,7 @@ pub async fn generate_packs_images(
         .user_credits(updated_credits_model.into())
         .training_models(training_models.into())
         .images(&images)
+        .is_oob_credits()
         .build();
     views::dashboard::photo_partial_dashboard(v, &website_options)
 }

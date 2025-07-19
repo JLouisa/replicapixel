@@ -1,44 +1,16 @@
-<!-- prettier-ignore -->
+<!-- Completed -->
 <div
-  id="container3-{{ image.pid }}"
+  id="image-container-{{ image.pid }}"
   class="image-container relative select-none aspect-square rounded-lg shadow-md overflow-hidden bg-base-200"
-  {% if loop.last and not is_image_gen %}
-    hx-get="{{ options.website.website_routes.image.api_image_infinite | safe }}/{{ image.pid }}{% if is_deleted %}?deleted=true{% endif %}{% if is_favorite %}?favorite=true{% endif %}"
-    hx-trigger="intersect once"
-    hx-swap="afterend"
-  {% endif %}
 >
   <img
-    id="img-{{ image.pid }}"
+    id="image-{{ image.pid }}"
     class="absolute inset-0 w-full h-full object-cover cursor-pointer duration-300 ease-in-out hover:scale-105"
-    onclick="document.getElementById('modal-{{ image.training_model_id }}-{{ image.pid }}').showModal()"
-    src="{{ image.s3_pre_url | default(value=image.image_url_fal) | safe }}"
+    onclick="document.getElementById('image-modal-{{ image.pid }}').showModal()"
+    src="{{  image.s3_pre_url | default(value= image.image_url_fal) | safe }}"
     alt="{{ image.image_alt }}"
     onerror="this.onerror=null; this.src='{{ image.image_url_fal | safe }}';"
     loading="lazy"
   />
-
-  {# The modal dialog belongs with the completed card #}
-  <dialog id="modal-{{ image.training_model_id }}-{{ image.pid }}" class="modal">
-    <div class="modal-box w-11/12 max-w-5xl">
-      <img
-        id="modal-img-{{ image.pid }}"
-        class="h-auto max-w-full rounded-lg shadow-md mx-auto"
-        src="{{ image.s3_pre_url | default(value=image.image_url_fal) | safe }}"
-        onerror="this.onerror=null; this.src='{{ image.image_url_fal | safe }}';"
-        alt="{{ image.image_alt }}"
-      />
-      <div class="flex items-center justify-center sm:justify-end gap-3 mt-4">
-        <button
-          onclick="downloadImageWithLink('{{ image.s3_pre_url | default(value=image.image_url_fal) | safe }}', '{{ image.pid }}.{{ image.content_type }}', '{{ image.pid }}')"
-          class="btn btn-primary btn-xs md:btn-md"
-        >
-          Download {% include "partials/svg/download.html" %}
-        </button>
-        {% include "dashboard/content/photo/cards/partials/favorite_button.html" %}
-        {% include "dashboard/content/photo/cards/partials/delete_button.html" %}
-      </div>
-    </div>
-    <form method="dialog" class="modal-backdrop"><button>close</button></form>
-  </dialog>
+  {% include "dashboard/content/photo/image_card_dialog.html" %}
 </div>

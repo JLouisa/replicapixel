@@ -84,18 +84,20 @@ pub async fn upload_training(
     auth: auth::JWT,
     State(ctx): State<AppContext>,
     Extension(s3_client): Extension<AwsS3>,
-    Json(form): Json<TrainingFormParam>,
+    Json(mut params): Json<TrainingFormParam>,
 ) -> Result<impl IntoResponse> {
+    params.sanitize();
+
     let user = UserModel::find_by_pid(&ctx.db, &auth.claims.pid).await?;
 
     //1. Generate Pre-Signed URL
-    let pre_url_request = PresignedUrlRequest::from(&form);
+    let pre_url_request = PresignedUrlRequest::from(&params);
     let (pre_url, s3_key) = s3_client
         .presigned_save_url(&user.pid, &pre_url_request, None)
         .await?;
 
     //2. Create and save Training Model in Database
-    let _ = form.from_form(&user, &s3_key).save(&ctx.db).await?;
+    let _ = params.from_form(&user, &s3_key).save(&ctx.db).await?;
 
     //3. Create Pre-Signed URL
     let pre_sign_response = PresignedUrlSafe::from_request(pre_url_request, pre_url);

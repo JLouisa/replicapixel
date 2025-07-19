@@ -1,53 +1,19 @@
 <!-- prettier-ignore -->
+{% set pack_link = options.website.website_routes.packs_routes.gen_pack %}
 {% set models = options.training_models%}
-{% set packs = options.packs%}
 {% set lang = options.language %}
 {% set image_sizes = options.website.website_fields.image_sizes%}
 {% set studio_partial_link = options.website.website_routes.dashboard_routes.sidebar.photo_partial %}
 {% set studio_link = options.website.website_routes.dashboard_routes.sidebar.photo %}
-{% set pack_link = options.website.website_routes.packs_routes.gen_pack  %}
 
 <div
   class="w-fit mx-auto grid grid-cols-1 lg:grid-cols-4 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-5"
 >
-  {% for pack in packs %}
-  <div
-    class="w-72 bg-base-100 shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl cursor-pointer"
-    onclick="packDialog( 
-      '{{ pack.pid }}',
-      '{{ options.user_credits.credit_amount }}',
-      '{{ pack.main_image | safe }}',
-      '{{ pack.images | safe }}',
-      '{{ pack.title }}',
-      '{{ pack.used }}',
-      '{{ pack.is_popular | default(value=false) }}',
-      '{{ pack.full_description }}',
-      '{{ pack.credits }}',
-      '{{ pack.num_images }}',
-      '{{ pack.features }}',
-    )"
-  >
-    <img
-      src="{{ pack.main_image | safe }}"
-      alt='{{ t(key="packs-card-image-alt", lang=lang) }}'
-      class="h-80 w-72 object-cover rounded-t-xl"
-    />
-    <div class="px-4 py-3 w-72">
-      <p class="text-lg text-center font-bold truncate block capitalize">{{ pack.title }}</p>
-      <p>{{ pack.short_description }}</p>
-      <div class="flex items-center justify-between">
-        <span class="text-gray-400 mr-3 uppercase text-xs">
-          {{ pack.num_images }} {{ t(key="packs-card-photos-suffix", lang=lang) }}
-        </span>
-        <div class="flex items-center justify-center">
-          <span> {% include "partials/svg/credit_svg.html" %} </span>
-          <span class="text-gray-700 mr-3 uppercase text-xs"> {{ pack.credits }} </span>
-        </div>
-      </div>
-      <div class="ml-auto"></div>
-    </div>
-  </div>
-  {% endfor %} {% include "dashboard/content/packs/pack_dialog.html" %}
+  {% include "dashboard/content/packs/pack_router.html" %}
+
+  <!-- -->
+  {% if not options.is_infinite %}{% include "dashboard/content/packs/pack_dialog.html" %}{% endif
+  %}
   <script>
     updatePageTitle("{{ t(key='packs-page-title', lang=lang) }}");
     function changeImage(id, src) {

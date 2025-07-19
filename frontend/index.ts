@@ -205,8 +205,6 @@ Alpine.store(Stores.CreateModelForm, {
         file_type: TrainingModelFormClass.file_type,
       });
 
-      console.log(modelData);
-
       // Create and upload to S3
       await DAL.Complete.S3UploadTrainingModel.saveToS3(modelData, this.zip);
       Alpine.store(Stores.Toast).success("New Model Successfully Created");
@@ -411,6 +409,10 @@ Alpine.store(Stores.ImageGenForm, {
   init() {},
   reset(this: ImageGenFormStore): void {
     (this.advancedOptionsOpenImage = false), (this.isLoading = false);
+
+    // close the panel
+    const toggleBtn = document.getElementById("toggle-advanced-options");
+    if (toggleBtn) toggleBtn.click();
   },
 
   toggleAdvancedOptions(this: ImageGenFormStore) {
@@ -453,8 +455,6 @@ Alpine.store(Stores.ImageGenForm, {
       model: (formData.get("model") as string) || "high",
     };
 
-    // console.log("Payload:", payload);
-
     // Validation
     if (!payload.prompt) {
       Alpine.store(Stores.Toast).error("Please enter a prompt description.");
@@ -462,7 +462,6 @@ Alpine.store(Stores.ImageGenForm, {
     }
 
     const modelData = ImageGenFormClass.create(payload);
-    // console.log("Submitting payload:", modelData);
 
     this.isLoading = true;
     Alpine.store(Stores.Toast).success("Image generation started!");
@@ -472,11 +471,9 @@ Alpine.store(Stores.ImageGenForm, {
 
     try {
       const [batches, singles] = createBatches(modelData.num_images);
-      console.log(batches, singles);
 
       modelData.num_images = 4;
       for (let i = 0; i < batches; i++) {
-        // console.log(`Batches ${i + 1} of ${batches} send`);
         // await sendRequest(url, modelData);
         await DAL.Complete.Htmx.imageGenerationHtmx(modelData, "drive-gallery", "afterbegin");
 
@@ -486,7 +483,6 @@ Alpine.store(Stores.ImageGenForm, {
 
       modelData.num_images = 1;
       for (let i = 0; i < singles; i++) {
-        // console.log(`Singles ${i + 1} of ${singles} send`);
         // await sendRequest(url, modelData);
         await DAL.Complete.Htmx.imageGenerationHtmx(modelData, "drive-gallery", "afterbegin");
 
@@ -495,7 +491,6 @@ Alpine.store(Stores.ImageGenForm, {
       }
 
       // await new Promise((resolve) => setTimeout(resolve, 3000));
-      // console.log("Processing completed.");
       this.reset();
     } catch (error) {
       console.error(error);
@@ -581,7 +576,6 @@ Alpine.store(Stores.VideoGenForm, {
     }
 
     const modelData = VideoGenFormClass.create(payload);
-    console.log("Submitting payload:", modelData);
 
     Alpine.store(Stores.Toast).success("Video generation started!");
 
@@ -621,7 +615,7 @@ document.body.addEventListener("htmx:afterSettle", (e) => {
     if (videoStore) videoStore.advancedOptionsOpen = false;
     if (imageStore) imageStore.advancedOptionsOpenImage = false; // ← fixed typo
   }
-  console.log("[HTMX Swap]", (e.target as HTMLElement).id, Alpine.store(Stores.VideoGenForm));
+  // console.log("[HTMX Swap]", (e.target as HTMLElement).id, Alpine.store(Stores.VideoGenForm));
 });
 
 // ✅ Make Alpine available globally

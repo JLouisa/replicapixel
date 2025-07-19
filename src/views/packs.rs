@@ -10,6 +10,17 @@ use crate::{
     },
 };
 
+pub fn pack_infinite_loading(
+    v: &impl ViewRenderer,
+    website_options: &WebsiteOptions,
+) -> Result<Response> {
+    format::render().view(
+        v,
+        "dashboard/content/packs/pack_router.html",
+        data!({ "options": website_options }),
+    )
+}
+
 pub fn get_all_packs(
     v: impl ViewRenderer,
     website_options: &WebsiteOptions,

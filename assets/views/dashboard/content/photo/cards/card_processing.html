@@ -1,24 +1,18 @@
+<!-- Processing -->
 <div
-  id="container3-{{ image.pid }}"
+  id="image-container-{{ image.pid }}"
   class="image-container relative select-none aspect-square rounded-lg shadow-md overflow-hidden bg-base-200"
-  hx-get="{{ options.website.website_routes.image.check | safe }}/{{ image.pid }}"
-  hx-trigger="every 3s"
-  hx-swap="outerHTML"
 >
-  {# Display the low-res preview we get immediately from the AI service #}
   <img
-    class="absolute inset-0 w-full h-full object-cover"
-    src="{{ image.image_url_fal | safe }}"
-    alt="Processing image..."
+    id="image-{{ image.pid }}"
+    class="absolute inset-0 w-full h-full object-cover cursor-pointer duration-300 ease-in-out hover:scale-105"
+    onclick="document.getElementById('image-modal-{{ image.pid }}').showModal()"
+    src="{{  image.s3_pre_url | default(value= image.image_url_fal) | safe }}"
+    alt="{{ image.image_alt }}"
+    onerror="this.onerror=null; this.src='{{ image.image_url_fal | safe }}';"
     loading="lazy"
   />
-  {# A spinner overlay makes the state clear to the user #}
-  <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-    <span class="loading loading-spinner loading-lg text-white"></span>
-  </div>
-
-  {# This script runs in the background to upload the image to our own S3 bucket #} {% if
-  image.pre_url %}
+  {% include "dashboard/content/photo/image_card_dialog.html" %}
   <script>
     uploadImageFromUrlToS3(
       "{{ image.image_url_fal | safe }}",
@@ -26,5 +20,4 @@
       "{{ options.website.website_routes.image.api_image_s3_complete_upload | safe }}/{{ image.pid }}"
     );
   </script>
-  {% endif %}
 </div>

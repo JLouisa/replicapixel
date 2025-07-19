@@ -7,17 +7,30 @@
 {% set images = options.images %}
 
 {% for image in images %}
-{% if image.image_status == "Completed" %}
-  {% include "dashboard/content/photo/cards/card_completed.html" %}
+<!-- prettier-ignore -->
+<div
+    id="img-container-{{ image.pid }}"
+    {% if loop.last and not options.is_image_gen and loop.index > 19 %}
+    hx-get="{{ options.website.website_routes.image.api_image_infinite | safe }}/{{ image.pid }}{% if is_deleted %}?deleted=true{% endif %}{% if is_favorite %}?favorite=true{% endif %}"
+    hx-trigger="intersect once"
+    hx-swap="afterend"
+    {% endif %}
+  >
+  {% if image.image_status == "Completed" %}
+    {% include "dashboard/content/photo/cards/card_completed.html" %}
 
-{% elif image.image_status == "Processing" %}
-  {% include "dashboard/content/photo/cards/card_processing.html" %}
+  {% elif image.image_status == "Processing" %}
+    {% include "dashboard/content/photo/cards/card_processing.html" %}
 
-{% elif image.image_status == "Failed" %}
-  {% include "dashboard/content/photo/cards/card_failed.html" %}
+  {% elif image.image_status == "Failed" %}
+    {% include "dashboard/content/photo/cards/card_failed.html" %}
 
-{% else %}
-  {% include "dashboard/content/photo/cards/card_loading.html" %}
-  
-{% endif %}
+  {% else %}
+    {% include "dashboard/content/photo/cards/card_loading.html" %}
+    
+  {% endif %} 
+</div>
 {% endfor %}
+
+<!-- Credits OOB Swap -->
+{% include "partials/parts/oob_user_credit.html" %}

@@ -39,8 +39,16 @@ pub struct TrainingFormParam {
     pub training_images: Option<serde_json::Value>,
     pub consent: bool,
 }
-
 impl TrainingFormParam {
+    fn normalize(text: &str) -> String {
+        text.replace(['\'', '"'], "’")
+            .chars()
+            .filter(|c| !c.is_control())
+            .collect()
+    }
+    pub fn sanitize(&mut self) {
+        self.name = Self::normalize(self.name.as_str());
+    }
     pub fn from_form(&self, user: &UserModel, s3_key: &S3Key) -> TrainingForm {
         let tw = format!("{}-{}", &self.name, &self.slug);
         TrainingForm {

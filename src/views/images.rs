@@ -13,34 +13,14 @@ use crate::models::{_entities::images, images::ImageNewList};
 use crate::service::aws::s3::{AwsError, AwsS3, S3Key};
 use crate::service::redis::redis::{RedisCacheDriver, RedisDbError};
 
-pub fn img_infinite_loading(
-    v: &impl ViewRenderer,
-    website_options: &WebsiteOptions,
-) -> Result<Response> {
+pub fn image_router(v: &impl ViewRenderer, website_options: &WebsiteOptions) -> Result<Response> {
     format::render().view(
         v,
-        "dashboard/content/photo/old/image_partial.html",
+        "dashboard/content/photo/photo_router.html",
         data!({ "options": website_options }),
     )
 }
 
-pub fn one(v: &impl ViewRenderer, website_options: &WebsiteOptions) -> Result<Response> {
-    format::render().view(
-        v,
-        "dashboard/content/photo/image_loading_partial.html",
-        data!({ "options": website_options }),
-    )
-}
-
-pub fn img_completed(v: &impl ViewRenderer, website_options: &WebsiteOptions) -> Result<Response> {
-    format::render().view(
-        v,
-        "dashboard/content/photo/old/image_partial.html",
-        data!({ "options": website_options }),
-    )
-}
-
-/// When there is an issue with rendering the view.
 pub fn favorite(v: &impl ViewRenderer, website_options: &WebsiteOptions) -> Result<Response> {
     format::render().view(
         v,
@@ -265,7 +245,7 @@ impl From<&ImageModel> for ImageView {
             pid: img.pid.to_owned(),
             training_model_id: img.training_model_id,
             user_prompt: img.user_prompt.to_owned(),
-            image_size: img.image_size.clone().to_string(),
+            image_size: img.image_size.to_string(),
             image_url_fal: img.image_url_fal.to_owned(),
             image_s3_key: img.image_s3_key.to_owned(),
             content_type: img.content_type.to_string(),
@@ -317,6 +297,9 @@ impl From<&ImageNew> for ImageView {
 #[derive(Debug, Serialize, Clone, Constructor, From, AsRef)]
 pub struct ImageViewList(Vec<ImageView>);
 impl ImageViewList {
+    pub fn one(image_view: ImageView) -> Self {
+        Self::new(vec![image_view])
+    }
     pub fn into_inner(self) -> Vec<ImageView> {
         self.0
     }
