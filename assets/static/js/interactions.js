@@ -85,6 +85,7 @@ document.addEventListener("click", function (event) {
   const targetSelector = toggleBtn.getAttribute("data-toggle");
   const panel = document.querySelector(targetSelector);
   if (panel) {
+    // panel.classList.toggle("grid");
     panel.classList.toggle("hidden");
   }
 });

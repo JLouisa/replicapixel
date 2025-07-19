@@ -358,7 +358,6 @@ pub async fn video_dashboard(
         .current_page(CurrentPage::Videos)
         .is_initial_load()
         .build();
-
     Ok(views::dashboard::video_dashboard(view_engine, &website_options).into_response())
 }
 
