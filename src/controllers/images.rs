@@ -9,6 +9,7 @@ use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 use crate::domain::domain_services::image_generation::ImageGenerationService;
+use crate::domain::prompt_renderer::{themed_prompt, Themes};
 use crate::domain::url::Url;
 use crate::domain::website::{Website, WebsiteOptions};
 use crate::middleware::i18nv2::LangEngine;
@@ -196,7 +197,11 @@ impl ImageGenerationTrait for PackDomain {
             Some(m) => self.formatted_prompt(&m),
             None => UserPrompt::new(self.pack_prompts.clone()),
         };
-        let sys_prompt = SysPrompt::new(user_prompt.as_ref());
+        let themes = Themes::from_title_url(&self.title_url);
+        let sys_prompt = match themed_prompt(&self, themes, model) {
+            Ok(prompt) => prompt,
+            Err(_) => SysPrompt::new(user_prompt.as_ref()),
+        };
         let alt: AltText = user_prompt.clone().into();
         (0..self.num_images())
             .map(|_| {

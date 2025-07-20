@@ -1,4 +1,4 @@
-use crate::models::{images::SysPrompt, PackModel, TrainingModelModel};
+use crate::models::{images::SysPrompt, packs::PackDomain, TrainingModelModel};
 use derive_more::Display;
 use loco_rs::prelude::*;
 use serde::{Deserialize, Serialize};
@@ -6,10 +6,6 @@ use std::str::FromStr;
 use strum::EnumString;
 use tera::{Context, Tera};
 use thiserror::Error;
-
-pub const MODEL_UUID: &str = "eec306f5-70ba-4ff3-a888-6e6843d86caf";
-const _TENSOR_PATH: &str =
-    "https://v3.fal.media/files/penguin/jbAfBP9Q0cxq4bxK9hqjM_pytorch_lora_weights.safetensors";
 
 #[derive(Debug, Error)]
 pub enum PromptRenderError {
@@ -52,10 +48,10 @@ const LIGHTING_EFFECT: &str = "lighting_effect";
 const COLOR_PALETTE: &str = "color_palette";
 const EXTRA_INFO: &str = "extra_info";
 
-pub fn formatted_prompt(
-    pack: &PackModel,
+pub fn themed_prompt(
+    pack: &PackDomain,
     themes_variables: Option<Themes>,
-    training_model: Option<TrainingModelModel>,
+    training_model: &Option<TrainingModelModel>,
 ) -> Result<SysPrompt, PromptRenderError> {
     let training_model = match training_model {
         Some(model) => model,

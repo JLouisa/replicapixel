@@ -8,7 +8,6 @@ use serde::Deserialize;
 use crate::{
     domain::{
         domain_services::image_generation::ImageGenerationService,
-        prompt_renderer::Theme,
         website::{Website, WebsiteOptions},
     },
     middleware::{cookie::ExtractConsentState, i18nv2::LangEngine},
@@ -150,17 +149,23 @@ pub async fn test_new_prompt(
     Path(title_url): Path<String>,
     State(ctx): State<AppContext>,
 ) -> Result<impl IntoResponse> {
-    use crate::domain::prompt_renderer::{formatted_prompt, Themes, MODEL_UUID};
+    use crate::domain::prompt_renderer::{themed_prompt, Themes};
     use axum::http::StatusCode;
     use loco_rs::controller::ErrorDetail;
     use loco_rs::prelude::Error as LocoError;
+
+    pub const MODEL_UUID: &str = "eec306f5-70ba-4ff3-a888-6e6843d86caf";
+    const _TENSOR_PATH: &str =
+        "https://v3.fal.media/files/penguin/jbAfBP9Q0cxq4bxK9hqjM_pytorch_lora_weights.safetensors";
 
     let uuid = Uuid::parse_str(MODEL_UUID).unwrap();
     let training = TrainingModelModel::find_by_pid_opt(&ctx.db, &uuid).await?;
     let themes = Themes::from_title_url(&title_url);
     let pack_model = load_pack_by_title_url(&ctx.db, &title_url).await?;
+    let image_size = ImageSize::SquareHD;
+    let pack_domain = PackDomain::from_model(pack_model, image_size);
 
-    let prompt = match formatted_prompt(&pack_model, themes, training) {
+    let prompt = match themed_prompt(&pack_domain, themes, &training) {
         Ok(prompt) => prompt,
         Err(err) => {
             return Err(LocoError::CustomError(
@@ -171,6 +176,8 @@ pub async fn test_new_prompt(
     };
 
     Ok((StatusCode::OK, Json(prompt)).into_response())
+
+    // format::empty()
 }
 
 async fn pack_infinite_handler(
