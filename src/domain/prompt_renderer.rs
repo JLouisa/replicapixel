@@ -20,10 +20,6 @@ Valentine’s Day fantasy portrait of a stunning {{sex}} in elegant, heart-inspi
 She poses gracefully with natural limb proportions — both arms and legs fully visible and correctly formed — while surrounded by romantic elements like rose petals, silky fabrics, and delicate lighting.  
 The setting is playful yet classy, evoking charm, allure, and a modern fairytale vibe.";
 
-const _PROMPT_TEXT: &str = "Valentine's Day fantasy portrait of a stunning woman in elegant, heart-inspired attire, softly glowing in warm pink and red tones. 
-She poses gracefully with natural limb proportions both arms and legs fully visible and correctly formed—while surrounded by romantic elements like rose petals, silky fabrics, and delicate lighting. 
-The setting is playful yet classy, evoking charm, allure, and a modern fairytale vibe.";
-
 const PROMPT_THEMELESS_TEMPLATE: &str = "{{trigger}}. {{trigger}} is a {{ethnicity}} {{sex}}{% if bald %} who is bald{% endif %} with {{eyes}} eyes, aged {{age}}. {{based_on}}.
  A fantasy portrait of a stunning {{sex}} in a {{theme}} style. The subject is wearing {{attire}}. The scene is set in {{background_setting}}, featuring elements like {{background_elements}}.
   The lighting is {{lighting_style}}, creating {{lighting_effect}}. The color palette is dominated by {{color_palette}}. 
