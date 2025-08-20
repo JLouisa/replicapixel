@@ -123,6 +123,7 @@ settings-dark-mode-description = Dunkelmodus-Darstellung umschalten.
 ## Studio & Gallery View
 ## =================================
 studio-empty-state-message = Keine Bilder verfügbar. Erstellen Sie welche, um loszulegen!
+video-empty-state-message = Keine video verfügbar. Erstellen Sie welche, um loszulegen!
 ## === Create Image Form
 # Prompt Area
 create-image-form-prompt-label = Ihre Bildbeschreibung

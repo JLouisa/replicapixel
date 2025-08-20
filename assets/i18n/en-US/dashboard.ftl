@@ -123,6 +123,7 @@ settings-dark-mode-description = Toggle dark mode appearance.
 ## Studio & Gallery View
 ## =================================
 studio-empty-state-message = No images available. Create some to get started!
+video-empty-state-message = No videos available. Create some to get started!
 ## === Create Image Form
 # Prompt Area
 create-image-form-prompt-label = Your Image Description

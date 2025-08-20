@@ -123,6 +123,7 @@ settings-dark-mode-description = Attiva/disattiva l'aspetto in modalità scura.
 ## Studio & Gallery View
 ## =================================
 studio-empty-state-message = Nessuna immagine disponibile. Creane qualcuna per iniziare!
+video-empty-state-message = Nessuna video disponibile. Creane qualcuna per iniziare!
 ## === Create Image Form
 # Prompt Area
 create-image-form-prompt-label = Descrizione della tua Immagine

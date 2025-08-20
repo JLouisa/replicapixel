@@ -123,6 +123,7 @@ settings-dark-mode-description = Schakel de donkere modus in of uit.
 ## Studio & Gallery View
 ## =================================
 studio-empty-state-message = Geen afbeeldingen beschikbaar. Maak er een om te beginnen!
+video-empty-state-message = Geen videos beschikbaar. Maak er een om te beginnen!
 ## === Create Image Form
 # Prompt Area
 create-image-form-prompt-label = Uw afbeeldingsomschrijving

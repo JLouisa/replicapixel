@@ -11,6 +11,21 @@ export function getBaseUrl(): string {
   return url;
 }
 
+// export async function createZip(files: File[], zipName: string): Promise<File> {
+//   const zipData: Record<string, Uint8Array> = {};
+
+//   for (const file of files) {
+//     zipData[file.name] = new Uint8Array(await file.arrayBuffer());
+//   }
+
+//   const zippedItem = new Blob([zipSync(zipData)], { type: "application/zip" });
+
+//   return new File([zippedItem], `${zipName}.zip`, {
+//     type: "application/zip",
+//     lastModified: Date.now(),
+//   });
+// }
+
 export async function createZip(files: File[], zipName: string): Promise<File> {
   const zipData: Record<string, Uint8Array> = {};
 
@@ -18,7 +33,10 @@ export async function createZip(files: File[], zipName: string): Promise<File> {
     zipData[file.name] = new Uint8Array(await file.arrayBuffer());
   }
 
-  const zippedItem = new Blob([zipSync(zipData)], { type: "application/zip" });
+  const zippedBytes = zipSync(zipData);
+  const zippedItem = new Blob([new Uint8Array(zippedBytes)], {
+    type: "application/zip",
+  });
 
   return new File([zippedItem], `${zipName}.zip`, {
     type: "application/zip",
